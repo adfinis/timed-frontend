@@ -28,7 +28,8 @@ setup(
         "pytest-cov",
         "factory-boy==2.7.0",
         "psycopg2",
-        "ipdb"
+        "ipdb",
+        "pytz"
     ],
     author = "Adfinis SyGroup AG",
     author_email = "https://adfinis-sygroup.ch/",
