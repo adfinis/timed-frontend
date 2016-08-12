@@ -6,7 +6,7 @@ from rest_framework.views       import APIView
 from rest_framework.response    import Response
 from django.contrib.auth.models import User
 from django.conf                import settings
-from base64                     import b64_encode
+from base64                     import b64encode
 
 
 class UserViewSet(ReadOnlyModelViewSet):
@@ -114,7 +114,7 @@ class ProjectIssuesView(APIView):
 
         if (settings.REDMINE_BASIC_AUTH):
             headers['Authorization'] = 'Basic {}'.format(
-                b64_encode('{}:{}'.format(
+                b64encode('{}:{}'.format(
                     settings.REDMINE_BASIC_AUTH_USER,
                     settings.REDMINE_BASIC_AUTH_PASSWORD
                 ))
