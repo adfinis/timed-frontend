@@ -13,8 +13,7 @@ install:
   - pip install coveralls
 
 before_script:
-  - psql -c "CREATE ROLE timed LOGIN PASSWORD 'timed';" -U postgres
-  - psql -c "CREATE DATABASE test_timed OWNER timed;" -U postgres
+  - psql -c "CREATE ROLE timed CREATEDB LOGIN PASSWORD 'timed';" -U postgres
 
 script: make test
 
