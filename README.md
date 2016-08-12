@@ -1,4 +1,7 @@
-# Timed (Backend)
+# Timed Backend
+[![Build Status](https://travis-ci.org/adfinis-sygroup/timed-backend.svg?branch=master)](https://travis-ci.org/adfinis-sygroup/timed-backend)
+Timed timetracking software REST API built with Django
+
 ## Installation
 **Requirements**
 * Python 3.5.1
