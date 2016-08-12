@@ -38,8 +38,11 @@ class ActivityBlockViewSet(ModelViewSet):
 
 class AttendanceViewSet(ModelViewSet):
     queryset         = models.Attendance.objects.all()
-    serializer_class = serializers.ActivitySerializer
+    serializer_class = serializers.AttendanceSerializer
     filter_class     = filters.AttendanceFilterSet
+
+    def get_queryset(self):
+        return models.Attendance.objects.filter(user=self.request.user)
 
 
 class ReportViewSet(ModelViewSet):
