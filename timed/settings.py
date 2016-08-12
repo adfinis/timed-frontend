@@ -204,9 +204,6 @@ REDMINE_BASIC_AUTH          = trueish(redmine_config.get('REDMINE_BASIC_AUTH'))
 REDMINE_BASIC_AUTH_USER     = redmine_config.get('REDMINE_BASIC_AUTH_USER')
 REDMINE_BASIC_AUTH_PASSWORD = redmine_config.get('REDMINE_BASIC_AUTH_PASSWORD')
 
-import ipdb
-ipdb.set_trace()
-
 AUTH_LDAP_ALWAYS_UPDATE_USER = True
 
 AUTH_LDAP_USER_ATTR_MAP = {
