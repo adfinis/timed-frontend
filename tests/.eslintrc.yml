@@ -1,0 +1,38 @@
+---
+ecmaFeatures:
+  blockBindings: true
+  modules: true
+  module: true
+globals:
+  semi:
+  - 0
+  - never
+  document: true
+  window: true
+  location: true
+  setTimeout: true
+  "$": true
+  "-Promise": true
+  define: true
+  console: true
+  visit: true
+  exists: true
+  fillIn: true
+  click: true
+  keyEvent: true
+  triggerEvent: true
+  find: true
+  findWithAssert: true
+  wait: true
+  DS: true
+  andThen: true
+  currentURL: true
+  currentPath: true
+  currentRouteName: true
+  server: true
+  authenticateSession: true
+  invalidateSession: true
+  currentSession: true
+rules:
+  no-magic-numbers: 0
+  max-statements: 0
