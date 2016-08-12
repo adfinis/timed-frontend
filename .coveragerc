@@ -1,0 +1,5 @@
+[run]
+source=timed_api,timed
+
+[report]
+omit=*/migrations/*.py,*/tests/*.py
