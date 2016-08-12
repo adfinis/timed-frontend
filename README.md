@@ -1,4 +1,4 @@
-# Timed Backend [![Build Status](https://travis-ci.org/adfinis-sygroup/timed-backend.svg?branch=master)](https://travis-ci.org/adfinis-sygroup/timed-backend) [![Coverage](https://coveralls.io/repos/github/adfinis-sygroup/timed-backend/badge.svg?branch=master)](https://coveralls.io/github/adfinis-sygroup/timed-backend?branch=master)
+# Timed Backend [![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-backend.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-backend) [![Coverage](https://img.shields.io/coveralls/adfinis-sygroup/timed-backend.svg?style=flat-square)](https://coveralls.io/github/adfinis-sygroup/timed-backend) [![License](https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://github.com/adfinis-sygroup/timed-backend/blob/master/LICENSE)
 Timed timetracking software REST API built with Django
 
 ## Installation
