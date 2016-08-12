@@ -1,0 +1,24 @@
+<h1>Create new customer</h1>
+
+<form {{action 'save' on='submit'}}>
+  <div class="form-group">
+    <label>Customer Name</label>
+    {{input type='text' class='form-control' value=model.name}}
+  </div>
+  <div class="form-group">
+    <label>Email</label>
+    {{input type='email' class='form-control' value=model.email}}
+  </div>
+  <div class="form-group">
+    <label>Website</label>
+    {{input type='url' class='form-control' value=model.website}}
+  </div>
+  <div class="form-group">
+    <label>Comment</label>
+    {{textarea class='form-control' value=model.comment}}
+  </div>
+  <div class="form-group">
+    <button type="submit" class="btn btn-primary">Save</button>
+    {{#link-to 'customers.index' tagName='button' class='btn btn-default'}}Cancel{{/link-to}}
+  </div>
+</form>

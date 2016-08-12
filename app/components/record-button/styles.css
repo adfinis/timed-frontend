@@ -1,0 +1,104 @@
+& {
+  display: flex;
+}
+
+.record-button-container {
+  position: relative;
+  padding: 0.2rem;
+  background: rgb(80, 80, 80);
+  border-radius: 1.1rem;
+  height: 2.2rem;
+  width: 2.2rem;
+  transition: width 500ms ease;
+  margin-right: 0.5rem;
+}
+
+.record-button {
+  position: absolute;
+  width:  1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  border: none;
+  cursor: default;
+  pointer-events: none;
+  background: radial-gradient(
+    circle
+    rgb(240, 240, 240) 50%,
+    rgb(180, 180, 180) 80%
+  );
+}
+
+.record-button::before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: '';
+  opacity: 0;
+  width:  1.8rem;
+  height: 1.8rem;
+  border-radius: 50%;
+  transition: opacity 500ms ease;
+  background: radial-gradient(
+    circle
+    rgb(240, 240, 240) 50%,
+    rgb(120, 120, 120) 80%
+  );
+  z-index: 0;
+}
+
+.record-button:hover::before {
+  opacity: 1;
+}
+
+.record-button::after {
+  position: absolute;
+  left: 50%;
+  top:  50%;
+  content: '\f04b';
+  font-family: FontAwesome;
+  font-size: 1rem;
+  color: rgb(110, 110, 110);
+  transform: translate(-38%, -45%);
+  z-index: 1;
+}
+
+.record-button--stop::after {
+  content: '\f04d';
+  transform: translate(-54%, -50%);
+}
+
+.record-button-timer {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: rgb(255, 255, 255);
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+  text-align: right;
+}
+
+&.ready .record-button {
+  pointer-events: all;
+  cursor: pointer;
+}
+
+&.ready .record-button::after {
+  color: var(--color-danger);
+}
+
+&:matches(.recording, .paused) .record-button-container.record-button-container--extend {
+  width: 7rem;
+}
+
+&.recording .record-button:not(.record-button--stop)::after {
+  content: '\f04c';
+  transform: translate(-55%, -50%);
+}
+
+&:matches(.recording, .paused) .record-button-timer {
+  opacity: 1;
+  pointer-events: all;
+}

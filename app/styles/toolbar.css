@@ -1,0 +1,15 @@
+.toolbar {
+  display: flex;
+  flex-direction: row;
+}
+
+.toolbar-content {
+  display: flex;
+  flex-grow: 1;
+  justify-content: flex-start;
+  margin-bottom: 1rem;
+}
+
+.toolbar-content--right {
+  justify-content: flex-end;
+}

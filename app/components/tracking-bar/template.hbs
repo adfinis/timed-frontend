@@ -1,0 +1,55 @@
+<form class="form-inline" {{action 'start' on='submit'}}>
+  <div class="form-group">
+    {{#power-select
+      disabled    = activity.active
+      options     = customers
+      selected    = customer
+      onchange    = (action 'setCustomer')
+      placeholder = 'Customer'
+      as |customer|}}
+      {{customer.name}}
+    {{/power-select}}
+  </div>
+  <div class="form-group">
+    {{#power-select
+      disabled    = (or (not projects.length) activity.active)
+      options     = projects
+      selected    = project
+      onchange    = (action 'setProject')
+      placeholder = 'Project'
+      as |project|}}
+      {{project.name}}
+    {{/power-select}}
+  </div>
+  <div class="form-group">
+    {{#power-select
+      disabled    = (or (not tasks.length) activity.active)
+      options     = tasks
+      selected    = task
+      onchange    = (action 'setTask')
+      placeholder = 'Task'
+      as |task|}}
+      {{task.name}}
+    {{/power-select}}
+  </div>
+  <div class="form-group">
+    {{input
+      type        = 'text'
+      class       = 'form-control'
+      placeholder = 'Comment'
+      value       = activity.comment
+      disabled    = activity.active
+    }}
+  </div>
+  <div class="form-group">
+    {{record-button
+      activity  = activity
+      recording = recording
+      ready     = ready
+      paused    = paused
+      start     = (action 'start')
+      stop      = (action 'stop')
+      pause     = (action 'pause')
+    }}
+  </div>
+</form>

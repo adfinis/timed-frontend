@@ -1,0 +1,140 @@
+/* Screen sizes */
+:root {
+ --screen-xs-min:  480px;
+ --screen-sm-min:  768px;
+ --screen-md-min:  992px;
+ --screen-lg-min: 1200px;
+ --screen-xl-min: 1440px;
+}
+
+@custom-media --xs-viewport only screen and (min-width:  480px);
+@custom-media --sm-viewport only screen and (min-width:  768px);
+@custom-media --md-viewport only screen and (min-width:  992px);
+@custom-media --lg-viewport only screen and (min-width: 1200px);
+@custom-media --xl-viewport only screen and (min-width: 1440px);
+
+@custom-media --nav-top-mobile-width only screen and (min-width: 768px);
+
+@custom-media --nav-side-mobile-width-unhide only screen and (min-width: 768px);
+
+@custom-media --subnav-side-mobile-width-unhide only screen and (min-width: 768px);
+
+@custom-selector :--table-cell td, th;
+
+:root {
+  --color-primary:   rgb( 91, 142, 219);
+  --color-secondary: rgb(162, 155, 150);
+  --color-tertiary:  rgb(134, 127, 124);
+  --color-border:    rgb(225, 225, 225);
+  --color-menu:      rgb(246, 246, 246);
+  --color-modal:     rgb(255, 255, 255);
+
+  /* State colors */
+  --color-success: rgb( 92, 184,  92);
+  --color-info:    rgb( 91, 192, 222);
+  --color-warning: rgb(240, 173,  78);
+  --color-danger:  rgb(217,  83,  79);
+}
+
+/* Grid */
+:root {
+ --gutter-width: 1rem;
+ --gutter-compensation: -1rem;
+}
+
+/* Grid Page */
+:root {
+  --page-padding-v: 1em;
+  --page-padding-h: 1.5em;
+}
+
+/* Global Fonts */
+:root {
+  --font-family-sans-serif: 'TheSansLT', 'Open Sans', sans-serif;
+  --font-family-serif: 'Merriweather', 'Times New Roman', serif;
+  --font-family-mono: Menlo, Monaco, Consolas, 'Courier New', monospace;
+  --font-family-base: var(--font-family-sans-serif);
+  --font-weight-base: 300;
+  --font-size-base: 16px;
+  --font-size-large: 1.25rem;
+  --font-size-small: 0.85rem;
+}
+
+/* Body */
+:root {
+  --body-background-color: #fff;
+  --body-color: rgb(61, 61, 61);
+  --body-font-weight: var(--font-weight-base);
+  --body-font-family: var(--font-family-base);
+  --body-min-font-size: calc(var(--font-size-base) - 3px);
+  --body-max-font-size: calc(var(--font-size-base) + 2px);
+  --body-min-font-size-break: 420px;
+  --body-max-font-size-break: 1440px;
+}
+
+/* Nav */
+:root {
+  --nav-font-size: var(--font-size-large);
+  --nav-font-size-unhide: var(--font-size-small);
+  --nav-item-border-radius: 3px;
+  --nav-logo-border-radius: 4px;
+}
+
+/* Links */
+:root {
+  --link-color:           var(--color-primary);
+  --link-color-highlight: color(var(--link-color) l(+10%));
+  --link-color-visited:   color(var(--link-color) l(-10%));
+}
+
+/* Headings */
+:root {
+  --headings-color: #000;
+  --headings-font-family: var(--font-family-base);
+  --headings-font-feature-settings: "dlig", "liga", "lnum", "kern";
+  --headings-font-weight: 500;
+  --headings-font-size-base: var(--font-size-base);
+  --headings-font-size-h1: calc(var(--headings-font-size-base) * 2.25);
+  --headings-font-size-h2: calc(var(--headings-font-size-base) * 2);
+  --headings-font-size-h3: calc(var(--headings-font-size-base) * 1.8);
+  --headings-font-size-h4: calc(var(--headings-font-size-base) * 1.5);
+  --headings-font-size-h5: calc(var(--headings-font-size-base) * 1.25);
+  --headings-font-size-h6: calc(var(--headings-font-size-base) * 1.1);
+  --headings-letter-spacing: -1;
+  --headings-line-height: 1.25;
+  --headings-margin: 0 0 0.4em;
+  --headings-small-color: color(var(--headings-color) tint(50%));
+}
+
+/* Content */
+:root {
+  --content-color: var(--body-color);
+  /* Disable weird looking Q in content texts with "salt" */
+  --content-font-feature-settings: "dlig", "liga", "salt", "kern";
+  --content-margin: 0 0 1.5em;
+  --list-margin: 0 0 1.25em;
+  --pre-margin: 0 0 2em;
+  --pre-padding: 1em;
+}
+
+/* Form */
+:root {
+  --button-border-radius: 4px;
+  --input-border-radius: 4px;
+  --input-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+
+/* Modal */
+:root {
+  --modal-space: 1.5rem;
+  --modal-width-small:  400px;
+  --modal-width-medium: 600px;
+  --modal-width-large:  800px;
+  --modal-border-radius: 6px;
+  --modal-line-color: color(var(--color-modal) b(15%));
+}
+
+/* Alert */
+:root {
+  --alert-border-radius: 4px;
+}

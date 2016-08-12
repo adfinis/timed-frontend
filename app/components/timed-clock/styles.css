@@ -1,0 +1,60 @@
+& {
+  position: relative;
+}
+
+.clock {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgb(87,87,87);
+  box-shadow: 0 1px 5px rgba(23, 23, 23, 0.5), 0 1px 5px rgba(23, 23, 23, 0.5) inset;
+  border-radius: 50%;
+  display: inline-block;
+  position: absolute;
+  vertical-align: middle;
+  left: 5px;
+  top: 10px;
+}
+
+.clock::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  margin: -2px 0 0 -2px;
+  border-radius: 2px;
+  background: rgb(87,87,87);
+  content: '';
+}
+
+.clock .hour,
+.clock .minute,
+.clock .second {
+  width: 0;
+  height: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: 50% 100% 0;
+  background: rgb(87,87,87);
+  box-sizing: border-box;
+}
+
+.clock .hour {
+  margin: -1.25px 0 -1.25px -30%;
+  padding: 1.25px 0  1.25px 30%;
+  border-radius: 1.25px 0 0 1.25px;
+  transform-origin: 100% 50% 0;
+}
+
+.clock .minute {
+  margin: -40% -1px 0;
+  padding: 40% 1px 0;
+  border-radius: 1px 1px 0 0;
+}
+
+.clock .second {
+  margin: -40% -0.7px 0 0;
+  padding: 40% 0.7px 0;
+  background: rgb(217, 83, 79);
+}

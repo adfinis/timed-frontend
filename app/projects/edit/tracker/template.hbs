@@ -1,0 +1,23 @@
+<form {{action 'save' on='submit'}}>
+  <div class="form-group">
+    <label>Tracker Type</label>
+    <select class="form-control" onchange={{action (mut model.trackerType) value='target.value'}}>
+      <option value=""></option>
+      <option value="GH" selected={{eq model.trackerType 'GH'}}>Github</option>
+      <option value="RM" selected={{eq model.trackerType 'RM'}}>Redmine</option>
+    </select>
+  </div>
+  {{#liquid-if model.trackerType}}
+    <div class="form-group">
+      <label>Project Identifier</label>
+      {{input type='text' class='form-control' value=model.trackerName}}
+    </div>
+    <div class="form-group">
+      <label>API Key</label>
+      {{input type='text' class='form-control' value=model.trackerApiKey}}
+    </div>
+  {{/liquid-if}}
+  <div class="form-group">
+    <button class="btn btn-primary" type="submit">Save</button>
+  </div>
+</form>

@@ -1,0 +1,7 @@
+{{#sy-sidenav title='Timed' showAutohideButton=true as |component section|}}
+  {{#if (eq section 'body')}}
+    {{partial 'sidenav-body'}}
+  {{else}}
+    {{partial 'page-content'}}
+  {{/if}}
+{{/sy-sidenav}}
