@@ -22,3 +22,6 @@ You can now access the API at http://localhost:8000/api/v1 and the admin panel a
 
 ## Testing
 Run tests by executing `make test`
+
+## License
+Code released under the [GNU Affero General Public License](LICENSE).
