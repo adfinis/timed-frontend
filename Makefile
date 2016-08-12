@@ -2,6 +2,7 @@
 
 install:
 	pip install -e .
+	cp timed/config.sample.ini timed/config.ini
 
 test: test-lint test-coverage
 
