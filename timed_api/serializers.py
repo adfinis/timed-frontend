@@ -7,12 +7,22 @@ from rest_framework_json_api.serializers import ModelSerializer
 
 class UserSerializer(ModelSerializer):
     projects = ResourceRelatedField(
-        queryset=models.Project.objects.all(),
+        read_only=True,
         many=True
     )
 
     attendances = ResourceRelatedField(
-        queryset=models.Attendance.objects.all(),
+        read_only=True,
+        many=True
+    )
+
+    activities = ResourceRelatedField(
+        read_only=True,
+        many=True
+    )
+
+    reports = ResourceRelatedField(
+        read_only=True,
         many=True
     )
 
@@ -25,6 +35,8 @@ class UserSerializer(ModelSerializer):
             'email',
             'projects',
             'attendances',
+            'activities',
+            'reports',
         ]
 
 

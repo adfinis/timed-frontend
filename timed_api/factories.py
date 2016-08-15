@@ -1,8 +1,9 @@
-from factory        import Faker, lazy_attribute, SubFactory
-from factory.django import DjangoModelFactory
-from timed_api      import models
-from random         import randint
-from pytz           import timezone
+from factory                    import Faker, lazy_attribute, SubFactory
+from factory.django             import DjangoModelFactory
+from timed_api                  import models
+from django.contrib.auth.models import User
+from random                     import randint
+from pytz                       import timezone
 
 import datetime
 
@@ -29,7 +30,13 @@ class UserFactory(DjangoModelFactory):
 
     @lazy_attribute
     def username(self):
-        return self.first_name.lower() + self.last_name[0].lower()
+        return '{}.{}'.format(
+            self.first_name,
+            self.last_name,
+        ).lower()
+
+    class Meta:
+        model = User
 
 
 class AttendanceFactory(DjangoModelFactory):
