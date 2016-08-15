@@ -1,8 +1,8 @@
-from timed.jsonapi_test_case    import JSONAPITestCase
-from django.core.urlresolvers   import reverse
-from timed_api.factories        import ProjectFactory, TaskTemplateFactory
-from timed_api.models           import Task
-from rest_framework             import status
+from timed.jsonapi_test_case  import JSONAPITestCase
+from django.core.urlresolvers import reverse
+from timed_api.factories      import ProjectFactory, TaskTemplateFactory
+from timed_api.models         import Task
+from rest_framework           import status
 
 
 class ProjectTests(JSONAPITestCase):

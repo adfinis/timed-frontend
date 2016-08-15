@@ -16,7 +16,11 @@ r.register(r'tasks',           views.TaskViewSet,          'task')
 r.register(r'task-templates',  views.TaskTemplateViewSet,  'task-template')
 
 urlpatterns = [
-    url(r'projects/(?P<pk>[0-9]+)/issues', views.ProjectIssuesView.as_view())
+    url(
+        r'projects/(?P<pk>[0-9]+)/issues',
+        views.ProjectIssuesView.as_view(),
+        name='project-issue-list'
+    )
 ]
 
 urlpatterns.extend(r.urls)

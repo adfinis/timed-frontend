@@ -2,8 +2,11 @@ import requests
 
 from timed_api                  import serializers, models, filters
 from rest_framework.viewsets    import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views       import APIView
 from rest_framework.response    import Response
+from rest_framework.exceptions  import AuthenticationFailed, ParseError
+from rest_framework             import status
 from django.contrib.auth.models import User
 from django.conf                import settings
 from base64                     import b64encode
@@ -82,6 +85,7 @@ class TaskTemplateViewSet(ModelViewSet):
 
 
 class ProjectIssuesView(APIView):
+    permission_classes = (IsAuthenticated,)
 
     def get_github_issues(self, project):
         url = settings.GITHUB_API_URL.format(project.tracker_name)
@@ -89,6 +93,12 @@ class ProjectIssuesView(APIView):
         response = requests.get(url, headers={
             'Authorization': 'token {}'.format(project.tracker_api_key)
         })
+
+        if (response.status_code == status.HTTP_401_UNAUTHORIZED):
+            raise AuthenticationFailed
+
+        elif (response.status_code != status.HTTP_200_OK):
+            raise ParseError
 
         issues = [
             {
@@ -102,6 +112,14 @@ class ProjectIssuesView(APIView):
                         issue['id']
                     ),
                     'state': issue['state'].capitalize()
+                },
+                'relationships': {
+                    'project': {
+                        'data': {
+                            'type': 'projects',
+                            'id': project.id
+                        }
+                    }
                 }
             }
             for issue
@@ -138,6 +156,14 @@ class ProjectIssuesView(APIView):
                     'title': issue['subject'],
                     'url':   settings.REDMINE_ISSUE_URL.format(issue['id']),
                     'state': issue['status']['name'].capitalize()
+                },
+                'relationships': {
+                    'project': {
+                        'data': {
+                            'type': 'projects',
+                            'id': project.id
+                        }
+                    }
                 }
             }
             for issue
