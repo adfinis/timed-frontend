@@ -4,22 +4,27 @@ from timed_api                  import models
 from django.contrib.auth.models import User
 from random                     import randint
 from pytz                       import timezone
+from faker                      import Factory as FakerFactory
 
 import datetime
 
 tzinfo = timezone('Europe/Zurich')
 
-today = datetime.date.today()
+faker = FakerFactory.create()
 
-begin_of_today = datetime.datetime(
-    today.year,
-    today.month,
-    today.day,
-    0, 0, 0,
-    tzinfo=tzinfo
-)
 
-end_of_today = begin_of_today + datetime.timedelta(days=1)
+def begin_of_day(day):
+    return datetime.datetime(
+        day.year,
+        day.month,
+        day.day,
+        0, 0, 0,
+        tzinfo=tzinfo
+    )
+
+
+def end_of_day(day):
+    return begin_of_day(day) + datetime.timedelta(days=1)
 
 
 class UserFactory(DjangoModelFactory):
@@ -40,12 +45,15 @@ class UserFactory(DjangoModelFactory):
 
 
 class AttendanceFactory(DjangoModelFactory):
-    from_datetime = Faker(
-        'date_time_between_dates',
-        datetime_start=begin_of_today,
-        datetime_end=end_of_today,
-        tzinfo=tzinfo
-    )
+    date = datetime.date.today()
+
+    @lazy_attribute
+    def from_datetime(self):
+        return faker.date_time_between_dates(
+            datetime_start=begin_of_day(self.date),
+            datetime_end=end_of_day(self.date),
+            tzinfo=tzinfo
+        )
 
     @lazy_attribute
     def to_datetime(self):
@@ -54,7 +62,8 @@ class AttendanceFactory(DjangoModelFactory):
         return self.from_datetime + datetime.timedelta(hours=hours)
 
     class Meta:
-        model = models.Attendance
+        model   = models.Attendance
+        exclude = ( 'date', )
 
 
 class CustomerFactory(DjangoModelFactory):
@@ -86,6 +95,23 @@ class TaskFactory(DjangoModelFactory):
 
     class Meta:
         model = models.Task
+
+
+class ReportFactory(DjangoModelFactory):
+    comment = Faker('sentence')
+    review  = False
+    nta     = False
+    task    = SubFactory(TaskFactory)
+
+    @lazy_attribute
+    def duration(self):
+        return datetime.timedelta(
+            hours=randint(0, 4),
+            minutes=randint(0, 59)
+        )
+
+    class Meta:
+        model = models.Report
 
 
 class TaskTemplateFactory(DjangoModelFactory):

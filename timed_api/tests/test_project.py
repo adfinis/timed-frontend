@@ -1,6 +1,7 @@
 from timed.jsonapi_test_case    import JSONAPITestCase
 from django.core.urlresolvers   import reverse
-from timed_api.factories        import ProjectFactory
+from timed_api.factories        import ProjectFactory, TaskTemplateFactory
+from timed_api.models           import Task
 from rest_framework             import status
 
 
@@ -171,3 +172,10 @@ class ProjectTests(JSONAPITestCase):
         self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
         self.assertEqual(admin_res.status_code,  status.HTTP_204_NO_CONTENT)
+
+    def test_project_default_tasks(self):
+        templates = TaskTemplateFactory.create_batch(5)
+        project   = ProjectFactory.create()
+        tasks     = Task.objects.filter(project=project)
+
+        self.assertEqual(len(templates), len(tasks))

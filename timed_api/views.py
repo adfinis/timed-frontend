@@ -46,9 +46,11 @@ class AttendanceViewSet(ModelViewSet):
 
 
 class ReportViewSet(ModelViewSet):
-    queryset         = models.Report.objects.all()
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
+
+    def get_queryset(self):
+        return models.Report.objects.filter(user=self.request.user)
 
 
 class CustomerViewSet(ModelViewSet):
