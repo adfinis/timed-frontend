@@ -88,6 +88,7 @@ class ReportSerializer(ModelSerializer):
 class CustomerSerializer(ModelSerializer):
     projects = ResourceRelatedField(
         queryset=models.Project.objects.all(),
+        required=False,
         many=True
     )
 
@@ -102,6 +103,7 @@ class ProjectSerializer(ModelSerializer):
 
     leaders = ResourceRelatedField(
         queryset=User.objects.all(),
+        required=False,
         many=True
     )
 

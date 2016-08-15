@@ -1,18 +1,23 @@
-from timed.jsonapi_test_case  import JSONAPITestCase
-from django.core.urlresolvers import reverse
-from timed_api.factories      import TaskTemplateFactory
-from rest_framework           import status
+from timed.jsonapi_test_case    import JSONAPITestCase
+from django.core.urlresolvers   import reverse
+from timed_api.factories        import CustomerFactory
+from rest_framework             import status
 
 
-class TaskTemplateTests(JSONAPITestCase):
+class CustomerTests(JSONAPITestCase):
 
     def setUp(self):
         super().setUp()
 
-        self.task_templates = TaskTemplateFactory.create_batch(5)
+        self.customers = CustomerFactory.create_batch(10)
 
-    def test_task_template_list(self):
-        url = reverse('task-template-list')
+        CustomerFactory.create_batch(
+            10,
+            archived=True
+        )
+
+    def test_customer_list(self):
+        url = reverse('customer-list')
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
@@ -24,16 +29,20 @@ class TaskTemplateTests(JSONAPITestCase):
 
         result = self.result(admin_res)
 
-        self.assertEqual(len(result['data']), len(self.task_templates))
+        self.assertEqual(len(result['data']), len(self.customers))
 
-        self.assertIn('id',   result['data'][0])
-        self.assertIn('name', result['data'][0]['attributes'])
+        self.assertIn('id',       result['data'][0])
+        self.assertIn('name',     result['data'][0]['attributes'])
+        self.assertIn('email',    result['data'][0]['attributes'])
+        self.assertIn('website',  result['data'][0]['attributes'])
+        self.assertIn('comment',  result['data'][0]['attributes'])
+        self.assertIn('projects', result['data'][0]['relationships'])
 
-    def test_task_template_detail(self):
-        task_template = self.task_templates[0]
+    def test_customer_detail(self):
+        customer = self.customers[0]
 
-        url = reverse('task-template-detail', args=[
-            task_template.id
+        url = reverse('customer-detail', args=[
+            customer.id
         ])
 
         noauth_res = self.noauth_client.get(url)
@@ -46,21 +55,26 @@ class TaskTemplateTests(JSONAPITestCase):
 
         result = self.result(admin_res)
 
-        self.assertIn('id',   result['data'])
-        self.assertIn('name', result['data']['attributes'])
+        self.assertIn('id',       result['data'])
+        self.assertIn('name',     result['data']['attributes'])
+        self.assertIn('email',    result['data']['attributes'])
+        self.assertIn('website',  result['data']['attributes'])
+        self.assertIn('comment',  result['data']['attributes'])
+        self.assertIn('projects', result['data']['relationships'])
 
-    def test_task_template_create(self):
+    def test_customer_create(self):
         data = {
             'data': {
-                'type': 'task-templates',
+                'type': 'customers',
                 'id': None,
                 'attributes': {
-                    'name': 'Test Task Template'
+                    'name': 'Test customer',
+                    'email': 'foo@bar.ch'
                 }
             }
         }
 
-        url = reverse('task-template-list')
+        url = reverse('customer-list')
 
         noauth_res = self.noauth_client.post(url, data)
         user_res   = self.client.post(url, data)
@@ -79,21 +93,27 @@ class TaskTemplateTests(JSONAPITestCase):
             data['data']['attributes']['name']
         )
 
-    def test_task_template_update(self):
-        task_template = self.task_templates[0]
+        self.assertEqual(
+            result['data']['attributes']['email'],
+            data['data']['attributes']['email']
+        )
+
+    def test_customer_update(self):
+        customer  = self.customers[0]
 
         data = {
             'data': {
-                'type': 'task-templates',
-                'id': task_template.id,
+                'type': 'customers',
+                'id': customer.id,
                 'attributes': {
-                    'name': 'Test Task Template'
+                    'name': 'Test customer',
+                    'email': 'foo@bar.ch'
                 }
             }
         }
 
-        url = reverse('task-template-detail', args=[
-            task_template.id
+        url = reverse('customer-detail', args=[
+            customer.id
         ])
 
         noauth_res = self.noauth_client.patch(url, data)
@@ -111,11 +131,16 @@ class TaskTemplateTests(JSONAPITestCase):
             data['data']['attributes']['name']
         )
 
-    def test_task_template_delete(self):
-        task_template = self.task_templates[0]
+        self.assertEqual(
+            result['data']['attributes']['email'],
+            data['data']['attributes']['email']
+        )
 
-        url = reverse('task-template-detail', args=[
-            task_template.id
+    def test_customer_delete(self):
+        customer = self.customers[0]
+
+        url = reverse('customer-detail', args=[
+            customer.id
         ])
 
         noauth_res = self.noauth_client.delete(url)

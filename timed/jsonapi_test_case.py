@@ -1,5 +1,5 @@
 from rest_framework.test         import APITestCase, APIClient
-from django.contrib.auth.models  import User
+from django.contrib.auth.models  import User, Group
 from django.core.urlresolvers    import reverse
 from rest_framework              import status
 from rest_framework_jwt.settings import api_settings
@@ -78,19 +78,35 @@ class JSONAPIClient(APIClient):
 
 class JSONAPITestCase(APITestCase):
 
+    fixtures = [ 'groups' ]
+
     def setUp(self):
         super(JSONAPITestCase, self).setUp()
 
+        self.admin_user = User.objects.create_user(
+            username='admin',
+            password='123qweasd'
+        )
+
+        self.admin_user.groups.add(
+            Group.objects.get(name='Administrator')
+        )
+
         self.user = User.objects.create_user(
             username='tester',
-            password='123qweasd',
-            is_staff=True,
-            is_superuser=True
+            password='123qweasd'
+        )
+
+        self.user.groups.add(
+            Group.objects.get(name='User')
         )
 
         self.noauth_client = JSONAPIClient()
-        self.client        = JSONAPIClient()
 
+        self.admin_client = JSONAPIClient()
+        self.admin_client.login('admin', '123qweasd')
+
+        self.client = JSONAPIClient()
         self.client.login('tester', '123qweasd')
 
     def result(self, response):
