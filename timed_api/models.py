@@ -25,6 +25,12 @@ class Activity(models.Model):
 
         return sum(durations, timedelta())
 
+    def __str__(self):
+        return '{}: {}'.format(self.user, self.task)
+
+    class Meta:
+        verbose_name_plural = 'activities'
+
 
 class ActivityBlock(models.Model):
     activity      = models.ForeignKey('Activity', related_name='blocks')
@@ -37,6 +43,9 @@ class ActivityBlock(models.Model):
             return None
 
         return self.to_datetime - self.from_datetime
+
+    def __str__(self):
+        return '{} ({})'.format(self.activity, self.duration)
 
 
 class Attendance(models.Model):
@@ -58,6 +67,9 @@ class Report(models.Model):
         settings.AUTH_USER_MODEL,
         related_name='reports'
     )
+
+    def __str__(self):
+        return '{}: {}'.format(self.user, self.task)
 
 
 class Customer(models.Model):
@@ -91,7 +103,7 @@ class Project(models.Model):
     )
 
     def __str__(self):
-        return self.name
+        return '{} > {}'.format(self.customer, self.name)
 
 
 class Task(models.Model):
@@ -101,7 +113,7 @@ class Task(models.Model):
     project         = models.ForeignKey('Project', related_name='tasks')
 
     def __str__(self):
-        return self.name
+        return '{} > {}'.format(self.project, self.name)
 
 
 class TaskTemplate(models.Model):
