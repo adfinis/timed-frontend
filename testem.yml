@@ -3,110 +3,75 @@ framework: qunit
 test_page: tests/index.html?hidepassed
 disable_watching: true
 launch_in_ci:
-  - SL_android_5_0
-  - SL_android_5_1
-  - SL_chrome_46
-  - SL_chrome_47
-  - SL_firefox_ESR
-  - SL_firefox_42
-  - SL_firefox_43
-  - SL_internet_explorer_11
+  - SL_Chrome_Current
+  - SL_Firefox_Current
+  - SL_Safari_Current
+  - SL_Safari_Last
+  - SL_MS_Edge
+  - SL_IE_11
 launch_in_dev:
   - PhantomJS
 launchers:
-  SL_chrome_46:
+  SL_Chrome_Current:
     exe: "./node_modules/.bin/ember-cli-sauce"
     args:
     - "-b"
-    - chrome
+    - "chrome"
     - "-v"
-    - 46
+    - "latest"
     - "--at"
     - "--no-ct"
     - "--u"
     protocol: browser
-  SL_chrome_47:
+  SL_Firefox_Current:
     exe: "./node_modules/.bin/ember-cli-sauce"
     args:
     - "-b"
-    - chrome
+    - "firefox"
     - "-v"
-    - 47
+    - "latest"
     - "--at"
     - "--no-ct"
     - "--u"
     protocol: browser
-  SL_firefox_ESR:
+  SL_Safari_Current:
     exe: "./node_modules/.bin/ember-cli-sauce"
     args:
     - "-b"
-    - firefox
+    - "safari"
     - "-v"
-    - 38
+    - "9"
     - "--at"
     - "--no-ct"
     - "--u"
     protocol: browser
-  SL_firefox_42:
+  SL_Safari_Last:
     exe: "./node_modules/.bin/ember-cli-sauce"
     args:
     - "-b"
-    - firefox
+    - "safari"
     - "-v"
-    - 42
+    - "8"
     - "--at"
     - "--no-ct"
     - "--u"
     protocol: browser
-  SL_firefox_43:
+  SL_MS_Edge:
     exe: "./node_modules/.bin/ember-cli-sauce"
     args:
     - "-b"
-    - firefox
-    - "-v"
-    - 43
+    - "microsoftedge"
     - "--at"
     - "--no-ct"
     - "--u"
     protocol: browser
-  SL_internet_explorer_11:
+  SL_IE_11:
     exe: "./node_modules/.bin/ember-cli-sauce"
     args:
     - "-b"
-    - internet explorer
+    - "internet explorer"
     - "-v"
-    - 11
-    - "--at"
-    - "--no-ct"
-    - "--u"
-    protocol: browser
-  SL_edge:
-    exe: "./node_modules/.bin/ember-cli-sauce"
-    args:
-    - "-b"
-    - microsoftedge
-    - "--at"
-    - "--no-ct"
-    - "--u"
-    protocol: browser
-  SL_android_5_0:
-    exe: "./node_modules/.bin/ember-cli-sauce"
-    args:
-    - "-b"
-    - android
-    - "-v"
-    - 5.0
-    - "--at"
-    - "--no-ct"
-    - "--u"
-    protocol: browser
-  SL_android_5_1:
-    exe: "./node_modules/.bin/ember-cli-sauce"
-    args:
-    - "-b"
-    - android
-    - "-v"
-    - 5.1
+    - "11"
     - "--at"
     - "--no-ct"
     - "--u"
