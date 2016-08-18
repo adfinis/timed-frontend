@@ -31,7 +31,8 @@ export default Route.extend({
         this.transitionTo('projects.index')
       }
       catch (e) {
-        console.error(e)
+        // TODO: print actual error message
+        this.get('notify').error('Error')
       }
     },
 
@@ -42,8 +43,9 @@ export default Route.extend({
         this.transitionTo('projects.index')
       }
       catch (e) {
-        console.error(e)
+        // TODO: print actual error message
+        this.get('notify').error('Error')
       }
-    },
+    }
   }
 })

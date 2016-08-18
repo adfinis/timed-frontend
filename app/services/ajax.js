@@ -9,11 +9,11 @@ export default AjaxService.extend({
   headers(token) {
     let headers = {
       'Accept':       'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json'
     }
 
     let auth = token ? {
-      'Authorization': `Bearer ${token}`,
+      'Authorization': `Bearer ${token}`
     } : {}
 
     return Object.assign(headers, auth)

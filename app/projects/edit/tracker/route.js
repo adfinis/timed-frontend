@@ -11,7 +11,8 @@ export default Route.extend({
         await this.get('currentModel').save()
       }
       catch (e) {
-        console.error(e)
+        // TODO: print actual error message
+        this.get('notify').error('Error')
       }
     }
   }

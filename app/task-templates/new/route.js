@@ -16,8 +16,9 @@ export default Route.extend({
 
         this.transitionTo('task-templates.index')
       }
-      catch(e) {
-        console.error(e)
+      catch (e) {
+        // TODO: print actual error message
+        this.get('notify').error('Error')
       }
     }
   }

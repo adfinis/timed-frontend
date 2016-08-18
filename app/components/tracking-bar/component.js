@@ -96,6 +96,6 @@ export default Component.extend({
     stop() {
       this.get('tracking').stopActivity()
       this.get('tracking').newActivity()
-    },
+    }
   }
 })

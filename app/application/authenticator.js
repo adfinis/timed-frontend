@@ -18,13 +18,14 @@ export default BaseAuthenticator.extend({
 
     try {
       return JSON.parse(tokenData)
-    } catch (e) {
+    }
+    catch (e) {
       return tokenData
     }
   },
 
   parseExp(exp) {
-    return new Date(exp * 1000).getTime()
+    return exp//new Date(exp * 1000).getTime()
   },
 
   async authenticate({ username, password }) {
@@ -41,9 +42,9 @@ export default BaseAuthenticator.extend({
 
       this.get('ajax').post('/api/v1/auth/login', { data: { data } })
         .then((res) => {
-          let data = this.handleAuthResponse(res.data)
+          let result = this.handleAuthResponse(res.data)
 
-          resolve(data)
+          resolve(result)
         })
         .catch((res) => {
           reject(res)
@@ -83,17 +84,19 @@ export default BaseAuthenticator.extend({
       attributes: { token }
     }
 
-    this.get('ajax').post('/api/v1/auth/refresh', { data: { data } })
-      .then((res) => {
-        let data = this.handleAuthResponse(res.data)
+    return new Promise((resolve, reject) => {
+      this.get('ajax').post('/api/v1/auth/refresh', { data: { data } })
+        .then((res) => {
+          let result = this.handleAuthResponse(res.data)
 
-        this.trigger('sessionDataUpdated', data)
+          this.trigger('sessionDataUpdated', result)
 
-        resolve(data)
-      })
-      .catch((res) => {
-        reject()
-      })
+          resolve(result)
+        })
+        .catch((res) => {
+          reject()
+        })
+    })
   },
 
   scheduleTokenRefresh(exp, token) {

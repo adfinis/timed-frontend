@@ -38,7 +38,8 @@ export default Route.extend({
         this.transitionTo('projects.edit', model)
       }
       catch (e) {
-        console.error(e)
+        // TODO: print actual error message
+        this.get('notify').error('Error')
       }
     }
   }

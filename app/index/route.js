@@ -26,6 +26,6 @@ export default Route.extend({
   actions: {
     continueActivity(activity) {
       this.get('tracking').continueActivity(activity)
-    },
+    }
   }
 })

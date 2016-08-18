@@ -1,6 +1,7 @@
 import Service  from 'ember-service'
 import service  from 'ember-service/inject'
 import computed from 'ember-computed-decorators'
+import moment   from 'moment'
 
 export default Service.extend({
   store: service('store'),

@@ -1,5 +1,6 @@
 import DurationFormatHelper from 'timed/helpers/duration-format'
 import { later }            from 'ember-runloop'
+import moment               from 'moment'
 
 export default DurationFormatHelper.extend({
   compute([ startTime, elapsed = moment.duration() ]) {

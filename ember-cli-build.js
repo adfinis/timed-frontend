@@ -33,8 +33,7 @@ module.exports = function(defaults) {
     babel: {
       includePolyfill: true,
       optional: [
-        'es7.decorators',
-        'asyncToGenerator'
+        'es7.decorators'
       ]
     },
     'ember-cli-qunit': {
