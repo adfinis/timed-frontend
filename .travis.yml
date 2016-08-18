@@ -3,6 +3,18 @@ language: node_js
 node_js:
   - "4"
 
+env:
+  - CXX=g++-4.8
+  - SAUCE_USERNAME=adsy-timed
+  - SAUCE_ACCESS_Key=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-4.8
+
 sudo: false
 
 cache:

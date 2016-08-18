@@ -1,0 +1,113 @@
+---
+framework: qunit
+test_page: tests/index.html?hidepassed
+disable_watching: true
+launch_in_ci:
+  - SL_android_5_0
+  - SL_android_5_1
+  - SL_chrome_46
+  - SL_chrome_47
+  - SL_firefox_ESR
+  - SL_firefox_42
+  - SL_firefox_43
+  - SL_internet_explorer_11
+launch_in_dev:
+  - PhantomJS
+launchers:
+  SL_chrome_46:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - chrome
+    - "-v"
+    - 46
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_chrome_47:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - chrome
+    - "-v"
+    - 47
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_firefox_ESR:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - firefox
+    - "-v"
+    - 38
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_firefox_42:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - firefox
+    - "-v"
+    - 42
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_firefox_43:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - firefox
+    - "-v"
+    - 43
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_internet_explorer_11:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - internet explorer
+    - "-v"
+    - 11
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_edge:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - microsoftedge
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_android_5_0:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - android
+    - "-v"
+    - 5.0
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
+  SL_android_5_1:
+    exe: "./node_modules/.bin/ember-cli-sauce"
+    args:
+    - "-b"
+    - android
+    - "-v"
+    - 5.1
+    - "--at"
+    - "--no-ct"
+    - "--u"
+    protocol: browser
