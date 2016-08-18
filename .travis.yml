@@ -4,9 +4,10 @@ node_js:
   - "4"
 
 env:
-  - CXX=g++-4.8
-  - SAUCE_USERNAME=adsy-timed
-  - SAUCE_ACCESS_Key=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
+  global:
+    - CXX=g++-4.8
+    - SAUCE_USERNAME=adsy-timed
+    - SAUCE_ACCESS_Key=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
 
 addons:
   apt:
@@ -32,5 +33,11 @@ install:
   - npm install
   - bower install
 
+before_script:
+  - ember sauce:connect
+
 script:
   - npm test
+
+after_script:
+  - ember sauce:disconnect
