@@ -1,7 +1,6 @@
-@import 'variables.css';
+@import 'adcssy/css/variables.css';
 @import 'power-select.css';
 @import 'toolbar.css';
-@import 'pod-styles';
 
 html {
   height: 100vh;

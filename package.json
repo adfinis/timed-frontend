@@ -22,7 +22,6 @@
     "babel-eslint": "^6.1.2",
     "broccoli-asset-rev": "^2.4.2",
     "broccoli-funnel": "^1.0.3",
-    "broccoli-postcss-single": "^1.0.0",
     "coveralls": "^2.11.12",
     "ember-ajax": "2.4.1",
     "ember-cli": "2.7.0",
@@ -35,7 +34,7 @@
     "ember-cli-htmlbars-inline-precompile": "^0.3.3",
     "ember-cli-inject-live-reload": "^1.4.0",
     "ember-cli-moment-shim": "2.0.0",
-    "ember-cli-postcss": "2.1.1",
+    "ember-cli-postcss": "3.0.4",
     "ember-cli-qunit": "^2.1.0",
     "ember-cli-release": "^0.2.9",
     "ember-cli-sauce": "1.6.0",
@@ -64,12 +63,6 @@
     "loader.js": "^4.0.1",
     "pagination-pager": "2.4.1",
     "postcss-cssnext": "^2.7.0",
-    "postcss-import": "^8.1.2",
-    "postcss-responsive-type": "^0.4.0"
-  },
-  "ember-addon": {
-    "paths": [
-      "lib/customise-adcssy"
-    ]
+    "postcss-import": "^8.1.2"
   }
 }

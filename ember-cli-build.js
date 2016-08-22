@@ -8,27 +8,20 @@ let funnel   = require('broccoli-funnel')
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     postcssOptions: {
-      plugins: [
-        {
-          module: require('postcss-import'),
-          options: {
-            path: [
-              'bower_components/adcssy/css',
-              'bower_components'
-            ]
+      filter: {
+        enabled: false
+      },
+      compile: {
+        enabled: true,
+        plugins: [
+          {
+            module: require('postcss-import'),
+            options: {
+              path: [ 'bower_components' ]
+            }
           }
-        },
-        {
-          module: require('postcss-cssnext'),
-          options: {
-            features: { rem: false, customProperties: true },
-            browsers: 'last 2 Firefox version, last 2 Chrome versions'
-          }
-        },
-        {
-          module: require('postcss-responsive-type')
-        }
-      ]
+        ]
+      }
     },
     babel: {
       includePolyfill: true,
@@ -43,6 +36,8 @@ module.exports = function(defaults) {
       paranoiaCheck: true
     }
   })
+
+  app.import('bower_components/adcssy/build/css/adcssy.css')
 
   let fonts = funnel('bower_components/adcssy/assets/fonts', {
     destDir: '/fonts'

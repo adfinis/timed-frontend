@@ -19,26 +19,18 @@ install:
   - npm install
   - bower install
 
-# before_script:
-#   - ember sauce:connect
+before_script:
+  - ember sauce:connect
 
 script:
   - npm test
 
-# after_script:
-#   - ember sauce:disconnect
-#   - cat coverage/lcov.info | ./node_modules/.bin/coveralls
+after_script:
+  - ember sauce:disconnect
+  - cat coverage/lcov.info | ./node_modules/.bin/coveralls
 
-# env:
-#   global:
-#     - CXX=g++-4.8
-#     - SAUCE_USERNAME=adsy-timed
-#     - SAUCE_ACCESS_KEY=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
-#     - COVERAGE=true
-#
-# addons:
-#   apt:
-#     sources:
-#       - ubuntu-toolchain-r-test
-#     packages:
-#       - g++-4.8
+env:
+  global:
+    - SAUCE_USERNAME=adsy-timed
+    - SAUCE_ACCESS_KEY=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
+    - COVERAGE=true
