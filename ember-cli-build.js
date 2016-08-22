@@ -25,15 +25,7 @@ module.exports = function(defaults) {
     },
     babel: {
       includePolyfill: true,
-      optional: [
-        'es7.decorators'
-      ]
-    },
-    'ember-cli-qunit': {
-      useLintTree: false
-    },
-    SRI: {
-      paranoiaCheck: true
+      optional: [ 'es7.asyncFunctions', 'es7.decorators' ]
     }
   })
 
