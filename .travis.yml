@@ -23,7 +23,7 @@ before_script:
   - ember sauce:connect
 
 script:
-  - npm test
+  - ember test --test-port 7000
 
 after_script:
   - ember sauce:disconnect
