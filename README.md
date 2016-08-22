@@ -1,9 +1,8 @@
 # Timed Frontend
 [![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-frontend)
-[![License](https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square)](LICENSE)
-<!---
 [![Coverage](https://img.shields.io/coveralls/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://coveralls.io/github/adfinis-sygroup/timed-frontend)
--->
+[![License](https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square)](LICENSE)
+
 [![Build Status](https://saucelabs.com/browser-matrix/adsy-timed.svg)](https://saucelabs.com/beta/builds/2b3459cd936e4596859e8bc9af4f23c4)
 
 This README outlines the details of collaborating on this Ember application.
