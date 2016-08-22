@@ -1,9 +1,14 @@
-# Timed
+# Timed Frontend
+[![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-frontend)
+[![License](https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square)](LICENSE)
+<!---
+[![Coverage](https://img.shields.io/coveralls/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://coveralls.io/github/adfinis-sygroup/timed-frontend)
+-->
 
 This README outlines the details of collaborating on this Ember application.
 A short introduction of this app could easily go here.
 
-## Prerequisites
+## Requirements
 
 You will need the following things properly installed on your computer.
 
@@ -25,10 +30,6 @@ You will need the following things properly installed on your computer.
 * `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
-### Code Generators
-
-Make use of the many generators for code, try `ember help generate` for more details
-
 ### Running Tests
 
 * `ember test`
@@ -39,15 +40,6 @@ Make use of the many generators for code, try `ember help generate` for more det
 * `ember build` (development)
 * `ember build --environment production` (production)
 
-### Deploying
-
-Specify what it takes to deploy your app.
-
-## Further Reading / Useful Links
-
-* [ember.js](http://emberjs.com/)
-* [ember-cli](http://ember-cli.com/)
-* Development Browser Extensions
-  * [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
-  * [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+## License
+Code released under the [GNU Affero General Public License v3.0](LICENSE).
 
