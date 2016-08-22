@@ -25,7 +25,7 @@ export default BaseAuthenticator.extend({
   },
 
   parseExp(exp) {
-    return exp//new Date(exp * 1000).getTime()
+    return new Date(exp * 1000).getTime()
   },
 
   async authenticate({ username, password }) {

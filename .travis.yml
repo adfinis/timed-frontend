@@ -27,12 +27,14 @@ script:
 
 after_script:
   - ember sauce:disconnect
+  - cat coverage/lcov.info | ./node_modules/.bin/coveralls
 
 env:
   global:
     - CXX=g++-4.8
     - SAUCE_USERNAME=adsy-timed
     - SAUCE_ACCESS_KEY=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
+    - COVERAGE=true
 
 addons:
   apt:
