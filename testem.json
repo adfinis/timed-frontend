@@ -1,18 +1,19 @@
 {
   "framework": "qunit",
   "test_page": "tests/index.html?hidepassed",
+  "timeout": 600,
+  "parallel": 5,
+  "port": 7000,
+  "browser_start_timeout": 90,
   "disable_watching": true,
   "launchers": {
     "SL_Firefox_Current": {
-      "exe": "ember",
+      "exe": "./node_modules/.bin/saucie",
       "args": [
-        "sauce:launch",
         "-b",
         "firefox",
         "-v",
-        "current",
-        "--vi",
-        "public",
+        "latest",
         "--at",
         "--no-ct",
         "--u"
@@ -20,15 +21,12 @@
       "protocol": "browser"
     },
     "SL_Chrome_Current": {
-      "exe": "ember",
+      "exe": "./node_modules/.bin/saucie",
       "args": [
-        "sauce:launch",
         "-b",
         "chrome",
         "-v",
-        "current",
-        "--vi",
-        "public",
+        "latest",
         "--at",
         "--no-ct",
         "--u"
@@ -36,31 +34,36 @@
       "protocol": "browser"
     },
     "SL_Safari_Current": {
-      "exe": "ember",
+      "exe": "./node_modules/.bin/saucie",
       "args": [
-        "sauce:launch",
         "-b",
         "safari",
         "-v",
-        "9.0",
-        "--vi",
-        "public",
+        "9",
         "--at",
         "--no-ct",
         "--u"
       ],
       "protocol": "browser"
     },
-    "SL_Edge_Current": {
-      "exe": "ember",
+    "SL_Safari_Last": {
+      "exe": "./node_modules/.bin/saucie",
       "args": [
-        "sauce:launch",
         "-b",
-        "edgebrowser",
+        "safari",
         "-v",
-        "13",
-        "--vi",
-        "public",
+        "8",
+        "--at",
+        "--no-ct",
+        "--u"
+      ],
+      "protocol": "browser"
+    },
+    "SL_MS_Edge": {
+      "exe": "./node_modules/.bin/saucie",
+      "args": [
+        "-b",
+        "microsoftedge",
         "--at",
         "--no-ct",
         "--u"
@@ -68,15 +71,38 @@
       "protocol": "browser"
     },
     "SL_IE_11": {
-      "exe": "ember",
+      "exe": "./node_modules/.bin/saucie",
       "args": [
-        "sauce:launch",
         "-b",
-        "internetexplorer",
+        "internet explorer",
         "-v",
         "11",
-        "--vi",
-        "public",
+        "--at",
+        "--no-ct",
+        "--u"
+      ],
+      "protocol": "browser"
+    },
+    "SL_IE_10": {
+      "exe": "./node_modules/.bin/saucie",
+      "args": [
+        "-b",
+        "internet explorer",
+        "-v",
+        "10",
+        "--at",
+        "--no-ct",
+        "--u"
+      ],
+      "protocol": "browser"
+    },
+    "SL_IE_9": {
+      "exe": "./node_modules/.bin/saucie",
+      "args": [
+        "-b",
+        "internet explorer",
+        "-v",
+        "9",
         "--at",
         "--no-ct",
         "--u"
@@ -91,7 +117,10 @@
     "SL_Chrome_Current",
     "SL_Firefox_Current",
     "SL_Safari_Current",
-    "SL_Edge_Current",
-    "SL_IE_11"
+    "SL_Safari_Last",
+    "SL_MS_Edge",
+    "SL_IE_11",
+    "SL_IE_10",
+    "SL_IE_9"
   ]
 }
