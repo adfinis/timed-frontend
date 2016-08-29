@@ -80,6 +80,12 @@ class ActivityBlockSerializer(ModelSerializer):
 
 
 class AttendanceSerializer(ModelSerializer):
+    user = ResourceRelatedField(
+        queryset=User.objects.all(),
+        allow_null=True,
+        required=False
+    )
+
     class Meta:
         model = models.Attendance
 

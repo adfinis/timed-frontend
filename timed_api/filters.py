@@ -17,11 +17,12 @@ def boolean_filter(func):
     return wrapper
 
 
-class TodayFilter(Filter):
-    @boolean_filter
+class DayFilter(Filter):
     def filter(self, qs, value):
+        date = datetime.datetime.strptime(value, '%Y-%m-%d').date()
+
         return qs.filter(**{
-            '%s__date' % self.name: datetime.date.today()
+            '%s__date' % self.name: date
         })
 
 
@@ -38,42 +39,44 @@ class UserFilterSet(FilterSet):
 
 class ActivityFilterSet(FilterSet):
     active = ActivityActiveFilter()
-    today  = TodayFilter(name='start_datetime')
+    day    = DayFilter(name='start_datetime')
 
     class Meta:
-        model  = models.Activity
+        model = models.Activity
 
 
 class ActivityBlockFilterSet(FilterSet):
     class Meta:
-        model  = models.ActivityBlock
+        model = models.ActivityBlock
 
 
 class AttendanceFilterSet(FilterSet):
+    day = DayFilter(name='from_datetime')
+
     class Meta:
-        model  = models.Attendance
+        model = models.Attendance
 
 
 class ReportFilterSet(FilterSet):
     class Meta:
-        model  = models.Report
+        model = models.Report
 
 
 class CustomerFilterSet(FilterSet):
     class Meta:
-        model  = models.Customer
+        model = models.Customer
 
 
 class ProjectFilterSet(FilterSet):
     class Meta:
-        model  = models.Project
+        model = models.Project
 
 
 class TaskFilterSet(FilterSet):
     class Meta:
-        model  = models.Task
+        model = models.Task
 
 
 class TaskTemplateFilterSet(FilterSet):
     class Meta:
-        model  = models.TaskTemplate
+        model = models.TaskTemplate
