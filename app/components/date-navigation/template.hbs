@@ -1,0 +1,12 @@
+<div class="btn-toolbar {{if align (concat 'btn-toolbar--' align)}}">
+  <div class="btn-group">
+    <button title="Previous" class="btn btn-default" {{action 'setPrevious'}}>{{fa-icon 'arrow-left'}}</button>
+    <button title="{{moment-format current 'ddd, ll'}}" class="btn btn-default btn-noclick">{{moment-format current 'ddd, ll'}}</button>
+    <button title="Next" class="btn btn-default" {{action 'setNext'}}>{{fa-icon 'arrow-right'}}</button>
+  </div>
+
+  <div class="btn-group">
+    <button title="Today" class="btn btn-default" {{action 'setToday'}}>{{fa-icon 'clock-o'}}</button>
+    <button title="Pick" class="btn btn-default">{{fa-icon 'calendar'}}</button>
+  </div>
+</div>

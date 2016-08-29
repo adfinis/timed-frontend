@@ -6,6 +6,8 @@
     "ember-qunit-notifications": "0.1.0",
     "adcssy": "adfinis-sygroup/adcssy#0.9.1",
     "font-awesome": "~4.5.0",
-    "pikaday": "^1.4.0"
+    "pikaday": "^1.4.0",
+    "seiyria-bootstrap-slider": "~6.0.6",
+    "elessar": "adfinis-forks/Elessar#master"
   }
 }

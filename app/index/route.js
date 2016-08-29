@@ -1,14 +1,23 @@
-import Route   from 'ember-route'
-import service from 'ember-service/inject'
+import Route        from 'ember-route'
+import service      from 'ember-service/inject'
 import { observes } from 'ember-computed-decorators'
+import moment       from 'moment'
+import RSVP         from 'rsvp'
 
 export default Route.extend({
   tracking: service('tracking'),
 
-  model() {
-    return this.get('store').query('activity', {
-      today: true,
-      include: 'task,task.project,task.project.customer,blocks'
+  queryParams: {
+    day: { refreshModel: true }
+  },
+
+  model({ day  }) {
+    return RSVP.hash({
+      activities: this.store.query('activity', {
+        include: 'task,task.project,task.project.customer,blocks',
+        day
+      }),
+      attendances: this.store.query('attendance', { day })
     })
   },
 
@@ -16,16 +25,54 @@ export default Route.extend({
   _refresh() {
     let activity = this.get('tracking.currentActivity')
 
-    if (!this.get('currentModel').contains(activity)) {
-      return this.refresh()
-    }
+    this.set('controller.date', moment())
 
-    return activity.reload()
+    if (!this.get('currentModel').contains(activity)) {
+      this.refresh()
+    }
   },
 
   actions: {
     continueActivity(activity) {
+      if (activity.get('active')) {
+        return
+      }
+
       this.get('tracking').continueActivity(activity)
+    },
+
+    async updateAttendances(values) {
+      let attendances = this.get('currentModel.attendances').toArray()
+      let deleted     = []
+
+      if (values.length > attendances.get('length')) {
+        attendances.pushObject(this.store.createRecord('attendance', {}))
+      }
+
+      await attendances.forEach(async(a, i) => {
+        if (!values[i]) {
+          deleted.pushObject(a)
+
+          await a.destroyRecord()
+        }
+        else {
+          let date = this.get('controller.date')
+
+          let fromDatetime = moment(values[i][0], 'HH:mm')
+          let toDatetime   = moment(values[i][1], 'HH:mm')
+
+          let from = moment(date).hour(fromDatetime.hour()).minute(fromDatetime.minute())
+          let to   = moment(date).hour(toDatetime.hour()).minute(toDatetime.minute())
+
+          a.setProperties({ from, to })
+
+          await a.save()
+        }
+      })
+
+      attendances.removeObjects(deleted)
+
+      this.set('currentModel.attendances', attendances)
     }
   }
 })

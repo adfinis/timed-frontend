@@ -17,6 +17,16 @@ export default Route.extend(ApplicationRouteMixin, {
   actions: {
     invalidateSession() {
       this.get('session').invalidate()
+    },
+
+    loading(transition, route) {
+      if (route.controller) {
+        route.controller.set('loading', true)
+
+        transition.promise.finally(() => {
+          route.controller.set('loading', false)
+        })
+      }
     }
   }
 })

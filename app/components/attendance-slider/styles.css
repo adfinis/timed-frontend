@@ -1,0 +1,72 @@
+& {
+  width: 100%;
+  height: 100px;
+}
+
+.elessar-rangebar {
+  margin-top: 30px;
+}
+
+.elessar-range {
+  background: var(--color-primary);
+  overflow: visible;
+}
+
+.elessar-handle {
+  background: color(var(--color-primary) shade(40%));
+}
+
+.elessar-barlabel {
+  display: block;
+  color: rgb(255, 255, 255);
+  width: 100%;
+  text-align: center;
+  font-weight: 300;
+  padding: 0 0.5rem;
+}
+
+.elessar-labels {
+  padding-top: 35px;
+  pointer-events: none;
+  font-size: 0.7rem;
+}
+
+.elessar-label {
+  transform: translateX(-70%) rotate(-60deg);
+  border: none;
+  padding: 0;
+  color: rgb(100, 100, 100);
+  pointer-events: all;
+}
+
+.elessar-from,
+.elessar-to,
+.elessar-duration {
+  cursor: text;
+  pointer-events: none;
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: rgb(87, 87, 87);
+}
+
+.elessar-from,
+.elessar-to {
+  font-size: 0.6rem;
+  top: -28px;
+  transform: translateX(0%);
+}
+
+.elessar-from {
+  left: 0;
+}
+
+.elessar-to {
+  right: 0;
+  left: auto;
+}
+
+.elessar-delete {
+  cursor: pointer;
+}

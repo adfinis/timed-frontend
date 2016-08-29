@@ -9,11 +9,6 @@ export default Service.extend({
   refresh: false,
 
   async load() {
-    await this.get('store').query('activity', {
-      today: true,
-      include: 'task,task.project,task.project.customer'
-    })
-
     let current = await this.get('store').query('activity', { active: true, include: 'blocks' })
 
     if (current.get('length')) {
@@ -36,7 +31,10 @@ export default Service.extend({
     let activity = this.get('currentActivity')
     let block    = this.get('store').createRecord('activity-block', { activity })
 
-    await activity.save()
+    if (activity.get('isNew')) {
+      await activity.save()
+    }
+
     await block.save()
 
     this.notifyPropertyChange('refresh')
@@ -50,8 +48,6 @@ export default Service.extend({
 
     await block.save()
     await activity.reload()
-
-    this.notifyPropertyChange('refresh')
   },
 
   newActivity() {
@@ -60,8 +56,11 @@ export default Service.extend({
     this.setActivity(activity)
   },
 
-  continueActivity(activity) {
-    this.stopActivity()
+  async continueActivity(activity) {
+    if (!this.get('currentActivity.isNew')) {
+      await this.stopActivity()
+    }
+
     this.setActivity(activity)
     this.startActivity()
   },

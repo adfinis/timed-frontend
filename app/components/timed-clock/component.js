@@ -1,15 +1,9 @@
 import Component from 'ember-component'
 import { later } from 'ember-runloop'
 import moment    from 'moment'
-import $         from 'jquery'
+import { on }    from 'ember-computed-decorators'
 
 export default Component.extend({
-  init() {
-    this._super(...arguments)
-
-    this._tick()
-  },
-
   _rotate(deg) {
     return `rotate(${deg}deg)`
   },
@@ -20,15 +14,18 @@ export default Component.extend({
     let minute = now.minutes() * 6 + second / 60
     let hour   = now.hours() % 12 / 12 * 360 + 90 + minute / 12
 
-    $(`${this.get('elementId')} .second`).css('transform', this._rotate(second))
-    $(`${this.get('elementId')} .minute`).css('transform', this._rotate(minute))
-    $(`${this.get('elementId')}   .hour`).css('transform', this._rotate(hour))
+    if (this.$()) {
+      this.$('.second').css('transform', this._rotate(second))
+      this.$('.minute').css('transform', this._rotate(minute))
+      this.$('  .hour').css('transform', this._rotate(hour))
+    }
   },
 
+  @on('didRender')
   _tick() {
     this._update()
 
-    later(() => {
+    later(this, () => {
       this._tick()
     }, 1000)
   }

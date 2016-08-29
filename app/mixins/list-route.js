@@ -18,16 +18,6 @@ export default Mixin.create({
   },
 
   actions: {
-    loading(transition, route) {
-      if (route.controller) {
-        route.controller.set('loading', true)
-
-        transition.promise.finally(() => {
-          route.controller.set('loading', false)
-        })
-      }
-    },
-
     clearFilter() {
       this.get('controller').setProperties({
         search: ''

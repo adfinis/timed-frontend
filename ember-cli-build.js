@@ -19,6 +19,9 @@ module.exports = function(defaults) {
             options: {
               path: [ 'bower_components' ]
             }
+          },
+          {
+            module: require('postcss-cssnext')
           }
         ]
       }
@@ -28,6 +31,9 @@ module.exports = function(defaults) {
       optional: [ 'es7.asyncFunctions', 'es7.decorators' ]
     }
   })
+
+  app.import('bower_components/elessar/dist/elessar.js')
+  app.import('bower_components/elessar/elessar.css')
 
   app.import('bower_components/adcssy/build/css/adcssy.css')
 

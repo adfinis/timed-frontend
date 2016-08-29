@@ -38,6 +38,7 @@
     "ember-cli-qunit": "^2.1.0",
     "ember-cli-release": "^0.2.9",
     "ember-cli-sri": "^2.1.0",
+    "ember-cli-style-lint": "0.1.4",
     "ember-cli-template-lint": "0.4.12",
     "ember-cli-test-loader": "^1.1.0",
     "ember-cli-uglify": "^1.2.0",
@@ -47,6 +48,7 @@
     "ember-data": "^2.7.0",
     "ember-export-application-global": "^1.0.5",
     "ember-font-awesome": "2.1.1",
+    "ember-highcharts": "0.4.4",
     "ember-load-initializers": "^0.5.1",
     "ember-moment": "7.0.0-beta.3",
     "ember-notify": "5.1.0",
@@ -58,10 +60,13 @@
     "ember-simple-auth": "1.1.0",
     "ember-sy": "github:adfinis-sygroup/ember-sy#v1.0.0",
     "ember-truth-helpers": "1.2.0",
+    "highcharts": "4.2.6",
     "liquid-fire": "0.24.1",
     "loader.js": "^4.0.1",
     "pagination-pager": "2.4.1",
     "postcss-cssnext": "^2.7.0",
-    "postcss-import": "^8.1.2"
+    "postcss-import": "^8.1.2",
+    "stylelint-config-standard": "^12.0.0",
+    "ui-ember-slider": "0.3.7"
   }
 }

@@ -1,6 +1,7 @@
 @import 'adcssy/css/variables.css';
 @import 'power-select.css';
 @import 'toolbar.css';
+@import 'pod-styles';
 
 html {
   height: 100vh;
@@ -34,18 +35,30 @@ body {
   padding: 0.3rem 0.8rem;
 }
 
-.table > tbody > tr.highlight {
-  animation: colorblink 5s infinite;
+.table > tbody > tr {
+  position: relative;
 }
 
-@keyframes colorblink {
-  0% {
-    background-color: color(var(--color-primary) a(70%));
-  }
-  50% {
-    background-color: color(var(--color-primary) a(50%));
-  }
-  100% {
-    background-color: color(var(--color-primary) a(70%));
-  }
+.table--activities tr::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0.2rem;
+  height: 100%;
+  background-color: color(var(--color-primary) a(0));
+  transition: background-color 500ms ease;
+}
+
+.table--activities tr.highlight::after {
+  background-color: var(--color-primary);
+}
+
+.btn-noclick {
+  pointer-events: none;
+}
+
+.btn-toolbar--right {
+  justify-content: flex-end;
 }
