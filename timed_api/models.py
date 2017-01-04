@@ -62,7 +62,12 @@ class Report(models.Model):
     duration = models.DurationField()
     review   = models.BooleanField(default=False)
     nta      = models.BooleanField(default=False)
-    task     = models.ForeignKey('Task', related_name='reports')
+    task     = models.ForeignKey(
+        'Task',
+        null=True,
+        blank=True,
+        related_name='reports'
+    )
     user     = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         related_name='reports'

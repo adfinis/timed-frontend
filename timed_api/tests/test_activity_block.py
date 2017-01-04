@@ -1,8 +1,9 @@
 from timed.jsonapi_test_case    import JSONAPITestCase
 from django.core.urlresolvers   import reverse
-from timed_api.factories        import AttendanceFactory
+from timed_api.factories        import ActivityFactory, ActivityBlockFactory
 from django.contrib.auth.models import User
-from datetime                   import timedelta
+from datetime                   import datetime
+from pytz                       import timezone
 
 from rest_framework.status import (
     HTTP_200_OK,
@@ -12,7 +13,7 @@ from rest_framework.status import (
 )
 
 
-class AttendanceTests(JSONAPITestCase):
+class ActivityBlockTests(JSONAPITestCase):
 
     def setUp(self):
         super().setUp()
@@ -22,18 +23,21 @@ class AttendanceTests(JSONAPITestCase):
             password='123qweasd'
         )
 
-        self.attendances = AttendanceFactory.create_batch(
+        activity       = ActivityFactory.create(user=self.user)
+        other_activity = ActivityFactory.create(user=other_user)
+
+        self.activity_blocks = ActivityBlockFactory.create_batch(
             10,
-            user=self.user
+            activity=activity
         )
 
-        AttendanceFactory.create_batch(
+        ActivityBlockFactory.create_batch(
             10,
-            user=other_user
+            activity=other_activity
         )
 
-    def test_attendance_list(self):
-        url = reverse('attendance-list')
+    def test_activity_block_list(self):
+        url = reverse('activity-block-list')
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
@@ -43,13 +47,13 @@ class AttendanceTests(JSONAPITestCase):
 
         result = self.result(user_res)
 
-        assert len(result['data']) == len(self.attendances)
+        assert len(result['data']) == len(self.activity_blocks)
 
-    def test_attendance_detail(self):
-        attendance = self.attendances[0]
+    def test_activity_block_detail(self):
+        activity_block = self.activity_blocks[0]
 
-        url = reverse('attendance-detail', args=[
-            attendance.id
+        url = reverse('activity-block-detail', args=[
+            activity_block.id
         ])
 
         noauth_res = self.noauth_client.get(url)
@@ -58,21 +62,26 @@ class AttendanceTests(JSONAPITestCase):
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert user_res.status_code == HTTP_200_OK
 
-    def test_attendance_create(self):
-        attendance = AttendanceFactory.build()
+    def test_activity_block_create(self):
+        activity = self.activity_blocks[0].activity
 
         data = {
             'data': {
-                'type': 'attendances',
+                'type': 'activity-blocks',
                 'id': None,
-                'attributes': {
-                    'from-datetime': attendance.from_datetime.isoformat(),
-                    'to-datetime': attendance.from_datetime.isoformat()
+                'attributes': {},
+                'relationships': {
+                    'activity': {
+                        'data': {
+                            'type': 'activities',
+                            'id': activity.id
+                        }
+                    }
                 }
             }
         }
 
-        url = reverse('attendance-list')
+        url = reverse('activity-block-list')
 
         noauth_res = self.noauth_client.post(url, data)
         user_res   = self.client.post(url, data)
@@ -82,31 +91,25 @@ class AttendanceTests(JSONAPITestCase):
 
         result = self.result(user_res)
 
-        assert not result['data']['id'] is None
+        assert not result['data']['attributes']['from-datetime'] is None
+        assert result['data']['attributes']['to-datetime'] is None
 
-        assert (
-            int(result['data']['relationships']['user']['data']['id']) ==
-            int(self.user.id)
-        )
-
-    def test_attendance_update(self):
-        attendance = self.attendances[0]
-
-        attendance.to_datetime += timedelta(hours=1)
+    def test_activity_block_update(self):
+        activity_block = self.activity_blocks[0]
+        tz = timezone('Europe/Zurich')
 
         data = {
             'data': {
-                'type': 'attendances',
-                'id': attendance.id,
+                'type': 'activity-blocks',
+                'id': activity_block.id,
                 'attributes': {
-                    'from-datetime': attendance.from_datetime.isoformat(),
-                    'to-datetime': attendance.to_datetime.isoformat()
+                    'to-datetime': datetime.now(tz).isoformat()
                 }
             }
         }
 
-        url = reverse('attendance-detail', args=[
-            attendance.id
+        url = reverse('activity-block-detail', args=[
+            activity_block.id
         ])
 
         noauth_res = self.noauth_client.patch(url, data)
@@ -122,11 +125,11 @@ class AttendanceTests(JSONAPITestCase):
             data['data']['attributes']['to-datetime']
         )
 
-    def test_attendance_delete(self):
-        attendance = self.attendances[0]
+    def test_activity_delete(self):
+        activity_block = self.activity_blocks[0]
 
-        url = reverse('attendance-detail', args=[
-            attendance.id
+        url = reverse('activity-block-detail', args=[
+            activity_block.id
         ])
 
         noauth_res = self.noauth_client.delete(url)

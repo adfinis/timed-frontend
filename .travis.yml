@@ -9,10 +9,11 @@ services:
 cache: pip
 
 install:
-  - make install
+  - make install-dev
   - pip install coveralls
 
 before_script:
+  - cp timed/config.sample.ini timed/config.ini
   - psql -c "CREATE ROLE timed CREATEDB LOGIN PASSWORD 'timed';" -U postgres
 
 script: make test

@@ -1,7 +1,14 @@
 from timed.jsonapi_test_case  import JSONAPITestCase
 from django.core.urlresolvers import reverse
 from timed_api.factories      import TaskTemplateFactory
-from rest_framework           import status
+
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_201_CREATED,
+    HTTP_204_NO_CONTENT,
+    HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN
+)
 
 
 class TaskTemplateTests(JSONAPITestCase):
@@ -16,18 +23,13 @@ class TaskTemplateTests(JSONAPITestCase):
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
-        admin_res  = self.admin_client.get(url)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_200_OK)
-        self.assertEqual(admin_res.status_code,  status.HTTP_200_OK)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_200_OK
 
-        result = self.result(admin_res)
+        result = self.result(user_res)
 
-        self.assertEqual(len(result['data']), len(self.task_templates))
-
-        self.assertIn('id',   result['data'][0])
-        self.assertIn('name', result['data'][0]['attributes'])
+        assert len(result['data']) == len(self.task_templates)
 
     def test_task_template_detail(self):
         task_template = self.task_templates[0]
@@ -38,16 +40,9 @@ class TaskTemplateTests(JSONAPITestCase):
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
-        admin_res  = self.admin_client.get(url)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_200_OK)
-        self.assertEqual(admin_res.status_code,  status.HTTP_200_OK)
-
-        result = self.result(admin_res)
-
-        self.assertIn('id',   result['data'])
-        self.assertIn('name', result['data']['attributes'])
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_200_OK
 
     def test_task_template_create(self):
         data = {
@@ -62,22 +57,15 @@ class TaskTemplateTests(JSONAPITestCase):
 
         url = reverse('task-template-list')
 
-        noauth_res = self.noauth_client.post(url, data)
-        user_res   = self.client.post(url, data)
-        admin_res  = self.admin_client.post(url, data)
+        noauth_res        = self.noauth_client.post(url, data)
+        user_res          = self.client.post(url, data)
+        project_admin_res = self.project_admin_client.post(url, data)
+        system_admin_res  = self.system_admin_client.post(url, data)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_res.status_code,  status.HTTP_201_CREATED)
-
-        result = self.result(admin_res)
-
-        self.assertIsNotNone(result['data']['id'])
-
-        self.assertEqual(
-            result['data']['attributes']['name'],
-            data['data']['attributes']['name']
-        )
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_403_FORBIDDEN
+        assert project_admin_res.status_code == HTTP_403_FORBIDDEN
+        assert system_admin_res.status_code == HTTP_201_CREATED
 
     def test_task_template_update(self):
         task_template = self.task_templates[0]
@@ -87,7 +75,7 @@ class TaskTemplateTests(JSONAPITestCase):
                 'type': 'task-templates',
                 'id': task_template.id,
                 'attributes': {
-                    'name': 'Test Task Template'
+                    'name': 'Test Task Template 2'
                 }
             }
         }
@@ -96,18 +84,20 @@ class TaskTemplateTests(JSONAPITestCase):
             task_template.id
         ])
 
-        noauth_res = self.noauth_client.patch(url, data)
-        user_res   = self.client.patch(url, data)
-        admin_res  = self.admin_client.patch(url, data)
+        noauth_res        = self.noauth_client.patch(url, data)
+        user_res          = self.client.patch(url, data)
+        project_admin_res = self.project_admin_client.patch(url, data)
+        system_admin_res  = self.system_admin_client.patch(url, data)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_res.status_code,  status.HTTP_200_OK)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_403_FORBIDDEN
+        assert project_admin_res.status_code == HTTP_403_FORBIDDEN
+        assert system_admin_res.status_code == HTTP_200_OK
 
-        result = self.result(admin_res)
+        result = self.result(system_admin_res)
 
-        self.assertEqual(
-            result['data']['attributes']['name'],
+        assert (
+            result['data']['attributes']['name'] ==
             data['data']['attributes']['name']
         )
 
@@ -118,10 +108,12 @@ class TaskTemplateTests(JSONAPITestCase):
             task_template.id
         ])
 
-        noauth_res = self.noauth_client.delete(url)
-        user_res   = self.client.delete(url)
-        admin_res  = self.admin_client.delete(url)
+        noauth_res        = self.noauth_client.delete(url)
+        user_res          = self.client.delete(url)
+        project_admin_res = self.project_admin_client.delete(url)
+        system_admin_res  = self.system_admin_client.delete(url)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_res.status_code,  status.HTTP_204_NO_CONTENT)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_403_FORBIDDEN
+        assert project_admin_res.status_code == HTTP_403_FORBIDDEN
+        assert system_admin_res.status_code == HTTP_204_NO_CONTENT

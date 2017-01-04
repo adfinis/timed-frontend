@@ -48,9 +48,7 @@ class ActivitySerializer(ModelSerializer):
     )
 
     user = ResourceRelatedField(
-        queryset=User.objects.all(),
-        allow_null=True,
-        required=False
+        read_only=True
     )
 
     blocks = ResourceRelatedField(
@@ -71,47 +69,75 @@ class ActivitySerializer(ModelSerializer):
 
 
 class ActivityBlockSerializer(ModelSerializer):
+    duration = serializers.DurationField(read_only=True)
+
     activity = ResourceRelatedField(
         queryset=models.Activity.objects.all()
     )
 
     class Meta:
-        model = models.ActivityBlock
+        model  = models.ActivityBlock
+        fields = [
+            'activity',
+            'duration',
+            'from_datetime',
+            'to_datetime',
+        ]
 
 
 class AttendanceSerializer(ModelSerializer):
     user = ResourceRelatedField(
-        queryset=User.objects.all(),
-        allow_null=True,
-        required=False
+        read_only=True
     )
 
     class Meta:
-        model = models.Attendance
+        model  = models.Attendance
+        fields = [
+            'from_datetime',
+            'to_datetime',
+            'user',
+        ]
 
 
 class ReportSerializer(ModelSerializer):
     task = ResourceRelatedField(
-        queryset=models.Task.objects.all()
+        queryset=models.Task.objects.all(),
+        allow_null=True,
+        required=False
     )
 
     user = ResourceRelatedField(
-        queryset=User.objects.all()
+        read_only=True
     )
 
     class Meta:
-        model = models.Report
+        model  = models.Report
+        fields = [
+            'comment',
+            'duration',
+            'review',
+            'nta',
+            'task',
+            'user',
+        ]
 
 
 class CustomerSerializer(ModelSerializer):
     projects = ResourceRelatedField(
-        queryset=models.Project.objects.all(),
-        required=False,
+        read_only=True,
         many=True
     )
 
     class Meta:
         model  = models.Customer
+        fields = [
+            'name',
+            'email',
+            'website',
+            'comment',
+            'archived',
+            'projects',
+        ]
 
 
 class ProjectSerializer(ModelSerializer):
@@ -126,18 +152,28 @@ class ProjectSerializer(ModelSerializer):
     )
 
     tasks = ResourceRelatedField(
-        queryset=models.Task.objects.all(),
-        required=False,
+        read_only=True,
         many=True
     )
 
     class Meta:
         model  = models.Project
+        fields = [
+            'name',
+            'comment',
+            'archived',
+            'tracker_type',
+            'tracker_name',
+            'tracker_api_key',
+            'customer',
+            'leaders',
+            'tasks',
+        ]
 
 
 class TaskSerializer(ModelSerializer):
     activities = ResourceRelatedField(
-        queryset=models.Activity.objects.all(),
+        read_only=True,
         many=True
     )
 
@@ -147,11 +183,21 @@ class TaskSerializer(ModelSerializer):
 
     class Meta:
         model  = models.Task
+        fields = [
+            'name',
+            'estimated_hours',
+            'archived',
+            'project',
+            'activities',
+        ]
 
 
 class TaskTemplateSerializer(ModelSerializer):
     class Meta:
         model  = models.TaskTemplate
+        fields = [
+            'name',
+        ]
 
 
 UserSerializer.included_serializers = {

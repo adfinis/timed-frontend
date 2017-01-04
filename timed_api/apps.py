@@ -1,5 +1,6 @@
 from django.apps import AppConfig
 
 
-class TimedApiConfig(AppConfig):
+class TimedAPIConfig(AppConfig):
     name = 'timed_api'
+    verbose_name = 'API'

@@ -1,7 +1,12 @@
 from timed.jsonapi_test_case    import JSONAPITestCase
 from django.core.urlresolvers   import reverse
 from timed_api.factories        import UserFactory
-from rest_framework             import status
+
+from rest_framework.status import (
+    HTTP_200_OK,
+    HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN
+)
 
 
 class UserTests(JSONAPITestCase):
@@ -16,24 +21,14 @@ class UserTests(JSONAPITestCase):
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
-        admin_res  = self.admin_client.get(url)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_200_OK)
-        self.assertEqual(admin_res.status_code,  status.HTTP_200_OK)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_200_OK
 
-        result = self.result(admin_res)
+        result = self.result(user_res)
 
-        self.assertEqual(len(result['data']), len(self.users) + 2)
-
-        self.assertIn('id',          result['data'][0])
-        self.assertIn('username',    result['data'][0]['attributes'])
-        self.assertIn('first-name',  result['data'][0]['attributes'])
-        self.assertIn('last-name',   result['data'][0]['attributes'])
-        self.assertIn('projects',    result['data'][0]['relationships'])
-        self.assertIn('attendances', result['data'][0]['relationships'])
-        self.assertIn('activities',  result['data'][0]['relationships'])
-        self.assertIn('reports',     result['data'][0]['relationships'])
+        # 3 is the count of users which are created in the setup hook
+        assert len(result['data']) + len(self.users) + 3
 
     def test_user_detail(self):
         user = self.users[0]
@@ -44,34 +39,23 @@ class UserTests(JSONAPITestCase):
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
-        admin_res  = self.admin_client.get(url)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_200_OK)
-        self.assertEqual(admin_res.status_code,  status.HTTP_200_OK)
-
-        result = self.result(admin_res)
-
-        self.assertIn('id',          result['data'])
-        self.assertIn('username',    result['data']['attributes'])
-        self.assertIn('first-name',  result['data']['attributes'])
-        self.assertIn('last-name',   result['data']['attributes'])
-        self.assertIn('projects',    result['data']['relationships'])
-        self.assertIn('attendances', result['data']['relationships'])
-        self.assertIn('activities',  result['data']['relationships'])
-        self.assertIn('reports',     result['data']['relationships'])
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_200_OK
 
     def test_user_create(self):
         data = {}
         url  = reverse('user-list')
 
-        noauth_res = self.noauth_client.post(url, data)
-        user_res   = self.client.post(url, data)
-        admin_res  = self.admin_client.post(url, data)
+        noauth_res        = self.noauth_client.post(url, data)
+        user_res          = self.client.post(url, data)
+        project_admin_res = self.project_admin_client.post(url, data)
+        system_admin_res  = self.system_admin_client.post(url, data)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_res.status_code,  status.HTTP_403_FORBIDDEN)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_403_FORBIDDEN
+        assert project_admin_res.status_code == HTTP_403_FORBIDDEN
+        assert system_admin_res.status_code == HTTP_403_FORBIDDEN
 
     def test_user_update(self):
         user = self.users[1]
@@ -81,13 +65,15 @@ class UserTests(JSONAPITestCase):
             user.id
         ])
 
-        noauth_res = self.noauth_client.patch(url, data)
-        user_res   = self.client.patch(url, data)
-        admin_res  = self.admin_client.patch(url, data)
+        noauth_res        = self.noauth_client.patch(url, data)
+        user_res          = self.client.patch(url, data)
+        project_admin_res = self.project_admin_client.patch(url, data)
+        system_admin_res  = self.system_admin_client.patch(url, data)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_res.status_code,  status.HTTP_403_FORBIDDEN)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_403_FORBIDDEN
+        assert project_admin_res.status_code == HTTP_403_FORBIDDEN
+        assert system_admin_res.status_code == HTTP_403_FORBIDDEN
 
     def test_user_delete(self):
         user = self.users[1]
@@ -97,10 +83,12 @@ class UserTests(JSONAPITestCase):
             user.id
         ])
 
-        noauth_res = self.noauth_client.delete(url, data)
-        user_res   = self.client.delete(url, data)
-        admin_res  = self.admin_client.delete(url, data)
+        noauth_res        = self.noauth_client.delete(url, data)
+        user_res          = self.client.delete(url, data)
+        project_admin_res = self.project_admin_client.delete(url, data)
+        system_admin_res  = self.system_admin_client.delete(url, data)
 
-        self.assertEqual(noauth_res.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(user_res.status_code,   status.HTTP_403_FORBIDDEN)
-        self.assertEqual(admin_res.status_code,  status.HTTP_403_FORBIDDEN)
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert user_res.status_code == HTTP_403_FORBIDDEN
+        assert project_admin_res.status_code == HTTP_403_FORBIDDEN
+        assert system_admin_res.status_code == HTTP_403_FORBIDDEN

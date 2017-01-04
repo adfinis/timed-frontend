@@ -28,6 +28,7 @@ redmine_config = config['redmine']
 def trueish(value):
     return value.lower() in ( 'true', '1', 'yes' )
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
@@ -43,6 +44,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'jet',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -144,9 +146,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
-    'ORDERING_PARAM': 'sort',
     'PAGINATE_BY': None,
-    'PAGINATE_BY_PARAM': 'page_size',
     'MAX_PAGINATE_BY': 100,
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework.filters.DjangoFilterBackend',
