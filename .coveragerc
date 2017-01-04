@@ -1,12 +1,23 @@
 [run]
-source=timed_api
+source=.
 
 [report]
-omit=*/migrations/*.py,*/apps.py,*/admin.py
+fail_under=100
+
 exclude_lines =
     pragma: no cover
+    pragma: todo cover
     def __str__
     def __unicode__
     def __repr__
+
+omit=
+    */migrations/*
+    */apps.py
+    */admin.py
+    manage.py
+    timed/settings_*.py
+    timed/wsgi.py
+    setup.py
 
 show_missing = True

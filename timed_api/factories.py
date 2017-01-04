@@ -119,3 +119,25 @@ class TaskTemplateFactory(DjangoModelFactory):
 
     class Meta:
         model = models.TaskTemplate
+
+
+class ActivityFactory(DjangoModelFactory):
+    comment = Faker('sentence')
+    task    = SubFactory(TaskFactory)
+
+    class Meta:
+        model = models.Activity
+
+
+class ActivityBlockFactory(DjangoModelFactory):
+    activity      = SubFactory(ActivityFactory)
+    from_datetime = Faker('date_time', tzinfo=tzinfo)
+
+    @lazy_attribute
+    def to_datetime(self):
+        hours = randint(1, 5)
+
+        return self.from_datetime + datetime.timedelta(hours=hours)
+
+    class Meta:
+        model = models.ActivityBlock

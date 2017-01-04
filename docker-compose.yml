@@ -3,7 +3,7 @@ services:
   db:
     image: postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       - POSTGRES_USER=timed
       - POSTGRES_PASSWORD=timed
@@ -14,7 +14,7 @@ services:
       - ./docker/ucs/timed-ucs.profile:/var/cache/univention-system-setup/profile
       - ./docker/ucs/scripts:/usr/ucs/scripts
     ports:
-      - "389:389"
-      - "8080:80"
+      - '389:389'
+      - '8080:80'
     environment:
       - rootpwd=univention

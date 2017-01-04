@@ -1,7 +1,6 @@
 from timed.jsonapi_test_case  import JSONAPITestCase
 from django.core.urlresolvers import reverse
-from timed_api.factories      import ProjectFactory, TaskTemplateFactory
-from timed_api.models         import Task
+from timed_api.factories      import TaskFactory
 
 from rest_framework.status import (
     HTTP_200_OK,
@@ -12,20 +11,15 @@ from rest_framework.status import (
 )
 
 
-class ProjectTests(JSONAPITestCase):
+class TaskTests(JSONAPITestCase):
 
     def setUp(self):
         super().setUp()
 
-        self.projects = ProjectFactory.create_batch(10)
+        self.tasks = TaskFactory.create_batch(5)
 
-        ProjectFactory.create_batch(
-            10,
-            archived=True
-        )
-
-    def test_project_list(self):
-        url = reverse('project-list')
+    def test_task_list(self):
+        url = reverse('task-list')
 
         noauth_res = self.noauth_client.get(url)
         user_res   = self.client.get(url)
@@ -35,13 +29,17 @@ class ProjectTests(JSONAPITestCase):
 
         result = self.result(user_res)
 
-        assert len(result['data']) == len(self.projects)
+        assert len(result['data']) == len(self.tasks)
 
-    def test_project_detail(self):
-        project = self.projects[0]
+        assert 'id' in result['data'][0]
+        assert 'name' in result['data'][0]['attributes']
+        assert 'project' in result['data'][0]['relationships']
 
-        url = reverse('project-detail', args=[
-            project.id
+    def test_task_detail(self):
+        task = self.tasks[0]
+
+        url = reverse('task-detail', args=[
+            task.id
         ])
 
         noauth_res = self.noauth_client.get(url)
@@ -50,28 +48,36 @@ class ProjectTests(JSONAPITestCase):
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert user_res.status_code == HTTP_200_OK
 
-    def test_project_create(self):
-        customer = self.projects[1].customer
+        result = self.result(user_res)
+
+        assert 'id' in result['data']
+        assert 'name' in result['data']['attributes']
+        assert 'project' in result['data']['relationships']
+
+    def test_task_create(self):
+        project = self.tasks[0].project
 
         data = {
             'data': {
-                'type': 'projects',
+                'type': 'tasks',
                 'id': None,
                 'attributes': {
-                    'name': 'Test Project'
+                    'name': 'Test Task',
+                    'estimated-hours': 200,
+                    'archived': False
                 },
                 'relationships': {
-                    'customer': {
+                    'project': {
                         'data': {
-                            'type': 'customers',
-                            'id': customer.id
+                            'type': 'projects',
+                            'id': project.id
                         }
                     }
                 }
             }
         }
 
-        url = reverse('project-list')
+        url = reverse('task-list')
 
         noauth_res        = self.noauth_client.post(url, data)
         user_res          = self.client.post(url, data)
@@ -83,35 +89,41 @@ class ProjectTests(JSONAPITestCase):
 
         result = self.result(project_admin_res)
 
+        assert not result['data']['id'] is None
+
         assert (
-            int(result['data']['relationships']['customer']['data']['id']) ==
-            int(data['data']['relationships']['customer']['data']['id'])
+            result['data']['attributes']['name'] ==
+            data['data']['attributes']['name']
+        )
+        assert (
+            int(result['data']['relationships']['project']['data']['id']) ==
+            int(data['data']['relationships']['project']['data']['id'])
         )
 
-    def test_project_update(self):
-        project  = self.projects[0]
-        customer = self.projects[1].customer
+    def test_task_update(self):
+        task = self.tasks[0]
+        project = self.tasks[1].project
 
         data = {
             'data': {
-                'type': 'projects',
-                'id': project.id,
+                'type': 'tasks',
+                'id': task.id,
                 'attributes': {
-                    'name': 'Test Project 2'
+                    'name': 'Test Task updated'
                 },
                 'relationships': {
-                    'customer': {
+                    'project': {
                         'data': {
-                            'type': 'customers',
-                            'id': customer.id
+                            'type': 'projects',
+                            'id': project.id
                         }
                     }
                 }
             }
         }
 
-        url = reverse('project-detail', args=[
-            project.id
+        url = reverse('task-detail', args=[
+            task.id
         ])
 
         noauth_res        = self.noauth_client.patch(url, data)
@@ -128,17 +140,16 @@ class ProjectTests(JSONAPITestCase):
             result['data']['attributes']['name'] ==
             data['data']['attributes']['name']
         )
-
         assert (
-            int(result['data']['relationships']['customer']['data']['id']) ==
-            int(data['data']['relationships']['customer']['data']['id'])
+            int(result['data']['relationships']['project']['data']['id']) ==
+            int(data['data']['relationships']['project']['data']['id'])
         )
 
-    def test_project_delete(self):
-        project = self.projects[0]
+    def test_task_delete(self):
+        task = self.tasks[0]
 
-        url = reverse('project-detail', args=[
-            project.id
+        url = reverse('task-detail', args=[
+            task.id
         ])
 
         noauth_res        = self.noauth_client.delete(url)
@@ -148,10 +159,3 @@ class ProjectTests(JSONAPITestCase):
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert user_res.status_code == HTTP_403_FORBIDDEN
         assert project_admin_res.status_code == HTTP_204_NO_CONTENT
-
-    def test_project_default_tasks(self):
-        templates = TaskTemplateFactory.create_batch(5)
-        project   = ProjectFactory.create()
-        tasks     = Task.objects.filter(project=project)
-
-        assert len(templates) == len(tasks)

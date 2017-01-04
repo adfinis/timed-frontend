@@ -1,0 +1,7 @@
+flake8
+coverage
+pytest
+pytest-django
+pytest-cov
+factory-boy
+ipdb
