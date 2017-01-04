@@ -9,7 +9,7 @@ services:
 cache: pip
 
 install:
-  - make install
+  - make install-dev
   - pip install coveralls
 
 before_script:
