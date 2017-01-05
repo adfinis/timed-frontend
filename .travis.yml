@@ -1,7 +1,7 @@
 language: python
 
 python:
-  - "3.5.1"
+  - "3.5.2"
 
 services:
   - postgresql
@@ -11,7 +11,7 @@ cache: pip
 install:
   - make install-dev
   - pip install coveralls
-  - pip install --user travis-sphinx
+  - pip install travis-sphinx
 
 before_script:
   - cp timed/config.sample.ini timed/config.ini
