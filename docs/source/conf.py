@@ -23,13 +23,6 @@ import sys
 
 import django
 
-on_rtd = os.environ.get('READTHEDOCS') == 'True'
-
-if on_rtd:
-    from shutil import copyfile
-
-    copyfile('../../timed/config.sample.ini', '../../timed/config.ini')
-
 os.environ['DJANGO_SETTINGS_MODULE'] = 'timed.settings'
 
 sys.path.insert(0, os.path.abspath('../..'))
