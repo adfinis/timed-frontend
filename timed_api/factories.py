@@ -57,7 +57,7 @@ class UserFactory(DjangoModelFactory):
         :return: The generated username
         :rtype:  str
         """
-        return '{}.{}'.format(
+        return '{0}.{1}'.format(
             self.first_name,
             self.last_name,
         ).lower()

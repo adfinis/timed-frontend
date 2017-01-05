@@ -157,7 +157,7 @@ class ActivityTests(JSONAPITestCase):
 
         url = reverse('activity-list')
 
-        res = self.client.get('{}?active=true'.format(url))
+        res = self.client.get('{0}?active=true'.format(url))
 
         result = self.result(res)
 
@@ -175,7 +175,7 @@ class ActivityTests(JSONAPITestCase):
 
         url = reverse('activity-list')
 
-        res = self.client.get('{}?day={}'.format(
+        res = self.client.get('{0}?day={1}'.format(
             url,
             now.strftime('%Y-%m-%d')
         ))

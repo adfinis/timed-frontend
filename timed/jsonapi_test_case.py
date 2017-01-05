@@ -98,10 +98,10 @@ class JSONAPIClient(APIClient):
         response = self.post(reverse('login'), data)
 
         if response.status_code != status.HTTP_200_OK:
-            raise Exception("Wrong credentials!")  # pragma: no cover
+            raise Exception('Wrong credentials!')  # pragma: no cover
 
         self.credentials(
-            HTTP_AUTHORIZATION='{} {}'.format(
+            HTTP_AUTHORIZATION='{0} {1}'.format(
                 api_settings.JWT_AUTH_HEADER_PREFIX,
                 response.data['token']
             )

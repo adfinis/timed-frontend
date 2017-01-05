@@ -45,7 +45,7 @@ class Activity(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{}: {}'.format(self.user, self.task)
+        return '{0}: {1}'.format(self.user, self.task)
 
     class Meta:
         """Meta informations for the activity model."""
@@ -81,7 +81,7 @@ class ActivityBlock(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{} ({})'.format(self.activity, self.duration)
+        return '{1} ({0})'.format(self.activity, self.duration)
 
 
 class Attendance(models.Model):
@@ -103,7 +103,7 @@ class Attendance(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{}: {} - {}'.format(
+        return '{0}: {1} - {2}'.format(
             self.user,
             self.from_datetime.strftime('%d.%m.%Y %h:%i'),
             self.to_datetime.strftime('%d.%m.%Y %h:%i')
@@ -139,7 +139,7 @@ class Report(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{}: {}'.format(self.user, self.task)
+        return '{0}: {1}'.format(self.user, self.task)
 
 
 class Customer(models.Model):
@@ -195,7 +195,7 @@ class Project(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{} > {}'.format(self.customer, self.name)
+        return '{0} > {1}'.format(self.customer, self.name)
 
 
 class Task(models.Model):
@@ -216,7 +216,7 @@ class Task(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{} > {}'.format(self.project, self.name)
+        return '{0} > {1}'.format(self.project, self.name)
 
 
 class TaskTemplate(models.Model):
