@@ -28,5 +28,5 @@ docs:
 	@make -C docs html
 
 test: ## Test the project
-	@flake8
+	# @flake8
 	@pytest --cov --create-db

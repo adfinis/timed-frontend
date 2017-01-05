@@ -19,8 +19,8 @@ before_script:
 
 script:
   - make test
-  - travis-spinx --source=docs build
+  - travis-sphinx --source=docs build
 
 after_success:
   - coveralls
-  - travis-spinx deploy
+  - travis-sphinx deploy
