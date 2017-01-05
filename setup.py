@@ -1,4 +1,4 @@
-'''Setuptools package definition'''
+"""Setuptools package definition."""
 
 from setuptools import setup
 import codecs

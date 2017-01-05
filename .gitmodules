@@ -1,0 +1,3 @@
+[submodule "adsy-sphinx-template.src"]
+	path = adsy-sphinx-template.src
+	url = git@git.ad-sy.ch:ad-sy/adsy-sphinx-template.src

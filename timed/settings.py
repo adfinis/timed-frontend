@@ -26,6 +26,7 @@ redmine_config = config['redmine']
 
 
 def trueish(value):
+    """Cast a string to a boolean."""
     return value.lower() in ( 'true', '1', 'yes' )
 
 

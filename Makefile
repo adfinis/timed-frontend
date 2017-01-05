@@ -24,6 +24,9 @@ start: ## Start the development server
 	@docker-compose start
 	@python manage.py runserver
 
+docs:
+	@make -C docs html
+
 test: ## Test the project
 	@flake8
 	@pytest --cov --create-db

@@ -1,3 +1,5 @@
+"""Root URL mapping."""
+
 from django.conf.urls         import url, include
 from django.contrib           import admin
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token

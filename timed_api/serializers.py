@@ -26,6 +26,10 @@ class UserSerializer(ModelSerializer):
         many=True
     )
 
+    included_serializers = {
+        'projects': 'timed_api.serializers.ProjectSerializer'
+    }
+
     class Meta:
         model  = User
         fields = [
@@ -56,6 +60,12 @@ class ActivitySerializer(ModelSerializer):
         many=True,
     )
 
+    included_serializers = {
+        'blocks': 'timed_api.serializers.ActivityBlockSerializer',
+        'task':   'timed_api.serializers.TaskSerializer',
+        'user':   'timed_api.serializers.UserSerializer'
+    }
+
     class Meta:
         model  = models.Activity
         fields = [
@@ -74,6 +84,10 @@ class ActivityBlockSerializer(ModelSerializer):
     activity = ResourceRelatedField(
         queryset=models.Activity.objects.all()
     )
+
+    included_serializers = {
+        'activity': 'timed_api.serializers.ActivitySerializer'
+    }
 
     class Meta:
         model  = models.ActivityBlock
@@ -110,6 +124,11 @@ class ReportSerializer(ModelSerializer):
         read_only=True
     )
 
+    included_serializers = {
+        'task': 'timed_api.serializers.TaskSerializer',
+        'user': 'timed_api.serializers.UserSerializer'
+    }
+
     class Meta:
         model  = models.Report
         fields = [
@@ -127,6 +146,10 @@ class CustomerSerializer(ModelSerializer):
         read_only=True,
         many=True
     )
+
+    included_serializers = {
+        'projects': 'timed_api.serializers.ProjectSerializer'
+    }
 
     class Meta:
         model  = models.Customer
@@ -156,6 +179,12 @@ class ProjectSerializer(ModelSerializer):
         many=True
     )
 
+    included_serializers = {
+        'customer': 'timed_api.serializers.CustomerSerializer',
+        'leaders':  'timed_api.serializers.UserSerializer',
+        'tasks':    'timed_api.serializers.TaskSerializer'
+    }
+
     class Meta:
         model  = models.Project
         fields = [
@@ -181,6 +210,11 @@ class TaskSerializer(ModelSerializer):
         queryset=models.Project.objects.all()
     )
 
+    included_serializers = {
+        'activities': 'timed_api.serializers.ActivitySerializer',
+        'project':    'timed_api.serializers.ProjectSerializer'
+    }
+
     class Meta:
         model  = models.Task
         fields = [
@@ -198,38 +232,3 @@ class TaskTemplateSerializer(ModelSerializer):
         fields = [
             'name',
         ]
-
-
-UserSerializer.included_serializers = {
-    'projects': ProjectSerializer
-}
-
-ActivitySerializer.included_serializers = {
-    'blocks': ActivityBlockSerializer,
-    'task':   TaskSerializer,
-    'user':   UserSerializer
-}
-
-ActivityBlockSerializer.included_serializers = {
-    'activity': ActivitySerializer
-}
-
-ReportSerializer.included_serializers = {
-    'task': TaskSerializer,
-    'user': UserSerializer
-}
-
-CustomerSerializer.included_serializers = {
-    'projects': ProjectSerializer
-}
-
-ProjectSerializer.included_serializers = {
-    'customer': CustomerSerializer,
-    'leaders':  UserSerializer,
-    'tasks':    TaskSerializer
-}
-
-TaskSerializer.included_serializers = {
-    'activities': ActivitySerializer,
-    'project':    ProjectSerializer
-}
