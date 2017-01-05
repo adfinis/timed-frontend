@@ -2,7 +2,6 @@ coverage
 factory-boy
 flake8
 flake8-blind-except
-flake8-colors
 flake8-debugger
 flake8-deprecated
 flake8-docstrings
