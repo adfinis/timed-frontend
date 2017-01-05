@@ -11,11 +11,16 @@ cache: pip
 install:
   - make install-dev
   - pip install coveralls
+  - pip install travis-sphinx
 
 before_script:
   - cp timed/config.sample.ini timed/config.ini
   - psql -c "CREATE ROLE timed CREATEDB LOGIN PASSWORD 'timed';" -U postgres
 
-script: make test
+script:
+  - make test
+  - travis-spinx --source=docs build
 
-after_success: coveralls
+after_success:
+  - coveralls
+  - travis-spinx deploy
