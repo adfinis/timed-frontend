@@ -13,17 +13,19 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
+
+os.environ['DJANGO_SETTINGS_MODULE'] = 'timed.settings'
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
 import sys
 
-os.environ['DJANGO_SETTINGS_MODULE'] = 'timed.settings'
+import django
+
 sys.path.insert(0, os.path.abspath('..'))
 
-import django
 
 django.setup()
 
@@ -158,6 +160,3 @@ texinfo_documents = [
      author, 'Timed', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-

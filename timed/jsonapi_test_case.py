@@ -1,13 +1,13 @@
 """Helpers for testing with JSONAPI."""
 
-from rest_framework.test         import APITestCase, APIClient
-from django.contrib.auth.models  import User, Group, Permission
-from django.core.urlresolvers    import reverse
-from rest_framework              import status
-from rest_framework_jwt.settings import api_settings
-
 import json
 import logging
+
+from django.contrib.auth.models import Group, Permission, User
+from django.core.urlresolvers import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+from rest_framework_jwt.settings import api_settings
 
 logging.getLogger('factory').setLevel(logging.WARN)
 logging.getLogger('django_auth_ldap').setLevel(logging.WARN)

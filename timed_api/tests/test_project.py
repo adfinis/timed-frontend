@@ -1,20 +1,23 @@
-from timed.jsonapi_test_case  import JSONAPITestCase
-from django.core.urlresolvers import reverse
-from timed_api.factories      import ProjectFactory, TaskTemplateFactory
-from timed_api.models         import Task
+"""Tests for the projects endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN
-)
+from django.core.urlresolvers import reverse
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
+                                   HTTP_403_FORBIDDEN)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import ProjectFactory, TaskTemplateFactory
+from timed_api.models import Task
 
 
 class ProjectTests(JSONAPITestCase):
+    """Tests for the project endpoint.
+
+    This endpoint should be read only for normal users.
+    """
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         self.projects = ProjectFactory.create_batch(10)
@@ -25,6 +28,7 @@ class ProjectTests(JSONAPITestCase):
         )
 
     def test_project_list(self):
+        """Should respond with a list of projects."""
         url = reverse('project-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -38,6 +42,7 @@ class ProjectTests(JSONAPITestCase):
         assert len(result['data']) == len(self.projects)
 
     def test_project_detail(self):
+        """Should respond with a single project."""
         project = self.projects[0]
 
         url = reverse('project-detail', args=[
@@ -51,6 +56,7 @@ class ProjectTests(JSONAPITestCase):
         assert user_res.status_code == HTTP_200_OK
 
     def test_project_create(self):
+        """Should create a new project."""
         customer = self.projects[1].customer
 
         data = {
@@ -89,6 +95,7 @@ class ProjectTests(JSONAPITestCase):
         )
 
     def test_project_update(self):
+        """Should update an existing project."""
         project  = self.projects[0]
         customer = self.projects[1].customer
 
@@ -135,6 +142,7 @@ class ProjectTests(JSONAPITestCase):
         )
 
     def test_project_delete(self):
+        """Should delete a project."""
         project = self.projects[0]
 
         url = reverse('project-detail', args=[
@@ -150,6 +158,7 @@ class ProjectTests(JSONAPITestCase):
         assert project_admin_res.status_code == HTTP_204_NO_CONTENT
 
     def test_project_default_tasks(self):
+        """Should generate tasks based on task templates for a new project."""
         templates = TaskTemplateFactory.create_batch(5)
         project   = ProjectFactory.create()
         tasks     = Task.objects.filter(project=project)

@@ -1,4 +1,4 @@
-.PHONY: help install install-dev setup-ldap create-ldap-user start test
+.PHONY: help install install-dev setup-ldap create-ldap-user start docs test
 .DEFAULT_GOAL := help
 
 help:
@@ -25,8 +25,8 @@ start: ## Start the development server
 	@python manage.py runserver
 
 docs:
-	@make -C docs html
+	@make -C docs/ html
 
 test: ## Test the project
-	# @flake8
+	@flake8
 	@pytest --cov --create-db

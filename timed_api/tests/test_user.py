@@ -1,22 +1,27 @@
-from timed.jsonapi_test_case    import JSONAPITestCase
-from django.core.urlresolvers   import reverse
-from timed_api.factories        import UserFactory
+"""Tests for the users endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN
-)
+from django.core.urlresolvers import reverse
+from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
+                                   HTTP_403_FORBIDDEN)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import UserFactory
 
 
 class UserTests(JSONAPITestCase):
+    """Tests for the users endpoint.
+
+    This endpoint should be read only.
+    """
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         self.users = UserFactory.create_batch(10)
 
     def test_user_list(self):
+        """Should respond with a list of users."""
         url = reverse('user-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -31,6 +36,7 @@ class UserTests(JSONAPITestCase):
         assert len(result['data']) + len(self.users) + 3
 
     def test_user_detail(self):
+        """Should respond with a single user."""
         user = self.users[0]
 
         url = reverse('user-detail', args=[
@@ -44,6 +50,7 @@ class UserTests(JSONAPITestCase):
         assert user_res.status_code == HTTP_200_OK
 
     def test_user_create(self):
+        """Should not be able to create a user."""
         data = {}
         url  = reverse('user-list')
 
@@ -58,6 +65,7 @@ class UserTests(JSONAPITestCase):
         assert system_admin_res.status_code == HTTP_403_FORBIDDEN
 
     def test_user_update(self):
+        """Should not be able to update a user."""
         user = self.users[1]
         data = {}
 
@@ -76,6 +84,7 @@ class UserTests(JSONAPITestCase):
         assert system_admin_res.status_code == HTTP_403_FORBIDDEN
 
     def test_user_delete(self):
+        """Should not be able to delete a user."""
         user = self.users[1]
         data = {}
 

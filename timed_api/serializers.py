@@ -1,11 +1,16 @@
-from timed_api                           import models
-from django.contrib.auth.models          import User
-from rest_framework_json_api             import serializers
-from rest_framework_json_api.relations   import ResourceRelatedField
+"""Serializers for the Timed API."""
+
+from django.contrib.auth.models import User
+from rest_framework_json_api import serializers
+from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import ModelSerializer
+
+from timed_api import models
 
 
 class UserSerializer(ModelSerializer):
+    """User serializer."""
+
     projects = ResourceRelatedField(
         read_only=True,
         many=True
@@ -31,6 +36,8 @@ class UserSerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the user serializer."""
+
         model  = User
         fields = [
             'username',
@@ -45,6 +52,8 @@ class UserSerializer(ModelSerializer):
 
 
 class ActivitySerializer(ModelSerializer):
+    """Activity serializer."""
+
     duration = serializers.DurationField(read_only=True)
 
     task = ResourceRelatedField(
@@ -67,6 +76,8 @@ class ActivitySerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the activity serializer."""
+
         model  = models.Activity
         fields = [
             'comment',
@@ -79,6 +90,8 @@ class ActivitySerializer(ModelSerializer):
 
 
 class ActivityBlockSerializer(ModelSerializer):
+    """Activity block serializer."""
+
     duration = serializers.DurationField(read_only=True)
 
     activity = ResourceRelatedField(
@@ -90,6 +103,8 @@ class ActivityBlockSerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the activity block serializer."""
+
         model  = models.ActivityBlock
         fields = [
             'activity',
@@ -100,11 +115,15 @@ class ActivityBlockSerializer(ModelSerializer):
 
 
 class AttendanceSerializer(ModelSerializer):
+    """Attendance serializer."""
+
     user = ResourceRelatedField(
         read_only=True
     )
 
     class Meta:
+        """Meta information for the attendance serializer."""
+
         model  = models.Attendance
         fields = [
             'from_datetime',
@@ -114,6 +133,8 @@ class AttendanceSerializer(ModelSerializer):
 
 
 class ReportSerializer(ModelSerializer):
+    """Report serializer."""
+
     task = ResourceRelatedField(
         queryset=models.Task.objects.all(),
         allow_null=True,
@@ -130,6 +151,8 @@ class ReportSerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the report serializer."""
+
         model  = models.Report
         fields = [
             'comment',
@@ -142,6 +165,8 @@ class ReportSerializer(ModelSerializer):
 
 
 class CustomerSerializer(ModelSerializer):
+    """Customer serializer."""
+
     projects = ResourceRelatedField(
         read_only=True,
         many=True
@@ -152,6 +177,8 @@ class CustomerSerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the customer serializer."""
+
         model  = models.Customer
         fields = [
             'name',
@@ -164,6 +191,8 @@ class CustomerSerializer(ModelSerializer):
 
 
 class ProjectSerializer(ModelSerializer):
+    """Project serializer."""
+
     customer = ResourceRelatedField(
         queryset=models.Customer.objects.all()
     )
@@ -186,6 +215,8 @@ class ProjectSerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the project serializer."""
+
         model  = models.Project
         fields = [
             'name',
@@ -201,6 +232,8 @@ class ProjectSerializer(ModelSerializer):
 
 
 class TaskSerializer(ModelSerializer):
+    """Task serializer."""
+
     activities = ResourceRelatedField(
         read_only=True,
         many=True
@@ -216,6 +249,8 @@ class TaskSerializer(ModelSerializer):
     }
 
     class Meta:
+        """Meta information for the task serializer."""
+
         model  = models.Task
         fields = [
             'name',
@@ -227,7 +262,11 @@ class TaskSerializer(ModelSerializer):
 
 
 class TaskTemplateSerializer(ModelSerializer):
+    """Task template serializer."""
+
     class Meta:
+        """Meta information for the task template serializer."""
+
         model  = models.TaskTemplate
         fields = [
             'name',

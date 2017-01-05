@@ -1,6 +1,9 @@
-from timed_api              import views
+"""URL to view mapping for the Timed API."""
+
+from django.conf import settings
 from rest_framework.routers import DefaultRouter
-from django.conf            import settings
+
+from timed_api import views
 
 r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
 

@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
-import datetime
 import configparser
+import datetime
+import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -27,7 +27,7 @@ redmine_config = config['redmine']
 
 def trueish(value):
     """Cast a string to a boolean."""
-    return value.lower() in ( 'true', '1', 'yes' )
+    return value.lower() in ('true', '1', 'yes')
 
 
 # Quick-start development settings - unsuitable for production
