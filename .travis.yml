@@ -11,7 +11,7 @@ cache: pip
 install:
   - make install-dev
   - pip install coveralls
-  - pip install travis-sphinx
+  - pip install --user travis-sphinx
 
 before_script:
   - cp timed/config.sample.ini timed/config.ini
@@ -19,7 +19,7 @@ before_script:
 
 script:
   - make test
-  - travis-sphinx --source=docs build
+  - travis-sphinx build
 
 after_success:
   - coveralls
