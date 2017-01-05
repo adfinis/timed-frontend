@@ -6,3 +6,5 @@ pytest-django
 pytest-cov
 factory-boy
 ipdb
+sphinx
+sphinx_rtd_theme
