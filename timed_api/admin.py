@@ -15,7 +15,7 @@ class OwnerAdminMixin(object):
 
         :param django.http.Request request: The HTTP request for this view
         :return:                            The filtered queryset
-        :rtype:                             django.db.models.query.QuerySet
+        :rtype:                             QuerySet
         """
         qs = super().get_queryset(request)
 
