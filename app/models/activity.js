@@ -9,16 +9,16 @@ import {
 } from 'ember-data/relationships'
 
 export default Model.extend({
-  comment:  attr('string', { defaultValue: '' }),
-  start:    attr('django-datetime'),
+  comment: attr('string', { defaultValue: '' }),
+  start: attr('django-datetime'),
   duration: attr('django-duration'),
-  task:     belongsTo('task'),
-  user:     belongsTo('user'),
-  blocks:   hasMany('activity-block'),
+  task: belongsTo('task'),
+  user: belongsTo('user'),
+  blocks: hasMany('activity-block'),
 
   @computed('blocks.@each.to')
   activeBlock(blocks) {
-    let activeBlocks = blocks.filter(b => !b.get('to'))
+    let activeBlocks = blocks.filter((b) => !b.get('to'))
 
     return activeBlocks.length ? activeBlocks.get('firstObject') : null
   },

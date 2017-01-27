@@ -10,7 +10,7 @@ export default Route.extend({
       try {
         await this.get('currentModel').save()
       }
-      catch (e) {
+      catch(e) {
         // TODO: print actual error message
         this.get('notify').error('Error')
       }

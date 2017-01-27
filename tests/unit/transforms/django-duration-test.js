@@ -1,6 +1,10 @@
 import moment              from 'moment'
 import { moduleFor, test } from 'ember-qunit'
 
+const HOUR   = 3600
+const MINUTE = 60
+const SECOND = 1
+
 moduleFor('transform:django-duration', 'Unit | Transform | django duration', {
   // Specify the other units that are required for this test.
   // needs: ['serializer:foo']
@@ -49,9 +53,6 @@ test('it correctly serializes', function(assert) {
 test('it correctly deserializes', function(assert) {
   assert.expect(6)
 
-  const HOUR   = 3600
-  const MINUTE = 60
-
   let transform = this.subject()
 
   assert.equal(transform.deserialize(''), null)
@@ -59,29 +60,21 @@ test('it correctly deserializes', function(assert) {
 
   assert.equal(
     transform.deserialize('01:02:03').asSeconds(),
-    1 * HOUR +
-    2 * MINUTE +
-    3 // Seconds
+    1 * HOUR + 2 * MINUTE + 3 * SECOND
   )
 
   assert.equal(
     transform.deserialize('01:02:63').asSeconds(),
-    1 * HOUR +
-    3 * MINUTE +
-    3 // Seconds
+    1 * HOUR + 3 * MINUTE + 3 * SECOND
   )
 
   assert.equal(
     transform.deserialize('01:62:03').asSeconds(),
-    2 * HOUR +
-    2 * MINUTE +
-    3 // Seconds
+    2 * HOUR + 2 * MINUTE + 3 * SECOND
   )
 
   assert.equal(
     transform.deserialize('101:02:03').asSeconds(),
-    101 * HOUR +
-    2 * MINUTE +
-    3 // Seconds
+    101 * HOUR + 2 * MINUTE + 3 * SECOND
   )
 })

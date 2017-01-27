@@ -26,21 +26,21 @@
   </div>
 </div>
 
-{{#paginated-table model=model page=page as |header body|}}
-  {{#paginated-table.header}}
+{{#paginated-table model=model page=page as |table|}}
+  {{#table.header}}
     <th>Name</th>
     <th>Customer</th>
     <th>From</th>
     <th>To</th>
     <th>Done</th>
-  {{/paginated-table.header}}
-  {{#paginated-table.body loading=loading model=model as |row|}}
+  {{/table.header}}
+  {{#table.body loading=loading model=model as |row|}}
     {{#link-to 'projects.edit' row.id tagName='tr' class='pointer'}}
       <td>{{row.name}}</td>
       <td>{{row.customer.name}}</td>
-      <td>{{#if row.from}}{{moment-format project.from 'DD.MM.YYYY'}}{{/if}}</td>
-      <td>{{#if row.to}}{{moment-format project.to 'DD.MM.YYYY'}}{{/if}}</td>
+      <td>{{if row.from (moment-format project.from 'DD.MM.YYYY')}}</td>
+      <td>{{if row.to (moment-format project.to 'DD.MM.YYYY')}}</td>
       <td>{{fa-icon (concat (if row.done 'check-' '') 'square-o')}}</td>
     {{/link-to}}
-  {{/paginated-table.body}}
+  {{/table.body}}
 {{/paginated-table}}

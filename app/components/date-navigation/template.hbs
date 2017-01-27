@@ -1,7 +1,7 @@
 <div class="btn-toolbar {{if align (concat 'btn-toolbar--' align)}}">
   <div class="btn-group">
     <button title="Previous" class="btn btn-default" {{action 'setPrevious'}}>{{fa-icon 'arrow-left'}}</button>
-    <button title="{{moment-format current 'ddd, ll'}}" class="btn btn-default btn-noclick">{{moment-format current 'ddd, ll'}}</button>
+    <button title="{{if current (moment-format current 'ddd, ll')}}" class="btn btn-default btn-noclick">{{if current (moment-format current 'ddd, ll')}}</button>
     <button title="Next" class="btn btn-default" {{action 'setNext'}}>{{fa-icon 'arrow-right'}}</button>
   </div>
 

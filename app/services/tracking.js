@@ -1,7 +1,6 @@
-import Service  from 'ember-service'
-import service  from 'ember-service/inject'
-import computed from 'ember-computed-decorators'
-import moment   from 'moment'
+import Service from 'ember-service'
+import service from 'ember-service/inject'
+import moment  from 'moment'
 
 export default Service.extend({
   store: service('store'),
@@ -22,7 +21,7 @@ export default Service.extend({
   setActivity(activity) {
     this.setProperties({
       currentCustomer: activity.get('task.project.customer') || null,
-      currentProject:  activity.get('task.project') || null,
+      currentProject: activity.get('task.project') || null,
       currentActivity: activity
     })
   },
@@ -66,6 +65,6 @@ export default Service.extend({
   },
 
   currentCustomer: null,
-  currentProject:  null,
+  currentProject: null,
   currentActivity: null
 })

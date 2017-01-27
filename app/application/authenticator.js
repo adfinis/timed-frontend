@@ -1,6 +1,7 @@
 import BaseAuthenticator from 'ember-simple-auth/authenticators/base'
 import { isEmpty }       from 'ember-utils'
 import service           from 'ember-service/inject'
+import RSVP              from 'rsvp'
 
 import {
   later,
@@ -13,13 +14,13 @@ export default BaseAuthenticator.extend({
   _refreshTokenTimeout: null,
 
   parseToken(token) {
-    const payload = token.split('.')[1]
-    const tokenData = decodeURIComponent(window.escape(atob(payload)))
+    let [ , payload ] = token.split('.')
+    let tokenData = decodeURIComponent(window.escape(atob(payload)))
 
     try {
       return JSON.parse(tokenData)
     }
-    catch (e) {
+    catch(e) {
       return tokenData
     }
   },
@@ -29,7 +30,7 @@ export default BaseAuthenticator.extend({
   },
 
   async authenticate({ username, password }) {
-    return new Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (isEmpty(username) || isEmpty(password)) {
         reject(new Error('Missing credentials'))
       }
@@ -53,11 +54,11 @@ export default BaseAuthenticator.extend({
   },
 
   restore(data) {
-    let token = data.token
-    let exp   = this.parseExp(data.exp)
-    let now   = new Date().getTime()
+    let { token } = data
+    let exp       = this.parseExp(data.exp)
+    let now       = new Date().getTime()
 
-    return new Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       if (isEmpty(token)) {
         reject(new Error('Token is empty'))
       }
@@ -74,7 +75,7 @@ export default BaseAuthenticator.extend({
   },
 
   invalidate(data) {
-    return new Promise(resolve => resolve(data))
+    return new RSVP.Promise((resolve) => resolve(data))
   },
 
   refreshToken(token) {
@@ -84,7 +85,7 @@ export default BaseAuthenticator.extend({
       attributes: { token }
     }
 
-    return new Promise((resolve, reject) => {
+    return new RSVP.Promise((resolve, reject) => {
       this.get('ajax').post('/api/v1/auth/refresh', { data: { data } })
         .then((res) => {
           let result = this.handleAuthResponse(res.data)
@@ -93,9 +94,7 @@ export default BaseAuthenticator.extend({
 
           resolve(result)
         })
-        .catch((res) => {
-          reject()
-        })
+        .catch(reject)
     })
   },
 
@@ -111,7 +110,7 @@ export default BaseAuthenticator.extend({
   },
 
   handleAuthResponse(response) {
-    let token = response.token
+    let { token } = response
 
     if (isEmpty(token)) {
       throw new Error('Token is empty')

@@ -14,7 +14,7 @@ export default Route.extend(ListRouteMixin, {
     return this.store.findAll('customer')
   },
 
-  setupController(controller, model) {
+  setupController(controller) {
     this._super(...arguments)
 
     controller.set('customers', this.store.peekAll('customer'))

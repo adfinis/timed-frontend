@@ -3,7 +3,7 @@ import config from './config/environment'
 
 const ApplicationRouter = Router.extend({
   location: config.locationType,
-  rootURL:  config.rootURL
+  rootURL: config.rootURL
 })
 
 const resetNamespace = true

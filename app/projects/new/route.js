@@ -1,11 +1,12 @@
 import Route   from 'ember-route'
+import RSVP    from 'rsvp'
 import service from 'ember-service/inject'
 
 export default Route.extend({
   notify: service('notify'),
 
   beforeModel() {
-    return Promise.all([
+    return RSVP.Promise.all([
       this.store.findAll('user'),
       this.store.findAll('customer')
     ])
@@ -15,7 +16,7 @@ export default Route.extend({
     return this.store.createRecord('project')
   },
 
-  setupController(controller, model) {
+  setupController(controller) {
     this._super(...arguments)
 
     controller.set('users',     this.store.peekAll('user'))
@@ -37,7 +38,7 @@ export default Route.extend({
 
         this.transitionTo('projects.edit', model)
       }
-      catch (e) {
+      catch(e) {
         // TODO: print actual error message
         this.get('notify').error('Error')
       }

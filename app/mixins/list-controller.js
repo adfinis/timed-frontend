@@ -10,7 +10,7 @@ export default Mixin.create({
 
   page: 1,
 
-  'page_size': 15,
+  limit: 15,
 
   searchDelay: 500,
 

@@ -2,9 +2,9 @@ import Mixin from 'ember-metal/mixin'
 
 export default Mixin.create({
   queryParams: {
-    sort:   { refreshModel: true },
+    sort: { refreshModel: true },
     search: { refreshModel: true },
-    page:   { refreshModel: true }
+    page: { refreshModel: true }
   },
 
   modelName: '',

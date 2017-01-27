@@ -1,6 +1,6 @@
-@import 'adcssy/css/variables.css';
-@import 'power-select.css';
-@import 'toolbar.css';
+@import 'variables';
+@import 'power-select';
+@import 'toolbar';
 @import 'pod-styles';
 
 html {
@@ -47,7 +47,7 @@ body {
   bottom: 0;
   width: 0.2rem;
   height: 100%;
-  background-color: color(var(--color-primary) a(0));
+  // background-color: color(var(--color-primary) a(0));
   transition: background-color 500ms ease;
 }
 

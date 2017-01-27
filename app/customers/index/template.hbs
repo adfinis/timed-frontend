@@ -16,19 +16,19 @@
   </div>
 </div>
 
-{{#paginated-table model=model page=page as |header body|}}
-  {{#paginated-table.header}}
+{{#paginated-table model=model page=page as |table|}}
+  {{#table.header}}
     <th>Name</th>
     <th>Email</th>
     <th>Website</th>
     <th>Comment</th>
-  {{/paginated-table.header}}
-  {{#paginated-table.body loading=loading model=model as |row|}}
+  {{/table.header}}
+  {{#table.body loading=loading model=model as |row|}}
     {{#link-to 'customers.edit' row.id tagName='tr' class='pointer'}}
       <td>{{row.name}}</td>
       <td>{{row.email}}</td>
-      <td><a href="{{row.website}}" target="_blank">{{row.website}}</a></td>
+      <td><a href="{{row.website}}" rel="noopener" target="_blank">{{row.website}}</a></td>
       <td>{{row.comment}}</td>
     {{/link-to}}
-  {{/paginated-table.body}}
+  {{/table.body}}
 {{/paginated-table}}

@@ -7,7 +7,7 @@
       {{date-navigation align='right' current=date on-change=(action (mut date))}}
     </div>
     <div class="grid-cell grid-cell--12of12">
-      {{attendance-slider loading=loading attendances=model.attendances date=date on-change=(route-action 'updateAttendances')}}
+      {{attendance-slider attendances=model.attendances date=date on-change=(route-action 'updateAttendances')}}
     </div>
     <div class="grid-cell">
       <h2>Activities</h2>
@@ -24,9 +24,10 @@
         <tbody class={{if loading 'loading-mask'}}>
           {{#each model.activities as |activity|}}
             <tr
+              role="link"
               class="{{if activity.active 'highlight' 'pointer'}}"
-              {{action 'continueActivity' activity}}
               title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
+              {{action 'continueActivity' activity}}
             >
               <td>{{activity.task.project.customer.name}}</td>
               <td>{{activity.task.project.name}}</td>
@@ -60,7 +61,7 @@
             <th>Comment</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody class={{if loading 'loading-mask'}}>
           <tr>
             <td colspan="5" class="text-center">No reports yet</td>
           </tr>

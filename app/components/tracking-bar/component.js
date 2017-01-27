@@ -2,8 +2,7 @@ import Component       from 'ember-component'
 import service         from 'ember-service/inject'
 
 import computed, {
-  alias,
-  bool
+  alias
 } from 'ember-computed-decorators'
 
 export default Component.extend({
@@ -36,7 +35,9 @@ export default Component.extend({
 
   @computed('customer')
   projects(customer) {
-    if (!customer) return []
+    if (!customer) {
+      return []
+    }
 
     return this.get('_allProjects').filter((project) => {
       return project.get('customer.id') === customer.get('id')
@@ -45,7 +46,9 @@ export default Component.extend({
 
   @computed('project')
   tasks(project) {
-    if (!project) return []
+    if (!project) {
+      return []
+    }
 
     return this.get('_allTasks').filter((task) => {
       return task.get('project.id') === project.get('id')

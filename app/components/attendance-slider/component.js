@@ -1,9 +1,8 @@
 /* global RangeBar */
 
-import Component          from 'ember-component'
-import { formatDuration } from 'timed/utils/duration'
-import { debounce }       from 'ember-runloop'
-import moment             from 'moment'
+import Component    from 'ember-component'
+import { debounce } from 'ember-runloop'
+import moment       from 'moment'
 
 import computed, {
   observes
@@ -72,7 +71,9 @@ export default Component.extend({
     })
 
     bar.on('change', (e, values) => {
-      if (!values) return
+      if (!values) {
+        return
+      }
 
       debounce(this, this.attrs['on-change'], values, this.get('saveDelay'))
     })
@@ -88,9 +89,9 @@ export default Component.extend({
     this.initBar()
   },
 
-  @computed('attendances')
+  @computed('attendances.[]')
   attendanceValues(attendances) {
-    return attendances.map(a => {
+    return attendances.map((a) => {
       return [ a.get('from').valueOf(), a.get('to').valueOf() ]
     })
   },
@@ -103,7 +104,7 @@ export default Component.extend({
     this.initBar()
   },
 
-  @observes('attendanceValues')
+  @observes('attendanceValues.[]')
   _updateBar() {
     let barValues = this.get('bar').val()
     let attValues = this.get('attendanceValues')

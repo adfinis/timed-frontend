@@ -5,7 +5,7 @@ export default Route.extend({
     return this.modelFor('projects.edit')
   },
 
-  setupController(controller, model) {
+  setupController(controller) {
     this._super(...arguments)
 
     controller.set('task', null)

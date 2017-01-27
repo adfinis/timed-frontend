@@ -26,7 +26,7 @@
     </thead>
     <tbody>
       {{#each project.tasks as |row|}}
-        <tr class="pointer" {{action 'editTask' row}}>
+        <tr role="link" class="pointer" {{action 'editTask' row}}>
           <td>{{row.name}}</td>
         </tr>
       {{/each}}

@@ -4,17 +4,10 @@ import moment from 'moment'
 export default Component.extend({
   classNameBindings: [ 'recording', 'paused', 'ready' ],
 
-  init() {
-    this._super(...arguments)
-
-    this.set('startTime', moment())
-  },
-
+  startTime: moment(),
   recording: false,
-  paused:    false,
-  ready:     false,
-
-  startTime: null,
+  paused: false,
+  ready: false,
 
   actions: {
     startOrPause() {

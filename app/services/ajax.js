@@ -8,7 +8,7 @@ export default AjaxService.extend({
   @computed('session.data.authenticated.token')
   headers(token) {
     let headers = {
-      'Accept':       'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json'
     }
 

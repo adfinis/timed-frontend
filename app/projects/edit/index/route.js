@@ -1,8 +1,9 @@
 import Route from 'ember-route'
+import RSVP  from 'rsvp'
 
 export default Route.extend({
   beforeModel() {
-    return Promise.all([
+    return RSVP.Promise.all([
       this.store.findAll('customer'),
       this.store.findAll('user')
     ])
@@ -12,7 +13,7 @@ export default Route.extend({
     return this.modelFor('projects.edit')
   },
 
-  setupController(controller, model) {
+  setupController(controller) {
     this._super(...arguments)
 
     controller.set('customers', this.store.peekAll('customer'))
@@ -30,7 +31,7 @@ export default Route.extend({
 
         this.transitionTo('projects.index')
       }
-      catch (e) {
+      catch(e) {
         // TODO: print actual error message
         this.get('notify').error('Error')
       }
@@ -42,7 +43,7 @@ export default Route.extend({
 
         this.transitionTo('projects.index')
       }
-      catch (e) {
+      catch(e) {
         // TODO: print actual error message
         this.get('notify').error('Error')
       }
