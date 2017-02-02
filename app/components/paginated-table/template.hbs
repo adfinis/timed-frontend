@@ -2,10 +2,12 @@
   header=(component 'paginated-table/header')
   body=(component 'paginated-table/body')
 )}}
-<tfoot>
-  <tr>
-    <td colspan="99">
-      {{pagination-pager current=page count=model.meta.pagination.pages}}
-    </td>
-  </tr>
-</tfoot>
+{{#if model.meta.pagination}}
+  <tfoot>
+    <tr>
+      <td colspan="99">
+        {{pagination-pager current=page count=model.meta.pagination.pages}}
+      </td>
+    </tr>
+  </tfoot>
+{{/if}}

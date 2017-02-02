@@ -3,6 +3,10 @@
 @import 'toolbar';
 @import 'pod-styles';
 
+:root {
+  --tracking-indicator-size: 10px;
+}
+
 html {
   height: 100vh;
 }
@@ -35,30 +39,17 @@ body {
   padding: 0.3rem 0.8rem;
 }
 
-.table > tbody > tr {
-  position: relative;
-}
-
-.table--activities tr::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: 0.2rem;
-  height: 100%;
-  // background-color: color(var(--color-primary) a(0));
-  transition: background-color 500ms ease;
-}
-
-.table--activities tr.highlight::after {
-  background-color: var(--color-primary);
-}
-
 .btn-noclick {
   pointer-events: none;
 }
 
 .btn-toolbar--right {
   justify-content: flex-end;
+}
+.page-main {
+  position: relative;
+}
+.page-content {
+  padding-top: 140px;
+  display: block;
 }

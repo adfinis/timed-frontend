@@ -1,0 +1,38 @@
+& {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--tracking-indicator-size) * 2 / 2) 0;
+}
+
+.tracking-indicator {
+  display: block;
+  position: relative;
+  width:  var(--tracking-indicator-size);
+  height: var(--tracking-indicator-size);
+  background-color: var(--color-danger);
+  border-radius: 50%;
+}
+
+.tracking-indicator::before {
+  content: '';
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+  position: absolute;
+  animation: infinite 1500ms ease grow;
+}
+
+@keyframes grow {
+  0% {
+    width:  var(--tracking-indicator-size);
+    height: var(--tracking-indicator-size);
+    background-color: var(--color-danger);
+  }
+  100% {
+    width:  calc(var(--tracking-indicator-size) * 2.5);
+    height: calc(var(--tracking-indicator-size) * 2.5);
+    background-color: color(var(--color-danger) a(0%));
+  }
+}

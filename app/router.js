@@ -28,11 +28,6 @@ ApplicationRouter.map(function() {
       this.route('new')
     })
 
-    this.route('task-templates', { resetNamespace }, function() {
-      this.route('edit', { path: '/:id' })
-      this.route('new')
-    })
-
     this.route('users', { resetNamespace }, function() {
       this.route('detail', { path: '/:id' })
     })
@@ -41,7 +36,6 @@ ApplicationRouter.map(function() {
     this.route('sick-days',  { resetNamespace })
     this.route('school',     { resetNamespace })
     this.route('holidays',   { resetNamespace })
-    this.route('overview',   { resetNamespace })
   })
 })
 

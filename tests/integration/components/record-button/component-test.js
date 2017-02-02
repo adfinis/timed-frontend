@@ -1,12 +1,24 @@
-import { moduleForComponent, test } from 'ember-qunit'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
+import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
-moduleForComponent('record-button', 'Integration | Component | record button', {
-  integration: true
-})
+describe('Integration | Component | record button', function() {
+  setupComponentTest('record-button', {
+    integration: true
+  })
 
-test('it renders', function(assert) {
-  this.render(hbs`{{record-button}}`)
+  it('renders', function() {
+    // Set any properties with this.set('myProperty', 'value')
+    // Handle any actions with this.on('myAction', function(val) { ... })
+    // Template block usage:
+    // this.render(hbs`
+    //   {{#record-button}}
+    //     template content
+    //   {{/record-button}}
+    // `)
 
-  assert.notEqual(this.$().text().trim(), '')
+    this.render(hbs`{{record-button}}`)
+    expect(this.$()).to.have.length(1)
+  })
 })

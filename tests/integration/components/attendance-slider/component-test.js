@@ -1,15 +1,24 @@
-import { moduleForComponent, test } from 'ember-qunit'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
+import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
-moduleForComponent('attendance-slider', 'Integration | Component | attendance slider', {
-  integration: true
-})
+describe('Integration | Component | attendance slider', function() {
+  setupComponentTest('attendance-slider', {
+    integration: true
+  })
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value')
-  // Handle any actions with this.on('myAction', function(val) { ... })
+  it('renders', function() {
+    // Set any properties with this.set('myProperty', 'value')
+    // Handle any actions with this.on('myAction', function(val) { ... })
+    // Template block usage:
+    // this.render(hbs`
+    //   {{#attendance-slider}}
+    //     template content
+    //   {{/attendance-slider}}
+    // `)
 
-  this.render(hbs`{{attendance-slider}}`)
-
-  assert.notEqual(this.$().text().trim(), '')
+    this.render(hbs`{{attendance-slider}}`)
+    expect(this.$()).to.have.length(1)
+  })
 })

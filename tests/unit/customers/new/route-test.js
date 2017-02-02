@@ -1,11 +1,15 @@
-import { moduleFor, test } from 'ember-qunit'
+import { expect }       from 'chai'
+import { it, describe } from 'mocha'
+import { setupTest }    from 'ember-mocha'
 
-moduleFor('route:customers/new', 'Unit | Route | customers/new', {
-  // Specify the other units that are required for this test.
-  // needs: ['controller:foo']
-})
+describe('Unit | Route | customers/new', function() {
+  setupTest('route:customers/new', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  })
 
-test('it exists', function(assert) {
-  let route = this.subject()
-  assert.ok(route)
+  it('exists', function() {
+    let route = this.subject()
+    expect(route).to.be.ok
+  })
 })

@@ -1,12 +1,13 @@
+import { expect }          from 'chai'
+import { describe, it }    from 'mocha'
 import EmberObject         from 'ember-object'
 import ListControllerMixin from 'timed/mixins/list-controller'
-import { module, test }    from 'qunit'
 
-module('Unit | Mixin | list controller')
-
-// Replace this with your real tests.
-test('it works', function(assert) {
-  let ListControllerObject = EmberObject.extend(ListControllerMixin)
-  let subject = ListControllerObject.create()
-  assert.ok(subject)
+describe('Unit | Mixin | list controller', function() {
+  // Replace this with your real tests.
+  it('works', function() {
+    let ListControllerObject = EmberObject.extend(ListControllerMixin)
+    let subject = ListControllerObject.create()
+    expect(subject).to.be.ok
+  })
 })

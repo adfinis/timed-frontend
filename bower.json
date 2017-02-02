@@ -3,9 +3,6 @@
   "dependencies": {
     "adcssy": "adfinis-sygroup/adcssy#0.9.1",
     "elessar": "adfinis-forks/Elessar#master",
-    "ember": "2.10.2",
-    "ember-cli-shims": "~0.1.1",
-    "ember-qunit-notifications": "0.1.0",
     "font-awesome": "~4.7.0",
     "jquery": "2.2.4"
   }

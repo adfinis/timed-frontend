@@ -1,12 +1,19 @@
-import { moduleForModel, test } from 'ember-qunit'
+import { describe, it }   from 'mocha'
+import { setupModelTest } from 'ember-mocha'
+import { expect }         from 'chai'
 
-moduleForModel('activity', 'Unit | Model | activity', {
-  // Specify the other units that are required for this test.
-  needs: [ 'model:task', 'model:user', 'model:activity-block' ]
-})
+describe('Unit | Model | activity', function() {
+  setupModelTest('activity', {
+    needs: [
+      'model:activity-block',
+      'model:task',
+      'model:user'
+    ]
+  })
 
-test('it exists', function(assert) {
-  let model = this.subject()
-  // let store = this.store()
-  assert.ok(!!model)
+  it('exists', function() {
+    let model = this.subject()
+    // var store = this.store()
+    expect(model).to.be.ok
+  })
 })

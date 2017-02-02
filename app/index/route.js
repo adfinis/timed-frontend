@@ -14,7 +14,7 @@ export default Route.extend({
   model({ day  }) {
     return RSVP.hash({
       activities: this.store.query('activity', {
-        include: 'task,task.project,task.project.customer,blocks',
+        include: 'task,task.project,task.project.customer',
         day
       }),
       attendances: this.store.query('attendance', { day })
@@ -27,7 +27,7 @@ export default Route.extend({
 
     this.set('controller.date', moment())
 
-    if (!this.get('currentModel').contains(activity)) {
+    if (!this.get('currentModel.activities').includes(activity)) {
       this.refresh()
     }
   },

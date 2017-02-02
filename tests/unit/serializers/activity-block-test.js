@@ -1,20 +1,21 @@
-import { moduleForModel, test } from 'ember-qunit'
+import { describe, it }   from 'mocha'
+import { setupModelTest } from 'ember-mocha'
+import { expect }         from 'chai'
 
-moduleForModel('activity-block', 'Unit | Serializer | activity block', {
-  // Specify the other units that are required for this test.
-  needs: [
-    'serializer:activity-block',
-    'transform:django-datetime',
-    'model:activity-block',
-    'model:activity'
-  ]
-})
+describe('Unit | Serializer | activity block', function() {
+  setupModelTest('activity-block', {
+    needs: [
+      'serializer:activity-block',
+      'model:activity',
+      'transform:django-datetime'
+    ]
+  })
 
-// Replace this with your real tests.
-test('it serializes records', function(assert) {
-  let record = this.subject()
+  it('serializes records', function() {
+    let record = this.subject()
 
-  let serializedRecord = record.serialize()
+    let serializedRecord = record.serialize()
 
-  assert.ok(serializedRecord)
+    expect(serializedRecord).to.be.ok
+  })
 })

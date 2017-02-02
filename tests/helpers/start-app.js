@@ -1,13 +1,17 @@
-import { assign as merge } from 'ember-platform'
-import { run }             from 'ember-runloop'
-import Application         from '../../app'
-import config              from '../../config/environment'
+import Ember       from 'ember'
+import { assign }  from 'ember-platform'
+import Application from '../../app'
+import config      from '../../config/environment'
+import run         from 'ember-runloop'
 
 export default function startApp(attrs) {
   let application
 
-  let attributes = merge({}, config.APP)
-  attributes = merge(attributes, attrs) // use defaults, but you can override
+  // disable the deprecation warnings
+  Ember.deprecate = () => {}
+
+  // use defaults, but you can override
+  let attributes = assign({}, config.APP, attrs)
 
   run(() => {
     application = Application.create(attributes)

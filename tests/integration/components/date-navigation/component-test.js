@@ -1,16 +1,24 @@
-import { moduleForComponent, test } from 'ember-qunit'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
+import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
-import moment from 'moment'
 
-moduleForComponent('date-navigation', 'Integration | Component | date navigation', {
-  integration: true
-})
+describe('Integration | Component | date navigation', function() {
+  setupComponentTest('date-navigation', {
+    integration: true
+  })
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value')
-  // Handle any actions with this.on('myAction', function(val) { ... })
+  it('renders', function() {
+    // Set any properties with this.set('myProperty', 'value')
+    // Handle any actions with this.on('myAction', function(val) { ... })
+    // Template block usage:
+    // this.render(hbs`
+    //   {{#date-navigation}}
+    //     template content
+    //   {{/date-navigation}}
+    // `)
 
-  this.render(hbs`{{date-navigation}}`)
-
-  assert.equal(this.$().text().trim(), moment().format('ddd, ll'))
+    this.render(hbs`{{date-navigation}}`)
+    expect(this.$()).to.have.length(1)
+  })
 })

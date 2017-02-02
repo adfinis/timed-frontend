@@ -1,1 +1,38 @@
-{{task-editor project=model task=task}}
+{{#liquid-if task}}
+  <div class="grid-cell">
+    <div class="form-group">
+      <label>Name</label>
+      {{input type='text' class='form-control' value=task.name}}
+    </div>
+  </div>
+  <div class="grid-cell">
+    <button class="btn btn-primary" {{action 'save'}}>Save</button>
+    {{#unless task.isNew}}
+      <button class="btn btn-danger" {{action 'delete'}}>Delete</button>
+    {{/unless}}
+    <button class="btn btn-default" {{action 'cancel'}}>Cancel</button>
+  </div>
+{{else}}
+  <div class="grid-cell">
+    <button class="btn btn-success" {{action 'editTask'}}>New Task</button>
+  </div>
+{{/liquid-if}}
+
+<div class="grid-cell">
+  <table class="table table--striped table--hover">
+    <thead>
+      <tr>
+        <th>Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each model.tasks as |row|}}
+        {{#unless (or row.isNew row.isDeleted)}}
+          <tr role="link" class="pointer" {{action 'editTask' row}}>
+            <td>{{row.name}}</td>
+          </tr>
+        {{/unless}}
+      {{/each}}
+    </tbody>
+  </table>
+</div>

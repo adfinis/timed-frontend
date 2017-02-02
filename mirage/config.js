@@ -1,10 +1,11 @@
 import { Response } from 'ember-cli-mirage'
+import moment       from 'moment'
 
 const { parse } = JSON
 
 export default function() {
   // this.urlPrefix = ''
-  this.namespace = 'api/v1'
+  this.namespace = '/api/v1'
   this.timing = 400
 
   this.post('/auth/login', ({ users }, req) => {
@@ -37,20 +38,39 @@ export default function() {
     return new Response(200, {}, { data: { token } })
   })
 
-  this.get('/attendances')
+  this.get('/attendances', function({ attendances }, { queryParams: { day } }) {
+    return attendances.where((a) => {
+      return a.day.format('YYYY-MM-DD') === day
+    })
+  })
+
   this.post('/attendances')
   this.get('/attendances/:id')
   this.patch('/attendances/:id')
   this.del('/attendances/:id')
 
-  this.get('/activities')
+  this.get('/activities', function({ activities, activityBlocks }, { queryParams: { active } }) {
+    if (active) {
+      return activities.where((a) => {
+        let blocks = activityBlocks.where((b) => b.activityId === a.id).models
+
+        return blocks.any((b) => !b.toDatetime)
+      })
+    }
+
+    return activities.all()
+  })
   this.post('/activities')
   this.get('/activities/:id')
   this.patch('/activities/:id')
   this.del('/activities/:id')
 
   this.get('/activity-blocks')
-  this.post('/activity-blocks')
+  this.post('/activity-blocks', function({ activityBlocks }) {
+    let attrs = this.normalizedRequestAttrs()
+
+    return activityBlocks.create({ ...attrs, fromDatetime: moment().format() })
+  })
   this.get('/activity-blocks/:id')
   this.patch('/activity-blocks/:id')
   this.del('/activity-blocks/:id')
@@ -100,12 +120,6 @@ export default function() {
   this.get('/tasks/:id')
   this.patch('/tasks/:id')
   this.del('/tasks/:id')
-
-  this.get('/task-templates')
-  this.post('/task-templates')
-  this.get('/task-templates/:id')
-  this.patch('/task-templates/:id')
-  this.del('/task-templates/:id')
 
   this.get('/users')
   this.post('/users')

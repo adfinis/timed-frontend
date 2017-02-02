@@ -1,12 +1,24 @@
-import { moduleForComponent, test } from 'ember-qunit'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
+import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
-moduleForComponent('timed-clock', 'Integration | Component | timed clock', {
-  integration: true
-})
+describe('Integration | Component | timed clock', function() {
+  setupComponentTest('timed-clock', {
+    integration: true
+  })
 
-test('it renders', function(assert) {
-  this.render(hbs`{{timed-clock}}`)
+  it('renders', function() {
+    // Set any properties with this.set('myProperty', 'value')
+    // Handle any actions with this.on('myAction', function(val) { ... })
+    // Template block usage:
+    // this.render(hbs`
+    //   {{#timed-clock}}
+    //     template content
+    //   {{/timed-clock}}
+    // `)
 
-  assert.equal(this.$().text().trim(), '')
+    this.render(hbs`{{timed-clock}}`)
+    expect(this.$()).to.have.length(1)
+  })
 })

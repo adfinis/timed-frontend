@@ -1,5 +1,8 @@
+import moment from 'moment'
+import { faker } from 'ember-cli-mirage'
+
 export default function(server) {
-  server.create('user', {
+  let user = server.create('user', {
     firstName: 'John',
     lastName: 'Doe',
     password: '123qwe'
@@ -17,5 +20,12 @@ export default function(server) {
     })
   })
 
-  server.loadFixtures('task-templates')
+  server.create('attendance', 'morning', { user, day: moment() })
+  server.create('attendance', 'afternoon', { user, day: moment() })
+
+  let { schema: { tasks } } = server
+  let allTasks = tasks.all().models
+
+  server.create('activity', { user, day: moment(), task: faker.random.arrayElement(allTasks) })
+  server.create('activity', 'active', { user, day: moment(), task: faker.random.arrayElement(allTasks) })
 }

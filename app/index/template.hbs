@@ -1,72 +1,70 @@
-<div>
-  <div class="grid grid--6of12">
-    <div class="grid-cell">
-      <h2>Attendance</h2>
-    </div>
-    <div class="grid-cell">
-      {{date-navigation align='right' current=date on-change=(action (mut date))}}
-    </div>
-    <div class="grid-cell grid-cell--12of12">
-      {{attendance-slider attendances=model.attendances date=date on-change=(route-action 'updateAttendances')}}
-    </div>
-    <div class="grid-cell">
-      <h2>Activities</h2>
-      <table class="table table--striped table--hover table--activities">
-        <thead>
-          <tr>
-            <th>Customer</th>
-            <th>Project</th>
-            <th>Task</th>
-            <th>Duration</th>
-            <th>Comment</th>
+<div class="grid grid--6of12">
+  <div class="grid-cell">
+    <h2>Attendance</h2>
+  </div>
+  <div class="grid-cell">
+    {{date-navigation align='right' current=date on-change=(action (mut date))}}
+  </div>
+  <div class="grid-cell grid-cell--12of12">
+    {{attendance-slider attendances=model.attendances date=date on-change=(route-action 'updateAttendances')}}
+  </div>
+  <div class="grid-cell">
+    <h2>Activities</h2>
+    <table class="table table--striped table--hover table--activities">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Project</th>
+          <th>Task</th>
+          <th>Duration</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody class={{if loading 'loading-mask'}}>
+        {{#each model.activities as |activity|}}
+          <tr
+            role="link"
+            class="pointer"
+            title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
+            {{action 'continueActivity' activity}}
+          >
+            <td>{{activity.task.project.customer.name}}</td>
+            <td>{{activity.task.project.name}}</td>
+            <td>{{activity.task.name}}</td>
+            <td>
+              {{#if activity.active}}
+                {{tracking-indicator}}
+              {{else}}
+                {{format-duration activity.duration}}
+              {{/if}}
+            </td>
+            <td>{{activity.comment}}</td>
           </tr>
-        </thead>
-        <tbody class={{if loading 'loading-mask'}}>
-          {{#each model.activities as |activity|}}
-            <tr
-              role="link"
-              class="{{if activity.active 'highlight' 'pointer'}}"
-              title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
-              {{action 'continueActivity' activity}}
-            >
-              <td>{{activity.task.project.customer.name}}</td>
-              <td>{{activity.task.project.name}}</td>
-              <td>{{activity.task.name}}</td>
-              <td>
-                {{#if activity.active}}
-                  {{since activity.activeBlock.from activity.duration}}
-                {{else}}
-                  {{duration-format activity.duration}}
-                {{/if}}
-              </td>
-              <td>{{activity.comment}}</td>
-            </tr>
-          {{^}}
-            <tr>
-              <td colspan="5" class="text-center">No activities yet</td>
-            </tr>
-          {{/each}}
-        </tbody>
-      </table>
-    </div>
-    <div class="grid-cell">
-      <h2>Reports</h2>
-      <table class="table table--striped table--hover table--activities">
-        <thead>
+        {{^}}
           <tr>
-            <th>Customer</th>
-            <th>Project</th>
-            <th>Task</th>
-            <th>Duration</th>
-            <th>Comment</th>
+            <td colspan="5" class="text-center">No activities yet</td>
           </tr>
-        </thead>
-        <tbody class={{if loading 'loading-mask'}}>
-          <tr>
-            <td colspan="5" class="text-center">No reports yet</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+  <div class="grid-cell">
+    <h2>Reports</h2>
+    <table class="table table--striped table--hover table--activities">
+      <thead>
+        <tr>
+          <th>Customer</th>
+          <th>Project</th>
+          <th>Task</th>
+          <th>Duration</th>
+          <th>Comment</th>
+        </tr>
+      </thead>
+      <tbody class={{if loading 'loading-mask'}}>
+        <tr>
+          <td colspan="5" class="text-center">No reports yet</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

@@ -3,7 +3,7 @@ import { padStartTpl } from 'ember-pad/utils/pad'
 const { floor } = Math
 const padTpl2   = padStartTpl(2)
 
-export function formatDuration(duration, seconds = true) {
+export default function formatDuration(duration, seconds = true) {
   if (!duration || duration.milliseconds() < 0) {
     return seconds ? '--:--:--' : '--:--'
   }
