@@ -2,8 +2,8 @@
   "name": "timed",
   "dependencies": {
     "adcssy": "adfinis-sygroup/adcssy#0.9.1",
-    "elessar": "adfinis-forks/Elessar#master",
     "font-awesome": "~4.7.0",
-    "jquery": "2.2.4"
+    "jquery": "2.2.4",
+    "nouislider": "^8.0.1"
   }
 }

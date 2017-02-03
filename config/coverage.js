@@ -1,3 +1,7 @@
 module.exports = {
-  useBabelInstrumenter: true
+  useBabelInstrumenter: true,
+  excludes: [
+    '*/mirage/**/*',
+    '*/app/application/auth*.js'
+  ]
 }

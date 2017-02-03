@@ -40,7 +40,7 @@ export default function() {
 
   this.get('/attendances', function({ attendances }, { queryParams: { day } }) {
     return attendances.where((a) => {
-      return a.day.format('YYYY-MM-DD') === day
+      return moment(a.fromDatetime).format('YYYY-MM-DD') === day
     })
   })
 
