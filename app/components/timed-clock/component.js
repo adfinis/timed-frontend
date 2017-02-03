@@ -1,7 +1,10 @@
 import Component from 'ember-component'
-import { later } from 'ember-runloop'
 import moment    from 'moment'
 import { on }    from 'ember-computed-decorators'
+import { later } from 'ember-runloop'
+import Ember     from 'ember'
+
+const { testing } = Ember
 
 export default Component.extend({
   _rotate(deg) {
@@ -25,8 +28,10 @@ export default Component.extend({
   _tick() {
     this._update()
 
-    later(this, () => {
-      this._tick()
-    }, 1000)
+    if (!testing) {
+      later(this, () => {
+        this._tick()
+      }, 1000)
+    }
   }
 })

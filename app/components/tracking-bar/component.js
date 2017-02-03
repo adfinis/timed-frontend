@@ -1,58 +1,75 @@
-import Component       from 'ember-component'
-import service         from 'ember-service/inject'
+import Component from 'ember-component'
 
 import computed, {
   alias
 } from 'ember-computed-decorators'
 
 export default Component.extend({
-  store: service('store'),
+  customers: [],
+  projects: [],
+  tasks: [],
 
-  tracking: service('tracking'),
+  _customer: null,
+  _project: null,
+  _task: null,
 
-  @alias('tracking.currentCustomer') customer: null,
+  @computed('activity.task')
+  customer: {
+    get(task) {
+      if (task) {
+        return task.get('project.customer')
+      }
 
-  @alias('tracking.currentProject') project: null,
+      return this.get('_customer')
+    },
+    set(value) {
+      this.set('_customer', value)
+      this.set('_project', null)
+      this.set('_task', null)
 
-  @alias('tracking.currentActivity.task') task: null,
-
-  @alias('tracking.currentActivity') activity: null,
-
-  @computed()
-  _allProjects() {
-    return this.get('store').peekAll('project')
+      return value
+    }
   },
 
-  @computed()
-  _allTasks() {
-    return this.get('store').peekAll('task')
+  @computed('activity.task')
+  project: {
+    get(task) {
+      if (task) {
+        return task.get('project')
+      }
+
+      return this.get('_project')
+    },
+    set(value) {
+      this.set('_project', value)
+      this.set('_task', null)
+
+      return value
+    }
   },
 
-  @computed()
-  customers() {
-    return this.get('store').peekAll('customer')
-  },
+  @alias('activity.task')
+  task: null,
 
-  @computed('customer')
-  projects(customer) {
-    if (!customer) {
+  @alias('customers')
+  _customers: [],
+
+  @computed('projects.[]', 'customer.id')
+  _projects(projects, id) {
+    if (!id) {
       return []
     }
 
-    return this.get('_allProjects').filter((project) => {
-      return project.get('customer.id') === customer.get('id')
-    })
+    return projects.filterBy('customer.id', id)
   },
 
-  @computed('project')
-  tasks(project) {
-    if (!project) {
+  @computed('tasks.[]', 'project.id')
+  _tasks(tasks, id) {
+    if (!id) {
       return []
     }
 
-    return this.get('_allTasks').filter((task) => {
-      return task.get('project.id') === project.get('id')
-    })
+    return tasks.filterBy('project.id', id)
   },
 
   @computed('activity.task')
@@ -71,34 +88,16 @@ export default Component.extend({
   },
 
   actions: {
-    async setCustomer(customer) {
-      await this.get('store').query('project', { customer: customer.get('id') })
-
-      this.set('customer',      customer)
-      this.set('project',       null)
-      this.set('activity.task', null)
-    },
-
-    async setProject(project) {
-      await this.get('store').query('task', { project: project.get('id') })
-
-      this.set('project',       project)
-      this.set('activity.task', null)
-    },
-
-    setTask(task) {
-      this.set('task', task)
-    },
-
     start() {
-      this.get('tracking').startActivity()
+      this.attrs['on-start'](this.get('activity'))
     },
+
     pause() {
-      this.get('tracking').stopActivity()
+      this.attrs['on-pause'](this.get('activity'))
     },
+
     stop() {
-      this.get('tracking').stopActivity()
-      this.get('tracking').newActivity()
+      this.attrs['on-stop'](this.get('activity'))
     }
   }
 })

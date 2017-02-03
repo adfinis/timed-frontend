@@ -1,0 +1,24 @@
+{{range-slider
+  start     = start
+  step      = 15
+  min       = 0
+  max       = 1440
+  connect   = true
+  animate   = true
+  behaviour = "drag"
+  tooltips  = tooltips
+  on-slide  = 'slide'
+  on-change = 'save'
+}}
+
+<div class="slider-labels">
+  {{#each labels as |label|}}
+    <div class="slider-label slider-label--{{label.size}}">
+      {{label.value}}
+    </div>
+  {{/each}}
+</div>
+
+<div class="slider-title">
+  {{duration}} {{fa-icon 'trash' click=(action 'delete')}}
+</div>

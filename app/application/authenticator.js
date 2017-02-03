@@ -2,11 +2,14 @@ import BaseAuthenticator from 'ember-simple-auth/authenticators/base'
 import { isEmpty }       from 'ember-utils'
 import service           from 'ember-service/inject'
 import RSVP              from 'rsvp'
+import Ember             from 'ember'
 
 import {
   later,
   cancel
 } from 'ember-runloop'
+
+const { testing } = Ember
 
 export default BaseAuthenticator.extend({
   ajax: service('ajax'),
@@ -29,7 +32,7 @@ export default BaseAuthenticator.extend({
     return new Date(exp * 1000).getTime()
   },
 
-  async authenticate({ username, password }) {
+  authenticate({ username, password }) {
     return new RSVP.Promise((resolve, reject) => {
       if (isEmpty(username) || isEmpty(password)) {
         reject(new Error('Missing credentials'))
@@ -54,11 +57,11 @@ export default BaseAuthenticator.extend({
   },
 
   restore(data) {
-    let { token } = data
-    let exp       = this.parseExp(data.exp)
-    let now       = new Date().getTime()
-
     return new RSVP.Promise((resolve, reject) => {
+      let { token } = data
+      let exp       = this.parseExp(data.exp)
+      let now       = new Date().getTime()
+
       if (isEmpty(token)) {
         reject(new Error('Token is empty'))
       }
@@ -106,7 +109,9 @@ export default BaseAuthenticator.extend({
 
     Reflect.deleteProperty(this, '_refreshTokenTimeout')
 
-    this._refreshTokenTimeout = later(this, this.refreshToken, token, wait)
+    if (!testing) {
+      this._refreshTokenTimeout = later(this, this.refreshToken, token, wait)
+    }
   },
 
   handleAuthResponse(response) {

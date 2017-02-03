@@ -1,72 +1,79 @@
 & {
-  width: 100%;
-  height: 100px;
+  padding-top: 1rem;
+  position: relative;
 }
 
-.elessar-rangebar {
-  margin-top: 30px;
+.noUi-handle-lower {
+  cursor: w-resize;
 }
 
-.elessar-range {
-  background: var(--color-primary);
-  overflow: visible;
+.noUi-handle-upper {
+  cursor: e-resize;
 }
 
-.elessar-handle {
-  background: color(var(--color-primary) shade(40%));
+.noUi-handle {
+  width: 8px;
+  height: 25px;
+  top: -4px;
+  left: -4px;
+  border-radius: 0;
+
+  &::after,
+  &::before {
+    display: none;
+  }
 }
 
-.elessar-barlabel {
-  display: block;
-  color: rgb(255, 255, 255);
-  width: 100%;
-  text-align: center;
-  font-weight: 300;
-  padding: 0 0.5rem;
-}
-
-.elessar-labels {
-  padding-top: 35px;
-  pointer-events: none;
-  font-size: 0.7rem;
-}
-
-.elessar-label {
-  transform: translateX(-70%) rotate(-60deg);
-  border: none;
-  padding: 0;
-  color: rgb(100, 100, 100);
-  pointer-events: all;
-}
-
-.elessar-from,
-.elessar-to,
-.elessar-duration {
-  cursor: text;
-  pointer-events: none;
-  position: absolute;
-  top: -30px;
+.noUi-tooltip {
   left: 50%;
   transform: translateX(-50%);
-  color: rgb(87, 87, 87);
+  background: transparent;
+  border: none;
+  font-size: 10px;
+  font-family: var(--font-family-mono);
 }
 
-.elessar-from,
-.elessar-to {
-  font-size: 0.6rem;
-  top: -28px;
-  transform: translateX(0%);
+.noUi-handle-lower .noUi-tooltip,
+.noUi-handle-upper .noUi-tooltip {
+  top: -18px;
 }
 
-.elessar-from {
+.noUi-connect {
+  background: var(--color-primary);
+}
+
+.noUi-draggable {
+  cursor: move;
+}
+
+.slider-labels {
+  display: flex;
+  padding: 1rem 0;
+  justify-content: space-between;
+  margin-left: -25px;
+  margin-right: -6px;
+}
+
+.slider-label {
+  display: flex;
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  transform: rotate(-45deg);
+  position: relative;
+
+  &--sm {
+    font-size: 9px;
+    color: color(var(--body-color) l(50%));
+  }
+}
+
+.slider-title {
+  position: absolute;
+  top: 0;
   left: 0;
-}
+  font-size: 12px;
 
-.elessar-to {
-  right: 0;
-  left: auto;
-}
-
-.elessar-delete {
-  cursor: pointer;
+  .fa-trash {
+    cursor: pointer;
+  }
 }

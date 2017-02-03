@@ -72,6 +72,10 @@ export default Model.extend({
    */
   @computed('firstName', 'lastName')
   fullName(firstName, lastName) {
+    if (!firstName || !lastName) {
+      return ''
+    }
+
     return `${firstName} ${lastName}`
   },
 

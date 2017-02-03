@@ -14,28 +14,6 @@ ApplicationRouter.map(function() {
 
   this.route('protected', { path: '/' }, function() {
     this.route('index', { resetNamespace, path: '/' })
-
-    this.route('projects', { resetNamespace }, function() {
-      this.route('edit', { path: '/:id' }, function() {
-        this.route('tasks')
-        this.route('tracker')
-      })
-      this.route('new')
-    })
-
-    this.route('customers', { resetNamespace }, function() {
-      this.route('edit', { path: '/:id' })
-      this.route('new')
-    })
-
-    this.route('users', { resetNamespace }, function() {
-      this.route('detail', { path: '/:id' })
-    })
-
-    this.route('about',      { resetNamespace })
-    this.route('sick-days',  { resetNamespace })
-    this.route('school',     { resetNamespace })
-    this.route('holidays',   { resetNamespace })
   })
 })
 

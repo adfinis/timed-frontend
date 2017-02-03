@@ -2,9 +2,9 @@
   <div class="form-group">
     {{#power-select
       disabled    = activity.active
-      options     = customers
+      options     = _customers
       selected    = customer
-      onchange    = (action 'setCustomer')
+      onchange    = (action (mut customer))
       placeholder = 'Customer'
       as |customer|}}
       {{customer.name}}
@@ -13,9 +13,9 @@
   <div class="form-group">
     {{#power-select
       disabled    = (or (not projects.length) activity.active)
-      options     = projects
+      options     = _projects
       selected    = project
-      onchange    = (action 'setProject')
+      onchange    = (action (mut project))
       placeholder = 'Project'
       as |project|}}
       {{project.name}}
@@ -24,9 +24,9 @@
   <div class="form-group">
     {{#power-select
       disabled    = (or (not tasks.length) activity.active)
-      options     = tasks
+      options     = _tasks
       selected    = task
-      onchange    = (action 'setTask')
+      onchange    = (action (mut task))
       placeholder = 'Task'
       as |task|}}
       {{task.name}}

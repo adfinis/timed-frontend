@@ -19,5 +19,29 @@ export default Controller.extend({
 
       return value
     }
+  },
+
+  @computed
+  _activities() {
+    return this.store.peekAll('activity')
+  },
+
+  @computed('day', '_activities.[]')
+  activities(day, activities) {
+    return activities.filter((a) => {
+      return a.get('start').format(this.get('dateFormat')) === day
+    })
+  },
+
+  @computed
+  _attendances() {
+    return this.store.peekAll('attendance')
+  },
+
+  @computed('day', '_attendances.[]')
+  attendances(day, attendances) {
+    return attendances.filter((a) => {
+      return a.get('from').format(this.get('dateFormat')) === day
+    })
   }
 })

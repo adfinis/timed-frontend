@@ -6,7 +6,16 @@
     {{date-navigation align='right' current=date on-change=(action (mut date))}}
   </div>
   <div class="grid-cell grid-cell--12of12">
-    {{attendance-slider attendances=model.attendances date=date on-change=(route-action 'updateAttendances')}}
+    {{#each attendances as |attendance|}}
+      {{#liquid-unless attendance.isDeleted}}
+        {{attendance-slider
+          attendance = attendance
+          on-save    = (route-action 'saveAttendance')
+          on-delete  = (route-action 'deleteAttendance')
+        }}
+      {{/liquid-unless}}
+    {{/each}}
+    <button class="btn btn-default" {{action 'addAttendance'}}>New Attendance</button>
   </div>
   <div class="grid-cell">
     <h2>Activities</h2>
@@ -21,25 +30,27 @@
         </tr>
       </thead>
       <tbody class={{if loading 'loading-mask'}}>
-        {{#each model.activities as |activity|}}
-          <tr
-            role="link"
-            class="pointer"
-            title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
-            {{action 'continueActivity' activity}}
-          >
-            <td>{{activity.task.project.customer.name}}</td>
-            <td>{{activity.task.project.name}}</td>
-            <td>{{activity.task.name}}</td>
-            <td>
-              {{#if activity.active}}
-                {{tracking-indicator}}
-              {{else}}
-                {{format-duration activity.duration}}
-              {{/if}}
-            </td>
-            <td>{{activity.comment}}</td>
-          </tr>
+        {{#each activities as |activity|}}
+          {{#unless activity.isNew}}
+            <tr
+              role="link"
+              class="pointer"
+              title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
+              {{action 'continueActivity' activity}}
+            >
+              <td>{{activity.task.project.customer.name}}</td>
+              <td>{{activity.task.project.name}}</td>
+              <td>{{activity.task.name}}</td>
+              <td>
+                {{#if activity.active}}
+                  {{tracking-indicator}}
+                {{else}}
+                  {{format-duration activity.duration}}
+                {{/if}}
+              </td>
+              <td>{{activity.comment}}</td>
+            </tr>
+          {{/unless}}
         {{^}}
           <tr>
             <td colspan="5" class="text-center">No activities yet</td>

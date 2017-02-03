@@ -1,116 +1,88 @@
-/* global RangeBar */
+import Component       from 'ember-component'
+import computed        from 'ember-computed-decorators'
+import moment          from 'moment'
+import formatDuration  from 'timed/utils/format-duration'
+import { padStartTpl } from 'ember-pad/utils/pad'
 
-import Component    from 'ember-component'
-import { debounce } from 'ember-runloop'
-import moment       from 'moment'
+const formatter = {
+  to(value) {
+    return moment({ hour: 0 }).minute(value).format('HH:mm')
+  }
+}
 
-import computed, {
-  observes
-} from 'ember-computed-decorators'
+const padTpl2 = padStartTpl(2)
 
 export default Component.extend({
-  classNameBindings: [ 'loading:loading-mask' ],
+  attendance: null,
 
-  saveDelay: 2000,
+  tooltips: [ formatter, formatter ],
 
-  bar: null,
+  values: [ 0, 0 ],
 
-  date: moment(),
+  init() {
+    this._super(...arguments)
 
-  attendances: [],
+    this.set('values', this.get('start'))
+  },
 
-  initBar() {
-    let date = this.get('date')
+  @computed('attendance.{from,to}')
+  start(from, to) {
+    return [
+      from.hour() * 60 + from.minute(),
+      to.hour() * 60 + to.minute()
+    ]
+  },
 
-    let bar = new RangeBar({
-      min: moment(date).startOf('day'),
-      max: moment(date).startOf('day').add(1, 'days'),
-      valueFormat(value) {
-        return moment(value).format('HH:mm')
-      },
-      valueParse(value) {
-        return moment(value).valueOf()
-      },
-      values: [],
-      label(a) {
-        let start = moment(a[0], 'HH:mm')
-        let end   = moment(a[1], 'HH:mm')
-        let diff  = end.diff(start)
+  @computed('values')
+  duration([ fromMin, toMin ]) {
+    let from = moment({ hour: 0 }).minute(fromMin)
+    let to   = moment({ hour: 0 }).minute(toMin)
 
-        if (diff < 0) {
-          diff = 24 * 60 * 60 * 1000 + diff
-        }
-        else if (diff === 0) {
-          diff = 24 * 60 * 60 * 1000
-        }
+    return formatDuration(moment.duration(to.diff(from)), false)
+  },
 
-        let dur = moment.duration(diff, 'milliseconds')
+  @computed
+  labels() {
+    let labels = []
 
-        if (dur.asHours() >= 1.5) {
-          return `
-            <span class="elessar-from">${a[0]}</span>
-            <span class="elessar-duration">${dur.asHours()}h</span>
-            <span class="elessar-to">${a[1]}</span>
-            <span class="elessar-delete" title="Delete attendance">&times;</span>
-          `
-        }
+    for (let h = 0; h <= 24; h++) {
+      for (let m = 0; m <= 30 && !(h === 24 && m === 30); m += 30) {
+        labels.push({
+          value: padTpl2`${h}:${m}`,
+          size: m === 0 ? 'lg' : 'sm'
+        })
+      }
+    }
 
-        return `
-          <span class="elessar-duration">${dur.asHours()}h</span>
-          <span class="elessar-delete" title="Delete attendance">&times;</span>
-        `
-      },
-      snap: 1000 * 60 * 15,
-      minSize: 1000 * 60 * 30,
-      bgMark: {
-        count: 24,
-        showLast: true
-      },
-      allowDelete: true,
-      htmlLabel: true
-    })
+    return labels
+  },
 
-    bar.on('change', (e, values) => {
-      if (!values) {
-        return
+  actions: {
+    slide(values) {
+      this.set('values', values)
+    },
+
+    save([ fromMin, toMin ]) {
+      let action = this.get('attrs.on-save')
+
+      if (!action) {
+        throw new Error('The `on-save` action is missing!')
       }
 
-      debounce(this, this.attrs['on-change'], values, this.get('saveDelay'))
-    })
+      this.set('attendance.from', moment({ hour: 0 }).minute(fromMin))
+      this.set('attendance.to', moment({ hour: 0 }).minute(toMin))
 
-    bar.val(this.get('attendanceValues'))
+      action(this.get('attendance'))
+    },
 
-    this.set('bar', bar)
+    delete() {
+      let action = this.get('attrs.on-delete')
 
-    this.$().append(bar.$el)
-  },
+      if (!action) {
+        throw new Error('The `on-delete` action is missing!')
+      }
 
-  didInsertElement() {
-    this.initBar()
-  },
-
-  @computed('attendances.[]')
-  attendanceValues(attendances) {
-    return attendances.map((a) => {
-      return [ a.get('from').valueOf(), a.get('to').valueOf() ]
-    })
-  },
-
-  @observes('date')
-  _reinitBar() {
-    this.get('bar').$el.remove()
-    this.set('bar', null)
-
-    this.initBar()
-  },
-
-  @observes('attendanceValues.[]')
-  _updateBar() {
-    let barValues = this.get('bar').val()
-    let attValues = this.get('attendanceValues')
-
-    if (attValues !== barValues) {
-      this.get('bar').val(attValues)
+      action(this.get('attendance'))
     }
   }
 })
