@@ -10,6 +10,7 @@ export default FormatDurationHelper.extend({
     let runtime = moment.duration(moment().diff(startTime)).add(elapsed)
 
     if (!testing) {
+      /* istanbul ignore next */
       later(this, () => {
         this.recompute()
       }, 1000)

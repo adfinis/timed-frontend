@@ -8,6 +8,7 @@ describe('Unit | Serializer | activity', function() {
       'serializer:activity',
       'transform:django-datetime',
       'transform:django-duration',
+      'model:activity-block',
       'model:task',
       'model:user'
     ]

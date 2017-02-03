@@ -1,14 +1,13 @@
-import Ember       from 'ember'
-import { assign }  from 'ember-platform'
-import Application from '../../app'
-import config      from '../../config/environment'
-import run         from 'ember-runloop'
+import { assign }                 from 'ember-platform'
+import run                        from 'ember-runloop'
+import Application                from '../../app'
+import config                     from '../../config/environment'
+import registerPowerSelectHelpers from 'timed/tests/helpers/ember-power-select'
+
+registerPowerSelectHelpers()
 
 export default function startApp(attrs) {
   let application
-
-  // disable the deprecation warnings
-  Ember.deprecate = () => {}
 
   // use defaults, but you can override
   let attributes = assign({}, config.APP, attrs)

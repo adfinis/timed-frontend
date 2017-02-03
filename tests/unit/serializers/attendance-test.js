@@ -6,7 +6,8 @@ describe('Unit | Serializer | attendance', function() {
   setupModelTest('attendance', {
     needs: [
       'serializer:attendance',
-      'transform:django-datetime'
+      'transform:django-datetime',
+      'model:user'
     ]
   })
 

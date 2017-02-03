@@ -29,6 +29,7 @@ export default Component.extend({
     this._update()
 
     if (!testing) {
+      /* istanbul ignore next */
       later(this, () => {
         this._tick()
       }, 1000)

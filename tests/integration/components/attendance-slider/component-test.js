@@ -1,7 +1,14 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { expect }             from 'chai'
+import { describe, it }       from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs from 'htmlbars-inline-precompile'
+import hbs                    from 'htmlbars-inline-precompile'
+import EmberObject            from 'ember-object'
+import moment                 from 'moment'
+
+const ATTENDANCE = EmberObject.create({
+  from: moment({ h: 8, m: 0, s: 0, ms: 0 }),
+  to: moment({ h: 8, m: 0, s: 0, ms: 0 })
+})
 
 describe('Integration | Component | attendance slider', function() {
   setupComponentTest('attendance-slider', {
@@ -9,16 +16,29 @@ describe('Integration | Component | attendance slider', function() {
   })
 
   it('renders', function() {
-    // Set any properties with this.set('myProperty', 'value')
-    // Handle any actions with this.on('myAction', function(val) { ... })
-    // Template block usage:
-    // this.render(hbs`
-    //   {{#attendance-slider}}
-    //     template content
-    //   {{/attendance-slider}}
-    // `)
+    this.set('attendance', ATTENDANCE)
 
-    this.render(hbs`{{attendance-slider}}`)
-    expect(this.$()).to.have.length(1)
+    this.render(hbs`
+      {{attendance-slider attendance=attendance}}
+    `)
+
+    expect(this.$('.noUi-connect')).to.be.ok
+  })
+
+  it('can delete', function() {
+    this.set('attendance', ATTENDANCE)
+
+    this.on('delete', (attendance) => {
+      expect(attendance).to.be.ok
+    })
+
+    this.render(hbs`
+      {{attendance-slider
+        attendance = attendance
+        on-delete  = (action 'delete')
+      }}
+    `)
+
+    this.$('.fa-trash').click()
   })
 })

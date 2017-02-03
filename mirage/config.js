@@ -4,9 +4,11 @@ import moment       from 'moment'
 const { parse } = JSON
 
 export default function() {
-  // this.urlPrefix = ''
+  this.passthrough('/write-coverage')
+
+  this.urlPrefix = ''
   this.namespace = '/api/v1'
-  this.timing = 400
+  this.timing    = 400
 
   this.post('/auth/login', ({ users }, req) => {
     let { data: { attributes: { username, password } } } = parse(req.requestBody)
@@ -43,7 +45,6 @@ export default function() {
       return moment(a.fromDatetime).format('YYYY-MM-DD') === day
     })
   })
-
   this.post('/attendances')
   this.get('/attendances/:id')
   this.patch('/attendances/:id')
@@ -75,47 +76,19 @@ export default function() {
   this.patch('/activity-blocks/:id')
   this.del('/activity-blocks/:id')
 
-  this.get('/customers', function({ customers }, { queryParams: { search } }) {
-    let res = customers.where((c) => {
-      return !search || c.name.toLowerCase().indexOf(search.toLowerCase()) >= 0
-    })
-
-    return this.serialize(res)
-  })
-
+  this.get('/customers')
   this.post('/customers')
   this.get('/customers/:id')
   this.patch('/customers/:id')
   this.del('/customers/:id')
 
-  this.get('/projects', function({ projects, customers }, { queryParams: { search, customer } }) {
-    let res = projects.where((p) => {
-      let c = customers.find(p.customerId)
-
-      return (
-        (
-          !search
-          || p.name.toLowerCase().indexOf(search.toLowerCase()) >= 0
-          || c.name.toLowerCase().indexOf(search.toLowerCase()) >= 0
-        ) && (
-          !customer || c.id === customer
-        )
-      )
-    })
-
-    return this.serialize(res)
-  })
-
+  this.get('/projects')
   this.post('/projects')
   this.get('/projects/:id')
   this.patch('/projects/:id')
   this.del('/projects/:id')
 
-  this.get('/tasks', function({ tasks }, { queryParams: { project } }) {
-    let res = tasks.where((t) => t.projectId === project)
-
-    return this.serialize(res)
-  })
+  this.get('/tasks')
   this.post('/tasks')
   this.get('/tasks/:id')
   this.patch('/tasks/:id')

@@ -1,7 +1,6 @@
 import Route   from 'ember-route'
 import RSVP    from 'rsvp'
 import service from 'ember-service/inject'
-import moment  from 'moment'
 
 export default Route.extend({
   notify: service('notify'),

@@ -1,6 +1,6 @@
-import Model from 'ember-data/model'
-import attr  from 'ember-data/attr'
-
+import Model    from 'ember-data/model'
+import attr     from 'ember-data/attr'
+import moment   from 'moment'
 import computed from 'ember-computed-decorators'
 
 import {
@@ -10,7 +10,7 @@ import {
 
 export default Model.extend({
   comment: attr('string', { defaultValue: '' }),
-  start: attr('django-datetime'),
+  start: attr('django-datetime', { defaultValue: () => moment() }),
   duration: attr('django-duration'),
   task: belongsTo('task'),
   user: belongsTo('user'),
@@ -20,7 +20,7 @@ export default Model.extend({
   activeBlock(blocks) {
     let activeBlocks = blocks.filter((b) => !b.get('to'))
 
-    return activeBlocks.length ? activeBlocks.get('firstObject') : null
+    return activeBlocks.get('length') ? activeBlocks.get('firstObject') : null
   },
 
   @computed('activeBlock')

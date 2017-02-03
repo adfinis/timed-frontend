@@ -35,6 +35,7 @@
             <tr
               role="link"
               class="pointer"
+              data-test-activity-row-id={{activity.id}}
               title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
               {{action 'continueActivity' activity}}
             >

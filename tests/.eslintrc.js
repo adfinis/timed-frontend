@@ -3,7 +3,11 @@ module.exports = {
     'embertest': true
   },
   globals: {
-    server: true
+    server: true,
+    selectChoose: true,
+    selectSearch: true,
+    removeMultipleOption: true,
+    clearSelected: true,
   },
   rules: {
     'no-magic-numbers': 0

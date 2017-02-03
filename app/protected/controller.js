@@ -36,26 +36,19 @@ export default Controller.extend({
 
   currentActivity: null,
 
-  _newActivity() {
-    let activity = this.store.createRecord('activity')
-
-    return this.set('currentActivity', activity)
-  },
-
   async _startCurrentActivity() {
     try {
       let activity = this.get('currentActivity')
-
-      let block = this.store.createRecord('activity-block', { activity })
 
       if (activity.get('isNew')) {
         await activity.save()
       }
 
+      let block = this.store.createRecord('activity-block', { activity })
+
       await block.save()
     }
     catch(e) {
-      console.log(e)
       this.get('notify').error('Ooops!')
     }
   },
