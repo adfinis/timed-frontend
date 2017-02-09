@@ -56,6 +56,8 @@ describe('Acceptance | index', function() {
       await visit('/')
 
       await click(testSelector('record-stop'))
+
+      expect(find(testSelector('record-stop'))).to.have.length(0)
     })
 
     it('can pause tracking', async function() {
@@ -66,6 +68,8 @@ describe('Acceptance | index', function() {
       await visit('/')
 
       await click(testSelector('record-start'))
+
+      expect(find(testSelector('record-stop'))).to.have.length(1)
     })
 
     it('can start tracking', async function() {
@@ -77,6 +81,8 @@ describe('Acceptance | index', function() {
       await fillIn(`${testSelector('tracking-comment')} input`, 'test comment')
 
       await click(testSelector('record-start'))
+
+      expect(find(testSelector('record-stop'))).to.have.length(1)
     })
 
     it('can continue tracking', async function() {
@@ -89,6 +95,8 @@ describe('Acceptance | index', function() {
       await visit('/')
 
       await click(testSelector('activity-row-id', other.id))
+
+      expect(find(testSelector('record-stop'))).to.have.length(1)
     })
   })
 
@@ -101,31 +109,31 @@ describe('Acceptance | index', function() {
     it('can delete attendances', async function() {
       await visit('/')
 
-      expect(find('.slider-title').length).to.equal(2)
+      expect(find('.slider-title')).to.have.length(2)
 
       await click('.slider-title .fa-trash')
 
-      expect(find('.slider-title').length).to.equal(1)
+      expect(find('.slider-title')).to.have.length(1)
     })
 
     it('can add attendances', async function() {
       await visit('/')
 
-      expect(find('.slider-title').length).to.equal(2)
+      expect(find('.slider-title')).to.have.length(2)
 
       await click('.btn:contains(New Attendance)')
 
-      expect(find('.slider-title').length).to.equal(3)
+      expect(find('.slider-title')).to.have.length(3)
     })
 
     it('can save attendances', async function() {
       await visit('/')
 
-      expect(find('.slider-title').length).to.equal(2)
+      expect(find('.slider-title')).to.have.length(2)
 
       await click('.noUi-connect')
 
-      expect(find('.slider-title').length).to.equal(2)
+      expect(find('.slider-title')).to.have.length(2)
     })
   })
 })

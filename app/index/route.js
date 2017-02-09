@@ -28,10 +28,11 @@ export default Route.extend({
       try {
         await attendance.save()
 
-        this.get('notify').success('Attendance saved')
+        this.get('notify').success('Attendance was saved')
       }
       catch(e) {
-        this.get('notify').error('Ooops! Something went wrong...')
+        /* istanbul ignore next */
+        this.get('notify').error('Error while saving the attendance')
       }
     },
 
@@ -39,10 +40,11 @@ export default Route.extend({
       try {
         await attendance.destroyRecord()
 
-        this.get('notify').success('Attendance deleted')
+        this.get('notify').success('Attendance was deleted')
       }
       catch(e) {
-        this.get('notify').error('Ooops! Something went wrong...')
+        /* istanbul ignore next */
+        this.get('notify').error('Error while deleting the attendance')
       }
     },
 
@@ -55,10 +57,11 @@ export default Route.extend({
 
         await attendance.save()
 
-        this.get('notify').success('Attendance added')
+        this.get('notify').success('Attendance was added')
       }
       catch(e) {
-        this.get('notify').error('Ooops! Something went wrong...')
+        /* istanbul ignore next */
+        this.get('notify').error('Error while adding the attendance')
       }
     }
   }

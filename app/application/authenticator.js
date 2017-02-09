@@ -11,7 +11,8 @@ import {
 
 const { testing } = Ember
 
-export default BaseAuthenticator.extend({
+/* istanbul ignore next */
+const ApplicationAuthenticator = BaseAuthenticator.extend({
   ajax: service('ajax'),
 
   _refreshTokenTimeout: null,
@@ -129,3 +130,5 @@ export default BaseAuthenticator.extend({
     return { ...data, token }
   }
 })
+
+export default ApplicationAuthenticator
