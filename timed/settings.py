@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'crispy_forms',
-    'timed_api',
+    'projects',
+    'tracking',
 ]
 
 MIDDLEWARE_CLASSES = [
