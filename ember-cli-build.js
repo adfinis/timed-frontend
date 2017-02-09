@@ -28,15 +28,12 @@ module.exports = function(defaults) {
       }
     },
     babel: {
-      optional: [ 'es7.asyncFunctions', 'es7.decorators' ]
+      optional: [ 'es7.decorators' ]
     },
     'ember-cli-babel': {
       includePolyfill: true
     }
   })
-
-  app.import('bower_components/elessar/dist/elessar.js')
-  app.import('bower_components/elessar/elessar.css')
 
   return app.toTree()
 }
