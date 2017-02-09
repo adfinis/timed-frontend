@@ -20,14 +20,39 @@ import {
  * @public
  */
 export default Model.extend({
+  /**
+   * The name
+   *
+   * @property name
+   * @type {String}
+   * @public
+   */
   name: attr('string', { defaultValue: '' }),
-  from: attr('django-date'),
-  to: attr('django-date'),
+
+  /**
+   * Whether the project is archived
+   *
+   * @property archived
+   * @type {Boolean}
+   * @public
+   */
   archived: attr('boolean', { defaultValue: false }),
-  trackerType: attr('string', { defaultValue: '' }),
-  trackerName: attr('string', { defaultValue: '' }),
-  trackerApiKey: attr('string', { defaultValue: '' }),
+
+  /**
+   * The customer
+   *
+   * @property customer
+   * @type {Customer}
+   * @public
+   */
   customer: belongsTo('customer'),
-  leaders: hasMany('user'),
+
+  /**
+   * The tasks
+   *
+   * @property tasks
+   * @type {Task[]}
+   * @public
+   */
   tasks: hasMany('task')
 })

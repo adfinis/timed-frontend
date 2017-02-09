@@ -16,9 +16,30 @@ import { hasMany } from 'ember-data/relationships'
  * @public
  */
 export default Model.extend({
+  /**
+   * The name
+   *
+   * @property name
+   * @type {String}
+   * @public
+   */
   name: attr('string', { defaultValue: '' }),
-  email: attr('string', { defaultValue: '' }),
-  website: attr('string', { defaultValue: '' }),
-  comment: attr('string', { defaultValue: '' }),
+
+  /**
+   * Whether the project is archived
+   *
+   * @property archived
+   * @type {Boolean}
+   * @public
+   */
+  archived: attr('boolean', { defaultValue: false }),
+
+  /**
+   * The projects
+   *
+   * @property projects
+   * @type {Project[]}
+   * @public
+   */
   projects: hasMany('project')
 })
