@@ -50,4 +50,14 @@ describe('Unit | Utility | format duration', function() {
 
     expect(result).to.equal('22:12')
   })
+
+  it('has a fallback', function() {
+    let result1 = formatDuration(null)
+
+    expect(result1).to.equal('--:--:--')
+
+    let result2 = formatDuration(null, false)
+
+    expect(result2).to.equal('--:--')
+  })
 })

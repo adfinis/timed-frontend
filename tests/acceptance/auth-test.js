@@ -46,6 +46,13 @@ describe('Acceptance | auth', function() {
     await click('button[type=submit]')
 
     expect(currentURL()).to.equal('/login')
+
+    await fillIn('input[type=text]', '')
+    await fillIn('input[type=password]', '')
+
+    await click('button[type=submit]')
+
+    expect(currentURL()).to.equal('/login')
   })
 
   it('can logout', async function() {

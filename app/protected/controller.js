@@ -47,9 +47,12 @@ export default Controller.extend({
       let block = this.store.createRecord('activity-block', { activity })
 
       await block.save()
+
+      this.get('notify').success('Activity was started')
     }
     catch(e) {
-      this.get('notify').error('Ooops!')
+      /* istanbul ignore next */
+      this.get('notify').error('Error while starting the activity')
     }
   },
 
@@ -62,9 +65,12 @@ export default Controller.extend({
       block.set('to', moment())
 
       await block.save()
+
+      this.get('notify').success('Activity was paused')
     }
     catch(e) {
-      this.get('notify').error('Ooops!')
+      /* istanbul ignore next */
+      this.get('notify').error('Error while pausing the activity')
     }
   },
 
@@ -81,9 +87,12 @@ export default Controller.extend({
       }
 
       this.set('currentActivity', this.store.createRecord('activity'))
+
+      this.get('notify').success('Activity was stopped')
     }
     catch(e) {
-      this.get('notify').error('Ooops!')
+      /* istanbul ignore next */
+      this.get('notify').error('Error while stopping the activity')
     }
   },
 
