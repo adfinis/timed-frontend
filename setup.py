@@ -4,12 +4,14 @@ import codecs
 
 from setuptools import setup
 
+from timed import __version__
+
 with codecs.open('README.md', 'r', encoding='UTF-8') as f:
     README_TEXT = f.read()
 
 setup(
     name='timed',
-    version='0.0.0',
+    version=__version__,
     author='Adfinis SyGroup AG',
     author_email='https://adfinis-sygroup.ch/',
     description='Timetracking software',
