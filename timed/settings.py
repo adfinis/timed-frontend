@@ -39,7 +39,7 @@ SECRET_KEY = 'jpfx&3nyjat!)g1vbp7n=#6cgeu*vnwyymxehm-%jc+482%^ej'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -54,7 +54,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'crispy_forms',
-    'timed_api',
+    'timed.employment',
+    'timed.projects',
+    'timed.tracking',
 ]
 
 MIDDLEWARE_CLASSES = [
