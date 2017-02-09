@@ -1,19 +1,23 @@
-from rest_framework.test         import APITestCase, APIClient
-from django.contrib.auth.models  import User, Group, Permission
-from django.core.urlresolvers    import reverse
-from rest_framework              import status
-from rest_framework_jwt.settings import api_settings
+"""Helpers for testing with JSONAPI."""
 
 import json
 import logging
+
+from django.contrib.auth.models import Group, Permission, User
+from django.core.urlresolvers import reverse
+from rest_framework import status
+from rest_framework.test import APIClient, APITestCase
+from rest_framework_jwt.settings import api_settings
 
 logging.getLogger('factory').setLevel(logging.WARN)
 logging.getLogger('django_auth_ldap').setLevel(logging.WARN)
 
 
 class JSONAPIClient(APIClient):
+    """Base API client for testing CRUD methods with JSONAPI format."""
 
     def __init__(self, *args, **kwargs):
+        """Initialize the API client."""
         super().__init__(*args, **kwargs)
 
         self._content_type = 'application/vnd.api+json'
@@ -21,39 +25,65 @@ class JSONAPIClient(APIClient):
     def _parse_data(self, data):
         return json.dumps(data) if data else data
 
-    def get(self, path, data=None, **extra):
+    def get(self, path, data=None, **kwargs):
+        """Patched GET method to enforce JSONAPI format.
+
+        :param str  path: The URL to call
+        :param dict data: The data of the request
+        """
         return super().get(
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **extra
+            **kwargs
         )
 
-    def post(self, path, data=None, **extra):
+    def post(self, path, data=None, **kwargs):
+        """Patched POST method to enforce JSONAPI format.
+
+        :param str  path: The URL to call
+        :param dict data: The data of the request
+        """
         return super().post(
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **extra
+            **kwargs
         )
 
-    def delete(self, path, data=None, **extra):
+    def delete(self, path, data=None, **kwargs):
+        """Patched DELETE method to enforce JSONAPI format.
+
+        :param str  path: The URL to call
+        :param dict data: The data of the request
+        """
         return super().delete(
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **extra
+            **kwargs
         )
 
-    def patch(self, path, data=None, **extra):
+    def patch(self, path, data=None, **kwargs):
+        """Patched PATCH method to enforce JSONAPI format.
+
+        :param str  path: The URL to call
+        :param dict data: The data of the request
+        """
         return super().patch(
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **extra
+            **kwargs
         )
 
     def login(self, username, password):
+        """Authenticate a user.
+
+        :param str username: Username of the user
+        :param str password: Password of the user
+        :raises:             Exception
+        """
         data = {
             'data': {
                 'type': 'obtain-json-web-tokens',
@@ -67,29 +97,28 @@ class JSONAPIClient(APIClient):
 
         response = self.post(reverse('login'), data)
 
-        if response.status_code == status.HTTP_200_OK:
-            self.credentials(
-                HTTP_AUTHORIZATION='{} {}'.format(
-                    api_settings.JWT_AUTH_HEADER_PREFIX,
-                    response.data['token']
-                )
+        if response.status_code != status.HTTP_200_OK:
+            raise Exception('Wrong credentials!')  # pragma: no cover
+
+        self.credentials(
+            HTTP_AUTHORIZATION='{0} {1}'.format(
+                api_settings.JWT_AUTH_HEADER_PREFIX,
+                response.data['token']
             )
-
-            return True
-
-        return False  # pragma: no cover
+        )
 
 
 class JSONAPITestCase(APITestCase):
+    """Base test case for testing the timed API."""
 
-    def get_system_admin_group_permissions(self):
+    def _get_system_admin_group_permissions(self):
         return Permission.objects.filter(codename__in=[
             'add_tasktemplate',
             'change_tasktemplate',
             'delete_tasktemplate',
         ])
 
-    def get_project_admin_group_permissions(self):
+    def _get_project_admin_group_permissions(self):
         return Permission.objects.filter(codename__in=[
             'add_customer',
             'change_customer',
@@ -102,7 +131,7 @@ class JSONAPITestCase(APITestCase):
             'delete_task',
         ])
 
-    def get_user_group_permissions(self):
+    def _get_user_group_permissions(self):
         return Permission.objects.filter(codename__in=[
             'add_activity',
             'change_activity',
@@ -118,14 +147,14 @@ class JSONAPITestCase(APITestCase):
             'delete_report',
         ])
 
-    def create_groups(self):
+    def _create_groups(self):
         system_admin_group  = Group.objects.create(name='System Admin')
         project_admin_group = Group.objects.create(name='Project Admin')
         user_group          = Group.objects.create(name='User')
 
-        system_admin_perms  = self.get_system_admin_group_permissions()
-        project_admin_perms = self.get_project_admin_group_permissions()
-        user_perms          = self.get_user_group_permissions()
+        system_admin_perms  = self._get_system_admin_group_permissions()
+        project_admin_perms = self._get_project_admin_group_permissions()
+        user_perms          = self._get_user_group_permissions()
 
         system_admin_group.permissions.add(*system_admin_perms)
         project_admin_group.permissions.add(*project_admin_perms)
@@ -135,7 +164,7 @@ class JSONAPITestCase(APITestCase):
         project_admin_group.save()
         user_group.save()
 
-    def create_users(self):
+    def _create_users(self):
         self.system_admin_user = User.objects.create_user(
             username='system_admin',
             password='123qweasd'
@@ -167,12 +196,11 @@ class JSONAPITestCase(APITestCase):
         ]))
 
     def setUp(self):
+        """Setup the clients for testing."""
         super().setUp()
 
-        self.create_groups()
-        self.create_users()
-
-        self.noauth_client = JSONAPIClient()
+        self._create_groups()
+        self._create_users()
 
         self.system_admin_client = JSONAPIClient()
         self.system_admin_client.login('system_admin', '123qweasd')
@@ -183,5 +211,8 @@ class JSONAPITestCase(APITestCase):
         self.client = JSONAPIClient()
         self.client.login('user', '123qweasd')
 
+        self.noauth_client = JSONAPIClient()
+
     def result(self, response):
+        """Convert the response data to JSON."""
         return json.loads(response.content.decode('utf8'))

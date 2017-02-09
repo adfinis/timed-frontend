@@ -1,19 +1,22 @@
-from timed.jsonapi_test_case  import JSONAPITestCase
-from django.core.urlresolvers import reverse
-from timed_api.factories      import CustomerFactory
+"""Tests for the customers endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN
-)
+from django.core.urlresolvers import reverse
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
+                                   HTTP_403_FORBIDDEN)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import CustomerFactory
 
 
 class CustomerTests(JSONAPITestCase):
+    """Tests for the customer endpoint.
+
+    This endpoint should be read only for normal users.
+    """
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         self.customers = CustomerFactory.create_batch(10)
@@ -24,6 +27,7 @@ class CustomerTests(JSONAPITestCase):
         )
 
     def test_customer_list(self):
+        """Should respond with a list of customers."""
         url = reverse('customer-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -37,6 +41,7 @@ class CustomerTests(JSONAPITestCase):
         assert len(result['data']) == len(self.customers)
 
     def test_customer_detail(self):
+        """Should respond with a single customer."""
         customer = self.customers[0]
 
         url = reverse('customer-detail', args=[
@@ -50,6 +55,7 @@ class CustomerTests(JSONAPITestCase):
         assert user_res.status_code == HTTP_200_OK
 
     def test_customer_create(self):
+        """Should create a new customer."""
         data = {
             'data': {
                 'type': 'customers',
@@ -72,6 +78,7 @@ class CustomerTests(JSONAPITestCase):
         assert project_admin_res.status_code == HTTP_201_CREATED
 
     def test_customer_update(self):
+        """Should update an existing customer."""
         customer  = self.customers[0]
 
         data = {
@@ -104,6 +111,7 @@ class CustomerTests(JSONAPITestCase):
         )
 
     def test_customer_delete(self):
+        """Should delete a customer."""
         customer = self.customers[0]
 
         url = reverse('customer-detail', args=[

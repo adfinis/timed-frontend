@@ -1,21 +1,22 @@
-from timed.jsonapi_test_case    import JSONAPITestCase
-from django.core.urlresolvers   import reverse
-from timed_api.factories        import ActivityFactory, ActivityBlockFactory
-from django.contrib.auth.models import User
-from datetime                   import datetime
-from pytz                       import timezone
+"""Tests for the activity blocks endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED
-)
+from datetime import datetime
+
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from pytz import timezone
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import ActivityBlockFactory, ActivityFactory
 
 
 class ActivityBlockTests(JSONAPITestCase):
+    """Tests for the activity blocks endpoint."""
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         other_user = User.objects.create_user(
@@ -37,6 +38,7 @@ class ActivityBlockTests(JSONAPITestCase):
         )
 
     def test_activity_block_list(self):
+        """Should respond with a list of activity blocks."""
         url = reverse('activity-block-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -50,6 +52,7 @@ class ActivityBlockTests(JSONAPITestCase):
         assert len(result['data']) == len(self.activity_blocks)
 
     def test_activity_block_detail(self):
+        """Should respond with a single activity block."""
         activity_block = self.activity_blocks[0]
 
         url = reverse('activity-block-detail', args=[
@@ -63,6 +66,7 @@ class ActivityBlockTests(JSONAPITestCase):
         assert user_res.status_code == HTTP_200_OK
 
     def test_activity_block_create(self):
+        """Should create a new activity block."""
         activity = self.activity_blocks[0].activity
 
         data = {
@@ -95,6 +99,7 @@ class ActivityBlockTests(JSONAPITestCase):
         assert result['data']['attributes']['to-datetime'] is None
 
     def test_activity_block_update(self):
+        """Should update an existing activity block."""
         activity_block = self.activity_blocks[0]
         tz = timezone('Europe/Zurich')
 
@@ -126,6 +131,7 @@ class ActivityBlockTests(JSONAPITestCase):
         )
 
     def test_activity_delete(self):
+        """Should delete an activity block."""
         activity_block = self.activity_blocks[0]
 
         url = reverse('activity-block-detail', args=[

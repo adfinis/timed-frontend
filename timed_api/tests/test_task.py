@@ -1,24 +1,28 @@
-from timed.jsonapi_test_case  import JSONAPITestCase
-from django.core.urlresolvers import reverse
-from timed_api.factories      import TaskFactory
+"""Tests for the tasks endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN
-)
+from django.core.urlresolvers import reverse
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
+                                   HTTP_403_FORBIDDEN)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import TaskFactory
 
 
 class TaskTests(JSONAPITestCase):
+    """Tests for the tasks endpoint.
+
+    This endpoint should be read only for normal users.
+    """
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         self.tasks = TaskFactory.create_batch(5)
 
     def test_task_list(self):
+        """Should respond with a list of tasks."""
         url = reverse('task-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -36,6 +40,7 @@ class TaskTests(JSONAPITestCase):
         assert 'project' in result['data'][0]['relationships']
 
     def test_task_detail(self):
+        """Should respond with a single task."""
         task = self.tasks[0]
 
         url = reverse('task-detail', args=[
@@ -55,6 +60,7 @@ class TaskTests(JSONAPITestCase):
         assert 'project' in result['data']['relationships']
 
     def test_task_create(self):
+        """Should create a new task."""
         project = self.tasks[0].project
 
         data = {
@@ -101,6 +107,7 @@ class TaskTests(JSONAPITestCase):
         )
 
     def test_task_update(self):
+        """Should update an exisiting task."""
         task = self.tasks[0]
         project = self.tasks[1].project
 
@@ -146,6 +153,7 @@ class TaskTests(JSONAPITestCase):
         )
 
     def test_task_delete(self):
+        """Should delete a task."""
         task = self.tasks[0]
 
         url = reverse('task-detail', args=[

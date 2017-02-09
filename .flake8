@@ -1,3 +1,13 @@
 [flake8]
-ignore = E221,E241,E272,E251,W702,E203,E272,E201,E202,F403
-exclude = migrations,__pycache__,Makefile
+ignore =
+    # multiple spaces before operator
+    E221,
+    # multiple spaces after separator
+    E241
+
+exclude =
+    manage.py,
+    Makefile,
+    migrations,
+    docs,
+    __pycache__

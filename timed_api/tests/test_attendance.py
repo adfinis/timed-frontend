@@ -1,20 +1,21 @@
-from timed.jsonapi_test_case    import JSONAPITestCase
-from django.core.urlresolvers   import reverse
-from timed_api.factories        import AttendanceFactory
-from django.contrib.auth.models import User
-from datetime                   import timedelta
+"""Tests for the attendances endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED
-)
+from datetime import timedelta
+
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import AttendanceFactory
 
 
 class AttendanceTests(JSONAPITestCase):
+    """Tests for the attendances endpoint."""
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         other_user = User.objects.create_user(
@@ -33,6 +34,7 @@ class AttendanceTests(JSONAPITestCase):
         )
 
     def test_attendance_list(self):
+        """Should respond with a list of attendances filtered by user."""
         url = reverse('attendance-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -46,6 +48,7 @@ class AttendanceTests(JSONAPITestCase):
         assert len(result['data']) == len(self.attendances)
 
     def test_attendance_detail(self):
+        """Should respond with a single attendance."""
         attendance = self.attendances[0]
 
         url = reverse('attendance-detail', args=[
@@ -59,6 +62,7 @@ class AttendanceTests(JSONAPITestCase):
         assert user_res.status_code == HTTP_200_OK
 
     def test_attendance_create(self):
+        """Should create a new attendance and automatically set the user."""
         attendance = AttendanceFactory.build()
 
         data = {
@@ -90,6 +94,7 @@ class AttendanceTests(JSONAPITestCase):
         )
 
     def test_attendance_update(self):
+        """Should update and existing attendance."""
         attendance = self.attendances[0]
 
         attendance.to_datetime += timedelta(hours=1)
@@ -123,6 +128,7 @@ class AttendanceTests(JSONAPITestCase):
         )
 
     def test_attendance_delete(self):
+        """Should delete an attendance."""
         attendance = self.attendances[0]
 
         url = reverse('attendance-detail', args=[

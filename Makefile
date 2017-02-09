@@ -1,4 +1,4 @@
-.PHONY: help install install-dev setup-ldap create-ldap-user start test
+.PHONY: help install install-dev setup-ldap create-ldap-user start docs test
 .DEFAULT_GOAL := help
 
 help:
@@ -23,6 +23,9 @@ create-ldap-user: ## Create a new user in the LDAP
 start: ## Start the development server
 	@docker-compose start
 	@python manage.py runserver
+
+docs:
+	@make -C docs/ html
 
 test: ## Test the project
 	@flake8

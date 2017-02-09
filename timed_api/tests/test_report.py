@@ -1,19 +1,19 @@
-from timed.jsonapi_test_case    import JSONAPITestCase
-from django.core.urlresolvers   import reverse
-from timed_api.factories        import ReportFactory, TaskFactory
-from django.contrib.auth.models import User
+"""Tests for the reports endpoint."""
 
-from rest_framework.status import (
-    HTTP_200_OK,
-    HTTP_201_CREATED,
-    HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED
-)
+from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
+from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+
+from timed.jsonapi_test_case import JSONAPITestCase
+from timed_api.factories import ReportFactory, TaskFactory
 
 
 class ReportTests(JSONAPITestCase):
+    """Tests for the reports endpoint."""
 
     def setUp(self):
+        """Setup the environment for the tests."""
         super().setUp()
 
         other_user = User.objects.create_user(
@@ -26,6 +26,7 @@ class ReportTests(JSONAPITestCase):
         ReportFactory.create_batch(10, user=other_user)
 
     def test_report_list(self):
+        """Should respond with a list of reports filtered by user."""
         url = reverse('report-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -39,6 +40,7 @@ class ReportTests(JSONAPITestCase):
         assert len(result['data']) == len(self.reports)
 
     def test_report_detail(self):
+        """Should respond with a single report."""
         report = self.reports[0]
 
         url = reverse('report-detail', args=[
@@ -52,6 +54,7 @@ class ReportTests(JSONAPITestCase):
         assert user_res.status_code == HTTP_200_OK
 
     def test_report_create(self):
+        """Should create a new report and automatically set the user."""
         task = TaskFactory.create()
 
         data = {
@@ -94,6 +97,7 @@ class ReportTests(JSONAPITestCase):
         )
 
     def test_report_update(self):
+        """Should update an existing report."""
         report = self.reports[0]
 
         data = {
@@ -137,6 +141,7 @@ class ReportTests(JSONAPITestCase):
         assert result['data']['relationships']['task']['data'] is None
 
     def test_report_delete(self):
+        """Should delete a report."""
         report = self.reports[0]
 
         url = reverse('report-detail', args=[
