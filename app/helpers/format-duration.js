@@ -18,7 +18,7 @@ export default Helper.extend({
    * Parse the duration into a string
    *
    * @method computed
-   * @param {moment.duration[]} The duration
+   * @param {Array} options The options
    * @return {String} The formatted duration
    * @public
    */

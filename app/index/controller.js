@@ -1,6 +1,6 @@
 /**
  * @module timed
- * @submodule timed-controller
+ * @submodule timed-controllers
  * @public
  */
 import Controller from 'ember-controller'
