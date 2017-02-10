@@ -4,6 +4,61 @@
   "disable_watching": true,
   "launch_in_dev": [],
   "launch_in_ci": [
-    "PhantomJS"
-  ]
+    "PhantomJS",
+    "SL_safari_public_macos_10_12",
+    "SL_chrome_public_linux",
+    "SL_firefox_public_linux"
+  ],
+  "launchers": {
+    "SL_safari_public_macos_10_12": {
+      "exe": "ember",
+      "args": [
+        "sauce:launch",
+        "-b",
+        "safari",
+        "--visibility",
+        "public",
+        "-p",
+        "macos",
+        "--platform-version",
+        "10.12",
+        "--attach",
+        "--no-connect",
+        "--url"
+      ],
+      "protocol": "browser"
+    },
+    "SL_chrome_public_linux": {
+      "exe": "ember",
+      "args": [
+        "sauce:launch",
+        "-b",
+        "chrome",
+        "--visibility",
+        "public",
+        "-p",
+        "linux",
+        "--attach",
+        "--no-connect",
+        "--url"
+      ],
+      "protocol": "browser"
+    },
+    "SL_firefox_public_linux": {
+      "exe": "ember",
+      "args": [
+        "sauce:launch",
+        "-b",
+        "firefox",
+        "--visibility",
+        "public",
+        "-p",
+        "linux",
+        "--attach",
+        "--no-connect",
+        "--url"
+      ],
+      "protocol": "browser"
+    }
+  }
 }

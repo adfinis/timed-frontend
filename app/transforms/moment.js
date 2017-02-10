@@ -33,7 +33,7 @@ export default Transform.extend({
    * @public
    */
   deserialize(serialized) {
-    return serialized ? moment(serialized, this.format) : null
+    return serialized ? moment(serialized, this.get('format')) : null
   },
 
   /**
@@ -45,6 +45,6 @@ export default Transform.extend({
    * @public
    */
   serialize(deserialized) {
-    return deserialized && deserialized.isValid() ? deserialized.format(this.format) : null
+    return deserialized && deserialized.isValid() ? deserialized.format(this.get('format')) : null
   }
 })

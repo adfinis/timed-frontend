@@ -19,10 +19,14 @@ install:
   - npm install
   - bower install
 
+before_script:
+  - ember sauce:connect
+
 script:
   - ember test --test-port 7000
 
 after_script:
+  - ember sauce:disconnect
   - cat coverage/lcov.info | ./node_modules/.bin/coveralls
 
 env:
