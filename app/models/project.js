@@ -3,7 +3,6 @@
  * @submodule timed-models
  * @public
  */
-
 import Model from 'ember-data/model'
 import attr  from 'ember-data/attr'
 
@@ -13,7 +12,7 @@ import {
 } from 'ember-data/relationships'
 
 /**
- * Project model
+ * The project model
  *
  * @class Project
  * @extends DS.Model

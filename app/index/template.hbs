@@ -3,7 +3,7 @@
     <h2>Attendance</h2>
   </div>
   <div class="grid-cell">
-    {{date-navigation align='right' current=date on-change=(action (mut date))}}
+    {{date-navigation class='btn-toolbar--right' current=date on-change=(action (mut date))}}
   </div>
   <div class="grid-cell grid-cell--12of12">
     {{#each attendances as |attendance|}}

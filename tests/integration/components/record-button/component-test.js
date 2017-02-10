@@ -23,7 +23,7 @@ describe('Integration | Component | record button', function() {
       expect(this.$(testSelector('record-stop'))).to.have.length(0)
     })
 
-    this.render(hbs`{{record-button recording=recording stop=(action 'stop')}}`)
+    this.render(hbs`{{record-button recording=recording on-stop=(action 'stop')}}`)
 
     this.$(testSelector('record-stop')).click()
   })
@@ -37,7 +37,7 @@ describe('Integration | Component | record button', function() {
       expect(this.$(testSelector('record-stop'))).to.have.length(1)
     })
 
-    this.render(hbs`{{record-button recording=recording start=(action 'start')}}`)
+    this.render(hbs`{{record-button recording=recording on-start=(action 'start')}}`)
 
     this.$(testSelector('record-start')).click()
   })
@@ -53,7 +53,7 @@ describe('Integration | Component | record button', function() {
       expect(this.$(testSelector('record-stop'))).to.have.length(1)
     })
 
-    this.render(hbs`{{record-button paused=paused recording=recording pause=(action 'pause')}}`)
+    this.render(hbs`{{record-button paused=paused recording=recording on-pause=(action 'pause')}}`)
 
     this.$(testSelector('record-start')).click()
   })

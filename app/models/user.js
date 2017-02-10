@@ -8,7 +8,7 @@ import attr     from 'ember-data/attr'
 import computed from 'ember-computed-decorators'
 
 /**
- * User model
+ * The user model
  *
  * @class User
  * @extends DS.Model

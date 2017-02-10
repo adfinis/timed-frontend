@@ -1,12 +1,10 @@
-<div class="btn-toolbar {{if align (concat 'btn-toolbar--' align)}}">
-  <div class="btn-group">
-    <button data-test-previous title="Previous" class="btn btn-default" {{action 'setPrevious'}}>{{fa-icon 'arrow-left'}}</button>
-    <button data-test-current title="{{if current (moment-format current 'ddd, ll')}}" class="btn btn-default btn-noclick">{{if current (moment-format current 'ddd, ll')}}</button>
-    <button data-test-next title="Next" class="btn btn-default" {{action 'setNext'}}>{{fa-icon 'arrow-right'}}</button>
-  </div>
+<div class="btn-group">
+  <button data-test-previous title="Previous" class="btn btn-default" {{action 'setPrevious'}}>{{fa-icon 'arrow-left'}}</button>
+  <button data-test-current title="{{if current (moment-format current 'ddd, ll')}}" class="btn btn-default btn-noclick">{{if current (moment-format current 'ddd, ll')}}</button>
+  <button data-test-next title="Next" class="btn btn-default" {{action 'setNext'}}>{{fa-icon 'arrow-right'}}</button>
+</div>
 
-  <div class="btn-group">
-    <button data-test-today title="Today" class="btn btn-default" {{action 'setToday'}}>{{fa-icon 'clock-o'}}</button>
-    <button data-test-pick title="Pick" class="btn btn-default">{{fa-icon 'calendar'}}</button>
-  </div>
+<div class="btn-group">
+  <button data-test-today title="Today" class="btn btn-default" {{action 'setToday'}}>{{fa-icon 'clock-o'}}</button>
+  <button data-test-pick title="Pick" class="btn btn-default">{{fa-icon 'calendar'}}</button>
 </div>

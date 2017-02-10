@@ -3,13 +3,12 @@
  * @submodule timed-models
  * @public
  */
-
 import Model         from 'ember-data/model'
 import attr          from 'ember-data/attr'
 import { belongsTo } from 'ember-data/relationships'
 
 /**
- * Attendance model
+ * The attendance model
  *
  * @class Attendance
  * @extends DS.Model

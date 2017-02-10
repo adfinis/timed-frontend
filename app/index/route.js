@@ -1,14 +1,48 @@
+/**
+ * @module timed
+ * @submodule timed-routes
+ * @public
+ */
 import Route   from 'ember-route'
 import RSVP    from 'rsvp'
 import service from 'ember-service/inject'
 
+/**
+ * The index route
+ *
+ * @class IndexRoute
+ * @extends Ember.Route
+ * @public
+ */
 export default Route.extend({
-  notify: service('notify'),
-
+  /**
+   * The query params
+   *
+   * @property {Object} queryParams
+   * @property {Object} queryParams.day
+   * @public
+   */
   queryParams: {
     day: { refreshModel: true }
   },
 
+  /**
+   * The notify service
+   *
+   * @property {EmberNotify.NotifyService} notify
+   * @public
+   */
+  notify: service('notify'),
+
+  /**
+   * Model hook, fetch all activities and attendances for the given day
+   *
+   * @method model
+   * @param {Object} params The query params
+   * @param {String} param.day The day
+   * @return {RSVP.Promise} A promise which resolves into if all data is fetched
+   * @public
+   */
   model({ day  }) {
     return RSVP.all([
       this.store.query('activity', {
@@ -19,11 +53,31 @@ export default Route.extend({
     ])
   },
 
+  /**
+   * The actions for the index route
+   *
+   * @property {Object} actions
+   * @public
+   */
   actions: {
+    /**
+     * Continue an activity
+     *
+     * @method continueActivity
+     * @param {Activity} activity The activity to continue
+     * @public
+     */
     continueActivity(activity) {
       this.controllerFor('protected').send('continueActivity', activity)
     },
 
+    /**
+     * Save an attendance
+     *
+     * @method saveAttendance
+     * @param {Attendance} attendance The attendance to save
+     * @public
+     */
     async saveAttendance(attendance) {
       try {
         await attendance.save()
@@ -36,6 +90,13 @@ export default Route.extend({
       }
     },
 
+    /**
+     * Delete an attendance
+     *
+     * @method deleteAttendance
+     * @param {Attendance} attendance The attendance to delete
+     * @public
+     */
     async deleteAttendance(attendance) {
       try {
         await attendance.destroyRecord()
@@ -48,6 +109,12 @@ export default Route.extend({
       }
     },
 
+    /**
+     * Add a new attendance
+     *
+     * @method addAttendance
+     * @public
+     */
     async addAttendance() {
       try {
         let from = this.get('controller.date').clone().set({ h: 8, m: 0, s: 0, ms: 0 })
