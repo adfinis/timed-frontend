@@ -5,9 +5,15 @@
 </p>
 
 <p align="center">
-  [![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-frontend)
-  [![Coverage](https://img.shields.io/coveralls/adfinis-sygroup/timed-frontend.svg?style=flat-square)](https://coveralls.io/github/adfinis-sygroup/timed-frontend)
-  [![License](https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square)](LICENSE)
+  <a alt="Build Status" href="https://travis-ci.org/adfinis-sygroup/timed-frontend">
+    <img src="https://img.shields.io/travis/adfinis-sygroup/timed-frontend.svg?style=flat-square">
+  </a>
+  <a alt="Coverage" href="https://coveralls.io/github/adfinis-sygroup/timed-frontend">
+    <img src="https://img.shields.io/coveralls/adfinis-sygroup/timed-frontend.svg?style=flat-square">
+  </a>
+  <a alt="License" href="/LICENSE">
+    <img src="https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square">
+  </a>
 </p>
 
 ## Requirements
