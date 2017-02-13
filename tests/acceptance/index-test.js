@@ -35,8 +35,6 @@ describe('Acceptance | index', function() {
 
   describe('tracking', function() {
     beforeEach(function() {
-      this.timeout(5000)
-
       let customers = server.createList('customer', 10)
 
       customers.forEach((customer) => {

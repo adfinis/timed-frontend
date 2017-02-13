@@ -5,6 +5,7 @@
   "launch_in_dev": [],
   "launch_in_ci": [
     "PhantomJS",
+    "SL_Safari_Current",
     "SL_Chrome_Current",
     "SL_Firefox_Current"
   ],
@@ -15,12 +16,8 @@
         "sauce:launch",
         "-b",
         "safari",
-        "--visibility",
-        "public",
         "-p",
-        "macos",
-        "--platform-version",
-        "10.12",
+        "Mac 10.10",
         "--attach",
         "--no-connect",
         "--url"
@@ -33,10 +30,8 @@
         "sauce:launch",
         "-b",
         "chrome",
-        "--visibility",
-        "public",
         "-p",
-        "linux",
+        "Linux",
         "--attach",
         "--no-connect",
         "--url"
@@ -49,10 +44,8 @@
         "sauce:launch",
         "-b",
         "firefox",
-        "--visibility",
-        "public",
         "-p",
-        "linux",
+        "Linux",
         "--attach",
         "--no-connect",
         "--url"
