@@ -1,12 +1,18 @@
-import { moduleForComponent, test } from 'ember-qunit'
-import hbs from 'htmlbars-inline-precompile'
+import { expect }             from 'chai'
+import { describe, it }       from 'mocha'
+import { setupComponentTest } from 'ember-mocha'
+import hbs                    from 'htmlbars-inline-precompile'
 
-moduleForComponent('tracking-bar', 'Integration | Component | tracking bar', {
-  integration: true
-})
+describe('Integration | Component | tracking bar', function() {
+  setupComponentTest('tracking-bar', {
+    integration: true
+  })
 
-test('it renders', function(assert) {
-  this.render(hbs`{{tracking-bar}}`)
+  it('renders', function() {
+    this.set('activity', { comment: 'asdf' })
 
-  assert.notEqual(this.$().text().trim(), '')
+    this.render(hbs`{{tracking-bar activity=activity}}`)
+
+    expect(this.$('input[type=text]').val()).to.equal('asdf')
+  })
 })

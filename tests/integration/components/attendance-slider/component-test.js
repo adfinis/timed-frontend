@@ -1,15 +1,44 @@
-import { moduleForComponent, test } from 'ember-qunit'
-import hbs from 'htmlbars-inline-precompile'
+import { expect }             from 'chai'
+import { describe, it }       from 'mocha'
+import { setupComponentTest } from 'ember-mocha'
+import hbs                    from 'htmlbars-inline-precompile'
+import EmberObject            from 'ember-object'
+import moment                 from 'moment'
 
-moduleForComponent('attendance-slider', 'Integration | Component | attendance slider', {
-  integration: true
+const ATTENDANCE = EmberObject.create({
+  from: moment({ h: 8, m: 0, s: 0, ms: 0 }),
+  to: moment({ h: 8, m: 0, s: 0, ms: 0 })
 })
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value')
-  // Handle any actions with this.on('myAction', function(val) { ... })
+describe('Integration | Component | attendance slider', function() {
+  setupComponentTest('attendance-slider', {
+    integration: true
+  })
 
-  this.render(hbs`{{attendance-slider}}`)
+  it('renders', function() {
+    this.set('attendance', ATTENDANCE)
 
-  assert.notEqual(this.$().text().trim(), '')
+    this.render(hbs`
+      {{attendance-slider attendance=attendance}}
+    `)
+
+    expect(this.$('.noUi-connect')).to.be.ok
+  })
+
+  it('can delete', function() {
+    this.set('attendance', ATTENDANCE)
+
+    this.on('delete', (attendance) => {
+      expect(attendance).to.be.ok
+    })
+
+    this.render(hbs`
+      {{attendance-slider
+        attendance = attendance
+        on-delete  = (action 'delete')
+      }}
+    `)
+
+    this.$('.fa-trash').click()
+  })
 })

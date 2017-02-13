@@ -1,87 +1,89 @@
-import moment              from 'moment'
-import { moduleFor, test } from 'ember-qunit'
+import { describe, it } from 'mocha'
+import { setupTest }    from 'ember-mocha'
+import { expect }       from 'chai'
+import moment           from 'moment'
 
-moduleFor('transform:django-duration', 'Unit | Transform | django duration', {
-  // Specify the other units that are required for this test.
-  // needs: ['serializer:foo']
-})
+const HOUR   = 3600
+const MINUTE = 60
+const SECOND = 1
 
-test('it correctly serializes', function(assert) {
-  assert.expect(5)
+describe('Unit | Transform | django duration', function() {
+  setupTest('transform:django-duration', {
+    // Specify the other units that are required for this test.
+    // needs: ['transform:foo']
+  })
 
-  let transform = this.subject()
+  it('serializes', function() {
+    let transform = this.subject()
 
-  assert.equal(
-    transform.serialize(moment.duration({ hours: 1, minutes: 2, seconds: 3 })),
-    '01:02:03'
-  )
+    expect(
+      transform.serialize(moment.duration({ hours: 1, minutes: 2, seconds: 3 }))
+    ).to.equal(
+      '01:02:03'
+    )
 
-  assert.equal(
-    transform.serialize(moment.duration({ hours: 100, minutes: 2, seconds: 3 })),
-    '100:02:03'
-  )
+    expect(
+      transform.serialize(moment.duration({ hours: 100, minutes: 2, seconds: 3 }))
+    ).to.equal(
+      '100:02:03'
+    )
 
-  assert.equal(
-    transform.serialize(moment.duration({ hours: 100, minutes: 65, seconds: 3 })),
-    '101:05:03'
-  )
+    expect(
+      transform.serialize(moment.duration({ hours: 100, minutes: 65, seconds: 3 }))
+    ).to.equal(
+      '101:05:03'
+    )
 
-  assert.equal(
-    transform.serialize(moment.duration({ hours: 100, minutes: 1, seconds: 63 })),
-    '100:02:03'
-  )
+    expect(
+      transform.serialize(moment.duration({ hours: 100, minutes: 1, seconds: 63 }))
+    ).to.equal(
+      '100:02:03'
+    )
 
-  assert.equal(
-    transform.serialize(moment.duration({
-      milliseconds: 50,
-      seconds: 3,
-      minutes: 2,
-      hours: 1,
-      days: 1,
-      weeks: 1,
-      months: 1,
-      years: 1
-    })),
-    '9697:02:03'
-  )
-})
+    expect(
+      transform.serialize(moment.duration({
+        milliseconds: 50,
+        seconds: 3,
+        minutes: 2,
+        hours: 1,
+        days: 1,
+        weeks: 1,
+        months: 1,
+        years: 1
+      }))
+    ).to.equal(
+      '9697:02:03'
+    )
+  })
 
-test('it correctly deserializes', function(assert) {
-  assert.expect(6)
+  it('deserializes', function() {
+    let transform = this.subject()
 
-  const HOUR   = 3600
-  const MINUTE = 60
+    expect(transform.deserialize('')).to.be.null
+    expect(transform.deserialize(null)).to.be.null
 
-  let transform = this.subject()
+    expect(
+      transform.deserialize('01:02:03').asSeconds()
+    ).to.equal(
+      1 * HOUR + 2 * MINUTE + 3 * SECOND
+    )
 
-  assert.equal(transform.deserialize(''), null)
-  assert.equal(transform.deserialize(null), null)
+    expect(
+      transform.deserialize('01:02:63').asSeconds()
+    ).to.equal(
+      1 * HOUR + 3 * MINUTE + 3 * SECOND
+    )
 
-  assert.equal(
-    transform.deserialize('01:02:03').asSeconds(),
-    1 * HOUR +
-    2 * MINUTE +
-    3 // Seconds
-  )
+    expect(
+      transform.deserialize('01:62:03').asSeconds()
+    ).to.equal(
+      2 * HOUR + 2 * MINUTE + 3 * SECOND
+    )
 
-  assert.equal(
-    transform.deserialize('01:02:63').asSeconds(),
-    1 * HOUR +
-    3 * MINUTE +
-    3 // Seconds
-  )
-
-  assert.equal(
-    transform.deserialize('01:62:03').asSeconds(),
-    2 * HOUR +
-    2 * MINUTE +
-    3 // Seconds
-  )
-
-  assert.equal(
-    transform.deserialize('101:02:03').asSeconds(),
-    101 * HOUR +
-    2 * MINUTE +
-    3 // Seconds
-  )
+    expect(
+      transform.deserialize('101:02:03').asSeconds()
+    ).to.equal(
+      101 * HOUR + 2 * MINUTE + 3 * SECOND
+    )
+  })
 })

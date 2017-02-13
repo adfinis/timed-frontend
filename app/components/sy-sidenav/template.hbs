@@ -5,7 +5,10 @@
     </button>
     {{#link-to headerLink}}
       <div class="nav-side-header-logo">{{timed-clock}}</div>
-      <div class="nav-side-header-title">{{title}}</div>
+      <div class="nav-side-header-title">
+        {{title}}
+        <div class="nav-side-header-subtitle">{{app-version}}</div>
+      </div>
     {{/link-to}}
   </header>
   <section class="nav-side-body">
@@ -20,4 +23,4 @@
   {{/if}}
 </nav>
 {{yield this 'page-content'}}
-<div class="page-main-overlay" {{action 'close' on='click'}}></div>
+<div role="button" class="page-main-overlay" {{action 'close' on='click'}}></div>

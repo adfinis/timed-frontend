@@ -1,115 +1,145 @@
-/* global RangeBar */
+/**
+ * @module timed
+ * @submodule timed-components
+ * @public
+ */
+import Component       from 'ember-component'
+import computed        from 'ember-computed-decorators'
+import moment          from 'moment'
+import formatDuration  from 'timed/utils/format-duration'
+import { padStartTpl } from 'ember-pad/utils/pad'
 
-import Component          from 'ember-component'
-import { formatDuration } from 'timed/utils/duration'
-import { debounce }       from 'ember-runloop'
-import moment             from 'moment'
+const padTpl2 = padStartTpl(2)
 
-import computed, {
-  observes
-} from 'ember-computed-decorators'
+/**
+ * The formatter for the slider tooltips
+ *
+ * @constant
+ * @type {Object}
+ * @public
+ */
+const Formatter = {
+  /**
+   * Format the minutes to a time string
+   *
+   * @method to
+   * @param {Number} value The time in minutes
+   * @return {String} The formatted time
+   * @public
+   */
+  to(value) {
+    return moment({ hour: 0 }).minute(value).format('HH:mm')
+  }
+}
 
+/**
+ * The attendance slider component
+ *
+ * @class AttendanceSliderComponent
+ * @extends Ember.Component
+ * @public
+ */
 export default Component.extend({
-  classNameBindings: [ 'loading:loading-mask' ],
+  /**
+   * The attendance
+   *
+   * @property {Attendance} attendance
+   * @public
+   */
+  attendance: null,
 
-  saveDelay: 2000,
+  /**
+   * Initialize the component
+   *
+   * @method init
+   * @public
+   */
+  init() {
+    this._super(...arguments)
 
-  bar: null,
-
-  date: moment(),
-
-  attendances: [],
-
-  initBar() {
-    let date = this.get('date')
-
-    let bar = new RangeBar({
-      min: moment(date).startOf('day'),
-      max: moment(date).startOf('day').add(1, 'days'),
-      valueFormat(value) {
-        return moment(value).format('HH:mm')
-      },
-      valueParse(value) {
-        return moment(value).valueOf()
-      },
-      values: [],
-      label(a) {
-        let start = moment(a[0], 'HH:mm')
-        let end   = moment(a[1], 'HH:mm')
-        let diff  = end.diff(start)
-
-        if (diff < 0) {
-          diff = 24 * 60 * 60 * 1000 + diff
-        }
-        else if (diff === 0) {
-          diff = 24 * 60 * 60 * 1000
-        }
-
-        let dur = moment.duration(diff, 'milliseconds')
-
-        if (dur.asHours() >= 1.5) {
-          return `
-            <span class="elessar-from">${a[0]}</span>
-            <span class="elessar-duration">${dur.asHours()}h</span>
-            <span class="elessar-to">${a[1]}</span>
-            <span class="elessar-delete" title="Delete attendance">&times;</span>
-          `
-        }
-
-        return `
-          <span class="elessar-duration">${dur.asHours()}h</span>
-          <span class="elessar-delete" title="Delete attendance">&times;</span>
-        `
-      },
-      snap: 1000 * 60 * 15,
-      minSize: 1000 * 60 * 30,
-      bgMark: {
-        count: 24,
-        showLast: true
-      },
-      allowDelete: true,
-      htmlLabel: true
-    })
-
-    bar.on('change', (e, values) => {
-      if (!values) return
-
-      debounce(this, this.attrs['on-change'], values, this.get('saveDelay'))
-    })
-
-    bar.val(this.get('attendanceValues'))
-
-    this.set('bar', bar)
-
-    this.$().append(bar.$el)
+    this.set('tooltips', [ Formatter, Formatter ])
+    this.set('values', this.get('start'))
   },
 
-  didInsertElement() {
-    this.initBar()
+  /**
+   * The start and end time in minutes
+   *
+   * @property {Number[]} start
+   * @public
+   */
+  @computed('attendance.{from,to}')
+  start(from, to) {
+    return [
+      from.hour() * 60 + from.minute(),
+      to.hour() * 60 + to.minute()
+    ]
   },
 
-  @computed('attendances')
-  attendanceValues(attendances) {
-    return attendances.map(a => {
-      return [ a.get('from').valueOf(), a.get('to').valueOf() ]
-    })
+  /**
+   * The duration of the attendance as a string
+   *
+   * @property {String} duration
+   * @public
+   */
+  @computed('values')
+  duration([ fromMin, toMin ]) {
+    let from = moment({ hour: 0 }).minute(fromMin)
+    let to   = moment({ hour: 0 }).minute(toMin)
+
+    return formatDuration(moment.duration(to.diff(from)), false)
   },
 
-  @observes('date')
-  _reinitBar() {
-    this.get('bar').$el.remove()
-    this.set('bar', null)
+  /**
+   * The labels for the slider
+   *
+   * @property {String[]} labels
+   * @public
+   */
+  @computed
+  labels() {
+    let labels = []
 
-    this.initBar()
+    for (let h = 0; h <= 24; h++) {
+      for (let m = 0; m <= 30 && !(h === 24 && m === 30); m += 30) {
+        labels.push({
+          value: padTpl2`${h}:${m}`,
+          size: m === 0 ? 'lg' : 'sm'
+        })
+      }
+    }
+
+    return labels
   },
 
-  @observes('attendanceValues')
-  _updateBar() {
-    let barValues = this.get('bar').val()
-    let attValues = this.get('attendanceValues')
+  /**
+   * The actions of the attendance slider component
+   *
+   * @property {Object} actions
+   * @public
+   */
+  actions: {
+    /**
+     * Save the attendance
+     *
+     * @method save
+     * @param {Number[]} values The time in minutes
+     * @public
+     */
+    save([ fromMin, toMin ]) {
+      this.set('attendance.from', moment({ hour: 0 }).minute(fromMin))
+      this.set('attendance.to', moment({ hour: 0 }).minute(toMin))
 
-    if (attValues !== barValues) {
-      this.get('bar').val(attValues)
+      this.get('attrs.on-save')(this.get('attendance'))
+    },
+
+    /**
+     * Delete the attendance
+     *
+     * @method delete
+     * @public
+     */
+    delete() {
+      this.get('attrs.on-delete')(this.get('attendance'))
     }
   }
 })

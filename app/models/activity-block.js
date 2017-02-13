@@ -1,13 +1,47 @@
+/**
+ * @module timed
+ * @submodule timed-models
+ * @public
+ */
 import Model from 'ember-data/model'
 import attr  from 'ember-data/attr'
 
 import {
-  belongsTo,
-  hasMany
+  belongsTo
 } from 'ember-data/relationships'
 
+/**
+ * The activity block model
+ *
+ * @class ActivityBlock
+ * @extends DS.Model
+ * @public
+ */
 export default Model.extend({
-  from:     attr('django-datetime'),
-  to:       attr('django-datetime'),
+  /**
+   * The start date and time
+   *
+   * @property from
+   * @type {moment}
+   * @public
+   */
+  from: attr('django-datetime'),
+
+  /**
+   * The end date and time
+   *
+   * @property to
+   * @type {moment}
+   * @public
+   */
+  to: attr('django-datetime'),
+
+  /**
+   * The activity
+   *
+   * @property activity
+   * @type {Activity}
+   * @public
+   */
   activity: belongsTo('activity')
 })

@@ -1,12 +1,42 @@
-import { moduleForModel, test } from 'ember-qunit'
+import { describe, it }   from 'mocha'
+import { setupModelTest } from 'ember-mocha'
+import { expect }         from 'chai'
 
-moduleForModel('user', 'Unit | Model | user', {
-  // Specify the other units that are required for this test.
-  needs: [ 'model:project', 'model:attendance' ]
-})
+describe('Unit | Model | user', function() {
+  setupModelTest('user', {
+    needs: [
+      'model:attendance',
+      'model:project'
+    ]
+  })
 
-test('it exists', function(assert) {
-  let model = this.subject()
-  // let store = this.store()
-  assert.ok(!!model)
+  it('exists', function() {
+    let model = this.subject()
+
+    expect(model).to.be.ok
+  })
+
+  it('computes a full name', function() {
+    let model = this.subject({ firstName: 'Hans', lastName: 'Muster' })
+
+    expect(model).to.be.ok
+
+    expect(model.get('fullName')).to.equal('Hans Muster')
+  })
+
+  it('computes a long name with full name', function() {
+    let model = this.subject({ username: 'hansm', firstName: 'Hans', lastName: 'Muster' })
+
+    expect(model).to.be.ok
+
+    expect(model.get('longName')).to.equal('Hans Muster (hansm)')
+  })
+
+  it('computes a long name without full name', function() {
+    let model = this.subject({ username: 'hansm' })
+
+    expect(model).to.be.ok
+
+    expect(model.get('longName')).to.equal('hansm')
+  })
 })

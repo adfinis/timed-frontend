@@ -1,13 +1,9 @@
 {
   "name": "timed",
   "dependencies": {
-    "ember": "2.7.0",
-    "ember-cli-shims": "~0.1.1",
-    "ember-qunit-notifications": "0.1.0",
     "adcssy": "adfinis-sygroup/adcssy#0.9.1",
-    "font-awesome": "~4.5.0",
-    "pikaday": "^1.4.0",
-    "seiyria-bootstrap-slider": "~6.0.6",
-    "elessar": "adfinis-forks/Elessar#master"
+    "font-awesome": "~4.7.0",
+    "jquery": "2.2.4",
+    "nouislider": "^8.0.1"
   }
 }

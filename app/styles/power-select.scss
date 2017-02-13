@@ -1,0 +1,93 @@
+@import 'ember-power-select';
+
+.ember-power-select-trigger {
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: var(--input-border-radius);
+  padding: 0.3rem 0.5rem;
+  line-height: 1.5;
+  color: rgb(85, 85, 85);
+  font-size: 0.9rem;
+  cursor: text;
+  min-height: 2rem;
+  min-width: 13rem;
+}
+
+.form-control {
+  min-width: 13rem;
+}
+
+.ember-power-select-placeholder {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+}
+
+.ember-power-select-option {
+  padding: 2px 0.3rem;
+  font-size: 0.9rem;
+}
+
+.ember-power-select-trigger::after {
+  height: 0.9rem;
+  display: inline-block;
+}
+
+.ember-power-select-multiple-option:first-child {
+  margin-left: -1px;
+}
+
+.ember-power-select-multiple-option {
+  margin: -1px 0 -1px 6px;
+}
+
+.ember-power-select-option[aria-current=true] {
+  background-color: var(--color-primary);
+}
+
+.ember-power-select-selected-item {
+  margin: 0;
+}
+
+.ember-basic-dropdown-content {
+  border-color: rgb(204, 204, 204);
+}
+
+.ember-power-select-search-input {
+  color: inherit;
+  border-color: rgb(204, 204, 204);
+  border-radius: 0;
+  padding: 0.3rem 0.5rem;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.ember-power-select-trigger:focus {
+  border-color: color(var(--color-primary) tint(20%));
+  outline: 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+              0 0   8px color(var(--color-primary) a(60%));
+}
+
+.ember-power-select-status-icon {
+  display: none;
+}
+
+.ember-power-select-clear-btn {
+  right: 30px;
+}
+
+.ember-basic-dropdown-content {
+  border-color: color(var(--color-primary) tint(20%));
+  outline: 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+              0 0   8px color(var(--color-primary) a(60%));
+}
+
+.ember-power-select-trigger {
+  background-position: right 0.5rem center;
+  background-size: 22px;
+  background-repeat: no-repeat;
+  padding-right: 2rem;
+  background-image: url('data:image/svg+xml,<svg height="512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="M98.9 184.7l1.8 2.1 136 156.5c4.6 5.3 11.5 8.6 19.2 8.6 7.7 0 14.6-3.4 19.2-8.6L411 187.1l2.3-2.6c1.7-2.5 2.7-5.5 2.7-8.7 0-8.7-7.4-15.8-16.6-15.8v0H112.6v0c-9.2 0-16.6 7.1-16.6 15.8C96 179.1 97.1 182.2 98.9 184.7z"/></svg>');
+}

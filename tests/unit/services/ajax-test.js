@@ -1,12 +1,31 @@
-import { moduleFor, test } from 'ember-qunit'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
+import { setupTest } from 'ember-mocha'
 
-moduleFor('service:ajax', 'Unit | Service | ajax', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
-})
+describe('Unit | Service | ajax', function() {
+  setupTest('service:ajax', {
+    // Specify the other units that are required for this test.
+    needs: [ 'service:session' ]
+  })
 
-// Replace this with your real tests.
-test('it exists', function(assert) {
-  let service = this.subject()
-  assert.ok(service)
+  it('exists', function() {
+    let service = this.subject()
+    expect(service).to.be.ok
+  })
+
+  it('adds the auth token to the headers', function() {
+    let service = this.subject()
+
+    service.get('session').set('data', { authenticated: { token: 'test' } })
+
+    expect(service.get('headers.Authorization')).to.equal('Bearer test')
+  })
+
+  it('does not add the auth token to the headers if no token is given', function() {
+    let service = this.subject()
+
+    service.get('session').set('data', { authenticated: { token: null } })
+
+    expect(service.get('headers.Authorization')).to.not.be.ok
+  })
 })

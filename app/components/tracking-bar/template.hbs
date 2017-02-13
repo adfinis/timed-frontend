@@ -1,38 +1,38 @@
 <form class="form-inline" {{action 'start' on='submit'}}>
-  <div class="form-group">
+  <div class="form-group" data-test-tracking-customer>
     {{#power-select
       disabled    = activity.active
-      options     = customers
+      options     = _customers
       selected    = customer
-      onchange    = (action 'setCustomer')
+      onchange    = (action (mut customer))
       placeholder = 'Customer'
       as |customer|}}
       {{customer.name}}
     {{/power-select}}
   </div>
-  <div class="form-group">
+  <div class="form-group" data-test-tracking-project>
     {{#power-select
       disabled    = (or (not projects.length) activity.active)
-      options     = projects
+      options     = _projects
       selected    = project
-      onchange    = (action 'setProject')
+      onchange    = (action (mut project))
       placeholder = 'Project'
       as |project|}}
       {{project.name}}
     {{/power-select}}
   </div>
-  <div class="form-group">
+  <div class="form-group" data-test-tracking-task>
     {{#power-select
       disabled    = (or (not tasks.length) activity.active)
-      options     = tasks
+      options     = _tasks
       selected    = task
-      onchange    = (action 'setTask')
+      onchange    = (action (mut task))
       placeholder = 'Task'
       as |task|}}
       {{task.name}}
     {{/power-select}}
   </div>
-  <div class="form-group">
+  <div class="form-group" data-test-tracking-comment>
     {{input
       type        = 'text'
       class       = 'form-control'
@@ -47,9 +47,9 @@
       recording = recording
       ready     = ready
       paused    = paused
-      start     = (action 'start')
-      stop      = (action 'stop')
-      pause     = (action 'pause')
+      on-start  = (action 'start')
+      on-stop   = (action 'stop')
+      on-pause  = (action 'pause')
     }}
   </div>
 </form>

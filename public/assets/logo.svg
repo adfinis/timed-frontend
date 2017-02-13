@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="500" viewBox="0 0 132.29166 132.29167">
+  <defs>
+    <filter id="a" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity=".706" flood-color="#171717" result="flood"/>
+      <feComposite in="flood" in2="SourceGraphic" operator="in" result="composite1"/>
+      <feGaussianBlur in="composite1" stdDeviation="3" result="blur"/>
+      <feOffset result="offset"/>
+      <feComposite in="SourceGraphic" in2="offset" result="composite2"/>
+    </filter>
+  </defs>
+  <g transform="translate(0 -164.708)">
+    <circle cx="66.146" cy="230.854" r="50.838" fill="none" stroke="#575757" stroke-width="5.292" filter="url(#a)"/>
+    <path fill="#575757" d="M63.86 186.878h4.623v41.494H63.86zm5.626 42.696l28.838 18.898-3.15 4.806-28.837-18.898z"/>
+    <path fill="#d9534f" d="M63.092 229.875v2.352H21.598v-2.352z"/>
+    <circle cx="66.146" cy="230.854" r="3.591" fill="#575757"/>
+  </g>
+</svg>

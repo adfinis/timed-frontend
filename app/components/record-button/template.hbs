@@ -1,15 +1,15 @@
 <div class="record-button-container record-button-container--extend">
-  <button type="button" class="record-button" {{action 'startOrPause'}}></button>
+  <button data-test-record-start type="button" class="record-button" {{action 'startOrPause'}}></button>
   <div class="record-button-timer">
     {{#if recording}}
       {{since activity.activeBlock.from activity.duration}}
     {{else}}
-      {{duration-format activity.duration}}
+      {{format-duration activity.duration}}
     {{/if}}
   </div>
 </div>
 {{#if (or recording paused)}}
   <div class="record-button-container">
-    <button type="button" class="record-button record-button--stop" {{action 'stop'}}></button>
+    <button data-test-record-stop type="button" class="record-button record-button--stop" {{action 'stop'}}></button>
   </div>
 {{/if}}

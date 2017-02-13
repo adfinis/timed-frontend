@@ -1,0 +1,55 @@
+@import 'variables';
+@import 'power-select';
+@import 'toolbar';
+@import 'pod-styles';
+
+:root {
+  --tracking-indicator-size: 10px;
+}
+
+html {
+  height: 100vh;
+}
+
+body {
+  min-height: 100%;
+}
+
+.page-wrapper {
+  flex-grow: 1;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+.table > tfoot > tr > td > .pagination {
+  margin-left: -10px;
+}
+
+.pagination > li {
+  margin-right: 5px;
+}
+
+.pagination > li > a {
+  border: none !important;
+  border-radius: 4px;
+  padding: 0.3rem 0.8rem;
+}
+
+.btn-noclick {
+  pointer-events: none;
+}
+
+.btn-toolbar--right {
+  justify-content: flex-end;
+}
+.page-main {
+  position: relative;
+}
+.page-content {
+  padding-top: 140px;
+  display: block;
+}
