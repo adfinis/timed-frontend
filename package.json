@@ -10,7 +10,7 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server --proxy http://localhost:8000",
-    "test": "ember test",
+    "test": "ember test --test-port 7000",
     "docs": "ember ember-cli-yuidoc"
   },
   "repository": "",
