@@ -119,17 +119,6 @@ export default Component.extend({
    */
   actions: {
     /**
-     * Update the values on slide of the slider
-     *
-     * @method slide
-     * @param {Number[]} values The time in minutes
-     * @public
-     */
-    slide(values) {
-      this.set('values', values)
-    },
-
-    /**
      * Save the attendance
      *
      * @method save
