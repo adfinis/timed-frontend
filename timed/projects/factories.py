@@ -24,10 +24,11 @@ class CustomerFactory(DjangoModelFactory):
 class ProjectFactory(DjangoModelFactory):
     """Project factory."""
 
-    name     = Faker('catch_phrase')
-    archived = False
-    comment  = Faker('sentence')
-    customer = SubFactory('timed.projects.factories.CustomerFactory')
+    name            = Faker('catch_phrase')
+    estimated_hours = Faker('random_int', min=0, max=2000)
+    archived        = False
+    comment         = Faker('sentence')
+    customer        = SubFactory('timed.projects.factories.CustomerFactory')
 
     class Meta:
         """Meta informations for the project factory."""

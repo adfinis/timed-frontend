@@ -1,6 +1,5 @@
 """Models for the projects app."""
 
-from django.conf import settings
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
@@ -43,14 +42,9 @@ class Project(models.Model):
     name            = models.CharField(max_length=255)
     comment         = models.TextField(blank=True)
     archived        = models.BooleanField(default=False)
-    tracker_type    = models.CharField(max_length=2, choices=TYPES, blank=True)
-    tracker_name    = models.CharField(max_length=255, blank=True)
-    tracker_api_key = models.CharField(max_length=255, blank=True)
+    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     customer        = models.ForeignKey('projects.Customer',
                                         related_name='projects')
-    leaders         = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                             related_name='projects',
-                                             blank=True)
 
     def __str__(self):
         """String representation.

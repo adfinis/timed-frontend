@@ -1,6 +1,5 @@
 """Serializers for the projects app."""
 
-from django.contrib.auth.models import User
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import ModelSerializer
 
@@ -35,15 +34,11 @@ class ProjectSerializer(ModelSerializer):
     """Project serializer."""
 
     customer = ResourceRelatedField(queryset=models.Customer.objects.all())
-    leaders  = ResourceRelatedField(queryset=User.objects.all(),
-                                    required=False,
-                                    many=True)
     tasks    = ResourceRelatedField(read_only=True,
                                     many=True)
 
     included_serializers = {
         'customer': 'timed.projects.serializers.CustomerSerializer',
-        'leaders':  'timed.employment.serializers.UserSerializer',
         'tasks':    'timed.projects.serializers.TaskSerializer'
     }
 
@@ -54,12 +49,9 @@ class ProjectSerializer(ModelSerializer):
         fields = [
             'name',
             'comment',
+            'estimated_hours',
             'archived',
-            'tracker_type',
-            'tracker_name',
-            'tracker_api_key',
             'customer',
-            'leaders',
             'tasks',
         ]
 

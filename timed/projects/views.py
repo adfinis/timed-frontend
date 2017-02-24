@@ -1,11 +1,11 @@
 """Viewsets for the projects app."""
 
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from timed.projects import filters, models, serializers
 
 
-class CustomerViewSet(ModelViewSet):
+class CustomerViewSet(ReadOnlyModelViewSet):
     """Customer view set."""
 
     queryset         = models.Customer.objects.filter(archived=False)
@@ -15,7 +15,7 @@ class CustomerViewSet(ModelViewSet):
     ordering         = 'name'
 
 
-class ProjectViewSet(ModelViewSet):
+class ProjectViewSet(ReadOnlyModelViewSet):
     """Project view set."""
 
     queryset         = models.Project.objects.filter(archived=False)
@@ -25,9 +25,9 @@ class ProjectViewSet(ModelViewSet):
     ordering         = ('customer__name', 'name')
 
 
-class TaskViewSet(ModelViewSet):
+class TaskViewSet(ReadOnlyModelViewSet):
     """Task view set."""
 
-    queryset         = models.Task.objects.all()
+    queryset         = models.Task.objects.filter(archived=False)
     serializer_class = serializers.TaskSerializer
     filter_class     = filters.TaskFilterSet

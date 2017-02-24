@@ -64,7 +64,8 @@ class ReportTests(JSONAPITestCase):
                 'id': None,
                 'attributes': {
                     'comment':  'foo',
-                    'duration': '00:50:00'
+                    'duration': '00:50:00',
+                    'date': '2017-02-01'
                 },
                 'relationships': {
                     'task': {
@@ -107,7 +108,8 @@ class ReportTests(JSONAPITestCase):
                 'id': report.id,
                 'attributes': {
                     'comment':  'foobar',
-                    'duration': '01:00:00'
+                    'duration': '01:00:00',
+                    'date': '2017-02-04'
                 },
                 'relationships': {
                     'task': {
@@ -137,6 +139,11 @@ class ReportTests(JSONAPITestCase):
         assert (
             result['data']['attributes']['duration'] ==
             data['data']['attributes']['duration']
+        )
+
+        assert (
+            result['data']['attributes']['date'] ==
+            data['data']['attributes']['date']
         )
 
         assert result['data']['relationships']['task']['data'] is None

@@ -42,12 +42,12 @@ class ActivityTests(JSONAPITestCase):
         url = reverse('activity-list')
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert len(result['data']) == len(self.activities)
 
@@ -60,10 +60,10 @@ class ActivityTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
     def test_activity_create(self):
         """Should create a new activity and automatically set the user."""
@@ -90,12 +90,12 @@ class ActivityTests(JSONAPITestCase):
         url = reverse('activity-list')
 
         noauth_res = self.noauth_client.post(url, data)
-        user_res   = self.client.post(url, data)
+        res        = self.client.post(url, data)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_201_CREATED
+        assert res.status_code == HTTP_201_CREATED
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert (
             int(result['data']['relationships']['user']['data']['id']) ==
@@ -121,12 +121,12 @@ class ActivityTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.patch(url, data)
-        user_res   = self.client.patch(url, data)
+        res        = self.client.patch(url, data)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert (
             result['data']['attributes']['comment'] ==
@@ -142,10 +142,10 @@ class ActivityTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.delete(url)
-        user_res   = self.client.delete(url)
+        res        = self.client.delete(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_204_NO_CONTENT
+        assert res.status_code == HTTP_204_NO_CONTENT
 
     def test_activity_list_filter_active(self):
         """Should respond with a list of active activities."""

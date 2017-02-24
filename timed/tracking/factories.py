@@ -82,6 +82,7 @@ class ReportFactory(DjangoModelFactory):
     """Task factory."""
 
     comment = Faker('sentence')
+    date    = Faker('date')
     review  = False
     nta     = False
     task    = SubFactory('timed.projects.factories.TaskFactory')

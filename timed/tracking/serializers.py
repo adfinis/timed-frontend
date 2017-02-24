@@ -13,8 +13,7 @@ class ActivitySerializer(ModelSerializer):
     duration = DurationField(read_only=True)
     task     = ResourceRelatedField(queryset=Task.objects.all())
     user     = ResourceRelatedField(read_only=True)
-    blocks   = ResourceRelatedField(read_only=True,
-                                    many=True,)
+    blocks   = ResourceRelatedField(read_only=True, many=True)
 
     included_serializers = {
         'blocks': 'timed.tracking.serializers.ActivityBlockSerializer',
@@ -43,7 +42,7 @@ class ActivityBlockSerializer(ModelSerializer):
     activity = ResourceRelatedField(queryset=models.Activity.objects.all())
 
     included_serializers = {
-        'timed.activity': 'timed.tracking.serializers.ActivitySerializer'
+        'activity': 'timed.tracking.serializers.ActivitySerializer'
     }
 
     class Meta:
@@ -93,6 +92,7 @@ class ReportSerializer(ModelSerializer):
         model  = models.Report
         fields = [
             'comment',
+            'date',
             'duration',
             'review',
             'nta',

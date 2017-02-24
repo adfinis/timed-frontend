@@ -103,7 +103,7 @@ class AttendanceFilterSet(FilterSet):
         """Meta information for the attendance filter set."""
 
         model  = models.Attendance
-        fields = ['day', 'user']
+        fields = ['day']
 
 
 class ReportFilterSet(FilterSet):
@@ -113,4 +113,4 @@ class ReportFilterSet(FilterSet):
         """Meta information for the report filter set."""
 
         model  = models.Report
-        fields = ['user']
+        fields = ['date']
