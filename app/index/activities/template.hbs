@@ -1,0 +1,53 @@
+{{#if activities}}
+  <table class="table table--striped">
+    <tbody>
+      {{#each activities as |activity|}}
+      <tr
+        data-test-activity-row
+        data-test-activity-row-id={{activity.id}}
+        class="pointer {{if activity.active 'primary'}}"
+        {{action 'startActivity' activity on='doubleClick'}}
+      >
+          <td>
+            <strong>{{activity.task.project.name}}</strong> ({{activity.task.project.customer.name}})
+            <br>
+            <small><em>{{activity.task.name}}</em></small>
+          </td>
+          <td>{{activity.comment}}</td>
+          <td>
+            {{#if activity.active}}
+              {{since activity.activeBlock.from activity.duration}}
+            {{else}}
+              {{format-duration activity.duration}}
+            {{/if}}
+          </td>
+          <td class="text-right visible-sm">
+            {{#if activity.active}}
+              {{fa-btn
+                'stop'
+                data-test-stop-activity
+                title = 'Stop activity'
+                click = (route-action 'stopActivity' activity)
+              }}
+            {{else}}
+              {{fa-btn
+                'trash'
+                data-test-delete-activity
+                title = 'Delete activity'
+                click = (route-action 'deleteActivity' activity)
+              }}
+              {{fa-btn
+                'play'
+                data-test-start-activity
+                title = 'Start activity'
+                click = (route-action 'startActivity' activity)
+              }}
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <div class="text-center"><em>No activities yet</em></div>
+{{/if}}

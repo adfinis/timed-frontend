@@ -45,7 +45,6 @@ export default Component.extend({
    * @public
    */
   /* eslint-disable ember/avoid-leaking-state-in-components */
-  /* eslint-disable object-literal-jsdoc/obj-doc */
   @computed('activity.task')
   customer: {
     get(task) {
@@ -55,7 +54,7 @@ export default Component.extend({
 
       return this.get('_customer')
     },
-    set(value) {
+    set(task, value) {
       this.set('_customer', value)
       this.set('_project', null)
 
@@ -63,7 +62,6 @@ export default Component.extend({
     }
   },
   /* eslint-enable ember/avoid-leaking-state-in-components */
-  /* eslint-enable object-literal-jsdoc/obj-doc */
 
   /**
    * The currently selected project
@@ -75,7 +73,6 @@ export default Component.extend({
    * @public
    */
   /* eslint-disable ember/avoid-leaking-state-in-components */
-  /* eslint-disable object-literal-jsdoc/obj-doc */
   @computed('activity.task')
   project: {
     get(task) {
@@ -85,14 +82,13 @@ export default Component.extend({
 
       return this.get('_project')
     },
-    set(value) {
+    set(task, value) {
       this.set('_project', value)
 
       return value
     }
   },
   /* eslint-enable ember/avoid-leaking-state-in-components */
-  /* eslint-enable object-literal-jsdoc/obj-doc */
 
   /**
    * The currently selected task
@@ -165,17 +161,6 @@ export default Component.extend({
   },
 
   /**
-   * Whether the bar is currently paused
-   *
-   * @property {Boolean} paused
-   * @public
-   */
-  @computed('ready', 'activity.isNew')
-  paused(ready, isNew) {
-    return ready && !isNew
-  },
-
-  /**
    * The actions for the tracking bar component
    *
    * @property {Object} actions
@@ -190,16 +175,6 @@ export default Component.extend({
      */
     start() {
       this.get('attrs.on-start')(this.get('activity'))
-    },
-
-    /**
-     * Pause tracking the activity
-     *
-     * @method pause
-     * @public
-     */
-    pause() {
-      this.get('attrs.on-pause')(this.get('activity'))
     },
 
     /**

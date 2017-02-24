@@ -1,0 +1,20 @@
+& {
+  display: flex;
+  width: 100%;
+}
+
+.btn-group  {
+  margin-left: 10px;
+
+  .btn {
+    border-bottom: none;
+    border-bottom-left-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+  }
+}
+
+.date-navigation-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: flex-end;
+}

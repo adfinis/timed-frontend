@@ -1,8 +1,8 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { expect }             from 'chai'
+import { describe, it }       from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs from 'htmlbars-inline-precompile'
-import testSelector from 'ember-test-selectors'
+import hbs                    from 'htmlbars-inline-precompile'
+import testSelector           from 'ember-test-selectors'
 
 describe('Integration | Component | record button', function() {
   setupComponentTest('record-button', {
@@ -38,22 +38,6 @@ describe('Integration | Component | record button', function() {
     })
 
     this.render(hbs`{{record-button recording=recording on-start=(action 'start')}}`)
-
-    this.$(testSelector('record-start')).click()
-  })
-
-  it('can pause', function() {
-    this.set('recording', true)
-    this.set('paused', false)
-
-    this.on('pause', () => {
-      this.set('recording', false)
-      this.set('paused', true)
-
-      expect(this.$(testSelector('record-stop'))).to.have.length(1)
-    })
-
-    this.render(hbs`{{record-button paused=paused recording=recording on-pause=(action 'pause')}}`)
 
     this.$(testSelector('record-start')).click()
   })

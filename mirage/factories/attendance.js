@@ -6,25 +6,23 @@ function time(day, hour, minute) {
 }
 
 export default Factory.extend({
-  day: moment(),
-
   morning: trait({
     fromDatetime() {
-      return time(this.day, 8, 0)
+      return time(moment(), 8, 0)
     },
 
     toDatetime() {
-      return time(this.day, 11, 30)
+      return time(moment(), 11, 30)
     }
   }),
 
   afternoon: trait({
     fromDatetime() {
-      return time(this.day, 12, 0)
+      return time(moment(), 12, 0)
     },
 
     toDatetime() {
-      return time(this.day, 17, 0)
+      return time(moment(), 17, 0)
     }
   })
 })

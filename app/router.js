@@ -8,12 +8,17 @@ const ApplicationRouter = Router.extend({
 
 const resetNamespace = true
 
-/* eslint-disable max-nested-callbacks */
 ApplicationRouter.map(function() {
   this.route('login')
 
   this.route('protected', { path: '/' }, function() {
-    this.route('index', { resetNamespace, path: '/' })
+    this.route('index', { resetNamespace, path: '/' }, function() {
+      this.route('activities', { path: '/' })
+      this.route('attendances')
+      this.route('reports')
+    })
+    this.route('me', { resetNamespace })
+    this.route('notfound', { resetNamespace, path: '/*path' })
   })
 })
 

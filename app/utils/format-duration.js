@@ -27,6 +27,7 @@ export default function formatDuration(duration, seconds = true) {
 
   if (seconds) {
     let seconds = duration.seconds()
+
     return padTpl2`${hours}:${minutes}:${seconds}`
   }
 

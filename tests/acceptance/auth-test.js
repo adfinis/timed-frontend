@@ -10,6 +10,8 @@ describe('Acceptance | auth', function() {
 
   beforeEach(function() {
     application = startApp()
+
+    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
   })
 
   afterEach(function() {
@@ -23,8 +25,6 @@ describe('Acceptance | auth', function() {
   })
 
   it('can login', async function() {
-    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
-
     await visit('/login')
 
     await fillIn('input[type=text]', 'johnd')
@@ -36,8 +36,6 @@ describe('Acceptance | auth', function() {
   })
 
   it('validates login', async function() {
-    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
-
     await visit('/login')
 
     await fillIn('input[type=text]', 'johnd')

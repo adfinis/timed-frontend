@@ -16,26 +16,19 @@ export default function() {
     let { models: [ user ] } = users.where({ username, password })
 
     if (!user) {
-      return new Response(401, {}, {
-        errors: [
-          {
-            status: 401,
-            detail: 'Invalid username or password'
-          }
-        ]
-      })
+      return new Response(400, {})
     }
 
     let exp     = new Date().getTime() + 30 * 60 * 60 // now plus 30 days
     let payload = `{"user_id":${user.id},"exp":${exp}}`
 
-    return new Response(200, {}, {
-      data: { token: `${btoa('foo')}.${btoa(payload)}.${btoa('pony')}` }
+    return new Response(200, {}, { data: {
+      token: `${btoa('foo')}.${btoa(payload)}.${btoa('pony')}` }
     })
   })
 
   this.post('/auth/refresh', ({ db }, req) => {
-    let { data: { attributes: { token } } } = parse(req.requestBody)
+    let { token } = parse(req.requestBody)
 
     return new Response(200, {}, { data: { token } })
   })
@@ -65,6 +58,16 @@ export default function() {
   this.get('/activities/:id')
   this.patch('/activities/:id')
   this.del('/activities/:id')
+
+  this.get('/reports', function({ reports }, { queryParams: { day } }) {
+    return reports.where((r) => {
+      return moment(r.date).format('YYYY-MM-DD') === day
+    })
+  })
+  this.post('/reports')
+  this.get('/reports/:id')
+  this.patch('/reports/:id')
+  this.del('/reports/:id')
 
   this.get('/activity-blocks')
   this.post('/activity-blocks', function({ activityBlocks }) {
@@ -99,4 +102,30 @@ export default function() {
   this.get('/users/:id')
   this.patch('/users/:id')
   this.del('/users/:id')
+
+  this.get('/public-holidays', function({ locations }, { queryParams: { date } }) {
+    if (date) {
+      locations.where((l) => {
+        return l.format('YYYY-MM-DD') === date
+      })
+    }
+
+    return locations.all()
+  })
+  this.post('/public-holidays')
+  this.get('/public-holidays/:id')
+  this.patch('/public-holidays/:id')
+  this.del('/public-holidays/:id')
+
+  this.get('/locations')
+  this.post('/locations')
+  this.get('/locations/:id')
+  this.patch('/locations/:id')
+  this.del('/locations/:id')
+
+  this.get('/employments')
+  this.post('/employments')
+  this.get('/employments/:id')
+  this.patch('/employments/:id')
+  this.del('/employments/:id')
 }

@@ -1,6 +1,6 @@
 /**
  * @module timed
- * @submodule timed-auth
+ * @submodule timed-adapters
  * @public
  */
 import JSONAPIAdapter   from 'ember-data/adapters/json-api'
@@ -19,7 +19,6 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
    * The authorizer
    *
    * @property {String} authorizer
-   * @default 'authorizer:application'
    * @public
    */
   authorizer: 'authorizer:application',
@@ -28,7 +27,6 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
    * The API namespace
    *
    * @property {String} namespace
-   * @default 'api/v1'
    * @public
    */
   namespace: 'api/v1'

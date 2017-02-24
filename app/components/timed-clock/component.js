@@ -3,11 +3,11 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
-import moment    from 'moment'
-import { on }    from 'ember-computed-decorators'
-import { later } from 'ember-runloop'
-import Ember     from 'ember'
+import Component         from 'ember-component'
+import moment            from 'moment'
+import { on }            from 'ember-computed-decorators'
+import { later, cancel } from 'ember-runloop'
+import Ember             from 'ember'
 
 const { testing } = Ember
 
@@ -19,6 +19,14 @@ const { testing } = Ember
  * @public
  */
 export default Component.extend({
+  /**
+   * The timer which ticks every second
+   *
+   * @property {*} _timer
+   * @private
+   */
+  _timer: null,
+
   /**
    * Return the CSS syntax for rotation
    *
@@ -55,14 +63,30 @@ export default Component.extend({
    * @private
    */
   @on('didRender')
-  _tick() { // eslint-disable-line object-literal-jsdoc/obj-doc
+  _tick() {
     this._update()
 
-    /* istanbul ignore if */
+    /* istanbul ignore next */
     if (!testing) {
-      later(this, () => {
+      let timer = later(this, () => {
         this._tick()
       }, 1000)
+
+      this.set('_timer', timer)
+    }
+  },
+
+  /**
+   * Clear the timer on destroy
+   *
+   * @method _clearTimer
+   * @private
+   */
+  @on('willDestroyElement')
+  _clearTimer() {
+    /* istanbul ignore next */
+    if (!testing) {
+      cancel(this.get('_timer'))
     }
   }
 })

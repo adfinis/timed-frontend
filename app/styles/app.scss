@@ -1,6 +1,8 @@
 @import 'variables';
 @import 'power-select';
+@import 'power-calendar';
 @import 'toolbar';
+@import 'badge';
 @import 'pod-styles';
 
 :root {
@@ -46,10 +48,22 @@ body {
 .btn-toolbar--right {
   justify-content: flex-end;
 }
+
 .page-main {
   position: relative;
 }
-.page-content {
-  padding-top: 140px;
-  display: block;
+
+.nav-tabs {
+  width: 100%;
+  overflow-x: auto;
+
+  > li > a {
+    white-space: nowrap;
+  }
+}
+
+@media (--sm-viewport) {
+  .nav-tabs {
+    overflow: visible;
+  }
 }
