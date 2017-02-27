@@ -5,6 +5,7 @@
       <tr
         data-test-activity-row
         data-test-activity-row-id={{activity.id}}
+        title="Double click to start the activity"
         class="pointer {{if activity.active 'primary'}}"
         {{action 'startActivity' activity on='doubleClick'}}
       >
