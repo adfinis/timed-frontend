@@ -2,7 +2,6 @@ import { authenticateSession, invalidateSession } from 'timed/tests/helpers/embe
 import { describe, it, beforeEach, afterEach }    from 'mocha'
 import destroyApp                                 from '../helpers/destroy-app'
 import { expect }                                 from 'chai'
-import { percySnapshot }                          from 'ember-percy'
 import startApp                                   from '../helpers/start-app'
 import testSelector                               from 'ember-test-selectors'
 
@@ -23,8 +22,6 @@ describe('Acceptance | index activities', function() {
 
   it('can visit /', async function() {
     await visit('/')
-
-    percySnapshot('activities')
 
     expect(currentURL()).to.equal('/')
   })

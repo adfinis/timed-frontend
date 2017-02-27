@@ -2,9 +2,7 @@
   "name": "timed",
   "dependencies": {
     "adcssy": "adfinis-sygroup/adcssy#0.9.1",
+    "font-awesome": "^4.7.0",
     "nouislider": "^8.0.1"
-  },
-  "devDependencies": {
-    "font-awesome": "^4.7.0"
   }
 }

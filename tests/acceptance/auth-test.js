@@ -2,7 +2,6 @@ import { authenticateSession }                 from 'timed/tests/helpers/ember-s
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp                              from '../helpers/destroy-app'
 import { expect }                              from 'chai'
-import { percySnapshot }                       from 'ember-percy'
 import startApp                                from '../helpers/start-app'
 import testSelector                            from 'ember-test-selectors'
 
@@ -26,8 +25,6 @@ describe('Acceptance | auth', function() {
 
   it('can login', async function() {
     await visit('/login')
-
-    percySnapshot('login')
 
     await fillIn('input[type=text]', 'johnd')
     await fillIn('input[type=password]', '123qwe')

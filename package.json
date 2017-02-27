@@ -22,7 +22,6 @@
   "devDependencies": {
     "babel-eslint": "^7.1.1",
     "broccoli-asset-rev": "^2.4.2",
-    "coveralls": "^2.11.16",
     "ember-adcssy": "adfinis-sygroup/ember-adcssy#v1.1.4",
     "ember-ajax": "2.5.5",
     "ember-cli": "2.11.1",
@@ -52,7 +51,6 @@
     "ember-composable-helpers": "2.0.0",
     "ember-computed-decorators": "0.3.0",
     "ember-data": "^2.11.1",
-    "ember-exam": "0.6.0",
     "ember-export-application-global": "^1.0.5",
     "ember-font-awesome": "3.0.3",
     "ember-load-initializers": "^0.6.3",
@@ -60,13 +58,11 @@
     "ember-moment": "7.3.0",
     "ember-notify": "5.2.0",
     "ember-pad": "1.2.2",
-    "ember-percy": "1.2.6",
     "ember-power-calendar": "0.3.1",
     "ember-power-select": "1.4.4",
     "ember-resolver": "^2.0.3",
     "ember-route-action-helper": "2.0.2",
     "ember-simple-auth": "1.2.0",
-    "ember-simple-auth-token": "2.1.0",
     "ember-source": "^2.11.2",
     "ember-sy": "github:adfinis-sygroup/ember-sy#v1.0.0",
     "ember-test-selectors": "0.2.1",
@@ -77,8 +73,6 @@
     "liquid-fire": "0.27.0",
     "loader.js": "^4.1.0",
     "postcss-cssnext": "^2.7.0",
-    "postcss-easy-import": "^2.0.0",
-    "postcss-import": "^9.1.0",
     "yuidoc-adsy-theme": "^1.1.1"
   }
 }
