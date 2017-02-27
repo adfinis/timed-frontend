@@ -1,6 +1,9 @@
 """Models for the employment app."""
 
+import datetime
+
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -38,6 +41,31 @@ class Employment(models.Model):
     worktime_per_day = models.DurationField()
     start_date       = models.DateField()
     end_date         = models.DateField(blank=True, null=True)
+
+    def clean(self):
+        """Validate the employment as a whole.
+
+        Ensure there are no overlapping employments per user and
+        only one active employment per user.
+        """
+        super().clean()
+
+        employments = Employment.objects.filter(user=self.user)
+
+        if employments.filter(end_date__isnull=True) and self.end_date is None:
+            raise ValidationError('A user can only have one active employment')
+
+        if any([
+            e.start_date <= (
+                self.end_date if self.end_date else datetime.date.today()
+            ) and self.start_date <= (
+                e.end_date if e.end_date else datetime.date.today()
+            )
+            for e
+            in employments
+        ]):
+            raise ValidationError('A user can\'t have multiple employments '
+                                  'at the same time')
 
     def __str__(self):
         """String representation.

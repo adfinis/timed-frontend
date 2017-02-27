@@ -1,5 +1,9 @@
 """Tests for the employments endpoint."""
 
+import datetime
+
+import pytest
+from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
@@ -18,7 +22,13 @@ class EmploymentTests(JSONAPITestCase):
         """Setup the environment for the tests."""
         super().setUp()
 
-        self.employments = EmploymentFactory.create_batch(2, user=self.user)
+        self.employments = [
+            EmploymentFactory.create(user=self.user,
+                                     start_date=datetime.date(2010, 1, 1),
+                                     end_date=datetime.date(2015, 1, 1)),
+            EmploymentFactory.create(user=self.user,
+                                     start_date=datetime.date(2015, 1, 2))
+        ]
 
         EmploymentFactory.create_batch(10)
 
@@ -87,3 +97,19 @@ class EmploymentTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+
+    def test_employment_unique_active(self):
+        """Should only be able to have one active employment per user."""
+        e = EmploymentFactory.build(user=self.user, end_date=None)
+
+        with pytest.raises(ValidationError):
+            e.clean()
+
+    def test_employment_unique_range(self):
+        """Should only be able to have one employment at a time per user."""
+        e = EmploymentFactory.build(user=self.user,
+                                    start_date=datetime.date(2009, 1, 1),
+                                    end_date=datetime.date(2016, 1, 1))
+
+        with pytest.raises(ValidationError):
+            e.clean()

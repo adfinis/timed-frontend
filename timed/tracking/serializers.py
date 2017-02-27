@@ -1,7 +1,10 @@
 """Serializers for the tracking app."""
 
 from rest_framework_json_api.relations import ResourceRelatedField
-from rest_framework_json_api.serializers import DurationField, ModelSerializer
+from rest_framework_json_api.serializers import (CurrentUserDefault,
+                                                 DurationField,
+                                                 ModelSerializer,
+                                                 ValidationError)
 
 from timed.projects.models import Task
 from timed.tracking import models
@@ -11,14 +14,15 @@ class ActivitySerializer(ModelSerializer):
     """Activity serializer."""
 
     duration = DurationField(read_only=True)
+    user     = ResourceRelatedField(read_only=True,
+                                    default=CurrentUserDefault())
     task     = ResourceRelatedField(queryset=Task.objects.all())
-    user     = ResourceRelatedField(read_only=True)
     blocks   = ResourceRelatedField(read_only=True, many=True)
 
     included_serializers = {
         'blocks': 'timed.tracking.serializers.ActivityBlockSerializer',
         'task':   'timed.projects.serializers.TaskSerializer',
-        'user':   'timed.employment.serializers.UserSerializer'
+        'user': 'timed.employment.serializers.UserSerializer',
     }
 
     class Meta:
@@ -29,8 +33,8 @@ class ActivitySerializer(ModelSerializer):
             'comment',
             'start_datetime',
             'duration',
-            'task',
             'user',
+            'task',
             'blocks',
         ]
 
@@ -42,8 +46,30 @@ class ActivityBlockSerializer(ModelSerializer):
     activity = ResourceRelatedField(queryset=models.Activity.objects.all())
 
     included_serializers = {
-        'activity': 'timed.tracking.serializers.ActivitySerializer'
+        'activity': 'timed.tracking.serializers.ActivitySerializer',
     }
+
+    def validate(self, data):
+        """Validate the activity block.
+
+        Ensure that a user can only have one activity with an active block.
+        """
+        if self.instance:
+            user = self.instance.activity.user
+            to_datetime = data.get('to_datetime', self.instance.to_datetime)
+        else:
+            user = data.get('activity').user
+            to_datetime = data.get('to_datetime', None)
+
+        blocks = models.ActivityBlock.objects.filter(activity__user=user)
+
+        if (
+            blocks.filter(to_datetime__isnull=True) and
+            to_datetime is None
+        ):
+            raise ValidationError('A user can only have one active activity')
+
+        return data
 
     class Meta:
         """Meta information for the activity block serializer."""
@@ -60,7 +86,11 @@ class ActivityBlockSerializer(ModelSerializer):
 class AttendanceSerializer(ModelSerializer):
     """Attendance serializer."""
 
-    user = ResourceRelatedField(read_only=True)
+    user = ResourceRelatedField(read_only=True, default=CurrentUserDefault())
+
+    included_serializers = {
+        'user': 'timed.employment.serializers.UserSerializer',
+    }
 
     class Meta:
         """Meta information for the attendance serializer."""
@@ -79,11 +109,11 @@ class ReportSerializer(ModelSerializer):
     task = ResourceRelatedField(queryset=Task.objects.all(),
                                 allow_null=True,
                                 required=False)
-    user = ResourceRelatedField(read_only=True)
+    user = ResourceRelatedField(read_only=True, default=CurrentUserDefault())
 
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
-        'user': 'timed.employment.serializers.UserSerializer'
+        'user': 'timed.employment.serializers.UserSerializer',
     }
 
     class Meta:
