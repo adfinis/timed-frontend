@@ -1,11 +1,13 @@
 & {
   background: white;
   border-bottom: 0.1rem solid rgb(220, 220, 220);
-  padding: 2rem;
-  display: flex;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+@media (--sm-viewport) {
+  .form-control,
+  .ember-power-select-trigger {
+    min-width: 13rem;
+  }
 }

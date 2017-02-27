@@ -12,7 +12,7 @@
   </div>
   <div class="form-group" data-test-tracking-project>
     {{#power-select
-      disabled    = (or (not projects.length) activity.active)
+      disabled    = (or (not _projects.length) activity.active)
       options     = _projects
       selected    = project
       onchange    = (action (mut project))
@@ -23,7 +23,7 @@
   </div>
   <div class="form-group" data-test-tracking-task>
     {{#power-select
-      disabled    = (or (not tasks.length) activity.active)
+      disabled    = (or (not _tasks.length) activity.active)
       options     = _tasks
       selected    = task
       onchange    = (action (mut task))
@@ -46,10 +46,8 @@
       activity  = activity
       recording = recording
       ready     = ready
-      paused    = paused
       on-start  = (action 'start')
       on-stop   = (action 'stop')
-      on-pause  = (action 'pause')
     }}
   </div>
 </form>

@@ -3,9 +3,10 @@
  * @submodule timed-models
  * @public
  */
-import Model    from 'ember-data/model'
-import attr     from 'ember-data/attr'
-import computed from 'ember-computed-decorators'
+import Model       from 'ember-data/model'
+import attr        from 'ember-data/attr'
+import { hasMany } from 'ember-data/relationships'
+import computed    from 'ember-computed-decorators'
 
 /**
  * The user model
@@ -18,8 +19,7 @@ export default Model.extend({
   /**
    * The username
    *
-   * @property username
-   * @type {String}
+   * @property {String} username
    * @public
    */
   username: attr('string'),
@@ -27,8 +27,7 @@ export default Model.extend({
   /**
    * The first name
    *
-   * @property firstName
-   * @type {String}
+   * @property {String} firstName
    * @public
    */
   firstName: attr('string'),
@@ -36,19 +35,25 @@ export default Model.extend({
   /**
    * The last name
    *
-   * @property lastName
-   * @type {String}
+   * @property {String} lastName
    * @public
    */
   lastName: attr('string'),
+
+  /**
+   * The users employments
+   *
+   * @property {Employment[]} employments
+   * @public
+   */
+  employments: hasMany('employment'),
 
   /**
    * The full name
    *
    * Consists of the first and last name
    *
-   * @property fullName
-   * @type {String}
+   * @property {String} fullName
    * @public
    */
   @computed('firstName', 'lastName')
@@ -66,8 +71,7 @@ export default Model.extend({
    * Consists of the full name and the username. If no full name is given, only
    * the username is returned
    *
-   * @property longName
-   * @type {String}
+   * @property {String} longName
    * @public
    */
   @computed('username', 'fullName')

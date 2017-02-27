@@ -18,11 +18,11 @@ export default Helper.extend({
    * Parse the duration into a string
    *
    * @method computed
-   * @param {Array} options The options
+   * @param {Array} params The parameters
    * @return {String} The formatted duration
    * @public
    */
-  compute([ duration ]) {
-    return formatDuration(duration)
+  compute([ duration, seconds = true ]) {
+    return formatDuration(duration, seconds)
   }
 })

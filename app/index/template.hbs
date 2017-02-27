@@ -1,82 +1,11 @@
-<div class="grid grid--6of12">
-  <div class="grid-cell">
-    <h2>Attendance</h2>
-  </div>
-  <div class="grid-cell">
+<div>
+  <ul class="nav-tabs">
+    <li>{{#link-to 'index.activities'}}Activities <span class="badge">{{activitySum}}</span>{{/link-to}}</li>
+      <li>{{#link-to 'index.attendances'}}Attendances <span class="badge">{{attendanceSum}}</span>{{/link-to}}</li>
+      <li>{{#link-to 'index.reports'}}Reports <span class="badge">{{reportSum}}</span>{{/link-to}}</li>
     {{date-navigation class='btn-toolbar--right' current=date on-change=(action (mut date))}}
-  </div>
-  <div class="grid-cell grid-cell--12of12">
-    {{#each attendances as |attendance|}}
-      {{#liquid-unless attendance.isDeleted}}
-        {{attendance-slider
-          attendance = attendance
-          on-save    = (route-action 'saveAttendance')
-          on-delete  = (route-action 'deleteAttendance')
-        }}
-      {{/liquid-unless}}
-    {{/each}}
-    <button class="btn btn-default" {{action 'addAttendance'}}>New Attendance</button>
-  </div>
-  <div class="grid-cell">
-    <h2>Activities</h2>
-    <table class="table table--striped table--hover table--activities">
-      <thead>
-        <tr>
-          <th>Customer</th>
-          <th>Project</th>
-          <th>Task</th>
-          <th>Duration</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody class={{if loading 'loading-mask'}}>
-        {{#each activities as |activity|}}
-          {{#unless activity.isNew}}
-            <tr
-              role="link"
-              class="pointer"
-              data-test-activity-row-id={{activity.id}}
-              title="{{if activity.active 'Currently tracking...' 'Continue this activity'}}"
-              {{action 'continueActivity' activity}}
-            >
-              <td>{{activity.task.project.customer.name}}</td>
-              <td>{{activity.task.project.name}}</td>
-              <td>{{activity.task.name}}</td>
-              <td>
-                {{#if activity.active}}
-                  {{tracking-indicator}}
-                {{else}}
-                  {{format-duration activity.duration}}
-                {{/if}}
-              </td>
-              <td>{{activity.comment}}</td>
-            </tr>
-          {{/unless}}
-        {{^}}
-          <tr>
-            <td colspan="5" class="text-center">No activities yet</td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  </div>
-  <div class="grid-cell">
-    <h2>Reports</h2>
-    <table class="table table--striped table--hover table--activities">
-      <thead>
-        <tr>
-          <th>Customer</th>
-          <th>Project</th>
-          <th>Task</th>
-          <th>Duration</th>
-          <th>Comment</th>
-        </tr>
-      </thead>
-      <tbody class={{if loading 'loading-mask'}}>
-        <tr>
-          <td colspan="5" class="text-center">No reports yet</td>
-        </tr>
-      </tbody>
-    </table>
+  </ul>
+  <div class="tab-content">
+    {{outlet}}
   </div>
 </div>

@@ -21,17 +21,23 @@ export default Model.extend({
   /**
    * The comment
    *
-   * @property comment
-   * @type {String}
+   * @property {String} comment
    * @public
    */
   comment: attr('string', { defaultValue: '' }),
 
   /**
+   * The date
+   *
+   * @property {moment} date
+   * @public
+   */
+  date: attr('django-date'),
+
+  /**
    * The duration
    *
-   * @property duration
-   * @type {moment.duration}
+   * @property {moment.duration} duration
    * @public
    */
   duration: attr('django-duration'),
@@ -39,8 +45,7 @@ export default Model.extend({
   /**
    * Whether the report needs to be reviewed
    *
-   * @property review
-   * @type {Boolean}
+   * @property {Boolean} review
    * @public
    */
   review: attr('boolean', { defaultValue: false }),
@@ -48,17 +53,23 @@ export default Model.extend({
   /**
    * Whether the report is not to be accumulated
    *
-   * @property nta
-   * @type {Boolean}
+   * @property {Boolean} nta
    * @public
    */
   nta: attr('boolean', { defaultValue: false }),
 
   /**
-   * The task from which the report was generated
+   * The activity from which the report was generated
    *
-   * @property task
-   * @type {Task}
+   * @property {Activity} activity
+   * @public
+   */
+  activity: belongsTo('task'),
+
+  /**
+   * The task
+   *
+   * @property {Task} task
    * @public
    */
   task: belongsTo('task'),
@@ -66,8 +77,7 @@ export default Model.extend({
   /**
    * The user
    *
-   * @property user
-   * @type {User}
+   * @property {User} user
    * @public
    */
   user: belongsTo('user')

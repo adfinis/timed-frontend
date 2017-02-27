@@ -1,10 +1,10 @@
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import { expect }                                 from 'chai'
-import startApp                                   from '../helpers/start-app'
-import destroyApp                                 from '../helpers/destroy-app'
 import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
-import testSelector                               from 'ember-test-selectors'
+import { describe, it, beforeEach, afterEach }    from 'mocha'
+import destroyApp                                 from '../helpers/destroy-app'
+import { expect }                                 from 'chai'
 import moment                                     from 'moment'
+import startApp                                   from '../helpers/start-app'
+import testSelector                               from 'ember-test-selectors'
 
 describe('Acceptance | index', function() {
   let application
@@ -20,118 +20,55 @@ describe('Acceptance | index', function() {
   })
 
   it('can select a day', async function() {
-    await visit('')
+    await visit('/')
 
-    await click(testSelector('next'))
+    await click(testSelector('previous'))
 
-    let nextDay = moment().add(1, 'day')
+    let lastDay = moment().subtract(1, 'day')
 
-    expect(currentURL()).to.equal(`/?day=${nextDay.format('YYYY-MM-DD')}`)
+    expect(currentURL()).to.equal(`/?day=${lastDay.format('YYYY-MM-DD')}`)
 
     await click(testSelector('today'))
 
     expect(currentURL()).to.equal('/')
   })
 
-  describe('tracking', function() {
-    beforeEach(function() {
-      let customers = server.createList('customer', 10)
+  it('can start a new activity', async function() {
+    server.create('task')
 
-      customers.forEach((customer) => {
-        let projects = server.createList('project', 2, { customer })
+    await visit('/')
 
-        projects.forEach((project) => {
-          server.createList('task', 5, { project })
-        })
-      })
-    })
+    expect(find(testSelector('record-start')).parent().parent().hasClass('ready')).to.not.be.ok
 
-    it('can stop tracking', async function() {
-      let { schema: { tasks } } = server
-      let allTasks = tasks.all().models
-      server.create('activity', 'active', { day: moment(), task: allTasks[0] })
+    await selectChoose(testSelector('tracking-customer'), '.ember-power-select-option:eq(0)')
+    await selectChoose(testSelector('tracking-project'), '.ember-power-select-option:eq(0)')
+    await selectChoose(testSelector('tracking-task'), '.ember-power-select-option:eq(0)')
+    await fillIn(testSelector('tracking-comment'), 'Some Random Comment')
 
-      await visit('/')
+    expect(find(testSelector('record-start')).parent().parent().hasClass('ready')).to.be.ok
+    expect(find(testSelector('record-start'))).to.have.length(1)
 
-      await click(testSelector('record-stop'))
+    await click(testSelector('record-start'))
 
-      expect(find(testSelector('record-stop'))).to.have.length(0)
-    })
-
-    it('can pause tracking', async function() {
-      let { schema: { tasks } } = server
-      let allTasks = tasks.all().models
-      server.create('activity', 'active', { day: moment(), task: allTasks[0] })
-
-      await visit('/')
-
-      await click(testSelector('record-start'))
-
-      expect(find(testSelector('record-stop'))).to.have.length(1)
-    })
-
-    it('can start tracking', async function() {
-      await visit('/')
-
-      await selectChoose(testSelector('tracking-customer'), '.ember-power-select-option:eq(-1)')
-      await selectChoose(testSelector('tracking-project'), '.ember-power-select-option:eq(0)')
-      await selectChoose(testSelector('tracking-task'), '.ember-power-select-option:eq(0)')
-      await fillIn(`${testSelector('tracking-comment')} input`, 'test comment')
-
-      await click(testSelector('record-start'))
-
-      expect(find(testSelector('record-stop'))).to.have.length(1)
-    })
-
-    it('can continue tracking', async function() {
-      let { schema: { tasks } } = server
-      let allTasks = tasks.all().models
-      server.create('activity', 'active', { day: moment(), task: allTasks[0] })
-
-      let other = server.create('activity', { day: moment(), task: allTasks[0] })
-
-      await visit('/')
-
-      await click(testSelector('activity-row-id', other.id))
-
-      expect(find(testSelector('record-stop'))).to.have.length(1)
-    })
+    expect(find(testSelector('record-start'))).to.have.length(0)
+    expect(find(testSelector('record-stop'))).to.have.length(1)
+    expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
   })
 
-  describe('attendances', function() {
-    beforeEach(function() {
-      server.create('attendance', 'morning', { day: moment() })
-      server.create('attendance', 'afternoon', { day: moment() })
-    })
+  it('can stop an active activity', async function() {
+    let activity = server.create('activity', 'active')
 
-    it('can delete attendances', async function() {
-      await visit('/')
+    await visit('/')
 
-      expect(find('.slider-title')).to.have.length(2)
+    expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
+    expect(find(testSelector('record-stop'))).to.have.length(1)
+    expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal(activity.comment)
 
-      await click('.slider-title .fa-trash')
+    await click(testSelector('record-stop'))
 
-      expect(find('.slider-title')).to.have.length(1)
-    })
-
-    it('can add attendances', async function() {
-      await visit('/')
-
-      expect(find('.slider-title')).to.have.length(2)
-
-      await click('.btn:contains(New Attendance)')
-
-      expect(find('.slider-title')).to.have.length(3)
-    })
-
-    it('can save attendances', async function() {
-      await visit('/')
-
-      expect(find('.slider-title')).to.have.length(2)
-
-      await click('.noUi-connect')
-
-      expect(find('.slider-title')).to.have.length(2)
-    })
+    expect(find(testSelector('record-start'))).to.have.length(1)
+    expect(find(testSelector('record-stop'))).to.have.length(0)
+    expect(find(testSelector('record-start')).parent().parent().hasClass('recording')).to.not.be.ok
+    expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal('')
   })
 })

@@ -5,14 +5,12 @@
     </button>
     {{#link-to headerLink}}
       <div class="nav-side-header-logo">{{timed-clock}}</div>
-      <div class="nav-side-header-title">
-        {{title}}
-        <div class="nav-side-header-subtitle">{{app-version}}</div>
-      </div>
+      <div class="nav-side-header-title">{{title}}</div>
     {{/link-to}}
   </header>
   <section class="nav-side-body">
     {{yield this 'body'}}
+    <span class="app-version">Version: {{app-version}}</span>
   </section>
   {{#if showAutohideButton}}
     <footer class="nav-side-footer">

@@ -1,9 +1,27 @@
 .nav-side-header-logo {
+  display: none;
   background: none;
   margin: 0 1rem 0 0.5rem;
 }
 
-.nav-side-header-subtitle {
-  font-size: 60%;
-  color: color(var(--body-color) l(50%));
+.app-version {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  line-height: 14px;
+  padding: 10px;
+  font-family: var(--font-family-mono);
+  font-size: 10px;
+}
+
+@media (--nav-side-mobile-width-unhide) {
+  .app-version {
+    display: block;
+  }
+
+  .nav-side-header-logo {
+    display: block;
+  }
 }

@@ -1,8 +1,8 @@
+import { authenticateSession }                 from 'timed/tests/helpers/ember-simple-auth'
 import { describe, it, beforeEach, afterEach } from 'mocha'
+import destroyApp                              from '../helpers/destroy-app'
 import { expect }                              from 'chai'
 import startApp                                from '../helpers/start-app'
-import destroyApp                              from '../helpers/destroy-app'
-import { authenticateSession }                 from 'timed/tests/helpers/ember-simple-auth'
 import testSelector                            from 'ember-test-selectors'
 
 describe('Acceptance | auth', function() {
@@ -10,6 +10,8 @@ describe('Acceptance | auth', function() {
 
   beforeEach(function() {
     application = startApp()
+
+    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
   })
 
   afterEach(function() {
@@ -18,13 +20,10 @@ describe('Acceptance | auth', function() {
 
   it('prevents unauthenticated access', async function() {
     await visit('/')
-
     expect(currentURL()).to.equal('/login')
   })
 
   it('can login', async function() {
-    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
-
     await visit('/login')
 
     await fillIn('input[type=text]', 'johnd')
@@ -36,8 +35,6 @@ describe('Acceptance | auth', function() {
   })
 
   it('validates login', async function() {
-    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
-
     await visit('/login')
 
     await fillIn('input[type=text]', 'johnd')

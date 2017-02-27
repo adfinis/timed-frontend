@@ -17,10 +17,7 @@ module.exports = {
     browser: true,
     es6: true
   },
-  plugins: [
-    'ember',
-    'object-literal-jsdoc'
-  ],
+  plugins: [ 'ember' ],
   rules: {
     'brace-style': [ 'error', 'stroustrup' ],
     'semi': [ 'error', 'never' ],
@@ -35,6 +32,5 @@ module.exports = {
     'ember/order-in-components': 'off',
     'ember/order-in-controllers': 'off',
     'ember/order-in-routes': 'off',
-    'object-literal-jsdoc/obj-doc': 'error'
   }
 }

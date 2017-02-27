@@ -1,0 +1,22 @@
+{{#if reports}}
+  <table class="table table--striped">
+    <tbody>
+      {{#each reports as |report|}}
+        <tr
+         data-test-report-row
+         data-test-report-row-id={{report.id}}
+        >
+          <td>
+            <strong>{{report.task.project.name}}</strong> ({{report.task.project.customer.name}})
+            <br>
+            <small><em>{{report.task.name}}</em></small>
+          </td>
+          <td>{{report.comment}}</td>
+          <td>{{format-duration report.duration}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+{{else}}
+  <div class="text-center"><em>No reports yet</em></div>
+{{/if}}

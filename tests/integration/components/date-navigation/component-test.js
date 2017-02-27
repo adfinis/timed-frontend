@@ -15,7 +15,7 @@ describe('Integration | Component | date navigation', function() {
   it('renders', function() {
     this.set('date', DATE)
 
-    this.render(hbs`{{date-navigation current=date}}`)
+    this.render(hbs`{{date-navigation current=date on-change=(action (mut date))}}`)
 
     expect(this.$(testSelector('current')).text()).to.equal('Tue, Jan 10, 2017')
   })

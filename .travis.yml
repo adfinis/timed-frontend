@@ -13,6 +13,7 @@ cache:
 before_install:
   - npm config set spin false
   - npm install -g bower
+  - npm install -g coveralls
   - npm install phantomjs-prebuilt
 
 install:
@@ -27,7 +28,7 @@ script:
 
 after_script:
   - ember sauce:disconnect
-  - cat coverage/lcov.info | ./node_modules/.bin/coveralls
+  - cat coverage/lcov.info | coveralls
 
 env:
   global:

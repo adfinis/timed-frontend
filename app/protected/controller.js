@@ -85,15 +85,18 @@ export default Controller.extend({
   currentActivity: null,
 
   /**
-   * Start the current activity
+   * Start an activity
    *
-   * @method _startCurrentActivity
-   * @private
+   * @method _startActivity
+   * @param {Activity} activity The activity to start
+   * @public
    */
-  async _startCurrentActivity() {
-    try {
-      let activity = this.get('currentActivity')
+  async _startActivity(activity) {
+    if (activity.get('active')) {
+      return
+    }
 
+    try {
       if (activity.get('isNew')) {
         await activity.save()
       }
@@ -111,39 +114,18 @@ export default Controller.extend({
   },
 
   /**
-   * Pause the current activity
+   * Stop an activity
    *
-   * @method _pauseCurrentActivity
-   * @private
+   * @method _stopActivity
+   * @param {Activity} activity The activity to stop
+   * @public
    */
-  async _pauseCurrentActivity() {
-    try {
-      let activity = this.get('currentActivity')
-
-      let block = await activity.get('activeBlock')
-
-      block.set('to', moment())
-
-      await block.save()
-
-      this.get('notify').success('Activity was paused')
+  async _stopActivity(activity) {
+    if (!activity.get('active')) {
+      return
     }
-    catch(e) {
-      /* istanbul ignore next */
-      this.get('notify').error('Error while pausing the activity')
-    }
-  },
 
-  /**
-   * Stop the current activity
-   *
-   * @method _stopCurrentActivity
-   * @private
-   */
-  async _stopCurrentActivity() {
     try {
-      let activity = this.get('currentActivity')
-
       let block = await activity.get('activeBlock')
 
       if (block) {
@@ -170,57 +152,23 @@ export default Controller.extend({
    */
   actions: {
     /**
-     * Set and start an activity
+     * Start the current activity
      *
-     * @method startActivity
-     * @param {Activity} activity The activity to start
+     * @method startCurrentActivity
      * @public
      */
-    startActivity(activity) {
-      this.set('currentActivity', activity)
-      this._startCurrentActivity(activity)
+    startCurrentActivity() {
+      this._startActivity(this.get('currentActivity'))
     },
 
     /**
-     * Set and pause an activity
+     * Stop the currentactivity
      *
-     * @method pauseActivity
-     * @param {Activity} activity The activity to pause
+     * @method stopCurrentActivity
      * @public
      */
-    pauseActivity(activity) {
-      this.set('currentActivity', activity)
-      this._pauseCurrentActivity(activity)
-    },
-
-    /**
-     * Set and stop an activity
-     *
-     * @method stopActivity
-     * @param {Activity} activity The activity to stop
-     * @public
-     */
-    stopActivity(activity) {
-      this.set('currentActivity', activity)
-      this._stopCurrentActivity(activity)
-    },
-
-    /**
-     * Continue an activity
-     *
-     * First stop the current activity, then start the given
-     *
-     * @method continueActivity
-     * @param {Activity} activity The activity to continue
-     * @public
-     */
-    async continueActivity(activity) {
-      if (!this.get('currentActivity.isNew')) {
-        await this._stopCurrentActivity()
-      }
-
-      this.set('currentActivity', activity)
-      this._startCurrentActivity(activity)
+    stopCurrentActivity() {
+      this._stopActivity(this.get('currentActivity'))
     }
   }
 })

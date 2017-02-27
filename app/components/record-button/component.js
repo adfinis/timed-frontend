@@ -20,7 +20,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'recording', 'paused', 'ready' ],
+  classNameBindings: [ 'recording', 'ready' ],
 
   /**
    * The start time
@@ -39,14 +39,6 @@ export default Component.extend({
   recording: false,
 
   /**
-   * Whether it is currently paused
-   *
-   * @property {Boolean} paused
-   * @public
-   */
-  paused: false,
-
-  /**
    * Whether it is ready
    *
    * @property {Boolean} ready
@@ -62,21 +54,19 @@ export default Component.extend({
    */
   actions: {
     /**
-     * Start or pause recording
+     * Start recording
      *
-     * @method startOrPause
+     * @method start
      * @public
      */
-    startOrPause() {
-      let action = this.get('recording') ? 'pause' : 'start'
-
-      this.get(`attrs.on-${action}`)()
+    start() {
+      this.get('attrs.on-start')()
     },
 
     /**
      * Stop recording
      *
-     * @method startOrPause
+     * @method stop
      * @public
      */
     stop() {

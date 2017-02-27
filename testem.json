@@ -1,6 +1,6 @@
 {
-  "framework": "qunit",
-  "test_page": "tests/index.html?hidepassed",
+  "framework": "mocha+chai",
+  "test_page": "tests/index.html",
   "disable_watching": true,
   "port": 7000,
   "timeout": 1000,

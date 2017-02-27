@@ -1,0 +1,18 @@
+<h1>{{model.longName}}</h1>
+<div>
+  <div class="grid grid--12of12">
+    {{#each model.employments as |employment|}}
+      <div class="grid-cell">
+        <strong>{{employment.percentage}}% ({{format-duration employment.worktimePerDay false}}h per day)</strong>
+        <br>
+        <em>
+          {{fa-icon 'calendar-o' fixedWidth=true}} {{moment-format employment.start 'DD.MM.YYYY'}} - {{if employment.end (moment-format employment.end 'DD.MM.YYYY') 'today'}}
+          <br>
+          {{fa-icon 'map-marker' fixedWidth=true}} {{employment.location.name}}
+        </em>
+        <br>
+        <br>
+      </div>
+    {{/each}}
+  </div>
+</div>

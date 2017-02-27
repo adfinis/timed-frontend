@@ -1,7 +1,8 @@
-{{#sy-sidenav title='Timed' showAutohideButton=true as |component section|}}
+{{#sy-sidenav title='Timed' showAutohideButton=false as |component section|}}
   {{#if (eq section 'body')}}
     {{#sy-sidenav-list}}
       {{sy-sidenav-item 'index' 'clock-o' 'Tracking'}}
+      {{sy-sidenav-item 'me' 'user' 'Profile'}}
     {{/sy-sidenav-list}}
 
     {{#sy-sidenav-list ' '}}
@@ -14,17 +15,16 @@
     {{/sy-sidenav-list}}
   {{else}}
     <main class="page-main">
-      {{tracking-bar
-        customers = customers
-        projects  = projects
-        tasks     = tasks
-        activity  = currentActivity
-        on-stop   = (action 'stopActivity')
-        on-pause  = (action 'pauseActivity')
-        on-start  = (action 'startActivity')
-      }}
       <div class="page-wrapper">
         <div class="page-content page-content--scroll">
+          {{tracking-bar
+            customers = customers
+            projects  = projects
+            tasks     = tasks
+            activity  = currentActivity
+            on-stop   = (action 'stopCurrentActivity')
+            on-start  = (action 'startCurrentActivity')
+          }}
           {{outlet}}
         </div>
       </div>

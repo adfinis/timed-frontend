@@ -1,19 +1,40 @@
 @import 'ember-power-select';
 
 .ember-power-select-trigger {
-  border: 1px solid rgb(204, 204, 204);
-  border-radius: var(--input-border-radius);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-height: 3rem;
   padding: 0.3rem 0.5rem;
+  font-size: 1.2rem;
   line-height: 1.5;
   color: rgb(85, 85, 85);
-  font-size: 0.9rem;
-  cursor: text;
-  min-height: 2rem;
-  min-width: 13rem;
+  background-color: rgb(255, 255, 255);
+  background-image: none;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: var(--input-border-radius);
+  box-shadow: var(--input-box-shadow);
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.form-control {
-  min-width: 13rem;
+.ember-power-select-trigger:focus {
+  border-color: color(var(--color-primary) tint(20%));
+  outline: 0;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+              0 0   8px color(var(--color-primary) a(60%));
+}
+
+@media (--sm-viewport) {
+  .ember-power-select-trigger {
+    font-size: 0.9rem;
+    min-height: 2rem;
+  }
+
+  .form-inline .ember-power-select-trigger {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+  }
 }
 
 .ember-power-select-placeholder {

@@ -1,0 +1,17 @@
+{{#if attendances}}
+  {{#each attendances as |attendance|}}
+    {{attendance-slider
+      data-test-attendance-slider
+      data-test-attendance-slider-id=attendance.id
+      attendance = attendance
+      on-save    = (route-action 'saveAttendance')
+      on-delete  = (route-action 'deleteAttendance')
+    }}
+  {{/each}}
+{{else}}
+  <div class="text-center"><em>No attendances yet</em></div>
+{{/if}}
+<div class="text-center">
+  <br>
+  <button class="btn btn-success" data-test-add-attendance {{action 'addAttendance'}}>{{fa-icon 'plus'}}</button>
+</div>

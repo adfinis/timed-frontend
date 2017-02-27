@@ -3,9 +3,9 @@
  * @submodule timed-routes
  * @public
  */
-import Route   from 'ember-route'
-import RSVP    from 'rsvp'
-import service from 'ember-service/inject'
+import Route  from 'ember-route'
+import RSVP   from 'rsvp'
+import moment from 'moment'
 
 /**
  * The index route
@@ -27,109 +27,25 @@ export default Route.extend({
   },
 
   /**
-   * The notify service
-   *
-   * @property {EmberNotify.NotifyService} notify
-   * @public
-   */
-  notify: service('notify'),
-
-  /**
-   * Model hook, fetch all activities and attendances for the given day
+   * Model hook, return the selected day as moment object
    *
    * @method model
    * @param {Object} params The query params
-   * @param {String} param.day The day
-   * @return {RSVP.Promise} A promise which resolves into if all data is fetched
+   * @param {String} params.day The selected day
+   * @return {moment} The selected day as moment object
    * @public
    */
-  model({ day  }) {
-    return RSVP.all([
-      this.store.query('activity', {
-        include: 'task,task.project,task.project.customer',
-        day
-      }),
-      this.store.query('attendance', { day })
-    ])
+  model({ day }) {
+    return moment(day, 'YYYY-MM-DD')
   },
 
-  /**
-   * The actions for the index route
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Continue an activity
-     *
-     * @method continueActivity
-     * @param {Activity} activity The activity to continue
-     * @public
-     */
-    continueActivity(activity) {
-      this.controllerFor('protected').send('continueActivity', activity)
-    },
+  afterModel(model) {
+    let day = model.format('YYYY-MM-DD')
 
-    /**
-     * Save an attendance
-     *
-     * @method saveAttendance
-     * @param {Attendance} attendance The attendance to save
-     * @public
-     */
-    async saveAttendance(attendance) {
-      try {
-        await attendance.save()
-
-        this.get('notify').success('Attendance was saved')
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while saving the attendance')
-      }
-    },
-
-    /**
-     * Delete an attendance
-     *
-     * @method deleteAttendance
-     * @param {Attendance} attendance The attendance to delete
-     * @public
-     */
-    async deleteAttendance(attendance) {
-      try {
-        await attendance.destroyRecord()
-
-        this.get('notify').success('Attendance was deleted')
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the attendance')
-      }
-    },
-
-    /**
-     * Add a new attendance
-     *
-     * @method addAttendance
-     * @public
-     */
-    async addAttendance() {
-      try {
-        let from = this.get('controller.date').clone().set({ h: 8, m: 0, s: 0, ms: 0 })
-        let to   = this.get('controller.date').clone().set({ h: 11, m: 30, s: 0, ms: 0 })
-
-        let attendance = this.store.createRecord('attendance', { from, to })
-
-        await attendance.save()
-
-        this.get('notify').success('Attendance was added')
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while adding the attendance')
-      }
-    }
+    return RSVP.all([
+      this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
+      this.store.query('attendance', { day }),
+      this.store.query('report', { include: 'task,task.project,task.project.customer', day })
+    ])
   }
 })

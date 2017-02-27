@@ -1,0 +1,10 @@
+& {
+  cursor: pointer;
+  color: var(--body-color);
+  transition: color 300ms ease;
+  margin: 0 3px;
+
+  &:hover {
+    color: color(var(--body-color) l(50%));
+  }
+}

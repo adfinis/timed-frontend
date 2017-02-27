@@ -17,15 +17,13 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
  */
 export default Route.extend(AuthenticatedRouteMixin, {
   /**
-   * Before model hook, fetch all customers and the current activity
+   * Model hook, fetch all customers and the current activity
    *
-   * @method beforeModel
+   * @method model
    * @return {RSVP.Promise} A promise which resolves once all data is fetched
    * @public
    */
-  beforeModel() {
-    this._super(...arguments)
-
+  model() {
     return RSVP.Promise.all([
       this.store.findAll('customer', { include: 'projects,projects.tasks' }),
       this.store.query('activity', { include: 'blocks', active: true })
