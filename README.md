@@ -1,5 +1,6 @@
 <p align="center">
-  <img style="margin-bottom: 30px;" width="500" src="/public/assets/logo_text.png?raw=true">
+  <img width="500" src="/public/assets/logo_text.png?raw=true">
+  <br><br>
 </p>
 
 <p align="center">
