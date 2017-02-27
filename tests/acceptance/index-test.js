@@ -1,10 +1,10 @@
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import { expect }                                 from 'chai'
-import startApp                                   from '../helpers/start-app'
-import destroyApp                                 from '../helpers/destroy-app'
 import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
-import testSelector                               from 'ember-test-selectors'
+import { describe, it, beforeEach, afterEach }    from 'mocha'
+import destroyApp                                 from '../helpers/destroy-app'
+import { expect }                                 from 'chai'
 import moment                                     from 'moment'
+import startApp                                   from '../helpers/start-app'
+import testSelector                               from 'ember-test-selectors'
 
 describe('Acceptance | index', function() {
   let application

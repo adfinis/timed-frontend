@@ -1,9 +1,10 @@
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { expect }                              from 'chai'
-import { authenticateSession, invalidateSession }                 from 'timed/tests/helpers/ember-simple-auth'
-import startApp                                from '../helpers/start-app'
-import destroyApp                              from '../helpers/destroy-app'
-import testSelector                            from 'ember-test-selectors'
+import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach }    from 'mocha'
+import destroyApp                                 from '../helpers/destroy-app'
+import { expect }                                 from 'chai'
+import { percySnapshot }                          from 'ember-percy'
+import startApp                                   from '../helpers/start-app'
+import testSelector                               from 'ember-test-selectors'
 
 describe('Acceptance | notfound', function() {
   let application
@@ -26,6 +27,8 @@ describe('Acceptance | notfound', function() {
     await authenticateSession(application)
 
     await visit('/thiswillneverbeavalidrouteurl')
+
+    percySnapshot('notfound')
 
     expect(find(testSelector('notfound'))).to.have.length(1)
 

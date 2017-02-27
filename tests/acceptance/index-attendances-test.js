@@ -1,8 +1,9 @@
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import { expect }                                 from 'chai'
-import startApp                                   from '../helpers/start-app'
-import destroyApp                                 from '../helpers/destroy-app'
 import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach }    from 'mocha'
+import destroyApp                                 from '../helpers/destroy-app'
+import { expect }                                 from 'chai'
+import { percySnapshot }                          from 'ember-percy'
+import startApp                                   from '../helpers/start-app'
 import testSelector                               from 'ember-test-selectors'
 
 describe('Acceptance | index attendances', function() {
@@ -23,6 +24,8 @@ describe('Acceptance | index attendances', function() {
 
   it('can visit /attendances', async function() {
     await visit('/attendances')
+
+    percySnapshot('attendances')
 
     expect(currentURL()).to.equal('/attendances')
   })

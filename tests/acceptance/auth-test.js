@@ -1,8 +1,9 @@
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { expect }                              from 'chai'
-import startApp                                from '../helpers/start-app'
-import destroyApp                              from '../helpers/destroy-app'
 import { authenticateSession }                 from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import destroyApp                              from '../helpers/destroy-app'
+import { expect }                              from 'chai'
+import { percySnapshot }                       from 'ember-percy'
+import startApp                                from '../helpers/start-app'
 import testSelector                            from 'ember-test-selectors'
 
 describe('Acceptance | auth', function() {
@@ -20,12 +21,13 @@ describe('Acceptance | auth', function() {
 
   it('prevents unauthenticated access', async function() {
     await visit('/')
-
     expect(currentURL()).to.equal('/login')
   })
 
   it('can login', async function() {
     await visit('/login')
+
+    percySnapshot('login')
 
     await fillIn('input[type=text]', 'johnd')
     await fillIn('input[type=password]', '123qwe')

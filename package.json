@@ -60,6 +60,7 @@
     "ember-moment": "7.3.0",
     "ember-notify": "5.2.0",
     "ember-pad": "1.2.2",
+    "ember-percy": "1.2.6",
     "ember-power-calendar": "0.3.1",
     "ember-power-select": "1.4.4",
     "ember-resolver": "^2.0.3",
