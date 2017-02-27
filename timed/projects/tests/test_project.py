@@ -1,9 +1,8 @@
 """Tests for the projects endpoint."""
 
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
-                                   HTTP_403_FORBIDDEN)
+from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
+                                   HTTP_405_METHOD_NOT_ALLOWED)
 
 from timed.jsonapi_test_case import JSONAPITestCase
 from timed.projects.factories import ProjectFactory, TaskTemplateFactory
@@ -32,12 +31,12 @@ class ProjectTests(JSONAPITestCase):
         url = reverse('project-list')
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert len(result['data']) == len(self.projects)
 
@@ -50,112 +49,48 @@ class ProjectTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
     def test_project_create(self):
-        """Should create a new project."""
-        customer = self.projects[1].customer
-
-        data = {
-            'data': {
-                'type': 'projects',
-                'id': None,
-                'attributes': {
-                    'name': 'Test Project'
-                },
-                'relationships': {
-                    'customer': {
-                        'data': {
-                            'type': 'customers',
-                            'id': customer.id
-                        }
-                    }
-                }
-            }
-        }
-
+        """Should not be able to create a new project."""
         url = reverse('project-list')
 
-        noauth_res        = self.noauth_client.post(url, data)
-        user_res          = self.client.post(url, data)
-        project_admin_res = self.project_admin_client.post(url, data)
+        noauth_res = self.noauth_client.post(url)
+        res        = self.client.post(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_403_FORBIDDEN
-        assert project_admin_res.status_code == HTTP_201_CREATED
-
-        result = self.result(project_admin_res)
-
-        assert (
-            int(result['data']['relationships']['customer']['data']['id']) ==
-            int(data['data']['relationships']['customer']['data']['id'])
-        )
+        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
 
     def test_project_update(self):
-        """Should update an existing project."""
+        """Should not be able to update an existing project."""
         project  = self.projects[0]
-        customer = self.projects[1].customer
-
-        data = {
-            'data': {
-                'type': 'projects',
-                'id': project.id,
-                'attributes': {
-                    'name': 'Test Project 2'
-                },
-                'relationships': {
-                    'customer': {
-                        'data': {
-                            'type': 'customers',
-                            'id': customer.id
-                        }
-                    }
-                }
-            }
-        }
 
         url = reverse('project-detail', args=[
             project.id
         ])
 
-        noauth_res        = self.noauth_client.patch(url, data)
-        user_res          = self.client.patch(url, data)
-        project_admin_res = self.project_admin_client.patch(url, data)
+        noauth_res = self.noauth_client.patch(url)
+        res        = self.client.patch(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_403_FORBIDDEN
-        assert project_admin_res.status_code == HTTP_200_OK
-
-        result = self.result(project_admin_res)
-
-        assert (
-            result['data']['attributes']['name'] ==
-            data['data']['attributes']['name']
-        )
-
-        assert (
-            int(result['data']['relationships']['customer']['data']['id']) ==
-            int(data['data']['relationships']['customer']['data']['id'])
-        )
+        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
 
     def test_project_delete(self):
-        """Should delete a project."""
+        """Should not be able to delete a project."""
         project = self.projects[0]
 
         url = reverse('project-detail', args=[
             project.id
         ])
 
-        noauth_res        = self.noauth_client.delete(url)
-        user_res          = self.client.delete(url)
-        project_admin_res = self.project_admin_client.delete(url)
+        noauth_res = self.noauth_client.delete(url)
+        res        = self.client.patch(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_403_FORBIDDEN
-        assert project_admin_res.status_code == HTTP_204_NO_CONTENT
+        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
 
     def test_project_default_tasks(self):
         """Should generate tasks based on task templates for a new project."""

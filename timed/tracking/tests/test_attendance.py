@@ -38,12 +38,12 @@ class AttendanceTests(JSONAPITestCase):
         url = reverse('attendance-list')
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert len(result['data']) == len(self.attendances)
 
@@ -56,10 +56,10 @@ class AttendanceTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
     def test_attendance_create(self):
         """Should create a new attendance and automatically set the user."""
@@ -79,12 +79,12 @@ class AttendanceTests(JSONAPITestCase):
         url = reverse('attendance-list')
 
         noauth_res = self.noauth_client.post(url, data)
-        user_res   = self.client.post(url, data)
+        res        = self.client.post(url, data)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_201_CREATED
+        assert res.status_code == HTTP_201_CREATED
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert not result['data']['id'] is None
 
@@ -115,12 +115,12 @@ class AttendanceTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.patch(url, data)
-        user_res   = self.client.patch(url, data)
+        res        = self.client.patch(url, data)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_200_OK
+        assert res.status_code == HTTP_200_OK
 
-        result = self.result(user_res)
+        result = self.result(res)
 
         assert (
             result['data']['attributes']['to-datetime'] ==
@@ -136,7 +136,7 @@ class AttendanceTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.delete(url)
-        user_res   = self.client.delete(url)
+        res        = self.client.delete(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert user_res.status_code == HTTP_204_NO_CONTENT
+        assert res.status_code == HTTP_204_NO_CONTENT

@@ -10,25 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import configparser
 import datetime
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-config = configparser.ConfigParser()
-config.read(os.path.join(BASE_DIR, 'timed/config.ini'))
-
-ldap_config    = config['ldap']
-github_config  = config['github']
-redmine_config = config['redmine']
-
-
-def trueish(value):
-    """Cast a string to a boolean."""
-    return value.lower() in ('true', '1', 'yes')
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
@@ -40,7 +26,6 @@ SECRET_KEY = 'jpfx&3nyjat!)g1vbp7n=#6cgeu*vnwyymxehm-%jc+482%^ej'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
-
 
 # Application definition
 
@@ -158,12 +143,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework_json_api.parsers.JSONParser',
+        'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
         'rest_framework.parsers.MultiPartParser'
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.DjangoModelPermissions',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -178,6 +163,7 @@ REST_FRAMEWORK = {
         'rest_framework_json_api.pagination.PageNumberPagination',
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework_json_api.renderers.JSONRenderer',
+        'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ),
 }
@@ -199,24 +185,14 @@ JSON_API_PLURALIZE_TYPES = True
 
 APPEND_SLASH = False
 
-GITHUB_API_URL   = github_config.get('GITHUB_API_URL')
-GITHUB_ISSUE_URL = github_config.get('GITHUB_ISSUE_URL')
-
-REDMINE_API_URL             = redmine_config.get('REDMINE_API_URL')
-REDMINE_ISSUE_URL           = redmine_config.get('REDMINE_ISSUE_URL')
-REDMINE_BASIC_AUTH          = trueish(redmine_config.get('REDMINE_BASIC_AUTH'))
-REDMINE_BASIC_AUTH_USER     = redmine_config.get('REDMINE_BASIC_AUTH_USER')
-REDMINE_BASIC_AUTH_PASSWORD = redmine_config.get('REDMINE_BASIC_AUTH_PASSWORD')
-
-AUTH_LDAP_ALWAYS_UPDATE_USER = True
-
 AUTH_LDAP_USER_ATTR_MAP = {
     'first_name': 'givenName',
     'last_name':  'sn',
     'email':      'mail'
 }
 
-AUTH_LDAP_SERVER_URI       = ldap_config.get('AUTH_LDAP_SERVER_URI')
-AUTH_LDAP_BIND_DN          = ldap_config.get('AUTH_LDAP_BIND_DN')
-AUTH_LDAP_BIND_PASSWORD    = ldap_config.get('AUTH_LDAP_BIND_PASSWORD')
-AUTH_LDAP_USER_DN_TEMPLATE = ldap_config.get('AUTH_LDAP_USER_DN_TEMPLATE')
+LDAP_BASE                  = 'dc=adsy-ext,dc=becs,dc=adfinis-sygroup,dc=ch'
+AUTH_LDAP_SERVER_URI       = 'ldap://localhost:389'
+AUTH_LDAP_BIND_DN          = 'uid=Administrator,cn=users,{0}'.format(LDAP_BASE)
+AUTH_LDAP_PASSWORD         = 'univention'
+AUTH_LDAP_USER_DN_TEMPLATE = 'uid=%(user)s,cn=users,{0}'.format(LDAP_BASE)

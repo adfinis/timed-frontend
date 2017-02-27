@@ -115,6 +115,7 @@ class Report(models.Model):
     """
 
     comment  = models.CharField(max_length=255)
+    date     = models.DateField()
     duration = models.DurationField()
     review   = models.BooleanField(default=False)
     nta      = models.BooleanField(default=False)

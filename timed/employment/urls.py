@@ -7,6 +7,9 @@ from timed.employment import views
 
 r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
 
-r.register(r'users', views.UserViewSet,  'user')
+r.register(r'users',           views.UserViewSet,          'user')
+r.register(r'employments',     views.EmploymentViewSet,    'employment')
+r.register(r'locations',       views.LocationViewSet,      'location')
+r.register(r'public-holidays', views.PublicHolidayViewSet, 'public-holiday')
 
 urlpatterns = r.urls
