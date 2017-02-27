@@ -1,7 +1,5 @@
-<h1 align="center">Timed</h1>
-
 <p align="center">
-  <img width="300" src="/public/assets/logo.png?raw=true">
+  <img width="500" src="/public/assets/logo_text.png?raw=true">
 </p>
 
 <p align="center">
