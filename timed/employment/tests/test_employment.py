@@ -3,11 +3,11 @@
 import datetime
 
 import pytest
-from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
+from timed.employment.admin import EmploymentForm
 from timed.employment.factories import EmploymentFactory
 from timed.jsonapi_test_case import JSONAPITestCase
 
@@ -100,16 +100,19 @@ class EmploymentTests(JSONAPITestCase):
 
     def test_employment_unique_active(self):
         """Should only be able to have one active employment per user."""
-        e = EmploymentFactory.build(user=self.user, end_date=None)
+        form = EmploymentForm({
+            'end_date': None
+        }, instance=self.employments[1])
 
-        with pytest.raises(ValidationError):
-            e.clean()
+        with pytest.raises(ValueError):
+            form.save()
 
     def test_employment_unique_range(self):
         """Should only be able to have one employment at a time per user."""
-        e = EmploymentFactory.build(user=self.user,
-                                    start_date=datetime.date(2009, 1, 1),
-                                    end_date=datetime.date(2016, 1, 1))
+        form = EmploymentForm({
+            'start_date': datetime.date(2009, 1, 1),
+            'end_date':   datetime.date(2016, 1, 1)
+        }, instance=self.employments[0])
 
-        with pytest.raises(ValidationError):
-            e.clean()
+        with pytest.raises(ValueError):
+            form.save()
