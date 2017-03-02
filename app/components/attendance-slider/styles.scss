@@ -47,24 +47,26 @@
 }
 
 .slider-labels {
-  display: flex;
-  padding: 1rem 0;
-  justify-content: space-between;
-  margin-left: -25px;
-  margin-right: -6px;
+  position: relative;
+  height: 3rem;
 }
 
 .slider-label {
   display: flex;
   font-family: var(--font-family-mono);
-  font-size: 12px;
-  transform: rotate(-45deg);
-  position: relative;
+  position: absolute;
+  font-size: 0.6rem;
+  top: 1rem;
+  transform: translateX(-75%);
 
   &--sm {
-    font-size: 9px;
+    font-size: 0.5rem;
     color: color(var(--body-color) l(50%));
   }
+}
+
+.slider-label-text {
+  transform: rotate(-45deg);
 }
 
 .slider-title {
