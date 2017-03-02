@@ -113,12 +113,16 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'timed/locale')
+]
+
 LANGUAGE_CODE = 'en-US'
 
 TIME_ZONE = 'Europe/Zurich'
 
-USE_I18N = False
-USE_L10N = False
+USE_I18N = True
+USE_L10N = True
 
 DATETIME_FORMAT = 'd.m.Y H:i:s'
 DATE_FORMAT = 'd.m.Y'
