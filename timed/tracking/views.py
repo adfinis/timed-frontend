@@ -19,13 +19,6 @@ class ActivityViewSet(ModelViewSet):
         """
         return models.Activity.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        """Set the user of the request as user on creation.
-
-        :param ActivitySerializer seralizer: The serializer
-        """
-        serializer.save(user=self.request.user)
-
 
 class ActivityBlockViewSet(ModelViewSet):
     """Activity view set."""
@@ -58,13 +51,6 @@ class AttendanceViewSet(ModelViewSet):
         """
         return models.Attendance.objects.filter(user=self.request.user)
 
-    def perform_create(self, serializer):
-        """Set the user of the request as user on creation.
-
-        :param AttendanceSerializer seralizer: The serializer
-        """
-        serializer.save(user=self.request.user)
-
 
 class ReportViewSet(ModelViewSet):
     """Report view set."""
@@ -79,10 +65,3 @@ class ReportViewSet(ModelViewSet):
         :rtype:  QuerySet
         """
         return models.Report.objects.filter(user=self.request.user)
-
-    def perform_create(self, serializer):
-        """Set the user of the request as user on creation.
-
-        :param ReportSerializer seralizer: The serializer
-        """
-        serializer.save(user=self.request.user)

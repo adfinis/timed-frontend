@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from pytz import timezone
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+                                   HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
+                                   HTTP_401_UNAUTHORIZED)
 
 from timed.jsonapi_test_case import JSONAPITestCase
 from timed.tracking.factories import ActivityBlockFactory, ActivityFactory
@@ -130,7 +131,7 @@ class ActivityBlockTests(JSONAPITestCase):
             data['data']['attributes']['to-datetime']
         )
 
-    def test_activity_delete(self):
+    def test_activity_block_delete(self):
         """Should delete an activity block."""
         activity_block = self.activity_blocks[0]
 
@@ -143,3 +144,32 @@ class ActivityBlockTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_204_NO_CONTENT
+
+    def test_activity_block_active_unique(self):
+        """Should not be able to have two active blocks."""
+        block = self.activity_blocks[0]
+
+        block.to_datetime = None
+        block.save()
+
+        data = {
+            'data': {
+                'type': 'activity-blocks',
+                'id': None,
+                'attributes': {},
+                'relationships': {
+                    'activity': {
+                        'data': {
+                            'type': 'activities',
+                            'id': block.activity.id
+                        }
+                    }
+                }
+            }
+        }
+
+        url = reverse('activity-block-list')
+
+        res = self.client.post(url, data)
+
+        assert res.status_code == HTTP_400_BAD_REQUEST

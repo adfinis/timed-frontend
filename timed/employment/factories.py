@@ -72,8 +72,8 @@ class EmploymentFactory(DjangoModelFactory):
     def worktime_per_day(self):
         """Generate the worktime per day based on the percentage.
 
-        :return The generated worktime
-        :rtype  datetime.timedelta
+        :return: The generated worktime
+        :rtype:  datetime.timedelta
         """
         return datetime.timedelta(minutes=60 * 8.5 * self.percentage)
 
