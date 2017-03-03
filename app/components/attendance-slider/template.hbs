@@ -13,8 +13,10 @@
 
 <div class="slider-labels">
   {{#each labels as |label|}}
-    <div class="slider-label slider-label--{{label.size}}">
-      {{label.value}}
+    <div style={{label.style}} class="slider-label slider-label--{{label.size}}">
+      <div class="slider-label-text">
+        {{label.value}}
+      </div>
     </div>
   {{/each}}
 </div>

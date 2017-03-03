@@ -4,21 +4,16 @@
       <span class="nav-toggle-icon"></span>
     </button>
     {{#link-to headerLink}}
-      <div class="nav-side-header-logo">{{timed-clock}}</div>
-      <div class="nav-side-header-title">{{title}}</div>
+      {{timed-clock}}
+      <div class="nav-side-header-title">
+        {{title}}
+      </div>
     {{/link-to}}
   </header>
   <section class="nav-side-body">
     {{yield this 'body'}}
-    <span class="app-version">Version: {{app-version}}</span>
+    <span class="app-version">v{{app-version}}</span>
   </section>
-  {{#if showAutohideButton}}
-    <footer class="nav-side-footer">
-      <button class="nav-hide btn" type="button" title="Toggle navigation" {{action 'autohide' on='click'}}>
-        <i class="fa fa-chevron-{{if autohide 'right' 'left'}}"></i>
-      </button>
-    </footer>
-  {{/if}}
 </nav>
 {{yield this 'page-content'}}
 <div role="button" class="page-main-overlay" {{action 'close' on='click'}}></div>

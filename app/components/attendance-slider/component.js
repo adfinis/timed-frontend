@@ -101,9 +101,13 @@ export default Component.extend({
 
     for (let h = 0; h <= 24; h++) {
       for (let m = 0; m <= 30 && !(h === 24 && m === 30); m += 30) {
+        let offsetH = 100 / 24 * h
+        let offsetM = 100 / 24 / 60 * m
+
         labels.push({
           value: padTpl2`${h}:${m}`,
-          size: m === 0 ? 'lg' : 'sm'
+          size: m === 0 ? 'lg' : 'sm',
+          style: `left: ${offsetH + offsetM}%;`
         })
       }
     }
