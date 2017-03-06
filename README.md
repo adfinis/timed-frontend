@@ -33,9 +33,9 @@ You will need the following things properly installed on your computer.
 
 ## Installation
 
-* `git clone <repository-url>` this repository
-* change into the new directory
-* `npm install`
+* `git clone git@github.com/adfinis-sygroup/timed-frontend`
+* `cd timed-frontend`
+* `yarn install`
 * `bower install`
 
 ## Running / Development
@@ -45,8 +45,8 @@ You will need the following things properly installed on your computer.
 
 ### Running Tests
 
-* `ember test`
-* `ember test --server`
+* `COVERAGE=true ember test`
+* `COVERAGE=true ember test --server`
 
 ### Building
 
