@@ -7,6 +7,6 @@
 
   <div class="btn-group">
     <button data-test-today title="Today" class="btn btn-default" {{action 'setToday'}}>{{fa-icon 'clock-o'}}</button>
-    {{datepicker-button current=current on-change=(action on-change)}}
+    {{sy-datepicker-btn value=current on-change=(action on-change)}}
   </div>
 </div>

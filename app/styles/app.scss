@@ -1,8 +1,9 @@
 @import 'variables';
 @import 'power-select';
-@import 'power-calendar';
 @import 'toolbar';
 @import 'badge';
+@import 'sy-timepicker';
+@import 'ember-power-calendar';
 @import 'pod-styles';
 
 :root {
@@ -60,6 +61,12 @@ body {
   > li > a {
     white-space: nowrap;
   }
+}
+
+.form-control[type=text].picker:read-only {
+  cursor: text;
+  text-align: right;
+  background-color: rgb(255,255,255);
 }
 
 @media (--sm-viewport) {

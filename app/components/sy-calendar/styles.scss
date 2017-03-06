@@ -1,12 +1,5 @@
-@import 'ember-power-calendar';
-
-.datepicker-button-calendar {
+& {
   @include ember-power-calendar($cell-size: 35px);
-
-  padding: 5px;
-  background-color: rgb(255,255,255);
-  border: 1px solid color(var(--color-primary) tint(20%));
-  box-shadow: 0 0 8px color(var(--color-primary) a(60%));
 
   .ember-power-calendar-nav-control {
     color: var(--color-primary);
