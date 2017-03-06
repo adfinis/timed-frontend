@@ -8,6 +8,7 @@ import computed        from 'ember-computed-decorators'
 import moment          from 'moment'
 import formatDuration  from 'timed/utils/format-duration'
 import { padStartTpl } from 'ember-pad/utils/pad'
+import { htmlSafe }    from 'ember-string'
 
 const padTpl2 = padStartTpl(2)
 
@@ -107,7 +108,7 @@ export default Component.extend({
         labels.push({
           value: padTpl2`${h}:${m}`,
           size: m === 0 ? 'lg' : 'sm',
-          style: `left: ${offsetH + offsetM}%;`
+          style: htmlSafe(`left: ${offsetH + offsetM}%;`)
         })
       }
     }
