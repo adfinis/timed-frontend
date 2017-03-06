@@ -7,9 +7,7 @@
   "parallel": 5,
   "launch_in_dev": [],
   "launch_in_ci": [
-    "PhantomJS",
-    "SL_Chrome_Current",
-    "SL_Firefox_Current"
+    "PhantomJS"
   ],
   "launchers": {
     "SL_IE_11": {
