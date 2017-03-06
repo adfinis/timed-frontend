@@ -1,0 +1,28 @@
+{{#basic-dropdown
+  horizontalPosition = 'right'
+  verticalPosition   = 'below'
+  as |dd|
+}}
+  {{#dd.trigger}}
+    <input
+      readonly
+      type="text"
+      class="form-control picker"
+      value={{moment-format value 'DD.MM.YYYY'}}
+    >
+  {{/dd.trigger}}
+
+  {{#dd.content renderInPlace=true}}
+    {{#sy-calendar
+      center         = center
+      selected       = value
+      class          = 'sy-datepicker-picker'
+      onCenterChange = (action (mut center) value='moment')
+      onSelect       = (action 'change' value='moment')
+      as |calendar|
+    }}
+      {{calendar.nav}}
+      {{calendar.days}}
+    {{/sy-calendar}}
+  {{/dd.content}}
+{{/basic-dropdown}}
