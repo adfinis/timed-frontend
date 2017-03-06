@@ -3,11 +3,8 @@
   "test_page": "tests/index.html",
   "disable_watching": true,
   "port": 7000,
-  "timeout": 1000,
-  "parallel": 5,
   "launch_in_dev": [],
   "launch_in_ci": [
-    "PhantomJS",
     "SL_Chrome_Current",
     "SL_Firefox_Current"
   ],
