@@ -6,6 +6,7 @@ node_js:
 sudo: false
 
 cache:
+  yarn: true
   directories:
     - node_modules
     - bower_components
@@ -16,14 +17,14 @@ before_install:
   - npm install phantomjs-prebuilt
 
 install:
-  - npm install
+  - yarn install
   - bower install
 
 before_script:
   - ember sauce:connect
 
 script:
-  - npm test
+  - COVERAGE=true ember test
 
 after_script:
   - ember sauce:disconnect
@@ -31,6 +32,5 @@ after_script:
 
 env:
   global:
-    - COVERAGE=true
     - SAUCE_USERNAME=adsy-timed
     - SAUCE_ACCESS_KEY=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
