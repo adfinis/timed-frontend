@@ -6,6 +6,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  ModelSerializer,
                                                  ValidationError)
 
+from timed.employment.models import AbsenceType
 from timed.projects.models import Task
 from timed.tracking import models
 
@@ -106,10 +107,31 @@ class AttendanceSerializer(ModelSerializer):
 class ReportSerializer(ModelSerializer):
     """Report serializer."""
 
-    task = ResourceRelatedField(queryset=Task.objects.all(),
-                                allow_null=True,
-                                required=False)
-    user = ResourceRelatedField(read_only=True, default=CurrentUserDefault())
+    task         = ResourceRelatedField(queryset=Task.objects.all(),
+                                        allow_null=True,
+                                        required=False)
+    absence_type = ResourceRelatedField(queryset=AbsenceType.objects.all(),
+                                        allow_null=True,
+                                        required=False)
+    activity     = ResourceRelatedField(queryset=models.Activity.objects.all(),
+                                        allow_null=True,
+                                        required=False)
+    user         = ResourceRelatedField(read_only=True,
+                                        default=CurrentUserDefault())
+
+    def validate(self, data):
+        """Validate the report.
+
+        Check if the report has either a task or an absence type.
+
+        :return: The validated data
+        :rtype:  dict
+        """
+        if not data.get('task') and not data.get('absence_type'):
+            raise ValidationError('Either a task or a absence type '
+                                  'must be referenced.')
+
+        return data
 
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
@@ -125,7 +147,9 @@ class ReportSerializer(ModelSerializer):
             'date',
             'duration',
             'review',
-            'nta',
+            'not_billable',
             'task',
+            'absence_type',
+            'activity',
             'user',
         ]

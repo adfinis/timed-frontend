@@ -71,3 +71,48 @@ class PublicHoliday(models.Model):
         :rtype:  str
         """
         return '{0} {1}'.format(self.name, self.date.strftime('%Y'))
+
+
+class AbsenceType(models.Model):
+    """Absence type model.
+
+    An absence type defines the type of an absence. E.g sickness, holiday or
+    school.
+    """
+
+    name = models.CharField(max_length=50)
+
+    def __str__(self):
+        """String representation.
+
+        :return: The string representation
+        :rtype:  str
+        """
+        return self.name
+
+
+class AbsenceCredit(models.Model):
+    """Absence credit model.
+
+    An absence credit is a credit for an absence of a certain type. An absence
+    is a report marked as an absence by referencing an absence type.
+    """
+
+    user         = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                     related_name='absence_credits')
+    absence_type = models.ForeignKey(AbsenceType)
+    date         = models.DateField()
+    duration     = models.DurationField(blank=True, null=True)
+
+
+class OvertimeCredit(models.Model):
+    """Overtime credit model.
+
+    An overtime credit is a transferred overtime from the last year. This is
+    added to the worktime of a user.
+    """
+
+    user     = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 related_name='overtime_credits')
+    date     = models.DateField()
+    duration = models.DurationField(blank=True, null=True)

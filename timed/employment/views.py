@@ -50,3 +50,39 @@ class PublicHolidayViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.PublicHolidaySerializer
     filter_class     = filters.PublicHolidayFilterSet
     ordering         = ('date',)
+
+
+class AbsenceTypeViewSet(ReadOnlyModelViewSet):
+    """Absence type view set."""
+
+    queryset         = models.AbsenceType.objects.all()
+    serializer_class = serializers.AbsenceTypeSerializer
+    ordering         = ('name',)
+
+
+class AbsenceCreditViewSet(ReadOnlyModelViewSet):
+    """Absence type view set."""
+
+    serializer_class = serializers.AbsenceCreditSerializer
+
+    def get_queryset(self):
+        """Filter the queryset by the user of the request.
+
+        :return: The filtered absence credits
+        :rtype:  QuerySet
+        """
+        return models.AbsenceCredit.objects.filter(user=self.request.user)
+
+
+class OvertimeCreditViewSet(ReadOnlyModelViewSet):
+    """Absence type view set."""
+
+    serializer_class = serializers.OvertimeCreditSerializer
+
+    def get_queryset(self):
+        """Filter the queryset by the user of the request.
+
+        :return: The filtered overtime credits
+        :rtype:  QuerySet
+        """
+        return models.OvertimeCredit.objects.filter(user=self.request.user)
