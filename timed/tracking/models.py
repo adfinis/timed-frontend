@@ -138,12 +138,16 @@ class Report(models.Model):
         """Customized save method.
 
         This rounds the duration of the report to the nearest 15 minutes.
+        However, the duration must at least be 15 minutes long.
 
         :returns: The saved report
         :rtype:   timed.tracking.models.Report
         """
         self.duration = timedelta(
-            seconds=round(self.duration.seconds / (15 * 60)) * (15 * 60)
+            seconds=max(
+                15 * 60,
+                round(self.duration.seconds / (15 * 60)) * (15 * 60)
+            )
         )
 
         return super().save(*args, **kwargs)
