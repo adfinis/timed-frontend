@@ -5,6 +5,7 @@
  */
 import Route   from 'ember-route'
 import service from 'ember-service/inject'
+import moment  from 'moment'
 
 /**
  * The index activities route
@@ -85,6 +86,49 @@ export default Route.extend({
       catch(e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the activity')
+      }
+    },
+
+    /**
+     * Generates reports from the current list of activities
+     *
+     * @method generateReports
+     * @public
+     */
+    async generateReports() {
+      try {
+        await this.get('controller.activities').forEach(async(activity) => {
+          let duration = moment.duration(activity.get('duration'))
+
+          if (activity.get('active')) {
+            duration.add(moment().diff(activity.get('activeBlock.from')))
+          }
+
+          let data = {
+            activity,
+            duration,
+            date: activity.get('start'),
+            task: activity.get('task'),
+            comment: activity.get('comment')
+          }
+
+          let report = this.store.peekAll('report').find((r) => {
+            return r.get('activity.id') == activity.get('id')
+          })
+
+          if (report) {
+            report.setProperties(data)
+          }
+          else {
+            report = this.store.createRecord('report', data)
+          }
+
+          await report.save()
+        })
+
+        this.transitionTo('index.reports')
+      }
+      catch (e) {
       }
     }
   }

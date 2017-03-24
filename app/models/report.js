@@ -51,20 +51,28 @@ export default Model.extend({
   review: attr('boolean', { defaultValue: false }),
 
   /**
-   * Whether the report is not to be accumulated
+   * Whether the report is not billable
    *
-   * @property {Boolean} nta
+   * @property {Boolean} notBillable
    * @public
    */
-  nta: attr('boolean', { defaultValue: false }),
+  notBillable: attr('boolean', { defaultValue: false }),
 
   /**
-   * The activity from which the report was generated
+   * The activity this report was generated from
    *
    * @property {Activity} activity
    * @public
    */
-  activity: belongsTo('task'),
+  activity: belongsTo('activity'),
+
+  /**
+   * The absence type
+   *
+   * @property {AbsenceType} absenceType
+   * @public
+   */
+  absenceType: belongsTo('absence-type'),
 
   /**
    * The task
