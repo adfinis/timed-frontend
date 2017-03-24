@@ -81,12 +81,13 @@ class AttendanceFactory(DjangoModelFactory):
 class ReportFactory(DjangoModelFactory):
     """Task factory."""
 
-    comment = Faker('sentence')
-    date    = Faker('date')
-    review  = False
-    nta     = False
-    task    = SubFactory('timed.projects.factories.TaskFactory')
-    user    = SubFactory('timed.employment.factories.UserFactory')
+    comment      = Faker('sentence')
+    date         = Faker('date')
+    review       = False
+    not_billable = False
+    absence_type = None
+    task         = SubFactory('timed.projects.factories.TaskFactory')
+    user         = SubFactory('timed.employment.factories.UserFactory')
 
     @lazy_attribute
     def duration(self):
