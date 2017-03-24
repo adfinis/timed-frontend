@@ -16,7 +16,8 @@ from timed.tracking.models import Report
 class UserSerializer(ModelSerializer):
     """User serializer."""
 
-    employments    = ResourceRelatedField(many=True, read_only=True)
+    employments      = ResourceRelatedField(many=True, read_only=True)
+    absence_credits  = ResourceRelatedField(many=True, read_only=True)
     worktime_balance = SerializerMethodField()
 
     def get_worktime_balance_raw(self, instance):
@@ -103,7 +104,10 @@ class UserSerializer(ModelSerializer):
         return duration_string(worktime_balance)
 
     included_serializers = {
-        'employments': 'timed.employment.serializers.EmploymentSerializer'
+        'employments':
+            'timed.employment.serializers.EmploymentSerializer',
+        'absence_credits':
+            'timed.employment.serializers.AbsenceCreditSerializer'
     }
 
     class Meta:
@@ -116,6 +120,7 @@ class UserSerializer(ModelSerializer):
             'last_name',
             'email',
             'employments',
+            'absence_credits',
             'worktime_balance',
         ]
 
