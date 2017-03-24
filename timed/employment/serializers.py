@@ -1,6 +1,6 @@
 """Serializers for the employment app."""
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 from dateutil import rrule
 from django.contrib.auth import get_user_model
@@ -47,8 +47,15 @@ class UserSerializer(ModelSerializer):
             end_date__isnull=True
         )
 
+        request            = self.context.get('request')
+        requested_end_date = request.query_params.get('until')
+
         start_date = max(employment.start_date, date(date.today().year, 1, 1))
-        end_date   = date.today()  # TODO
+        end_date   = (
+            datetime.strptime(requested_end_date, '%Y-%m-%d').date()
+            if requested_end_date
+            else date.today()
+        )
 
         workdays = rrule.rrule(
             rrule.DAILY,
@@ -196,10 +203,20 @@ class AbsenceCreditSerializer(ModelSerializer):
         :return: The total of used time
         :rtype:  datetime.timedelta
         """
+        request            = self.context.get('request')
+        requested_end_date = request.query_params.get('until')
+
+        end_date = (
+            datetime.strptime(requested_end_date, '%Y-%m-%d').date()
+            if requested_end_date
+            else date.today()
+        )
+
         reports = Report.objects.filter(
             user=instance.user,
             absence_type=instance.absence_type,
-            date__gte=instance.date
+            date__gte=instance.date,
+            date__lte=end_date
         ).values_list('duration', flat=True)
 
         return sum(reports, timedelta())

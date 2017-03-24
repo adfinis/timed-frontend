@@ -1,5 +1,7 @@
 """Viewsets for the employment app."""
 
+from datetime import date, datetime
+
 from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -71,7 +73,18 @@ class AbsenceCreditViewSet(ReadOnlyModelViewSet):
         :return: The filtered absence credits
         :rtype:  QuerySet
         """
-        return models.AbsenceCredit.objects.filter(user=self.request.user)
+        requested_end_date = self.request.query_params.get('until')
+
+        end_date = (
+            datetime.strptime(requested_end_date, '%Y-%m-%d').date()
+            if requested_end_date
+            else date.today()
+        )
+
+        return models.AbsenceCredit.objects.filter(
+            user=self.request.user,
+            date__lte=end_date
+        )
 
 
 class OvertimeCreditViewSet(ReadOnlyModelViewSet):
