@@ -27,6 +27,9 @@ class EmploymentForm(forms.ModelForm):
 
         employments = models.Employment.objects.filter(user=data.get('user'))
 
+        if self.instance:
+            employments = employments.exclude(id=self.instance.id)
+
         if (
             data.get('end_date') and
             data.get('start_date') >= data.get('end_date')
