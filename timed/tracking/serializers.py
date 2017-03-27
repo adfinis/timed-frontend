@@ -136,6 +136,7 @@ class ReportSerializer(ModelSerializer):
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
         'user': 'timed.employment.serializers.UserSerializer',
+        'absence_type': 'timed.employment.serializers.AbsenceTypeSerializer',
     }
 
     class Meta:
