@@ -1,0 +1,12 @@
+{{#ember-wormhole to='sy-modals'}}
+  {{#sy-modal/overlay visible=visible}}
+    <div class="modal-dialog">
+      {{yield (hash
+        header = (component 'sy-modal/header' close=(action 'close'))
+        body   = (component 'sy-modal/body'   close=(action 'close'))
+        footer = (component 'sy-modal/footer' close=(action 'close'))
+        close  = (action 'close')
+      )}}
+    </div>
+  {{/sy-modal/overlay}}
+{{/ember-wormhole}}

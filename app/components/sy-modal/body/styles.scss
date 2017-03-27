@@ -1,0 +1,7 @@
+& {
+  overflow-x: hidden;
+
+  > .form-group:last-child {
+    margin-bottom: 0;
+  }
+}
