@@ -1,4 +1,5 @@
 .sy-datepicker-picker,
+.sy-durationpicker-picker,
 .sy-timepicker-picker {
   margin-top: -1px;
   background-color: rgb(255,255,255);
@@ -10,6 +11,7 @@
   padding: 5px;
 }
 
+.sy-durationpicker-picker,
 .sy-timepicker-picker {
   display: flex;
   padding: 10px 5px;

@@ -69,6 +69,40 @@ body {
   background-color: rgb(255,255,255);
 }
 
+.card-block .table {
+  margin: 0;
+}
+
+.worktime-balance {
+  border-bottom: 3px double rgb(0,0,0);
+  font-weight: bold;
+}
+
+.worktime-balance.color-danger {
+  border-bottom-color: var(--color-danger);
+}
+
+.worktime-balance.color-success {
+  border-bottom-color: var(--color-success);
+
+  &::before {
+    display: inline-block;
+    margin-right: -0.2em;
+    content: '+';
+  }
+}
+
+.table tr.has-absence-type {
+  background-color: var(--color-danger) !important;
+  border-bottom-color: color(var(--color-danger) tint(10%)) !important;
+}
+
+.error-text {
+  font-size: 80%;
+  margin: 0;
+  color: var(--color-danger);
+}
+
 @media (--sm-viewport) {
   .nav-tabs {
     overflow: visible;

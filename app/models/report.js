@@ -3,8 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr  from 'ember-data/attr'
+import Model  from 'ember-data/model'
+import attr   from 'ember-data/attr'
+import moment from 'moment'
 
 import {
   belongsTo
@@ -40,7 +41,7 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: attr('django-duration'),
+  duration: attr('django-duration', { defaultValue: () => moment.duration() }),
 
   /**
    * Whether the report needs to be reviewed

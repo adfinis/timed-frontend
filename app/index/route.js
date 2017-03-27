@@ -39,13 +39,22 @@ export default Route.extend({
     return moment(day, 'YYYY-MM-DD')
   },
 
+  /**
+   * After model hook, fetch all activities, attendances and reports of the
+   * selected day, toghether with necessary data related to them.
+   *
+   * @method afterModel
+   * @param {moment} model The selected day
+   * @return {RSVP.Promise} A promise which resolves after all data is fetched
+   * @public
+   */
   afterModel(model) {
     let day = model.format('YYYY-MM-DD')
 
     return RSVP.all([
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
       this.store.query('attendance', { day }),
-      this.store.query('report', { include: 'task,task.project,task.project.customer', day })
+      this.store.query('report', { include: 'task,task.project,task.project.customer,absence_type', day })
     ])
   }
 })

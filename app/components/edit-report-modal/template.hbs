@@ -1,0 +1,44 @@
+{{#with (changeset report validator) as |changeset|}}
+  {{#sy-modal visible=visible as |modal|}}
+    {{#modal.header close=(action 'close' changeset)}}
+      {{if changeset.isNew 'New' 'Edit'}} report
+    {{/modal.header}}
+    {{#modal.body}}
+      {{#task-selection
+        task      = changeset.task
+        customers = customers
+        projects  = projects
+        tasks     = tasks
+        on-change = (action (mut changeset.task))
+      }}
+        {{#if changeset.error.task}}
+          <p class="error-text">{{changeset.error.task.validation.firstObject}}</p>
+        {{/if}}
+      {{/task-selection}}
+      <div class="grid grid--4of12">
+        <div class="grid-cell">
+          {{sy-durationpicker value=changeset.duration on-change=(action (mut changeset.duration))}}
+        </div>
+        <div class="grid-cell checkbox">
+          {{input elementId='notBillable' type='checkbox' checked=changeset.notBillable}}
+          <label for="notBillable">Not billable</label>
+        </div>
+        <div class="grid-cell checkbox">
+          {{input elementId='review' type='checkbox' checked=changeset.review}}
+          <label for="review">Review</label>
+        </div>
+      </div>
+      <div class="form-group">
+        {{textarea placeholder='Enter comment...' rows=4 class='form-control' value=changeset.comment}}
+      </div>
+    {{/modal.body}}
+    {{#modal.footer}}
+      <button class="btn btn-primary" disabled="{{unless changeset.isValid 'disbled'}}" {{action 'save' changeset}}>
+        Save
+      </button>
+      {{#unless changeset.isNew}}
+      <button class="btn btn-danger" {{action 'delete'}}>Delete</button>
+      {{/unless}}
+    {{/modal.footer}}
+  {{/sy-modal}}
+{{/with}}

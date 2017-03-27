@@ -1,0 +1,39 @@
+{{#with (changeset report validator) as |changeset|}}
+  {{#sy-modal visible=visible as |modal|}}
+    {{#modal.header close=(action 'close' changeset)}}
+      {{if changeset.isNew 'New' 'Edit'}} absence
+    {{/modal.header}}
+    {{#modal.body}}
+      <div class="form-group">
+        {{#power-select
+          renderInPlace = true
+          allowClear    = true
+          options       = absenceTypes
+          selected      = changeset.absenceType
+          searchField   = 'name'
+          onchange      = (action (mut changeset.absenceType))
+          placeholder   = 'Select absence type...'
+          as |absenceType|}}
+          {{absenceType.name}}
+        {{/power-select}}
+        {{#if changeset.error.absenceType}}
+          <p class="error-text">{{changeset.error.absenceType.validation.firstObject}}</p>
+        {{/if}}
+      </div>
+      <div class="form-group">
+        {{sy-durationpicker value=changeset.duration on-change=(action (mut changeset.duration))}}
+      </div>
+      <div class="form-group">
+        {{textarea placeholder='Enter comment...' rows=4 class='form-control' value=changeset.comment}}
+      </div>
+    {{/modal.body}}
+    {{#modal.footer}}
+      <button class="btn btn-primary" disabled="{{unless changeset.isValid 'disbled'}}" {{action 'save' changeset}}>
+        Save
+      </button>
+      {{#unless changeset.isNew}}
+        <button class="btn btn-danger" {{action 'delete'}}>Delete</button>
+      {{/unless}}
+    {{/modal.footer}}
+  {{/sy-modal}}
+{{/with}}
