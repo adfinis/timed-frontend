@@ -12,7 +12,7 @@ describe('Acceptance | index activities', function() {
     application = startApp()
     await authenticateSession(application)
 
-    server.createList('activity', 5)
+    this.activities = server.createList('activity', 5)
   })
 
   afterEach(async function() {
@@ -79,5 +79,64 @@ describe('Acceptance | index activities', function() {
 
     expect(find(testSelector('activity-row-id', 1))).to.have.length(0)
     expect(find(testSelector('activity-row'))).to.have.length(4)
+  })
+
+  it('can generate reports', async function() {
+    server.create('activity', 'active')
+
+    await visit('/')
+
+    await click(find('button:contains(Generate reports)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find(testSelector('report-row'))).to.have.length(6)
+
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(this.activities[0].task.name)
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(this.activities[0].task.project.name)
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(this.activities[0].task.project.customer.name)
+  })
+
+  it('does not generate reports twice', async function() {
+    await visit('/')
+
+    await click(find('button:contains(Generate reports)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find(testSelector('report-row'))).to.have.length(5)
+
+    await visit('/')
+
+    await click(find('button:contains(Generate reports)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find(testSelector('report-row'))).to.have.length(5)
+  })
+
+  it('updates reports when generating', async function() {
+    await server.db.activities.update(this.activities[0].id, { duration: '02:30:00' })
+
+    await visit('/')
+
+    await click(find('button:contains(Generate reports)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find(testSelector('report-row'))).to.have.length(5)
+
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(2)`).text().trim()).to.equal('02:30')
+
+    await server.db.activities.update(this.activities[0].id, { duration: '05:30:00' })
+
+    await visit('/somenonexistentsite') // navigate away from index to reload the model
+    await visit('/')
+
+    await click(find('button:contains(Generate reports)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(2)`).text().trim()).to.equal('05:30')
   })
 })
