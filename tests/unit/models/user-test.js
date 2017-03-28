@@ -5,7 +5,8 @@ import { expect }         from 'chai'
 describe('Unit | Model | user', function() {
   setupModelTest('user', {
     needs: [
-      'model:employment'
+      'model:employment',
+      'model:absence-credit'
     ]
   })
 
