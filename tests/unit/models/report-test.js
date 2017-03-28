@@ -7,7 +7,9 @@ describe('Unit | Model | report', function() {
     needs: [
       'model:project',
       'model:task',
-      'model:user'
+      'model:user',
+      'model:activity',
+      'model:absence-type'
     ]
   })
 
