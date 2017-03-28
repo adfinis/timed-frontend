@@ -3,12 +3,6 @@ import { setupTest }    from 'ember-mocha'
 import { expect }       from 'chai'
 import moment           from 'moment'
 
-const MILLISECOND = 1 / 1000
-const SECOND      = MILLISECOND * 1000
-const MINUTE      = SECOND * 60
-const HOUR        = MINUTE * 60
-const DAY         = HOUR * 24
-
 describe('Unit | Transform | django duration', function() {
   setupTest('transform:django-duration', {
     // Specify the other units that are required for this test.
