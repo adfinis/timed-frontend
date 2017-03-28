@@ -41,6 +41,30 @@ export default Model.extend({
   lastName: attr('string'),
 
   /**
+   * The email address
+   *
+   * @property {String} email
+   * @public
+   */
+  email: attr('string'),
+
+  /**
+   * The worktime balance of this user
+   *
+   * @property {moment.duration} worktimeBalance
+   * @public
+   */
+  worktimeBalance: attr('django-duration'),
+
+  /**
+   * The users absence credits
+   *
+   * @property {AbsenceCredit[]} absenceCredits
+   * @public
+   */
+  absenceCredits: hasMany('absence-credit'),
+
+  /**
    * The users employments
    *
    * @property {Employment[]} employments
