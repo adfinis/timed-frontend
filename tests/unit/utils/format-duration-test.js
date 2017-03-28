@@ -54,8 +54,8 @@ describe('Unit | Utility | format duration', function() {
   it('can be negative', function() {
     let duration = moment.duration({
       hours: -1,
-      minutes: 1,
-      seconds: 1
+      minutes: -1,
+      seconds: -1
     })
 
     let result = formatDuration(duration)
