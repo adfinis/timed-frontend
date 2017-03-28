@@ -47,12 +47,6 @@ describe('Unit | Transform | django datetime', function() {
 
     let result = transform.deserialize(datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ')).utc()
 
-    expect(result.year()).to.equal(2017)
-    expect(result.month()).to.equal(2) // moments months are zerobased
-    expect(result.date()).to.equal(11)
-    expect(result.hour()).to.equal(15)
-    expect(result.minute()).to.equal(30)
-    expect(result.second()).to.equal(50)
-    expect(result.millisecond()).to.equal(11)
+    expect(result.toISOString()).to.be.equal(datetime.toISOString())
   })
 })
