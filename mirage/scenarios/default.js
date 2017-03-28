@@ -7,7 +7,8 @@ export default function(server) {
     password: '123qwe'
   })
 
-  server.createList('report', 5)
+  server.createList('report', 3)
+  server.create('report', 'absence')
 
   server.createList('activity', 3)
   server.create('activity', 'active')
