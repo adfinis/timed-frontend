@@ -129,6 +129,7 @@ export default Route.extend({
         this.transitionTo('index.reports')
       }
       catch(e) {
+        /* istanbul ignore next */
         this.get('notify').error('Error while generating reports')
       }
     }

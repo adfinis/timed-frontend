@@ -59,6 +59,7 @@ export default Route.extend({
         this.set('controller.modalVisible', false)
       }
       catch(e) {
+        /* istanbul ignore next */
         this.get('notify').error('Error while deleting the report')
       }
     },
@@ -78,6 +79,7 @@ export default Route.extend({
         this.set('controller.modalVisible', false)
       }
       catch(e) {
+        /* istanbul ignore next */
         this.get('notify').error('Error while deleting the report')
       }
     }
