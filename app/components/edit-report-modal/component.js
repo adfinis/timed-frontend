@@ -48,6 +48,8 @@ export default Component.extend({
       changeset.rollback()
 
       this.set('visible', false)
+
+      this.get('attrs.on-close')()
     },
 
     /**

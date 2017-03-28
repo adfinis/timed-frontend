@@ -9,19 +9,19 @@ import EmberObject            from 'ember-object'
 
 // content: {} is to simulate a promise
 
-const CUSTOMERS = [
+export const CUSTOMERS = [
   EmberObject.create({ id: 1, content: {}, name: 'Test Customer 1' }),
   EmberObject.create({ id: 2, content: {}, name: 'Test Customer 2' })
 ]
 
-const PROJECTS = [
+export const PROJECTS = [
   EmberObject.create({ id: 1, content: {}, customer: CUSTOMERS[0], name: 'Test Project 1' }),
   EmberObject.create({ id: 2, content: {}, customer: CUSTOMERS[0], name: 'Test Project 2' }),
   EmberObject.create({ id: 3, content: {}, customer: CUSTOMERS[1], name: 'Test Project 3' }),
   EmberObject.create({ id: 4, content: {}, customer: CUSTOMERS[1], name: 'Test Project 4' })
 ]
 
-const TASKS = [
+export const TASKS = [
   EmberObject.create({ id: 1, content: {}, project: PROJECTS[0], name: 'Test Task 1' }),
   EmberObject.create({ id: 2, content: {}, project: PROJECTS[0], name: 'Test Task 2' }),
   EmberObject.create({ id: 3, content: {}, project: PROJECTS[1], name: 'Test Task 3' }),
