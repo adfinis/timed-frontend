@@ -37,8 +37,10 @@ export default Component.extend({
 
     let task = this.get('task.id') ? this.get('task') : null
 
-    this.set('_customer', task && task.get('project.customer'))
-    this.set('_project', task && task.get('project'))
+    if (task) {
+      this.set('_customer', task.get('project.customer'))
+      this.set('_project', task.get('project'))
+    }
   },
 
   /**
@@ -87,7 +89,7 @@ export default Component.extend({
     },
     set(task, value) {
       this.set('_customer', value)
-      this.set('_project', null)
+      this.set('project', null)
 
       if (this.get('task.content')) {
         this.get('attrs.on-change')(null)

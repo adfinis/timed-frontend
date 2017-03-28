@@ -60,6 +60,7 @@
     "ember-load-initializers": "^0.6.3",
     "ember-mocha": "0.11.0",
     "ember-moment": "7.3.0",
+    "ember-native-dom-helpers": "0.3.5",
     "ember-notify": "5.2.0",
     "ember-pad": "1.2.2",
     "ember-power-calendar": "0.3.1",
