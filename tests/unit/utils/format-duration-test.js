@@ -40,7 +40,7 @@ describe('Unit | Utility | format duration', function() {
     expect(result).to.equal('01:01:01')
   })
 
-  it('zeropads all numbers', function() {
+  it('can hide seconds', function() {
     let duration = moment.duration({
       hours: 22,
       minutes: 12
@@ -49,6 +49,18 @@ describe('Unit | Utility | format duration', function() {
     let result = formatDuration(duration, false)
 
     expect(result).to.equal('22:12')
+  })
+
+  it('can be negative', function() {
+    let duration = moment.duration({
+      hours: -1,
+      minutes: 1,
+      seconds: 1
+    })
+
+    let result = formatDuration(duration)
+
+    expect(result).to.equal('-01:01:01')
   })
 
   it('has a fallback', function() {
