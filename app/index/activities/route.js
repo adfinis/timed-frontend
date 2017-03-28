@@ -128,7 +128,8 @@ export default Route.extend({
 
         this.transitionTo('index.reports')
       }
-      catch (e) {
+      catch(e) {
+        this.get('notify').error('Error while generating reports')
       }
     }
   }
