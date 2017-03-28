@@ -82,7 +82,7 @@ describe('Acceptance | index activities', function() {
   })
 
   it('can generate reports', async function() {
-    server.create('activity', 'active')
+    let activity = server.create('activity', 'active')
 
     await visit('/')
 
@@ -92,9 +92,9 @@ describe('Acceptance | index activities', function() {
 
     expect(find(testSelector('report-row'))).to.have.length(6)
 
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(this.activities[0].task.name)
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(this.activities[0].task.project.name)
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(this.activities[0].task.project.customer.name)
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.name)
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.project.name)
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.project.customer.name)
   })
 
   it('does not generate reports twice', async function() {
