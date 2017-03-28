@@ -1,6 +1,7 @@
 import { expect }                from 'chai'
 import { describe, it }          from 'mocha'
 import { balanceHighlightClass } from 'timed/helpers/balance-highlight-class'
+import moment                    from 'moment'
 
 describe('Unit | Helper | balance highlight class', function() {
   it('returns an empty string on neutral durations', function() {
