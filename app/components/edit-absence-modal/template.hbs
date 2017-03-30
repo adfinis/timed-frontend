@@ -5,6 +5,7 @@
     {{/modal.header}}
     {{#modal.body}}
       <div data-test-absence-type class="form-group {{if changeset.error.absenceType 'has-error'}}">
+          <label>Type <span class="required">*</span></label>
         {{#power-select
           renderInPlace = true
           allowClear    = true
@@ -25,6 +26,7 @@
         {{/if}}
       </div>
       <div data-test-absence-duration class="form-group {{if changeset.error.duration 'has-error'}}">
+        <label>Duration <span class="required">*</span></label>
         {{sy-durationpicker
           value     = changeset.duration
           on-change = (action (mut changeset.duration))
@@ -38,6 +40,7 @@
         {{/if}}
       </div>
       <div data-test-absence-comment class="form-group">
+        <label>Comment</label>
         {{textarea
           placeholder = 'Enter comment...'
           rows        = 4
