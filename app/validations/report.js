@@ -5,6 +5,12 @@
  */
 import { validatePresence } from 'ember-changeset-validations/validators'
 
+/**
+ * Validations for reports
+ *
+ * @class ReportValidations
+ * @public
+ */
 export default {
   /**
    * Task validator, check if a task is existent
