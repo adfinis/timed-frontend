@@ -31,4 +31,4 @@ docs:
 
 test: ## Test the project
 	@flake8
-	@pytest -v --cov --create-db
+	@pytest --cov --create-db
