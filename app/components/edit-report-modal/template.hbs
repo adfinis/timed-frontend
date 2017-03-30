@@ -4,25 +4,32 @@
       {{if changeset.isNew 'New' 'Edit'}} report
     {{/modal.header}}
     {{#modal.body}}
-      {{#task-selection
-        task      = changeset.task
-        customers = customers
-        projects  = projects
-        tasks     = tasks
-        on-change = (action (mut changeset.task))
+      {{task-selection
+        changeset = changeset
+        error      = changeset.error.task
+        showLabels = true
+        task       = changeset.task
+        customers  = customers
+        projects   = projects
+        tasks      = tasks
+        on-change  = (action (mut changeset.task))
       }}
-        {{#if changeset.error.task}}
-          <p class="error-text">{{changeset.error.task.validation.firstObject}}</p>
-        {{/if}}
-      {{/task-selection}}
       <div class="grid grid--4of12">
-        <div data-test-report-duration class="grid-cell">
+        <div data-test-report-duration class="grid-cell form-group {{if changeset.error.duration 'has-error'}}">
+          <label>Duration <span class="required">*</span></label>
           {{sy-durationpicker
             value     = changeset.duration
             on-change = (action (mut changeset.duration))
           }}
+          {{#if changeset.error.duration}}
+            <p class="error-text">
+              {{#each changeset.error.duration.validation as |message index|}}
+                {{if (gt index 0) ', '}}{{message}}
+              {{/each}}
+            </p>
+          {{/if}}
         </div>
-        <div data-test-report-not-billable class="grid-cell checkbox">
+        <div data-test-report-not-billable class="grid-cell grid-cell--align-center form-group checkbox {{if changeset.error.notBillable 'has-error'}}">
           {{input
             elementId = 'notBillable'
             type      = 'checkbox'
@@ -30,7 +37,7 @@
           }}
           <label for="notBillable">Not billable</label>
         </div>
-        <div data-test-report-review class="grid-cell checkbox">
+        <div data-test-report-review class="grid-cell grid-cell--align-center form-group checkbox {{if changeset.error.review 'has-error'}}">
           {{input
             elementId = 'review'
             type      = 'checkbox'
@@ -40,6 +47,7 @@
         </div>
       </div>
       <div data-test-report-comment class="form-group">
+        <label>Comment</label>
         {{textarea
           placeholder = 'Enter comment...'
           rows        = 4

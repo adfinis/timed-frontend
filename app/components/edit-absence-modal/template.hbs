@@ -4,7 +4,7 @@
       {{if changeset.isNew 'New' 'Edit'}} absence
     {{/modal.header}}
     {{#modal.body}}
-      <div data-test-absence-type class="form-group">
+      <div data-test-absence-type class="form-group {{if changeset.error.absenceType 'has-error'}}">
         {{#power-select
           renderInPlace = true
           allowClear    = true
@@ -17,14 +17,25 @@
           {{absenceType.name}}
         {{/power-select}}
         {{#if changeset.error.absenceType}}
-          <p class="error-text">{{changeset.error.absenceType.validation.firstObject}}</p>
+          <p class="error-text">
+            {{#each changeset.error.absenceType.validation as |message index|}}
+              {{if (gt index 0) ', '}}{{message}}
+            {{/each}}
+          </p>
         {{/if}}
       </div>
-      <div data-test-absence-duration class="form-group">
+      <div data-test-absence-duration class="form-group {{if changeset.error.duration 'has-error'}}">
         {{sy-durationpicker
           value     = changeset.duration
           on-change = (action (mut changeset.duration))
         }}
+        {{#if changeset.error.duration}}
+          <p class="error-text">
+            {{#each changeset.error.duration.validation as |message index|}}
+              {{if (gt index 0) ', '}}{{message}}
+            {{/each}}
+          </p>
+        {{/if}}
       </div>
       <div data-test-absence-comment class="form-group">
         {{textarea

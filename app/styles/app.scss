@@ -103,6 +103,26 @@ body {
   color: var(--color-danger);
 }
 
+.required {
+  color: var(--color-danger);
+}
+
+.form-group.has-error {
+  label {
+    color: var(--color-danger);
+  }
+
+  .form-control {
+    border-color: color(var(--color-danger) tint(20%));
+
+    &:focus {
+      border-color: color(var(--color-danger) tint(20%));
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+                  0 0   8px color(var(--color-danger) a(60%));
+    }
+  }
+}
+
 @media (--sm-viewport) {
   .nav-tabs {
     overflow: visible;

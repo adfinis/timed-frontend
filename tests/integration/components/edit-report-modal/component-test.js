@@ -51,9 +51,13 @@ describe('Integration | Component | edit report modal', function() {
 
     this.$('#sy-modals button:contains(Save)').click()
 
-    expect(this.$('#sy-modals .error-text')).to.have.length(1)
-    expect(this.$('#sy-modals .error-text').first().text().trim().toLowerCase()).to.include('task')
-    expect(this.$('#sy-modals .error-text').first().text().trim().toLowerCase()).to.include('blank')
+    expect(this.$('#sy-modals .error-text')).to.have.length(2)
+
+    expect(this.$('#sy-modals .error-text:eq(0)').text().trim().toLowerCase()).to.include('task')
+    expect(this.$('#sy-modals .error-text:eq(0)').text().trim().toLowerCase()).to.include('blank')
+
+    expect(this.$('#sy-modals .error-text:eq(1)').text().trim().toLowerCase()).to.include('duration')
+    expect(this.$('#sy-modals .error-text:eq(1)').text().trim().toLowerCase()).to.include('blank')
   })
 
   it('can save', function() {

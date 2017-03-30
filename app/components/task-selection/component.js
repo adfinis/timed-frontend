@@ -27,6 +27,24 @@ export default Component.extend({
   tagName: '',
 
   /**
+   * Whether to show labels above the select boxes
+   *
+   * @property {Boolean} showLabels
+   * @public
+   */
+  showLabels: false,
+
+  /**
+   * Whether the task selection has errors
+   *
+   * This is either null or an object containing the error messages.
+   *
+   * @property {*} error
+   * @public
+   */
+  error: null,
+
+  /**
    * Set the customer and project when we set a task
    *
    * @method didReceiveAttrs
