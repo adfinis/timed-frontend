@@ -123,6 +123,10 @@ body {
   }
 }
 
+.grid-cell.form-group {
+  margin-bottom: 0;
+}
+
 @media (--sm-viewport) {
   .nav-tabs {
     overflow: visible;

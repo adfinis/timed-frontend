@@ -29,7 +29,7 @@
             </p>
           {{/if}}
         </div>
-        <div data-test-report-not-billable class="grid-cell grid-cell--align-center form-group checkbox {{if changeset.error.notBillable 'has-error'}}">
+        <div data-test-report-not-billable class="grid-cell grid-cell--align-end form-group checkbox {{if changeset.error.notBillable 'has-error'}}">
           {{input
             elementId = 'notBillable'
             type      = 'checkbox'
@@ -37,7 +37,7 @@
           }}
           <label for="notBillable">Not billable</label>
         </div>
-        <div data-test-report-review class="grid-cell grid-cell--align-center form-group checkbox {{if changeset.error.review 'has-error'}}">
+        <div data-test-report-review class="grid-cell grid-cell--align-end form-group checkbox {{if changeset.error.review 'has-error'}}">
           {{input
             elementId = 'review'
             type      = 'checkbox'
