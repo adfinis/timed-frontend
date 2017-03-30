@@ -92,7 +92,7 @@ body {
   }
 }
 
-.table tr.has-absence-type {
+.table tr.is-absence {
   background-color: var(--color-danger) !important;
   border-bottom-color: color(var(--color-danger) tint(10%)) !important;
 }
