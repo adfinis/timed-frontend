@@ -59,13 +59,14 @@
     {{#modal.footer}}
       <button
         class="btn btn-primary"
+        title="Save this report"
         disabled="{{unless changeset.isValid 'disabled'}}"
         {{action 'save' changeset}}
       >
         Save
       </button>
       {{#unless changeset.isNew}}
-      <button class="btn btn-danger" {{action 'delete'}}>Delete</button>
+        <button title="Delete this report" class="btn btn-danger" {{action 'delete'}}>Delete</button>
       {{/unless}}
     {{/modal.footer}}
   {{/sy-modal}}
