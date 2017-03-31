@@ -67,6 +67,9 @@ export default Component.extend({
 
         this.get('attrs.on-save')(this.get('report'))
       }
+      else {
+        this.$().find('.has-error input, .has-error textarea, .has-error select').first().focus()
+      }
     },
 
     /**
