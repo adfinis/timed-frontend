@@ -80,28 +80,16 @@ export default function() {
   this.del('/activity-blocks/:id')
 
   this.get('/customers')
-  this.post('/customers')
   this.get('/customers/:id')
-  this.patch('/customers/:id')
-  this.del('/customers/:id')
 
   this.get('/projects')
-  this.post('/projects')
   this.get('/projects/:id')
-  this.patch('/projects/:id')
-  this.del('/projects/:id')
 
   this.get('/tasks')
-  this.post('/tasks')
   this.get('/tasks/:id')
-  this.patch('/tasks/:id')
-  this.del('/tasks/:id')
 
   this.get('/users')
-  this.post('/users')
   this.get('/users/:id')
-  this.patch('/users/:id')
-  this.del('/users/:id')
 
   this.get('/public-holidays', function({ locations }, { queryParams: { date } }) {
     if (date) {
@@ -112,20 +100,20 @@ export default function() {
 
     return locations.all()
   })
-  this.post('/public-holidays')
   this.get('/public-holidays/:id')
-  this.patch('/public-holidays/:id')
-  this.del('/public-holidays/:id')
 
   this.get('/locations')
-  this.post('/locations')
   this.get('/locations/:id')
-  this.patch('/locations/:id')
-  this.del('/locations/:id')
 
   this.get('/employments')
-  this.post('/employments')
   this.get('/employments/:id')
-  this.patch('/employments/:id')
-  this.del('/employments/:id')
+
+  this.get('/absence-types')
+  this.get('/absence-types/:id')
+
+  this.get('/absence-credits')
+  this.get('/absence-credits/:id')
+
+  this.get('/overtime-credits')
+  this.get('/overtime-credits/:id')
 }

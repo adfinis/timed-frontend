@@ -1,18 +1,75 @@
-<h1>{{model.longName}}</h1>
+<h1>{{model.fullName}}</h1>
 <div>
-  <div class="grid grid--12of12">
-    {{#each model.employments as |employment|}}
-      <div class="grid-cell">
-        <strong>{{employment.percentage}}% ({{format-duration employment.worktimePerDay false}}h per day)</strong>
-        <br>
-        <em>
-          {{fa-icon 'calendar-o' fixedWidth=true}} {{moment-format employment.start 'DD.MM.YYYY'}} - {{if employment.end (moment-format employment.end 'DD.MM.YYYY') 'today'}}
-          <br>
-          {{fa-icon 'map-marker' fixedWidth=true}} {{employment.location.name}}
-        </em>
-        <br>
-        <br>
+  <div class="grid grid--6of12">
+    <div class="grid-cell">
+      <div class="card">
+        <div class="card-header text-center">
+          <strong>User information</strong>
+        </div>
+        <div class="card-block">
+          <table class="table table--striped">
+            <tbody>
+              <tr>
+                <td>Username:</td>
+                <td class="text-right">{{model.username}}</td>
+              </tr>
+              <tr>
+                <td>Email:</td>
+                <td class="text-right">{{model.email}}</td>
+              </tr>
+              <tr>
+                <td>Employed since:</td>
+                <td class="text-right">{{moment-format model.employments.firstObject.start 'DD.MM.YYYY'}}</td>
+              </tr>
+              <tr>
+                <td>Percentage:</td>
+                <td class="text-right">{{model.employments.firstObject.percentage}}%</td>
+              </tr>
+              <tr>
+                <td>Wortime per day:</td>
+                <td class="text-right">{{format-duration model.employments.firstObject.worktimePerDay false}}</td>
+              </tr>
+              <tr>
+                <td><strong>Wortime balance:</strong></td>
+                <td class="text-right">
+                  <span class="worktime-balance {{balance-highlight-class model.worktimeBalance}}">
+                    {{format-duration model.worktimeBalance false}}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-    {{/each}}
+    </div>
+    <div class="grid-cell">
+      <div class="card">
+        <div class="card-header text-center">
+          <strong>Absences</strong>
+        </div>
+        <div class="card-block">
+          <table class="table table--striped">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Credit</th>
+                <th>Used</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each model.absenceCredits as |absenceCredit|}}
+                <tr>
+                  <td>{{absenceCredit.absenceType.name}}</td>
+                  <td>{{#if absenceCredit.duration}}{{format-duration absenceCredit.duration false}}{{else}}-{{/if}}</td>
+                  <td>{{format-duration absenceCredit.used false}}</td>
+                  <td>{{#if absenceCredit.balance}}{{format-duration absenceCredit.balance false}}{{else}}-{{/if}}</td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

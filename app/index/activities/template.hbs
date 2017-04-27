@@ -49,6 +49,16 @@
       {{/each}}
     </tbody>
   </table>
+  <div class="text-center">
+    <br>
+    <button
+      class="btn btn-primary"
+      title="Generate reports for all the listed activities above"
+      {{action 'generateReports'}}
+    >
+       Generate reports
+    </button>
+  </div>
 {{else}}
   <div class="text-center"><em>No activities yet</em></div>
 {{/if}}

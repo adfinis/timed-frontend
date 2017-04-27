@@ -4,10 +4,7 @@
  * @public
  */
 import Component from 'ember-component'
-
-import computed, {
-  alias
-} from 'ember-computed-decorators'
+import computed  from 'ember-computed-decorators'
 
 /**
  * The tracking bar component
@@ -17,127 +14,6 @@ import computed, {
  * @public
  */
 export default Component.extend({
-  /**
-   * The selected (by dropdown) customer
-   *
-   * @property {String} _customer
-   * @private
-   */
-  _customer: null,
-
-  /**
-   * The selected (by dropdown) project
-   *
-   * @property {String} _project
-   * @private
-   */
-  _project: null,
-
-  /**
-   * The currently selected customer
-   *
-   * This is either the customer related to the activity's task's project's
-   * customer or the customer selected in the dropdown
-   *
-   * By setting this, you reset the project automatically
-   *
-   * @property {Customer} customer
-   * @public
-   */
-  /* eslint-disable ember/avoid-leaking-state-in-components */
-  @computed('activity.task')
-  customer: {
-    get(task) {
-      if (task) {
-        return task.get('project.customer')
-      }
-
-      return this.get('_customer')
-    },
-    set(task, value) {
-      this.set('_customer', value)
-      this.set('_project', null)
-
-      return value
-    }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-components */
-
-  /**
-   * The currently selected project
-   *
-   * This is either the customer related to the activity's task's project
-   * or the project selected in the dropdown
-   *
-   * @property {Project} project
-   * @public
-   */
-  /* eslint-disable ember/avoid-leaking-state-in-components */
-  @computed('activity.task')
-  project: {
-    get(task) {
-      if (task) {
-        return task.get('project')
-      }
-
-      return this.get('_project')
-    },
-    set(task, value) {
-      this.set('_project', value)
-
-      return value
-    }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-components */
-
-  /**
-   * The currently selected task
-   *
-   * @property {Task} task
-   * @public
-   */
-  @alias('activity.task')
-  task: null,
-
-  /**
-   * All available customers
-   *
-   * @property {Customer[]} _customers
-   * @private
-   */
-  @alias('customers')
-  _customers: null,
-
-  /**
-   * All available projects filtered by the currently selected customer
-   *
-   * @property {Project[]} _projects
-   * @private
-   */
-  @computed('projects.[]', 'customer.id')
-  _projects(projects, id) {
-    if (!id) {
-      return []
-    }
-
-    return projects.filterBy('customer.id', id)
-  },
-
-  /**
-   * All available tasks filtered by the currently selected project
-   *
-   * @property {Task[]} _tasks
-   * @private
-   */
-  @computed('tasks.[]', 'project.id')
-  _tasks(tasks, id) {
-    if (!id) {
-      return []
-    }
-
-    return tasks.filterBy('project.id', id)
-  },
-
   /**
    * Whether the bar is ready to start tracking
    *

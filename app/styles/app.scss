@@ -69,6 +69,64 @@ body {
   background-color: rgb(255,255,255);
 }
 
+.card-block .table {
+  margin: 0;
+}
+
+.worktime-balance {
+  border-bottom: 3px double rgb(0,0,0);
+  font-weight: bold;
+}
+
+.worktime-balance.color-danger {
+  border-bottom-color: var(--color-danger);
+}
+
+.worktime-balance.color-success {
+  border-bottom-color: var(--color-success);
+
+  &::before {
+    display: inline-block;
+    margin-right: -0.2em;
+    content: '+';
+  }
+}
+
+.table tr.is-absence {
+  background-color: var(--color-danger) !important;
+  border-bottom-color: color(var(--color-danger) tint(10%)) !important;
+}
+
+.error-text {
+  font-size: 80%;
+  margin: 0;
+  color: var(--color-danger);
+}
+
+.required {
+  color: var(--color-danger);
+}
+
+.form-group.has-error {
+  label {
+    color: var(--color-danger);
+  }
+
+  .form-control {
+    border-color: color(var(--color-danger) tint(20%));
+
+    &:focus {
+      border-color: color(var(--color-danger) tint(20%));
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+                  0 0   8px color(var(--color-danger) a(60%));
+    }
+  }
+}
+
+.grid-cell.form-group {
+  margin-bottom: 0;
+}
+
 @media (--sm-viewport) {
   .nav-tabs {
     overflow: visible;

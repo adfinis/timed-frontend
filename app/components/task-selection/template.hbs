@@ -1,0 +1,58 @@
+<div class="form-group" data-test-tracking-customer>
+  {{#if showLabels}}
+    <label>Customer</label>
+  {{/if}}
+  {{#power-select
+    renderInPlace = true
+    allowClear    = true
+    disabled      = disabled
+    options       = _customers
+    selected      = customer
+    searchField   = 'name'
+    onchange      = (action (mut customer))
+    placeholder   = 'Select customer...'
+    as |customer|}}
+    {{customer.name}}
+  {{/power-select}}
+</div>
+<div class="form-group" data-test-tracking-project>
+  {{#if showLabels}}
+    <label>Project</label>
+  {{/if}}
+  {{#power-select
+    renderInPlace = true
+    allowClear    = true
+    disabled      = (or (not _projects.length) disabled)
+    options       = _projects
+    selected      = project
+    searchField   = 'name'
+    onchange      = (action (mut project))
+    placeholder   = 'Select project...'
+    as |project|}}
+    {{project.name}}
+  {{/power-select}}
+</div>
+<div class="form-group {{if error 'has-error'}}" data-test-tracking-task>
+  {{#if showLabels}}
+    <label>Task <span class="required">*</span></label>
+  {{/if}}
+  {{#power-select
+    renderInPlace = true
+    allowClear    = true
+    disabled      = (or (not _tasks.length) disabled)
+    options       = _tasks
+    selected      = task
+    searchField   = 'name'
+    onchange      = (action 'change')
+    placeholder   = 'Select task...'
+    as |task|}}
+    {{task.name}}
+  {{/power-select}}
+  {{#if error}}
+    <p class="error-text">
+      {{#each error.validation as |message index|}}
+        {{if (gt index 0) ', '}}{{message}}
+      {{/each}}
+    </p>
+  {{/if}}
+</div>

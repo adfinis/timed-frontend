@@ -1,7 +1,6 @@
 import { Factory, faker, trait } from 'ember-cli-mirage'
-import { padStartTpl }           from 'ember-pad/utils/pad'
-
-const HOURS_PER_DAY = 8.5
+import DjangoDurationTransform   from 'timed/transforms/django-duration'
+import moment                    from 'moment'
 
 export default Factory.extend({
   percentage: faker.list.random(50, 60, 80, 100),
@@ -9,14 +8,9 @@ export default Factory.extend({
   // user: association(),
 
   worktimePerDay() {
-    let minutesFullTime = HOURS_PER_DAY * 60
+    let worktime = moment.duration(moment.duration({ h: 8, m: 30 }) / 100 * this.percentage)
 
-    let minutesWorktime = minutesFullTime / 100 * this.percentage
-
-    let hours = Math.floor(minutesWorktime / 60)
-    let minutes = Math.round(minutesWorktime % 60)
-
-    return padStartTpl(2)`${hours}:${minutes}:00`
+    return DjangoDurationTransform.create().serialize(worktime)
   },
 
   start: () => faker.date.past(4),

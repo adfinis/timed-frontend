@@ -26,6 +26,7 @@ module.exports = {
     'array-bracket-spacing': [ 'error', 'always' ],
     'valid-jsdoc': [ 'error', { requireReturn: false } ],
     'require-jsdoc': 'error',
+    'ember/avoid-leaking-state-in-components': 'off',
     'ember/named-functions-in-promises': 'off',
     'ember/alias-model-in-controller': 'off',
     'ember/use-ember-get-and-set': 'off',

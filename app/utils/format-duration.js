@@ -5,8 +5,8 @@
  */
 import { padStartTpl } from 'ember-pad/utils/pad'
 
-const { floor } = Math
-const padTpl2   = padStartTpl(2)
+const { floor, abs } = Math
+const padTpl2        = padStartTpl(2)
 
 /**
  * Converts a moment duration into a string with zeropadded digits
@@ -14,7 +14,7 @@ const padTpl2   = padStartTpl(2)
  * @function formatDuration
  * @param {moment.duration} duration The duration to format
  * @param {Boolean} seconds Whether to show seconds
- * @returns {String} The formatted duration
+ * @return {String} The formatted duration
  * @public
  */
 export default function formatDuration(duration, seconds = true) {
@@ -22,14 +22,16 @@ export default function formatDuration(duration, seconds = true) {
     return seconds ? '--:--:--' : '--:--'
   }
 
-  let hours   = floor(duration.asHours())
-  let minutes = duration.minutes()
+  let prefix = duration.asMinutes() < 0 ? '-' : ''
+
+  let hours   = floor(abs(duration.asHours()))
+  let minutes = abs(duration.minutes())
 
   if (seconds) {
-    let seconds = duration.seconds()
+    let seconds = abs(duration.seconds())
 
-    return padTpl2`${hours}:${minutes}:${seconds}`
+    return prefix + padTpl2`${hours}:${minutes}:${seconds}`
   }
 
-  return padTpl2`${hours}:${minutes}`
+  return prefix + padTpl2`${hours}:${minutes}`
 }

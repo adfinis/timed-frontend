@@ -53,7 +53,7 @@ export default Controller.extend({
    * @property {Activity[]} _activities
    * @private
    */
-  @computed('_allActivities.[]', 'model')
+  @computed('_allActivities.@each.{start,isDeleted}', 'model')
   _activities(activities, day) {
     return activities.filter((a) => {
       return a.get('start').isSame(day, 'day') && !a.get('isDeleted')
@@ -99,7 +99,7 @@ export default Controller.extend({
    * @property {Attendance[]} _attendances
    * @private
    */
-  @computed('_allAttendances.[]', 'model')
+  @computed('_allAttendances.@each.{from,isDeleted}', 'model')
   _attendances(attendances, day) {
     return attendances.filter((a) => {
       return a.get('from').isSame(day, 'day') && !a.get('isDeleted')
@@ -140,7 +140,7 @@ export default Controller.extend({
    * @property {Report[]} _reports
    * @private
    */
-  @computed('_allReports.[]', 'model')
+  @computed('_allReports.@each.{date,isNew,isDeleted}', 'model')
   _reports(reports, day) {
     return reports.filter((r) => {
       return r.get('date').isSame(day, 'day') && !r.get('isNew') && !r.get('isDeleted')
