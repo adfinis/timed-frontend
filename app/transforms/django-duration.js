@@ -11,7 +11,8 @@ import {
   padStart
 } from 'ember-pad/utils/pad'
 
-const padTpl2 = padTpl(2)
+const padTpl2   = padTpl(2)
+const { round } = Math
 
 /**
  * The django duration transform
@@ -86,7 +87,7 @@ export default Transform.extend({
       hours: positiveDuration.hours(),
       minutes: positiveDuration.minutes(),
       seconds: positiveDuration.seconds(),
-      microseconds: positiveDuration.milliseconds() * 1000
+      microseconds: round(positiveDuration.milliseconds() * 1000)
     }
   },
 
