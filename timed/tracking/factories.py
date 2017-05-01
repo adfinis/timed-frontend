@@ -16,7 +16,7 @@ faker = FakerFactory.create()
 
 
 def begin_of_day(day):
-    """Function for determining the start of a day.
+    """Determine the start of a day.
 
     :param datetime.datetime day: The datetime to get the day from
     :return:                      The start of the day
@@ -32,7 +32,7 @@ def begin_of_day(day):
 
 
 def end_of_day(day):
-    """Function for determining the end of a day.
+    """Determine the end of a day.
 
     :param datetime.datetime day: The datetime to get the day from
     :return:                      The end of the day

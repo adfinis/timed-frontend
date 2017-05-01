@@ -9,7 +9,7 @@ from timed.tracking import models
 
 
 def boolean_filter(func):
-    """Decorator for casting the passed query parameter into a boolean.
+    """Cast the passed query parameter into a boolean.
 
     :param function func: The function to decorate
     :return:              The function called with a boolean
@@ -17,7 +17,7 @@ def boolean_filter(func):
     """
     @wraps(func)
     def wrapper(self, qs, value):
-        """The wrapper.
+        """Wrap the initial function.
 
         :param QuerySet qs: The queryset to filter
         :param str   value: The value to cast

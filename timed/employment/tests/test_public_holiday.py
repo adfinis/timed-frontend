@@ -16,7 +16,7 @@ class PublicHolidayTests(JSONAPITestCase):
     """
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         self.public_holidays = PublicHolidayFactory.create_batch(10)

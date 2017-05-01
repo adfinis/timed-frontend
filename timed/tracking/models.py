@@ -22,7 +22,7 @@ class Activity(models.Model):
 
     @property
     def duration(self):
-        """The total duration of this activity.
+        """Calculate the total duration of this activity.
 
         :return: The total duration
         :rtype:  datetime.timedelta
@@ -37,7 +37,7 @@ class Activity(models.Model):
         return sum(durations, timedelta())
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -63,7 +63,7 @@ class ActivityBlock(models.Model):
 
     @property
     def duration(self):
-        """The duration of this activity block.
+        """Calculate the duration of this activity block.
 
         :return: The duration
         :rtype:  datetime.timedelta or None
@@ -74,7 +74,7 @@ class ActivityBlock(models.Model):
         return self.to_datetime - self.from_datetime
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -94,7 +94,7 @@ class Attendance(models.Model):
                                       related_name='attendances')
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -136,7 +136,7 @@ class Report(models.Model):
                                      related_name='reports')
 
     def save(self, *args, **kwargs):
-        """Customized save method.
+        """Save the report with some custom functionality.
 
         This rounds the duration of the report to the nearest 15 minutes.
         However, the duration must at least be 15 minutes long.
@@ -154,7 +154,7 @@ class Report(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str

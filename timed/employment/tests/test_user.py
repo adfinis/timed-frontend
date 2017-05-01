@@ -22,7 +22,7 @@ class UserTests(JSONAPITestCase):
     """
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         self.users = UserFactory.create_batch(3)

@@ -15,7 +15,7 @@ class LocationTests(JSONAPITestCase):
     """
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         self.locations = LocationFactory.create_batch(3)

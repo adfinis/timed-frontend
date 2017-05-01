@@ -14,7 +14,7 @@ class Location(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -40,7 +40,7 @@ class Employment(models.Model):
     end_date         = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -65,7 +65,7 @@ class PublicHoliday(models.Model):
                                  related_name='public_holidays')
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -83,7 +83,7 @@ class AbsenceType(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
