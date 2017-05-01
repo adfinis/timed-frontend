@@ -1,12 +1,18 @@
 """Tests for the locations endpoint."""
 
+from datetime import date, timedelta
+
 from django.core.urlresolvers import reverse
+from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_404_NOT_FOUND,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
-from timed.employment.factories import UserFactory
+from timed.employment.factories import (EmploymentFactory,
+                                        OvertimeCreditFactory,
+                                        PublicHolidayFactory, UserFactory)
 from timed.jsonapi_test_case import JSONAPITestCase
+from timed.tracking.factories import ReportFactory
 
 
 class UserTests(JSONAPITestCase):
@@ -20,6 +26,9 @@ class UserTests(JSONAPITestCase):
         super().setUp()
 
         self.users = UserFactory.create_batch(3)
+
+        for user in self.users + [self.user]:
+            EmploymentFactory.create(user=user)
 
     def test_user_list(self):
         """Should respond with a list of one user: the currently logged in."""
@@ -75,7 +84,7 @@ class UserTests(JSONAPITestCase):
 
     def test_user_update(self):
         """Should not be able to update an existing user."""
-        user = self.users[0]
+        user = self.user
 
         url = reverse('user-detail', args=[
             user.id
@@ -89,7 +98,7 @@ class UserTests(JSONAPITestCase):
 
     def test_user_delete(self):
         """Should not be able delete a user."""
-        user = self.users[0]
+        user = self.user
 
         url = reverse('user-detail', args=[
             user.id
@@ -100,3 +109,83 @@ class UserTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+
+    def test_user_worktime_balance(self):
+        """Should calculate correct worktime balances."""
+        user       = self.user
+        employment = user.employments.get(end_date__isnull=True)
+
+        # Calculate over one week
+        start_date = date(2017, 3, 19)
+        end_date   = date(2017, 3, 26)
+
+        employment.start_date       = start_date
+        employment.worktime_per_day = timedelta(hours=8)
+
+        employment.save()
+
+        # Overtime credit of 10 hours
+        OvertimeCreditFactory.create(
+            user=user,
+            date=start_date,
+            duration=timedelta(hours=10, minutes=30)
+        )
+
+        # One public holiday
+        PublicHolidayFactory.create(
+            date=start_date + timedelta(days=1),
+            location=employment.location
+        )
+
+        url = reverse('user-detail', args=[
+            user.id
+        ])
+
+        res = self.client.get('{0}?until={1}'.format(
+            url,
+            end_date.strftime('%Y-%m-%d')
+        ))
+
+        result = self.result(res)
+
+        # 5 workdays minus one holiday minus 10 hours overtime credit
+        expected_worktime = (
+            4 * employment.worktime_per_day -
+            timedelta(hours=10, minutes=30)
+        )
+
+        assert (
+            result['data']['attributes']['worktime-balance'] ==
+            duration_string(timedelta() - expected_worktime)
+        )
+
+        # 3x 10 hour reported worktime
+        ReportFactory.create(
+            user=user,
+            date=start_date + timedelta(days=3),
+            duration=timedelta(hours=10)
+        )
+
+        ReportFactory.create(
+            user=user,
+            date=start_date + timedelta(days=4),
+            duration=timedelta(hours=10)
+        )
+
+        ReportFactory.create(
+            user=user,
+            date=start_date + timedelta(days=5),
+            duration=timedelta(hours=10)
+        )
+
+        res2 = self.client.get('{0}?until={1}'.format(
+            url,
+            end_date.strftime('%Y-%m-%d')
+        ))
+
+        result2 = self.result(res2)
+
+        assert (
+            result2['data']['attributes']['worktime-balance'] ==
+            duration_string(timedelta(hours=30) - expected_worktime)
+        )

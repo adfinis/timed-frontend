@@ -27,6 +27,9 @@ class EmploymentForm(forms.ModelForm):
 
         employments = models.Employment.objects.filter(user=data.get('user'))
 
+        if self.instance:
+            employments = employments.exclude(id=self.instance.id)
+
         if (
             data.get('end_date') and
             data.get('start_date') >= data.get('end_date')
@@ -90,3 +93,26 @@ class PublicHolidayAdmin(admin.ModelAdmin):
 
     list_display = ['__str__', 'date', 'location']
     list_filter  = ['location']
+
+
+@admin.register(models.AbsenceType)
+class AbsenceTypeAdmin(admin.ModelAdmin):
+    """Absence type admin view."""
+
+    list_display = ['name']
+
+
+@admin.register(models.AbsenceCredit)
+class AbsenceCreditAdmin(admin.ModelAdmin):
+    """Absence credit admin view."""
+
+    list_display = ['absence_type', 'user', 'duration', 'date']
+    list_filter  = ['absence_type', 'user']
+
+
+@admin.register(models.OvertimeCredit)
+class OvertimeCreditAdmin(admin.ModelAdmin):
+    """Overtime credit admin view."""
+
+    list_display = ['user', 'duration', 'date']
+    list_filter  = ['user']

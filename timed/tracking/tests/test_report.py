@@ -1,10 +1,15 @@
 """Tests for the reports endpoint."""
 
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+                                   HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
+                                   HTTP_401_UNAUTHORIZED)
 
+from timed.employment.factories import AbsenceTypeFactory
 from timed.jsonapi_test_case import JSONAPITestCase
 from timed.projects.factories import TaskFactory
 from timed.tracking.factories import ReportFactory
@@ -102,6 +107,8 @@ class ReportTests(JSONAPITestCase):
         """Should update an existing report."""
         report = self.reports[0]
 
+        absence_type = AbsenceTypeFactory.create()
+
         data = {
             'data': {
                 'type': 'reports',
@@ -114,6 +121,12 @@ class ReportTests(JSONAPITestCase):
                 'relationships': {
                     'task': {
                         'data': None
+                    },
+                    'absence-type': {
+                        'data': {
+                            'type': 'absence-types',
+                            'id': absence_type.id
+                        }
                     }
                 }
             }
@@ -161,3 +174,50 @@ class ReportTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert user_res.status_code == HTTP_204_NO_CONTENT
+
+    def test_report_task_or_absence_type_required(self):
+        """Should not be able to save reports without task or absence type."""
+        report = self.reports[0]
+
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {},
+                'relationships': {
+                    'task': {
+                        'data': None
+                    },
+                    'absence-type': {
+                        'data': None
+                    }
+                }
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        res = self.client.patch(url, data)
+
+        assert res.status_code == HTTP_400_BAD_REQUEST
+
+    def test_report_round_duration(self):
+        """Should round the duration of a report to 15 minutes."""
+        report = self.reports[0]
+
+        report.duration = timedelta(hours=1, minutes=7)
+        report.save()
+
+        assert duration_string(report.duration) == '01:00:00'
+
+        report.duration = timedelta(hours=1, minutes=8)
+        report.save()
+
+        assert duration_string(report.duration) == '01:15:00'
+
+        report.duration = timedelta(hours=1, minutes=53)
+        report.save()
+
+        assert duration_string(report.duration) == '02:00:00'

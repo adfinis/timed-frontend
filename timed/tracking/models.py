@@ -114,17 +114,43 @@ class Report(models.Model):
     bill for the customer.
     """
 
-    comment  = models.CharField(max_length=255)
-    date     = models.DateField()
-    duration = models.DurationField()
-    review   = models.BooleanField(default=False)
-    nta      = models.BooleanField(default=False)
-    task     = models.ForeignKey('projects.Task',
-                                 null=True,
-                                 blank=True,
-                                 related_name='reports')
-    user     = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                 related_name='reports')
+    comment      = models.CharField(max_length=255, blank=True)
+    date         = models.DateField()
+    duration     = models.DurationField()
+    review       = models.BooleanField(default=False)
+    not_billable = models.BooleanField(default=False)
+    task         = models.ForeignKey('projects.Task',
+                                     null=True,
+                                     blank=True,
+                                     related_name='reports')
+    activity     = models.ForeignKey(Activity,
+                                     null=True,
+                                     blank=True,
+                                     related_name='reports')
+    absence_type = models.ForeignKey('employment.AbsenceType',
+                                     null=True,
+                                     blank=True,
+                                     related_name='reports')
+    user         = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                     related_name='reports')
+
+    def save(self, *args, **kwargs):
+        """Customized save method.
+
+        This rounds the duration of the report to the nearest 15 minutes.
+        However, the duration must at least be 15 minutes long.
+
+        :returns: The saved report
+        :rtype:   timed.tracking.models.Report
+        """
+        self.duration = timedelta(
+            seconds=max(
+                15 * 60,
+                round(self.duration.seconds / (15 * 60)) * (15 * 60)
+            )
+        )
+
+        return super().save(*args, **kwargs)
 
     def __str__(self):
         """String representation.

@@ -1,6 +1,7 @@
 """Factories for testing the tracking app."""
 
 import datetime
+import random
 
 from django.conf import settings
 from factory import Faker, SubFactory, lazy_attribute
@@ -81,3 +82,57 @@ class EmploymentFactory(DjangoModelFactory):
         """Meta informations for the employment factory."""
 
         model = models.Employment
+
+
+class AbsenceTypeFactory(DjangoModelFactory):
+    """Absence type factory."""
+
+    name = Faker('word')
+
+    class Meta:
+        """Meta informations for the absence type factory."""
+
+        model = models.AbsenceType
+
+
+class AbsenceCreditFactory(DjangoModelFactory):
+    """Absence credit factory."""
+
+    absence_type = SubFactory(AbsenceTypeFactory)
+    user         = SubFactory(UserFactory)
+    date         = Faker('date_object')
+
+    @lazy_attribute
+    def duration(self):
+        """Generate a random duration.
+
+        :return: The generated duration
+        :rtype:  datetime.timedelta
+        """
+        return datetime.timedelta(hours=random.randint(8, 200))
+
+    class Meta:
+        """Meta informations for the absence credit factory."""
+
+        model = models.AbsenceCredit
+
+
+class OvertimeCreditFactory(DjangoModelFactory):
+    """Overtime credit factory."""
+
+    user = SubFactory(UserFactory)
+    date = Faker('date_object')
+
+    @lazy_attribute
+    def duration(self):
+        """Generate a random duration.
+
+        :return: The generated duration
+        :rtype:  datetime.timedelta
+        """
+        return datetime.timedelta(hours=random.randint(5, 40))
+
+    class Meta:
+        """Meta informations for the overtime credit factory."""
+
+        model = models.OvertimeCredit
