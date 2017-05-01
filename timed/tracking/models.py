@@ -126,6 +126,7 @@ class Report(models.Model):
     activity     = models.ForeignKey(Activity,
                                      null=True,
                                      blank=True,
+                                     on_delete=models.SET_NULL,
                                      related_name='reports')
     absence_type = models.ForeignKey('employment.AbsenceType',
                                      null=True,
