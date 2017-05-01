@@ -19,7 +19,7 @@ class Customer(models.Model):
     archived = models.BooleanField(default=False)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -47,7 +47,7 @@ class Project(models.Model):
                                         related_name='projects')
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -69,7 +69,7 @@ class Task(models.Model):
                                         related_name='tasks')
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -87,7 +87,7 @@ class TaskTemplate(models.Model):
     name = models.CharField(max_length=255)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str

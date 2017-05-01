@@ -15,7 +15,7 @@ class TaskTests(JSONAPITestCase):
     """
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         self.tasks = TaskFactory.create_batch(5)

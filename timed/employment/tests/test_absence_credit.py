@@ -18,7 +18,7 @@ class AbsenceCreditTests(JSONAPITestCase):
     """
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         self.absence_credits = AbsenceCreditFactory.create_batch(

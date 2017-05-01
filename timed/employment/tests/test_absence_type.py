@@ -15,7 +15,7 @@ class AbsenceTypeTests(JSONAPITestCase):
     """
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         self.absence_types = AbsenceTypeFactory.create_batch(5)

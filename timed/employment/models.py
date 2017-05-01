@@ -14,7 +14,7 @@ class Location(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -40,7 +40,7 @@ class Employment(models.Model):
     end_date         = models.DateField(blank=True, null=True)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -65,7 +65,7 @@ class PublicHoliday(models.Model):
                                  related_name='public_holidays')
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -83,7 +83,7 @@ class AbsenceType(models.Model):
     name = models.CharField(max_length=50)
 
     def __str__(self):
-        """String representation.
+        """Represent the model as a string.
 
         :return: The string representation
         :rtype:  str
@@ -94,8 +94,9 @@ class AbsenceType(models.Model):
 class AbsenceCredit(models.Model):
     """Absence credit model.
 
-    An absence credit is a credit for an absence of a certain type. An absence
-    is a report marked as an absence by referencing an absence type.
+    An absence credit is a credit for an absence of a certain type. A user
+    should only be able to create as many absences as defined in this credit.
+    E.g a credit that defines that a user can only have 25 holidays.
     """
 
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,

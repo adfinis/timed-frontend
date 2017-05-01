@@ -106,7 +106,7 @@ class JSONAPITestCase(APITestCase):
     """Base test case for testing the timed API."""
 
     def setUp(self):
-        """Setup the clients for testing."""
+        """Set the clients for testing up."""
         super().setUp()
 
         self.user = User.objects.create_user(

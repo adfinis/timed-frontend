@@ -16,7 +16,7 @@ class ActivityTests(JSONAPITestCase):
     """Tests for the activities endpoint."""
 
     def setUp(self):
-        """Setup the environment for the tests."""
+        """Set the environment for the tests up."""
         super().setUp()
 
         other_user = User.objects.create_user(

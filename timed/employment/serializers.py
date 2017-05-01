@@ -94,7 +94,7 @@ class UserSerializer(ModelSerializer):
         return reported_worktime + overtime_credit - expected_worktime
 
     def get_worktime_balance(self, instance):
-        """The formatted worktime balance.
+        """Format the worktime balance.
 
         :return: The formatted worktime balance.
         :rtype:  str
@@ -196,10 +196,10 @@ class AbsenceCreditSerializer(ModelSerializer):
     absence_type = ResourceRelatedField(read_only=True)
     user         = ResourceRelatedField(read_only=True)
     used         = SerializerMethodField()
-    balance        = SerializerMethodField()
+    balance      = SerializerMethodField()
 
     def get_used_raw(self, instance):
-        """The total of used time since the date of the requested credit.
+        """Calculate the total of used time since the date of the requested credit.
 
         This is the sum of all durations of reports, which are assigned to the
         credits user, absence type and were created at or after the date of
@@ -227,7 +227,7 @@ class AbsenceCreditSerializer(ModelSerializer):
         return sum(reports, timedelta())
 
     def get_balance_raw(self, instance):
-        """The balance of the requested credit.
+        """Calculate the balance of the requested credit.
 
         This is the difference between the credits duration and the total used
         time.
@@ -242,7 +242,7 @@ class AbsenceCreditSerializer(ModelSerializer):
         )
 
     def get_used(self, instance):
-        """The formatted total of used time.
+        """Format the total of used time.
 
         :return: The formatted total of used time
         :rtype:  str
@@ -252,7 +252,7 @@ class AbsenceCreditSerializer(ModelSerializer):
         return duration_string(used)
 
     def get_balance(self, instance):
-        """The formatted balance.
+        """Format the balance.
 
         This is None if we don't have a duration.
 
