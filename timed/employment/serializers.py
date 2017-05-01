@@ -196,7 +196,7 @@ class AbsenceCreditSerializer(ModelSerializer):
     absence_type = ResourceRelatedField(read_only=True)
     user         = ResourceRelatedField(read_only=True)
     used         = SerializerMethodField()
-    balance        = SerializerMethodField()
+    balance      = SerializerMethodField()
 
     def get_used_raw(self, instance):
         """Calculate the total of used time since the date of the requested credit.
