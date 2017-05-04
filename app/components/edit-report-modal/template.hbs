@@ -1,11 +1,11 @@
-{{#with (changeset report validator) as |changeset|}}
+{{#with (changeset model validator) as |changeset|}}
   {{#sy-modal visible=visible as |modal|}}
     {{#modal.header close=(action 'close' changeset)}}
       {{if changeset.isNew 'New' 'Edit'}} report
     {{/modal.header}}
     {{#modal.body}}
       {{task-selection
-        changeset = changeset
+        changeset  = changeset
         error      = changeset.error.task
         showLabels = true
         task       = changeset.task
@@ -66,7 +66,7 @@
         Save
       </button>
       {{#unless changeset.isNew}}
-        <button title="Delete this report" class="btn btn-danger" {{action 'delete'}}>Delete</button>
+        <button title="Delete this report" class="btn btn-danger" {{action 'delete' changeset}}>Delete</button>
       {{/unless}}
     {{/modal.footer}}
   {{/sy-modal}}

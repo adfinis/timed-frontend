@@ -72,10 +72,24 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.not.be.ok
   })
 
+  it('can edit an activity', async function() {
+    await visit('/')
+
+    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('edit-activity')}`))
+
+    await fillIn('textarea', 'Test')
+
+    await click(find('button:contains(Save)'))
+
+    expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal('Test')
+  })
+
   it('can delete an activity', async function() {
     await visit('/')
 
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('delete-activity')}`))
+    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('edit-activity')}`))
+
+    await click(find('button:contains(Delete)'))
 
     expect(find(testSelector('activity-row-id', 1))).to.have.length(0)
     expect(find(testSelector('activity-row'))).to.have.length(4)
