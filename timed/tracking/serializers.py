@@ -17,7 +17,9 @@ class ActivitySerializer(ModelSerializer):
     duration = DurationField(read_only=True)
     user     = ResourceRelatedField(read_only=True,
                                     default=CurrentUserDefault())
-    task     = ResourceRelatedField(queryset=Task.objects.all())
+    task     = ResourceRelatedField(queryset=Task.objects.all(),
+                                    allow_null=True,
+                                    required=False)
     blocks   = ResourceRelatedField(read_only=True, many=True)
 
     included_serializers = {

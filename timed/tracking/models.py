@@ -16,6 +16,8 @@ class Activity(models.Model):
     comment        = models.CharField(max_length=255, blank=True)
     start_datetime = models.DateTimeField(auto_now_add=True)
     task           = models.ForeignKey('projects.Task',
+                                       null=True,
+                                       blank=True,
                                        related_name='activities')
     user           = models.ForeignKey(settings.AUTH_USER_MODEL,
                                        related_name='activities')
