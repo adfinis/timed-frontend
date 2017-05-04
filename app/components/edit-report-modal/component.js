@@ -65,10 +65,9 @@ export default Component.extend({
       if (changeset.get('isValid')) {
         changeset.execute()
 
-        this.get('attrs.on-save')(this.get('report'))
-      }
-      else {
-        this.$().find('.has-error input, .has-error textarea, .has-error select').first().focus()
+        this.send('close', changeset)
+
+        this.get('attrs.on-save')(this.get('model'))
       }
     },
 
@@ -76,10 +75,13 @@ export default Component.extend({
      * Delete the report
      *
      * @method delete
+     * @param {Changeset} changeset The changeset to delete
      * @public
      */
-    delete() {
-      this.get('attrs.on-delete')(this.get('report'))
+    delete(changeset) {
+      this.send('close', changeset)
+
+      this.get('attrs.on-delete')(this.get('model'))
     }
   }
 })

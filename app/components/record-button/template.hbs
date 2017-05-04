@@ -1,10 +1,10 @@
-<div class="record-button-container">
+<div class="record-button-container record-button-container--start-stop">
   {{#if recording}}
     <button data-test-record-stop type="button" class="record-button record-button--stop" {{action 'stop'}}></button>
     <div class="record-button-timer">
       {{since activity.activeBlock.from activity.duration}}
     </div>
   {{else}}
-    <button data-test-record-start type="button" class="record-button" {{action 'start'}}></button>
+    <button data-test-record-start type="button" class="record-button record-button--start" {{action 'start'}}></button>
   {{/if}}
 </div>

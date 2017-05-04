@@ -1,4 +1,4 @@
-{{#with (changeset report validator) as |changeset|}}
+{{#with (changeset model validator) as |changeset|}}
   {{#sy-modal visible=visible as |modal|}}
     {{#modal.header close=(action 'close' changeset)}}
       {{if changeset.isNew 'New' 'Edit'}} absence
@@ -52,14 +52,14 @@
     {{#modal.footer}}
       <button
         class="btn btn-primary"
-        title="Delete this absence"
+        title="Save this absence"
         disabled="{{unless changeset.isValid 'disabled'}}"
         {{action 'save' changeset}}
       >
         Save
       </button>
       {{#unless changeset.isNew}}
-        <button title="Delete this absence" class="btn btn-danger" {{action 'delete'}}>Delete</button>
+        <button title="Delete this absence" class="btn btn-danger" {{action 'delete' changeset}}>Delete</button>
       {{/unless}}
     {{/modal.footer}}
   {{/sy-modal}}

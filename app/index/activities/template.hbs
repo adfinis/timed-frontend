@@ -6,13 +6,17 @@
         data-test-activity-row
         data-test-activity-row-id={{activity.id}}
         title="Double click to start the activity"
-        class="pointer {{if activity.active 'primary'}}"
+        class="pointer {{unless activity.task 'warning'}} {{if activity.active 'primary'}}"
         {{action 'startActivity' activity on='doubleClick'}}
       >
           <td>
-            <strong>{{activity.task.project.name}}</strong> ({{activity.task.project.customer.name}})
-            <br>
-            <small><em>{{activity.task.name}}</em></small>
+            {{#if activity.task}}
+              <strong>{{activity.task.project.name}}</strong> ({{activity.task.project.customer.name}})
+              <br>
+              <small><em>{{activity.task.name}}</em></small>
+            {{else}}
+            <strong>Unknown task</strong>
+            {{/if}}
           </td>
           <td>{{activity.comment}}</td>
           <td>
@@ -23,6 +27,12 @@
             {{/if}}
           </td>
           <td class="text-right visible-sm">
+            {{fa-btn
+              'pencil'
+              data-test-edit-activity
+              title = 'Edit activity'
+              click = (queue (action (mut activityToEdit) activity) (action (mut modalVisible) true))
+            }}
             {{#if activity.active}}
               {{fa-btn
                 'stop'
@@ -31,12 +41,6 @@
                 click = (route-action 'stopActivity' activity)
               }}
             {{else}}
-              {{fa-btn
-                'trash'
-                data-test-delete-activity
-                title = 'Delete activity'
-                click = (route-action 'deleteActivity' activity)
-              }}
               {{fa-btn
                 'play'
                 data-test-start-activity
@@ -61,4 +65,17 @@
   </div>
 {{else}}
   <div class="text-center"><em>No activities yet</em></div>
+{{/if}}
+
+{{#if activityToEdit}}
+  {{edit-activity-modal
+    visible   = modalVisible
+    model     = activityToEdit
+    customers = customers
+    projects  = projects
+    tasks     = tasks
+    on-close  = (action (mut activityToEdit) null)
+    on-delete = (route-action 'deleteActivity')
+    on-save   = (route-action 'saveActivity')
+  }}
 {{/if}}

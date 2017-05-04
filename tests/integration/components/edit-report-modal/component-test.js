@@ -31,7 +31,7 @@ describe('Integration | Component | edit report modal', function() {
       {{sy-modal-target}}
       {{edit-report-modal
         visible = true
-        report  = report
+        model   = report
       }}
     `)
 
@@ -45,7 +45,7 @@ describe('Integration | Component | edit report modal', function() {
       {{sy-modal-target}}
       {{edit-report-modal
         visible = true
-        report  = report
+        model   = report
       }}
     `)
 
@@ -66,15 +66,17 @@ describe('Integration | Component | edit report modal', function() {
     this.set('customers', CUSTOMERS)
     this.set('projects', PROJECTS)
     this.set('tasks', TASKS)
+    this.set('visible', true)
 
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible   = true
-        report    = report
+        visible   = visible
+        model     = report
         customers = customers
         projects  = projects
         tasks     = tasks
+        on-close  = (action (mut visible) false)
         on-save   = (action (mut report))
       }}
     `)
@@ -89,6 +91,7 @@ describe('Integration | Component | edit report modal', function() {
 
     expect(this.get('report.notBillable')).to.be.ok
     expect(this.get('report.comment')).to.equal('...')
+    expect(this.get('visible')).to.not.be.ok
   })
 
   it('can delete', function() {
@@ -99,15 +102,17 @@ describe('Integration | Component | edit report modal', function() {
     this.set('customers', CUSTOMERS)
     this.set('projects', PROJECTS)
     this.set('tasks', TASKS)
+    this.set('visible', true)
 
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible   = true
-        report    = report
+        visible   = visible
+        model     = report
         customers = customers
         projects  = projects
         tasks     = tasks
+        on-close  = (action (mut visible) false)
         on-delete = (action (mut didDelete) true)
       }}
     `)
@@ -115,6 +120,7 @@ describe('Integration | Component | edit report modal', function() {
     this.$('#sy-modals button:contains(Delete)').click()
 
     expect(this.get('didDelete')).to.be.ok
+    expect(this.get('visible')).to.not.be.ok
   })
 
   it('can close', function() {
@@ -130,7 +136,7 @@ describe('Integration | Component | edit report modal', function() {
       {{sy-modal-target}}
       {{edit-report-modal
         visible   = true
-        report    = report
+        model     = report
         customers = customers
         projects  = projects
         tasks     = tasks

@@ -45,7 +45,6 @@ describe('Acceptance | index', function() {
     await selectChoose(testSelector('tracking-task'), '.ember-power-select-option:eq(0)')
     await fillIn(testSelector('tracking-comment'), 'Some Random Comment')
 
-    expect(find(testSelector('record-start')).parent().parent().hasClass('ready')).to.be.ok
     expect(find(testSelector('record-start'))).to.have.length(1)
 
     await click(testSelector('record-start'))
