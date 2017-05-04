@@ -189,3 +189,32 @@ class ActivityTests(JSONAPITestCase):
             for data
             in result['data']
         ])
+
+    def test_activity_create_no_task(self):
+        """Should create a new activity without a task."""
+        data = {
+            'data': {
+                'type': 'activities',
+                'id': None,
+                'attributes': {
+                    'comment': 'Test activity'
+                },
+                'relationships': {
+                    'task': {
+                        'data': None
+                    }
+                }
+            }
+        }
+
+        url = reverse('activity-list')
+
+        noauth_res = self.noauth_client.post(url, data)
+        res        = self.client.post(url, data)
+
+        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
+        assert res.status_code == HTTP_201_CREATED
+
+        result = self.result(res)
+
+        assert result['data']['relationships']['task']['data'] is None
