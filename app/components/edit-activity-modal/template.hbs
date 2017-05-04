@@ -1,0 +1,48 @@
+{{#with (changeset model validator) as |changeset|}}
+  {{#sy-modal visible=visible as |modal|}}
+    {{#modal.header close=(action 'close' changeset)}}
+      {{if changeset.isNew 'New' 'Edit'}} activity
+    {{/modal.header}}
+    {{#modal.body}}
+      {{task-selection
+        changeset  = changeset
+        showLabels = true
+        required   = false
+        task       = changeset.task
+        customers  = customers
+        projects   = projects
+        tasks      = tasks
+        on-change  = (action (mut changeset.task))
+      }}
+      <div data-test-activity-comment class="form-group">
+        <label>Comment</label>
+        {{textarea
+          placeholder = 'Enter comment...'
+          rows        = 4
+          class       = 'form-control'
+          value       = changeset.comment
+        }}
+      </div>
+    {{/modal.body}}
+    {{#modal.footer}}
+      <button
+        class="btn btn-primary"
+        title="Save this activity"
+        disabled="{{unless changeset.isValid 'disabled'}}"
+        {{action 'save' changeset}}
+      >
+        Save
+      </button>
+      {{#unless changeset.isNew}}
+        <button
+          class="btn btn-danger"
+          title="Delete this activity"
+          disabled="{{if changeset.active 'disabled'}}"
+          {{action 'delete' changeset}}
+        >
+          Delete
+        </button>
+      {{/unless}}
+    {{/modal.footer}}
+  {{/sy-modal}}
+{{/with}}

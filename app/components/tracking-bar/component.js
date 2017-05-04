@@ -4,7 +4,6 @@
  * @public
  */
 import Component from 'ember-component'
-import computed  from 'ember-computed-decorators'
 
 /**
  * The tracking bar component
@@ -14,28 +13,6 @@ import computed  from 'ember-computed-decorators'
  * @public
  */
 export default Component.extend({
-  /**
-   * Whether the bar is ready to start tracking
-   *
-   * @property {Boolean} ready
-   * @public
-   */
-  @computed('activity.task')
-  ready(task) {
-    return Boolean(task && task.get('content'))
-  },
-
-  /**
-   * Whether the bar is currently recording
-   *
-   * @property {Boolean} recording
-   * @public
-   */
-  @computed('ready', 'activity.active')
-  recording(ready, active) {
-    return ready && active
-  },
-
   /**
    * The actions for the tracking bar component
    *

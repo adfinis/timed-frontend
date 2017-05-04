@@ -20,7 +20,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'recording', 'ready' ],
+  classNameBindings: [ 'recording' ],
 
   /**
    * The start time
@@ -37,14 +37,6 @@ export default Component.extend({
    * @public
    */
   recording: false,
-
-  /**
-   * Whether it is ready
-   *
-   * @property {Boolean} ready
-   * @public
-   */
-  ready: false,
 
   /**
    * The actions for the record button component

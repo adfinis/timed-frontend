@@ -21,8 +21,7 @@
   <div class="form-group">
     {{record-button
       activity  = activity
-      recording = recording
-      ready     = ready
+      recording = activity.active
       on-start  = (action 'start')
       on-stop   = (action 'stop')
     }}

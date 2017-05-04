@@ -35,6 +35,14 @@ export default Component.extend({
   showLabels: false,
 
   /**
+   * Whether to mark the task as required field
+   *
+   * @property {Boolean} required
+   * @public
+   */
+  required: true,
+
+  /**
    * Whether the task selection has errors
    *
    * This is either null or an object containing the error messages.

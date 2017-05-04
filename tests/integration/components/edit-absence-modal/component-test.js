@@ -15,7 +15,7 @@ describe('Integration | Component | edit absence modal', function() {
       {{sy-modal-target}}
       {{edit-absence-modal
         visible = true
-        report  = report
+        model   = report
       }}
     `)
 
@@ -29,7 +29,7 @@ describe('Integration | Component | edit absence modal', function() {
       {{sy-modal-target}}
       {{edit-absence-modal
         visible = true
-        report  = report
+        model   = report
       }}
     `)
 

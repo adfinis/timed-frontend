@@ -46,7 +46,7 @@
   {{#if reportToEditIsAbsence}}
     {{edit-absence-modal
       visible      = modalVisible
-      report       = reportToEdit
+      model        = reportToEdit
       absenceTypes = absenceTypes
       on-close     = (action (mut reportToEdit) null)
       on-save      = (route-action 'saveReport')
@@ -55,7 +55,7 @@
   {{else}}
     {{edit-report-modal
       visible   = modalVisible
-      report    = reportToEdit
+      model     = reportToEdit
       customers = customers
       projects  = projects
       tasks     = tasks

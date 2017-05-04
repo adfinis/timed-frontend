@@ -65,6 +65,25 @@ export default Route.extend({
     },
 
     /**
+     * Save an activity
+     *
+     * @method saveActivity
+     * @param {Activity} activity The activity to save
+     * @public
+     */
+    async saveActivity(activity) {
+      try {
+        await activity.save()
+
+        this.get('notify').success('Activity was saved')
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while saving the activity')
+      }
+    },
+
+    /**
      * Delete an activity
      *
      * @method deleteActivity
@@ -97,7 +116,7 @@ export default Route.extend({
      */
     async generateReports() {
       try {
-        await this.get('controller.activities').forEach(async(activity) => {
+        await this.get('controller.activities').filterBy('task.id').forEach(async(activity) => {
           let duration = moment.duration(activity.get('duration'))
 
           if (activity.get('active')) {
