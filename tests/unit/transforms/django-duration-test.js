@@ -67,6 +67,17 @@ describe('Unit | Transform | django duration', function() {
     ).to.equal(
       '-1 22:57:57'
     )
+
+    expect(
+      transform.serialize(moment.duration({
+        days: -9,
+        hours: -1,
+        minutes: -2,
+        seconds: -3
+      }))
+    ).to.equal(
+      '-10 22:57:57'
+    )
   })
 
   it('deserializes', function() {
@@ -123,6 +134,17 @@ describe('Unit | Transform | django duration', function() {
       transform.deserialize('-1 22:57:57').asMilliseconds()
     ).to.equal(
       moment.duration({
+        hours: -1,
+        minutes: -2,
+        seconds: -3
+      }).asMilliseconds()
+    )
+
+    expect(
+      transform.deserialize('-10 22:57:57').asMilliseconds()
+    ).to.equal(
+      moment.duration({
+        days: -9,
         hours: -1,
         minutes: -2,
         seconds: -3

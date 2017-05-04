@@ -43,7 +43,7 @@ export default Transform.extend({
       return null
     }
 
-    let re = new RegExp(/^(\-?\d\s)?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
+    let re = new RegExp(/^(\-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
 
     let [
       ,
