@@ -116,4 +116,4 @@ class ReportFilterSet(FilterSet):
         """Meta information for the report filter set."""
 
         model  = models.Report
-        fields = ['date']
+        fields = ['date', 'from_date', 'to_date']
