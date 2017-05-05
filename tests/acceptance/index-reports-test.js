@@ -10,7 +10,10 @@ describe('Acceptance | index reports', function() {
 
   beforeEach(async function() {
     application = startApp()
-    await authenticateSession(application)
+
+    let user = server.create('user')
+
+    await authenticateSession(application, { 'user_id': user.id })
 
     server.createList('report', 5)
   })

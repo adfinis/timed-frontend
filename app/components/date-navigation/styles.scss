@@ -1,20 +1,22 @@
 & {
   display: flex;
-  width: 100%;
+  flex-grow: 1;
+  justify-content: space-between;
+  padding: 1rem 0;
 }
 
-.btn-group  {
+:not(:first-child)  {
   margin-left: 10px;
-
-  .btn {
-    border-bottom: none;
-    border-bottom-left-radius: 0 !important;
-    border-bottom-right-radius: 0 !important;
-  }
 }
 
 .date-navigation-container {
   flex-grow: 1;
   display: flex;
-  justify-content: flex-end;
+}
+
+@media (--sm-viewport) {
+  & {
+    justify-content: flex-end;
+    padding: 0;
+  }
 }

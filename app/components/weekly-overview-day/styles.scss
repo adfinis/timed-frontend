@@ -1,0 +1,53 @@
+& {
+  height: 100%;
+  width: 15px;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+}
+
+&.weekend {
+  .bar {
+    background-color: rgb(220, 220, 220);
+  }
+  .day {
+    color: rgb(220, 220, 220);
+  }
+}
+
+&.active {
+  .bar {
+    background-color: var(--color-primary);
+  }
+  .day {
+    color: var(--color-primary);
+  }
+}
+
+&:hover {
+  .bar {
+    background-color: color(var(--color-primary) w(50%));
+  }
+  .day {
+    color: color(var(--color-primary) w(50%));
+  }
+}
+
+.bar {
+  background-color: rgb(150, 150, 150);
+  height: 100%;
+  width: 100%;
+  transition: background-color 300ms ease;
+}
+
+.day {
+  position: absolute;
+  font-family: var(--font-family-mono);
+  font-size: 12px;
+  left: 50%;
+  bottom: -35px;
+  text-align: center;
+  transform: translateX(-50%);
+  color: rgb(150, 150, 150);
+  transition: color 300ms ease;
+}

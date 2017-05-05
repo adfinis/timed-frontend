@@ -8,6 +8,7 @@ import moment     from 'moment'
 import computed   from 'ember-computed-decorators'
 import { later }  from 'ember-runloop'
 import Ember      from 'ember'
+import service    from 'ember-service/inject'
 
 const { testing } = Ember
 const { floor } = Math
@@ -37,6 +38,14 @@ export default Controller.extend({
   day: moment().format('YYYY-MM-DD'),
 
   /**
+   * The session service
+   *
+   * @property {EmberSimpleAuth.SessionService} session
+   * @public
+   */
+  session: service('session'),
+
+  /**
    * All activities
    *
    * @property {Activity[]} _allActivities
@@ -60,6 +69,12 @@ export default Controller.extend({
     })
   },
 
+  /**
+   * The duration sum of all activities of the selected day
+   *
+   * @property {String} activitySum
+   * @public
+   */
   @computed('_activities.@each.{duration,activeBlock}')
   activitySum(activities) {
     let duration = activities.reduce((dur, cur) => {
@@ -180,5 +195,35 @@ export default Controller.extend({
 
       return value
     }
+  },
+
+  /**
+   * The expected worktime of the user
+   *
+   * @property {moment.duration} expectedWorktime
+   * @public
+   */
+  @computed('session.data.authenticated.user_id')
+  expectedWorktime(userId) {
+    return this.store.peekRecord('user', userId).get('activeEmployment.worktimePerDay')
+  },
+
+  /**
+   * The data for the weekly overview
+   *
+   * @property {Object[]} weeklyOverviewData
+   * @public
+   */
+  @computed('_allReports.@each.{date,duration}', 'days.[]', 'date')
+  weeklyOverviewData(reports, days, current) {
+    return Array.from({ length: 31 }, (v, k) => moment(current).add(k - 20, 'days')).map((d) => {
+      return {
+        day: d,
+        active: d.isSame(current, 'day'),
+        worktime: reports.filter((r) => r.get('date').isSame(d, 'day')).reduce((val, cur) => {
+          return val.add(cur.get('duration'))
+        }, moment.duration())
+      }
+    })
   }
 })

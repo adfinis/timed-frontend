@@ -1,11 +1,59 @@
 <div>
-  <ul class="nav-tabs">
-    <li>{{#link-to 'index.activities'}}Activities <span class="badge">{{activitySum}}</span>{{/link-to}}</li>
-      <li>{{#link-to 'index.attendances'}}Attendances <span class="badge">{{attendanceSum}}</span>{{/link-to}}</li>
-      <li>{{#link-to 'index.reports'}}Reports <span class="badge">{{reportSum}}</span>{{/link-to}}</li>
-    {{date-navigation class='btn-toolbar--right' current=date on-change=(action (mut date))}}
-  </ul>
-  <div class="tab-content">
-    {{outlet}}
+  <div class="grid grid--12of12">
+    <div class="grid-cell grid-cell-sm--6of12">
+      <h1 class="no-margin">{{moment-format model 'dddd, DD.MM.YYYY'}}</h1>
+    </div>
+    <div class="grid-cell grid-cell-sm--6of12 grid-cell--align-center">
+      {{date-navigation current=date on-change=(action (mut date))}}
+    </div>
+    <div class="grid-cell visible-md">
+      {{#weekly-overview expected=expectedWorktime}}
+        {{#each weeklyOverviewData as |d|}}
+          {{weekly-overview-day
+            day      = d.day
+            active   = d.active
+            worktime = d.worktime
+            on-click = (action (mut date))
+          }}
+        {{/each}}
+      {{/weekly-overview}}
+    </div>
+    <div class="grid-cell hidden-sm">
+      <div class="btn-group btn-group--vertical">
+        {{#link-to 'index.activities' tagName='button' class='btn'}}
+          Activities <span class="badge">{{activitySum}}</span>
+        {{/link-to}}
+        {{#link-to 'index.attendances' tagName='button' class='btn'}}
+          Attendances <span class="badge">{{attendanceSum}}</span>
+        {{/link-to}}
+        {{#link-to 'index.reports' tagName='button' class='btn'}}
+          Reports <span class="badge">{{reportSum}}</span>
+        {{/link-to}}
+      </div>
+    </div>
+    <div class="grid-cell visible-sm">
+      <ul class="nav-tabs">
+        <li>
+          {{#link-to 'index.activities'}}
+            Activities <span class="badge">{{activitySum}}</span>
+          {{/link-to}}
+        </li>
+        <li>
+          {{#link-to 'index.attendances'}}
+            Attendances <span class="badge">{{attendanceSum}}</span>
+          {{/link-to}}
+        </li>
+        <li>
+          {{#link-to 'index.reports'}}
+            Reports <span class="badge">{{reportSum}}</span>
+          {{/link-to}}
+        </li>
+      </ul>
+    </div>
+    <div class="grid-cell">
+      <div class="tab-content">
+        {{outlet}}
+      </div>
+    </div>
   </div>
 </div>

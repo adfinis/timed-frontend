@@ -101,5 +101,18 @@ export default Model.extend({
   @computed('username', 'fullName')
   longName(username, fullName) {
     return fullName ? `${fullName} (${username})` : username
+  },
+
+  /**
+   * The active employment
+   *
+   * An employment is active as soon as it doesn't have a to date
+   *
+   * @property {Employment} activeEmployment
+   * @public
+   */
+  @computed('employments.[]')
+  activeEmployment(employments) {
+    return employments.find((e) => !e.get('to')) || null
   }
 })

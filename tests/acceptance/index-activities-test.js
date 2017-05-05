@@ -10,7 +10,10 @@ describe('Acceptance | index activities', function() {
 
   beforeEach(async function() {
     application = startApp()
-    await authenticateSession(application)
+
+    let user = server.create('user')
+
+    await authenticateSession(application, { 'user_id': user.id })
 
     this.activities = server.createList('activity', 5)
   })
