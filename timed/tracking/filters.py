@@ -3,7 +3,7 @@
 import datetime
 from functools import wraps
 
-from django_filters import Filter, FilterSet
+from django_filters import DateFilter, Filter, FilterSet
 
 from timed.tracking import models
 
@@ -108,6 +108,9 @@ class AttendanceFilterSet(FilterSet):
 
 class ReportFilterSet(FilterSet):
     """Filter set for the reports endpoint."""
+
+    from_date = DateFilter(name='date', lookup_expr='gte')
+    to_date   = DateFilter(name='date', lookup_expr='lte')
 
     class Meta:
         """Meta information for the report filter set."""
