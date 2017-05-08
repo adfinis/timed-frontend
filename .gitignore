@@ -63,3 +63,6 @@ target/
 
 # Pyenv
 .python-version
+
+# Editor swap files
+*.swp
