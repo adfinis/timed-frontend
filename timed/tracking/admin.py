@@ -53,4 +53,11 @@ class AttendanceAdmin(OwnerAdminMixin, admin.ModelAdmin):
 class ReportAdmin(OwnerAdminMixin, admin.ModelAdmin):
     """Report admin view."""
 
-    list_display = ['user', 'task', 'duration', 'comment']
+    list_display = ['user', 'task', 'date', 'duration', 'comment']
+
+
+@admin.register(models.Absence)
+class AbsenceAdmin(OwnerAdminMixin, admin.ModelAdmin):
+    """Absence admin view."""
+
+    list_display = ['user', 'date', 'duration', 'type']

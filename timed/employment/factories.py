@@ -87,7 +87,8 @@ class EmploymentFactory(DjangoModelFactory):
 class AbsenceTypeFactory(DjangoModelFactory):
     """Absence type factory."""
 
-    name = Faker('word')
+    name          = Faker('word')
+    fill_worktime = False
 
     class Meta:
         """Meta informations for the absence type factory."""

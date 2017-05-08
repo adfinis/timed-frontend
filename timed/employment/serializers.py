@@ -10,7 +10,7 @@ from rest_framework_json_api.serializers import (ModelSerializer,
                                                  SerializerMethodField)
 
 from timed.employment import models
-from timed.tracking.models import Report
+from timed.tracking.models import Absence, Report
 
 
 class UserSerializer(ModelSerializer):
@@ -91,7 +91,21 @@ class UserSerializer(ModelSerializer):
             timedelta()
         )
 
-        return reported_worktime + overtime_credit - expected_worktime
+        absences = sum(
+            Absence.objects.filter(
+                user=instance,
+                date__gte=start_date,
+                date__lte=end_date
+            ).values_list('duration', flat=True),
+            timedelta()
+        )
+
+        return (
+            reported_worktime +
+            absences +
+            overtime_credit -
+            expected_worktime
+        )
 
     def get_worktime_balance(self, instance):
         """Format the worktime balance.
@@ -187,7 +201,7 @@ class AbsenceTypeSerializer(ModelSerializer):
         """Meta information for the absence type serializer."""
 
         model  = models.AbsenceType
-        fields = ['name']
+        fields = ['name', 'fill_worktime']
 
 
 class AbsenceCreditSerializer(ModelSerializer):
@@ -217,9 +231,9 @@ class AbsenceCreditSerializer(ModelSerializer):
             else date.today()
         )
 
-        reports = Report.objects.filter(
+        reports = Absence.objects.filter(
             user=instance.user,
-            absence_type=instance.absence_type,
+            type=instance.absence_type,
             date__gte=instance.date,
             date__lte=end_date
         ).values_list('duration', flat=True)

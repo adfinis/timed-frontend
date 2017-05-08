@@ -8,6 +8,7 @@ from factory.django import DjangoModelFactory
 from faker import Factory as FakerFactory
 from pytz import timezone
 
+from timed.employment.models import Employment
 from timed.tracking import models
 
 tzinfo = timezone('Europe/Zurich')
@@ -85,7 +86,6 @@ class ReportFactory(DjangoModelFactory):
     date         = Faker('date')
     review       = False
     not_billable = False
-    absence_type = None
     task         = SubFactory('timed.projects.factories.TaskFactory')
     user         = SubFactory('timed.employment.factories.UserFactory')
 
@@ -141,3 +141,25 @@ class ActivityBlockFactory(DjangoModelFactory):
         """Meta informations for the activity block factory."""
 
         model = models.ActivityBlock
+
+
+class AbsenceFactory(DjangoModelFactory):
+    """Absence factory."""
+
+    user = SubFactory('timed.employment.factories.UserFactory')
+    type = SubFactory('timed.employment.factories.AbsenceTypeFactory')
+    date = Faker('date')
+
+    @lazy_attribute
+    def duration(self):
+        """Take the users employment worktime per day as duration.
+
+        :return: The computed duration
+        :rtype:  datetime.timedelta
+        """
+        return Employment.employment_at(self.user, self.date).worktime_per_day
+
+    class Meta:
+        """Meta informations for the absence factory."""
+
+        model = models.Absence

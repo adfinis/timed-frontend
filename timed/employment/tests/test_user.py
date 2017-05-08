@@ -12,7 +12,7 @@ from timed.employment.factories import (EmploymentFactory,
                                         OvertimeCreditFactory,
                                         PublicHolidayFactory, UserFactory)
 from timed.jsonapi_test_case import JSONAPITestCase
-from timed.tracking.factories import ReportFactory
+from timed.tracking.factories import AbsenceFactory, ReportFactory
 
 
 class UserTests(JSONAPITestCase):
@@ -159,7 +159,7 @@ class UserTests(JSONAPITestCase):
             duration_string(timedelta() - expected_worktime)
         )
 
-        # 3x 10 hour reported worktime
+        # 2x 10 hour reported worktime
         ReportFactory.create(
             user=user,
             date=start_date + timedelta(days=3),
@@ -172,10 +172,9 @@ class UserTests(JSONAPITestCase):
             duration=timedelta(hours=10)
         )
 
-        ReportFactory.create(
+        AbsenceFactory.create(
             user=user,
-            date=start_date + timedelta(days=5),
-            duration=timedelta(hours=10)
+            date=start_date + timedelta(days=5)
         )
 
         res2 = self.client.get('{0}?until={1}'.format(
@@ -187,5 +186,5 @@ class UserTests(JSONAPITestCase):
 
         assert (
             result2['data']['attributes']['worktime-balance'] ==
-            duration_string(timedelta(hours=30) - expected_worktime)
+            duration_string(timedelta(hours=28) - expected_worktime)
         )

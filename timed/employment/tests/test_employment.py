@@ -9,6 +9,7 @@ from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
 
 from timed.employment.admin import EmploymentForm
 from timed.employment.factories import EmploymentFactory
+from timed.employment.models import Employment
 from timed.jsonapi_test_case import JSONAPITestCase
 
 
@@ -116,3 +117,26 @@ class EmploymentTests(JSONAPITestCase):
 
         with pytest.raises(ValueError):
             form.save()
+
+    def test_employment_at(self):
+        """Should return the right employment on a date."""
+        employment = Employment.objects.get(user=self.user,
+                                            end_date__isnull=True)
+
+        assert (
+            Employment.employment_at(self.user, employment.start_date) ==
+            employment
+        )
+
+        employment.end_date = (
+            employment.start_date +
+            datetime.timedelta(days=20)
+        )
+
+        employment.save()
+
+        with pytest.raises(Exception):
+            Employment.employment_at(
+                self.user,
+                employment.start_date + datetime.timedelta(days=21)
+            )

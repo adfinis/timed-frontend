@@ -39,6 +39,28 @@ class Employment(models.Model):
     start_date       = models.DateField()
     end_date         = models.DateField(blank=True, null=True)
 
+    @classmethod
+    def employment_at(cls, user, date):
+        """Get the employment on a date for a user.
+
+        :returns: The employment on the date for the user
+        :rtype:   timed.employment.models.Employment
+        """
+        try:
+            return cls.objects.get(
+                (
+                    models.Q(end_date__gte=date) |
+                    models.Q(end_date__isnull=True)
+                ),
+                start_date__lte=date,
+                user=user
+            )
+        except Exception:
+            raise Exception('User {0} had no employment on {1}'.format(
+                user.username,
+                date.strftime('%Y-%m-%d')
+            ))
+
     def __str__(self):
         """Represent the model as a string.
 
@@ -80,7 +102,8 @@ class AbsenceType(models.Model):
     school.
     """
 
-    name = models.CharField(max_length=50)
+    name          = models.CharField(max_length=50)
+    fill_worktime = models.BooleanField(default=False)
 
     def __str__(self):
         """Represent the model as a string.

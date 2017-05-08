@@ -6,7 +6,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  ModelSerializer,
                                                  ValidationError)
 
-from timed.employment.models import AbsenceType
+from timed.employment.models import AbsenceType, Employment, PublicHoliday
 from timed.projects.models import Task
 from timed.tracking import models
 
@@ -109,36 +109,16 @@ class AttendanceSerializer(ModelSerializer):
 class ReportSerializer(ModelSerializer):
     """Report serializer."""
 
-    task         = ResourceRelatedField(queryset=Task.objects.all(),
-                                        allow_null=True,
-                                        required=False)
-    absence_type = ResourceRelatedField(queryset=AbsenceType.objects.all(),
-                                        allow_null=True,
-                                        required=False)
+    task         = ResourceRelatedField(queryset=Task.objects.all())
     activity     = ResourceRelatedField(queryset=models.Activity.objects.all(),
                                         allow_null=True,
                                         required=False)
     user         = ResourceRelatedField(read_only=True,
                                         default=CurrentUserDefault())
 
-    def validate(self, data):
-        """Validate the report.
-
-        Check if the report has either a task or an absence type.
-
-        :return: The validated data
-        :rtype:  dict
-        """
-        if not data.get('task') and not data.get('absence_type'):
-            raise ValidationError('Either a task or a absence type '
-                                  'must be referenced.')
-
-        return data
-
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
-        'user': 'timed.employment.serializers.UserSerializer',
-        'absence_type': 'timed.employment.serializers.AbsenceTypeSerializer',
+        'user': 'timed.employment.serializers.UserSerializer'
     }
 
     class Meta:
@@ -152,7 +132,54 @@ class ReportSerializer(ModelSerializer):
             'review',
             'not_billable',
             'task',
-            'absence_type',
             'activity',
+            'user',
+        ]
+
+
+class AbsenceSerializer(ModelSerializer):
+    """Absence serializer."""
+
+    duration = DurationField(read_only=True)
+    type     = ResourceRelatedField(queryset=AbsenceType.objects.all())
+    user     = ResourceRelatedField(read_only=True,
+                                    default=CurrentUserDefault())
+
+    included_serializers = {
+        'user': 'timed.employment.serializers.UserSerializer',
+    }
+
+    def validate(self, data):
+        """Validate the absence data.
+
+        An absence should not be created on a public holiday or a weekend.
+
+        :returns: The validated data
+        :rtype:   dict
+        """
+        if PublicHoliday.objects.filter(
+            location=Employment.employment_at(
+                data.get('user'),
+                data.get('date')
+            ).location,
+            date=data.get('date')
+        ).exists():
+            raise ValidationError(
+                'You can\'t create an absence on a public holiday'
+            )
+
+        if data.get('date').weekday() not in [1, 2, 3, 4, 5]:
+            raise ValidationError('You can\'t create an absence on a weekend')
+
+        return data
+
+    class Meta:
+        """Meta information for the absence serializer."""
+
+        model  = models.Absence
+        fields = [
+            'date',
+            'duration',
+            'type',
             'user',
         ]
