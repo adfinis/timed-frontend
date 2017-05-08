@@ -11,8 +11,7 @@ install: ## Install production environment
 	@pip install --upgrade .
 
 install-dev: ## Install development environment
-	@pip install --upgrade -r requirements.txt
-	@pip install --upgrade -r dev_requirements.txt
+	@pip install --upgrade -r requirements.txt -r dev_requirements.txt
 	@pip install -e .
 
 setup-ldap: ## Setup the LDAP container
