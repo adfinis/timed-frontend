@@ -2,7 +2,7 @@
 
 import codecs
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 from timed import __version__
 
@@ -18,6 +18,7 @@ setup(
     long_description=README_TEXT,
     keywords='timetracking',
     url='https://adfinis-sygroup.ch/',
+    packages=find_packages(),
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
