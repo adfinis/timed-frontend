@@ -3,9 +3,12 @@
  * @submodule timed-routes
  * @public
  */
-import Route  from 'ember-route'
-import RSVP   from 'rsvp'
-import moment from 'moment'
+import Route   from 'ember-route'
+import RSVP    from 'rsvp'
+import moment  from 'moment'
+import service from 'ember-service/inject'
+
+const DATE_FORMAT = 'YYYY-MM-DD'
 
 /**
  * The index route
@@ -27,6 +30,14 @@ export default Route.extend({
   },
 
   /**
+   * The session service
+   *
+   * @property {EmberSimpleAuth.SessionService} session
+   * @public
+   */
+  session: service('session'),
+
+  /**
    * Model hook, return the selected day as moment object
    *
    * @method model
@@ -36,7 +47,7 @@ export default Route.extend({
    * @public
    */
   model({ day }) {
-    return moment(day, 'YYYY-MM-DD')
+    return moment(day, DATE_FORMAT)
   },
 
   /**
@@ -49,12 +60,17 @@ export default Route.extend({
    * @public
    */
   afterModel(model) {
-    let day = model.format('YYYY-MM-DD')
+    let id   = this.get('session.data.authenticated.user_id')
+    let day  = model.format(DATE_FORMAT)
+    let from = moment(model).subtract(15, 'days').format(DATE_FORMAT)
+    let to   = moment(model).add(15, 'days').format(DATE_FORMAT)
 
     return RSVP.all([
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
       this.store.query('attendance', { day }),
-      this.store.query('report', { include: 'task,task.project,task.project.customer,absence_type', day })
+      this.store.query('report', { include: 'task,task.project,task.project.customer,absence_type', day }),
+      this.store.query('report', { 'from_date': from, 'to_date': to }),
+      this.store.findRecord('user', id, { include: 'employments' })
     ])
   }
 })

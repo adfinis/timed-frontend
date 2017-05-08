@@ -19,15 +19,15 @@
               </tr>
               <tr>
                 <td>Employed since:</td>
-                <td class="text-right">{{moment-format model.employments.firstObject.start 'DD.MM.YYYY'}}</td>
+                <td class="text-right">{{moment-format model.activeEmployment.start 'DD.MM.YYYY'}}</td>
               </tr>
               <tr>
                 <td>Percentage:</td>
-                <td class="text-right">{{model.employments.firstObject.percentage}}%</td>
+                <td class="text-right">{{model.activeEmployment.percentage}}%</td>
               </tr>
               <tr>
                 <td>Wortime per day:</td>
-                <td class="text-right">{{format-duration model.employments.firstObject.worktimePerDay false}}</td>
+                <td class="text-right">{{format-duration model.activeEmployment.worktimePerDay false}}</td>
               </tr>
               <tr>
                 <td><strong>Wortime balance:</strong></td>

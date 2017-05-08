@@ -17,7 +17,7 @@ describe('Integration | Component | date navigation', function() {
 
     this.render(hbs`{{date-navigation current=date on-change=(action (mut date))}}`)
 
-    expect(this.$(testSelector('current')).text()).to.equal('Tue, Jan 10, 2017')
+    expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-10')
   })
 
   it('can select the next day', function() {
@@ -27,7 +27,7 @@ describe('Integration | Component | date navigation', function() {
 
     this.$(testSelector('next')).click()
 
-    expect(this.$(testSelector('current')).text()).to.equal('Wed, Jan 11, 2017')
+    expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-11')
   })
 
   it('can select the previous day', function() {
@@ -37,7 +37,7 @@ describe('Integration | Component | date navigation', function() {
 
     this.$(testSelector('previous')).click()
 
-    expect(this.$(testSelector('current')).text()).to.equal('Mon, Jan 9, 2017')
+    expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-09')
   })
 
   it('can select the current day', function() {
@@ -47,6 +47,6 @@ describe('Integration | Component | date navigation', function() {
 
     this.$(testSelector('today')).click()
 
-    expect(this.$(testSelector('current')).text()).to.equal(moment().format('ddd, ll'))
+    expect(this.get('date').format('YYYY-MM-DD')).to.equal(moment().format('YYYY-MM-DD'))
   })
 })

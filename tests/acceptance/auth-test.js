@@ -11,7 +11,7 @@ describe('Acceptance | auth', function() {
   beforeEach(function() {
     application = startApp()
 
-    server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
+    this.user = server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
   })
 
   afterEach(function() {
@@ -53,7 +53,7 @@ describe('Acceptance | auth', function() {
   })
 
   it('can logout', async function() {
-    await authenticateSession(application)
+    await authenticateSession(application, { 'user_id': this.user.id })
 
     await visit('/')
 
