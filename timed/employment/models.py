@@ -1,5 +1,7 @@
 """Models for the employment app."""
 
+import datetime
+
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -8,7 +10,7 @@ from django.db import models
 class EmploymentManager(models.Manager):
     """Custom manager for employments."""
 
-    def at(self, user, date):
+    def for_user(self, user, date=datetime.date.today()):
         """Get the employment on a date for a user.
 
         :param User user: The user of the searched employment

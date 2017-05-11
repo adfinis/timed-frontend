@@ -158,7 +158,7 @@ class AbsenceSerializer(ModelSerializer):
         :rtype:   dict
         """
         if PublicHoliday.objects.filter(
-            location=Employment.objects.at(
+            location=Employment.objects.for_user(
                 data.get('user'),
                 data.get('date')
             ).location,

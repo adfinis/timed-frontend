@@ -124,7 +124,7 @@ class EmploymentTests(JSONAPITestCase):
                                             end_date__isnull=True)
 
         assert (
-            Employment.objects.at(self.user, employment.start_date) ==
+            Employment.objects.for_user(self.user, employment.start_date) ==
             employment
         )
 
@@ -136,7 +136,7 @@ class EmploymentTests(JSONAPITestCase):
         employment.save()
 
         with pytest.raises(Employment.DoesNotExist):
-            Employment.objects.at(
+            Employment.objects.for_user(
                 self.user,
                 employment.start_date + datetime.timedelta(days=21)
             )
