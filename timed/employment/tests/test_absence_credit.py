@@ -6,9 +6,9 @@ from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
-from timed.employment.factories import AbsenceCreditFactory
+from timed.employment.factories import AbsenceCreditFactory, EmploymentFactory
 from timed.jsonapi_test_case import JSONAPITestCase
-from timed.tracking.factories import ReportFactory
+from timed.tracking.factories import AbsenceFactory
 
 
 class AbsenceCreditTests(JSONAPITestCase):
@@ -101,17 +101,21 @@ class AbsenceCreditTests(JSONAPITestCase):
             duration=timedelta(hours=30)
         )
 
-        ReportFactory.create_batch(
-            2,
+        EmploymentFactory.create(
             user=self.user,
-            absence_type=absence_credit.absence_type,
-            date=absence_credit.date + timedelta(days=1),
-            duration=timedelta(hours=8)
+            start_date=absence_credit.date - timedelta(days=1),
+            worktime_per_day=timedelta(hours=8)
         )
 
-        ReportFactory.create(
+        AbsenceFactory.create(
             user=self.user,
-            absence_type=absence_credit.absence_type,
+            type=absence_credit.absence_type,
+            date=absence_credit.date + timedelta(days=1)
+        )
+
+        AbsenceFactory.create(
+            user=self.user,
+            type=absence_credit.absence_type,
             date=absence_credit.date - timedelta(days=1),
             duration=timedelta(hours=8)
         )
@@ -124,8 +128,8 @@ class AbsenceCreditTests(JSONAPITestCase):
         result = self.result(res)
 
         assert result['data']['attributes']['duration'] == '1 06:00:00'
-        assert result['data']['attributes']['used'] == '16:00:00'
-        assert result['data']['attributes']['balance'] == '14:00:00'
+        assert result['data']['attributes']['used'] == '08:00:00'
+        assert result['data']['attributes']['balance'] == '22:00:00'
 
     def test_absence_credit_balance_no_duration(self):
         """Should not calculate an absence credit balance."""
@@ -134,11 +138,16 @@ class AbsenceCreditTests(JSONAPITestCase):
             duration=None
         )
 
-        ReportFactory.create(
+        EmploymentFactory.create(
             user=self.user,
-            absence_type=absence_credit.absence_type,
-            date=absence_credit.date + timedelta(days=1),
-            duration=timedelta(hours=8)
+            start_date=absence_credit.date,
+            worktime_per_day=timedelta(hours=8)
+        )
+
+        AbsenceFactory.create(
+            user=self.user,
+            type=absence_credit.absence_type,
+            date=absence_credit.date + timedelta(days=1)
         )
 
         url = reverse('absence-credit-detail', args=[
@@ -159,26 +168,28 @@ class AbsenceCreditTests(JSONAPITestCase):
             duration=timedelta(hours=30)
         )
 
-        ReportFactory.create_batch(
-            2,
+        EmploymentFactory.create(
             user=self.user,
-            absence_type=absence_credit.absence_type,
-            date=absence_credit.date + timedelta(days=1),
-            duration=timedelta(hours=8)
+            start_date=absence_credit.date - timedelta(days=1),
+            worktime_per_day=timedelta(hours=8)
         )
 
-        ReportFactory.create(
+        AbsenceFactory.create(
             user=self.user,
-            absence_type=absence_credit.absence_type,
-            date=absence_credit.date - timedelta(days=1),
-            duration=timedelta(hours=8)
+            type=absence_credit.absence_type,
+            date=absence_credit.date + timedelta(days=1)
         )
 
-        ReportFactory.create(
+        AbsenceFactory.create(
             user=self.user,
-            absence_type=absence_credit.absence_type,
-            date=absence_credit.date + timedelta(days=2),
-            duration=timedelta(hours=8)
+            type=absence_credit.absence_type,
+            date=absence_credit.date - timedelta(days=1)
+        )
+
+        AbsenceFactory.create(
+            user=self.user,
+            type=absence_credit.absence_type,
+            date=absence_credit.date + timedelta(days=2)
         )
 
         url = reverse('absence-credit-detail', args=[
@@ -193,5 +204,5 @@ class AbsenceCreditTests(JSONAPITestCase):
         result = self.result(res)
 
         assert result['data']['attributes']['duration'] == '1 06:00:00'
-        assert result['data']['attributes']['used'] == '16:00:00'
-        assert result['data']['attributes']['balance'] == '14:00:00'
+        assert result['data']['attributes']['used'] == '08:00:00'
+        assert result['data']['attributes']['balance'] == '22:00:00'

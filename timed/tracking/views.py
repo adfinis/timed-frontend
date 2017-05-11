@@ -65,3 +65,18 @@ class ReportViewSet(ModelViewSet):
         :rtype:  QuerySet
         """
         return models.Report.objects.filter(user=self.request.user)
+
+
+class AbsenceViewSet(ModelViewSet):
+    """Absence view set."""
+
+    serializer_class = serializers.AbsenceSerializer
+    filter_class     = filters.AbsenceFilterSet
+
+    def get_queryset(self):
+        """Filter the queryset by the user of the request.
+
+        :return: The filtered absences
+        :rtype:  QuerySet
+        """
+        return models.Absence.objects.filter(user=self.request.user)

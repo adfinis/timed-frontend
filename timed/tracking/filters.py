@@ -117,3 +117,13 @@ class ReportFilterSet(FilterSet):
 
         model  = models.Report
         fields = ['date', 'from_date', 'to_date']
+
+
+class AbsenceFilterSet(FilterSet):
+    """Filter set for the absences endpoint."""
+
+    class Meta:
+        """Meta information for the absence filter set."""
+
+        model  = models.Absence
+        fields = ['date']

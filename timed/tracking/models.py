@@ -5,6 +5,8 @@ from datetime import timedelta
 from django.conf import settings
 from django.db import models
 
+from timed.employment.models import Employment
+
 
 class Activity(models.Model):
     """Activity model.
@@ -130,10 +132,6 @@ class Report(models.Model):
                                      blank=True,
                                      on_delete=models.SET_NULL,
                                      related_name='reports')
-    absence_type = models.ForeignKey('employment.AbsenceType',
-                                     null=True,
-                                     blank=True,
-                                     related_name='reports')
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='reports')
 
@@ -142,9 +140,9 @@ class Report(models.Model):
 
         This rounds the duration of the report to the nearest 15 minutes.
         However, the duration must at least be 15 minutes long.
-
-        :returns: The saved report
-        :rtype:   timed.tracking.models.Report
+        It also checks if an absence which should fill the expected worktime
+        exists on this date. If so, the duration of the absence needs to be
+        updated, by saving the absence again.
         """
         self.duration = timedelta(
             seconds=max(
@@ -153,7 +151,14 @@ class Report(models.Model):
             )
         )
 
-        return super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
+
+        for absence in Absence.objects.filter(
+            user=self.user,
+            date=self.date,
+            type__fill_worktime=True
+        ):
+            absence.save()
 
     def __str__(self):
         """Represent the model as a string.
@@ -162,3 +167,50 @@ class Report(models.Model):
         :rtype:  str
         """
         return '{0}: {1}'.format(self.user, self.task)
+
+
+class Absence(models.Model):
+    """Absence model.
+
+    An absence is time an employee was not working but still counts as
+    worktime. E.g holidays or sickness.
+    """
+
+    date     = models.DateField()
+    duration = models.DurationField(default=timedelta())
+    type     = models.ForeignKey('employment.AbsenceType',
+                                 related_name='absences')
+    user     = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 related_name='absences')
+
+    def save(self, *args, **kwargs):
+        """Compute the duration of the absence and save it.
+
+        The duration of an absence should be the worktime per day of the
+        employment. Unless an absence type should only fill the worktime (e.g
+        sickness), in which case the duration of the absence needs to fill the
+        difference between the reported time and the worktime per day.
+        """
+        employment = Employment.objects.for_user(self.user, self.date)
+
+        if self.type.fill_worktime:
+            worktime = sum(
+                Report.objects.filter(
+                    date=self.date
+                ).values_list('duration', flat=True),
+                timedelta()
+            )
+
+            self.duration = max(
+                timedelta(),
+                employment.worktime_per_day - worktime
+            )
+        else:
+            self.duration = employment.worktime_per_day
+
+        super().save(*args, **kwargs)
+
+    class Meta:
+        """Meta informations for the absence model."""
+
+        unique_together = ('date', 'user',)

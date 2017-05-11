@@ -10,7 +10,7 @@ from rest_framework_json_api.serializers import (ModelSerializer,
                                                  SerializerMethodField)
 
 from timed.employment import models
-from timed.tracking.models import Report
+from timed.tracking.models import Absence, Report
 
 
 class UserSerializer(ModelSerializer):
@@ -23,22 +23,24 @@ class UserSerializer(ModelSerializer):
     def get_worktime_balance_raw(self, instance):
         """Calculate the worktime balance for the user.
 
-        1. Determine the current employment of the user
-        2. Take the latest of those two as start date:
-            * The start of the year
-            * The start of the current employment
-        3. Take the delivered date if given or the current date as end date
-        4. Determine the count of workdays within start and end date
-        5. Determine the count of public holidays within start and end date
-        6. The expected worktime consists of following elements:
-            * Workdays
-            * Subtracted by holidays
-            * Multiplicated with the worktime per day of the employment
-        7. Determine the overtime credit duration within start and end date
-        8. The reported worktime is the sum of the durations of all reports for
-           this user within start and end date
-        9. The balance is the reported time plus the overtime credit minus the
-           expected worktime
+        1.  Determine the current employment of the user
+        2.  Take the latest of those two as start date:
+             * The start of the year
+             * The start of the current employment
+        3.  Take the delivered date if given or the current date as end date
+        4.  Determine the count of workdays within start and end date
+        5.  Determine the count of public holidays within start and end date
+        6.  The expected worktime consists of following elements:
+             * Workdays
+             * Subtracted by holidays
+             * Multiplicated with the worktime per day of the employment
+        7.  Determine the overtime credit duration within start and end date
+        8.  The reported worktime is the sum of the durations of all reports
+            for this user within start and end date
+        9.  The absences are all absences for this user between the start and
+            end time
+        10. The balance is the reported time plus the absences plus the
+            overtime credit minus the expected worktime
 
         :returns: The worktime balance of the user
         :rtype:   datetime.timedelta
@@ -91,7 +93,21 @@ class UserSerializer(ModelSerializer):
             timedelta()
         )
 
-        return reported_worktime + overtime_credit - expected_worktime
+        absences = sum(
+            Absence.objects.filter(
+                user=instance,
+                date__gte=start_date,
+                date__lte=end_date
+            ).values_list('duration', flat=True),
+            timedelta()
+        )
+
+        return (
+            reported_worktime +
+            absences +
+            overtime_credit -
+            expected_worktime
+        )
 
     def get_worktime_balance(self, instance):
         """Format the worktime balance.
@@ -187,7 +203,7 @@ class AbsenceTypeSerializer(ModelSerializer):
         """Meta information for the absence type serializer."""
 
         model  = models.AbsenceType
-        fields = ['name']
+        fields = ['name', 'fill_worktime']
 
 
 class AbsenceCreditSerializer(ModelSerializer):
@@ -217,9 +233,9 @@ class AbsenceCreditSerializer(ModelSerializer):
             else date.today()
         )
 
-        reports = Report.objects.filter(
+        reports = Absence.objects.filter(
             user=instance.user,
-            absence_type=instance.absence_type,
+            type=instance.absence_type,
             date__gte=instance.date,
             date__lte=end_date
         ).values_list('duration', flat=True)

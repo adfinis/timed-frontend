@@ -1,18 +1,18 @@
 """Tests for the reports endpoint."""
 
-from datetime import timedelta
+from datetime import date, timedelta
 
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
-                                   HTTP_401_UNAUTHORIZED)
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
 
-from timed.employment.factories import AbsenceTypeFactory
+from timed.employment.factories import AbsenceTypeFactory, EmploymentFactory
 from timed.jsonapi_test_case import JSONAPITestCase
 from timed.projects.factories import TaskFactory
-from timed.tracking.factories import ReportFactory
+from timed.tracking.factories import AbsenceFactory, ReportFactory
+from timed.tracking.models import Absence, Report
 
 
 class ReportTests(JSONAPITestCase):
@@ -107,7 +107,7 @@ class ReportTests(JSONAPITestCase):
         """Should update an existing report."""
         report = self.reports[0]
 
-        absence_type = AbsenceTypeFactory.create()
+        task = TaskFactory.create()
 
         data = {
             'data': {
@@ -120,12 +120,9 @@ class ReportTests(JSONAPITestCase):
                 },
                 'relationships': {
                     'task': {
-                        'data': None
-                    },
-                    'absence-type': {
                         'data': {
-                            'type': 'absence-types',
-                            'id': absence_type.id
+                            'type': 'tasks',
+                            'id': task.id
                         }
                     }
                 }
@@ -159,7 +156,10 @@ class ReportTests(JSONAPITestCase):
             data['data']['attributes']['date']
         )
 
-        assert result['data']['relationships']['task']['data'] is None
+        assert (
+            int(result['data']['relationships']['task']['data']['id']) ==
+            int(data['data']['relationships']['task']['data']['id'])
+        )
 
     def test_report_delete(self):
         """Should delete a report."""
@@ -174,34 +174,6 @@ class ReportTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert user_res.status_code == HTTP_204_NO_CONTENT
-
-    def test_report_task_or_absence_type_required(self):
-        """Should not be able to save reports without task or absence type."""
-        report = self.reports[0]
-
-        data = {
-            'data': {
-                'type': 'reports',
-                'id': report.id,
-                'attributes': {},
-                'relationships': {
-                    'task': {
-                        'data': None
-                    },
-                    'absence-type': {
-                        'data': None
-                    }
-                }
-            }
-        }
-
-        url = reverse('report-detail', args=[
-            report.id
-        ])
-
-        res = self.client.patch(url, data)
-
-        assert res.status_code == HTTP_400_BAD_REQUEST
 
     def test_report_round_duration(self):
         """Should round the duration of a report to 15 minutes."""
@@ -221,3 +193,25 @@ class ReportTests(JSONAPITestCase):
         report.save()
 
         assert duration_string(report.duration) == '02:00:00'
+
+    def test_absence_update_on_create_report(self):
+        """Should update the absence after creating a new report."""
+        task = TaskFactory.create()
+        type = AbsenceTypeFactory.create(fill_worktime=True)
+        day  = date(2017, 5, 3)
+
+        employment = EmploymentFactory.create(user=self.user, start_date=day)
+
+        absence = AbsenceFactory.create(user=self.user, date=day, type=type)
+
+        Report.objects.create(
+            user=self.user,
+            date=day,
+            task=task,
+            duration=timedelta(hours=1)
+        )
+
+        assert (
+            Absence.objects.get(pk=absence.pk).duration ==
+            employment.worktime_per_day - timedelta(hours=1)
+        )

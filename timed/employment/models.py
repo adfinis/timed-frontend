@@ -1,8 +1,31 @@
 """Models for the employment app."""
 
+import datetime
+
 from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+
+class EmploymentManager(models.Manager):
+    """Custom manager for employments."""
+
+    def for_user(self, user, date=datetime.date.today()):
+        """Get the employment on a date for a user.
+
+        :param User user: The user of the searched employment
+        :param datetime.date date: The date of the searched employment
+        :returns: The employment on the date for the user
+        :rtype: timed.employment.models.Employment
+        """
+        return self.get(
+            (
+                models.Q(end_date__gte=date) |
+                models.Q(end_date__isnull=True)
+            ),
+            start_date__lte=date,
+            user=user
+        )
 
 
 class Location(models.Model):
@@ -38,6 +61,7 @@ class Employment(models.Model):
     worktime_per_day = models.DurationField()
     start_date       = models.DateField()
     end_date         = models.DateField(blank=True, null=True)
+    objects          = EmploymentManager()
 
     def __str__(self):
         """Represent the model as a string.
@@ -80,7 +104,8 @@ class AbsenceType(models.Model):
     school.
     """
 
-    name = models.CharField(max_length=50)
+    name          = models.CharField(max_length=50)
+    fill_worktime = models.BooleanField(default=False)
 
     def __str__(self):
         """Represent the model as a string.
