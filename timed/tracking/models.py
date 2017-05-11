@@ -191,7 +191,7 @@ class Absence(models.Model):
         sickness), in which case the duration of the absence needs to fill the
         difference between the reported time and the worktime per day.
         """
-        employment = Employment.employment_at(self.user, self.date)
+        employment = Employment.objects.at(self.user, self.date)
 
         if self.type.fill_worktime:
             worktime = sum(

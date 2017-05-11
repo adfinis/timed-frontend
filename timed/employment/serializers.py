@@ -23,22 +23,24 @@ class UserSerializer(ModelSerializer):
     def get_worktime_balance_raw(self, instance):
         """Calculate the worktime balance for the user.
 
-        1. Determine the current employment of the user
-        2. Take the latest of those two as start date:
-            * The start of the year
-            * The start of the current employment
-        3. Take the delivered date if given or the current date as end date
-        4. Determine the count of workdays within start and end date
-        5. Determine the count of public holidays within start and end date
-        6. The expected worktime consists of following elements:
-            * Workdays
-            * Subtracted by holidays
-            * Multiplicated with the worktime per day of the employment
-        7. Determine the overtime credit duration within start and end date
-        8. The reported worktime is the sum of the durations of all reports for
-           this user within start and end date
-        9. The balance is the reported time plus the overtime credit minus the
-           expected worktime
+        1.  Determine the current employment of the user
+        2.  Take the latest of those two as start date:
+             * The start of the year
+             * The start of the current employment
+        3.  Take the delivered date if given or the current date as end date
+        4.  Determine the count of workdays within start and end date
+        5.  Determine the count of public holidays within start and end date
+        6.  The expected worktime consists of following elements:
+             * Workdays
+             * Subtracted by holidays
+             * Multiplicated with the worktime per day of the employment
+        7.  Determine the overtime credit duration within start and end date
+        8.  The reported worktime is the sum of the durations of all reports
+            for this user within start and end date
+        9.  The absences are all absences for this user between the start and
+            end time
+        10. The balance is the reported time plus the absences plus the
+            overtime credit minus the expected worktime
 
         :returns: The worktime balance of the user
         :rtype:   datetime.timedelta

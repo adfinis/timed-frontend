@@ -5,6 +5,27 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 
+class EmploymentManager(models.Manager):
+    """Custom manager for employments."""
+
+    def at(self, user, date):
+        """Get the employment on a date for a user.
+
+        :param User user: The user of the searched employment
+        :param datetime.date date: The date of the searched employment
+        :returns: The employment on the date for the user
+        :rtype: timed.employment.models.Employment
+        """
+        return self.get(
+            (
+                models.Q(end_date__gte=date) |
+                models.Q(end_date__isnull=True)
+            ),
+            start_date__lte=date,
+            user=user
+        )
+
+
 class Location(models.Model):
     """Location model.
 
@@ -38,28 +59,7 @@ class Employment(models.Model):
     worktime_per_day = models.DurationField()
     start_date       = models.DateField()
     end_date         = models.DateField(blank=True, null=True)
-
-    @classmethod
-    def employment_at(cls, user, date):
-        """Get the employment on a date for a user.
-
-        :returns: The employment on the date for the user
-        :rtype:   timed.employment.models.Employment
-        """
-        try:
-            return cls.objects.get(
-                (
-                    models.Q(end_date__gte=date) |
-                    models.Q(end_date__isnull=True)
-                ),
-                start_date__lte=date,
-                user=user
-            )
-        except Exception:
-            raise Exception('User {0} had no employment on {1}'.format(
-                user.username,
-                date.strftime('%Y-%m-%d')
-            ))
+    objects          = EmploymentManager()
 
     def __str__(self):
         """Represent the model as a string.
