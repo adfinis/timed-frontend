@@ -15,7 +15,7 @@ class Activity(models.Model):
     certain task.
     """
 
-    comment        = models.CharField(max_length=255, blank=True)
+    comment        = models.TextField(blank=True)
     start_datetime = models.DateTimeField(auto_now_add=True)
     task           = models.ForeignKey('projects.Task',
                                        null=True,
@@ -118,7 +118,7 @@ class Report(models.Model):
     bill for the customer.
     """
 
-    comment      = models.CharField(max_length=255, blank=True)
+    comment      = models.TextField(blank=True)
     date         = models.DateField()
     duration     = models.DurationField()
     review       = models.BooleanField(default=False)
