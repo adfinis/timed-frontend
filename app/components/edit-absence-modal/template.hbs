@@ -4,36 +4,24 @@
       {{if changeset.isNew 'New' 'Edit'}} absence
     {{/modal.header}}
     {{#modal.body}}
-      <div data-test-absence-type class="form-group {{if changeset.error.absenceType 'has-error'}}">
+      <div data-test-absence-date class="form-group">
+        {{sy-datepicker value=changeset.date}}
+      </div>
+      <div data-test-absence-type class="form-group {{if changeset.error.type 'has-error'}}">
           <label>Type <span class="required">*</span></label>
         {{#power-select
           renderInPlace = true
-          allowClear    = true
           options       = absenceTypes
-          selected      = changeset.absenceType
+          selected      = changeset.type
           searchField   = 'name'
-          onchange      = (action (mut changeset.absenceType))
+          onchange      = (action (mut changeset.type))
           placeholder   = 'Select absence type...'
-          as |absenceType|}}
-          {{absenceType.name}}
+          as |type|}}
+          {{type.name}}
         {{/power-select}}
-        {{#if changeset.error.absenceType}}
+        {{#if changeset.error.type}}
           <p class="error-text">
-            {{#each changeset.error.absenceType.validation as |message index|}}
-              {{if (gt index 0) ', '}}{{message}}
-            {{/each}}
-          </p>
-        {{/if}}
-      </div>
-      <div data-test-absence-duration class="form-group {{if changeset.error.duration 'has-error'}}">
-        <label>Duration <span class="required">*</span></label>
-        {{sy-durationpicker
-          value     = changeset.duration
-          on-change = (action (mut changeset.duration))
-        }}
-        {{#if changeset.error.duration}}
-          <p class="error-text">
-            {{#each changeset.error.duration.validation as |message index|}}
+            {{#each changeset.error.type.validation as |message index|}}
               {{if (gt index 0) ', '}}{{message}}
             {{/each}}
           </p>

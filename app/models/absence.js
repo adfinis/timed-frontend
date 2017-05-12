@@ -28,14 +28,6 @@ export default Model.extend({
   comment: attr('string', { defaultValue: '' }),
 
   /**
-   * The date
-   *
-   * @property {moment} date
-   * @public
-   */
-  date: attr('django-date'),
-
-  /**
    * The duration
    *
    * @property {moment.duration} duration
@@ -44,36 +36,20 @@ export default Model.extend({
   duration: attr('django-duration', { defaultValue: () => moment.duration() }),
 
   /**
-   * Whether the report needs to be reviewed
+   * The date
    *
-   * @property {Boolean} review
+   * @property {moment} date
    * @public
    */
-  review: attr('boolean', { defaultValue: false }),
+  date: attr('django-date'),
 
   /**
-   * Whether the report is not billable
+   * The type of the absence
    *
-   * @property {Boolean} notBillable
+   * @property {AbsenceType} type
    * @public
    */
-  notBillable: attr('boolean', { defaultValue: false }),
-
-  /**
-   * The activity this report was generated from
-   *
-   * @property {Activity} activity
-   * @public
-   */
-  activity: belongsTo('activity'),
-
-  /**
-   * The task
-   *
-   * @property {Task} task
-   * @public
-   */
-  task: belongsTo('task'),
+  type: belongsTo('absence-type'),
 
   /**
    * The user

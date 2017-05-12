@@ -33,7 +33,15 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'weekend', 'active' ],
+  classNameBindings: [ 'active', 'weekend', 'absence' ],
+
+  /**
+   * Whether there is an absence on this day
+   *
+   * @property {Boolean} absence
+   * @public
+   */
+  absence: false,
 
   /**
    * Whether it is the currently selected day

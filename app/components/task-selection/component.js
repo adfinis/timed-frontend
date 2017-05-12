@@ -3,8 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component           from 'ember-component'
-import computed, { alias } from 'ember-computed-decorators'
+import Component         from 'ember-component'
+import computed          from 'ember-computed-decorators'
+import { task, timeout } from 'ember-concurrency'
 
 /**
  * Component for selecting a task, which consists of selecting a customer and
@@ -52,21 +53,11 @@ export default Component.extend({
    */
   error: null,
 
-  /**
-   * Set the customer and project when we set a task
-   *
-   * @method didReceiveAttrs
-   * @public
-   */
-  didReceiveAttrs() {
+  init() {
     this._super(...arguments)
 
-    let task = this.get('task.id') ? this.get('task') : null
-
-    if (task) {
-      this.set('_customer', task.get('project.customer'))
-      this.set('_project', task.get('project'))
-    }
+    this.set('_customer', this.getWithDefault('_task.project.customer', null))
+    this.set('_project',  this.getWithDefault('_task.project', null))
   },
 
   /**
@@ -88,10 +79,10 @@ export default Component.extend({
   /**
    * The currently selected task
    *
-   * @property {Task} task
-   * @public
+   * @property {Task} _task
+   * @private
    */
-  task: null,
+  _task: null,
 
   /**
    * The currently selected customer
@@ -115,10 +106,11 @@ export default Component.extend({
     },
     set(task, value) {
       this.set('_customer', value)
+
       this.set('project', null)
 
-      if (this.get('task.content')) {
-        this.get('attrs.on-change')(null)
+      if (value) {
+        this.get('attrs.on-filter-projects')({ customer: value.id })
       }
 
       return value
@@ -146,21 +138,32 @@ export default Component.extend({
     set(task, value) {
       this.set('_project', value)
 
-      if (this.get('task.content')) {
-        this.get('attrs.on-change')(null)
+      this.set('_task', null)
+
+      if (value) {
+        this.get('attrs.on-filter-tasks')({ project: value.id })
       }
 
       return value
     }
   },
 
-  /**
-   * All available customers
-   *
-   * @property {Customer[]} customers
-   * @public
-   */
-  customers: [],
+  @computed('_task')
+  task: {
+    get(task) {
+      return task
+    },
+    set(task, value) {
+      this.set('_task', value)
+
+      if (!value) {
+        this.set('_customer', null)
+        this.set('_project',  null)
+      }
+
+      return value
+    }
+  },
 
   /**
    * All available projects
@@ -177,15 +180,6 @@ export default Component.extend({
    * @public
    */
   tasks: [],
-
-  /**
-   * All available customers
-   *
-   * @property {Customer[]} _customers
-   * @private
-   */
-  @alias('customers')
-  _customers: null,
 
   /**
    * All available projects filtered by the currently selected customer
@@ -217,25 +211,13 @@ export default Component.extend({
     return tasks.filterBy('project.id', id)
   },
 
-  /**
-   * The actions of the task selection component
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Change action
-     *
-     * This is triggered when the task is selected, not when the customer or
-     * project is selected
-     *
-     * @method change
-     * @param {Task} task The selected task
-     * @public
-     */
-    change(task) {
-      this.get('attrs.on-change')(task)
+  searchCustomers: task(function* (search) {
+    if (!search || search.length < 3) {
+      return []
     }
-  }
+
+    yield timeout(500)
+
+    return this.get('attrs.on-search-customers')(search)
+  })
 })

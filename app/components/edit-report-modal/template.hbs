@@ -5,14 +5,16 @@
     {{/modal.header}}
     {{#modal.body}}
       {{task-selection
-        changeset  = changeset
-        error      = changeset.error.task
-        showLabels = true
-        task       = changeset.task
-        customers  = customers
-        projects   = projects
-        tasks      = tasks
-        on-change  = (action (mut changeset.task))
+        _task               = changeset.task
+        changeset           = changeset
+        error               = changeset.error.task
+        showLabels          = true
+        projects            = projects
+        tasks               = tasks
+        on-search-customers = (action on-search-customers)
+        on-filter-projects  = (action on-filter-projects)
+        on-filter-tasks     = (action on-filter-tasks)
+        on-change           = (action (mut changeset.task))
       }}
       <div class="grid grid--4of12">
         <div data-test-report-duration class="grid-cell form-group {{if changeset.error.duration 'has-error'}}">

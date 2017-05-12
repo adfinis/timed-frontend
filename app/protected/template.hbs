@@ -14,7 +14,7 @@
       {{/sy-sidenav-item}}
     {{/sy-sidenav-list}}
   {{else}}
-    <main class="page-main">
+    <main class="page-main {{if loading 'loading-mask'}}">
       <div class="page-wrapper">
         <div class="page-content page-content--scroll">
           {{tracking-bar
@@ -24,6 +24,9 @@
             activity  = currentActivity
             on-stop   = (action 'stopCurrentActivity')
             on-start  = (action 'startCurrentActivity')
+            on-search-customers = (route-action 'searchCustomers')
+            on-filter-projects = (route-action 'filterProjects')
+            on-filter-tasks    = (route-action 'filterTasks')
           }}
           {{outlet}}
         </div>

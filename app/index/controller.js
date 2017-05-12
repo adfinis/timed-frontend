@@ -150,6 +150,17 @@ export default Controller.extend({
   },
 
   /**
+   * All absences
+   *
+   * @property {Absence[]} _allAbsences
+   * @private
+   */
+  @computed()
+  _allAbsences() {
+    return this.store.peekAll('absence')
+  },
+
+  /**
    * All reports filtered by the selected day
    *
    * @property {Report[]} _reports
@@ -163,17 +174,33 @@ export default Controller.extend({
   },
 
   /**
+   * All absences filtered by the selected day
+   *
+   * @property {Absence[]} _absences
+   * @private
+   */
+  @computed('_allAbsences.@each.{date,isNew,isDeleted}', 'model')
+  _absences(absences, day) {
+    return absences.filter((a) => {
+      return a.get('date').isSame(day, 'day') && !a.get('isNew') && !a.get('isDeleted')
+    })
+  },
+
+  /**
    * The duration sum of all reports of the selected day
    *
    * @property {String} reportSum
    * @public
    */
-  @computed('_reports.@each.duration')
-  reportSum(reports) {
-    let duration = reports.reduce((dur, cur) => {
-      dur.add(cur.get('duration'))
+  @computed('_reports.@each.duration', '_absences.@each.duration')
+  reportSum(reports, absences) {
+    let reportDurations  = reports.mapBy('duration')
+    let absenceDurations = absences.mapBy('duration')
 
-      return dur
+    let duration = [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => {
+      val.add(dur)
+
+      return val
     }, moment.duration())
 
     return `${floor(duration.asHours())}h ${duration.minutes()}m`
@@ -214,14 +241,18 @@ export default Controller.extend({
    * @property {Object[]} weeklyOverviewData
    * @public
    */
-  @computed('_allReports.@each.{date,duration}', 'days.[]', 'date')
-  weeklyOverviewData(reports, days, current) {
+  @computed('_allReports.@each.{date,duration}', '_allAbsences.@each.{date,duration}', 'days.[]', 'date')
+  weeklyOverviewData(allReports, allAbsences, days, current) {
     return Array.from({ length: 31 }, (v, k) => moment(current).add(k - 20, 'days')).map((d) => {
+      let reports  = allReports.filter((r) => r.get('date').isSame(d, 'day')).mapBy('duration')
+      let absences = allAbsences.filter((a) => a.get('date').isSame(d, 'day')).mapBy('duration')
+
       return {
         day: d,
         active: d.isSame(current, 'day'),
-        worktime: reports.filter((r) => r.get('date').isSame(d, 'day')).reduce((val, cur) => {
-          return val.add(cur.get('duration'))
+        absence: !!absences.length,
+        worktime: [ ...reports, ...absences ].reduce((val, dur) => {
+          return val.add(dur)
         }, moment.duration())
       }
     })

@@ -24,6 +24,15 @@
   }
 }
 
+&.absence {
+  .bar {
+    background-color: var(--color-warning);
+  }
+  .day {
+    color: var(--color-warning);
+  }
+}
+
 &:hover {
   .bar {
     background-color: color(var(--color-primary) w(50%));

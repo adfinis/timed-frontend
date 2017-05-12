@@ -62,14 +62,15 @@ export default Route.extend({
   afterModel(model) {
     let id   = this.get('session.data.authenticated.user_id')
     let day  = model.format(DATE_FORMAT)
-    let from = moment(model).subtract(15, 'days').format(DATE_FORMAT)
-    let to   = moment(model).add(15, 'days').format(DATE_FORMAT)
+    let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
+    let to   = moment(model).add(10, 'days').format(DATE_FORMAT)
 
     return RSVP.all([
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
       this.store.query('attendance', { day }),
-      this.store.query('report', { include: 'task,task.project,task.project.customer,absence_type', day }),
+      this.store.query('report', { include: 'task,task.project,task.project.customer', date: day }),
       this.store.query('report', { 'from_date': from, 'to_date': to }),
+      this.store.query('absence', { 'from_date': from, 'to_date': to }),
       this.store.findRecord('user', id, { include: 'employments' })
     ])
   }

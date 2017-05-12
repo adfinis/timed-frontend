@@ -4,8 +4,8 @@
  * @public
  */
 import Route                   from 'ember-route'
-import RSVP                    from 'rsvp'
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin'
+import TaskSelectionRouteMixin from 'timed/mixins/task-selection-route'
 
 /**
  * The protected route
@@ -15,18 +15,69 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
  * @uses EmberSimpleAuth.AuthenticatedRouteMixin
  * @public
  */
-export default Route.extend(AuthenticatedRouteMixin, {
+export default Route.extend(AuthenticatedRouteMixin, TaskSelectionRouteMixin, {
   /**
-   * Model hook, fetch all customers and the current activity
+   * Model hook, fetch the current activity
    *
    * @method model
-   * @return {RSVP.Promise} A promise which resolves once all data is fetched
+   * @return {Activity} The currently active activity
    * @public
    */
-  model() {
-    return RSVP.Promise.all([
-      this.store.findAll('customer', { include: 'projects,projects.tasks' }),
-      this.store.query('activity', { include: 'blocks', active: true })
-    ])
+  async model() {
+    let activeActivities = await this.store.query('activity', { include: 'blocks', active: true })
+
+    return activeActivities.getWithDefault('firstObject', null)
+  },
+
+  /**
+   * Setup controller hook, set the current activity or create a new one if
+   * none is active
+   *
+   * @method setupController
+   * @param {ProtectedController} controller The controller
+   * @param {Activity|null} model The active activity
+   * @public
+   */
+  setupController(controller, model) {
+    this._super(...arguments)
+
+    if (model) {
+      controller.set('currentActivity', model)
+    }
+    else {
+      controller.set('currentActivity', this.store.createRecord('activity'))
+    }
+  },
+
+  /**
+   * Actions for the protected route
+   *
+   * @property {Object} actions
+   * @public
+   */
+  actions: {
+    /**
+     * Loading action
+     *
+     * Set loading property on the controller
+     *
+     * @method loading
+     * @param {Ember.Transition} transition The transition which is loading
+     * @public
+     */
+    async loading(transition) {
+      let controller = this.get('controller')
+
+      if (controller) {
+        try {
+          controller.set('loading', true)
+
+          await transition.promise
+        }
+        finally {
+          controller.set('loading', false)
+        }
+      }
+    }
   }
 })

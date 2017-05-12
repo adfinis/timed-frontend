@@ -4,11 +4,9 @@
   {{/if}}
   {{#power-select
     renderInPlace = true
-    allowClear    = true
     disabled      = disabled
-    options       = _customers
     selected      = customer
-    searchField   = 'name'
+    search        = (perform searchCustomers)
     onchange      = (action (mut customer))
     placeholder   = 'Select customer...'
     as |customer|}}
@@ -21,7 +19,6 @@
   {{/if}}
   {{#power-select
     renderInPlace = true
-    allowClear    = true
     disabled      = (or (not _projects.length) disabled)
     options       = _projects
     selected      = project
@@ -38,12 +35,11 @@
   {{/if}}
   {{#power-select
     renderInPlace = true
-    allowClear    = true
     disabled      = (or (not _tasks.length) disabled)
     options       = _tasks
     selected      = task
     searchField   = 'name'
-    onchange      = (action 'change')
+    onchange      = (action on-change)
     placeholder   = 'Select task...'
     as |task|}}
     {{task.name}}

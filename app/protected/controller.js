@@ -4,7 +4,6 @@
  * @public
  */
 import Controller from 'ember-controller'
-import computed   from 'ember-computed-decorators'
 import service    from 'ember-service/inject'
 import moment     from 'moment'
 
@@ -23,58 +22,6 @@ export default Controller.extend({
    * @public
    */
   notify: service('notify'),
-
-  /**
-   * Init hook, get or create the current activity
-   *
-   * @method init
-   * @public
-   */
-  init() {
-    this._super(...arguments)
-
-    let activities = this.store.peekAll('activity').filterBy('active', true)
-
-    if (activities.get('length')) {
-      this.set('currentActivity', activities.get('firstObject'))
-    }
-    else {
-      this.set('currentActivity', this.store.createRecord('activity'))
-    }
-  },
-
-  /**
-   * All customers
-   *
-   * @property {Customer[]} customers
-   * @public
-   */
-  @computed
-  customers() {
-    return this.store.peekAll('customer')
-  },
-
-  /**
-   * All projects
-   *
-   * @property {Project[]} projects
-   * @public
-   */
-  @computed
-  projects() {
-    return this.store.peekAll('project')
-  },
-
-  /**
-   * All tasks
-   *
-   * @property {Task[]} tasks
-   * @public
-   */
-  @computed
-  tasks() {
-    return this.store.peekAll('task')
-  },
 
   /**
    * The current activity
