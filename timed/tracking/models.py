@@ -176,6 +176,7 @@ class Absence(models.Model):
     worktime. E.g holidays or sickness.
     """
 
+    comment  = models.TextField(blank=True)
     date     = models.DateField()
     duration = models.DurationField(default=timedelta())
     type     = models.ForeignKey('employment.AbsenceType',
@@ -196,7 +197,8 @@ class Absence(models.Model):
         if self.type.fill_worktime:
             worktime = sum(
                 Report.objects.filter(
-                    date=self.date
+                    date=self.date,
+                    user=self.user
                 ).values_list('duration', flat=True),
                 timedelta()
             )

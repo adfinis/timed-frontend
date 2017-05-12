@@ -178,6 +178,7 @@ class AbsenceSerializer(ModelSerializer):
 
         model  = models.Absence
         fields = [
+            'comment',
             'date',
             'duration',
             'type',

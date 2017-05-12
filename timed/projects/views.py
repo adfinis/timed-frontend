@@ -21,8 +21,7 @@ class ProjectViewSet(ReadOnlyModelViewSet):
     queryset         = models.Project.objects.filter(archived=False)
     serializer_class = serializers.ProjectSerializer
     filter_class     = filters.ProjectFilterSet
-    search_fields    = ('name', 'customer__name',)
-    ordering         = ('customer__name', 'name')
+    ordering         = 'name'
 
 
 class TaskViewSet(ReadOnlyModelViewSet):
@@ -31,3 +30,4 @@ class TaskViewSet(ReadOnlyModelViewSet):
     queryset         = models.Task.objects.filter(archived=False)
     serializer_class = serializers.TaskSerializer
     filter_class     = filters.TaskFilterSet
+    ordering         = 'name'
