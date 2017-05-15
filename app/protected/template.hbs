@@ -14,7 +14,8 @@
       {{/sy-sidenav-item}}
     {{/sy-sidenav-list}}
   {{else}}
-    <main class="page-main {{if loading 'loading-mask'}}">
+    <main class="page-main">
+      {{#if loading}}<span class="loader"></span>{{/if}}
       <div class="page-wrapper">
         <div class="page-content page-content--scroll">
           {{tracking-bar

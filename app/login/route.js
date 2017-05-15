@@ -50,6 +50,8 @@ export default Route.extend({
 
       try {
         await this.get('session').authenticate('authenticator:application', { username, password })
+
+        this.store.unloadAll()
       }
       catch(e) {
         this.get('notify').error('Wrong username or password')

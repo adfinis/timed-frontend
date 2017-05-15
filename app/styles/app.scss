@@ -2,6 +2,7 @@
 @import 'power-select';
 @import 'toolbar';
 @import 'badge';
+@import 'loader';
 @import 'sy-timepicker';
 @import 'ember-power-calendar';
 @import 'pod-styles';
@@ -125,6 +126,10 @@ body {
 
 .grid-cell.form-group {
   margin-bottom: 0;
+}
+
+.btn-group--auto .btn {
+  flex-grow: 1;
 }
 
 .no-margin  { margin: 0 !important  }

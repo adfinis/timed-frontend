@@ -71,7 +71,7 @@ export default Route.extend({
       this.store.query('report', { include: 'task,task.project,task.project.customer', date: day }),
       this.store.query('report', { 'from_date': from, 'to_date': to }),
       this.store.query('absence', { 'from_date': from, 'to_date': to }),
-      this.store.findRecord('user', id, { include: 'employments' })
+      this.store.findRecord('user', id, { include: 'employments,employments.location' })
     ])
   }
 })

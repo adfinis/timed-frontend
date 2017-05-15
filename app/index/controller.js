@@ -241,16 +241,19 @@ export default Controller.extend({
    * @property {Object[]} weeklyOverviewData
    * @public
    */
-  @computed('_allReports.@each.{date,duration}', '_allAbsences.@each.{date,duration}', 'days.[]', 'date')
+  @computed('_allReports.@each.{date,duration}', '_allAbsences.@each.{date,duration,isDeleted,isNew}', 'days.[]', 'date')
   weeklyOverviewData(allReports, allAbsences, days, current) {
+    let location = this.store.peekRecord('user', this.get('session.data.authenticated.user_id')).get('activeEmployment.location')
+
     return Array.from({ length: 31 }, (v, k) => moment(current).add(k - 20, 'days')).map((d) => {
-      let reports  = allReports.filter((r) => r.get('date').isSame(d, 'day')).mapBy('duration')
-      let absences = allAbsences.filter((a) => a.get('date').isSame(d, 'day')).mapBy('duration')
+      let reports  = allReports.filter((r)  => !r.get('isDeleted') && !r.get('isNew') && r.get('date').isSame(d, 'day')).mapBy('duration')
+      let absences = allAbsences.filter((a) => !a.get('isDeleted') && !a.get('isNew') && a.get('date').isSame(d, 'day')).mapBy('duration')
 
       return {
         day: d,
         active: d.isSame(current, 'day'),
         absence: !!absences.length,
+        workday: location.get('workdays').includes(d.isoWeekday()),
         worktime: [ ...reports, ...absences ].reduce((val, dur) => {
           return val.add(dur)
         }, moment.duration())

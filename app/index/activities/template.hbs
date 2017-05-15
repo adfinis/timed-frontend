@@ -6,8 +6,8 @@
         data-test-activity-row
         data-test-activity-row-id={{activity.id}}
         title="Double click to start the activity"
-        class="pointer {{unless activity.task 'warning'}} {{if activity.active 'primary'}}"
-        {{action 'startActivity' activity on='doubleClick'}}
+        class="pointer {{if activity.active 'primary'}} {{unless activity.task 'warning'}}"
+        {{action (if activity.active 'stopActivity' 'startActivity') activity on='doubleClick'}}
       >
           <td>
             {{#if activity.task}}
@@ -31,7 +31,7 @@
               'pencil'
               data-test-edit-activity
               title = 'Edit activity'
-              click = (queue (action (mut activityToEdit) activity) (action (mut modalVisible) true))
+              click = (queue (action (mut activityToEdit) activity) (action (mut showActivityEditModal) true))
             }}
             {{#if activity.active}}
               {{fa-btn

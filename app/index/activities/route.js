@@ -40,6 +40,10 @@ export default Route.extend(TaskSelectionRouteMixin, {
      * @public
      */
     async startActivity(activity) {
+      if (!activity.get('start').isSame(moment(), 'day')) {
+        activity = this.store.createRecord('activity', { ...activity.getProperties('task', 'comment') })
+      }
+
       let controller = this.controllerFor('protected')
 
       if (controller.get('currentActivity.active')) {
@@ -49,6 +53,8 @@ export default Route.extend(TaskSelectionRouteMixin, {
       controller.set('currentActivity', activity)
 
       controller.send('startCurrentActivity')
+
+      this.transitionTo('index.activities', { queryParams: { day: moment().format('YYYY-MM-DD') } })
     },
 
     /**

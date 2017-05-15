@@ -4,21 +4,17 @@
       {{if changeset.isNew 'New' 'Edit'}} absence
     {{/modal.header}}
     {{#modal.body}}
-      <div data-test-absence-date class="form-group">
-        {{sy-datepicker value=changeset.date}}
-      </div>
       <div data-test-absence-type class="form-group {{if changeset.error.type 'has-error'}}">
-          <label>Type <span class="required">*</span></label>
-        {{#power-select
-          renderInPlace = true
-          options       = absenceTypes
-          selected      = changeset.type
-          searchField   = 'name'
-          onchange      = (action (mut changeset.type))
-          placeholder   = 'Select absence type...'
-          as |type|}}
-          {{type.name}}
-        {{/power-select}}
+        <div class="btn-group btn-group--auto">
+          {{#each absenceTypes as |t|}}
+            <button
+              class="btn btn-default {{if (eq t.id changeset.type.id) 'active'}}"
+              {{action (mut changeset.type) t}}
+              >
+              {{t.name}}
+            </button>
+          {{/each}}
+        </div>
         {{#if changeset.error.type}}
           <p class="error-text">
             {{#each changeset.error.type.validation as |message index|}}

@@ -113,6 +113,6 @@ export default Model.extend({
    */
   @computed('employments.[]')
   activeEmployment(employments) {
-    return employments.find((e) => !e.get('to')) || null
+    return employments.find((e) => !e.get('end')) || null
   }
 })
