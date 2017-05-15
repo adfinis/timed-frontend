@@ -131,7 +131,12 @@ class UserTests(JSONAPITestCase):
             duration=timedelta(hours=10, minutes=30)
         )
 
-        # One public holiday
+        # One public holiday during workdays
+        PublicHolidayFactory.create(
+            date=start_date,
+            location=employment.location
+        )
+        # One public holiday on weekend
         PublicHolidayFactory.create(
             date=start_date + timedelta(days=1),
             location=employment.location
