@@ -60,11 +60,13 @@ class UserSerializer(ModelSerializer):
             else date.today()
         )
 
+        # workdays is in isoweekday, byweekday expects Monday to be zero
+        week_workdays = [int(day) - 1 for day in employment.location.workdays]
         workdays = rrule.rrule(
             rrule.DAILY,
             dtstart=start_date,
             until=end_date,
-            byweekday=[1, 2, 3, 4, 5]
+            byweekday=week_workdays
         ).count()
 
         holidays = models.PublicHoliday.objects.filter(
@@ -173,7 +175,7 @@ class LocationSerializer(ModelSerializer):
         """Meta information for the location serializer."""
 
         model  = models.Location
-        fields = ['name']
+        fields = ['name', 'workdays']
 
 
 class PublicHolidaySerializer(ModelSerializer):

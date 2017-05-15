@@ -6,6 +6,8 @@ from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
+from timed.models import WeekdaysField
+
 
 class EmploymentManager(models.Manager):
     """Custom manager for employments."""
@@ -34,7 +36,11 @@ class Location(models.Model):
     A location is the place where an employee works.
     """
 
-    name = models.CharField(max_length=50)
+    name     = models.CharField(max_length=50, unique=True)
+    workdays = WeekdaysField(default=[str(day) for day in range(1, 6)])
+    """
+    Workdays defined per location, default is Monday - Friday
+    """
 
     def __str__(self):
         """Represent the model as a string.

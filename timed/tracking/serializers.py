@@ -157,18 +157,21 @@ class AbsenceSerializer(ModelSerializer):
         :returns: The validated data
         :rtype:   dict
         """
+        location = Employment.objects.for_user(
+            data.get('user'),
+            data.get('date')
+        ).location
+
         if PublicHoliday.objects.filter(
-            location=Employment.objects.for_user(
-                data.get('user'),
-                data.get('date')
-            ).location,
+            location_id=location.id,
             date=data.get('date')
         ).exists():
             raise ValidationError(
                 'You can\'t create an absence on a public holiday'
             )
 
-        if data.get('date').weekday() not in [1, 2, 3, 4, 5]:
+        workdays = [int(day) for day in location.workdays]
+        if data.get('date').isoweekday() not in workdays:
             raise ValidationError('You can\'t create an absence on a weekend')
 
         return data

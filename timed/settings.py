@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'jet',
     'django.contrib.admin',
+    'multiselectfield',
+    'django.forms',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -58,10 +60,11 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'timed.urls'
 
+FORM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'timed', 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

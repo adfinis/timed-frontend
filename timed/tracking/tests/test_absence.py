@@ -130,7 +130,7 @@ class AbsenceTests(JSONAPITestCase):
                 'type': 'absences',
                 'id': absence.id,
                 'attributes': {
-                    'date': datetime.date(2017, 5, 6).strftime('%Y-%m-%d')
+                    'date': datetime.date(2017, 5, 8).strftime('%Y-%m-%d')
                 }
             }
         }
@@ -218,7 +218,7 @@ class AbsenceTests(JSONAPITestCase):
                 'type': 'absences',
                 'id': None,
                 'attributes': {
-                    'date': datetime.date(2017, 5, 15).strftime('%Y-%m-%d')
+                    'date': datetime.date(2017, 5, 14).strftime('%Y-%m-%d')
                 },
                 'relationships': {
                     'type': {
