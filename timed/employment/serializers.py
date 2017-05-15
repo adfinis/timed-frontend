@@ -49,6 +49,7 @@ class UserSerializer(ModelSerializer):
             user=instance,
             end_date__isnull=True
         )
+        location = employment.location
 
         request            = self.context.get('request')
         requested_end_date = request.query_params.get('until')
@@ -60,17 +61,26 @@ class UserSerializer(ModelSerializer):
             else date.today()
         )
 
+        # workdays is in isoweekday, byweekday expects Monday to be zero
+        week_workdays = [int(day) - 1 for day in employment.location.workdays]
         workdays = rrule.rrule(
             rrule.DAILY,
             dtstart=start_date,
             until=end_date,
-            byweekday=[1, 2, 3, 4, 5]
+            byweekday=week_workdays
         ).count()
 
+        # converting workdays as db expects 1 (Sunday) to 7 (Saturday)
+        workdays_db = [
+            # special case for Sunday
+            int(day) == 7 and 1 or int(day) + 1
+            for day in location.workdays
+        ]
         holidays = models.PublicHoliday.objects.filter(
-            location=employment.location,
+            location=location,
             date__gte=start_date,
-            date__lte=end_date
+            date__lte=end_date,
+            date__week_day__in=workdays_db
         ).count()
 
         expected_worktime = employment.worktime_per_day * (workdays - holidays)
@@ -173,7 +183,7 @@ class LocationSerializer(ModelSerializer):
         """Meta information for the location serializer."""
 
         model  = models.Location
-        fields = ['name']
+        fields = ['name', 'workdays']
 
 
 class PublicHolidaySerializer(ModelSerializer):

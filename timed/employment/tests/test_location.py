@@ -31,8 +31,12 @@ class LocationTests(JSONAPITestCase):
         assert res.status_code == HTTP_200_OK
 
         result = self.result(res)
+        data = result['data']
 
-        assert len(result['data']) == len(self.locations)
+        assert len(data) == len(self.locations)
+        assert data[0]['attributes']['workdays'] == (
+            [str(day) for day in range(1, 6)]
+        )
 
     def test_location_detail(self):
         """Should respond with a single location."""
