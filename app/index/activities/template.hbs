@@ -21,7 +21,7 @@
           <td>{{activity.comment}}</td>
           <td>
             {{#if activity.active}}
-              {{since activity.activeBlock.from activity.duration}}
+              {{duration-since activity.activeBlock.from elapsed=activity.duration}}
             {{else}}
               {{format-duration activity.duration}}
             {{/if}}
