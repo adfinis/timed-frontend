@@ -81,6 +81,11 @@ class Employment(models.Model):
             self.end_date.strftime('%d.%m.%Y') if self.end_date else 'today'
         )
 
+    class Meta:
+        """Meta information for the employment model."""
+
+        indexes = [models.Index(fields=['start_date', 'end_date'])]
+
 
 class PublicHoliday(models.Model):
     """Public holiday model.
@@ -101,6 +106,11 @@ class PublicHoliday(models.Model):
         :rtype:  str
         """
         return '{0} {1}'.format(self.name, self.date.strftime('%Y'))
+
+    class Meta:
+        """Meta information for the public holiday model."""
+
+        indexes = [models.Index(fields=['date'])]
 
 
 class AbsenceType(models.Model):

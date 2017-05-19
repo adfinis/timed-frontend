@@ -19,14 +19,19 @@ class UserViewSet(ReadOnlyModelViewSet):
         :return: The filtered users
         :rtype:  QuerySet
         """
-        return get_user_model().objects.filter(pk=self.request.user.pk)
+        return get_user_model().objects.prefetch_related(
+            'employments',
+            'absence_credits'
+        ).filter(
+            pk=self.request.user.pk
+        )
 
 
 class EmploymentViewSet(ReadOnlyModelViewSet):
     """Employment view set."""
 
     serializer_class = serializers.EmploymentSerializer
-    ordering         = ('-start_date',)
+    ordering         = ('-end_date',)
 
     def get_queryset(self):
         """Filter the queryset by the user of the request.
@@ -34,7 +39,12 @@ class EmploymentViewSet(ReadOnlyModelViewSet):
         :return: The filtered employments
         :rtype:  QuerySet
         """
-        return models.Employment.objects.filter(user=self.request.user)
+        return models.Employment.objects.select_related(
+            'user',
+            'location'
+        ).filter(
+            user=self.request.user
+        )
 
 
 class LocationViewSet(ReadOnlyModelViewSet):
@@ -48,10 +58,19 @@ class LocationViewSet(ReadOnlyModelViewSet):
 class PublicHolidayViewSet(ReadOnlyModelViewSet):
     """Public holiday view set."""
 
-    queryset         = models.PublicHoliday.objects.all()
     serializer_class = serializers.PublicHolidaySerializer
     filter_class     = filters.PublicHolidayFilterSet
     ordering         = ('date',)
+
+    def get_queryset(self):
+        """Prefetch the related data.
+
+        :return: The public holidays
+        :rtype:  QuerySet
+        """
+        return models.PublicHoliday.objects.select_related(
+            'location'
+        ).all()
 
 
 class AbsenceTypeViewSet(ReadOnlyModelViewSet):
@@ -81,7 +100,10 @@ class AbsenceCreditViewSet(ReadOnlyModelViewSet):
             else date.today()
         )
 
-        return models.AbsenceCredit.objects.filter(
+        return models.AbsenceCredit.objects.select_related(
+            'user',
+            'absence_type'
+        ).filter(
             user=self.request.user,
             date__lte=end_date
         )
@@ -98,4 +120,8 @@ class OvertimeCreditViewSet(ReadOnlyModelViewSet):
         :return: The filtered overtime credits
         :rtype:  QuerySet
         """
-        return models.OvertimeCredit.objects.filter(user=self.request.user)
+        return models.OvertimeCredit.objects.select_related(
+            'user'
+        ).filter(
+            user=self.request.user
+        )

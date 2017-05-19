@@ -4,6 +4,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import models
+from django.db.models import F, Sum
 
 from timed.employment.models import Employment
 
@@ -31,14 +32,9 @@ class Activity(models.Model):
         :return: The total duration
         :rtype:  datetime.timedelta
         """
-        durations = [
-            block.duration
-            for block
-            in self.blocks.all()
-            if block.duration
-        ]
-
-        return sum(durations, timedelta())
+        return self.blocks.all().aggregate(
+            duration=Sum(F('to_datetime') - F('from_datetime'))
+        ).get('duration')
 
     def __str__(self):
         """Represent the model as a string.
@@ -52,6 +48,7 @@ class Activity(models.Model):
         """Meta informations for the activity model."""
 
         verbose_name_plural = 'activities'
+        indexes             = [models.Index(fields=['start_datetime'])]
 
 
 class ActivityBlock(models.Model):
@@ -64,18 +61,6 @@ class ActivityBlock(models.Model):
                                       related_name='blocks')
     from_datetime = models.DateTimeField(auto_now_add=True)
     to_datetime   = models.DateTimeField(blank=True, null=True)
-
-    @property
-    def duration(self):
-        """Calculate the duration of this activity block.
-
-        :return: The duration
-        :rtype:  datetime.timedelta or None
-        """
-        if not self.to_datetime:
-            return None
-
-        return self.to_datetime - self.from_datetime
 
     def __str__(self):
         """Represent the model as a string.
@@ -167,6 +152,11 @@ class Report(models.Model):
         :rtype:  str
         """
         return '{0}: {1}'.format(self.user, self.task)
+
+    class Meta:
+        """Meta information for the report model."""
+
+        indexes = [models.Index(fields=['date'])]
 
 
 class Absence(models.Model):

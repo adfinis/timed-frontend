@@ -59,9 +59,7 @@ class ProjectSerializer(ModelSerializer):
 class TaskSerializer(ModelSerializer):
     """Task serializer."""
 
-    activities = ResourceRelatedField(read_only=True,
-                                      many=True)
-    project    = ResourceRelatedField(queryset=models.Project.objects.all())
+    project = ResourceRelatedField(queryset=models.Project.objects.all())
 
     included_serializers = {
         'activities': 'timed.tracking.serializers.ActivitySerializer',
@@ -77,5 +75,4 @@ class TaskSerializer(ModelSerializer):
             'estimated_hours',
             'archived',
             'project',
-            'activities',
         ]

@@ -8,26 +8,61 @@ from timed.projects import filters, models, serializers
 class CustomerViewSet(ReadOnlyModelViewSet):
     """Customer view set."""
 
-    queryset         = models.Customer.objects.filter(archived=False)
     serializer_class = serializers.CustomerSerializer
     filter_class     = filters.CustomerFilterSet
     search_fields    = ('name',)
     ordering         = 'name'
 
+    def get_queryset(self):
+        """Prefetch related data.
+
+        :return: The customers
+        :rtype:  QuerySet
+        """
+        return models.Customer.objects.prefetch_related(
+            'projects'
+        ).filter(
+            archived=False
+        )
+
 
 class ProjectViewSet(ReadOnlyModelViewSet):
     """Project view set."""
 
-    queryset         = models.Project.objects.filter(archived=False)
     serializer_class = serializers.ProjectSerializer
     filter_class     = filters.ProjectFilterSet
     ordering         = 'name'
+
+    def get_queryset(self):
+        """Prefetch related data.
+
+        :return: The projects
+        :rtype:  QuerySet
+        """
+        return models.Project.objects.prefetch_related(
+            'tasks'
+        ).select_related(
+            'customer'
+        ).filter(
+            archived=False
+        )
 
 
 class TaskViewSet(ReadOnlyModelViewSet):
     """Task view set."""
 
-    queryset         = models.Task.objects.filter(archived=False)
     serializer_class = serializers.TaskSerializer
     filter_class     = filters.TaskFilterSet
     ordering         = 'name'
+
+    def get_queryset(self):
+        """Prefetch related data.
+
+        :return: The tasks
+        :rtype:  QuerySet
+        """
+        return models.Task.objects.select_related(
+            'project'
+        ).filter(
+            archived=False
+        )

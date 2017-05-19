@@ -17,7 +17,16 @@ class ActivityViewSet(ModelViewSet):
         :return: The filtered activities
         :rtype:  QuerySet
         """
-        return models.Activity.objects.filter(user=self.request.user)
+        return models.Activity.objects.prefetch_related(
+            'blocks'
+        ).select_related(
+            'task',
+            'user',
+            'task__project',
+            'task__project__customer'
+        ).filter(
+            user=self.request.user
+        )
 
 
 class ActivityBlockViewSet(ModelViewSet):
@@ -32,7 +41,9 @@ class ActivityBlockViewSet(ModelViewSet):
         :return: The filtered activity blocks
         :rtype:  QuerySet
         """
-        return models.ActivityBlock.objects.filter(
+        return models.ActivityBlock.objects.select_related(
+            'activity'
+        ).filter(
             activity__user=self.request.user
         )
 
@@ -49,7 +60,11 @@ class AttendanceViewSet(ModelViewSet):
         :return: The filtered attendances
         :rtype:  QuerySet
         """
-        return models.Attendance.objects.filter(user=self.request.user)
+        return models.Attendance.objects.select_related(
+            'user'
+        ).filter(
+            user=self.request.user
+        )
 
 
 class ReportViewSet(ModelViewSet):
@@ -64,7 +79,13 @@ class ReportViewSet(ModelViewSet):
         :return: The filtered reports
         :rtype:  QuerySet
         """
-        return models.Report.objects.filter(user=self.request.user)
+        return models.Report.objects.select_related(
+            'task',
+            'user',
+            'activity'
+        ).filter(
+            user=self.request.user
+        )
 
 
 class AbsenceViewSet(ModelViewSet):
@@ -79,4 +100,9 @@ class AbsenceViewSet(ModelViewSet):
         :return: The filtered absences
         :rtype:  QuerySet
         """
-        return models.Absence.objects.filter(user=self.request.user)
+        return models.Absence.objects.select_related(
+            'type',
+            'user'
+        ).filter(
+            user=self.request.user
+        )
