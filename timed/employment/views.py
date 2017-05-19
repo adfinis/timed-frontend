@@ -70,7 +70,7 @@ class PublicHolidayViewSet(ReadOnlyModelViewSet):
         """
         return models.PublicHoliday.objects.select_related(
             'location'
-        ).all()
+        )
 
 
 class AbsenceTypeViewSet(ReadOnlyModelViewSet):
