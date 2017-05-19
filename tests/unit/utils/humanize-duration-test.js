@@ -1,0 +1,42 @@
+import { expect }       from 'chai'
+import { describe, it } from 'mocha'
+import humanizeDuration from 'timed/utils/humanize-duration'
+import moment           from 'moment'
+
+describe('Unit | Utility | humanize duration', function() {
+  it('works', function() {
+    let duration = moment.duration({
+      hours: 11,
+      minutes: 12,
+      seconds: 13
+    })
+
+    let result = humanizeDuration(duration)
+
+    expect(result).to.equal('11h 12m')
+  })
+
+  it('works with seconds', function() {
+    let duration = moment.duration({
+      hours: 11,
+      minutes: 12,
+      seconds: 13
+    })
+
+    let result = humanizeDuration(duration, true)
+
+    expect(result).to.equal('11h 12m 13s')
+  })
+
+  it('has a fallback', function() {
+    let result = humanizeDuration(null)
+
+    expect(result).to.equal('0h 0m')
+  })
+
+  it('has a fallback with seconds', function() {
+    let result = humanizeDuration(null, true)
+
+    expect(result).to.equal('0h 0m 0s')
+  })
+})

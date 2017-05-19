@@ -135,8 +135,39 @@ body {
 .no-margin  { margin: 0 !important  }
 .no-padding { padding: 0 !important }
 
+.table--activities tr td:last-child {
+  display: none;
+}
+
 @media (--sm-viewport) {
   .nav-tabs {
     overflow: visible;
+  }
+
+  .table--activities tr td:last-child {
+    display: flex;
+  }
+
+  .table--activities tr {
+    height: 80px;
+    display: flex;
+
+    td {
+      display: flex;
+      align-items: center;
+
+      &:nth-child(1) { flex-basis: 30% }
+      &:nth-child(2) { flex-basis: 50% }
+      &:nth-child(3) { flex-basis: 10% }
+
+      &:nth-child(4) {
+        flex-basis: 10%;
+        justify-content: flex-end;
+
+        .btn {
+          margin-left: 10px;
+        }
+      }
+    }
   }
 }

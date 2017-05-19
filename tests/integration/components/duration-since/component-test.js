@@ -17,7 +17,6 @@ describe('Integration | Component | duration since', function() {
 
     this.render(hbs`{{duration-since start}}`)
 
-    console.log(this.get('start'))
     expect(this.$()).to.have.length(1)
     expect(this.$().text().trim()).to.equal('00:05:05')
   })

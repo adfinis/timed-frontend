@@ -11,11 +11,16 @@ describe('Integration | Component | edit activity modal', function() {
   it('renders', function() {
     this.set('activity', {})
 
+    this.on('search', () => [])
+
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-activity-modal
-        visible = true
-        model   = activity
+        visible             = true
+        model               = activity
+        on-search-customers = (action 'search')
+        on-filter-projects  = (action 'search')
+        on-filter-tasks     = (action 'search')
       }}
     `)
 

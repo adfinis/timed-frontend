@@ -41,6 +41,7 @@ describe('Acceptance | index reports', function() {
     await click('button:contains(Add report)')
 
     // select task
+    await selectSearch(`.modal ${testSelector('tracking-customer')}`, 'somerandomstring')
     await selectChoose(`.modal ${testSelector('tracking-customer')}`, '.ember-power-select-option:eq(0)')
     await selectChoose(`.modal ${testSelector('tracking-project')}`, '.ember-power-select-option:eq(0)')
     await selectChoose(`.modal ${testSelector('tracking-task')}`, '.ember-power-select-option:eq(0)')
@@ -70,38 +71,24 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can add absence', async function() {
-    server.createList('absence-type', 5)
+    server.loadFixtures('absence-types')
 
     await visit('/reports')
 
     await click('button:contains(Add absence)')
 
     // select absence type
-    await selectChoose(`${testSelector('absence-type')}`, '.ember-power-select-option:eq(0)')
-
-    // open durationpicker
-    await click(`${testSelector('absence-duration')} input`)
-
-    // set duration to 04:45
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-m')}`)
-    await click(`${testSelector('sy-durationpicker-inc-m')}`)
-    await click(`${testSelector('sy-durationpicker-inc-m')}`)
+    await click(`${testSelector('absence-type')} .btn:eq(0)`)
 
     // fill comment
     await fillIn(`${testSelector('absence-comment')} textarea`, 'Test comment absence')
 
     await click('button:contains(Save)')
 
-    expect(find(testSelector('report-row'))).to.have.length(6)
+    expect(find(testSelector('absence-row'))).to.have.length(1)
 
-    expect(find(`${testSelector('report-row')}:last-of-type td:eq(1)`).text().trim()).to.equal('Test comment absence')
-    expect(find(`${testSelector('report-row')}:last-of-type td:eq(2)`).text().trim()).to.equal('04:45')
-
-    expect(find(`${testSelector('report-row')}:last-of-type`).hasClass('is-absence')).to.be.ok
+    expect(find(`${testSelector('absence-row')} td:eq(1)`).text().trim()).to.equal('Test comment absence')
+    expect(find(`${testSelector('absence-row')}`).hasClass('is-absence')).to.be.ok
   })
 
   it('can edit report', async function() {
@@ -121,19 +108,21 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can edit absence', async function() {
-    let report = server.create('report', 'absence')
+    server.loadFixtures('absence-types')
+
+    let absence = server.create('absence')
 
     await visit('/reports')
 
-    expect(find(`${testSelector('report-row')}:last-of-type td:eq(1)`).text().trim()).to.equal(report.comment)
+    expect(find(`${testSelector('absence-row-id', absence.id)} td:eq(1)`).text().trim()).to.equal(absence.comment)
 
-    await click(testSelector('report-row-id', report.id))
+    await click(testSelector('absence-row-id', absence.id))
 
     await fillIn(`${testSelector('absence-comment')} textarea`, 'Test comment absence')
 
     await click('button:contains(Save)')
 
-    expect(find(`${testSelector('report-row')}:last-of-type td:eq(1)`).text().trim()).to.equal('Test comment absence')
+    expect(find(`${testSelector('absence-row-id', absence.id)} td:eq(1)`).text().trim()).to.equal('Test comment absence')
   })
 
   it('can delete report', async function() {
@@ -151,18 +140,18 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can delete absence', async function() {
-    let report = server.create('report', 'absence')
+    server.loadFixtures('absence-types')
+
+    let absence = server.create('absence')
 
     await visit('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(6)
+    expect(find(testSelector('absence-row'))).to.have.length(1)
 
-    expect(find(testSelector('report-row-id', report.id)).hasClass('is-absence')).to.be.ok
-
-    await click(testSelector('report-row-id', report.id))
+    await click(testSelector('absence-row-id', absence.id))
 
     await click('button:contains(Delete)')
 
-    expect(find(testSelector('report-row'))).to.have.length(5)
+    expect(find(testSelector('absence-row'))).to.have.length(0)
   })
 })

@@ -5,14 +5,15 @@
     {{/modal.header}}
     {{#modal.body}}
       {{task-selection
-        changeset  = changeset
-        showLabels = true
-        required   = false
-        task       = changeset.task
-        customers  = customers
-        projects   = projects
-        tasks      = tasks
-        on-change  = (action (mut changeset.task))
+        _task               = changeset.task
+        changeset           = changeset
+        showLabels          = true
+        projects            = projects
+        tasks               = tasks
+        on-search-customers = (action on-search-customers)
+        on-filter-projects  = (action on-filter-projects)
+        on-filter-tasks     = (action on-filter-tasks)
+        on-change           = (action (mut changeset.task))
       }}
       <div data-test-activity-comment class="form-group">
         <label>Comment</label>

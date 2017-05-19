@@ -6,12 +6,11 @@
 import Controller from 'ember-controller'
 import moment     from 'moment'
 import computed   from 'ember-computed-decorators'
-import { later }  from 'ember-runloop'
 import Ember      from 'ember'
 import service    from 'ember-service/inject'
+import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
-const { floor } = Math
 
 /**
  * The index controller
@@ -72,30 +71,28 @@ export default Controller.extend({
   /**
    * The duration sum of all activities of the selected day
    *
-   * @property {String} activitySum
+   * @property {moment.duration} activitySum
    * @public
    */
-  @computed('_activities.@each.{duration,activeBlock}')
-  activitySum(activities) {
-    let duration = activities.reduce((dur, cur) => {
-      dur.add(cur.get('duration'))
+  activitySum: moment.duration(),
 
-      if (cur.get('activeBlock')) {
-        dur.add(moment().diff(cur.get('activeBlock.from')), 'milliseconds')
+  _activitySum: task(function* () {
+    while (!testing) {
+      yield timeout(1000)
 
-        /* istanbul ignore next */
-        if (!testing) {
-          later(() => {
-            this.notifyPropertyChange('_activities')
-          }, 1000)
+      let duration = this.get('_activities').reduce((dur, cur) => {
+        dur.add(cur.get('duration'))
+
+        if (cur.get('activeBlock')) {
+          dur.add(moment().diff(cur.get('activeBlock.from')), 'milliseconds')
         }
-      }
 
-      return dur
-    }, moment.duration())
+        return dur
+      }, moment.duration())
 
-    return `${floor(duration.asHours())}h ${duration.minutes()}m ${duration.seconds()}s`
-  },
+      this.set('activitySum', duration)
+    }
+  }).on('init'),
 
   /**
    * All attendances
@@ -124,18 +121,16 @@ export default Controller.extend({
   /**
    * The duration sum of all attendances of the selected day
    *
-   * @property {String} attendanceSum
+   * @property {moment.duration} attendanceSum
    * @public
    */
   @computed('_attendances.@each.{from,to}')
   attendanceSum(attendances) {
-    let duration = attendances.reduce((dur, cur) => {
+    return attendances.reduce((dur, cur) => {
       dur.add(cur.get('to').diff(cur.get('from')), 'milliseconds')
 
       return dur
     }, moment.duration())
-
-    return `${floor(duration.asHours())}h ${duration.minutes()}m`
   },
 
   /**
@@ -189,7 +184,7 @@ export default Controller.extend({
   /**
    * The duration sum of all reports of the selected day
    *
-   * @property {String} reportSum
+   * @property {moment.duration} reportSum
    * @public
    */
   @computed('_reports.@each.duration', '_absences.@each.duration')
@@ -197,13 +192,11 @@ export default Controller.extend({
     let reportDurations  = reports.mapBy('duration')
     let absenceDurations = absences.mapBy('duration')
 
-    let duration = [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => {
+    return [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => {
       val.add(dur)
 
       return val
     }, moment.duration())
-
-    return `${floor(duration.asHours())}h ${duration.minutes()}m`
   },
 
   /**
@@ -236,28 +229,65 @@ export default Controller.extend({
   },
 
   /**
+   * The workdays for the location related to the users active employment
+   *
+   * @property {Number[]} workdays
+   * @public
+   */
+  @computed('session.data.authenticated.user_id')
+  workdays(userId) {
+    return this.store.peekRecord('user', userId).get('activeEmployment.location.workdays')
+  },
+
+  /**
    * The data for the weekly overview
    *
    * @property {Object[]} weeklyOverviewData
    * @public
    */
-  @computed('_allReports.@each.{date,duration}', '_allAbsences.@each.{date,duration,isDeleted,isNew}', 'days.[]', 'date')
-  weeklyOverviewData(allReports, allAbsences, days, current) {
-    let location = this.store.peekRecord('user', this.get('session.data.authenticated.user_id')).get('activeEmployment.location')
+  @computed('_allReports.@each.{duration,date}', '_allAbsences.@each.{duration,date}', 'date')
+  weeklyOverviewData(allReports, allAbsences, date) {
+    let task = this.get('_weeklyOverviewData')
 
-    return Array.from({ length: 31 }, (v, k) => moment(current).add(k - 20, 'days')).map((d) => {
-      let reports  = allReports.filter((r)  => !r.get('isDeleted') && !r.get('isNew') && r.get('date').isSame(d, 'day')).mapBy('duration')
-      let absences = allAbsences.filter((a) => !a.get('isDeleted') && !a.get('isNew') && a.get('date').isSame(d, 'day')).mapBy('duration')
+    task.perform(allReports, allAbsences, date)
+
+    return task
+  },
+
+  /**
+   * The task to compute the data for the weekly overview
+   *
+   * @property {EmberConcurrency.Task} _weeklyOverviewData
+   * @private
+   */
+  _weeklyOverviewData: task(function* (allReports, allAbsences, date) {
+    yield timeout(200)
+
+    allReports  = allReports.filter((r)  => !r.get('isDeleted') && !r.get('isNew'))
+    allAbsences = allAbsences.filter((a) => !a.get('isDeleted') && !a.get('isNew'))
+
+    let container = [ ...allReports, ...allAbsences ].reduce((obj, model) => {
+      let d = model.get('date').format('YYYY-MM-DD')
+
+      obj[d] = obj[d] || { reports: [], absences: [] }
+
+      obj[d][`${model.constructor.modelName}s`].push(model.get('duration'))
+
+      return obj
+    }, {})
+
+    return Array.from({ length: 31 }, (v, k) => moment(date).add(k - 20, 'days')).map((d) => {
+      let { reports = [], absences = [] } = container[d.format('YYYY-MM-DD')] || {}
 
       return {
         day: d,
-        active: d.isSame(current, 'day'),
+        active: d.isSame(date, 'day'),
         absence: !!absences.length,
-        workday: location.get('workdays').includes(d.isoWeekday()),
+        workday: this.get('workdays').includes(d.isoWeekday()),
         worktime: [ ...reports, ...absences ].reduce((val, dur) => {
           return val.add(dur)
         }, moment.duration())
       }
     })
-  }
+  }).restartable()
 })

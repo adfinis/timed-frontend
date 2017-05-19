@@ -35,12 +35,9 @@ describe('Integration | Component | edit absence modal', function() {
 
     this.$('#sy-modals button:contains(Save)').click()
 
-    expect(this.$('#sy-modals .error-text')).to.have.length(2)
+    expect(this.$('#sy-modals .error-text')).to.have.length(1)
 
-    expect(this.$('#sy-modals .error-text:eq(0)').text().trim().toLowerCase()).to.include('absence')
+    expect(this.$('#sy-modals .error-text:eq(0)').text().trim().toLowerCase()).to.include('type')
     expect(this.$('#sy-modals .error-text:eq(0)').text().trim().toLowerCase()).to.include('blank')
-
-    expect(this.$('#sy-modals .error-text:eq(1)').text().trim().toLowerCase()).to.include('duration')
-    expect(this.$('#sy-modals .error-text:eq(1)').text().trim().toLowerCase()).to.include('blank')
   })
 })

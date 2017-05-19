@@ -59,10 +59,8 @@ export default function() {
   this.patch('/activities/:id')
   this.del('/activities/:id')
 
-  this.get('/reports', function({ reports }, { queryParams: { day } }) {
-    return reports.where((r) => {
-      return moment(r.date).format('YYYY-MM-DD') === day
-    })
+  this.get('/reports', function({ reports }, { queryParams: { date } }) {
+    return reports.where((r) => r.date === date)
   })
   this.post('/reports')
   this.get('/reports/:id')
@@ -116,4 +114,12 @@ export default function() {
 
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
+
+  this.get('/absences')
+  this.post('/absences', function({ absences }) {
+    return absences.create({ ...this.normalizedRequestAttrs(), duration: '08:30:00' })
+  })
+  this.get('/absences/:id')
+  this.patch('/absences/:id')
+  this.del('/absences/:id')
 }

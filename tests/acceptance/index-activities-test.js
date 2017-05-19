@@ -35,30 +35,10 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('activity-row'))).to.have.length(5)
   })
 
-  it('can start an activity by clicking on the row', async function() {
+  it('can not start an active activity', async function() {
     await visit('/')
 
-    await triggerEvent(find(testSelector('activity-row-id', 1)), 'dblclick')
-
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
-  })
-
-  it('can\'t start an active activity', async function() {
-    await visit('/')
-
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`))
-
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
-
-    await triggerEvent(find(testSelector('activity-row-id', 1)), 'dblclick')
-
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
-  })
-
-  it('can start an activity by clicking on the play button', async function() {
-    await visit('/')
-
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`))
+    await click(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`)
 
     expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
   })
@@ -114,7 +94,7 @@ describe('Acceptance | index activities', function() {
     expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.project.customer.name)
   })
 
-  it('does not generate reports twice', async function() {
+  it('can not generate reports twice', async function() {
     await visit('/')
 
     await click(find('button:contains(Generate reports)'))
@@ -132,7 +112,7 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('report-row'))).to.have.length(5)
   })
 
-  it('updates reports when generating', async function() {
+  it('can update reports when generating', async function() {
     await server.db.activities.update(this.activities[0].id, { duration: '02:30:00' })
 
     await visit('/')

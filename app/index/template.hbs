@@ -8,7 +8,7 @@
     </div>
     <div class="grid-cell visible-md">
       {{#weekly-overview expected=expectedWorktime}}
-        {{#each weeklyOverviewData as |d|}}
+        {{#each weeklyOverviewData.lastSuccessful.value as |d|}}
           {{weekly-overview-day
             day      = d.day
             active   = d.active
@@ -23,13 +23,13 @@
     <div class="grid-cell hidden-sm">
       <div class="btn-group btn-group--vertical">
         {{#link-to 'index.activities' tagName='button' class='btn'}}
-          Activities <span class="badge">{{activitySum}}</span>
+          Activities <span class="badge">{{humanize-duration activitySum true}}</span>
         {{/link-to}}
         {{#link-to 'index.attendances' tagName='button' class='btn'}}
-          Attendances <span class="badge">{{attendanceSum}}</span>
+          Attendances <span class="badge">{{humanize-duration attendanceSum}}</span>
         {{/link-to}}
         {{#link-to 'index.reports' tagName='button' class='btn'}}
-          Reports <span class="badge">{{reportSum}}</span>
+          Reports <span class="badge">{{humanize-duration reportSum}}</span>
         {{/link-to}}
       </div>
     </div>
@@ -37,17 +37,17 @@
       <ul class="nav-tabs">
         <li>
           {{#link-to 'index.activities'}}
-            Activities <span class="badge">{{activitySum}}</span>
+            Activities <span class="badge">{{humanize-duration activitySum true}}</span>
           {{/link-to}}
         </li>
         <li>
           {{#link-to 'index.attendances'}}
-            Attendances <span class="badge">{{attendanceSum}}</span>
+            Attendances <span class="badge">{{humanize-duration attendanceSum}}</span>
           {{/link-to}}
         </li>
         <li>
           {{#link-to 'index.reports'}}
-            Reports <span class="badge">{{reportSum}}</span>
+            Reports <span class="badge">{{humanize-duration reportSum}}</span>
           {{/link-to}}
         </li>
       </ul>

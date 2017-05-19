@@ -43,6 +43,7 @@ describe('Acceptance | index', function() {
 
     expect(find(testSelector('record-start')).parent().parent().hasClass('ready')).to.not.be.ok
 
+    await selectSearch(testSelector('tracking-customer'), 'somerandomstring')
     await selectChoose(testSelector('tracking-customer'), '.ember-power-select-option:eq(0)')
     await selectChoose(testSelector('tracking-project'), '.ember-power-select-option:eq(0)')
     await selectChoose(testSelector('tracking-task'), '.ember-power-select-option:eq(0)')

@@ -27,11 +27,16 @@ describe('Integration | Component | edit report modal', function() {
   it('renders', function() {
     this.set('report', {})
 
+    this.on('search', () => [])
+
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible = true
-        model   = report
+        visible             = true
+        model               = report
+        on-search-customers = (action 'search')
+        on-filter-projects  = (action 'search')
+        on-filter-tasks     = (action 'search')
       }}
     `)
 
@@ -41,11 +46,16 @@ describe('Integration | Component | edit report modal', function() {
   it('validates', function() {
     this.set('report', {})
 
+    this.on('search', () => [])
+
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible = true
-        model   = report
+        visible             = true
+        model               = report
+        on-search-customers = (action 'search')
+        on-filter-projects  = (action 'search')
+        on-filter-tasks     = (action 'search')
       }}
     `)
 
@@ -68,16 +78,21 @@ describe('Integration | Component | edit report modal', function() {
     this.set('tasks', TASKS)
     this.set('visible', true)
 
+    this.on('search', () => CUSTOMERS)
+    this.on('filter', () => [])
+
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible   = visible
-        model     = report
-        customers = customers
-        projects  = projects
-        tasks     = tasks
-        on-close  = (action (mut visible) false)
-        on-save   = (action (mut report))
+        visible             = visible
+        model               = report
+        projects            = projects
+        tasks               = tasks
+        on-search-customers = (action 'search')
+        on-filter-projects  = (action 'filter')
+        on-filter-tasks     = (action 'filter')
+        on-close            = (action (mut visible) false)
+        on-save             = (action (mut report))
       }}
     `)
 
@@ -104,16 +119,21 @@ describe('Integration | Component | edit report modal', function() {
     this.set('tasks', TASKS)
     this.set('visible', true)
 
+    this.on('search', () => CUSTOMERS)
+    this.on('filter', () => [])
+
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible   = visible
-        model     = report
-        customers = customers
-        projects  = projects
-        tasks     = tasks
-        on-close  = (action (mut visible) false)
-        on-delete = (action (mut didDelete) true)
+        visible             = visible
+        model               = report
+        projects            = projects
+        tasks               = tasks
+        on-search-customers = (action 'search')
+        on-filter-projects  = (action 'filter')
+        on-filter-tasks     = (action 'filter')
+        on-close            = (action (mut visible) false)
+        on-delete           = (action (mut didDelete) true)
       }}
     `)
 
@@ -132,15 +152,20 @@ describe('Integration | Component | edit report modal', function() {
     this.set('projects', PROJECTS)
     this.set('tasks', TASKS)
 
+    this.on('search', () => CUSTOMERS)
+    this.on('filter', () => [])
+
     this.render(hbs`
       {{sy-modal-target}}
       {{edit-report-modal
-        visible   = true
-        model     = report
-        customers = customers
-        projects  = projects
-        tasks     = tasks
-        on-close  = (action (mut didClose) true)
+        visible             = true
+        model               = report
+        projects            = projects
+        tasks               = tasks
+        on-search-customers = (action 'search')
+        on-filter-projects  = (action 'filter')
+        on-filter-tasks     = (action 'filter')
+        on-close            = (action (mut didClose) true)
       }}
     `)
 

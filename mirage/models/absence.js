@@ -1,7 +1,6 @@
 import { Model, belongsTo } from 'ember-cli-mirage'
 
 export default Model.extend({
-  task: belongsTo(),
-  activity: belongsTo(),
+  type: belongsTo('absenceType'),
   user: belongsTo()
 })

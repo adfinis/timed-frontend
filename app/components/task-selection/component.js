@@ -219,5 +219,5 @@ export default Component.extend({
     yield timeout(500)
 
     return this.get('attrs.on-search-customers')(search)
-  })
+  }).restartable()
 })
