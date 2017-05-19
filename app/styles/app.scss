@@ -140,6 +140,10 @@ body {
 }
 
 @media (--sm-viewport) {
+  .login-form .btn {
+    width: 125px;
+  }
+
   .nav-tabs {
     overflow: visible;
   }
