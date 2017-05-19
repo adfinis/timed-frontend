@@ -26,6 +26,11 @@ class Customer(models.Model):
         """
         return self.name
 
+    class Meta:
+        """Meta informations for the customer model."""
+
+        indexes = [models.Index(fields=['name', 'archived'])]
+
 
 class Project(models.Model):
     """Project model.
@@ -54,6 +59,11 @@ class Project(models.Model):
         """
         return '{0} > {1}'.format(self.customer, self.name)
 
+    class Meta:
+        """Meta informations for the project model."""
+
+        indexes = [models.Index(fields=['name', 'archived'])]
+
 
 class Task(models.Model):
     """Task model.
@@ -75,6 +85,11 @@ class Task(models.Model):
         :rtype:  str
         """
         return '{0} > {1}'.format(self.project, self.name)
+
+    class Meta:
+        """Meta informations for the task model."""
+
+        indexes = [models.Index(fields=['name', 'archived'])]
 
 
 class TaskTemplate(models.Model):
