@@ -53,11 +53,9 @@ export default Route.extend({
       try {
         await report.save()
 
-        if (this.get('controller.absences')) {
-          this.get('controller.absences').forEach(async(absence) => {
-            await absence.reload()
-          })
-        }
+        this.get('controller.absences').forEach(async(absence) => {
+          await absence.reload()
+        })
 
         this.set('controller.reportToEdit', null)
         this.set('controller.showReportEditModal', false)
@@ -99,11 +97,9 @@ export default Route.extend({
       try {
         await report.destroyRecord()
 
-        if (this.get('controller.absences')) {
-          this.get('controller.absences').forEach(async(absence) => {
-            await absence.reload()
-          })
-        }
+        this.get('controller.absences').forEach(async(absence) => {
+          await absence.reload()
+        })
 
         this.set('controller.reportToEdit', null)
         this.set('controller.showReportEditModal', false)

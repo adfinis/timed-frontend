@@ -13,7 +13,7 @@ describe('Unit | Transform | django workdays', function() {
 
     let result = transform.serialize([ 1, 2, 3, 4, 5 ])
 
-    expect(result).to.equal([ '1', '2', '3', '4', '5' ])
+    expect(result).to.deep.equal([ '1', '2', '3', '4', '5' ])
   })
 
   it('deserializes', function() {
@@ -21,6 +21,6 @@ describe('Unit | Transform | django workdays', function() {
 
     let result = transform.deserialize([ '1', '2', '3', '4', '5' ])
 
-    expect(result).to.equal([ 1, 2, 3, 4, 5 ])
+    expect(result).to.deep.equal([ 1, 2, 3, 4, 5 ])
   })
 })

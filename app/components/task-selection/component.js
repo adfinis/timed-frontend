@@ -53,10 +53,12 @@ export default Component.extend({
     set(task, value) {
       this.set('_customer', value)
 
+      /* istanbul ignore else */
       if (value === null || value.get('id') !== this.get('project.customer.id')) {
         this.set('project', null)
       }
 
+      /* istanbul ignore else */
       if (value) {
         this.get('tracking.filterProjects').perform(value.get('id'))
       }
@@ -73,10 +75,12 @@ export default Component.extend({
     set(task, value) {
       this.set('_project', value)
 
+      /* istanbul ignore else */
       if (value === null || value.get('id') !== this.get('task.project.id')) {
         this.set('task', null)
       }
 
+      /* istanbul ignore else */
       if (value) {
         this.get('tracking.filterTasks').perform(value.get('id'))
       }
@@ -92,6 +96,7 @@ export default Component.extend({
 
       let customers = fn.get('last') || fn.perform()
 
+      /* istanbul ignore next */
       customers
         .then((data) => {
           let re = new RegExp(`.*${search}.*`, 'i')
@@ -111,6 +116,7 @@ export default Component.extend({
 
       let projects = fn.get('last') || fn.perform(this.get('customer.id'))
 
+      /* istanbul ignore next */
       projects
         .then((data) => {
           let re = new RegExp(`.*${search}.*`, 'i')
@@ -130,6 +136,7 @@ export default Component.extend({
 
       let tasks = fn.get('last') || fn.perform(this.get('project.id'))
 
+      /* istanbul ignore next */
       tasks
         .then((data) => {
           let re = new RegExp(`.*${search}.*`, 'i')

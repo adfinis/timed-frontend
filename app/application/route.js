@@ -62,24 +62,6 @@ export default Route.extend(ApplicationRouteMixin, {
      */
     invalidateSession() {
       this.get('session').invalidate()
-    },
-
-    /**
-     * Indicate the application is loading
-     *
-     * @method loading
-     * @param {Ember.Transition} transition The transition which caused the loading state
-     * @param {Ember.Route} route The route from which we are transitioning
-     * @public
-     */
-    loading(transition, route) {
-      if (route.controller) {
-        route.controller.set('loading', true)
-
-        transition.promise.finally(() => {
-          route.controller.set('loading', false)
-        })
-      }
     }
   }
 })

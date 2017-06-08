@@ -36,6 +36,22 @@ describe('Acceptance | index', function() {
     expect(currentURL()).to.equal('/')
   })
 
+  it('can start a activity by pressing enter', async function() {
+    await visit('/')
+
+    await triggerEvent('.page-content', 'keypress', { charCode: 13 })
+
+    expect(find(testSelector('record-start'))).to.have.length(1)
+
+    await triggerEvent(testSelector('tracking-comment'), 'keypress', { charCode: 22 })
+
+    expect(find(testSelector('record-start'))).to.have.length(1)
+
+    await triggerEvent(testSelector('tracking-comment'), 'keypress', { charCode: 13 })
+
+    expect(find(testSelector('record-start'))).to.have.length(0)
+  })
+
   it('can start a new activity', async function() {
     server.createList('task', 20)
 

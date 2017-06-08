@@ -16,11 +16,11 @@ const ENTER_CHAR_CODE = 13
  * @public
  */
 export default Component.extend({
+  tracking: service('tracking'),
+
   keyPress(e) {
     if (e.charCode === ENTER_CHAR_CODE && !e.target.classList.contains('tt-input')) {
-      this.send('start')
+      this.get('tracking.startActivity').perform()
     }
-  },
-
-  tracking: service('tracking')
+  }
 })
