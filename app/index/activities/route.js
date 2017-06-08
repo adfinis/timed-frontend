@@ -3,20 +3,18 @@
  * @submodule timed-routes
  * @public
  */
-import Route                   from 'ember-route'
-import service                 from 'ember-service/inject'
-import moment                  from 'moment'
-import TaskSelectionRouteMixin from 'timed/mixins/task-selection-route'
+import Route   from 'ember-route'
+import service from 'ember-service/inject'
+import moment  from 'moment'
 
 /**
  * The index activities route
  *
  * @class IndexActivitiesRoute
  * @extends Ember.Route
- * @uses TaskSelectionRouteMixin
  * @public
  */
-export default Route.extend(TaskSelectionRouteMixin, {
+export default Route.extend({
   /**
    * The notify service
    *
@@ -24,6 +22,8 @@ export default Route.extend(TaskSelectionRouteMixin, {
    * @public
    */
   notify: service('notify'),
+
+  tracking: service('tracking'),
 
   /**
    * The actions for the index activities route
@@ -44,15 +44,11 @@ export default Route.extend(TaskSelectionRouteMixin, {
         activity = this.store.createRecord('activity', { ...activity.getProperties('task', 'comment') })
       }
 
-      let controller = this.controllerFor('protected')
+      await this.get('tracking.stopActivity').perform()
 
-      if (controller.get('currentActivity.active')) {
-        await controller._stopActivity(controller.get('currentActivity'))
-      }
+      this.set('tracking.activity', activity)
 
-      controller.set('currentActivity', activity)
-
-      controller.send('startCurrentActivity')
+      await this.get('tracking.startActivity').perform()
 
       this.transitionTo('index.activities', { queryParams: { day: moment().format('YYYY-MM-DD') } })
     },
@@ -65,11 +61,9 @@ export default Route.extend(TaskSelectionRouteMixin, {
      * @public
      */
     stopActivity(activity) {
-      let controller = this.controllerFor('protected')
+      this.set('tracking.activity', activity)
 
-      controller.set('currentActivity', activity)
-
-      controller.send('stopCurrentActivity')
+      this.get('tracking.stopActivity').perform()
     },
 
     /**

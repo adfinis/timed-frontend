@@ -3,17 +3,17 @@
  * @submodule timed-helpers
  * @public
  */
-import { helper }         from 'ember-helper'
-import humanizeDurationFn from 'timed/utils/humanize-duration'
+import { helper }       from 'ember-helper'
+import humanizeDuration from 'timed/utils/humanize-duration'
 
 /**
  * The humanize duration helper
  *
- * @function humanizeDuration
+ * @function humanizeDurationFn
  * @param {Array} args The arguments delivered to the helper
  * @return {String} The humanized duration
  * @public
  */
-export const humanizeDuration = (args) => humanizeDurationFn(...args)
+export const humanizeDurationFn = (args) => humanizeDuration(...args)
 
-export default helper(humanizeDuration)
+export default helper(humanizeDurationFn)

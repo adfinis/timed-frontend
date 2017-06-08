@@ -4,17 +4,20 @@
       {{if changeset.isNew 'New' 'Edit'}} activity
     {{/modal.header}}
     {{#modal.body}}
-      {{task-selection
-        _task               = changeset.task
-        changeset           = changeset
-        showLabels          = true
-        projects            = projects
-        tasks               = tasks
-        on-search-customers = (action on-search-customers)
-        on-filter-projects  = (action on-filter-projects)
-        on-filter-tasks     = (action on-filter-tasks)
-        on-change           = (action (mut changeset.task))
-      }}
+      {{#task-selection task=changeset.task as |t|}}
+        <div class="form-group" data-test-activity-customer>
+          <label>Customer</label>
+          {{t.customer}}
+        </div>
+        <div class="form-group" data-test-activity-project>
+          <label>Project</label>
+          {{t.project}}
+        </div>
+        <div class="form-group" data-test-activity-task>
+          <label>Task</label>
+          {{t.task}}
+        </div>
+      {{/task-selection}}
       <div data-test-activity-comment class="form-group">
         <label>Comment</label>
         {{textarea

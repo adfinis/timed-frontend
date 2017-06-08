@@ -72,15 +72,12 @@
 
 {{#if activityToEdit}}
   {{edit-activity-modal
-    visible             = showActivityEditModal
-    model               = activityToEdit
-    projects            = projects
-    tasks               = tasks
-    on-close            = (action (mut activityToEdit) null)
-    on-delete           = (route-action 'deleteActivity')
-    on-save             = (route-action 'saveActivity')
-    on-search-customers = (route-action 'searchCustomers')
-    on-filter-projects  = (route-action 'filterProjects')
-    on-filter-tasks     = (route-action 'filterTasks')
+    visible   = showActivityEditModal
+    model     = activityToEdit
+    projects  = projects
+    tasks     = tasks
+    on-close  = (action (mut activityToEdit) null)
+    on-delete = (route-action 'deleteActivity')
+    on-save   = (route-action 'saveActivity')
   }}
 {{/if}}

@@ -36,38 +36,5 @@ export default Controller.extend({
     return activities.filter((a) => {
       return a.get('start').isSame(day, 'day') && !a.get('isNew') && !a.get('isDeleted')
     })
-  },
-
-  /**
-   * All available customers
-   *
-   * @property {Customer[]} customers
-   * @public
-   */
-  @computed()
-  customers() {
-    return this.store.peekAll('customer')
-  },
-
-  /**
-   * All available projects
-   *
-   * @property {Project[]} projects
-   * @public
-   */
-  @computed()
-  projects() {
-    return this.store.peekAll('project')
-  },
-
-  /**
-   * All available tasks
-   *
-   * @property {Task[]} tasks
-   * @public
-   */
-  @computed()
-  tasks() {
-    return this.store.peekAll('task')
   }
 })

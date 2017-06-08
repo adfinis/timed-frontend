@@ -65,15 +65,12 @@
 
 {{#if reportToEdit}}
   {{edit-report-modal
-    visible             = showReportEditModal
-    model               = reportToEdit
-    projects            = projects
-    tasks               = tasks
-    on-close            = (action (mut reportToEdit) null)
-    on-search-customers = (route-action 'searchCustomers')
-    on-filter-projects  = (route-action 'filterProjects')
-    on-filter-tasks     = (route-action 'filterTasks')
-    on-save             = (route-action 'saveReport')
-    on-delete           = (route-action 'deleteReport')
+    visible   = showReportEditModal
+    model     = reportToEdit
+    projects  = projects
+    tasks     = tasks
+    on-close  = (action (mut reportToEdit) null)
+    on-save   = (route-action 'saveReport')
+    on-delete = (route-action 'deleteReport')
   }}
 {{/if}}

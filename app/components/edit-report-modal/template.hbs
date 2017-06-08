@@ -4,18 +4,27 @@
       {{if changeset.isNew 'New' 'Edit'}} report
     {{/modal.header}}
     {{#modal.body}}
-      {{task-selection
-        _task               = changeset.task
-        changeset           = changeset
-        error               = changeset.error.task
-        showLabels          = true
-        projects            = projects
-        tasks               = tasks
-        on-search-customers = (action on-search-customers)
-        on-filter-projects  = (action on-filter-projects)
-        on-filter-tasks     = (action on-filter-tasks)
-        on-change           = (action (mut changeset.task))
-      }}
+      {{#task-selection task=changeset.task as |t|}}
+        <div class="form-group" data-test-activity-customer>
+          <label>Customer</label>
+          {{t.customer}}
+        </div>
+        <div class="form-group" data-test-activity-project>
+          <label>Project</label>
+          {{t.project}}
+        </div>
+        <div class="form-group" data-test-activity-task>
+          <label>Task <span class="required">*</span></label>
+          {{t.task}}
+          {{#if changeset.error.task}}
+            <p class="error-text">
+              {{#each changeset.error.duration.validation as |message index|}}
+                {{if (gt index 0) ', '}}{{message}}
+              {{/each}}
+            </p>
+          {{/if}}
+        </div>
+      {{/task-selection}}
       <div class="grid grid--4of12">
         <div data-test-report-duration class="grid-cell form-group {{if changeset.error.duration 'has-error'}}">
           <label>Duration <span class="required">*</span></label>

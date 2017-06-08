@@ -3,19 +3,17 @@
  * @submodule timed-routes
  * @public
  */
-import Route                   from 'ember-route'
-import service                 from 'ember-service/inject'
-import TaskSelectionRouteMixin from 'timed/mixins/task-selection-route'
+import Route   from 'ember-route'
+import service from 'ember-service/inject'
 
 /**
  * The index reports route
  *
  * @class IndexReportsRoute
  * @extends Ember.Route
- * @uses TaskSelectionRouteMixin
  * @public
  */
-export default Route.extend(TaskSelectionRouteMixin, {
+export default Route.extend({
   /**
    * The notify service
    *

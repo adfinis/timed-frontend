@@ -1,54 +1,44 @@
-<div class="form-group" data-test-tracking-customer>
-  {{#if showLabels}}
-    <label>Customer</label>
-  {{/if}}
-  {{#power-select
-    renderInPlace = true
-    disabled      = disabled
-    selected      = customer
-    search        = (perform searchCustomers)
-    onchange      = (action (mut customer))
-    placeholder   = 'Select customer...'
-    as |customer|}}
-    {{customer.name}}
-  {{/power-select}}
-</div>
-<div class="form-group" data-test-tracking-project>
-  {{#if showLabels}}
-    <label>Project</label>
-  {{/if}}
-  {{#power-select
-    renderInPlace = true
-    disabled      = (or (not _projects.length) disabled)
-    options       = _projects
-    selected      = project
-    searchField   = 'name'
-    onchange      = (action (mut project))
-    placeholder   = 'Select project...'
-    as |project|}}
-    {{project.name}}
-  {{/power-select}}
-</div>
-<div class="form-group {{if error 'has-error'}}" data-test-tracking-task>
-  {{#if showLabels}}
-    <label>Task {{#if required}}<span class="required">*</span>{{/if}}</label>
-  {{/if}}
-  {{#power-select
-    renderInPlace = true
-    disabled      = (or (not _tasks.length) disabled)
-    options       = _tasks
-    selected      = task
-    searchField   = 'name'
-    onchange      = (action on-change)
-    placeholder   = 'Select task...'
-    as |task|}}
-    {{task.name}}
-  {{/power-select}}
-  {{#if error}}
-    <p class="error-text">
-      {{#each error.validation as |message index|}}
-        {{if (gt index 0) ', '}}{{message}}
-      {{/each}}
-    </p>
-  {{/if}}
-</div>
+{{yield (hash
+  customer = (component 'aupac-typeahead'
+    action             = (action (mut customer))
+    class              = 'form-control'
+    disabled           = disabled
+    source             = customerSource
+    selection          = (readonly customer)
+    placeholder        = 'Select customer...'
+    async              = true
+    minLength          = -1
+    limit              = limit
+    display            = display
+    transformSelection = transformSelection
+    suggestionTemplate = suggestionTemplate
+  )
+  project = (component 'aupac-typeahead'
+    action             = (action (mut project))
+    class              = 'form-control'
+    disabled           = (or disabled (not customer))
+    source             = projectSource
+    selection          = (readonly project)
+    placeholder        = 'Select project...'
+    async              = true
+    minLength          = -1
+    limit              = limit
+    display            = display
+    transformSelection = transformSelection
+    suggestionTemplate = suggestionTemplate
+  )
+  task = (component 'aupac-typeahead'
+    action             = (action (mut task))
+    class              = 'form-control'
+    disabled           = (or disabled (not project))
+    placeholder        = 'Select task...'
+    source             = taskSource
+    selection          = (readonly task)
+    async              = true
+    minLength          = -1
+    limit              = limit
+    display            = display
+    transformSelection = transformSelection
+    suggestionTemplate = suggestionTemplate
+  )
+)}}

@@ -5,7 +5,6 @@
  */
 import Route                   from 'ember-route'
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin'
-import TaskSelectionRouteMixin from 'timed/mixins/task-selection-route'
 
 /**
  * The protected route
@@ -15,40 +14,7 @@ import TaskSelectionRouteMixin from 'timed/mixins/task-selection-route'
  * @uses EmberSimpleAuth.AuthenticatedRouteMixin
  * @public
  */
-export default Route.extend(AuthenticatedRouteMixin, TaskSelectionRouteMixin, {
-  /**
-   * Model hook, fetch the current activity
-   *
-   * @method model
-   * @return {Activity} The currently active activity
-   * @public
-   */
-  async model() {
-    let activeActivities = await this.store.query('activity', { include: 'blocks', active: true })
-
-    return activeActivities.getWithDefault('firstObject', null)
-  },
-
-  /**
-   * Setup controller hook, set the current activity or create a new one if
-   * none is active
-   *
-   * @method setupController
-   * @param {ProtectedController} controller The controller
-   * @param {Activity|null} model The active activity
-   * @public
-   */
-  setupController(controller, model) {
-    this._super(...arguments)
-
-    if (model) {
-      controller.set('currentActivity', model)
-    }
-    else {
-      controller.set('currentActivity', this.store.createRecord('activity'))
-    }
-  },
-
+export default Route.extend(AuthenticatedRouteMixin, {
   /**
    * Actions for the protected route
    *
