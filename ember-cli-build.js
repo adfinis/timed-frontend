@@ -32,8 +32,13 @@ module.exports = function(defaults) {
     },
     'ember-cli-babel': {
       includePolyfill: true
+    },
+    'ember-aupac-typeahead': {
+      includeTypeahead: false
     }
   })
+
+  app.import('bower_components/corejs-typeahead/dist/typeahead.jquery.js')
 
   return app.toTree()
 }

@@ -2376,6 +2376,13 @@ ember-assign-helper@0.1.1:
   dependencies:
     ember-cli-babel "^5.1.7"
 
+ember-aupac-typeahead@2.2.0:
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ember-aupac-typeahead/-/ember-aupac-typeahead-2.2.0.tgz#5f93870c1cb6305671d3a22c54ffc27f8dc7323f"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+    ember-cli-htmlbars "^1.1.1"
+
 ember-basic-dropdown@0.30.2:
   version "0.30.2"
   resolved "https://registry.yarnpkg.com/ember-basic-dropdown/-/ember-basic-dropdown-0.30.2.tgz#179561add86dda942215c73dd9875f4a83419052"
@@ -2383,14 +2390,6 @@ ember-basic-dropdown@0.30.2:
     ember-cli-babel "^5.1.10"
     ember-cli-htmlbars "^1.1.1"
     ember-native-dom-helpers "^0.3.0"
-    ember-wormhole "^0.5.1"
-
-ember-basic-dropdown@^0.22.0:
-  version "0.22.0"
-  resolved "https://registry.yarnpkg.com/ember-basic-dropdown/-/ember-basic-dropdown-0.22.0.tgz#2b160272b7b817efc8218271d5420e0da65f9877"
-  dependencies:
-    ember-cli-babel "^5.1.10"
-    ember-cli-htmlbars "^1.1.1"
     ember-wormhole "^0.5.1"
 
 ember-changeset-validations@1.2.6:
@@ -3031,18 +3030,12 @@ ember-moment@7.3.0, ember-moment@^7.3.0:
     ember-cli-babel "^5.1.6"
     ember-macro-helpers "^0.4.0"
 
-ember-native-dom-helpers@0.3.5:
+ember-native-dom-helpers@0.3.5, ember-native-dom-helpers@^0.3.0:
   version "0.3.5"
   resolved "https://registry.yarnpkg.com/ember-native-dom-helpers/-/ember-native-dom-helpers-0.3.5.tgz#df492bc34f6b277f0c9d2adcacb3fd8a3e11defa"
   dependencies:
     broccoli-funnel "^1.1.0"
     ember-cli-babel "^6.0.0-beta.9"
-
-ember-native-dom-helpers@^0.3.0:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/ember-native-dom-helpers/-/ember-native-dom-helpers-0.3.2.tgz#3c488ef564481c2b700f353bf2b755e11e31fd7c"
-  dependencies:
-    ember-cli-babel "^5.1.7"
 
 ember-network@^0.3.0:
   version "0.3.1"
@@ -3081,17 +3074,6 @@ ember-power-calendar@0.3.1:
     ember-cli-moment-shim "^2.1.0"
     ember-concurrency "^0.7.15"
     ember-moment "^7.3.0"
-
-ember-power-select@1.4.4:
-  version "1.4.4"
-  resolved "https://registry.yarnpkg.com/ember-power-select/-/ember-power-select-1.4.4.tgz#11c0ff8f4cec18a871a7ade879267ff7a568cb62"
-  dependencies:
-    ember-basic-dropdown "^0.22.0"
-    ember-cli-babel "^5.1.10"
-    ember-cli-htmlbars "^1.1.1"
-    ember-concurrency "^0.7.15"
-    ember-text-measurer "^0.3.3"
-    ember-truth-helpers "^1.3.0"
 
 ember-resolver@^2.0.3:
   version "2.1.1"
@@ -3173,19 +3155,13 @@ ember-test-selectors@0.2.1:
   dependencies:
     ember-cli-babel "^5.1.7"
 
-ember-text-measurer@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.yarnpkg.com/ember-text-measurer/-/ember-text-measurer-0.3.3.tgz#0762809a71c2e1f2e60ab00c53c6eb1b63c9f963"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-
 ember-truth-helpers@1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/ember-truth-helpers/-/ember-truth-helpers-1.2.0.tgz#e63cffeaa8211882ae61a958816fded3790d065b"
   dependencies:
     ember-cli-babel "^5.1.5"
 
-ember-truth-helpers@1.3.0, ember-truth-helpers@^1.3.0:
+ember-truth-helpers@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/ember-truth-helpers/-/ember-truth-helpers-1.3.0.tgz#6ed9f83ce9a49f52bb416d55e227426339a64c60"
   dependencies:
