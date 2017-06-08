@@ -63,39 +63,6 @@ export default Controller.extend({
   },
 
   /**
-   * All available customers
-   *
-   * @property {Customer[]} customers
-   * @public
-   */
-  @computed()
-  customers() {
-    return this.store.peekAll('customer')
-  },
-
-  /**
-   * All available projects
-   *
-   * @property {Project[]} projects
-   * @public
-   */
-  @computed()
-  projects() {
-    return this.store.peekAll('project')
-  },
-
-  /**
-   * All available tasks
-   *
-   * @property {Task[]} tasks
-   * @public
-   */
-  @computed()
-  tasks() {
-    return this.store.peekAll('task')
-  },
-
-  /**
    * All available absence types
    *
    * @property {AbsenceType[]} absenceTypes

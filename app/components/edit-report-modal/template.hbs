@@ -3,8 +3,8 @@
     {{#modal.header close=(action 'close' changeset)}}
       {{if changeset.isNew 'New' 'Edit'}} report
     {{/modal.header}}
-    {{#modal.body}}
-      {{#task-selection task=changeset.task as |t|}}
+    {{#modal.body data-test-edit-report}}
+      {{#task-selection changeset=changeset task=changeset.task as |t|}}
         <div class="form-group" data-test-activity-customer>
           <label>Customer</label>
           {{t.customer}}
@@ -18,7 +18,7 @@
           {{t.task}}
           {{#if changeset.error.task}}
             <p class="error-text">
-              {{#each changeset.error.duration.validation as |message index|}}
+              {{#each changeset.error.task.validation as |message index|}}
                 {{if (gt index 0) ', '}}{{message}}
               {{/each}}
             </p>

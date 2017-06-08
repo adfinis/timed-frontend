@@ -1,5 +1,6 @@
 {{yield (hash
   customer = (component 'aupac-typeahead'
+    name               = 'customer'
     action             = (action (mut customer))
     class              = 'form-control'
     disabled           = disabled
@@ -14,6 +15,7 @@
     suggestionTemplate = suggestionTemplate
   )
   project = (component 'aupac-typeahead'
+    name               = 'project'
     action             = (action (mut project))
     class              = 'form-control'
     disabled           = (or disabled (not customer))
@@ -28,6 +30,7 @@
     suggestionTemplate = suggestionTemplate
   )
   task = (component 'aupac-typeahead'
+    name               = 'task'
     action             = (action (mut task))
     class              = 'form-control'
     disabled           = (or disabled (not project))

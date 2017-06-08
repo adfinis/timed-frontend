@@ -77,9 +77,7 @@ export default Controller.extend({
   activitySum: moment.duration(),
 
   _activitySum: task(function* () {
-    while (!testing) {
-      yield timeout(1000)
-
+    for (;;) {
       let duration = this.get('_activities').reduce((dur, cur) => {
         dur.add(cur.get('duration'))
 
@@ -91,6 +89,12 @@ export default Controller.extend({
       }, moment.duration())
 
       this.set('activitySum', duration)
+
+      if (testing) {
+        return
+      }
+
+      yield timeout(1000)
     }
   }).on('init'),
 

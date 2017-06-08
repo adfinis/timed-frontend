@@ -56,8 +56,12 @@ export default Component.extend({
    * @public
    */
   timer: task(function* () {
-    while (!testing) {
+    for (;;) {
       this._update()
+
+      if (testing) {
+        return
+      }
 
       yield timeout(1000)
     }

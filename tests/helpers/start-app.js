@@ -4,6 +4,8 @@ import Application                  from '../../app'
 import config                       from '../../config/environment'
 import registerBasicDropdownHelpers from 'timed/tests/helpers/ember-basic-dropdown'
 
+import 'timed/tests/helpers/task-select'
+
 registerBasicDropdownHelpers()
 
 export default function startApp(attrs) {

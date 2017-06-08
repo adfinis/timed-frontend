@@ -4,10 +4,7 @@ module.exports = {
   },
   globals: {
     server: true,
-    selectChoose: true,
-    selectSearch: true,
-    removeMultipleOption: true,
-    clearSelected: true,
+    taskSelect: true
   },
   rules: {
     'no-magic-numbers': 'off',

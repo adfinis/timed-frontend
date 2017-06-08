@@ -78,8 +78,12 @@ const DurationSinceComponent = Component.extend({
    * @public
    */
   timer: task(function* () {
-    while (!testing) {
+    for (;;) {
       this._compute()
+
+      if (testing) {
+        return
+      }
 
       yield timeout(1000)
     }

@@ -67,8 +67,6 @@
   {{edit-report-modal
     visible   = showReportEditModal
     model     = reportToEdit
-    projects  = projects
-    tasks     = tasks
     on-close  = (action (mut reportToEdit) null)
     on-save   = (route-action 'saveReport')
     on-delete = (route-action 'deleteReport')

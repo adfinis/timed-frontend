@@ -74,8 +74,6 @@
   {{edit-activity-modal
     visible   = showActivityEditModal
     model     = activityToEdit
-    projects  = projects
-    tasks     = tasks
     on-close  = (action (mut activityToEdit) null)
     on-delete = (route-action 'deleteActivity')
     on-save   = (route-action 'saveActivity')

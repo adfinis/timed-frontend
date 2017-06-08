@@ -4,6 +4,7 @@ import destroyApp                                 from '../helpers/destroy-app'
 import { expect }                                 from 'chai'
 import startApp                                   from '../helpers/start-app'
 import testSelector                               from 'ember-test-selectors'
+import moment                                     from 'moment'
 
 describe('Acceptance | index activities', function() {
   let application
@@ -43,6 +44,32 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
   })
 
+  it('can start an activity', async function() {
+    await visit('/')
+
+    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`))
+
+    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
+  })
+
+  it('can start an activity of a past day', async function() {
+    let lastDay = moment().subtract(1, 'day')
+
+    let activity = server.create('activity', { startDatetime: lastDay })
+
+    await visit('/')
+
+    await click(testSelector('previous'))
+
+    expect(currentURL()).to.equal(`/?day=${lastDay.format('YYYY-MM-DD')}`)
+
+    await click(`${testSelector('activity-row-id', activity.id)} ${testSelector('start-activity')}`)
+
+    expect(currentURL()).to.equal('/')
+
+    expect(find(`${testSelector('activity-row')}:last-child td:eq(1)`).text()).to.equal(activity.comment)
+  })
+
   it('can stop an activity', async function() {
     await visit('/')
 
@@ -80,6 +107,7 @@ describe('Acceptance | index activities', function() {
 
   it('can generate reports', async function() {
     let activity = server.create('activity', 'active')
+    let { id }   = activity
 
     await visit('/')
 
@@ -89,9 +117,9 @@ describe('Acceptance | index activities', function() {
 
     expect(find(testSelector('report-row'))).to.have.length(6)
 
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.name)
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.project.name)
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(0)`).text()).to.contain(activity.task.project.customer.name)
+    expect(find(`${testSelector('report-row-id', id)} td:eq(0)`).text()).to.contain(activity.task.name)
+    expect(find(`${testSelector('report-row-id', id)} td:eq(0)`).text()).to.contain(activity.task.project.name)
+    expect(find(`${testSelector('report-row-id', id)} td:eq(0)`).text()).to.contain(activity.task.project.customer.name)
   })
 
   it('can not generate reports twice', async function() {

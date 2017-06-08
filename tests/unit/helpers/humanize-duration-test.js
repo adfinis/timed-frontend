@@ -13,7 +13,7 @@ describe('Unit | Helper | humanize duration', function() {
 
     let result = humanizeDurationFn([ duration ])
 
-    expect(result).to.equal('03h 56m')
+    expect(result).to.equal('3h 56m')
   })
 
   it('works with seconds', function() {
@@ -25,6 +25,6 @@ describe('Unit | Helper | humanize duration', function() {
 
     let result = humanizeDurationFn([ duration, true ])
 
-    expect(result).to.equal('03h 56m 59s')
+    expect(result).to.equal('3h 56m 59s')
   })
 })
