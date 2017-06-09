@@ -1,3 +1,8 @@
+/**
+ * @module timed
+ * @submodule timed-services
+ * @public
+ */
 import Service  from 'ember-service'
 import service  from 'ember-service/inject'
 import moment   from 'moment'
@@ -8,6 +13,15 @@ import {
   timeout
 } from 'ember-concurrency'
 
+/**
+ * Tracking service
+ *
+ * This contains some methods, the application needs on multiple routes
+ *
+ * @class TrackingService
+ * @extends Ember.Service
+ * @public
+ */
 export default Service.extend({
   /**
    * The store service
@@ -25,6 +39,12 @@ export default Service.extend({
    */
   notify: service('notify'),
 
+  /**
+   * Init hook, get the current activity
+   *
+   * @method init
+   * @public
+   */
   async init() {
     this._super()
 
@@ -36,6 +56,12 @@ export default Service.extend({
     this.set('activity', actives.getWithDefault('firstObject', null))
   },
 
+  /**
+   * Filter all customers
+   *
+   * @property {EmberConcurrency.Task} filterCustomers
+   * @public
+   */
   filterCustomers: task(function* () {
     yield timeout(500)
 
@@ -44,6 +70,12 @@ export default Service.extend({
     return customers
   }).restartable(),
 
+  /**
+   * Filter all projects by customer
+   *
+   * @property {EmberConcurrency.Task} filterProjects
+   * @public
+   */
   filterProjects: task(function* (customer) {
     if (!customer) {
       throw new Error('No customer selected')
@@ -56,6 +88,12 @@ export default Service.extend({
     return projects
   }).restartable(),
 
+  /**
+   * Filter all tasks by project
+   *
+   * @property {EmberConcurrency.Task} filterTask
+   * @public
+   */
   filterTasks: task(function* (project) {
     if (!project) {
       throw new Error('No project selected')
@@ -76,6 +114,12 @@ export default Service.extend({
    */
   _activity: null,
 
+  /**
+   * The currenty activity or create a new one if none is set
+   *
+   * @property {Activity} activity
+   * @public
+   */
   @computed
   activity: {
     get() {

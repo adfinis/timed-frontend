@@ -32,19 +32,74 @@ export default Component.extend({
    */
   tagName: '',
 
+  /**
+   * Tracking service
+   *
+   * This service delivers the tasks to fetch the needed data, so we don't have
+   * to pass them to the component every time.
+   *
+   * @property {TrackingService} tracking
+   * @public
+   */
   tracking: service('tracking'),
 
-  limit: Infinity,
+  /**
+   * The limit of search results
+   *
+   * @property {Number} limit
+   * @public
+   */
+  limit: Number.MAX_SAFE_INTEGER,
 
+  /**
+   * Display function for the autocomplete component
+   *
+   * @property {Function} display
+   * @public
+   */
   display: FORMAT,
 
+  /**
+   * Transform selection function for the autocomplete component
+   *
+   * @property {Function} transformSelection
+   * @public
+   */
   transformSelection: FORMAT,
 
+  /**
+   * Template for displaying the suggestions
+   *
+   * @property {*} suggestionTemplate
+   * @public
+   */
   suggestionTemplate: SUGGESTION_TEMPLATE,
 
+  /**
+   * The manually selected customer
+   *
+   * @property {Customer} _customer
+   * @private
+   */
   _customer: null,
+
+  /**
+   * The manually selected project
+   *
+   * @property {Project} _project
+   * @private
+   */
   _project: null,
 
+  /**
+   * The selected customer
+   *
+   * This can be selected manually or automatically, because a task is already
+   * set.
+   *
+   * @property {Customer} customer
+   * @public
+   */
   @computed('task')
   customer: {
     get(task) {
@@ -67,6 +122,15 @@ export default Component.extend({
     }
   },
 
+  /**
+   * The selected project
+   *
+   * This can be selected manually or automatically, because a task is already
+   * set.
+   *
+   * @property {Project} project
+   * @public
+   */
   @computed('task')
   project: {
     get(task) {
@@ -89,6 +153,15 @@ export default Component.extend({
     }
   },
 
+  /**
+   * Source function for the customer autocomplete component
+   *
+   * This either takes the last fetched customers and filters them, or triggers
+   * the call first if none was triggered before.
+   *
+   * @property {Function} customerSource
+   * @public
+   */
   @computed
   customerSource() {
     return (search, syncResults, asyncResults) => {
@@ -109,6 +182,15 @@ export default Component.extend({
     }
   },
 
+  /**
+   * Source function for the project autocomplete component
+   *
+   * This either takes the last fetched projects and filters them, or triggers
+   * the call first if none was triggered before.
+   *
+   * @property {Function} projectSource
+   * @public
+   */
   @computed
   projectSource() {
     return (search, syncResults, asyncResults) => {
@@ -129,6 +211,15 @@ export default Component.extend({
     }
   },
 
+  /**
+   * Source function for the task autocomplete component
+   *
+   * This either takes the last fetched projects and filters them, or triggers
+   * the call first if none was triggered before.
+   *
+   * @property {Function} taskSource
+   * @public
+   */
   @computed
   taskSource() {
     return (search, syncResults, asyncResults) => {
