@@ -9,13 +9,6 @@ from timed.projects import models
 class CustomerSerializer(ModelSerializer):
     """Customer serializer."""
 
-    projects = ResourceRelatedField(read_only=True,
-                                    many=True)
-
-    included_serializers = {
-        'projects': 'timed.projects.serializers.ProjectSerializer'
-    }
-
     class Meta:
         """Meta information for the customer serializer."""
 
@@ -26,7 +19,6 @@ class CustomerSerializer(ModelSerializer):
             'website',
             'comment',
             'archived',
-            'projects',
         ]
 
 
@@ -34,12 +26,9 @@ class ProjectSerializer(ModelSerializer):
     """Project serializer."""
 
     customer = ResourceRelatedField(queryset=models.Customer.objects.all())
-    tasks    = ResourceRelatedField(read_only=True,
-                                    many=True)
 
     included_serializers = {
-        'customer': 'timed.projects.serializers.CustomerSerializer',
-        'tasks':    'timed.projects.serializers.TaskSerializer'
+        'customer': 'timed.projects.serializers.CustomerSerializer'
     }
 
     class Meta:
@@ -52,7 +41,6 @@ class ProjectSerializer(ModelSerializer):
             'estimated_hours',
             'archived',
             'customer',
-            'tasks',
         ]
 
 
