@@ -10,7 +10,6 @@ class CustomerViewSet(ReadOnlyModelViewSet):
 
     serializer_class = serializers.CustomerSerializer
     filter_class     = filters.CustomerFilterSet
-    search_fields    = ('name',)
     ordering         = 'name'
 
     def get_queryset(self):
@@ -39,9 +38,7 @@ class ProjectViewSet(ReadOnlyModelViewSet):
         :return: The projects
         :rtype:  QuerySet
         """
-        return models.Project.objects.prefetch_related(
-            'tasks'
-        ).select_related(
+        return models.Project.objects.select_related(
             'customer'
         ).filter(
             archived=False
