@@ -12,6 +12,12 @@ import { typeOf } from 'ember-utils'
 const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
 const SUGGESTION_TEMPLATE = hbs`{{model.name}}`
 
+const regexFilter = (data, term, key) => {
+  let re = new RegExp(`.*${term}.*`, 'i')
+
+  return data.filter((i) => re.test(i.get(key)))
+}
+
 /**
  * Component for selecting a task, which consists of selecting a customer and
  * project first.
@@ -171,14 +177,8 @@ export default Component.extend({
 
       /* istanbul ignore next */
       customers
-        .then((data) => {
-          let re = new RegExp(`.*${search}.*`, 'i')
-
-          return asyncResults(data.filter((i) => re.test(i.get('name'))))
-        })
-        .catch(() => {
-          return asyncResults([])
-        })
+        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .catch(() => asyncResults([]))
     }
   },
 
@@ -200,14 +200,8 @@ export default Component.extend({
 
       /* istanbul ignore next */
       projects
-        .then((data) => {
-          let re = new RegExp(`.*${search}.*`, 'i')
-
-          return asyncResults(data.filter((i) => re.test(i.get('name'))))
-        })
-        .catch(() => {
-          return asyncResults([])
-        })
+        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .catch(() => asyncResults([]))
     }
   },
 
@@ -229,14 +223,8 @@ export default Component.extend({
 
       /* istanbul ignore next */
       tasks
-        .then((data) => {
-          let re = new RegExp(`.*${search}.*`, 'i')
-
-          return asyncResults(data.filter((i) => re.test(i.get('name'))))
-        })
-        .catch(() => {
-          return asyncResults([])
-        })
+        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .catch(() => asyncResults([]))
     }
   }
 })
