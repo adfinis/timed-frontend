@@ -131,9 +131,7 @@ export default Controller.extend({
   @computed('_attendances.@each.{from,to}')
   attendanceSum(attendances) {
     return attendances.reduce((dur, cur) => {
-      dur.add(cur.get('to').diff(cur.get('from')), 'milliseconds')
-
-      return dur
+      return dur.add(cur.get('to').diff(cur.get('from')), 'milliseconds')
     }, moment.duration())
   },
 
@@ -196,11 +194,7 @@ export default Controller.extend({
     let reportDurations  = reports.mapBy('duration')
     let absenceDurations = absences.mapBy('duration')
 
-    return [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => {
-      val.add(dur)
-
-      return val
-    }, moment.duration())
+    return [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => val.add(dur), moment.duration())
   },
 
   /**
@@ -288,9 +282,7 @@ export default Controller.extend({
         active: d.isSame(date, 'day'),
         absence: !!absences.length,
         workday: this.get('workdays').includes(d.isoWeekday()),
-        worktime: [ ...reports, ...absences ].reduce((val, dur) => {
-          return val.add(dur)
-        }, moment.duration())
+        worktime: [ ...reports, ...absences ].reduce((val, dur) => val.add(dur), moment.duration())
       }
     })
   }).restartable()
