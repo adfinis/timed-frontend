@@ -2,7 +2,6 @@
 @import 'toolbar';
 @import 'badge';
 @import 'loader';
-@import 'sy-timepicker';
 @import 'ember-power-calendar';
 @import 'pod-styles';
 
@@ -61,12 +60,6 @@ body {
   > li > a {
     white-space: nowrap;
   }
-}
-
-.form-control[type=text].picker:read-only {
-  cursor: text;
-  text-align: right;
-  background-color: rgb(255,255,255);
 }
 
 .card-block .table {

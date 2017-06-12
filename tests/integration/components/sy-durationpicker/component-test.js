@@ -3,8 +3,9 @@ import { describe, it }       from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs                    from 'htmlbars-inline-precompile'
 import moment                 from 'moment'
-import { clickTrigger }       from 'timed/tests/helpers/ember-basic-dropdown'
-import testSelector           from 'ember-test-selectors'
+import $                      from 'jquery'
+
+const event = $.Event
 
 describe('Integration | Component | sy durationpicker', function() {
   setupComponentTest('sy-durationpicker', {
@@ -19,104 +20,67 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.$('input').val()).to.equal('01:30')
   })
 
-  it('toggles the durationpicker on click of the input', function() {
-    this.set('value', moment.duration({ h: 1, m: 30 }))
+  it('renders without value', function() {
+    this.set('value', null)
 
     this.render(hbs`{{sy-durationpicker value=value}}`)
 
-    expect(this.$('.sy-durationpicker-picker')).to.have.length(0)
-
-    clickTrigger()
-
-    expect(this.$('.sy-durationpicker-picker')).to.have.length(1)
+    expect(this.$('input').val()).to.equal('')
   })
 
-  it('can change hours', function() {
-    this.set('value', moment.duration({ h: 1, m: 30 }))
+  it('can change the value', function() {
+    this.set('value', moment.duration({
+      h: 12,
+      m: 30
+    }))
 
     this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
 
-    expect(this.$('.sy-durationpicker-picker')).to.have.length(0)
+    this.$('input').val('13:15').trigger(event('input'))
 
-    clickTrigger()
-
-    this.$(testSelector('sy-durationpicker-inc-h')).click()
-
-    expect(this.$('input').val()).to.equal('02:30')
-
-    this.$(testSelector('sy-durationpicker-dec-h')).click()
-
-    expect(this.$('input').val()).to.equal('01:30')
+    expect(this.get('value').hours()).to.equal(13)
+    expect(this.get('value').minutes()).to.equal(15)
   })
 
-  it('can change minutes', function() {
-    this.set('value', moment.duration({ h: 1, m: 30 }))
+  it('can\'t set an invalid value', function() {
+    this.set('value', moment.duration({
+      h: 12,
+      m: 30
+    }))
 
     this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
 
-    expect(this.$('.sy-durationpicker-picker')).to.have.length(0)
+    this.$('input').val('24:15').trigger(event('input'))
 
-    clickTrigger()
-
-    this.$(testSelector('sy-durationpicker-inc-m')).click()
-
-    expect(this.$('input').val()).to.equal('01:45')
-
-    this.$(testSelector('sy-durationpicker-dec-m')).click()
-
-    expect(this.$('input').val()).to.equal('01:30')
-
-    this.$(testSelector('sy-durationpicker-dec-m')).click()
-    this.$(testSelector('sy-durationpicker-dec-m')).click()
-
-    expect(this.$('input').val()).to.equal('01:00')
-
-    this.$(testSelector('sy-durationpicker-dec-m')).click()
-
-    expect(this.$('input').val()).to.equal('00:45')
-
-    this.$(testSelector('sy-durationpicker-inc-m')).click()
-
-    expect(this.$('input').val()).to.equal('01:00')
+    expect(this.get('value').hours()).to.equal(12)
+    expect(this.get('value').minutes()).to.equal(30)
   })
 
-  it('can not be more than 24 hours', function() {
-    this.set('value', moment.duration({ h: 23, m: 45 }))
+  it('can increase minutes per arrow', function() {
+    this.set('value', moment.duration({
+      h: 12,
+      m: 15
+    }))
 
     this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
 
-    expect(this.$('.sy-durationpicker-picker')).to.have.length(0)
+    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
 
-    clickTrigger()
-
-    expect(this.$('input').val()).to.equal('23:45')
-
-    this.$(testSelector('sy-durationpicker-inc-h')).click()
-
-    expect(this.$('input').val()).to.equal('23:45')
-
-    this.$(testSelector('sy-durationpicker-inc-m')).click()
-
-    expect(this.$('input').val()).to.equal('23:45')
+    expect(this.get('value').hours()).to.equal(12)
+    expect(this.get('value').minutes()).to.equal(30)
   })
 
-  it('can not be less than 0 hours', function() {
-    this.set('value', moment.duration({ h: 0, m: 0 }))
+  it('can decrease minutes per arrow', function() {
+    this.set('value', moment.duration({
+      h: 12,
+      m: 15
+    }))
 
     this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
 
-    expect(this.$('.sy-durationpicker-picker')).to.have.length(0)
+    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
 
-    clickTrigger()
-
-    expect(this.$('input').val()).to.equal('00:00')
-
-    this.$(testSelector('sy-durationpicker-dec-h')).click()
-
-    expect(this.$('input').val()).to.equal('00:00')
-
-    this.$(testSelector('sy-durationpicker-dec-m')).click()
-
-    expect(this.$('input').val()).to.equal('00:00')
+    expect(this.get('value').hours()).to.equal(12)
+    expect(this.get('value').minutes()).to.equal(0)
   })
 })

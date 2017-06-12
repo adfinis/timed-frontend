@@ -46,17 +46,8 @@ describe('Acceptance | index reports', function() {
     // select task
     await taskSelect(testSelector('edit-report'))
 
-    // open duration picker
-    await click(`${testSelector('report-duration')} input`)
-
-    // set duration to 03:30
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-h')}`)
-    await click(`${testSelector('sy-durationpicker-inc-m')}`)
-    await click(`${testSelector('sy-durationpicker-inc-m')}`)
-
     // fill the remaining fields
+    await fillIn(`${testSelector('report-duration')} input`, '03:30')
     await fillIn(`${testSelector('report-comment')} textarea`, 'Test comment report')
     await click(`${testSelector('report-not-billable')} input`)
     await click(`${testSelector('report-review')} input`)

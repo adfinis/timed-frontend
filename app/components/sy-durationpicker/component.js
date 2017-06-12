@@ -3,93 +3,72 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
-import computed  from 'ember-computed-decorators'
-import moment    from 'moment'
-
-const { floor } = Math
+import SyTimepickerComponent from 'timed/components/sy-timepicker/component'
+import layout                from 'timed/components/sy-timepicker/template'
+import computed              from 'ember-computed-decorators'
+import moment                from 'moment'
+import formatDuration        from 'timed/utils/format-duration'
 
 /**
  * Duration selector component
- *
- * This component provides an input box with a selecor where you can increase
- * and decrease hours and minutes of a duration. Currently the biggest minute
- * step is 15 minutes. It does not allow durations longer than 24 hours or
- * less than 0 hours.
  *
  * @class SyDurationpickerComponent
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
+export default SyTimepickerComponent.extend({
+  layout,
+
   /**
-   * The hours of the current duration
+   * The display representation of the value
    *
-   * We use the function `.asHours()` here, because `.hours()` would return 0
-   * if we have a duration with 24 hours.
+   * This is the value in the input field.
    *
-   * @property {Number} hours
+   * @property {String} displayValue
    * @public
    */
+  pattern: '(([01][0-9]|2[0-3]):(00|15|30|45)|24:00)',
+
   @computed('value')
-  hours(value) {
-    return floor(value.asHours())
+  displayValue(value) {
+    return value ? formatDuration(value, false) : ''
   },
 
   /**
-   * The minutes of the current duration
+   * Set the current value
    *
-   * @property {Number} minutes
-   * @public
+   * @method _set
+   * @param {Number} h The hours of the new value
+   * @param {Number} m The minutes of the new value
+   * @return {moment.duration} The mutated value
+   * @private
    */
-  @computed('value')
-  minutes(value) {
-    return value.minutes()
+  _set(h, m) {
+    return moment.duration({ h, m })
   },
 
   /**
-   * Actions for the sy durationpicker component
+   * Add hours and minutes to the current value
    *
-   * @property {Object} actions
-   * @public
+   * @method _add
+   * @param {Number} h The hours to add
+   * @param {Number} m The minutes to add
+   * @return {moment.duration} The mutated value
+   * @private
    */
-  actions: {
-    /**
-     * Increase the duration by x minutes
-     *
-     * @method increase
-     * @param {Number} minutes The minutes to add
-     * @public
-     */
-    increase(minutes) {
-      value = this.get('value')
+  _add(h, m) {
+    return moment.duration(this.get('value')).add({ h, m })
+  },
 
-      if (value.asHours() * 60 + value.minutes() + minutes > 24 * 60) {
-        return
-      }
-
-      let value = moment.duration(value).add(minutes, 'minutes')
-
-      this.get('attrs.on-change')(value)
-    },
-
-    /**
-     * Decrease the duration by x minutes
-     *
-     * @method decrease
-     * @param {Number} minutes The minutes to subtract
-     * @public
-     */
-    decrease(minutes) {
-      value = this.get('value')
-
-      if (value.asHours() * 60 + value.minutes() < minutes) {
-        return
-      }
-
-      let value = moment.duration(value).subtract(minutes, 'minutes')
-
-      this.get('attrs.on-change')(value)
-    }
+  /**
+   * Validate a value
+   *
+   * @method _validate
+   * @param {moment.duration} value The value to check
+   * @return {Boolean} Whether the value is valid
+   * @private
+   */
+  _validate(value) {
+    return value.asHours() >= 0 && value.asHours() <= 24
   }
 })
