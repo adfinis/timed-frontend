@@ -131,10 +131,12 @@ export default Component.extend({
      * @public
      */
     save([ fromMin, toMin ]) {
-      this.set('attendance.from', moment({ hour: 0 }).minute(fromMin))
-      this.set('attendance.to', moment({ hour: 0 }).minute(toMin))
+      let attendance = this.get('attendance')
 
-      this.get('attrs.on-save')(this.get('attendance'))
+      attendance.set('from', moment(attendance.get('from')).hour(0).minute(fromMin))
+      attendance.set('to', moment(attendance.get('to')).hour(0).minute(toMin))
+
+      this.get('attrs.on-save')(attendance)
     },
 
     /**
