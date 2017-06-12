@@ -65,9 +65,7 @@ export default Service.extend({
   filterCustomers: task(function* () {
     yield timeout(500)
 
-    let customers = yield this.get('store').query('customer', {})
-
-    return customers
+    return yield this.get('store').query('customer', {})
   }).restartable(),
 
   /**
@@ -83,9 +81,7 @@ export default Service.extend({
 
     yield timeout(500)
 
-    let projects = yield this.get('store').query('project', { customer })
-
-    return projects
+    return yield this.get('store').query('project', { customer })
   }).restartable(),
 
   /**
@@ -101,9 +97,7 @@ export default Service.extend({
 
     yield timeout(500)
 
-    let tasks = yield this.get('store').query('task', { project })
-
-    return tasks
+    return yield this.get('store').query('task', { project })
   }).restartable(),
 
   /**
