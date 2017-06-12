@@ -3,9 +3,27 @@
   <button title="Add a new absence" class="btn btn-success" {{action 'addAbsence'}}>Add absence</button>
 </div>
 
-{{#if reports}}
+{{#if (or reports absences)}}
   <table class="table table--striped">
     <tbody>
+      {{#each absences as |absence|}}
+        <tr
+         data-test-absence-row
+         data-test-absence-row-id={{absence.id}}
+         onclick={{action 'editAbsence' absence}}
+         title="Click to edit absence"
+         class="pointer is-absence"
+        >
+          <td>
+            <strong>{{absence.type.name}}</strong>
+            <br>
+            <small>&nbsp;</small>
+          </td>
+          <td>{{absence.comment}}</td>
+          <td>{{format-duration absence.duration false}}</td>
+          <td></td>
+        </tr>
+      {{/each}}
       {{#each reports as |report|}}
         <tr
          data-test-report-row
@@ -15,24 +33,16 @@
          class="pointer {{if report.absenceType 'is-absence'}}"
         >
           <td>
-            {{#if report.absenceType}}
-              <strong>{{report.absenceType.name}}</strong>
-              <br>
-              <small>&nbsp;</small>
-            {{else if report.task}}
-              <strong>{{report.task.project.name}}</strong> ({{report.task.project.customer.name}})
-              <br>
-              <small><em>{{report.task.name}}</em></small>
-            {{/if}}
+            <strong>{{report.task.project.name}}</strong> ({{report.task.project.customer.name}})
+            <br>
+            <small><em>{{report.task.name}}</em></small>
           </td>
           <td>{{report.comment}}</td>
           <td>{{format-duration report.duration false}}</td>
           <td>
-            {{#unless report.absenceType}}
-              {{fa-icon (concat (if report.notBillable 'check-') 'square-o') fixedWidth=true}} Not billable
-              <br>
-              {{fa-icon (concat (if report.review 'check-') 'square-o') fixedWidth=true}} Needs review
-            {{/unless}}
+            {{fa-icon (concat (if report.notBillable 'check-') 'square-o') fixedWidth=true}} Not billable
+            <br>
+            {{fa-icon (concat (if report.review 'check-') 'square-o') fixedWidth=true}} Needs review
           </td>
         </tr>
       {{/each}}
@@ -42,26 +52,23 @@
   <div class="text-center"><em>No reports yet</em></div>
 {{/if}}
 
+{{#if absenceToEdit}}
+  {{edit-absence-modal
+    visible      = showAbsenceEditModal
+    model        = absenceToEdit
+    absenceTypes = absenceTypes
+    on-close     = (action (mut absenceToEdit) null)
+    on-save      = (route-action 'saveAbsence')
+    on-delete    = (route-action 'deleteAbsence')
+  }}
+{{/if}}
+
 {{#if reportToEdit}}
-  {{#if reportToEditIsAbsence}}
-    {{edit-absence-modal
-      visible      = modalVisible
-      model        = reportToEdit
-      absenceTypes = absenceTypes
-      on-close     = (action (mut reportToEdit) null)
-      on-save      = (route-action 'saveReport')
-      on-delete    = (route-action 'deleteReport')
-    }}
-  {{else}}
-    {{edit-report-modal
-      visible   = modalVisible
-      model     = reportToEdit
-      customers = customers
-      projects  = projects
-      tasks     = tasks
-      on-close  = (action (mut reportToEdit) null)
-      on-save   = (route-action 'saveReport')
-      on-delete = (route-action 'deleteReport')
-    }}
-  {{/if}}
+  {{edit-report-modal
+    visible   = showReportEditModal
+    model     = reportToEdit
+    on-close  = (action (mut reportToEdit) null)
+    on-save   = (route-action 'saveReport')
+    on-delete = (route-action 'deleteReport')
+  }}
 {{/if}}

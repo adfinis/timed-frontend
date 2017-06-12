@@ -4,7 +4,6 @@
  * @public
  */
 import Route   from 'ember-route'
-import RSVP    from 'rsvp'
 import service from 'ember-service/inject'
 
 /**
@@ -24,17 +23,16 @@ export default Route.extend({
   notify: service('notify'),
 
   /**
-   * Before model hook, fetch all customers, projects, tasks and absence types
+   * Before model hook, fetch all absence types
    *
    * @method beforeModel
-   * @return {RSVP.Promise} A promise which resolves if all data is fetched
+   * @return {AbsenceType[]} All absence types
    * @public
    */
   beforeModel() {
-    return RSVP.all([
-      this.store.findAll('customer', { include: 'projects,projects.tasks' }),
-      this.store.findAll('absence-type')
-    ])
+    this._super(...arguments)
+
+    return this.store.findAll('absence-type')
   },
 
   /**
@@ -55,12 +53,36 @@ export default Route.extend({
       try {
         await report.save()
 
+        this.get('controller.absences').forEach(async(absence) => {
+          await absence.reload()
+        })
+
         this.set('controller.reportToEdit', null)
-        this.set('controller.modalVisible', false)
+        this.set('controller.showReportEditModal', false)
       }
       catch(e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the report')
+        this.get('notify').error('Error while saving the report')
+      }
+    },
+
+    /**
+     * Save a certain absence and close the modal afterwards
+     *
+     * @method saveAbsence
+     * @param {Absence} absence The absence to save
+     * @public
+     */
+    async saveAbsence(absence) {
+      try {
+        await absence.save()
+
+        this.set('controller.absenceToEdit', null)
+        this.set('controller.showAbsenceEditModal', false)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while saving the absence')
       }
     },
 
@@ -75,12 +97,36 @@ export default Route.extend({
       try {
         await report.destroyRecord()
 
+        this.get('controller.absences').forEach(async(absence) => {
+          await absence.reload()
+        })
+
         this.set('controller.reportToEdit', null)
-        this.set('controller.modalVisible', false)
+        this.set('controller.showReportEditModal', false)
       }
       catch(e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the report')
+      }
+    },
+
+    /**
+     * Delete a certain absence and close the modal afterwards
+     *
+     * @method deleteAbsence
+     * @param {Absence} absence The absence to delete
+     * @public
+     */
+    async deleteAbsence(absence) {
+      try {
+        await absence.destroyRecord()
+
+        this.set('controller.absenceToEdit', null)
+        this.set('controller.showAbsenceEditModal', false)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while deleting the absence')
       }
     }
   }

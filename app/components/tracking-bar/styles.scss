@@ -6,8 +6,7 @@
 }
 
 @media (--sm-viewport) {
-  .form-control,
-  .ember-power-select-trigger {
-    min-width: 13rem;
+  .form-control {
+    min-width: 15rem;
   }
 }

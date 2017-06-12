@@ -3,26 +3,17 @@
  * @submodule timed-helpers
  * @public
  */
-import Helper         from 'ember-helper'
+import { helper }     from 'ember-helper'
 import formatDuration from 'timed/utils/format-duration'
 
 /**
  * The format duration helper
  *
- * @class FormatDurationHelper
- * @extends Ember.Helper
+ * @function formatDurationFn
+ * @param {Array} args The arguments delivered to the helper
+ * @return {String} The formatted duration
  * @public
  */
-export default Helper.extend({
-  /**
-   * Parse the duration into a string
-   *
-   * @method computed
-   * @param {Array} params The parameters
-   * @return {String} The formatted duration
-   * @public
-   */
-  compute([ duration, seconds = true ]) {
-    return formatDuration(duration, seconds)
-  }
-})
+export const formatDurationFn = (args) => formatDuration(...args)
+
+export default helper(formatDurationFn)

@@ -1,19 +1,19 @@
 {{#if activities}}
-  <table class="table table--striped">
+  <table class="table table--striped table--activities">
     <tbody>
       {{#each activities as |activity|}}
       <tr
         data-test-activity-row
         data-test-activity-row-id={{activity.id}}
-        title="Double click to start the activity"
-        class="pointer {{unless activity.task 'warning'}} {{if activity.active 'primary'}}"
-        {{action 'startActivity' activity on='doubleClick'}}
+        class="{{if activity.active 'primary'}} {{unless activity.task 'warning'}}"
       >
           <td>
             {{#if activity.task}}
-              <strong>{{activity.task.project.name}}</strong> ({{activity.task.project.customer.name}})
-              <br>
-              <small><em>{{activity.task.name}}</em></small>
+              <div>
+                <strong>{{activity.task.project.name}}</strong> ({{activity.task.project.customer.name}})
+                <br>
+                <small><em>{{activity.task.name}}</em></small>
+              </div>
             {{else}}
             <strong>Unknown task</strong>
             {{/if}}
@@ -21,32 +21,35 @@
           <td>{{activity.comment}}</td>
           <td>
             {{#if activity.active}}
-              {{since activity.activeBlock.from activity.duration}}
+              {{duration-since activity.activeBlock.from elapsed=activity.duration}}
             {{else}}
               {{format-duration activity.duration}}
             {{/if}}
           </td>
-          <td class="text-right visible-sm">
-            {{fa-btn
-              'pencil'
+          <td>
+            <button
               data-test-edit-activity
-              title = 'Edit activity'
-              click = (queue (action (mut activityToEdit) activity) (action (mut modalVisible) true))
-            }}
+              class="btn btn-default"
+              {{action (queue (action (mut activityToEdit) activity) (action (mut showActivityEditModal) true))}}
+            >
+              {{fa-icon 'pencil'}}
+            </button>
             {{#if activity.active}}
-              {{fa-btn
-                'stop'
+              <button
                 data-test-stop-activity
-                title = 'Stop activity'
-                click = (route-action 'stopActivity' activity)
-              }}
+                class="btn btn-danger"
+                {{action 'stopActivity' activity}}
+              >
+                {{fa-icon 'stop'}}
+              </button>
             {{else}}
-              {{fa-btn
-                'play'
+              <button
                 data-test-start-activity
-                title = 'Start activity'
-                click = (route-action 'startActivity' activity)
-              }}
+                class="btn btn-success"
+                {{action 'startActivity' activity}}
+              >
+                {{fa-icon 'play'}}
+              </button>
             {{/if}}
           </td>
         </tr>
@@ -69,11 +72,8 @@
 
 {{#if activityToEdit}}
   {{edit-activity-modal
-    visible   = modalVisible
+    visible   = showActivityEditModal
     model     = activityToEdit
-    customers = customers
-    projects  = projects
-    tasks     = tasks
     on-close  = (action (mut activityToEdit) null)
     on-delete = (route-action 'deleteActivity')
     on-save   = (route-action 'saveActivity')

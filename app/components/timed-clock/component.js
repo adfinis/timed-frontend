@@ -5,9 +5,8 @@
  */
 import Component         from 'ember-component'
 import moment            from 'moment'
-import { on }            from 'ember-computed-decorators'
-import { later, cancel } from 'ember-runloop'
 import Ember             from 'ember'
+import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
 
@@ -19,14 +18,6 @@ const { testing } = Ember
  * @public
  */
 export default Component.extend({
-  /**
-   * The timer which ticks every second
-   *
-   * @property {*} _timer
-   * @private
-   */
-  _timer: null,
-
   /**
    * Return the CSS syntax for rotation
    *
@@ -57,36 +48,22 @@ export default Component.extend({
   },
 
   /**
+   * Timer task
+   *
    * Update the clock every second
    *
-   * @method _tick
-   * @private
+   * @method timed
+   * @public
    */
-  @on('didRender')
-  _tick() {
-    this._update()
+  timer: task(function* () {
+    for (;;) {
+      this._update()
 
-    /* istanbul ignore next */
-    if (!testing) {
-      let timer = later(this, () => {
-        this._tick()
-      }, 1000)
+      if (testing) {
+        return
+      }
 
-      this.set('_timer', timer)
+      yield timeout(1000)
     }
-  },
-
-  /**
-   * Clear the timer on destroy
-   *
-   * @method _clearTimer
-   * @private
-   */
-  @on('willDestroyElement')
-  _clearTimer() {
-    /* istanbul ignore next */
-    if (!testing) {
-      cancel(this.get('_timer'))
-    }
-  }
+  }).on('didInsertElement')
 })

@@ -4,6 +4,9 @@
  * @public
  */
 import Component from 'ember-component'
+import service   from 'ember-service/inject'
+
+const ENTER_CHAR_CODE = 13
 
 /**
  * The tracking bar component
@@ -13,31 +16,20 @@ import Component from 'ember-component'
  * @public
  */
 export default Component.extend({
+  tracking: service('tracking'),
+
   /**
-   * The actions for the tracking bar component
+   * Key press event
    *
-   * @property {Object} actions
+   * Start activity if the pressed key is enter
+   *
+   * @event keyPress
+   * @param {jQuery.Event} e The keypress event
    * @public
    */
-  actions: {
-    /**
-     * Start tracking the activity
-     *
-     * @method start
-     * @public
-     */
-    start() {
-      this.get('attrs.on-start')(this.get('activity'))
-    },
-
-    /**
-     * Stop tracking the activity
-     *
-     * @method stop
-     * @public
-     */
-    stop() {
-      this.get('attrs.on-stop')(this.get('activity'))
+  keyPress(e) {
+    if (e.charCode === ENTER_CHAR_CODE && !e.target.classList.contains('tt-input')) {
+      this.get('tracking.startActivity').perform()
     }
   }
 })

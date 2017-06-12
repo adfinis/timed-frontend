@@ -1,11 +1,17 @@
-import { expect }       from 'chai'
-import { it, describe } from 'mocha'
-import { setupTest }    from 'ember-mocha'
+import { expect }                   from 'chai'
+import { it, describe, beforeEach } from 'mocha'
+import { setupTest }                from 'ember-mocha'
+import { trackingStub }             from 'timed/tests/integration/components/tracking-bar/component-test'
 
 describe('Unit | Controller | index', function() {
   setupTest('controller:index', {
     // Specify the other units that are required for this test.
-    // needs: ['controller:foo']
+    needs: [ 'model:activity' ]
+  })
+
+  beforeEach(function() {
+    this.register('service:tracking', trackingStub)
+    this.inject.service('tracking', { as: 'tracking' })
   })
 
   it('exists', function() {

@@ -20,5 +20,13 @@ export default Model.extend({
    * @property {String} name
    * @public
    */
-  name: attr('string')
+  name: attr('string'),
+
+  /**
+   * The days on which users in this location need to work
+   *
+   * @property {Number[]} workdays
+   * @public
+   */
+  workdays: attr('django-workdays')
 })

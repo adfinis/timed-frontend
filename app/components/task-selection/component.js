@@ -3,8 +3,20 @@
  * @submodule timed-components
  * @public
  */
-import Component           from 'ember-component'
-import computed, { alias } from 'ember-computed-decorators'
+import Component  from 'ember-component'
+import computed   from 'ember-computed-decorators'
+import service    from 'ember-service/inject'
+import hbs        from 'htmlbars-inline-precompile'
+import { typeOf } from 'ember-utils'
+
+const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
+const SUGGESTION_TEMPLATE = hbs`{{model.name}}`
+
+const regexFilter = (data, term, key) => {
+  let re = new RegExp(`.*${term}.*`, 'i')
+
+  return data.filter((i) => re.test(i.get(key)))
+}
 
 /**
  * Component for selecting a task, which consists of selecting a customer and
@@ -27,79 +39,69 @@ export default Component.extend({
   tagName: '',
 
   /**
-   * Whether to show labels above the select boxes
+   * Tracking service
    *
-   * @property {Boolean} showLabels
+   * This service delivers the tasks to fetch the needed data, so we don't have
+   * to pass them to the component every time.
+   *
+   * @property {TrackingService} tracking
    * @public
    */
-  showLabels: false,
+  tracking: service('tracking'),
 
   /**
-   * Whether to mark the task as required field
+   * The limit of search results
    *
-   * @property {Boolean} required
+   * @property {Number} limit
    * @public
    */
-  required: true,
+  limit: Number.MAX_SAFE_INTEGER,
 
   /**
-   * Whether the task selection has errors
+   * Display function for the autocomplete component
    *
-   * This is either null or an object containing the error messages.
-   *
-   * @property {*} error
+   * @property {Function} display
    * @public
    */
-  error: null,
+  display: FORMAT,
 
   /**
-   * Set the customer and project when we set a task
+   * Transform selection function for the autocomplete component
    *
-   * @method didReceiveAttrs
+   * @property {Function} transformSelection
    * @public
    */
-  didReceiveAttrs() {
-    this._super(...arguments)
-
-    let task = this.get('task.id') ? this.get('task') : null
-
-    if (task) {
-      this.set('_customer', task.get('project.customer'))
-      this.set('_project', task.get('project'))
-    }
-  },
+  transformSelection: FORMAT,
 
   /**
-   * The selected (by dropdown) customer
+   * Template for displaying the suggestions
    *
-   * @property {String} _customer
+   * @property {*} suggestionTemplate
+   * @public
+   */
+  suggestionTemplate: SUGGESTION_TEMPLATE,
+
+  /**
+   * The manually selected customer
+   *
+   * @property {Customer} _customer
    * @private
    */
   _customer: null,
 
   /**
-   * The selected (by dropdown) project
+   * The manually selected project
    *
-   * @property {String} _project
+   * @property {Project} _project
    * @private
    */
   _project: null,
 
   /**
-   * The currently selected task
+   * The selected customer
    *
-   * @property {Task} task
-   * @public
-   */
-  task: null,
-
-  /**
-   * The currently selected customer
-   *
-   * This is either the customer related to the tasks project or the customer
-   * selected in the dropdown
-   *
-   * By setting this, you reset the project automatically
+   * This can be selected manually or automatically, because a task is already
+   * set.
    *
    * @property {Customer} customer
    * @public
@@ -107,18 +109,19 @@ export default Component.extend({
   @computed('task')
   customer: {
     get(task) {
-      if (task && task.get('content')) {
-        return task.get('project.customer')
-      }
-
-      return this.get('_customer')
+      return task && task.get('project.customer') || this.get('_customer')
     },
     set(task, value) {
       this.set('_customer', value)
-      this.set('project', null)
 
-      if (this.get('task.content')) {
-        this.get('attrs.on-change')(null)
+      /* istanbul ignore else */
+      if (value === null || value.get('id') !== this.get('project.customer.id')) {
+        this.set('project', null)
+      }
+
+      /* istanbul ignore else */
+      if (value) {
+        this.get('tracking.filterProjects').perform(value.get('id'))
       }
 
       return value
@@ -126,10 +129,10 @@ export default Component.extend({
   },
 
   /**
-   * The currently selected project
+   * The selected project
    *
-   * This is either the project related to the task or the project selected in
-   * the dropdown
+   * This can be selected manually or automatically, because a task is already
+   * set.
    *
    * @property {Project} project
    * @public
@@ -137,17 +140,19 @@ export default Component.extend({
   @computed('task')
   project: {
     get(task) {
-      if (task && task.get('content')) {
-        return task.get('project')
-      }
-
-      return this.get('_project')
+      return task && task.get('project') || this.get('_project')
     },
     set(task, value) {
       this.set('_project', value)
 
-      if (this.get('task.content')) {
-        this.get('attrs.on-change')(null)
+      /* istanbul ignore else */
+      if (value === null || value.get('id') !== this.get('task.project.id')) {
+        this.set('task', null)
+      }
+
+      /* istanbul ignore else */
+      if (value) {
+        this.get('tracking.filterTasks').perform(value.get('id'))
       }
 
       return value
@@ -155,87 +160,71 @@ export default Component.extend({
   },
 
   /**
-   * All available customers
+   * Source function for the customer autocomplete component
    *
-   * @property {Customer[]} customers
+   * This either takes the last fetched customers and filters them, or triggers
+   * the call first if none was triggered before.
+   *
+   * @property {Function} customerSource
    * @public
    */
-  customers: [],
+  @computed
+  customerSource() {
+    return (search, syncResults, asyncResults) => {
+      let fn = this.get('tracking.filterCustomers')
 
-  /**
-   * All available projects
-   *
-   * @property {Project[]} projects
-   * @public
-   */
-  projects: [],
+      let customers = fn.get('last') || fn.perform()
 
-  /**
-   * All available tasks
-   *
-   * @property {Task[]} task
-   * @public
-   */
-  tasks: [],
-
-  /**
-   * All available customers
-   *
-   * @property {Customer[]} _customers
-   * @private
-   */
-  @alias('customers')
-  _customers: null,
-
-  /**
-   * All available projects filtered by the currently selected customer
-   *
-   * @property {Project[]} _projects
-   * @private
-   */
-  @computed('projects.[]', 'customer.id')
-  _projects(projects, id) {
-    if (!id) {
-      return []
+      /* istanbul ignore next */
+      customers
+        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .catch(() => asyncResults([]))
     }
-
-    return projects.filterBy('customer.id', id)
   },
 
   /**
-   * All available tasks filtered by the currently selected project
+   * Source function for the project autocomplete component
    *
-   * @property {Task[]} _tasks
-   * @private
+   * This either takes the last fetched projects and filters them, or triggers
+   * the call first if none was triggered before.
+   *
+   * @property {Function} projectSource
+   * @public
    */
-  @computed('tasks.[]', 'project.id')
-  _tasks(tasks, id) {
-    if (!id) {
-      return []
-    }
+  @computed
+  projectSource() {
+    return (search, syncResults, asyncResults) => {
+      let fn = this.get('tracking.filterProjects')
 
-    return tasks.filterBy('project.id', id)
+      let projects = fn.get('last') || fn.perform(this.get('customer.id'))
+
+      /* istanbul ignore next */
+      projects
+        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .catch(() => asyncResults([]))
+    }
   },
 
   /**
-   * The actions of the task selection component
+   * Source function for the task autocomplete component
    *
-   * @property {Object} actions
+   * This either takes the last fetched projects and filters them, or triggers
+   * the call first if none was triggered before.
+   *
+   * @property {Function} taskSource
    * @public
    */
-  actions: {
-    /**
-     * Change action
-     *
-     * This is triggered when the task is selected, not when the customer or
-     * project is selected
-     *
-     * @method change
-     * @param {Task} task The selected task
-     * @public
-     */
-    change(task) {
-      this.get('attrs.on-change')(task)
+  @computed
+  taskSource() {
+    return (search, syncResults, asyncResults) => {
+      let fn = this.get('tracking.filterTasks')
+
+      let tasks = fn.get('last') || fn.perform(this.get('project.id'))
+
+      /* istanbul ignore next */
+      tasks
+        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .catch(() => asyncResults([]))
     }
   }
 })

@@ -36,16 +36,29 @@ describe('Acceptance | index', function() {
     expect(currentURL()).to.equal('/')
   })
 
+  it('can start a activity by pressing enter', async function() {
+    await visit('/')
+
+    await triggerEvent('.page-content', 'keypress', { charCode: 13 })
+
+    expect(find(testSelector('record-start'))).to.have.length(1)
+
+    await triggerEvent(testSelector('tracking-comment'), 'keypress', { charCode: 22 })
+
+    expect(find(testSelector('record-start'))).to.have.length(1)
+
+    await triggerEvent(testSelector('tracking-comment'), 'keypress', { charCode: 13 })
+
+    expect(find(testSelector('record-start'))).to.have.length(0)
+  })
+
   it('can start a new activity', async function() {
-    server.create('task')
+    server.createList('task', 20)
 
     await visit('/')
 
-    expect(find(testSelector('record-start')).parent().parent().hasClass('ready')).to.not.be.ok
+    await taskSelect(testSelector('tracking-bar'))
 
-    await selectChoose(testSelector('tracking-customer'), '.ember-power-select-option:eq(0)')
-    await selectChoose(testSelector('tracking-project'), '.ember-power-select-option:eq(0)')
-    await selectChoose(testSelector('tracking-task'), '.ember-power-select-option:eq(0)')
     await fillIn(testSelector('tracking-comment'), 'Some Random Comment')
 
     expect(find(testSelector('record-start'))).to.have.length(1)

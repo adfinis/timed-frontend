@@ -23,6 +23,8 @@ export default Route.extend({
    */
   notify: service('notify'),
 
+  tracking: service('tracking'),
+
   /**
    * The actions for the index activities route
    *
@@ -38,15 +40,17 @@ export default Route.extend({
      * @public
      */
     async startActivity(activity) {
-      let controller = this.controllerFor('protected')
-
-      if (controller.get('currentActivity.active')) {
-        await controller._stopActivity(controller.get('currentActivity'))
+      if (!activity.get('start').isSame(moment(), 'day')) {
+        activity = this.store.createRecord('activity', { ...activity.getProperties('task', 'comment') })
       }
 
-      controller.set('currentActivity', activity)
+      await this.get('tracking.stopActivity').perform()
 
-      controller.send('startCurrentActivity')
+      this.set('tracking.activity', activity)
+
+      await this.get('tracking.startActivity').perform()
+
+      this.transitionTo('index.activities', { queryParams: { day: moment().format('YYYY-MM-DD') } })
     },
 
     /**
@@ -57,11 +61,9 @@ export default Route.extend({
      * @public
      */
     stopActivity(activity) {
-      let controller = this.controllerFor('protected')
+      this.set('tracking.activity', activity)
 
-      controller.set('currentActivity', activity)
-
-      controller.send('stopCurrentActivity')
+      this.get('tracking.stopActivity').perform()
     },
 
     /**

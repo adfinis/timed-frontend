@@ -15,16 +15,10 @@
     {{/sy-sidenav-list}}
   {{else}}
     <main class="page-main">
+      {{#if loading}}<span class="loader"></span>{{/if}}
       <div class="page-wrapper">
         <div class="page-content page-content--scroll">
-          {{tracking-bar
-            customers = customers
-            projects  = projects
-            tasks     = tasks
-            activity  = currentActivity
-            on-stop   = (action 'stopCurrentActivity')
-            on-start  = (action 'startCurrentActivity')
-          }}
+          {{tracking-bar data-test-tracking-bar}}
           {{outlet}}
         </div>
       </div>

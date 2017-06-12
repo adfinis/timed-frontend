@@ -1,16 +1,26 @@
-<div class="page page-login {{if loading 'loading-mask'}}">
+<div class="page page-login">
   <div class="page-viewport">
     <main class="page-main">
       <div class="page-content">
         <div class="login-form">
-          <form class="form-inline" {{action 'authenticate' username password on='submit'}}>
+          <form class="form-inline" {{action (perform authenticate username password) on='submit'}}>
             <div class="form-group login-form-user">
               {{input type='text' placeholder='Username' class='form-control' value=username autofocus=true}}
             </div>
             <div class="form-group login-form-password">
               {{input type='password' placeholder='Password' class='form-control' value=password}}
             </div>
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              disabled={{authenticate.isRunning}}
+            >
+              {{#if authenticate.isRunning}}
+                Logging in{{sy-loading-dots}}
+              {{else}}
+                Login
+              {{/if}}
+            </button>
           </form>
         </div>
       </div>

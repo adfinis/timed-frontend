@@ -26,6 +26,17 @@ export default Controller.extend({
   },
 
   /**
+   * All absences currently in the store
+   *
+   * @property {Absence[]} _allAbsences
+   * @private
+   */
+  @computed()
+  _allAbsences() {
+    return this.store.peekAll('absence')
+  },
+
+  /**
    * The reports filtered by the selected day
    *
    * @property {Report[]} reports
@@ -39,36 +50,16 @@ export default Controller.extend({
   },
 
   /**
-   * All available customers
+   * The absences filtered by the selected day
    *
-   * @property {Customer[]} customers
+   * @property {Absence[]} absences
    * @public
    */
-  @computed()
-  customers() {
-    return this.store.peekAll('customer')
-  },
-
-  /**
-   * All available projects
-   *
-   * @property {Project[]} projects
-   * @public
-   */
-  @computed()
-  projects() {
-    return this.store.peekAll('project')
-  },
-
-  /**
-   * All available tasks
-   *
-   * @property {Task[]} tasks
-   * @public
-   */
-  @computed()
-  tasks() {
-    return this.store.peekAll('task')
+  @computed('_allAbsences.@each.{date,isNew,isDeleted}', 'model')
+  absences(absences, day) {
+    return absences.filter((a) => {
+      return a.get('date').isSame(day, 'day') && !a.get('isNew') && !a.get('isDeleted')
+    })
   },
 
   /**
@@ -83,12 +74,28 @@ export default Controller.extend({
   },
 
   /**
-   * Whether the edit modal is visible
+   * Whether the absence edit modal is visible
    *
-   * @property {Boolean} modalVisible
+   * @property {Boolean} showAbsenceEditModal
    * @public
    */
-  modalVisible: false,
+  showAbsenceEditModal: false,
+
+  /**
+   * Whether the report edit modal is visible
+   *
+   * @property {Boolean} showReportEditModal
+   * @public
+   */
+  showReportEditModal: false,
+
+  /**
+   * The absence to edit in the modal
+   *
+   * @property {Absence} absenceToEdit
+   * @public
+   */
+  absenceToEdit: null,
 
   /**
    * The report to edit in the modal
@@ -97,14 +104,6 @@ export default Controller.extend({
    * @public
    */
   reportToEdit: null,
-
-  /**
-   * Whether the report to edit is an absence
-   *
-   * @property {Boolean} reportToEditIsAbsence
-   * @public
-   */
-  reportToEditIsAbsence: false,
 
   /**
    * Actions for the index report controller
@@ -116,18 +115,28 @@ export default Controller.extend({
     /**
      * Edit a certain report
      *
-     * This also determines if the report to edit is an absence or not to
-     * decide which modal must be shown.
-     *
      * @method editReport
      * @param {Report} report The report to edit
      * @public
      */
     editReport(report) {
       this.setProperties({
-        modalVisible: true,
-        reportToEdit: report,
-        reportToEditIsAbsence: !!report.get('absenceType.id')
+        showReportEditModal: true,
+        reportToEdit: report
+      })
+    },
+
+    /**
+     * Edit a certain absence
+     *
+     * @method editAbsence
+     * @param {Absence} absence The absence to edit
+     * @public
+     */
+    editAbsence(absence) {
+      this.setProperties({
+        showAbsenceEditModal: true,
+        absenceToEdit: absence
       })
     },
 
@@ -139,23 +148,21 @@ export default Controller.extend({
      */
     addReport() {
       this.setProperties({
-        modalVisible: true,
-        reportToEdit: this.store.createRecord('report', { date: this.get('model') }),
-        reportToEditIsAbsence: false
+        showReportEditModal: true,
+        reportToEdit: this.store.createRecord('report', { date: this.get('model') })
       })
     },
 
     /**
      * Add a new absence
      *
-     * @method addReport
+     * @method addAbsence
      * @public
      */
     addAbsence() {
       this.setProperties({
-        modalVisible: true,
-        reportToEdit: this.store.createRecord('report', { date: this.get('model') }),
-        reportToEditIsAbsence: true
+        showAbsenceEditModal: true,
+        absenceToEdit: this.store.createRecord('absence', { date: this.get('model') })
       })
     }
   }

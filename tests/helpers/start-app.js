@@ -2,10 +2,10 @@ import { assign }                   from 'ember-platform'
 import run                          from 'ember-runloop'
 import Application                  from '../../app'
 import config                       from '../../config/environment'
-import registerPowerSelectHelpers   from 'timed/tests/helpers/ember-power-select'
 import registerBasicDropdownHelpers from 'timed/tests/helpers/ember-basic-dropdown'
 
-registerPowerSelectHelpers()
+import 'timed/tests/helpers/task-select'
+
 registerBasicDropdownHelpers()
 
 export default function startApp(attrs) {

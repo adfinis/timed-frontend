@@ -68,14 +68,6 @@ export default Model.extend({
   activity: belongsTo('activity'),
 
   /**
-   * The absence type
-   *
-   * @property {AbsenceType} absenceType
-   * @public
-   */
-  absenceType: belongsTo('absence-type'),
-
-  /**
    * The task
    *
    * @property {Task} task
