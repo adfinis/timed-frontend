@@ -34,6 +34,9 @@
       </div>
     {{/modal.body}}
     {{#modal.footer}}
+      {{#unless changeset.isNew}}
+        <button title="Delete this absence" class="btn btn-danger" {{action 'delete' changeset}}>Delete</button>
+      {{/unless}}
       <button
         class="btn btn-primary"
         title="Save this absence"
@@ -42,9 +45,6 @@
       >
         Save
       </button>
-      {{#unless changeset.isNew}}
-        <button title="Delete this absence" class="btn btn-danger" {{action 'delete' changeset}}>Delete</button>
-      {{/unless}}
     {{/modal.footer}}
   {{/sy-modal}}
 {{/with}}
