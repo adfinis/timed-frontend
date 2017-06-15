@@ -1,37 +1,9 @@
-{{#basic-dropdown
-  horizontalPosition = 'right'
-  verticalPosition   = 'below'
-  as |dd|
-}}
-  {{#dd.trigger}}
-    <input
-      readonly
-      type="text"
-      class="form-control picker"
-      value={{moment-format value 'HH:mm'}}
-    >
-  {{/dd.trigger}}
-
-  {{#dd.content renderInPlace=true}}
-    <div class="sy-timepicker-picker">
-      <div class="hour">
-        <button data-test-sy-timepicker-inc-h {{action 'increase' hourStep}}>
-          {{fa-icon 'chevron-up'}}
-        </button>
-        {{moment-format value 'HH'}}
-        <button data-test-sy-timepicker-dec-h {{action 'decrease' hourStep}}>
-          {{fa-icon 'chevron-down'}}
-        </button>
-      </div>
-      <div class="minute">
-        <button data-test-sy-timepicker-inc-m {{action 'increase' minuteStep}}>
-          {{fa-icon 'chevron-up'}}
-        </button>
-        {{moment-format value 'mm'}}
-        <button data-test-sy-timepicker-dec-m {{action 'decrease' minuteStep}}>
-          {{fa-icon 'chevron-down'}}
-        </button>
-      </div>
-    </div>
-  {{/dd.content}}
-{{/basic-dropdown}}
+<input
+  type="text"
+  class="form-control"
+  placeholder="--:--"
+  value={{displayValue}}
+  pattern={{pattern}}
+  onkeydown={{action 'handleKeyDown'}}
+  oninput={{action 'handleInput'}}
+>

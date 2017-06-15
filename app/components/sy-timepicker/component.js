@@ -4,6 +4,8 @@
  * @public
  */
 import Component from 'ember-component'
+import computed  from 'ember-computed-decorators'
+import moment    from 'moment'
 
 /**
  * Timepicker component
@@ -14,92 +16,178 @@ import Component from 'ember-component'
  */
 export default Component.extend({
   /**
-   * The value
+   * The display representation of the value
    *
-   * @property {moment} value
+   * This is the value in the input field.
+   *
+   * @property {String} displayValue
    * @public
    */
-  value: null,
+  @computed('value')
+  displayValue(value) {
+    return value && value.isValid() ? value.format('HH:mm') : ''
+  },
 
   /**
-   * The step used to increase / decrease the minutes
+   * Set the current value
    *
-   * This value is in minutes
-   *
-   * @property {Number} minuteStep
-   * @public
+   * @method _set
+   * @param {Number} h The hours of the new value
+   * @param {Number} m The minutes of the new value
+   * @return {moment} The mutated value
+   * @private
    */
-  minuteStep: 15,
+  _set(h, m) {
+    return moment(this.get('value')).set({ h, m })
+  },
 
   /**
-   * The step used to increase / decrease the hours
+   * Add hours and minutes to the current value
    *
-   * This value is in minutes
-   *
-   * @property {Number} hourStep
-   * @public
+   * @method _add
+   * @param {Number} h The hours to add
+   * @param {Number} m The minutes to add
+   * @return {moment} The mutated value
+   * @private
    */
-  hourStep: 60,
+  _add(h, m) {
+    return moment(this.get('value')).add({ h, m })
+  },
 
   /**
-   * Init hook, check if we have an initial value
+   * Validate a value
    *
-   * @method init
-   * @throws Error
-   * @public
+   * @method _validate
+   * @param {moment} value The value to check
+   * @return {Boolean} Whether the value is valid
+   * @private
    */
-  init() {
-    this._super(...arguments)
+  _validate(value) {
+    return value.isSame(this.get('value'), 'day')
+  },
 
-    /* istanbul ignore next */
-    if (!this.get('value')) {
-      throw new Error('An initial value needs to be defined!')
+  /**
+   * Add minutes to the current value
+   *
+   * @method _addMinutes
+   * @param {moment} value The amount of minutes to add
+   * @private
+   */
+  _addMinutes(value) {
+    this._change(this._add(0, value))
+  },
+
+  /**
+   * Add hours to the current value
+   *
+   * @method _addHours
+   * @param {moment} value The amount of hours to add
+   * @private
+   */
+  _addHours(value) {
+    this._change(this._add(value, 0))
+  },
+
+  /**
+   * Ensure that the new value is valid and trigger a change
+   *
+   * @method change
+   * @param {moment} value The new value
+   * @private
+   */
+  _change(value) {
+    if (this._validate(value)) {
+      this.get('attrs.on-change')(value)
     }
   },
 
   /**
-   * Round the moment object to 15 minutes
+   * The regex for the input
    *
-   * @method _round
-   * @param {moment} m The moment object to round
-   * @return {moment} The rounded moment object
+   * @property {String} pattern
+   * @public
+   */
+  pattern: '([01][0-9]|2[0-3]):(00|15|30|45)',
+
+  /**
+   * Increase or decrease the current value
+   *
+   * If the shift or ctrl key is pressed it changes the hours instead of the
+   * minutes.
+   *
+   * @method _handleArrows
+   * @param {jQuery.Event} e The keydown event
    * @private
    */
-  _round(m) {
-    return m.clone().minute(Math.round(m.minute() / 15) * 15).second(0)
+  _handleArrows(e) {
+    switch (e.keyCode) {
+      case 38:
+        if (e.ctrlKey || e.shiftKey) {
+          this._addHours(1)
+        }
+        else {
+          this._addMinutes(15)
+        }
+        break
+      case 40:
+        if (e.ctrlKey || e.shiftKey) {
+          this._addHours(-1)
+        }
+        else {
+          this._addMinutes(-15)
+        }
+        break
+      default:
+        break
+    }
   },
 
   /**
-   * The timepicker component actions
+   * Actions for the timepicker component
    *
    * @property {Object} actions
    * @public
    */
   actions: {
     /**
-     * Increase the value by the given minutes
+     * Handle input event
      *
-     * @method increase
-     * @param {Number} minutes The amount of minutes to increase
+     * This is called when the value in the input box was changed. It ensures
+     * that the value is valid and updates the value accordingly.
+     *
+     * @method handleInput
+     * @param {jQuery.Event} e The jquery input event
      * @public
      */
-    increase(minutes) {
-      let value = this.get('value').clone().add(minutes, 'minutes')
+    handleInput(e) {
+      if (e.target.validity.valid) {
+        let [ h, m ] = e.target.value.split(':').map(Number)
 
-      this.get('attrs.on-change')(this._round(value))
+        this._change(this._set(h, m))
+      }
     },
 
     /**
-     * Decrease the value by the given minutes
+     * Handle keydown event
      *
-     * @method increase
-     * @param {Number} minutes The amount of minutes to decrease
+     * This is called when the input is focused and a key was pressed. It
+     * ensures that the pressed key can be used for changing the value.
+     *
+     * @method handleKeyDown
+     * @param {jQuery.Event} e The jquery input event
+     * @return {Boolean} Whether to bubble the event or not
      * @public
      */
-    decrease(minutes) {
-      let value = this.get('value').clone().subtract(minutes, 'minutes')
+    handleKeyDown(e) {
+      if (e.key.length === 1 && (!/[\d:]/.test(e.key) || e.target.value.length === 5)) {
+        e.preventDefault()
 
-      this.get('attrs.on-change')(this._round(value))
+        return false
+      }
+
+      this._handleArrows(e)
+
+      return true
     }
   }
 })
