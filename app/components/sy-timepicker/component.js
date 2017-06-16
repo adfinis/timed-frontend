@@ -3,9 +3,10 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
-import computed  from 'ember-computed-decorators'
-import moment    from 'moment'
+import Component    from 'ember-component'
+import computed     from 'ember-computed-decorators'
+import moment       from 'moment'
+import { padStart } from 'ember-pad/utils/pad'
 
 /**
  * Timepicker component
@@ -15,6 +16,24 @@ import moment    from 'moment'
  * @public
  */
 export default Component.extend({
+  /**
+   * Init hook, set min and max if not passed
+   *
+   * @method init
+   * @public
+   */
+  init() {
+    if (!this.get('min')) {
+      this.set('min', moment(this.get('value')).set({ h: 0, m: 0 }))
+    }
+
+    if (!this.get('max')) {
+      this.set('max', moment(this.get('value')).set({ h: 23, m: 59 }))
+    }
+
+    this._super(...arguments)
+  },
+
   /**
    * The display representation of the value
    *
@@ -63,7 +82,7 @@ export default Component.extend({
    * @private
    */
   _validate(value) {
-    return value.isSame(this.get('value'), 'day')
+    return value < this.get('max') && value > this.get('min')
   },
 
   /**
@@ -102,12 +121,28 @@ export default Component.extend({
   },
 
   /**
+   * The precision of the time
+   *
+   * 60 needs to be divisable by this
+   *
+   * @property {Number} precision
+   * @public
+   */
+  precision: 15,
+
+  /**
    * The regex for the input
    *
    * @property {String} pattern
    * @public
    */
-  pattern: '([01][0-9]|2[0-3]):(00|15|30|45)',
+  @computed('precision')
+  pattern(p) {
+    let count   = 60 / p
+    let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
+
+    return `([01][0-9]|2[0-3]):(${minutes.map((m) => padStart(m, 2)).join('|')})`
+  },
 
   /**
    * Increase or decrease the current value
@@ -126,7 +161,7 @@ export default Component.extend({
           this._addHours(1)
         }
         else {
-          this._addMinutes(15)
+          this._addMinutes(this.get('precision'))
         }
         break
       case 40:
@@ -134,7 +169,7 @@ export default Component.extend({
           this._addHours(-1)
         }
         else {
-          this._addMinutes(-15)
+          this._addMinutes(-this.get('precision'))
         }
         break
       default:

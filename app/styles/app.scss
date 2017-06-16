@@ -2,6 +2,7 @@
 @import 'toolbar';
 @import 'badge';
 @import 'loader';
+@import 'activities';
 @import 'ember-power-calendar';
 @import 'pod-styles';
 
@@ -152,8 +153,8 @@ body {
       display: flex;
       align-items: center;
 
-      &:nth-child(1) { flex-basis: 30% }
-      &:nth-child(2) { flex-basis: 50% }
+      &:nth-child(1) { flex-basis: 40% }
+      &:nth-child(2) { flex-basis: 40% }
       &:nth-child(3) { flex-basis: 10% }
 
       &:nth-child(4) {

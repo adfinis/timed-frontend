@@ -4,6 +4,7 @@
  * @public
  */
 import { padStartTpl } from 'ember-pad/utils/pad'
+import moment          from 'moment'
 
 const { floor, abs } = Math
 const padTpl2        = padStartTpl(2)
@@ -18,6 +19,10 @@ const padTpl2        = padStartTpl(2)
  * @public
  */
 export default function formatDuration(duration, seconds = true) {
+  if (typeof duration === 'number') {
+    duration = moment.duration(duration)
+  }
+
   if (!duration || duration.milliseconds() < 0) {
     return seconds ? '--:--:--' : '--:--'
   }
