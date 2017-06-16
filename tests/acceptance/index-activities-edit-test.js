@@ -28,11 +28,15 @@ describe('Acceptance | index activities edit', function() {
 
     await click(find(testSelector('activity-row-id', 1)))
 
+    expect(currentURL()).to.equal('/edit/1')
+
     await taskSelect(testSelector('activity-edit-form'))
 
     await fillIn(`${testSelector('activity-edit-form')} textarea`, 'Test')
 
     await click(find('button:contains(Save)'))
+
+    expect(currentURL()).to.equal('/')
 
     expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal('Test')
   })
@@ -42,7 +46,11 @@ describe('Acceptance | index activities edit', function() {
 
     await click(find(testSelector('activity-row-id', 1)))
 
+    expect(currentURL()).to.equal('/edit/1')
+
     await click(find('button:contains(Delete)'))
+
+    expect(currentURL()).to.equal('/')
 
     expect(find(testSelector('activity-row-id', 1))).to.have.length(0)
     expect(find(testSelector('activity-row'))).to.have.length(4)

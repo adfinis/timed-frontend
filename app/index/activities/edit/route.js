@@ -134,6 +134,8 @@ export default Route.extend({
         await this.get('currentModel').destroyRecord()
 
         this.get('notify').success('Activity was deleted')
+
+        this.transitionTo('index.activities')
       }
       catch(e) {
         /* istanbul ignore next */
