@@ -59,7 +59,7 @@ class ActivityBlock(models.Model):
 
     activity      = models.ForeignKey('tracking.Activity',
                                       related_name='blocks')
-    from_datetime = models.DateTimeField(auto_now_add=True)
+    from_datetime = models.DateTimeField()
     to_datetime   = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
