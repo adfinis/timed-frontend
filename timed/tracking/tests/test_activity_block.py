@@ -69,12 +69,15 @@ class ActivityBlockTests(JSONAPITestCase):
     def test_activity_block_create(self):
         """Should create a new activity block."""
         activity = self.activity_blocks[0].activity
+        tz = timezone('Europe/Zurich')
 
         data = {
             'data': {
                 'type': 'activity-blocks',
                 'id': None,
-                'attributes': {},
+                'attributes': {
+                    'from-datetime': datetime.now(tz).isoformat()
+                },
                 'relationships': {
                     'activity': {
                         'data': {
@@ -148,6 +151,7 @@ class ActivityBlockTests(JSONAPITestCase):
     def test_activity_block_active_unique(self):
         """Should not be able to have two active blocks."""
         block = self.activity_blocks[0]
+        tz = timezone('Europe/Zurich')
 
         block.to_datetime = None
         block.save()
@@ -156,7 +160,9 @@ class ActivityBlockTests(JSONAPITestCase):
             'data': {
                 'type': 'activity-blocks',
                 'id': None,
-                'attributes': {},
+                'attributes': {
+                    'from-datetime': datetime.now(tz).isoformat()
+                },
                 'relationships': {
                     'activity': {
                         'data': {
