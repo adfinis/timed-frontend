@@ -80,59 +80,6 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.not.be.ok
   })
 
-  it('can edit an activity', async function() {
-    await visit('/')
-
-    await click(find(testSelector('activity-row-id', 1)))
-
-    await taskSelect(testSelector('activity-edit-form'))
-
-    await fillIn(`${testSelector('activity-edit-form')} textarea`, 'Test')
-
-    await click(find('button:contains(Save)'))
-
-    expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal('Test')
-  })
-
-  it('can delete an activity', async function() {
-    await visit('/')
-
-    await click(find(testSelector('activity-row-id', 1)))
-
-    await click(find('button:contains(Delete)'))
-
-    expect(find(testSelector('activity-row-id', 1))).to.have.length(0)
-    expect(find(testSelector('activity-row'))).to.have.length(4)
-  })
-
-  it('can\'t delete an active activity', async function() {
-    await visit('/')
-
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`))
-    await click(find(testSelector('activity-row-id', 1)))
-
-    await click(find('button:contains(Delete)'))
-
-    expect(find('button:contains(Delete)').is(':disabled')).to.be.ok
-    expect(find(testSelector('activity-row-id', 1))).to.have.length(1)
-  })
-
-  it('closes edit window when clicking on the currently edited activity row', async function() {
-    await visit('/')
-
-    await click(find(testSelector('activity-row-id', 1)))
-
-    expect(currentURL()).to.equal('/edit/1')
-
-    await click(find(testSelector('activity-row-id', 2)))
-
-    expect(currentURL()).to.equal('/edit/2')
-
-    await click(find(testSelector('activity-row-id', 2)))
-
-    expect(currentURL()).to.equal('/')
-  })
-
   it('can generate reports', async function() {
     let activity = server.create('activity', 'active')
     let { id }   = activity

@@ -5,6 +5,7 @@
  */
 import Route             from 'ember-route'
 import service           from 'ember-service/inject'
+import moment            from 'moment'
 import Changeset         from 'ember-changeset'
 import ActivityValidator from 'timed/validations/activity'
 
@@ -59,6 +60,34 @@ export default Route.extend({
    */
   actions: {
     /**
+     * Add a new activity block
+     *
+     * @method addBlock
+     * @public
+     */
+    addBlock() {
+      this.store.createRecord('activity-block', {
+        activity: this.get('currentModel'),
+        from: moment(),
+        to: moment().add(1, 'hour')
+      })
+    },
+
+    /**
+     * Delete a certain activity block
+     *
+     * This only sets the `isDeleted` flag, so the block is only really deleted
+     * after saving the activity.
+     *
+     * @method deleteBlock
+     * @param {ActivityBlock} block The block to delete
+     * @public
+     */
+    deleteBlock(block) {
+      block.deleteRecord()
+    },
+
+    /**
      * Save the activity and the related edited blocks
      *
      * @method save
@@ -66,13 +95,13 @@ export default Route.extend({
      */
     async save() {
       try {
-        await this.get('controller.activity').save()
-
         this.get('controller.activity.blocks').forEach(async(block) => {
           if (block.get('hasDirtyAttributes')) {
             await block.save()
           }
         })
+
+        await this.get('controller.activity').save()
 
         this.get('notify').success('Activity was saved')
 

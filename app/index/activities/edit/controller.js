@@ -21,7 +21,7 @@ export default Controller.extend({
    * @property {ActivitBlock[]} blocks
    * @public
    */
-  @sort('activity.blocks', (x, y) => {
+  @sort('activity.blocks.[]', (x, y) => {
     /* istanbul ignore next */
     return x.get('from') > y.get('from') ? 1 : -1
   })
