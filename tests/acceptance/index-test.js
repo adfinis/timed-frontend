@@ -86,4 +86,25 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-start')).parent().parent().hasClass('recording')).to.not.be.ok
     expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal('')
   })
+
+  it('can set the document title', async function() {
+    server.create('activity', 'active')
+
+    await visit('/')
+
+    expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
+
+    await click(testSelector('record-stop'))
+
+    expect(document.title).to.not.match(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
+  })
+
+  it('can set the document title without task', async function() {
+    let a = server.create('activity', 'active')
+    a.update('task', null)
+
+    await visit('/')
+
+    expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/)
+  })
 })
