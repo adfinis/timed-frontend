@@ -17,6 +17,9 @@ before_install:
   - npm config set spin false
   - npm install -g bower
   - npm install phantomjs-prebuilt
+  - yarn cache clean
+  - bower cache clean
+  - rm -rf node_modules bower_components
 
 install:
   - yarn install
