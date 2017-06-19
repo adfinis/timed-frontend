@@ -47,7 +47,7 @@ export default Route.extend({
      * @public
      */
     editActivity(activity) {
-      let { id = null } = this.paramsFor('index.activities.edit')
+      let { id } = this.paramsFor('index.activities.edit')
 
       if (id === activity.get('id')) {
         this.transitionTo('index.activities')

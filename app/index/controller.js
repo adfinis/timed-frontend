@@ -3,11 +3,11 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from 'ember-controller'
-import moment     from 'moment'
-import computed   from 'ember-computed-decorators'
-import Ember      from 'ember'
-import service    from 'ember-service/inject'
+import Controller        from 'ember-controller'
+import moment            from 'moment'
+import computed          from 'ember-computed-decorators'
+import Ember             from 'ember'
+import service           from 'ember-service/inject'
 import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
@@ -61,8 +61,8 @@ export default Controller.extend({
    * @property {Activity[]} _activities
    * @private
    */
-  @computed('_allActivities.@each.{start,isDeleted}', 'model')
-  _activities(activities, day) {
+  @computed('date', '_allActivities.@each.{start,isDeleted}')
+  _activities(day, activities) {
     return activities.filter((a) => {
       return a.get('start').isSame(day, 'day') && !a.get('isDeleted')
     })
@@ -76,6 +76,12 @@ export default Controller.extend({
    */
   activitySum: moment.duration(),
 
+  /**
+   * Compute the current activity sum
+   *
+   * @method _activitySum
+   * @private
+   */
   _activitySum: task(function* () {
     for (;;) {
       let duration = this.get('_activities').reduce((dur, cur) => {
@@ -90,10 +96,12 @@ export default Controller.extend({
 
       this.set('activitySum', duration)
 
+      /* istanbul ignore else */
       if (testing) {
         return
       }
 
+      /* istanbul ignore next */
       yield timeout(1000)
     }
   }).on('init'),
@@ -115,8 +123,8 @@ export default Controller.extend({
    * @property {Attendance[]} _attendances
    * @private
    */
-  @computed('_allAttendances.@each.{from,isDeleted}', 'model')
-  _attendances(attendances, day) {
+  @computed('date', '_allAttendances.@each.{from,isDeleted}')
+  _attendances(day, attendances) {
     return attendances.filter((a) => {
       return a.get('from').isSame(day, 'day') && !a.get('isDeleted')
     })
@@ -163,8 +171,8 @@ export default Controller.extend({
    * @property {Report[]} _reports
    * @private
    */
-  @computed('_allReports.@each.{date,isNew,isDeleted}', 'model')
-  _reports(reports, day) {
+  @computed('date', '_allReports.@each.{date,isNew,isDeleted}')
+  _reports(day, reports) {
     return reports.filter((r) => {
       return r.get('date').isSame(day, 'day') && !r.get('isNew') && !r.get('isDeleted')
     })
@@ -176,8 +184,8 @@ export default Controller.extend({
    * @property {Absence[]} _absences
    * @private
    */
-  @computed('_allAbsences.@each.{date,isNew,isDeleted}', 'model')
-  _absences(absences, day) {
+  @computed('date', '_allAbsences.@each.{date,isNew,isDeleted}')
+  _absences(day, absences) {
     return absences.filter((a) => {
       return a.get('date').isSame(day, 'day') && !a.get('isNew') && !a.get('isDeleted')
     })

@@ -123,7 +123,7 @@ export default Component.extend({
   /**
    * The precision of the time
    *
-   * 60 needs to be divisable by this
+   * 60 needs to be divisible by this
    *
    * @property {Number} precision
    * @public

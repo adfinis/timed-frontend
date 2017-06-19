@@ -59,10 +59,12 @@ export default Component.extend({
     for (;;) {
       this._update()
 
+      /* istanbul ignore else */
       if (testing) {
         return
       }
 
+      /* istanbul ignore next */
       yield timeout(1000)
     }
   }).on('didInsertElement')

@@ -120,11 +120,11 @@ export default Route.extend({
      * @public
      */
     async delete() {
+      /* istanbul ignore next */
       if (this.get('currentModel.active')) {
         // We can't test this because the UI already prevents this by disabling
         // the save button..
 
-        /* istanbul ignore next */
         this.get('notify').error('You can\'t delete an active activity')
 
         return

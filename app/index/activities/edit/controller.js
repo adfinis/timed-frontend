@@ -16,16 +16,21 @@ import moment             from 'moment'
  */
 export default Controller.extend({
   /**
+   * The sort key by which the blocks should be sorted
+   *
+   * @property {String[]} sortBy
+   * @public
+   */
+  sortBy: [ 'from:desc' ],
+
+  /**
    * The sorted blocks of the activity
    *
    * @property {ActivitBlock[]} blocks
    * @public
    */
-  @sort('activity.blocks.[]', (x, y) => {
-    /* istanbul ignore next */
-    return x.get('from') > y.get('from') ? 1 : -1
-  })
-  blocks: null,
+  @sort('activity.blocks.[]', 'sortBy')
+  blocks: [],
 
   /**
    * The total duration of all inactive blocks

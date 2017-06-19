@@ -4,6 +4,7 @@ import destroyApp                                 from '../helpers/destroy-app'
 import { expect }                                 from 'chai'
 import startApp                                   from '../helpers/start-app'
 import testSelector                               from 'ember-test-selectors'
+import moment                                     from 'moment'
 
 describe('Acceptance | index activities edit', function() {
   let application
@@ -32,6 +33,10 @@ describe('Acceptance | index activities edit', function() {
 
     await taskSelect(testSelector('activity-edit-form'))
 
+    let from = find(`${testSelector('activity-edit-form')} .table--activity-blocks tr:eq(0) td:eq(1) input`).val()
+
+    await triggerEvent(`${testSelector('activity-edit-form')} .table--activity-blocks tr:eq(0) td:eq(1) input`, 'keydown', { key: 'ArrowDown', keyCode: 40 })
+
     await fillIn(`${testSelector('activity-edit-form')} textarea`, 'Test')
 
     await click(find('button:contains(Save)'))
@@ -39,6 +44,10 @@ describe('Acceptance | index activities edit', function() {
     expect(currentURL()).to.equal('/')
 
     expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal('Test')
+
+    await click(find(testSelector('activity-row-id', 1)))
+
+    expect(find(`${testSelector('activity-edit-form')} .table--activity-blocks tr:eq(0) td:eq(1) input`).val()).to.equal(moment(from, 'HH:mm').subtract(1, 'minutes').format('HH:mm'))
   })
 
   it('can delete an activity', async function() {
