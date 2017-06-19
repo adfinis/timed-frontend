@@ -27,7 +27,7 @@ export default function() {
     })
   })
 
-  this.post('/auth/refresh', ({ db }, req) => {
+  this.post('/auth/refresh', (db, req) => {
     let { token } = parse(req.requestBody)
 
     return new Response(200, {}, { data: { token } })

@@ -3,7 +3,9 @@
  * @submodule timed-transforms
  * @public
  */
-import Transform from 'ember-data/transform'
+import DS from 'ember-data'
+
+const { Transform } = DS
 
 /**
  * Django worktime transform

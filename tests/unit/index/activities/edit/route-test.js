@@ -5,7 +5,7 @@ import { setupTest }    from 'ember-mocha'
 describe('Unit | Route | index/activities/edit', function() {
   setupTest('route:index/activities/edit', {
     // Specify the other units that are required for this test.
-    // needs: ['controller:foo']
+    needs: [ 'service:notify' ]
   })
 
   it('exists', function() {

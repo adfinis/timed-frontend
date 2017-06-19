@@ -208,7 +208,7 @@ export default Controller.extend({
     get(day) {
       return moment(day, 'YYYY-MM-DD')
     },
-    set(day, value) {
+    set(value) {
       this.set('day', value.format('YYYY-MM-DD'))
 
       return value

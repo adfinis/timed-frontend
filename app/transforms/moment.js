@@ -3,8 +3,10 @@
  * @submodule timed-transforms
  * @public
  */
-import Transform from 'ember-data/transform'
-import moment    from 'moment'
+import DS     from 'ember-data'
+import moment from 'moment'
+
+const { Transform } = DS
 
 /**
  * The moment transform

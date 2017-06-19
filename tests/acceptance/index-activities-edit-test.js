@@ -15,7 +15,7 @@ describe('Acceptance | index activities edit', function() {
 
     await authenticateSession(application, { 'user_id': user.id })
 
-    this.activities = server.createList('activity', 5)
+    server.createList('activity', 5)
   })
 
   afterEach(async function() {
@@ -74,15 +74,14 @@ describe('Acceptance | index activities edit', function() {
   })
 
   it('can\'t delete an active activity', async function() {
-    await visit('/')
+    let { id } = server.create('activity', 'active')
 
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`))
-    await click(find(testSelector('activity-row-id', 1)))
+    await visit(`/edit/${id}`)
 
     await click(find('button:contains(Delete)'))
 
     expect(find('button:contains(Delete)').is(':disabled')).to.be.ok
-    expect(find(testSelector('activity-row-id', 1))).to.have.length(1)
+    expect(find(testSelector('activity-row-id', id))).to.have.length(1)
   })
 
   it('closes edit window when clicking on the currently edited activity row', async function() {

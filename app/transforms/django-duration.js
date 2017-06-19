@@ -3,8 +3,10 @@
  * @submodule timed-transforms
  * @public
  */
-import Transform from 'ember-data/transform'
-import moment    from 'moment'
+import DS     from 'ember-data'
+import moment from 'moment'
+
+const { Transform } = DS
 
 import {
   padTpl,
@@ -43,7 +45,7 @@ export default Transform.extend({
       return null
     }
 
-    let re = new RegExp(/^(\-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
+    let re = new RegExp(/^(-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
 
     let [
       ,

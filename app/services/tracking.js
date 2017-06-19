@@ -119,7 +119,7 @@ export default Service.extend({
     get() {
       return this.get('_activity')
     },
-    set(key, value) {
+    set(value) {
       let newActivity = value || this.get('store').createRecord('activity')
 
       this.set('_activity', newActivity)

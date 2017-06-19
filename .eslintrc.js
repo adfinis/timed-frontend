@@ -1,4 +1,7 @@
 module.exports = {
+  globals: {
+    server: true,
+  },
   extends: [
     'eslint:recommended',
     'plugin:ember/recommended',
@@ -7,15 +10,15 @@ module.exports = {
   root: true,
   parser: 'babel-eslint',
   parserOptions: {
-    ecmaVersion: 6,
+    ecmaVersion: 2017,
     sourceType: 'module'
   },
   globals: {
+    server: true,
     Reflect: true
   },
   env: {
-    browser: true,
-    es6: true
+    browser: true
   },
   plugins: [ 'ember' ],
   rules: {

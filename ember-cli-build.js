@@ -28,7 +28,11 @@ module.exports = function(defaults) {
       }
     },
     babel: {
-      optional: [ 'es7.decorators' ]
+      plugins: [
+        'transform-async-generator-functions',
+        'transform-decorators-legacy',
+        'transform-object-rest-spread'
+      ]
     },
     'ember-cli-babel': {
       includePolyfill: true
