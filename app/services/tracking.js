@@ -149,10 +149,12 @@ export default Service.extend({
 
       this.setTitle(`${formatDuration(full)} (${task})`)
 
+      /* istanbul ignore else */
       if (testing) {
         return
       }
 
+      /* istanbul ignore next */
       yield timeout(1000)
     }
   }),
