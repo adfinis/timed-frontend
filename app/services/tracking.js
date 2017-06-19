@@ -137,7 +137,7 @@ export default Service.extend({
 
       let full = moment.duration(elapsed).add(duration)
 
-      let task = ''
+      let task = 'Unknown Task'
 
       if (this.get('activity.task.content')) {
         let c = this.get('activity.task.project.customer.name')
@@ -145,9 +145,6 @@ export default Service.extend({
         let t = this.get('activity.task.name')
 
         task = `${c} > ${p} > ${t}`
-      }
-      else {
-        task = 'Unknown Task'
       }
 
       this.setTitle(`${formatDuration(full)} (${task})`)
