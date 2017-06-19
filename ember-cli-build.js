@@ -29,7 +29,6 @@ module.exports = function(defaults) {
     },
     babel: {
       plugins: [
-        'transform-async-generator-functions',
         'transform-decorators-legacy',
         'transform-object-rest-spread'
       ]
