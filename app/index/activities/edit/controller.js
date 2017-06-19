@@ -14,7 +14,7 @@ import moment             from 'moment'
  * @extends Ember.Controller
  * @public
  */
-export default Controller.extend({
+const IndexActivitiesEditController = Controller.extend({
   /**
    * The sort key by which the blocks should be sorted
    *
@@ -51,3 +51,5 @@ export default Controller.extend({
     }, moment.duration())
   }
 })
+
+export default IndexActivitiesEditController
