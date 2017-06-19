@@ -3,15 +3,29 @@
  * @submodule timed-services
  * @public
  */
-import Service  from 'ember-service'
-import service  from 'ember-service/inject'
-import moment   from 'moment'
-import computed from 'ember-computed-decorators'
+import Ember            from 'ember'
+import Service          from 'ember-service'
+import service          from 'ember-service/inject'
+import moment           from 'moment'
+import formatDuration   from 'timed/utils/format-duration'
+import getOwner         from 'ember-owner/get'
+import { scheduleOnce } from 'ember-runloop'
+
+import computed, {
+  observes
+} from 'ember-computed-decorators'
+
+import {
+  camelize,
+  capitalize
+} from 'ember-string'
 
 import {
   task,
   timeout
 } from 'ember-concurrency'
+
+const { testing } = Ember
 
 /**
  * Tracking service
@@ -54,7 +68,94 @@ export default Service.extend({
     })
 
     this.set('activity', actives.getWithDefault('firstObject', null))
+
+    this.get('_computeTitle').perform()
   },
+
+  /**
+   * The application
+   *
+   * @property {Ember.Application} application
+   * @public
+   */
+  @computed
+  application() {
+    return getOwner(this).lookup('application:main')
+  },
+
+  /**
+   * The default application title
+   *
+   * @property {String} title
+   * @public
+   */
+  @computed('application.name')
+  title(name) {
+    return capitalize(camelize(name || 'Timed'))
+  },
+
+  /**
+   * Trigger a reload of the title because the activity has changed
+   *
+   * @method _triggerTitle
+   * @private
+   */
+  @observes('activity.active')
+  _triggerTitle() {
+    if (this.get('activity.active')) {
+      this.get('_computeTitle').perform()
+    }
+    else {
+      this.setTitle(this.get('title'))
+    }
+  },
+
+  /**
+   * Set the doctitle
+   *
+   * @method setTitle
+   * @param {String} title The title to set
+   * @public
+   */
+  setTitle(title) {
+    scheduleOnce('afterRender', this, (t) => {
+      document.title = t
+    }, title)
+  },
+
+  /**
+   * Set the title of the application to show the current tracking time and
+   * task
+   *
+   * @method _computeTitle
+   * @private
+   */
+  _computeTitle: task(function* () {
+    while (this.get('activity.active')) {
+      let elapsed  = this.get('activity.duration') || moment.duration()
+      let duration = moment.duration(moment().diff(this.get('activity.activeBlock.from')))
+
+      let full = moment.duration(elapsed).add(duration)
+
+      let task = 'Unknown Task'
+
+      if (this.get('activity.task.content')) {
+        let c = this.get('activity.task.project.customer.name')
+        let p = this.get('activity.task.project.name')
+        let t = this.get('activity.task.name')
+
+        task = `${c} > ${p} > ${t}`
+      }
+
+      this.setTitle(`${formatDuration(full)} (${task})`)
+
+      if (testing) {
+        return
+      }
+
+      yield timeout(1000)
+    }
+  }),
 
   /**
    * Filter all customers
