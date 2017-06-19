@@ -149,10 +149,12 @@ export default Service.extend({
 
       this.setTitle(`${formatDuration(full)} (${task})`)
 
+      /* istanbul ignore else */
       if (testing) {
         return
       }
 
+      /* istanbul ignore next */
       yield timeout(1000)
     }
   }),
@@ -176,7 +178,9 @@ export default Service.extend({
    * @public
    */
   filterProjects: task(function* (customer) {
+    /* istanbul ignore next */
     if (!customer) {
+      // We can't test this because the UI prevents it
       throw new Error('No customer selected')
     }
 
@@ -192,7 +196,9 @@ export default Service.extend({
    * @public
    */
   filterTasks: task(function* (project) {
+    /* istanbul ignore next */
     if (!project) {
+      // We can't test this because the UI prevents it
       throw new Error('No project selected')
     }
 
@@ -220,7 +226,7 @@ export default Service.extend({
     get() {
       return this.get('_activity')
     },
-    set(key, value) {
+    set(value) {
       let newActivity = value || this.get('store').createRecord('activity')
 
       this.set('_activity', newActivity)
@@ -238,7 +244,9 @@ export default Service.extend({
   startActivity: task(function* () {
     let activity = this.get('activity')
 
+    /* istanbul ignore next */
     if (activity.get('active')) {
+      // We can't test this because the UI prevents it
       return
     }
 
@@ -275,11 +283,9 @@ export default Service.extend({
     try {
       let block = yield activity.get('activeBlock')
 
-      if (block) {
-        block.set('to', moment())
+      block.set('to', moment())
 
-        yield block.save()
-      }
+      yield block.save()
 
       this.set('activity', null)
 

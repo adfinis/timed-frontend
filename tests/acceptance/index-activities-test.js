@@ -37,11 +37,13 @@ describe('Acceptance | index activities', function() {
   })
 
   it('can not start an active activity', async function() {
+    let [ { id } ] = this.activities
+
     await visit('/')
 
-    await click(`${testSelector('activity-row-id', 1)} ${testSelector('start-activity')}`)
+    await click(`${testSelector('activity-row-id', id)} ${testSelector('start-activity')}`)
 
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be.ok
+    expect(find(testSelector('activity-row-id', id)).hasClass('primary')).to.be.ok
   })
 
   it('can start an activity', async function() {
@@ -57,11 +59,7 @@ describe('Acceptance | index activities', function() {
 
     let activity = server.create('activity', { startDatetime: lastDay })
 
-    await visit('/')
-
-    await click(testSelector('previous'))
-
-    expect(currentURL()).to.equal(`/?day=${lastDay.format('YYYY-MM-DD')}`)
+    await visit(`/?day=${lastDay.format('YYYY-MM-DD')}`)
 
     await click(`${testSelector('activity-row-id', activity.id)} ${testSelector('start-activity')}`)
 
@@ -80,29 +78,6 @@ describe('Acceptance | index activities', function() {
     await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('stop-activity')}`))
 
     expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.not.be.ok
-  })
-
-  it('can edit an activity', async function() {
-    await visit('/')
-
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('edit-activity')}`))
-
-    await fillIn('textarea', 'Test')
-
-    await click(find('button:contains(Save)'))
-
-    expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal('Test')
-  })
-
-  it('can delete an activity', async function() {
-    await visit('/')
-
-    await click(find(`${testSelector('activity-row-id', 1)} ${testSelector('edit-activity')}`))
-
-    await click(find('button:contains(Delete)'))
-
-    expect(find(testSelector('activity-row-id', 1))).to.have.length(0)
-    expect(find(testSelector('activity-row'))).to.have.length(4)
   })
 
   it('can generate reports', async function() {

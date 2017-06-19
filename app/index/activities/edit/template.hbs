@@ -1,0 +1,43 @@
+<form data-test-activity-edit-form {{action 'save' on='submit'}}>
+  <div class="card">
+    <div class="card-header hidden-lg">
+      {{#link-to 'index.activities'}}{{fa-icon 'chevron-left'}}{{/link-to}}
+    </div>
+    <div class="card-block">
+      {{#task-selection task=activity.task as |t|}}
+        <div class="form-group">{{t.customer}}</div>
+        <div class="form-group">{{t.project}}</div>
+        <div class="form-group">{{t.task}}</div>
+      {{/task-selection}}
+      <div class="form-group">{{textarea class='form-control' placeholder='Enter comment...' value=activity.comment}}</div>
+      <table class="table table--striped table--activity-blocks">
+        <tbody>
+          {{#each blocks as |block|}}
+            {{#if (and block.to (not block.isDeleted))}}
+              <tr class="text-center" data-test-activity-block-row data-test-activity-block-row-id={{block.id}}>
+                <td>
+                  <button data-test-delete-activity-block class="btn btn-default" {{action 'deleteBlock' block}}>{{fa-icon 'trash'}}</button>
+                </td>
+                <td>{{sy-timepicker max=block.to precision=1 value=block.from on-change=(action (mut block.from))}}</td>
+                <td>-</td>
+                <td>{{sy-timepicker min=block.from precision=1 value=block.to on-change=(action (mut block.to))}}</td>
+                <td>{{format-duration (moment-diff block.from block.to) false}}</td>
+              </tr>
+            {{/if}}
+          {{/each}}
+          <tr>
+            <td><button data-test-add-activity-block class="btn btn-default" {{action 'addBlock'}}>{{fa-icon 'plus'}}</button></td>
+            <td><strong><u>Total:</u></strong></td>
+            <td></td>
+            <td></td>
+            <td><strong><u>{{format-duration total false}}</u></strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer text-right">
+      <button class="btn btn-danger" disabled={{model.active}} {{action 'delete'}}>Delete</button>
+      <button class="btn btn-primary" type="submit" disabled={{not activity.isValid}}>Save</button>
+    </div>
+  </div>
+</form>

@@ -13,7 +13,9 @@ ApplicationRouter.map(function() {
 
   this.route('protected', { path: '/' }, function() {
     this.route('index', { resetNamespace, path: '/' }, function() {
-      this.route('activities', { path: '/' })
+      this.route('activities', { path: '/' }, function() {
+        this.route('edit', { path: '/edit/:id' })
+      })
       this.route('attendances')
       this.route('reports')
     })

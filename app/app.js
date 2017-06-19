@@ -1,4 +1,3 @@
-import Ember            from 'ember'
 import Application      from 'ember-application'
 import Resolver         from './resolver'
 import loadInitializers from 'ember-load-initializers'
@@ -9,8 +8,6 @@ const { Promise } = RSVP
 
 window.NativePromise = window.Promise
 window.Promise = Promise
-
-Ember.MODEL_FACTORY_INJECTIONS = true
 
 let App = Application.extend({
   modulePrefix: config.modulePrefix,

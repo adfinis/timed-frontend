@@ -81,10 +81,12 @@ const DurationSinceComponent = Component.extend({
     for (;;) {
       this._compute()
 
+      /* istanbul ignore else */
       if (testing) {
         return
       }
 
+      /* istanbul ignore next */
       yield timeout(1000)
     }
   }).on('init')

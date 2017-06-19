@@ -111,7 +111,7 @@ export default Component.extend({
     get(task) {
       return task && task.get('project.customer') || this.get('_customer')
     },
-    set(task, value) {
+    set(value) {
       this.set('_customer', value)
 
       /* istanbul ignore else */
@@ -142,7 +142,7 @@ export default Component.extend({
     get(task) {
       return task && task.get('project') || this.get('_project')
     },
-    set(task, value) {
+    set(value) {
       this.set('_project', value)
 
       /* istanbul ignore else */

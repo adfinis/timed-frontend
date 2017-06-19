@@ -19,7 +19,8 @@ describe('Unit | Service | tracking', function() {
     // Specify the other units that are required for this test.
     needs: [
       'model:activity',
-      'model:activity-block'
+      'model:activity-block',
+      'service:notify'
     ]
   })
 

@@ -23,6 +23,12 @@ export default Route.extend({
    */
   notify: service('notify'),
 
+  /**
+   * The tracking service
+   *
+   * @property {TrackingService} tracking
+   * @public
+   */
   tracking: service('tracking'),
 
   /**
@@ -32,6 +38,25 @@ export default Route.extend({
    * @public
    */
   actions: {
+    /**
+     * Edit the clicked activity or exit the edit mask if the activity is
+     * already being edited.
+     *
+     * @method editActivity
+     * @param {Activity} activity The activity to edit
+     * @public
+     */
+    editActivity(activity) {
+      let { id } = this.paramsFor('index.activities.edit')
+
+      if (id === activity.get('id')) {
+        this.transitionTo('index.activities')
+      }
+      else {
+        this.transitionTo('index.activities.edit', activity.get('id'))
+      }
+    },
+
     /**
      * Start an activity
      *
@@ -64,50 +89,6 @@ export default Route.extend({
       this.set('tracking.activity', activity)
 
       this.get('tracking.stopActivity').perform()
-    },
-
-    /**
-     * Save an activity
-     *
-     * @method saveActivity
-     * @param {Activity} activity The activity to save
-     * @public
-     */
-    async saveActivity(activity) {
-      try {
-        await activity.save()
-
-        this.get('notify').success('Activity was saved')
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while saving the activity')
-      }
-    },
-
-    /**
-     * Delete an activity
-     *
-     * @method deleteActivity
-     * @param {Activity} activity The activity to delete
-     * @public
-     */
-    async deleteActivity(activity) {
-      if (activity.get('active')) {
-        /* istanbul ignore next */
-        this.get('notify').error('You can\'t delete a currently active activity')
-        return
-      }
-
-      try {
-        await activity.destroyRecord()
-
-        this.get('notify').success('Activity was deleted')
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the activity')
-      }
     },
 
     /**

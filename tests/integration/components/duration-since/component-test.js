@@ -10,7 +10,7 @@ describe('Integration | Component | duration since', function() {
   })
 
   it('computes the duration correctly', function() {
-    this.set('start', moment().subtract({
+    this.set('start', moment().milliseconds(0).subtract({
       minutes: 5,
       seconds: 5
     }))

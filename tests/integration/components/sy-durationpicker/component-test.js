@@ -83,4 +83,33 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').hours()).to.equal(12)
     expect(this.get('value').minutes()).to.equal(0)
   })
+
+  it('can\'t be bigger than max or smaller than min', function() {
+    this.set('value', moment.duration({
+      h: 12,
+      m: 30
+    }))
+
+    this.set('min', moment.duration({
+      h: 12,
+      m: 30
+    }))
+
+    this.set('max', moment.duration({
+      h: 12,
+      m: 30
+    }))
+
+    this.render(hbs`{{sy-durationpicker min=min max=max value=value on-change=(action (mut value))}}`)
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+
+    expect(this.get('value').hours()).to.equal(12)
+    expect(this.get('value').minutes()).to.equal(30)
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
+
+    expect(this.get('value').hours()).to.equal(12)
+    expect(this.get('value').minutes()).to.equal(30)
+  })
 })

@@ -72,4 +72,16 @@ describe('Unit | Utility | format duration', function() {
 
     expect(result2).to.equal('--:--')
   })
+
+  it('works with a number instead of a duration', function() {
+    let num = 11 * 60 * 60 * 1000 + 12 * 60 * 1000 + 13 * 1000
+
+    let result1 = formatDuration(num)
+
+    expect(result1).to.equal('11:12:13')
+
+    let result2 = formatDuration(num, false)
+
+    expect(result2).to.equal('11:12')
+  })
 })

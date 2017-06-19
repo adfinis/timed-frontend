@@ -169,4 +169,47 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').hour()).to.equal(23)
     expect(this.get('value').minute()).to.equal(45)
   })
+
+  it('can\'t be bigger than max or smaller than min', function() {
+    this.set('value', moment({
+      h: 12,
+      m: 30
+    }))
+
+    this.set('min', moment({
+      h: 12,
+      m: 30
+    }))
+
+    this.set('max', moment({
+      h: 12,
+      m: 30
+    }))
+
+    this.render(hbs`{{sy-timepicker min=min max=max value=value on-change=(action (mut value))}}`)
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+
+    expect(this.get('value').hour()).to.equal(12)
+    expect(this.get('value').minute()).to.equal(30)
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
+
+    expect(this.get('value').hour()).to.equal(12)
+    expect(this.get('value').minute()).to.equal(30)
+  })
+
+  it('respects the precision', function() {
+    this.set('value', moment({
+      h: 10,
+      m: 0
+    }))
+
+    this.render(hbs`{{sy-timepicker precision=5 value=value on-change=(action (mut value))}}`)
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+
+    expect(this.get('value').hour()).to.equal(10)
+    expect(this.get('value').minute()).to.equal(5)
+  })
 })
