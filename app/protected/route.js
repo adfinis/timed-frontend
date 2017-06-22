@@ -31,18 +31,31 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @param {Ember.Transition} transition The transition which is loading
      * @public
      */
-    async loading(transition) {
+    loading(transition) {
       let controller = this.get('controller')
 
       if (controller) {
-        try {
-          controller.set('loading', true)
+        controller.set('loading', true)
+      }
 
-          await transition.promise
-        }
-        finally {
-          controller.set('loading', false)
-        }
+      if (transition) {
+        transition.promise.finally(() => {
+          this.send('finished')
+        })
+      }
+    },
+
+    /**
+     * Finish the loading animation
+     *
+     * @method finished
+     * @public
+     */
+    finished() {
+      let controller = this.get('controller')
+
+      if (controller) {
+        controller.set('loading', false)
       }
     }
   }
