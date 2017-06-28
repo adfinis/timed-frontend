@@ -10,7 +10,7 @@ import hbs        from 'htmlbars-inline-precompile'
 import { typeOf } from 'ember-utils'
 
 const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
-const SUGGESTION_TEMPLATE = hbs`{{model.name}}`
+const SUGGESTION_TEMPLATE = hbs`{{#if model.start}}<i class="fa fa-history"></i> {{/if}}{{model.name}}`
 
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
@@ -112,6 +112,18 @@ export default Component.extend({
       return task && task.get('project.customer') || this.get('_customer')
     },
     set(value) {
+      /**
+       * It is also possible a activity was selected from the history.
+       * An activity has a start property, check for this one.
+       */
+      if (value !== null && value.get('start')) {
+        this.set('task', value.get('task'))
+        this.set('_customer', value.get('task.project.customer'))
+        this.set('_project', value.get('task.project'))
+
+        return this.get('_customer')
+      }
+
       this.set('_customer', value)
 
       /* istanbul ignore else */

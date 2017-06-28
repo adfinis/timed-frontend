@@ -99,5 +99,23 @@ export default Model.extend({
   @computed('activeBlock')
   active(block) {
     return Boolean(block && block.get('from'))
+  },
+
+  /**
+   * The name of the activity
+   *
+   * Build as a path "customer > project > task"
+   *
+   * @property name
+   * @type {String}
+   * @public
+   */
+  @computed('task')
+  name(task) {
+    const taskName = task.get('name')
+    const projectName = task.get('project.name')
+    const customerName = task.get('project.customer.name')
+
+    return `${customerName} > ${projectName} > ${taskName}`
   }
 })
