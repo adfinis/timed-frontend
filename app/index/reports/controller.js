@@ -31,13 +31,21 @@ export default Controller.extend({
   /**
    * The reports filtered by the selected day
    *
+   * Create a new report if no new report is already in the store
+   *
    * @property {Report[]} reports
    * @public
    */
-  @computed('_allReports.@each.{date,isDeleted}', 'model')
+  @computed('_allReports.@each.{date,isNew,isDeleted}', 'model')
   reports(reports, day) {
-    return reports.filter((r) => {
+    let reportsToday = reports.filter((r) => {
       return r.get('date').isSame(day, 'day') && !r.get('isDeleted')
     })
+
+    if (!reportsToday.filterBy('isNew', true).get('length')) {
+      this.store.createRecord('report', { date: this.get('model') })
+    }
+
+    return reportsToday.sort((a) => a.get('isNew') ? 1 : -1)
   }
 })

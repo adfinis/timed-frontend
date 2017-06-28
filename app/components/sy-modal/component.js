@@ -54,6 +54,8 @@ export default Component.extend({
      */
     close() {
       this.set('visible', false)
+
+      this.getWithDefault('on-close', () => {})()
     }
   }
 })

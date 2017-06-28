@@ -1,36 +1,13 @@
 <table class="table table--striped table--reports">
   <tbody>
-    {{#each reports as |report index|}}
-      {{#with (changeset report ReportValidations) as |r|}}
-        <tr
-          data-test-report-row
-          data-test-report-row-id={{report.id}}
-        >
-          {{#task-selection task=r.task as |t|}}
-            <td class="form-group {{if r.error.task 'has-error'}}">{{t.customer}}</td>
-            <td class="form-group {{if r.error.task 'has-error'}}">{{t.project}}</td>
-            <td class="form-group {{if r.error.task 'has-error'}}">{{t.task}}</td>
-          {{/task-selection}}
-          <td class="form-group">{{sy-durationpicker data-test-report-duration value=r.duration on-change=(action (mut r.duration))}}</td>
-          <td class="form-group">{{input data-test-report-comment type='text' class='form-control' value=r.comment}}</td>
-          <td class="form-group">
-            <div class="checkbox">
-              {{input data-test-report-review elementId=(concat 'review-' index) type='checkbox' checked=r.review}}
-              <label for="review-{{index}}">Needs review</label>
-            </div>
-          </td>
-          <td class="form-group">
-            <div class="checkbox">
-              {{input data-test-report-not-billable elementId=(concat 'not-billable-' index) type='checkbox' checked=r.notBillable}}
-              <label for="not-billable-{{index}}">Not billable</label>
-            </div>
-          </td>
-          <td>
-            <button data-test-delete-report class="btn btn-danger" {{action 'deleteReport' report}}>{{fa-icon 'trash'}}</button>
-            <button data-test-save-report class="btn btn-primary" {{action 'saveReport' r}} disabled={{not r.isDirty}}>{{fa-icon 'save'}}</button>
-          </td>
-        </tr>
-      {{/with}}
+    {{#each reports as |report|}}
+      {{report-row
+        report
+        data-test-report-row
+        data-test-report-row-id = report.id
+        on-save                 = (route-action 'saveReport')
+        on-delete               = (route-action 'deleteReport')
+      }}
     {{^}}
       <tr>
         <td colspan="8" class="text-center">
@@ -38,10 +15,5 @@
         </td>
       </tr>
     {{/each}}
-    <tr>
-      <td colspan="8" class="text-center">
-        <button data-test-add-report class="btn btn-success" {{action 'addReport'}}>{{fa-icon 'plus'}}</button>
-      </td>
-    </tr>
   </tbody>
 </table>

@@ -38,6 +38,14 @@ export default Route.extend({
   session: service('session'),
 
   /**
+   * The notify service
+   *
+   * @property {EmberNotify.NotifyService} notify
+   * @public
+   */
+  notify: service('notify'),
+
+  /**
    * Model hook, return the selected day as moment object
    *
    * @method model
@@ -68,10 +76,67 @@ export default Route.extend({
     return RSVP.all([
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
       this.store.query('attendance', { day }),
+      this.store.query('absence-type', {}),
       this.store.query('report', { include: 'task,task.project,task.project.customer', date: day }),
       this.store.query('report', { 'from_date': from, 'to_date': to }),
       this.store.query('absence', { 'from_date': from, 'to_date': to }),
       this.store.query('user', { id, include: 'employments,employments.location' })
     ])
+  },
+
+  actions: {
+    async saveAbsence(changeset) {
+      try {
+        this.send('loading')
+
+        await changeset.save()
+
+        this.set('controller.showEditModal', false)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while saving the absence')
+      }
+      finally {
+        this.send('finished')
+      }
+    },
+
+    async deleteAbsence(absence) {
+      try {
+        this.send('loading')
+
+        await absence.destroyRecord()
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while deleting the absence')
+      }
+      finally {
+        this.send('finished')
+      }
+    },
+
+    async addAbsence(changeset) {
+      try {
+        let type    = changeset.get('type')
+        let comment = changeset.get('comment')
+
+        changeset.get('dates').forEach(async(date) => {
+          let absence = this.store.createRecord('absence', { type, date, comment })
+
+          await absence.save()
+        })
+
+        this.set('controller.showEditModal', false)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while adding the absence')
+      }
+      finally {
+        this.send('finished')
+      }
+    },
   }
 })

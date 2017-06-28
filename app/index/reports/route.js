@@ -65,9 +65,11 @@ export default Route.extend({
 
         await report.save()
 
-        this.get('controller.absences').forEach(async(absence) => {
+        let absence = this.controllerFor('index').get('absence')
+
+        if (absence) {
           await absence.reload()
-        })
+        }
       }
       catch(e) {
         /* istanbul ignore next */
@@ -92,9 +94,11 @@ export default Route.extend({
         await report.destroyRecord()
 
         if (!report.get('isNew')) {
-          this.get('controller.absences').forEach(async(absence) => {
+          let absence = this.controllerFor('index').get('absence')
+
+          if (absence) {
             await absence.reload()
-          })
+          }
         }
       }
       catch(e) {

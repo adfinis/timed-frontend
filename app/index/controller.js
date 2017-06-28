@@ -3,12 +3,14 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller        from 'ember-controller'
-import moment            from 'moment'
-import computed          from 'ember-computed-decorators'
-import Ember             from 'ember'
-import service           from 'ember-service/inject'
-import { task, timeout } from 'ember-concurrency'
+import Controller                 from 'ember-controller'
+import moment                     from 'moment'
+import computed                   from 'ember-computed-decorators'
+import Ember                      from 'ember'
+import service                    from 'ember-service/inject'
+import { task, timeout }          from 'ember-concurrency'
+import AbsenceValidations         from 'timed/validations/absence'
+import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
 
 const { testing } = Ember
 
@@ -20,6 +22,10 @@ const { testing } = Ember
  * @public
  */
 export default Controller.extend({
+  AbsenceValidations,
+
+  MultipleAbsenceValidations,
+
   /**
    * The query params
    *
@@ -166,6 +172,17 @@ export default Controller.extend({
   },
 
   /**
+   * All public holidays
+   *
+   * @property {PublicHoliday[]} _allPublicHolidays
+   * @private
+   */
+  @computed()
+  _allPublicHolidays() {
+    return this.store.peekAll('public-holiday')
+  },
+
+  /**
    * All reports filtered by the selected day
    *
    * @property {Report[]} _reports
@@ -203,6 +220,31 @@ export default Controller.extend({
     let absenceDurations = absences.mapBy('duration')
 
     return [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => val.add(dur), moment.duration())
+  },
+
+  /**
+   * The absence of the current day if available
+   *
+   * This should always be the first of all absences of the day because in
+   * theory, we can only have one absence per day.
+   *
+   * @property {Absence} absence
+   * @public
+   */
+  @computed('_absences.[]')
+  absence(absences) {
+    return absences.getWithDefault('firstObject', null)
+  },
+
+  /**
+   * All absence types
+   *
+   * @property {AbsenceType[]} absenceTypes
+   * @public
+   */
+  @computed()
+  absenceTypes() {
+    return this.store.peekAll('absence-type')
   },
 
   /**
@@ -289,9 +331,75 @@ export default Controller.extend({
         day: d,
         active: d.isSame(date, 'day'),
         absence: !!absences.length,
-        workday: this.get('workdays').includes(d.isoWeekday()),
+        workday: this.get('workdays').includes(d.isoWeekday()) && !this.get('_allPublicHolidays').find((h) => h.get('date').isSame(d, 'day')),
         worktime: [ ...reports, ...absences ].reduce((val, dur) => val.add(dur), moment.duration())
       }
     })
-  }).restartable()
+  }).restartable(),
+
+  init() {
+    this._super(...arguments)
+
+    let date = this.get('date')
+
+    this.set('newAbsence', {
+      dates: [],
+      comment: '',
+      type: null,
+    })
+
+    this.get('setCenter').perform({ moment: date })
+  },
+
+  disabledDates: [],
+
+  setCenter: task(function*({ moment: center }) {
+    let from = moment(center).startOf('month').startOf('day')
+    let to   = moment(center).endOf('month').endOf('day')
+
+    let location = this.store.peekRecord(
+      'user',
+      this.get('session.data.authenticated.user_id')
+    ).get('activeEmployment.location.id')
+
+    let params = {
+      'from_date': from.format('YYYY-MM-DD'),
+      'to_date': to.format('YYYY-MM-DD')
+    }
+
+    let absences = yield this.store.query('absence', params)
+    let publicHolidays = yield this.store.query('public-holiday', { ...params, location })
+
+    let disabled = [ ...absences.mapBy('date'), ...publicHolidays.mapBy('date') ]
+    let date     = moment(from)
+    let workdays = this.get('workdays')
+
+    while (date < to) {
+      if (!workdays.includes(date.isoWeekday())) {
+        disabled.push(moment(date))
+      }
+      date.add(1, 'days')
+    }
+
+    this.set('disabledDates', disabled)
+    this.set('center', center)
+  }).drop(),
+
+  @computed('absence.date', 'disabledDates.[]')
+  disabledDatesForEdit(current, disabled) {
+    return disabled.filter((d) => !d.isSame(current, 'day'))
+  },
+
+  actions: {
+    /**
+     * Rollback the changes made in the absence dialogs
+     *
+     * @method rollback
+     * @param {EmberChangeset.Changeset} changeset
+     * @public
+     */
+    rollback(changeset) {
+      changeset.rollback()
+    }
+  }
 })

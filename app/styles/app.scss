@@ -5,8 +5,8 @@
 @import 'activities';
 @import 'reports';
 @import 'ember-power-calendar';
-@import 'pod-styles';
 @import 'ember-basic-dropdown';
+@import 'pod-styles';
 
 :root {
   --tracking-indicator-size: 10px;
@@ -57,8 +57,7 @@ body {
 }
 
 .nav-tabs {
-  width: 100%;
-  overflow-x: auto;
+  position: relative;
 
   > li > a {
     white-space: nowrap;
@@ -134,13 +133,46 @@ body {
   display: none;
 }
 
+.nav-tab--buttons {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+
+  .btn {
+    margin-left: 0.5rem;
+    z-index: 0;
+    border-bottom-width: 1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+}
+
+.calendar {
+  @include ember-power-calendar($cell-size: 50px);
+
+  .ember-power-calendar-day:not(:disabled) {
+    cursor: pointer;
+    transition: background-color 300ms ease;
+  }
+
+  .ember-power-calendar-day--selected {
+    background-color: var(--color-primary);
+    color: rgb(255, 255, 255);
+
+    &:not(:disabled):hover {
+      background-color: color(var(--color-primary) tint(25%));
+      color: rgb(255, 255, 255);
+    }
+  }
+
+  .ember-power-calendar-day--focused {
+    box-shadow: inset 0px -2px 0px 0px var(--color-primary);
+  }
+}
+
 @media (--sm-viewport) {
   .login-form .btn {
     width: 125px;
-  }
-
-  .nav-tabs {
-    overflow: visible;
   }
 
   .table--activities tr td:last-child {
