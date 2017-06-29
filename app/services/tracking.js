@@ -160,10 +160,33 @@ export default Service.extend({
   }),
 
   /**
-   * Filter all customers
+   * Filter recent activities
    *
-   * Also add history entries (activities) as addition
-   * to the customer list.
+   * @property {EmberConcurrency.Task} filterActivity
+   * @public
+   */
+  filterActivity: task(function* () {
+    return yield this.get('store').query('activity', {
+      recent: true,
+      include: 'task,task.project,task.project.customer'
+    })
+  }).restartable(),
+
+  /**
+   * Filter recent reports
+   *
+   * @property {EmberConcurrency.Task} filterReport
+   * @public
+   */
+  filterReport: task(function* () {
+    return yield this.get('store').query('report', {
+      recent: true,
+      include: 'task,task.project,task.project.customer'
+    })
+  }).restartable(),
+
+  /**
+   * Filter all customers
    *
    * @property {EmberConcurrency.Task} filterCustomers
    * @public
@@ -171,16 +194,7 @@ export default Service.extend({
   filterCustomers: task(function* () {
     yield timeout(500)
 
-    let activities = this.get('store').query('activity', {
-      recent: true,
-      include: 'blocks,task,task.project,task.project.customer'
-    })
-    yield activities
-
-    let customers = this.get('store').query('customer', {})
-    yield customers
-
-    return [ ...activities.toArray(), ...customers.toArray() ]
+    return yield this.get('store').query('customer', {})
   }).restartable(),
 
   /**

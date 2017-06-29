@@ -6,11 +6,12 @@
 import Component  from 'ember-component'
 import computed   from 'ember-computed-decorators'
 import service    from 'ember-service/inject'
+import RSVP       from 'rsvp'
 import hbs        from 'htmlbars-inline-precompile'
 import { typeOf } from 'ember-utils'
 
 const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
-const SUGGESTION_TEMPLATE = hbs`{{#if model.start}}<i class="fa fa-history"></i> {{/if}}{{model.name}}`
+const SUGGESTION_TEMPLATE = hbs`{{#if model.duration}}<i class="fa fa-history"></i> {{/if}}{{model.name}}`
 
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
@@ -82,6 +83,14 @@ export default Component.extend({
   suggestionTemplate: SUGGESTION_TEMPLATE,
 
   /**
+   * Model name which will be used to fetch the history
+   *
+   * @property {String}
+   * @public
+   */
+  historyModel: 'activity',
+
+  /**
    * The manually selected customer
    *
    * @property {Customer} _customer
@@ -113,10 +122,10 @@ export default Component.extend({
     },
     set(value) {
       /**
-       * It is also possible a activity was selected from the history.
-       * An activity has a start property, check for this one.
+       * It is also possible a activity/report was selected from the history.
+       * An activity/report has a duration property, check for this one.
        */
-      if (value !== null && value.get('start')) {
+      if (value !== null && value.get('duration')) {
         this.set('task', value.get('task'))
         this.set('_customer', value.get('task.project.customer'))
         this.set('_project', value.get('task.project'))
@@ -174,23 +183,34 @@ export default Component.extend({
   /**
    * Source function for the customer autocomplete component
    *
-   * This either takes the last fetched customers and filters them, or triggers
+   * Creates a list starting with the recent history of activities or reports
+   * and following with all customers.
+   *
+   * This either takes the last fetched data and filters them, or triggers
    * the call first if none was triggered before.
    *
    * @property {Function} customerSource
    * @public
    */
-  @computed
-  customerSource() {
+  @computed('historyModel')
+  customerSource(historyModel) {
     return (search, syncResults, asyncResults) => {
-      let fn = this.get('tracking.filterCustomers')
+      let fnHistory = this.get(`tracking.filter${historyModel.capitalize()}`)
+      let history = fnHistory.get('last') || fnHistory.perform(historyModel)
 
-      let customers = fn.get('last') || fn.perform()
+      let fnCustomer = this.get('tracking.filterCustomers')
+      let customers = fnCustomer.get('last') || fnCustomer.perform()
 
       /* istanbul ignore next */
-      customers
-        .then((data) => asyncResults(regexFilter(data, search, 'name')))
-        .catch(() => asyncResults([]))
+      RSVP.hash({
+        history,
+        customers
+      })
+      .then(hash => {
+        let data = [ ...hash.history.toArray(), ...hash.customers.toArray() ]
+        asyncResults(regexFilter(data, search, 'name'))
+      })
+      .catch(() => asyncResults([]))
     }
   },
 
