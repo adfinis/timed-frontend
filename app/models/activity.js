@@ -112,9 +112,9 @@ export default Model.extend({
    */
   @computed('task')
   name(task) {
-    const taskName = task.get('name')
-    const projectName = task.get('project.name')
-    const customerName = task.get('project.customer.name')
+    let taskName = task.get('name')
+    let projectName = task.get('project.name')
+    let customerName = task.get('project.customer.name')
 
     return `${customerName} > ${projectName} > ${taskName}`
   }

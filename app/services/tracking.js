@@ -171,16 +171,16 @@ export default Service.extend({
   filterCustomers: task(function* () {
     yield timeout(500)
 
-    const activities = this.get('store').query('activity', {
+    let activities = this.get('store').query('activity', {
       recent: true,
       include: 'blocks,task,task.project,task.project.customer'
     })
     yield activities
 
-    const customers = this.get('store').query('customer', {})
+    let customers = this.get('store').query('customer', {})
     yield customers
 
-    return [...activities.toArray(), ...customers.toArray()]
+    return [ ...activities.toArray(), ...customers.toArray() ]
   }).restartable(),
 
   /**
