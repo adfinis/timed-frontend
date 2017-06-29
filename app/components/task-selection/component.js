@@ -202,15 +202,12 @@ export default Component.extend({
       let customers = fnCustomer.get('last') || fnCustomer.perform()
 
       /* istanbul ignore next */
-      RSVP.hash({
-        history,
-        customers
-      })
-      .then(hash => {
-        let data = [ ...hash.history.toArray(), ...hash.customers.toArray() ]
-        asyncResults(regexFilter(data, search, 'name'))
-      })
-      .catch(() => asyncResults([]))
+      RSVP.hash({ history, customers })
+        .then((hash) => {
+          let data = [ ...hash.history.toArray(), ...hash.customers.toArray() ]
+          asyncResults(regexFilter(data, search, 'name'))
+        })
+        .catch(() => asyncResults([]))
     }
   },
 
