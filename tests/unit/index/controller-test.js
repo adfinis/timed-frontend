@@ -6,7 +6,7 @@ import { trackingStub }             from 'timed/tests/integration/components/tra
 describe('Unit | Controller | index', function() {
   setupTest('controller:index', {
     // Specify the other units that are required for this test.
-    needs: [ 'model:activity', 'service:session' ]
+    needs: [ 'model:activity', 'model:absence', 'service:session' ]
   })
 
   beforeEach(function() {

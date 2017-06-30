@@ -43,16 +43,6 @@ export default Route.extend({
    */
   actions: {
     /**
-     * Add a new report
-     *
-     * @method addReport
-     * @public
-     */
-    addReport() {
-      this.store.createRecord('report', { date: this.get('currentModel') })
-    },
-
-    /**
      * Save a certain report and close the modal afterwards
      *
      * @method saveReport

@@ -4,6 +4,7 @@ import destroyApp                                 from '../helpers/destroy-app'
 import { expect }                                 from 'chai'
 import startApp                                   from '../helpers/start-app'
 import testSelector                               from 'ember-test-selectors'
+import { faker }                                  from 'ember-cli-mirage'
 
 describe('Acceptance | index reports', function() {
   let application
@@ -32,23 +33,22 @@ describe('Acceptance | index reports', function() {
   it('can list reports', async function() {
     await visit('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(5)
+    // one row is for adding a new report
+    expect(find(testSelector('report-row'))).to.have.length(6)
   })
 
   it('can add report', async function() {
     await visit('/reports')
 
-    await click(testSelector('add-report'))
+    await taskSelect('.table--reports tr:last-child')
 
-    await taskSelect('.table--reports tr:nth-last-child(2)')
+    await fillIn(`.table--reports tr:last-child ${testSelector('report-duration')}`, '03:30')
+    await fillIn(`.table--reports tr:last-child ${testSelector('report-comment')}`, 'Test comment report')
 
-    await fillIn(`.table--reports tr:nth-last-child(2) ${testSelector('report-duration')}`, '03:30')
-    await fillIn(`.table--reports tr:nth-last-child(2) ${testSelector('report-comment')}`, 'Test comment report')
+    await click(`.table--reports tr:last-child ${testSelector('report-review')}`)
+    await click(`.table--reports tr:last-child ${testSelector('report-not-billable')}`)
 
-    await click(`.table--reports tr:nth-last-child(2) ${testSelector('report-review')}`)
-    await click(`.table--reports tr:nth-last-child(2) ${testSelector('report-not-billable')}`)
-
-    await click(`.table--reports tr:nth-last-child(2) ${testSelector('save-report')}`)
+    await click(`.table--reports tr:last-child ${testSelector('save-report')}`)
 
     expect(find(`${testSelector('report-row')}:nth-last-child(2) ${testSelector('report-duration')}`).val()).to.equal('03:30')
     expect(find(`${testSelector('report-row')}:nth-last-child(2) ${testSelector('report-comment')}`).val()).to.equal('Test comment report')
@@ -84,5 +84,62 @@ describe('Acceptance | index reports', function() {
     await click(`${testSelector('report-row-id', id)} ${testSelector('delete-report')}`)
 
     expect(find(testSelector('report-row-id', id))).to.have.length(0)
+  })
+
+  it('can submit report by pressing enter', async function() {
+    await visit('/reports')
+
+    expect(find(testSelector('report-row'))).to.have.length(6)
+
+    await taskSelect('.table--reports tr:last-child')
+    await fillIn(`.table--reports tr:last-child ${testSelector('report-duration')}`, '03:30')
+    await fillIn(`.table--reports tr:last-child ${testSelector('report-comment')}`, 'Test comment report')
+
+    await triggerEvent(`.table--reports tr:last-child ${testSelector('report-comment')}`, 'keypress', { charCode: 13 })
+
+    expect(find(`${testSelector('report-row')}:nth-last-child(2) ${testSelector('report-duration')}`).val()).to.equal('03:30')
+    expect(find(`${testSelector('report-row')}:nth-last-child(2) ${testSelector('report-comment')}`).val()).to.equal('Test comment report')
+
+    expect(find(testSelector('report-row'))).to.have.length(7)
+  })
+
+  it('reloads absences after saving or deleting a report', async function() {
+    server.loadFixtures('absence-types')
+
+    let absence = server.create('absence')
+    let report  = server.create('report')
+
+    server.get('/absences/:id', ({ absences }, { params: { id } }) => {
+      let a = absences.find(id)
+
+      a.comment = faker.lorem.sentence()
+
+      return a
+    })
+
+    let { comment } = absence
+
+    await visit('/reports')
+
+    await click(testSelector('edit-absence'))
+    expect(find(`${testSelector('edit-absence-form')} textarea`).val()).to.equal(comment)
+    await click(`${testSelector('edit-absence-form')} button.close`)
+
+    await fillIn(`${testSelector('report-row-id', report.id)} ${testSelector('report-comment')}`, 'test')
+    await click(`${testSelector('report-row-id', report.id)} ${testSelector('save-report')}`)
+
+    await click(testSelector('edit-absence'))
+    let c1 = find(`${testSelector('edit-absence-form')} textarea`).val()
+    await click(`${testSelector('edit-absence-form')} button.close`)
+
+    expect(c1).to.not.equal(comment)
+
+    await click(`${testSelector('report-row-id', report.id)} ${testSelector('delete-report')}`)
+
+    await click(testSelector('edit-absence'))
+    let c2 = find(`${testSelector('edit-absence-form')} textarea`).val()
+    await click(`${testSelector('edit-absence-form')} button.close`)
+
+    expect(c2).to.not.equal(c1)
   })
 })

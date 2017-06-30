@@ -4,6 +4,7 @@
  * @public
  */
 import Route                   from 'ember-route'
+import service                 from 'ember-service/inject'
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin'
 
 /**
@@ -15,6 +16,14 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
+  session: service('session'),
+
+  model() {
+    let id = this.get('session.data.authenticated.user_id')
+
+    return this.store.findRecord('user', id, { include: 'employments,employments.location' })
+  },
+
   /**
    * Actions for the protected route
    *

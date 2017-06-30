@@ -68,7 +68,6 @@ export default Route.extend({
    * @public
    */
   afterModel(model) {
-    let id   = this.get('session.data.authenticated.user_id')
     let day  = model.format(DATE_FORMAT)
     let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
     let to   = moment(model).add(10, 'days').format(DATE_FORMAT)
@@ -79,12 +78,24 @@ export default Route.extend({
       this.store.query('absence-type', {}),
       this.store.query('report', { include: 'task,task.project,task.project.customer', date: day }),
       this.store.query('report', { 'from_date': from, 'to_date': to }),
-      this.store.query('absence', { 'from_date': from, 'to_date': to }),
-      this.store.query('user', { id, include: 'employments,employments.location' })
+      this.store.query('absence', { 'from_date': from, 'to_date': to })
     ])
   },
 
+  setupController(controller) {
+    this._super(...arguments)
+
+    controller.set('user', this.modelFor('protected'))
+  },
+
   actions: {
+    /**
+     * Edit an existing absence
+     *
+     * @method editAbsence
+     * @param {EmberChangeset.Changeset} changeset The changeset containing the absence data
+     * @public
+     */
     async saveAbsence(changeset) {
       try {
         this.send('loading')
@@ -102,6 +113,13 @@ export default Route.extend({
       }
     },
 
+    /**
+     * Delete an absence
+     *
+     * @method deleteAbsence
+     * @param {Absence} absence The absence to delete
+     * @public
+     */
     async deleteAbsence(absence) {
       try {
         this.send('loading')
@@ -117,6 +135,13 @@ export default Route.extend({
       }
     },
 
+    /**
+     * Add one or more absences
+     *
+     * @method addAbsence
+     * @param {EmberChangeset.Changeset} changeset The changeset containing the absence data
+     * @public
+     */
     async addAbsence(changeset) {
       try {
         let type    = changeset.get('type')
@@ -128,7 +153,7 @@ export default Route.extend({
           await absence.save()
         })
 
-        this.set('controller.showEditModal', false)
+        this.set('controller.showAddModal', false)
       }
       catch(e) {
         /* istanbul ignore next */
@@ -137,6 +162,6 @@ export default Route.extend({
       finally {
         this.send('finished')
       }
-    },
+    }
   }
 })

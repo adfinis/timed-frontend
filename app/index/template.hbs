@@ -31,6 +31,22 @@
         {{#link-to 'index.reports' tagName='button' class='btn'}}
           Reports <span class="badge">{{humanize-duration reportSum}}</span>
         {{/link-to}}
+        {{#if absence}}
+          <button
+            data-test-edit-absence
+            class="btn btn-warning"
+            {{action (toggle 'showEditModal' this)}}
+          >
+            {{absence.type.name}}
+          </button>
+        {{/if}}
+        <button
+          data-test-add-absence
+          class="btn btn-default"
+          {{action (toggle 'showAddModal' this)}}
+        >
+          Add absence
+        </button>
       </div>
     </div>
     <div class="grid-cell visible-sm">
@@ -52,9 +68,21 @@
         </li>
         <li class="nav-tab--buttons">
           {{#if absence}}
-          <button class="btn btn-warning" {{action (toggle 'showEditModal' this)}}>{{absence.type.name}}</button>
+            <button
+              data-test-edit-absence
+              class="btn btn-warning"
+              {{action (toggle 'showEditModal' this)}}
+            >
+              {{absence.type.name}}
+            </button>
           {{/if}}
-          <button class="btn btn-default" {{action (toggle 'showAddModal' this)}}>Add absence</button>
+          <button
+            data-test-add-absence
+            class="btn btn-default"
+            {{action (toggle 'showAddModal' this)}}
+          >
+            Add absence
+          </button>
         </li>
       </ul>
     </div>
@@ -69,7 +97,7 @@
 {{#if absence}}
   {{#with (changeset absence AbsenceValidations) as |changeset|}}
     {{#sy-modal size='auto' visible=showEditModal on-close=(action 'rollback' changeset) as |modal|}}
-      {{#validated-form model=changeset on-submit=(route-action 'saveAbsence' changeset) as |f|}}
+      {{#validated-form data-test-edit-absence-form model=changeset on-submit=(route-action 'saveAbsence' changeset) as |f|}}
         {{#modal.header}}
           Edit absence
         {{/modal.header}}
@@ -92,7 +120,7 @@
             }}
               <div class={{if calendar.loading 'loading-mask'}}>
                 {{calendar.nav}}
-                {{calendar.days disabledDates=disabledDatesForEdit startOfWeek=1 showDaysAround=false}}
+                {{calendar.days disabledDates=disabledDatesForEdit startOfWeek=1}}
               </div>
             {{/power-calendar}}
           {{/f.input}}
@@ -109,7 +137,7 @@
 
 {{#with (changeset newAbsence MultipleAbsenceValidations) as |changeset|}}
   {{#sy-modal size='auto' visible=showAddModal on-close=(action 'rollback' changeset) as |modal|}}
-    {{#validated-form model=changeset on-submit=(route-action 'addAbsence' changeset) as |f|}}
+    {{#validated-form data-test-add-absence-form model=changeset on-submit=(route-action 'addAbsence' changeset) as |f|}}
       {{#modal.header}}
         New absence
       {{/modal.header}}
@@ -132,7 +160,7 @@
           }}
             <div class={{if calendar.loading 'loading-mask'}}>
               {{calendar.nav}}
-              {{calendar.days disabledDates=disabledDates startOfWeek=1 showDaysAround=false}}
+              {{calendar.days disabledDates=disabledDates startOfWeek=1}}
             </div>
           {{/power-calendar-multiple}}
         {{/f.input}}

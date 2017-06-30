@@ -6,10 +6,10 @@
 <td class="form-group">{{sy-durationpicker data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</td>
 <td class="form-group">{{input data-test-report-comment type='text' class='form-control' value=changeset.comment}}</td>
 <td class="form-group">
-  {{sy-checkbox checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
+  {{sy-checkbox data-test-report-review checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
 </td>
 <td class="form-group">
-  {{sy-checkbox checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
+  {{sy-checkbox data-test-report-not-billable checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
 </td>
 <td>
   <button data-test-delete-report class="btn btn-danger" {{action 'delete'}}>{{fa-icon 'trash'}}</button>

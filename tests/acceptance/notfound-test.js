@@ -23,7 +23,9 @@ describe('Acceptance | notfound', function() {
   })
 
   it('displays a 404 page for undefined routes if logged in', async function() {
-    await authenticateSession(application)
+    let user = server.create('user')
+
+    await authenticateSession(application, { 'user_id': user.id })
 
     await visit('/thiswillneverbeavalidrouteurl')
 

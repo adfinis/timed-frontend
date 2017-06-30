@@ -107,4 +107,69 @@ describe('Acceptance | index', function() {
 
     expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/)
   })
+
+  it('can add an absence for multiple days', async function() {
+    server.loadFixtures('absence-types')
+
+    await visit('/?day=2017-06-29')
+
+    await click(testSelector('add-absence'))
+
+    expect(find(testSelector('add-absence-form'))).to.have.length(1)
+
+    await click(`${testSelector('add-absence-form')} .btn-group .btn:first-child`)
+
+    await click(find('[data-date=2017-06-28]'))
+    await click(find('[data-date=2017-06-29]'))
+    await click(find('[data-date=2017-06-30]'))
+
+    await click(`${testSelector('add-absence-form')} button:contains(Save)`)
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+
+    await click(testSelector('next'))
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+
+    await click(testSelector('previous'))
+    await click(testSelector('previous'))
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+  })
+
+  it('can edit an absence', async function() {
+    server.loadFixtures('absence-types')
+    server.create('absence', { date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD') })
+
+    await visit('/?day=2017-06-29')
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+
+    await click(testSelector('edit-absence'))
+
+    await click(find('[data-date=2017-06-30]'))
+
+    await click(`${testSelector('edit-absence-form')} button:contains(Save)`)
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(0)
+
+    await click(testSelector('next'))
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+  })
+
+  it('can delete an absence', async function() {
+    server.loadFixtures('absence-types')
+    server.create('absence', { date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD') })
+
+    await visit('/?day=2017-06-29')
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+
+    await click(testSelector('edit-absence'))
+
+    await click(`${testSelector('edit-absence-form')} button:contains(Delete)`)
+
+    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(0)
+  })
 })
