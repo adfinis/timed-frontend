@@ -125,7 +125,7 @@ export default Component.extend({
        * It is also possible a activity/report was selected from the history.
        * An activity/report has a duration property, check for this one.
        */
-      if (value !== null && value.get('duration')) {
+      if (value && value.get('duration')) {
         this.set('task', value.get('task'))
         this.set('_customer', value.get('task.project.customer'))
         this.set('_project', value.get('task.project'))
