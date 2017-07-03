@@ -1,7 +1,7 @@
 """Filters for filtering the data of the employment app endpoints."""
 
 
-from django_filters import Filter, FilterSet
+from django_filters import DateFilter, Filter, FilterSet
 
 from timed.employment import models
 
@@ -25,10 +25,12 @@ class YearFilter(Filter):
 class PublicHolidayFilterSet(FilterSet):
     """Filter set for the public holidays endpoint."""
 
-    year = YearFilter(name='date')
+    year      = YearFilter(name='date')
+    from_date = DateFilter(name='date', lookup_expr='gte')
+    to_date   = DateFilter(name='date', lookup_expr='lte')
 
     class Meta:
         """Meta information for the public holiday filter set."""
 
         model  = models.PublicHoliday
-        fields = ['year', 'location', 'date']
+        fields = ['year', 'location', 'date', 'from_date', 'to_date']
