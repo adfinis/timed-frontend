@@ -160,6 +160,32 @@ export default Service.extend({
   }),
 
   /**
+   * Filter recent activities
+   *
+   * @property {EmberConcurrency.Task} filterActivity
+   * @public
+   */
+  filterActivity: task(function* () {
+    return yield this.get('store').query('activity', {
+      recent: true,
+      include: 'task,task.project,task.project.customer'
+    })
+  }).restartable(),
+
+  /**
+   * Filter recent reports
+   *
+   * @property {EmberConcurrency.Task} filterReport
+   * @public
+   */
+  filterReport: task(function* () {
+    return yield this.get('store').query('report', {
+      recent: true,
+      include: 'task,task.project,task.project.customer'
+    })
+  }).restartable(),
+
+  /**
    * Filter all customers
    *
    * @property {EmberConcurrency.Task} filterCustomers

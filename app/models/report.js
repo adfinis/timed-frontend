@@ -3,9 +3,10 @@
  * @submodule timed-models
  * @public
  */
-import Model  from 'ember-data/model'
-import attr   from 'ember-data/attr'
-import moment from 'moment'
+import Model    from 'ember-data/model'
+import attr     from 'ember-data/attr'
+import moment   from 'moment'
+import computed from 'ember-computed-decorators'
 
 import {
   belongsTo
@@ -81,5 +82,27 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo('user')
+  user: belongsTo('user'),
+
+  /**
+   * The name of the report
+   *
+   * Build as a path "customer > project > task"
+   *
+   * @property name
+   * @type {String}
+   * @public
+   */
+  @computed('task')
+  name(task) {
+    if (!task) {
+      return ''
+    }
+
+    let taskName = task.get('name')
+    let projectName = task.get('project.name')
+    let customerName = task.get('project.customer.name')
+
+    return `${customerName} > ${projectName} > ${taskName}`
+  }
 })

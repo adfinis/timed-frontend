@@ -4,7 +4,7 @@
       {{if changeset.isNew 'New' 'Edit'}} report
     {{/modal.header}}
     {{#modal.body data-test-edit-report}}
-      {{#task-selection changeset=changeset task=changeset.task as |t|}}
+      {{#task-selection changeset=changeset task=changeset.task historyModel='report' as |t|}}
         <div class="form-group" data-test-activity-customer>
           <label>Customer</label>
           {{t.customer}}
