@@ -95,6 +95,10 @@ export default Model.extend({
    */
   @computed('task')
   name(task) {
+    if (!task) {
+      return ''
+    }
+
     let taskName = task.get('name')
     let projectName = task.get('project.name')
     let customerName = task.get('project.customer.name')
