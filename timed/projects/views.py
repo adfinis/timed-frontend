@@ -68,6 +68,7 @@ class TaskViewSet(ReadOnlyModelViewSet):
         """Specific filter queryset options."""
         # my most frequent filter uses LIMIT so default ordering
         # needs to be disabled to avoid exception
+        # see TODO filters.MyMostFrequentTaskFilter to avoid this
         if 'my_most_frequent' in self.request.query_params:
             self.ordering = None
 
