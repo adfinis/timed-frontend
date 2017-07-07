@@ -1,5 +1,6 @@
 """Viewsets for the projects app."""
 
+from django.db.models import Sum
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from timed.projects import filters, models, serializers
@@ -46,6 +47,8 @@ class ProjectViewSet(ReadOnlyModelViewSet):
         """
         return models.Project.objects.select_related(
             'customer'
+        ).annotate(
+            spent_hours=Sum('customer__projects__tasks__reports__duration')
         )
 
 
