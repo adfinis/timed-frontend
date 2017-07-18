@@ -33,7 +33,7 @@ class JSONAPIClient(APIClient):
         """
         return super().get(
             path=path,
-            data=self._parse_data(data),
+            data=data,
             content_type=self._content_type,
             **kwargs
         )

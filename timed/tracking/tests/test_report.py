@@ -6,7 +6,8 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
+                                   HTTP_403_FORBIDDEN)
 
 from timed.employment.factories import AbsenceTypeFactory, EmploymentFactory
 from timed.jsonapi_test_case import JSONAPITestCase
@@ -28,22 +29,28 @@ class ReportTests(JSONAPITestCase):
         )
 
         self.reports = ReportFactory.create_batch(10, user=self.user)
-
-        ReportFactory.create_batch(10, user=other_user)
+        self.other_reports = ReportFactory.create_batch(10, user=other_user)
 
     def test_report_list(self):
-        """Should respond with a list of reports filtered by user."""
+        """Should respond with a list of filtered reports."""
         url = reverse('report-list')
 
         noauth_res = self.noauth_client.get(url)
-        user_res   = self.client.get(url)
+        user_res   = self.client.get(url, data={
+            'date': self.reports[0].date,
+            'user': self.user.id,
+            'task': self.reports[0].task.id,
+            'project': self.reports[0].task.project.id,
+            'customer': self.reports[0].task.project.customer.id,
+        })
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert user_res.status_code == HTTP_200_OK
 
         result = self.result(user_res)
 
-        assert len(result['data']) == len(self.reports)
+        assert len(result['data']) == 1
+        assert result['data'][0]['id'] == str(self.reports[0].id)
 
     def test_report_detail(self):
         """Should respond with a single report."""
@@ -160,6 +167,26 @@ class ReportTests(JSONAPITestCase):
             int(result['data']['relationships']['task']['data']['id']) ==
             int(data['data']['relationships']['task']['data']['id'])
         )
+
+    def test_report_update_invalid_user(self):
+        """Updating of report belonging to different user is not allowed."""
+        report = self.other_reports[0]
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'comment':  'foobar',
+                },
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        user_res = self.client.patch(url, data)
+        assert user_res.status_code == HTTP_403_FORBIDDEN
 
     def test_report_delete(self):
         """Should delete a report."""

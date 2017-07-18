@@ -1,8 +1,9 @@
 """Viewsets for the tracking app."""
 
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from timed.tracking import filters, models, serializers
+from timed.tracking import filters, models, permissions, serializers
 
 
 class ActivityViewSet(ModelViewSet):
@@ -72,9 +73,10 @@ class ReportViewSet(ModelViewSet):
 
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
+    permission_classes = [IsAuthenticated, permissions.IsOwnerOrReadOnly]
 
     def get_queryset(self):
-        """Filter the queryset by the user of the request.
+        """Select related to reduce queries.
 
         :return: The filtered reports
         :rtype:  QuerySet
@@ -83,8 +85,6 @@ class ReportViewSet(ModelViewSet):
             'task',
             'user',
             'activity'
-        ).filter(
-            user=self.request.user
         )
 
 
