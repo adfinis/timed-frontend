@@ -1,3 +1,6 @@
+<div class="btn-toolbar btn-toolbar--right form-group">
+  <button class="btn btn-success" data-test-add-attendance {{action 'addAttendance'}}>Add attendance</button>
+</div>
 {{#if attendances}}
   <div class="visible-md">
     {{#each attendances as |attendance|}}
@@ -39,5 +42,4 @@
 {{/if}}
 <div class="text-center">
   <br>
-  <button class="btn btn-success" data-test-add-attendance {{action 'addAttendance'}}>{{fa-icon 'plus'}}</button>
 </div>
