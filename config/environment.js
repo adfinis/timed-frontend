@@ -30,6 +30,20 @@ module.exports = function(environment) {
       serverTokenRefreshEndpoint: '/api/v1/auth/refresh',
       refreshAccessTokens: true,
       refreshLeeway: 300
+    },
+
+    'ember-validated-form': {
+      css: {
+        // adcssy classes
+        group: 'form-group',
+        control: 'form-control',
+        label: 'form-label',
+        checkbox: 'checkbox',
+        radio: 'radio',
+        help: 'error-text',
+        button: 'btn btn-default',
+        submit: 'btn btn-primary'
+      }
     }
   }
 

@@ -1,74 +1,19 @@
-<div class="btn-toolbar btn-toolbar--right form-group">
-  <button title="Add a new report" class="btn btn-success" {{action 'addReport'}}>Add report</button>
-  <button title="Add a new absence" class="btn btn-success" {{action 'addAbsence'}}>Add absence</button>
-</div>
-
-{{#if (or reports absences)}}
-  <table class="table table--striped">
-    <tbody>
-      {{#each absences as |absence|}}
-        <tr
-         data-test-absence-row
-         data-test-absence-row-id={{absence.id}}
-         onclick={{action 'editAbsence' absence}}
-         title="Click to edit absence"
-         class="pointer is-absence"
-        >
-          <td>
-            <strong>{{absence.type.name}}</strong>
-            <br>
-            <small>&nbsp;</small>
-          </td>
-          <td>{{absence.comment}}</td>
-          <td>{{format-duration absence.duration false}}</td>
-          <td></td>
-        </tr>
-      {{/each}}
-      {{#each reports as |report|}}
-        <tr
-         data-test-report-row
-         data-test-report-row-id={{report.id}}
-         onclick={{action 'editReport' report}}
-         title="Click to edit report"
-         class="pointer {{if report.absenceType 'is-absence'}}"
-        >
-          <td>
-            <strong>{{report.task.project.name}}</strong> ({{report.task.project.customer.name}})
-            <br>
-            <small><em>{{report.task.name}}</em></small>
-          </td>
-          <td>{{report.comment}}</td>
-          <td>{{format-duration report.duration false}}</td>
-          <td>
-            {{fa-icon (concat (if report.notBillable 'check-') 'square-o') fixedWidth=true}} Not billable
-            <br>
-            {{fa-icon (concat (if report.review 'check-') 'square-o') fixedWidth=true}} Needs review
-          </td>
-        </tr>
-      {{/each}}
-    </tbody>
-  </table>
-{{else}}
-  <div class="text-center"><em>No reports yet</em></div>
-{{/if}}
-
-{{#if absenceToEdit}}
-  {{edit-absence-modal
-    visible      = showAbsenceEditModal
-    model        = absenceToEdit
-    absenceTypes = absenceTypes
-    on-close     = (action (mut absenceToEdit) null)
-    on-save      = (route-action 'saveAbsence')
-    on-delete    = (route-action 'deleteAbsence')
-  }}
-{{/if}}
-
-{{#if reportToEdit}}
-  {{edit-report-modal
-    visible   = showReportEditModal
-    model     = reportToEdit
-    on-close  = (action (mut reportToEdit) null)
-    on-save   = (route-action 'saveReport')
-    on-delete = (route-action 'deleteReport')
-  }}
-{{/if}}
+<table class="table table--striped table--reports">
+  <tbody>
+    {{#each reports as |report|}}
+      {{report-row
+        report
+        data-test-report-row
+        data-test-report-row-id = report.id
+        on-save                 = (route-action 'saveReport')
+        on-delete               = (route-action 'deleteReport')
+      }}
+    {{^}}
+      <tr>
+        <td colspan="8" class="text-center">
+          <em>No reports yet</em>
+        </td>
+      </tr>
+    {{/each}}
+  </tbody>
+</table>

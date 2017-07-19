@@ -38,6 +38,14 @@ export default Route.extend({
   session: service('session'),
 
   /**
+   * The notify service
+   *
+   * @property {EmberNotify.NotifyService} notify
+   * @public
+   */
+  notify: service('notify'),
+
+  /**
    * Model hook, return the selected day as moment object
    *
    * @method model
@@ -60,7 +68,6 @@ export default Route.extend({
    * @public
    */
   afterModel(model) {
-    let id   = this.get('session.data.authenticated.user_id')
     let day  = model.format(DATE_FORMAT)
     let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
     let to   = moment(model).add(10, 'days').format(DATE_FORMAT)
@@ -68,10 +75,93 @@ export default Route.extend({
     return RSVP.all([
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
       this.store.query('attendance', { day }),
+      this.store.query('absence-type', {}),
       this.store.query('report', { include: 'task,task.project,task.project.customer', date: day }),
       this.store.query('report', { 'from_date': from, 'to_date': to }),
-      this.store.query('absence', { 'from_date': from, 'to_date': to }),
-      this.store.query('user', { id, include: 'employments,employments.location' })
+      this.store.query('absence', { 'from_date': from, 'to_date': to })
     ])
+  },
+
+  setupController(controller) {
+    this._super(...arguments)
+
+    controller.set('user', this.modelFor('protected'))
+  },
+
+  actions: {
+    /**
+     * Edit an existing absence
+     *
+     * @method editAbsence
+     * @param {EmberChangeset.Changeset} changeset The changeset containing the absence data
+     * @public
+     */
+    async saveAbsence(changeset) {
+      try {
+        this.send('loading')
+
+        await changeset.save()
+
+        this.set('controller.showEditModal', false)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while saving the absence')
+      }
+      finally {
+        this.send('finished')
+      }
+    },
+
+    /**
+     * Delete an absence
+     *
+     * @method deleteAbsence
+     * @param {Absence} absence The absence to delete
+     * @public
+     */
+    async deleteAbsence(absence) {
+      try {
+        this.send('loading')
+
+        await absence.destroyRecord()
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while deleting the absence')
+      }
+      finally {
+        this.send('finished')
+      }
+    },
+
+    /**
+     * Add one or more absences
+     *
+     * @method addAbsence
+     * @param {EmberChangeset.Changeset} changeset The changeset containing the absence data
+     * @public
+     */
+    async addAbsence(changeset) {
+      try {
+        let type    = changeset.get('type')
+        let comment = changeset.get('comment')
+
+        changeset.get('dates').forEach(async(date) => {
+          let absence = this.store.createRecord('absence', { type, date, comment })
+
+          await absence.save()
+        })
+
+        this.set('controller.showAddModal', false)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while adding the absence')
+      }
+      finally {
+        this.send('finished')
+      }
+    }
   }
 })

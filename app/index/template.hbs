@@ -31,6 +31,22 @@
         {{#link-to 'index.reports' tagName='button' class='btn'}}
           Reports <span class="badge">{{humanize-duration reportSum}}</span>
         {{/link-to}}
+        {{#if absence}}
+          <button
+            data-test-edit-absence
+            class="btn btn-warning"
+            {{action (toggle 'showEditModal' this)}}
+          >
+            {{absence.type.name}}
+          </button>
+        {{/if}}
+        <button
+          data-test-add-absence
+          class="btn btn-default"
+          {{action (toggle 'showAddModal' this)}}
+        >
+          Add absence
+        </button>
       </div>
     </div>
     <div class="grid-cell visible-sm">
@@ -50,6 +66,24 @@
             Reports <span class="badge">{{humanize-duration reportSum}}</span>
           {{/link-to}}
         </li>
+        <li class="nav-tab--buttons">
+          {{#if absence}}
+            <button
+              data-test-edit-absence
+              class="btn btn-warning"
+              {{action (toggle 'showEditModal' this)}}
+            >
+              {{absence.type.name}}
+            </button>
+          {{/if}}
+          <button
+            data-test-add-absence
+            class="btn btn-default"
+            {{action (toggle 'showAddModal' this)}}
+          >
+            Add absence
+          </button>
+        </li>
       </ul>
     </div>
     <div class="grid-cell">
@@ -59,3 +93,82 @@
     </div>
   </div>
 </div>
+
+{{#if absence}}
+  {{#with (changeset absence AbsenceValidations) as |changeset|}}
+    {{#sy-modal size='auto' visible=showEditModal on-close=(action 'rollback' changeset) as |modal|}}
+      {{#validated-form data-test-edit-absence-form model=changeset on-submit=(route-action 'saveAbsence' changeset) as |f|}}
+        {{#modal.header}}
+          Edit absence
+        {{/modal.header}}
+        {{#modal.body}}
+          {{#f.input name='type' as |fi|}}
+            <div class="btn-group btn-group--auto">
+              {{#each absenceTypes as |at|}}
+                <button class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
+              {{/each}}
+            </div>
+          {{/f.input}}
+          {{#f.input name='date' as |fi|}}
+            {{#power-calendar
+              class          = 'calendar'
+              selected       = changeset.date
+              center         = center
+              onCenterChange = (perform setCenter)
+              onSelect       = (action fi.update value='moment')
+              as |calendar|
+            }}
+              <div class={{if calendar.loading 'loading-mask'}}>
+                {{calendar.nav}}
+                {{calendar.days disabledDates=disabledDatesForEdit startOfWeek=1}}
+              </div>
+            {{/power-calendar}}
+          {{/f.input}}
+          {{f.input type='textarea' placeholder='Enter comment...' name='comment'}}
+        {{/modal.body}}
+        {{#modal.footer}}
+          <button class="btn btn-danger" {{action 'deleteAbsence' absence}}>Delete</button>
+          {{f.submit label='Save'}}
+        {{/modal.footer}}
+      {{/validated-form}}
+    {{/sy-modal}}
+  {{/with}}
+{{/if}}
+
+{{#with (changeset newAbsence MultipleAbsenceValidations) as |changeset|}}
+  {{#sy-modal size='auto' visible=showAddModal on-close=(action 'rollback' changeset) as |modal|}}
+    {{#validated-form data-test-add-absence-form model=changeset on-submit=(route-action 'addAbsence' changeset) as |f|}}
+      {{#modal.header}}
+        New absence
+      {{/modal.header}}
+      {{#modal.body}}
+        {{#f.input name='type' as |fi|}}
+          <div class="btn-group btn-group--auto">
+            {{#each absenceTypes as |at|}}
+              <button class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
+            {{/each}}
+          </div>
+        {{/f.input}}
+        {{#f.input name='dates' as |fi|}}
+          {{#power-calendar-multiple
+            class          = 'calendar'
+            selected       = changeset.dates
+            center         = center
+            onCenterChange = (perform setCenter)
+            onSelect       = (action fi.update value='moment')
+            as |calendar|
+          }}
+            <div class={{if calendar.loading 'loading-mask'}}>
+              {{calendar.nav}}
+              {{calendar.days disabledDates=disabledDates startOfWeek=1}}
+            </div>
+          {{/power-calendar-multiple}}
+        {{/f.input}}
+        {{f.input type='textarea' placeholder='Enter comment...' name='comment'}}
+      {{/modal.body}}
+      {{#modal.footer}}
+        {{f.submit label='Save'}}
+      {{/modal.footer}}
+    {{/validated-form}}
+  {{/sy-modal}}
+{{/with}}

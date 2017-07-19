@@ -1,0 +1,19 @@
+.table--reports tbody > tr > td {
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3) {
+    width: 15%;
+
+    > .twitter-typeahead {
+      display: inline-block !important;
+    }
+  }
+
+  &:nth-child(4) { width: 80px; }
+  &:nth-child(5) { width: 20%; }
+
+  &:nth-child(8) {
+    width: 130px;
+    text-align: right;
+  }
+}

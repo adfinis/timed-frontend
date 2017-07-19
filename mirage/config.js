@@ -89,14 +89,14 @@ export default function() {
   this.get('/users')
   this.get('/users/:id')
 
-  this.get('/public-holidays', function({ locations }, { queryParams: { date } }) {
+  this.get('/public-holidays', function({ publicHolidays }, { queryParams: { date } }) {
     if (date) {
-      locations.where((l) => {
+      publicHolidays.where((l) => {
         return l.format('YYYY-MM-DD') === date
       })
     }
 
-    return locations.all()
+    return publicHolidays.all()
   })
   this.get('/public-holidays/:id')
 

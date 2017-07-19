@@ -90,11 +90,11 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(6)
+    expect(find(testSelector('report-row'))).to.have.length(7)
 
-    expect(find(`${testSelector('report-row-id', id)} td:eq(0)`).text()).to.contain(activity.task.name)
-    expect(find(`${testSelector('report-row-id', id)} td:eq(0)`).text()).to.contain(activity.task.project.name)
-    expect(find(`${testSelector('report-row-id', id)} td:eq(0)`).text()).to.contain(activity.task.project.customer.name)
+    expect(find(`${testSelector('report-row-id', id)} td:eq(0) .tt-input`).val()).to.equal(activity.task.project.customer.name)
+    expect(find(`${testSelector('report-row-id', id)} td:eq(1) .tt-input`).val()).to.equal(activity.task.project.name)
+    expect(find(`${testSelector('report-row-id', id)} td:eq(2) .tt-input`).val()).to.equal(activity.task.name)
   })
 
   it('can not generate reports twice', async function() {
@@ -104,7 +104,7 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(5)
+    expect(find(testSelector('report-row'))).to.have.length(6)
 
     await visit('/')
 
@@ -112,7 +112,7 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(5)
+    expect(find(testSelector('report-row'))).to.have.length(6)
   })
 
   it('can update reports when generating', async function() {
@@ -124,9 +124,9 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(5)
+    expect(find(testSelector('report-row'))).to.have.length(6)
 
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(2)`).text().trim()).to.equal('02:30')
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(3) input`).val()).to.equal('02:30')
 
     await server.db.activities.update(this.activities[0].id, { duration: '05:30:00' })
 
@@ -137,6 +137,6 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(`${testSelector('report-row')}:eq(0) td:eq(2)`).text().trim()).to.equal('05:30')
+    expect(find(`${testSelector('report-row')}:eq(0) td:eq(3) input`).val()).to.equal('05:30')
   })
 })

@@ -51,38 +51,22 @@ export default Route.extend({
      */
     async saveReport(report) {
       try {
+        this.send('loading')
+
         await report.save()
 
-        this.get('controller.absences').forEach(async(absence) => {
-          await absence.reload()
-        })
+        let absence = this.controllerFor('index').get('absence')
 
-        this.set('controller.reportToEdit', null)
-        this.set('controller.showReportEditModal', false)
+        if (absence) {
+          await absence.reload()
+        }
       }
       catch(e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the report')
       }
-    },
-
-    /**
-     * Save a certain absence and close the modal afterwards
-     *
-     * @method saveAbsence
-     * @param {Absence} absence The absence to save
-     * @public
-     */
-    async saveAbsence(absence) {
-      try {
-        await absence.save()
-
-        this.set('controller.absenceToEdit', null)
-        this.set('controller.showAbsenceEditModal', false)
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while saving the absence')
+      finally {
+        this.send('finished')
       }
     },
 
@@ -95,38 +79,24 @@ export default Route.extend({
      */
     async deleteReport(report) {
       try {
+        this.send('loading')
+
         await report.destroyRecord()
 
-        this.get('controller.absences').forEach(async(absence) => {
-          await absence.reload()
-        })
+        if (!report.get('isNew')) {
+          let absence = this.controllerFor('index').get('absence')
 
-        this.set('controller.reportToEdit', null)
-        this.set('controller.showReportEditModal', false)
+          if (absence) {
+            await absence.reload()
+          }
+        }
       }
       catch(e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the report')
       }
-    },
-
-    /**
-     * Delete a certain absence and close the modal afterwards
-     *
-     * @method deleteAbsence
-     * @param {Absence} absence The absence to delete
-     * @public
-     */
-    async deleteAbsence(absence) {
-      try {
-        await absence.destroyRecord()
-
-        this.set('controller.absenceToEdit', null)
-        this.set('controller.showAbsenceEditModal', false)
-      }
-      catch(e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the absence')
+      finally {
+        this.send('finished')
       }
     }
   }
