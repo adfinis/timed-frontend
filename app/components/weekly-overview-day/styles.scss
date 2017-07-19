@@ -7,7 +7,7 @@
   transition: height 300ms ease;
 }
 
-&.weekend {
+&.weekend, &.holiday {
   .bar {
     background-color: rgb(220, 220, 220);
   }
