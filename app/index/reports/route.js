@@ -5,6 +5,7 @@
  */
 import Route   from 'ember-route'
 import service from 'ember-service/inject'
+import RSVP    from 'rsvp'
 
 /**
  * The index reports route
@@ -33,6 +34,12 @@ export default Route.extend({
     this._super(...arguments)
 
     return this.store.findAll('absence-type')
+  },
+
+  setupController(controller, model) {
+    this._super(...arguments)
+
+    controller.set('rescheduleDate', model)
   },
 
   /**
@@ -97,6 +104,22 @@ export default Route.extend({
       }
       finally {
         this.send('finished')
+      }
+    },
+
+    async reschedule(date) {
+      try {
+        let reports = this.get('controller.reports').filterBy('isNew', false)
+        await RSVP.Promise.all(reports.map(async(report) => {
+          report.set('date', date)
+          return await report.save()
+        }))
+        this.set('controller.showReschedule', false)
+        this.controllerFor('index').set('date', date)
+      }
+      catch(e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while rescheduling the timesheet')
       }
     }
   }

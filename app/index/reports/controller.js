@@ -17,6 +17,8 @@ import ReportValidations from 'timed/validations/report'
 export default Controller.extend({
   ReportValidations,
 
+  showReschedule: false,
+
   /**
    * All reports currently in the store
    *
