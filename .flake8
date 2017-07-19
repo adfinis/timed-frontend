@@ -3,7 +3,21 @@ ignore =
     # multiple spaces before operator
     E221,
     # multiple spaces after separator
-    E241
+    E241,
+    # Missing docstring in public module
+    D100,
+    # Missing docstring in public class
+    D101,
+    # Missing docstring in public method
+    D102,
+    # Missing docstring in public function
+    D103,
+    # Missing docstring in public package
+    D104,
+    # Missing docstring in magic method
+    D105,
+    # Missing docstring in public package
+    D106
 
 exclude =
     manage.py,
