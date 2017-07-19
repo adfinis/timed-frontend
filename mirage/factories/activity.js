@@ -41,5 +41,11 @@ export default Factory.extend({
         toDatetime: null
       })
     }
+  }),
+
+  unknown: trait({
+    afterCreate(activity) {
+      activity.task.destroy()
+    }
   })
 })

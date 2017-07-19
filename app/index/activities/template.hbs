@@ -1,5 +1,5 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
-  <button class="btn btn-success" title="Generate reports for all the listed activities above" {{action 'generateReports'}}>Generate reports</button>
+  <button class="btn btn-success" title="Generate reports for all the listed activities above" {{action 'generateReportsCheck'}}>Generate reports</button>
 </div>
 <div class="activities">
   <div class="activities-edit">{{outlet}}</div>
@@ -61,3 +61,16 @@
     {{/if}}
   </div>
 </div>
+
+{{#sy-modal visible=showWarning as |modal|}}
+  {{#modal.header}}
+    Activities contain unknown tasks
+  {{/modal.header}}
+  {{#modal.body}}
+    Unknown tasks will not be taken into account for the timesheet.
+  {{/modal.body}}
+  {{#modal.footer}}
+   <button class="btn btn-primary" {{action 'generateReports'}}>That's fine</button>
+   <button class="btn btn-default" {{action (mut showWarning false)}}>Cancel</button>
+  {{/modal.footer}}
+{{/sy-modal}}
