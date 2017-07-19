@@ -2,15 +2,22 @@
 
 from datetime import date, timedelta
 
+import pyexcel
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
+from hypothesis import given, settings
+from hypothesis.extra.django import TestCase
+from hypothesis.extra.django.models import models
+from hypothesis.strategies import (builds, characters, dates, sampled_from,
+                                   timedeltas)
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED,
-                                   HTTP_403_FORBIDDEN)
+                                   HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
+                                   HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN)
 
-from timed.employment.factories import AbsenceTypeFactory, EmploymentFactory
-from timed.jsonapi_test_case import JSONAPITestCase
+from timed.employment.factories import (AbsenceTypeFactory, EmploymentFactory,
+                                        UserFactory)
+from timed.jsonapi_test_case import JSONAPIClient, JSONAPITestCase
 from timed.projects.factories import TaskFactory
 from timed.tracking.factories import AbsenceFactory, ReportFactory
 from timed.tracking.models import Absence, Report
@@ -51,6 +58,16 @@ class ReportTests(JSONAPITestCase):
 
         assert len(result['data']) == 1
         assert result['data'][0]['id'] == str(self.reports[0].id)
+
+    def test_report_export_missing_type(self):
+        """Should respond with a list of filtered reports."""
+        url = reverse('report-export')
+
+        user_res   = self.client.get(url, data={
+            'user': self.user.id,
+        })
+
+        assert user_res.status_code == HTTP_400_BAD_REQUEST
 
     def test_report_detail(self):
         """Should respond with a single report."""
@@ -242,3 +259,41 @@ class ReportTests(JSONAPITestCase):
             Absence.objects.get(pk=absence.pk).duration ==
             employment.worktime_per_day - timedelta(hours=1)
         )
+
+
+class TestReportHypo(TestCase):
+    @given(
+        sampled_from(['csv', 'xlsx', 'ods']),
+        models(
+            Report,
+            comment=characters(blacklist_categories=['Cc']),
+            task=builds(TaskFactory.create),
+            user=builds(UserFactory.create),
+            date=dates(
+                min_date=date(2000, 1, 1),
+                max_date=date(2100, 1, 1),
+            ),
+            duration=timedeltas(
+                min_delta=timedelta(0),
+                max_delta=timedelta(days=1)
+            )
+        )
+    )
+    @settings(timeout=5)
+    def test_report_export(self, file_type, report):
+        User.objects.create_user(username='test', password='1234qwer')
+        client = JSONAPIClient()
+        client.login('test', '1234qwer')
+        url = reverse('report-export')
+
+        user_res = client.get(url, data={
+            'file_type': file_type
+        })
+
+        assert user_res.status_code == HTTP_200_OK
+        book = pyexcel.get_book(
+            file_content=user_res.content, file_type=file_type
+        )
+        # bookdict is a dict of tuples(name, content)
+        sheet = book.bookdict.popitem()[1]
+        assert len(sheet) == 2

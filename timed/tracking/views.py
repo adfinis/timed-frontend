@@ -1,5 +1,8 @@
 """Viewsets for the tracking app."""
 
+import django_excel
+from rest_framework.decorators import list_route
+from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -74,6 +77,38 @@ class ReportViewSet(ModelViewSet):
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
     permission_classes = [IsAuthenticated, permissions.IsOwnerOrReadOnly]
+
+    @list_route()
+    def export(self, request):
+        """Export filtered reports to given file format."""
+        queryset = self.filter_queryset(self.get_queryset())
+        colnames = [
+            'Date', 'Duration', 'Customer',
+            'Project', 'Task', 'User', 'Comment'
+        ]
+        content = [
+            [
+                report.date,
+                report.duration,
+                report.task.project.customer.name,
+                report.task.project.name,
+                report.task.name,
+                report.user.username,
+                report.comment,
+            ]
+            for report in queryset
+        ]
+
+        file_type = request.query_params.get('file_type')
+        if file_type is None:
+            raise ParseError('Missing file_type parameter')
+
+        sheet = django_excel.pe.Sheet(
+            content, name='Report', colnames=colnames
+        )
+        return django_excel.make_response(
+            sheet, file_type=file_type, file_name='report.%s' % file_type
+        )
 
     def get_queryset(self):
         """Select related to reduce queries.
