@@ -139,4 +139,13 @@ describe('Acceptance | index activities', function() {
 
     expect(find(`${testSelector('report-row')}:eq(0) td:eq(3) input`).val()).to.equal('05:30')
   })
+
+  it('shows a warning when generating reports from unknown tasks', async function() {
+    server.create('activity', 'unknown')
+
+    await visit('/')
+    await click(find('button:contains(Generate timesheet)'))
+
+    expect(currentURL()).to.equal('/')
+  })
 })

@@ -33,7 +33,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'active', 'workday::weekend', 'absence' ],
+  classNameBindings: [ 'active', 'workday::weekend', 'absence', 'holiday' ],
 
   /**
    * Whether there is an absence on this day
@@ -42,6 +42,14 @@ export default Component.extend({
    * @public
    */
   absence: false,
+
+  /**
+   * Whether there is an holiday on this day
+   *
+   * @property {Boolean} holiday
+   * @public
+   */
+  holiday: false,
 
   /**
    * Whether it is the currently selected day

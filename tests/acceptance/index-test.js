@@ -172,4 +172,13 @@ describe('Acceptance | index', function() {
 
     expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(0)
   })
+
+  it('highlights holidays', async function() {
+    let date = moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
+    server.create('public-holiday', { date })
+    await visit('/?day=2017-06-29')
+
+    expect(find('[data-test-weekly-overview-day=29].holiday')).to.have.length(1)
+    expect(find('[data-test-weekly-overview-day=28].holiday')).to.have.length(0)
+  })
 })
