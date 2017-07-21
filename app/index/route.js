@@ -68,6 +68,7 @@ export default Route.extend({
    * @public
    */
   afterModel(model) {
+    let user = this.get('session.data.authenticated.user_id')
     let day  = model.format(DATE_FORMAT)
     let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
     let to   = moment(model).add(10, 'days').format(DATE_FORMAT)
@@ -76,8 +77,8 @@ export default Route.extend({
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
       this.store.query('attendance', { day }),
       this.store.query('absence-type', {}),
-      this.store.query('report', { include: 'task,task.project,task.project.customer', date: day }),
-      this.store.query('report', { 'from_date': from, 'to_date': to }),
+      this.store.query('report', { include: 'task,task.project,task.project.customer', date: day, user }),
+      this.store.query('report', { 'from_date': from, 'to_date': to, user }),
       this.store.query('absence', { 'from_date': from, 'to_date': to })
     ])
   },
