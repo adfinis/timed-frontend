@@ -92,12 +92,25 @@ export default Route.extend({
     },
 
     /**
+     * Checks if warning concerning unknown tasks should be displayed
+     *
+     * @method generateReportsCheck
+     * @public
+     */
+    generateReportsCheck() {
+      this.get('controller.activities').filterBy('task.id', undefined).length
+        ? this.set('controller.showWarning', true)
+        : this.send('generateReports')
+    },
+
+    /**
      * Generates reports from the current list of activities
      *
      * @method generateReports
      * @public
      */
     async generateReports() {
+      this.set('controller.showWarning', false)
       try {
         await this.get('controller.activities').filterBy('task.id').forEach(async(activity) => {
           let duration = moment.duration(activity.get('duration'))
