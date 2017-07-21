@@ -328,6 +328,13 @@ export default Controller.extend({
     allReports  = allReports.filter((r)  => !r.get('isDeleted') && !r.get('isNew'))
     allAbsences = allAbsences.filter((a) => !a.get('isDeleted') && !a.get('isNew'))
 
+    let allHolidays = this.store.peekAll('public-holiday')
+
+    // Build an object containing report and absence durations by date:
+    // {
+    //  '2017-03-21': { reports: [duration1, duration2, ...], absences: [duration1, ...]
+    //  ...
+    // }
     let container = [ ...allReports, ...allAbsences ].reduce((obj, model) => {
       let d = model.get('date').format('YYYY-MM-DD')
 
@@ -346,7 +353,8 @@ export default Controller.extend({
         active: d.isSame(date, 'day'),
         absence: !!absences.length,
         workday: this.get('workdays').includes(d.isoWeekday()),
-        worktime: [ ...reports, ...absences ].reduce((val, dur) => val.add(dur), moment.duration())
+        worktime: [ ...reports, ...absences ].reduce((val, dur) => val.add(dur), moment.duration()),
+        holiday: !!allHolidays.filter((holiday) => holiday.get('date').isSame(d)).length
       }
     })
   }).restartable(),
