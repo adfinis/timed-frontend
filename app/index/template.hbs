@@ -17,6 +17,7 @@
             absence  = d.absence
             holiday  = d.holiday
             on-click = (action (mut date))
+            data-test-weekly-overview-day = (moment-format d.day 'DD')
           }}
         {{/each}}
       {{/weekly-overview}}
