@@ -72,6 +72,7 @@ export default Route.extend({
     let day  = model.format(DATE_FORMAT)
     let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
     let to   = moment(model).add(10, 'days').format(DATE_FORMAT)
+    let location = this.store.peekRecord('user', user).get('activeEmployment.location.id')
 
     return RSVP.all([
       this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
@@ -79,7 +80,8 @@ export default Route.extend({
       this.store.query('absence-type', {}),
       this.store.query('report', { include: 'task,task.project,task.project.customer', date: day, user }),
       this.store.query('report', { 'from_date': from, 'to_date': to, user }),
-      this.store.query('absence', { 'from_date': from, 'to_date': to })
+      this.store.query('absence', { 'from_date': from, 'to_date': to }),
+      this.store.query('public-holiday', { 'from_date': from, 'to_date': to, location })
     ])
   },
 

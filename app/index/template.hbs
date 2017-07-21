@@ -15,7 +15,9 @@
             worktime = d.worktime
             workday  = d.workday
             absence  = d.absence
+            holiday  = d.holiday
             on-click = (action (mut date))
+            data-test-weekly-overview-day = (moment-format d.day 'DD')
           }}
         {{/each}}
       {{/weekly-overview}}
@@ -29,7 +31,7 @@
           Attendances <span class="badge">{{humanize-duration attendanceSum}}</span>
         {{/link-to}}
         {{#link-to 'index.reports' tagName='button' class='btn'}}
-          Reports <span class="badge">{{humanize-duration reportSum}}</span>
+          Timesheet <span class="badge">{{humanize-duration reportSum}}</span>
         {{/link-to}}
         {{#if absence}}
           <button
@@ -63,7 +65,7 @@
         </li>
         <li>
           {{#link-to 'index.reports'}}
-            Reports <span class="badge">{{humanize-duration reportSum}}</span>
+            Timesheet <span class="badge">{{humanize-duration reportSum}}</span>
           {{/link-to}}
         </li>
         <li class="nav-tab--buttons">

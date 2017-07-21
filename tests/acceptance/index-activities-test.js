@@ -86,7 +86,7 @@ describe('Acceptance | index activities', function() {
 
     await visit('/')
 
-    await click(find('button:contains(Generate reports)'))
+    await click(find('button:contains(Generate timesheet)'))
 
     expect(currentURL()).to.equal('/reports')
 
@@ -100,7 +100,7 @@ describe('Acceptance | index activities', function() {
   it('can not generate reports twice', async function() {
     await visit('/')
 
-    await click(find('button:contains(Generate reports)'))
+    await click(find('button:contains(Generate timesheet)'))
 
     expect(currentURL()).to.equal('/reports')
 
@@ -108,7 +108,7 @@ describe('Acceptance | index activities', function() {
 
     await visit('/')
 
-    await click(find('button:contains(Generate reports)'))
+    await click(find('button:contains(Generate timesheet)'))
 
     expect(currentURL()).to.equal('/reports')
 
@@ -120,7 +120,7 @@ describe('Acceptance | index activities', function() {
 
     await visit('/')
 
-    await click(find('button:contains(Generate reports)'))
+    await click(find('button:contains(Generate timesheet)'))
 
     expect(currentURL()).to.equal('/reports')
 
@@ -133,7 +133,7 @@ describe('Acceptance | index activities', function() {
     await visit('/somenonexistentsite') // navigate away from index to reload the model
     await visit('/')
 
-    await click(find('button:contains(Generate reports)'))
+    await click(find('button:contains(Generate timesheet)'))
 
     expect(currentURL()).to.equal('/reports')
 
