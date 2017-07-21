@@ -144,7 +144,7 @@ describe('Acceptance | index activities', function() {
     server.create('activity', 'unknown')
 
     await visit('/')
-    await click(find('button:contains(Generate reports)'))
+    await click(find('button:contains(Generate timesheet)'))
 
     expect(currentURL()).to.equal('/')
   })
