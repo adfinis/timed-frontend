@@ -100,8 +100,11 @@ class ReportViewSet(ModelViewSet):
         ]
 
         file_type = request.query_params.get('file_type')
-        if file_type is None:
-            raise ParseError('Missing file_type parameter')
+        if file_type not in ['csv', 'xlsx', 'ods']:
+            raise ParseError(
+                'Invalid file_type parameter. '
+                'Only csv, xlsx and ods are supported.'
+            )
 
         sheet = django_excel.pe.Sheet(
             content, name='Report', colnames=colnames
