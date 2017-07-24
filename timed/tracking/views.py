@@ -77,6 +77,7 @@ class ReportViewSet(ModelViewSet):
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
     permission_classes = [IsAuthenticated, permissions.IsOwnerOrReadOnly]
+    ordering = ('id', )
 
     @list_route()
     def export(self, request):

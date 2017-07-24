@@ -45,10 +45,15 @@ class UserSerializer(ModelSerializer):
         :returns: The worktime balance of the user
         :rtype:   datetime.timedelta
         """
-        employment = models.Employment.objects.get(
+        employment = models.Employment.objects.filter(
             user=instance,
             end_date__isnull=True
-        )
+        ).first()
+
+        # If there is no active employment, set the balance to 0
+        if employment is None:
+            return timedelta()
+
         location = employment.location
 
         request            = self.context.get('request')

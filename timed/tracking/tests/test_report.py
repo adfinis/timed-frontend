@@ -49,6 +49,7 @@ class ReportTests(JSONAPITestCase):
             'task': self.reports[0].task.id,
             'project': self.reports[0].task.project.id,
             'customer': self.reports[0].task.project.customer.id,
+            'include': 'user,task,task.project,task.project.customer'
         })
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
