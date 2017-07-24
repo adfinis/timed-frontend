@@ -2,6 +2,7 @@
 
 from datetime import date, timedelta
 
+from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
@@ -192,4 +193,22 @@ class UserTests(JSONAPITestCase):
         assert (
             result2['data']['attributes']['worktime-balance'] ==
             duration_string(timedelta(hours=28) - expected_worktime)
+        )
+
+    def test_user_without_employment(self):
+        user = User.objects.create_user(username='test', password='1234qwer')
+        self.client.login('test', '1234qwer')
+
+        url = reverse('user-list')
+
+        res        = self.client.get(url)
+
+        assert res.status_code == HTTP_200_OK
+
+        result = self.result(res)
+
+        assert len(result['data']) == 1
+        assert int(result['data'][0]['id']) == user.id
+        assert result['data'][0]['attributes']['worktime-balance'] == (
+            '00:00:00'
         )
