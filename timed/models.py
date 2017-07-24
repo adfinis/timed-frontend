@@ -9,8 +9,6 @@ class WeekdaysField(MultiSelectField):
 
     Stores weekdays as comma-separated values in database as
     iso week day (MON = 1, SUN = 7).
-    For django-jet to properly show multiple choices in admin
-    it is necessary to overwrite checkbox_option.html template.
     """
 
     MO, TU, WE, TH, FR, SA, SU = range(1, 8)
