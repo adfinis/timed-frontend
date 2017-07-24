@@ -266,7 +266,7 @@ class TestReportHypo(TestCase):
         sampled_from(['csv', 'xlsx', 'ods']),
         models(
             Report,
-            comment=characters(blacklist_categories=['Cc']),
+            comment=characters(blacklist_categories=['Cc', 'Cs']),
             task=builds(TaskFactory.create),
             user=builds(UserFactory.create),
             date=dates(
