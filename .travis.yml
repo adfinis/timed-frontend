@@ -6,7 +6,10 @@ python:
 services:
   - postgresql
 
-cache: pip
+cache:
+  - pip
+  - directories:
+    - .hypothesis
 
 install:
   - make install-dev
