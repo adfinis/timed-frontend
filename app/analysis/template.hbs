@@ -1,0 +1,69 @@
+<h1>Project analysis</h1>
+
+{{#task-selection task=task as |t|}}
+  <form {{action 'search' t.model from to on='submit'}} class="form-inline">
+    <div class="form-group" data-test-tracking-customer>
+      {{t.customer}}
+    </div>
+    <div class="form-group" data-test-tracking-project>
+      {{t.project}}
+    </div>
+    <div class="form-group" data-test-tracking-task>
+      {{t.task}}
+    </div>
+    <div class="form-group">
+      {{sy-datepicker class="force-white" value=from on-change=(action (mut from)) placeholder="From date"}}
+    </div>
+    <div class="form-group">
+      {{sy-datepicker class="force-white" value=to on-change=(action (mut to)) placeholder="To date"}}
+    </div>
+
+    <p style="margin-top:1em;">
+      <button type="submit" class="btn btn-primary">Search</button>
+      <button {{action 'reset'}} type="reset" class="btn btn-default">Reset</button>
+    </p>
+  </form>
+{{/task-selection}}
+
+{{#paginated-table pages=reports.lastSuccessful.value.meta.pagination.pages page=page}}
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>Dur.</th>
+      <th>Customer</th>
+      <th>Project</th>
+      <th>Task</th>
+      <th>User</th>
+      <th>Comment</th>
+    </tr>
+  </thead>
+{{^}}
+  <tbody>
+    {{#each reports.lastSuccessful.value as |report|}}
+      <tr>
+        <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
+        <td>{{format-duration report.duration false}}</td>
+        <td>{{report.task.project.customer.name}}</td>
+        <td>{{report.task.project.name}}</td>
+        <td>{{report.task.name}}</td>
+        <td>{{report.user.username}}</td>
+        <td>{{report.comment}}</td>
+      </tr>
+    {{^}}
+      <tr>
+        <td colspan="7">Nothing to show here - yet!</td>
+      </tr>
+    {{/each}}
+  </tbody>
+{{/paginated-table}}
+
+{{#if reports.lastSuccessful}}
+<p>
+  <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'csv'}}>CSV</button>
+  <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'ods'}}>ODS</button>
+  <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'xlsx'}}>XLSX</button>
+  {{#if tooManyResults}}
+    More than 4000 rows were found. Please narrow down your search export results.
+  {{/if}}
+</p>
+{{/if}}

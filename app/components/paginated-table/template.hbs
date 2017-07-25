@@ -1,0 +1,11 @@
+{{yield}}
+{{#if (gt pages 1)}}
+  <tfoot>
+    <tr>
+      <td colspan="42">
+        {{pagination-pager current=page count=pages}}
+      </td>
+    </tr>
+  </tfoot>
+{{/if}}
+{{yield to='inverse'}}
