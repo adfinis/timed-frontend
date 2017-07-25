@@ -1,7 +1,8 @@
 <h1>Project analysis</h1>
 
+
 {{#task-selection task=task as |t|}}
-  <form {{action 'search' t.model from to on='submit'}} class="form-inline">
+  <form {{action 'search' t.model user from to on='submit'}} class="form-inline">
     <div class="form-group" data-test-tracking-customer>
       {{t.customer}}
     </div>
@@ -11,11 +12,17 @@
     <div class="form-group" data-test-tracking-task>
       {{t.task}}
     </div>
-    <div class="form-group">
-      {{sy-datepicker class="force-white" value=from on-change=(action (mut from)) placeholder="From date"}}
-    </div>
-    <div class="form-group">
-      {{sy-datepicker class="force-white" value=to on-change=(action (mut to)) placeholder="To date"}}
+
+    <div style="margin-top:1em;">
+      <div class="form-group">
+        {{user-selection on-change=(action (mut user))}}
+      </div>
+      <div class="form-group">
+        {{sy-datepicker class="force-white" value=from on-change=(action (mut from)) placeholder="From date"}}
+      </div>
+      <div class="form-group">
+        {{sy-datepicker class="force-white" value=to on-change=(action (mut to)) placeholder="To date"}}
+      </div>
     </div>
 
     <p style="margin-top:1em;">
