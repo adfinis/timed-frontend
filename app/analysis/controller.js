@@ -61,11 +61,12 @@ export default Controller.extend({
   },
 
   actions: {
-    search({ customer, project, task }, from, to) {
+    search({ customer, project, task }, user, from, to) {
       this.set('filters', {
         customer: customer && customer.get('id'),
         project: project && project.get('id'),
         task: task && task.get('id'),
+        user: user && user.get('id'),
         from_date: from ? from.format(DATE_FORMAT) : null,
         to_date: to ? to.format(DATE_FORMAT) : null
       })
