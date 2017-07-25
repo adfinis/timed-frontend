@@ -14,7 +14,7 @@
     </div>
 
     <div style="margin-top:1em;">
-      <div class="form-group">
+      <div class="form-group" data-test-user-select>
         {{user-selection on-change=(action (mut user))}}
       </div>
       <div class="form-group">
@@ -26,13 +26,17 @@
     </div>
 
     <p style="margin-top:1em;">
-      <button type="submit" class="btn btn-primary">Search</button>
+      <button data-test-search type="submit" class="btn btn-primary">Search</button>
       <button {{action 'reset'}} type="reset" class="btn btn-default">Reset</button>
     </p>
   </form>
 {{/task-selection}}
 
-{{#paginated-table pages=reports.lastSuccessful.value.meta.pagination.pages page=page}}
+{{#paginated-table
+  pages=reports.lastSuccessful.value.meta.pagination.pages
+  page=page
+  data-test-search-results=''
+  }}
   <thead>
     <tr>
       <th>Date</th>
@@ -66,7 +70,10 @@
 
 {{#if reports.lastSuccessful}}
 <p>
-  <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'csv'}}>CSV</button>
+  <button {{action 'download' 'csv'}}
+    disabled={{tooManyResults}}
+    class="btn btn-default"
+    data-test-download-csv>CSV</button>
   <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'ods'}}>ODS</button>
   <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'xlsx'}}>XLSX</button>
   {{#if tooManyResults}}
