@@ -22,22 +22,6 @@ export default Component.extend({
   value: null,
 
   /**
-   * Init hook, check if we have an initial value
-   *
-   * @method init
-   * @throws Error
-   * @public
-   */
-  init() {
-    this._super(...arguments)
-
-    /* istanbul ignore next */
-    if (!this.get('value')) {
-      throw new Error('An initial value needs to be defined!')
-    }
-  },
-
-  /**
    * The actions for the datepicker button component
    *
    * @property {Object} actions
