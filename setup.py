@@ -17,6 +17,7 @@ setup(
     description='Timetracking software',
     long_description=README_TEXT,
     install_requires=(
+        'python-dateutil>=2.6,<2.7',
         'django>=1.11,<1.12',
         'django-auth-ldap==1.2.11',
         'django-filter==1.0.2',
