@@ -59,8 +59,12 @@ export default function() {
   this.patch('/activities/:id')
   this.del('/activities/:id')
 
-  this.get('/reports', function({ reports }, { queryParams: { date } }) {
-    return reports.where((r) => r.date === date)
+  this.get('/reports', function({ reports }, { queryParams: { date = null } }) {
+    if (date) {
+      return reports.where((r) => r.date === date)
+    }
+
+    return reports.all()
   })
   this.post('/reports')
   this.get('/reports/:id')
