@@ -59,10 +59,6 @@ export default Controller.extend({
     }).join('&')
   },
 
-  getDownloadUrl(type) {
-    return `${this.get('download')}&file_type=${type}`
-  },
-
   actions: {
     search({ customer, project, task }, user, from, to) {
       this.set('filters', {
