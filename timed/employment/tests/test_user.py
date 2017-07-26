@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_404_NOT_FOUND,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
 from timed.employment.factories import (EmploymentFactory,
@@ -32,7 +31,7 @@ class UserTests(JSONAPITestCase):
             EmploymentFactory.create(user=user)
 
     def test_user_list(self):
-        """Should respond with a list of one user: the currently logged in."""
+        """Should respond with a list of all users."""
         url = reverse('user-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -43,7 +42,7 @@ class UserTests(JSONAPITestCase):
 
         result = self.result(res)
 
-        assert len(result['data']) == 1
+        assert len(result['data']) == 4
         assert int(result['data'][0]['id']) == self.user.id
 
     def test_logged_in_user_detail(self):
@@ -62,7 +61,7 @@ class UserTests(JSONAPITestCase):
         assert res.status_code == HTTP_200_OK
 
     def test_not_logged_in_user_detail(self):
-        """Should throw a 404 since we don't request the logged in user."""
+        """Should return other users too."""
         url = reverse('user-detail', args=[
             self.users[0].id
         ])
@@ -71,7 +70,7 @@ class UserTests(JSONAPITestCase):
         res        = self.client.get(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_404_NOT_FOUND
+        assert res.status_code == HTTP_200_OK
 
     def test_user_create(self):
         """Should not be able to create a new user."""
@@ -199,16 +198,17 @@ class UserTests(JSONAPITestCase):
         user = User.objects.create_user(username='test', password='1234qwer')
         self.client.login('test', '1234qwer')
 
-        url = reverse('user-list')
+        url = reverse('user-detail', args=[
+            user.id
+        ])
 
-        res        = self.client.get(url)
+        res = self.client.get(url)
 
         assert res.status_code == HTTP_200_OK
 
         result = self.result(res)
 
-        assert len(result['data']) == 1
-        assert int(result['data'][0]['id']) == user.id
-        assert result['data'][0]['attributes']['worktime-balance'] == (
+        assert int(result['data']['id']) == user.id
+        assert result['data']['attributes']['worktime-balance'] == (
             '00:00:00'
         )
