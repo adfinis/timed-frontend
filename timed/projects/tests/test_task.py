@@ -1,4 +1,5 @@
 """Tests for the tasks endpoint."""
+from datetime import date, timedelta
 
 from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
@@ -6,6 +7,7 @@ from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
 
 from timed.jsonapi_test_case import JSONAPITestCase
 from timed.projects.factories import TaskFactory
+from timed.tracking.factories import ReportFactory
 
 
 class TaskTests(JSONAPITestCase):
@@ -39,6 +41,35 @@ class TaskTests(JSONAPITestCase):
         assert 'id' in result['data'][0]
         assert 'name' in result['data'][0]['attributes']
         assert 'project' in result['data'][0]['relationships']
+
+    def test_task_my_most_frequent(self):
+        """Should respond with a list of my most frequent tasks."""
+        report_date = date.today() - timedelta(days=20)
+        old_report_date = date.today() - timedelta(days=90)
+
+        # tasks[0] should appear as most frequently used task
+        ReportFactory.create_batch(
+            5, date=report_date, user=self.user, task=self.tasks[0]
+        )
+        # tasks[1] should appear as secondly most frequently used task
+        ReportFactory.create_batch(
+            4, date=report_date, user=self.user, task=self.tasks[1]
+        )
+        # tasks[2] should not appear in result, as too far in the past
+        ReportFactory.create_batch(
+            4, date=old_report_date, user=self.user, task=self.tasks[2]
+        )
+
+        url = reverse('task-list')
+
+        res = self.client.get(url, {'my_most_frequent': '10'})
+        assert res.status_code == HTTP_200_OK
+
+        result = self.result(res)
+        data = result['data']
+        assert len(data) == 2
+        assert data[0]['id'] == str(self.tasks[0].id)
+        assert data[1]['id'] == str(self.tasks[1].id)
 
     def test_task_detail(self):
         """Should respond with a single task."""
