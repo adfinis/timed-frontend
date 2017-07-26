@@ -52,6 +52,16 @@ export default Model.extend({
    */
   project: belongsTo('project'),
 
+  /**
+   * Flag saying that this is a task.
+   * Used in /app/customer-suggestion/template.hbs
+   * We're using this as a workaround for the fact that one
+   * can't seem to use helpers like "(eq" in inline templates
+   *
+   * @property project
+   * @type {Project}
+   * @public
+   */
   isTask: true,
 
   @computed('project')
