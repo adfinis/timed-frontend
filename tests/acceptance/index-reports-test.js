@@ -5,6 +5,7 @@ import { expect }                                 from 'chai'
 import startApp                                   from '../helpers/start-app'
 import testSelector                               from 'ember-test-selectors'
 import { faker }                                  from 'ember-cli-mirage'
+import moment                                     from 'moment'
 
 describe('Acceptance | index reports', function() {
   let application
@@ -141,5 +142,19 @@ describe('Acceptance | index reports', function() {
     await click(`${testSelector('edit-absence-form')} button.close`)
 
     expect(c2).to.not.equal(c1)
+  })
+
+  it('can reschedule reports', async function() {
+    let tomorrow = moment().add(1, 'days').format('YYYY-MM-DD')
+
+    await visit('/reports')
+    expect(find(testSelector('report-row'))).to.have.length(6)
+
+    await click(find('button:contains(reschedule)'))
+    await click(find(`button[data-date="${tomorrow}"]`))
+    await click(find('button:contains(save)'))
+
+    expect(currentURL()).to.equal(`/reports?day=${tomorrow}`)
+    expect(find(testSelector('report-row'))).to.have.length(6)
   })
 })
