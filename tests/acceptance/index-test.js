@@ -53,8 +53,7 @@ describe('Acceptance | index', function() {
   })
 
   it('can start a new activity', async function() {
-    server.createList('task', 20)
-
+    let task = server.create('task')
     await visit('/')
 
     await taskSelect(testSelector('tracking-bar'))
@@ -68,10 +67,11 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-start'))).to.have.length(0)
     expect(find(testSelector('record-stop'))).to.have.length(1)
     expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
+    expect(find(`${testSelector('activity-row')}:first-child div small`).text()).to.equal(task.name)
   })
 
   it('can start a new activity from the history', async function() {
-    server.createList('task', 20)
+    let task = server.create('task')
 
     await visit('/')
 
@@ -84,6 +84,7 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-start'))).to.have.length(0)
     expect(find(testSelector('record-stop'))).to.have.length(1)
     expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
+    expect(find(`${testSelector('activity-row')}:first-child div small`).text()).to.equal(task.name)
   })
 
   it('can stop an active activity', async function() {

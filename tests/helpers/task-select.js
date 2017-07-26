@@ -14,7 +14,7 @@ export default Test.registerAsyncHelper(
     }
 
     await triggerEvent(`#${c.attr('id')}`, 'focus')
-    await click(`#${c.parent().find('.tt-suggestion:eq(0)').children().attr('id')}`)
+    await click(`#${c.parent().find('.tt-suggestion:eq(1)').children().attr('id')}`)
 
     await triggerEvent(`#${p.attr('id')}`, 'focus')
     await click(`#${p.parent().find('.tt-suggestion:eq(0)').children().attr('id')}`)
