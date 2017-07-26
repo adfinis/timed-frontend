@@ -6,7 +6,6 @@
 import Model    from 'ember-data/model'
 import attr     from 'ember-data/attr'
 import moment   from 'moment'
-import computed from 'ember-computed-decorators'
 
 import {
   belongsTo
