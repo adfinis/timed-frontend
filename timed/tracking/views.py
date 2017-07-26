@@ -1,8 +1,8 @@
 """Viewsets for the tracking app."""
 
 import django_excel
+from django.http import HttpResponseBadRequest
 from rest_framework.decorators import list_route
-from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
@@ -102,10 +102,7 @@ class ReportViewSet(ModelViewSet):
 
         file_type = request.query_params.get('file_type')
         if file_type not in ['csv', 'xlsx', 'ods']:
-            raise ParseError(
-                'Invalid file_type parameter. '
-                'Only csv, xlsx and ods are supported.'
-            )
+            return HttpResponseBadRequest()
 
         sheet = django_excel.pe.Sheet(
             content, name='Report', colnames=colnames

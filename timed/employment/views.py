@@ -22,8 +22,6 @@ class UserViewSet(ReadOnlyModelViewSet):
         return get_user_model().objects.prefetch_related(
             'employments',
             'absence_credits'
-        ).filter(
-            pk=self.request.user.pk
         )
 
 
