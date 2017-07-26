@@ -70,6 +70,22 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
   })
 
+  it('can start a new activity from the history', async function() {
+    server.createList('task', 20)
+
+    await visit('/')
+
+    await taskSelect(testSelector('tracking-bar'), { fromHistory: true })
+
+    await fillIn(testSelector('tracking-comment'), 'Some Random Comment')
+
+    await click(testSelector('record-start'))
+
+    expect(find(testSelector('record-start'))).to.have.length(0)
+    expect(find(testSelector('record-stop'))).to.have.length(1)
+    expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
+  })
+
   it('can stop an active activity', async function() {
     let activity = server.create('activity', 'active')
 
