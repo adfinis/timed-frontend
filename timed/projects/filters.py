@@ -44,7 +44,7 @@ class MyMostFrequentTaskFilter(Filter):
         for today's usage.
 
         :param QuerySet qs: The queryset to filter
-        :param int   value: number of frequest items
+        :param int   value: number of most frequent items
         :return:            The filtered queryset
         :rtype:             QuerySet
         """
@@ -53,6 +53,7 @@ class MyMostFrequentTaskFilter(Filter):
 
         qs = qs.filter(reports__user=user, reports__date__gt=from_date)
         qs = qs.annotate(frequency=Count('reports')).order_by('-frequency')
+        # limit number of results to given value
         qs = qs[:int(value)]
 
         return qs
