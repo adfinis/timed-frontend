@@ -6,6 +6,7 @@
 import Model         from 'ember-data/model'
 import attr          from 'ember-data/attr'
 import { belongsTo } from 'ember-data/relationships'
+import computed      from 'ember-computed-decorators'
 
 /**
  * The task model
@@ -49,5 +50,16 @@ export default Model.extend({
    * @type {Project}
    * @public
    */
-  project: belongsTo('project')
+  project: belongsTo('project'),
+
+  isTask: true,
+
+  @computed('project')
+  longName(project) {
+    let taskName = this.get('name')
+    let projectName = project.get('name')
+    let customerName = project.get('customer.name')
+
+    return `${customerName} > ${projectName} > ${taskName}`
+  }
 })

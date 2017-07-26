@@ -3,15 +3,15 @@
  * @submodule timed-components
  * @public
  */
-import Component  from 'ember-component'
-import computed   from 'ember-computed-decorators'
-import service    from 'ember-service/inject'
-import RSVP       from 'rsvp'
-import hbs        from 'htmlbars-inline-precompile'
-import { typeOf } from 'ember-utils'
+import Component        from 'ember-component'
+import computed         from 'ember-computed-decorators'
+import service          from 'ember-service/inject'
+import RSVP             from 'rsvp'
+import hbs              from 'htmlbars-inline-precompile'
+import { typeOf }       from 'ember-utils'
+import customerTemplate from '../../customer-suggestion/template'
 
 const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
-const SUGGESTION_TEMPLATE = hbs`{{#if model.duration}}<i class="fa fa-history"></i> {{/if}}{{model.name}}`
 
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
@@ -80,15 +80,9 @@ export default Component.extend({
    * @property {*} suggestionTemplate
    * @public
    */
-  suggestionTemplate: SUGGESTION_TEMPLATE,
+  suggestionTemplate: hbs`{{model.name}}`,
 
-  /**
-   * Model name which will be used to fetch the history
-   *
-   * @property {String}
-   * @public
-   */
-  historyModel: 'activity',
+  customerTemplate,
 
   /**
    * The manually selected customer
@@ -122,13 +116,12 @@ export default Component.extend({
     },
     set(value) {
       /**
-       * It is also possible a activity/report was selected from the history.
-       * An activity/report has a duration property, check for this one.
+       * It is also possible a task was selected from the history.
        */
-      if (value && value.get('duration')) {
-        this.set('task', value.get('task'))
-        this.set('_customer', value.get('task.project.customer'))
-        this.set('_project', value.get('task.project'))
+      if (value && value.get('constructor.modelName') === 'task') {
+        this.set('task', value)
+        this.set('_project', value.get('project'))
+        this.set('_customer', value.get('project.customer'))
 
         return this.get('_customer')
       }
@@ -192,11 +185,11 @@ export default Component.extend({
    * @property {Function} customerSource
    * @public
    */
-  @computed('historyModel')
-  customerSource(historyModel) {
+  @computed
+  customerSource() {
     return (search, syncResults, asyncResults) => {
-      let fnHistory = this.get(`tracking.filter${historyModel.capitalize()}`)
-      let history = fnHistory.get('last') || fnHistory.perform(historyModel)
+      let fnHistory = this.get('tracking.recentTasks')
+      let history = fnHistory.get('last') || fnHistory.perform()
 
       let fnCustomer = this.get('tracking.filterCustomers')
       let customers = fnCustomer.get('last') || fnCustomer.perform()
@@ -204,8 +197,10 @@ export default Component.extend({
       /* istanbul ignore next */
       RSVP.hash({ history, customers })
         .then((hash) => {
-          let data = [ ...hash.history.toArray(), ...hash.customers.toArray() ]
-          asyncResults(regexFilter(data, search, 'name'))
+          asyncResults([
+            ...regexFilter(hash.history.toArray(), search, 'longName'),
+            ...regexFilter(hash.customers.toArray(), search, 'name')
+          ])
         })
         .catch(() => asyncResults([]))
     }

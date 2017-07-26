@@ -160,28 +160,15 @@ export default Service.extend({
   }),
 
   /**
-   * Filter recent activities
+   * Returns recently used tasks
    *
-   * @property {EmberConcurrency.Task} filterActivity
+   * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  filterActivity: task(function* () {
-    return yield this.get('store').query('activity', {
-      recent: true,
-      include: 'task,task.project,task.project.customer'
-    })
-  }).restartable(),
-
-  /**
-   * Filter recent reports
-   *
-   * @property {EmberConcurrency.Task} filterReport
-   * @public
-   */
-  filterReport: task(function* () {
-    return yield this.get('store').query('report', {
-      recent: true,
-      include: 'task,task.project,task.project.customer'
+  recentTasks: task(function* () {
+    return yield this.get('store').query('task', {
+      my_most_frequent: 10, // eslint-disable-line camelcase
+      include: 'project,project.customer'
     })
   }).restartable(),
 
