@@ -96,6 +96,7 @@ export default Model.extend({
   @computed('task')
   name(task) {
     if (!task) {
+      /* istanbul ignore next */
       return ''
     }
 
