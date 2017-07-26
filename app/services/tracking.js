@@ -160,6 +160,19 @@ export default Service.extend({
   }),
 
   /**
+   * Returns recently used tasks
+   *
+   * @property {EmberConcurrency.Task} recentTasks
+   * @public
+   */
+  recentTasks: task(function* () {
+    return yield this.get('store').query('task', {
+      my_most_frequent: 10, // eslint-disable-line camelcase
+      include: 'project,project.customer'
+    })
+  }).restartable(),
+
+  /**
    * Filter all customers
    *
    * @property {EmberConcurrency.Task} filterCustomers

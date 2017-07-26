@@ -3,14 +3,15 @@
  * @submodule timed-components
  * @public
  */
-import Component  from 'ember-component'
-import computed   from 'ember-computed-decorators'
-import service    from 'ember-service/inject'
-import hbs        from 'htmlbars-inline-precompile'
-import { typeOf } from 'ember-utils'
+import Component        from 'ember-component'
+import computed         from 'ember-computed-decorators'
+import service          from 'ember-service/inject'
+import RSVP             from 'rsvp'
+import hbs              from 'htmlbars-inline-precompile'
+import { typeOf }       from 'ember-utils'
+import customerTemplate from '../../customer-suggestion/template'
 
 const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
-const SUGGESTION_TEMPLATE = hbs`{{model.name}}`
 
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
@@ -79,7 +80,9 @@ export default Component.extend({
    * @property {*} suggestionTemplate
    * @public
    */
-  suggestionTemplate: SUGGESTION_TEMPLATE,
+  suggestionTemplate: hbs`{{model.name}}`,
+
+  customerTemplate,
 
   /**
    * The manually selected customer
@@ -112,6 +115,17 @@ export default Component.extend({
       return task && task.get('project.customer') || this.get('_customer')
     },
     set(value) {
+      /**
+       * It is also possible a task was selected from the history.
+       */
+      if (value && value.get('constructor.modelName') === 'task') {
+        this.set('task', value)
+        this.set('_project', value.get('project'))
+        this.set('_customer', value.get('project.customer'))
+
+        return this.get('_customer')
+      }
+
       this.set('_customer', value)
 
       /* istanbul ignore else */
@@ -162,7 +176,10 @@ export default Component.extend({
   /**
    * Source function for the customer autocomplete component
    *
-   * This either takes the last fetched customers and filters them, or triggers
+   * Creates a list starting with the recent history of activities or reports
+   * and following with all customers.
+   *
+   * This either takes the last fetched data and filters them, or triggers
    * the call first if none was triggered before.
    *
    * @property {Function} customerSource
@@ -171,13 +188,20 @@ export default Component.extend({
   @computed
   customerSource() {
     return (search, syncResults, asyncResults) => {
-      let fn = this.get('tracking.filterCustomers')
+      let fnHistory = this.get('tracking.recentTasks')
+      let history = fnHistory.get('last') || fnHistory.perform()
 
-      let customers = fn.get('last') || fn.perform()
+      let fnCustomer = this.get('tracking.filterCustomers')
+      let customers = fnCustomer.get('last') || fnCustomer.perform()
 
       /* istanbul ignore next */
-      customers
-        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+      RSVP.hash({ history, customers })
+        .then((hash) => {
+          asyncResults([
+            ...regexFilter(hash.history.toArray(), search, 'longName'),
+            ...regexFilter(hash.customers.toArray(), search, 'name')
+          ])
+        })
         .catch(() => asyncResults([]))
     }
   },
