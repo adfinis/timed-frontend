@@ -1,6 +1,9 @@
+import Ember from 'ember'
 import Controller from 'ember-controller'
 import computed from 'ember-computed-decorators'
 import { task } from 'ember-concurrency'
+
+const { testing } = Ember
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
@@ -78,7 +81,13 @@ export default Controller.extend({
       this.set('to', null)
     },
     download(type) {
-      window.location.href = `${this.get('download')}&file_type=${type}`
+      let target = `${this.get('download')}&file_type=${type}`
+
+      if (testing) {
+        return
+      }
+      /* istanbul ignore next */
+      window.location.href = target
     }
   }
 })

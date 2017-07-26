@@ -29,11 +29,14 @@ describe('Acceptance | analysis', function() {
     expect(currentURL()).to.equal('/analysis')
   })
 
-  it('can search analysis', async function() {
+  it('can search and download analysis', async function() {
     await visit('/analysis')
     await userSelect(testSelector('user-select'))
     await click(testSelector('search'))
 
     expect(find(`${testSelector('search-results')} tbody tr`).length).to.equal(6)
+
+    await click(testSelector('download-csv'))
+    expect(currentURL()).to.equal('/analysis')
   })
 })
