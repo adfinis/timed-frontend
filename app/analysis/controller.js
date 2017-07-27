@@ -13,6 +13,9 @@ const clean = (obj) => {
     .reduce((out, key) => ({ ...out, [key]: obj[key] }), {})
 }
 
+const id = (obj) => obj && obj.get('id')
+const formatDate = (date) => date && date.format(DATE_FORMAT)
+
 export default Controller.extend({
   filters: {},
 
@@ -63,12 +66,12 @@ export default Controller.extend({
   actions: {
     search({ customer, project, task }, user, from, to) {
       this.set('filters', {
-        customer: customer && customer.get('id'),
-        project: project && project.get('id'),
-        task: task && task.get('id'),
-        user: user && user.get('id'),
-        from_date: from ? from.format(DATE_FORMAT) : null,
-        to_date: to ? to.format(DATE_FORMAT) : null
+        customer: id(customer),
+        project: id(project),
+        task: id(task),
+        user: id(user),
+        from_date: formatDate(from),
+        to_date: formatDate(to)
       })
       this.set('page', 1)
     },
