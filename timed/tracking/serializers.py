@@ -121,6 +121,26 @@ class ReportSerializer(ModelSerializer):
         'user': 'timed.employment.serializers.UserSerializer'
     }
 
+    def validate_date(self, value):
+        """Only owner is allowed to change date."""
+        if self.instance is not None:
+            user = self.context['request'].user
+            owner = self.instance.user
+            if self.instance.date != value and user != owner:
+                raise ValidationError('Only owner may change date')
+
+        return value
+
+    def validate_duration(self, value):
+        """Only owner is allowed to change duration."""
+        if self.instance is not None:
+            user = self.context['request'].user
+            owner = self.instance.user
+            if self.instance.duration != value and user != owner:
+                raise ValidationError('Only owner may change duration')
+
+        return value
+
     class Meta:
         """Meta information for the report serializer."""
 

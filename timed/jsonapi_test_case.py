@@ -111,7 +111,8 @@ class JSONAPITestCase(APITestCase):
 
         self.user = User.objects.create_user(
             username='user',
-            password='123qweasd'
+            password='123qweasd',
+            is_staff=True,
         )
 
         self.client = JSONAPIClient()

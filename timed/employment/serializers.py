@@ -153,6 +153,7 @@ class UserSerializer(ModelSerializer):
             'employments',
             'absence_credits',
             'worktime_balance',
+            'is_staff',
         ]
 
 
