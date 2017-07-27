@@ -3,7 +3,7 @@
 import json
 import logging
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
@@ -109,7 +109,7 @@ class JSONAPITestCase(APITestCase):
         """Set the clients for testing up."""
         super().setUp()
 
-        self.user = User.objects.create_user(
+        self.user = get_user_model().objects.create_user(
             username='user',
             password='123qweasd',
             is_staff=True,

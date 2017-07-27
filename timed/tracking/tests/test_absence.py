@@ -2,7 +2,7 @@
 
 import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
@@ -24,7 +24,7 @@ class AbsenceTests(JSONAPITestCase):
 
         user = self.user
 
-        other_user = User.objects.create_user(
+        other_user = get_user_model().objects.create_user(
             username='test',
             password='123qweasd'
         )

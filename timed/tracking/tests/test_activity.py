@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from pytz import timezone
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
@@ -19,7 +19,7 @@ class ActivityTests(JSONAPITestCase):
         """Set the environment for the tests up."""
         super().setUp()
 
-        other_user = User.objects.create_user(
+        other_user = get_user_model().objects.create_user(
             username='test',
             password='123qweasd'
         )

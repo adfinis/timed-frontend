@@ -3,7 +3,7 @@
 from datetime import date, timedelta
 
 import pyexcel
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from hypothesis import given, settings
@@ -30,7 +30,7 @@ class ReportTests(JSONAPITestCase):
         """Set the environment for the tests up."""
         super().setUp()
 
-        other_user = User.objects.create_user(
+        other_user = get_user_model().objects.create_user(
             username='test',
             password='123qweasd'
         )
@@ -343,7 +343,8 @@ class TestReportHypo(TestCase):
     )
     @settings(timeout=5)
     def test_report_export(self, file_type, report):
-        User.objects.create_user(username='test', password='1234qwer')
+        get_user_model().objects.create_user(username='test',
+                                             password='1234qwer')
         client = JSONAPIClient()
         client.login('test', '1234qwer')
         url = reverse('report-export')
