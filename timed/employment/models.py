@@ -3,6 +3,7 @@
 import datetime
 
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
@@ -49,6 +50,12 @@ class Location(models.Model):
         :rtype:  str
         """
         return self.name
+
+
+class User(AbstractUser):
+    """Timed specific user."""
+
+    pass
 
 
 class Employment(models.Model):

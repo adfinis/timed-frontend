@@ -3,7 +3,7 @@
 import datetime
 import random
 
-from django.conf import settings
+from django.contrib.auth import get_user_model
 from factory import Faker, SubFactory, lazy_attribute
 from factory.django import DjangoModelFactory
 
@@ -33,13 +33,14 @@ class UserFactory(DjangoModelFactory):
     class Meta:
         """Meta informations for the user factory."""
 
-        model = settings.AUTH_USER_MODEL
+        model = get_user_model()
 
 
 class LocationFactory(DjangoModelFactory):
     """Location factory."""
 
-    name = Faker('city')
+    name = Faker('uuid4')
+    # cannot use city provider as name needs to be unique
 
     class Meta:
         """Meta informations for the location factory."""

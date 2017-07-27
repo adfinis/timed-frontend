@@ -203,3 +203,5 @@ AUTH_LDAP_SERVER_URI       = 'ldap://localhost:389'
 AUTH_LDAP_BIND_DN          = 'uid=Administrator,cn=users,{0}'.format(LDAP_BASE)
 AUTH_LDAP_PASSWORD         = 'univention'
 AUTH_LDAP_USER_DN_TEMPLATE = 'uid=%(user)s,cn=users,{0}'.format(LDAP_BASE)
+
+AUTH_USER_MODEL = 'employment.User'

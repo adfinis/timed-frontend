@@ -2,7 +2,7 @@
 
 from datetime import date, timedelta
 
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
@@ -195,7 +195,8 @@ class UserTests(JSONAPITestCase):
         )
 
     def test_user_without_employment(self):
-        user = User.objects.create_user(username='test', password='1234qwer')
+        user = get_user_model().objects.create_user(username='test',
+                                                    password='1234qwer')
         self.client.login('test', '1234qwer')
 
         url = reverse('user-detail', args=[
