@@ -1,7 +1,6 @@
 <h1>Project analysis</h1>
 
-
-{{#task-selection task=task as |t|}}
+{{#task-selection customer=customer as |t|}}
   <form {{action 'search' t.model user from to on='submit'}} class="form-inline">
     <div class="form-group" data-test-tracking-customer>
       {{t.customer}}
@@ -15,7 +14,7 @@
 
     <div style="margin-top:1em;">
       <div class="form-group" data-test-user-select>
-        {{user-selection on-change=(action (mut user))}}
+        {{user-selection selection=user on-change=(action (mut user))}}
       </div>
       <div class="form-group">
         {{sy-datepicker class="force-white" value=from on-change=(action (mut from)) placeholder="From date"}}
@@ -27,7 +26,7 @@
 
     <p style="margin-top:1em;">
       <button data-test-search type="submit" class="btn btn-primary">Search</button>
-      <button {{action 'reset'}} type="reset" class="btn btn-default">Reset</button>
+      <button data-test-reset {{action 'reset'}} type="reset" class="btn btn-default">Reset</button>
     </p>
   </form>
 {{/task-selection}}
@@ -62,7 +61,7 @@
       </tr>
     {{^}}
       <tr>
-        <td colspan="7">Nothing to show here - yet!</td>
+        <td colspan="7">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
       </tr>
     {{/each}}
   </tbody>

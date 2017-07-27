@@ -39,4 +39,16 @@ describe('Acceptance | analysis', function() {
     await click(testSelector('download-csv'))
     expect(currentURL()).to.equal('/analysis')
   })
+
+  it('can reset the search params', async function() {
+    await visit('/analysis')
+    await userSelect(testSelector('user-select'))
+    await taskSelect(testSelector('tracking-customer'), { fromHistory: true })
+
+    expect(find(`${testSelector('user-select')} input[name='user']`).val()).to.be.ok
+    expect(find(`${testSelector('tracking-customer')} input[name='customer']`).val()).to.be.ok
+    await click(testSelector('reset'))
+    expect(find(`${testSelector('user-select')} input[name='user']`).val()).to.equal('')
+    expect(find(`${testSelector('tracking-customer')} input[name='customer']`).val()).to.equal('')
+  })
 })

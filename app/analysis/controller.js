@@ -28,7 +28,8 @@ export default Controller.extend({
   @computed('_cleanFilters', 'page')
   reports(cleanFilters, page) {
     /* eslint-disable camelcase */
-    if (!Object.keys(cleanFilters).length) {
+    this.set('hasCriteria', Boolean(Object.keys(cleanFilters).length))
+    if (!this.get('hasCriteria')) {
       return []
     }
     let task = this.get('reportTask')
@@ -72,7 +73,8 @@ export default Controller.extend({
       this.set('page', 1)
     },
     reset() {
-      this.set('task', null)
+      this.set('customer', null)
+      this.set('user', null)
       this.set('from', null)
       this.set('to', null)
     },

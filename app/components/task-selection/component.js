@@ -129,7 +129,7 @@ export default Component.extend({
       this.set('_customer', value)
 
       /* istanbul ignore else */
-      if (value === null || value.get('id') !== this.get('project.customer.id')) {
+      if (!value || value.get('id') !== this.get('project.customer.id')) {
         this.set('project', null)
       }
 
