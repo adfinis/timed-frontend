@@ -6,7 +6,8 @@ from rest_framework.decorators import list_route
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.viewsets import ModelViewSet
 
-from timed.tracking import filters, models, permissions, serializers
+from timed.tracking import filters, models, serializers
+from timed.tracking.permissions import IsOwnerOrStaffElseReadOnly
 
 
 class ActivityViewSet(ModelViewSet):
@@ -76,7 +77,7 @@ class ReportViewSet(ModelViewSet):
 
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
-    permission_classes = [IsAuthenticated, permissions.IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrStaffElseReadOnly]
     ordering = ('id', )
 
     @list_route()

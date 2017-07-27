@@ -128,7 +128,7 @@ class ReportTests(JSONAPITestCase):
             int(data['data']['relationships']['task']['data']['id'])
         )
 
-    def test_report_update(self):
+    def test_report_update_owner(self):
         """Should update an existing report."""
         report = self.reports[0]
 
@@ -186,9 +186,49 @@ class ReportTests(JSONAPITestCase):
             int(data['data']['relationships']['task']['data']['id'])
         )
 
-    def test_report_update_invalid_user(self):
-        """Updating of report belonging to different user is not allowed."""
+    def test_report_update_date_staff(self):
         report = self.other_reports[0]
+
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'date': '2017-02-04'
+                },
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        res = self.client.patch(url, data)
+        assert res.status_code == HTTP_400_BAD_REQUEST
+
+    def test_report_update_duration_staff(self):
+        report = self.other_reports[0]
+
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'duration': '01:00:00',
+                },
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        res = self.client.patch(url, data)
+        assert res.status_code == HTTP_400_BAD_REQUEST
+
+    def test_report_update_not_staff_user(self):
+        """Updating of report belonging to different user is not allowed."""
+        report = self.reports[0]
         data = {
             'data': {
                 'type': 'reports',
@@ -203,8 +243,29 @@ class ReportTests(JSONAPITestCase):
             report.id
         ])
 
-        user_res = self.client.patch(url, data)
-        assert user_res.status_code == HTTP_403_FORBIDDEN
+        client = JSONAPIClient()
+        client.login('test', '123qweasd')
+        res = client.patch(url, data)
+        assert res.status_code == HTTP_403_FORBIDDEN
+
+    def test_report_update_staff_user(self):
+        report = self.reports[0]
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'comment':  'foobar',
+                },
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        res = self.client.patch(url, data)
+        assert res.status_code == HTTP_200_OK
 
     def test_report_delete(self):
         """Should delete a report."""
