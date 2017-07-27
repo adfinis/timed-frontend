@@ -1,13 +1,16 @@
 import { describe, it } from 'mocha'
-import { setupTest }    from 'ember-mocha'
-import { expect }       from 'chai'
-import moment           from 'moment'
+import { setupTest } from 'ember-mocha'
+import { expect } from 'chai'
+import moment from 'moment'
 
 describe('Unit | Transform | django datetime', function() {
-  setupTest('transform:django-datetime', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+  setupTest(
+    'transform:django-datetime',
+    {
+      // Specify the other units that are required for this test.
+      // needs: ['transform:foo']
+    }
+  )
 
   it('serializes', function() {
     let transform = this.subject()
@@ -45,7 +48,9 @@ describe('Unit | Transform | django datetime', function() {
     expect(transform.deserialize('')).to.be.null
     expect(transform.deserialize(null)).to.be.null
 
-    let result = transform.deserialize(datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ')).utc()
+    let result = transform
+      .deserialize(datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
+      .utc()
 
     expect(result.toISOString()).to.be.equal(datetime.toISOString())
   })

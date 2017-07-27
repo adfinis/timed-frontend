@@ -1,10 +1,13 @@
-import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import destroyApp                                 from '../helpers/destroy-app'
-import { expect }                                 from 'chai'
-import startApp                                   from '../helpers/start-app'
-import testSelector                               from 'ember-test-selectors'
-import moment                                     from 'moment'
+import {
+  authenticateSession,
+  invalidateSession
+} from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import destroyApp from '../helpers/destroy-app'
+import { expect } from 'chai'
+import startApp from '../helpers/start-app'
+import testSelector from 'ember-test-selectors'
+import moment from 'moment'
 
 describe('Acceptance | index activities edit', function() {
   let application
@@ -14,7 +17,8 @@ describe('Acceptance | index activities edit', function() {
 
     let user = server.create('user')
 
-    await authenticateSession(application, { 'user_id': user.id })
+    // eslint-disable-next-line camelcase
+    await authenticateSession(application, { user_id: user.id })
 
     server.createList('activity', 5)
   })
@@ -33,9 +37,19 @@ describe('Acceptance | index activities edit', function() {
 
     await taskSelect(testSelector('activity-edit-form'))
 
-    let from = find(`${testSelector('activity-edit-form')} .table--activity-blocks tr:eq(0) td:eq(1) input`).val()
+    let from = find(
+      `${testSelector(
+        'activity-edit-form'
+      )} .table--activity-blocks tr:eq(0) td:eq(1) input`
+    ).val()
 
-    await triggerEvent(`${testSelector('activity-edit-form')} .table--activity-blocks tr:eq(0) td:eq(1) input`, 'keydown', { key: 'ArrowDown', keyCode: 40 })
+    await triggerEvent(
+      `${testSelector(
+        'activity-edit-form'
+      )} .table--activity-blocks tr:eq(0) td:eq(1) input`,
+      'keydown',
+      { key: 'ArrowDown', keyCode: 40 }
+    )
 
     await fillIn(`${testSelector('activity-edit-form')} textarea`, 'Test')
 
@@ -43,11 +57,19 @@ describe('Acceptance | index activities edit', function() {
 
     expect(currentURL()).to.equal('/')
 
-    expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal('Test')
+    expect(find(`${testSelector('activity-row')} td:eq(1)`).text()).to.equal(
+      'Test'
+    )
 
     await click(find(testSelector('activity-row-id', 1)))
 
-    expect(find(`${testSelector('activity-edit-form')} .table--activity-blocks tr:eq(0) td:eq(1) input`).val()).to.equal(moment(from, 'HH:mm').subtract(1, 'minutes').format('HH:mm'))
+    expect(
+      find(
+        `${testSelector(
+          'activity-edit-form'
+        )} .table--activity-blocks tr:eq(0) td:eq(1) input`
+      ).val()
+    ).to.equal(moment(from, 'HH:mm').subtract(1, 'minutes').format('HH:mm'))
   })
 
   it('can delete an activity', async function() {
@@ -68,7 +90,11 @@ describe('Acceptance | index activities edit', function() {
   it('can delete an activity block', async function() {
     await visit('/edit/1')
 
-    await click(`${testSelector('activity-block-row-id', 1)} ${testSelector('delete-activity-block')}`)
+    await click(
+      `${testSelector('activity-block-row-id', 1)} ${testSelector(
+        'delete-activity-block'
+      )}`
+    )
 
     expect(find(testSelector('activity-block-row-id', 0))).to.have.length(0)
     expect(find(testSelector('activity-block-row'))).to.have.length(0)
@@ -82,7 +108,7 @@ describe('Acceptance | index activities edit', function() {
     expect(find(testSelector('activity-block-row'))).to.have.length(2)
   })
 
-  it('can\'t delete an active activity', async function() {
+  it("can't delete an active activity", async function() {
     let { id } = server.create('activity', 'active')
 
     await visit(`/edit/${id}`)

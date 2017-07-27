@@ -3,27 +3,19 @@
  * @submodule timed-services
  * @public
  */
-import Ember            from 'ember'
-import Service          from 'ember-service'
-import service          from 'ember-service/inject'
-import moment           from 'moment'
-import formatDuration   from 'timed/utils/format-duration'
-import getOwner         from 'ember-owner/get'
+import Ember from 'ember'
+import Service from 'ember-service'
+import service from 'ember-service/inject'
+import moment from 'moment'
+import formatDuration from 'timed/utils/format-duration'
+import getOwner from 'ember-owner/get'
 import { scheduleOnce } from 'ember-runloop'
 
-import computed, {
-  observes
-} from 'ember-computed-decorators'
+import computed, { observes } from 'ember-computed-decorators'
 
-import {
-  camelize,
-  capitalize
-} from 'ember-string'
+import { camelize, capitalize } from 'ember-string'
 
-import {
-  task,
-  timeout
-} from 'ember-concurrency'
+import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
 
@@ -104,8 +96,7 @@ export default Service.extend({
   _triggerTitle() {
     if (this.get('activity.active')) {
       this.get('_computeTitle').perform()
-    }
-    else {
+    } else {
       this.setTitle(this.get('title'))
     }
   },
@@ -118,9 +109,14 @@ export default Service.extend({
    * @public
    */
   setTitle(title) {
-    scheduleOnce('afterRender', this, (t) => {
-      document.title = t
-    }, title)
+    scheduleOnce(
+      'afterRender',
+      this,
+      t => {
+        document.title = t
+      },
+      title
+    )
   },
 
   /**
@@ -130,10 +126,12 @@ export default Service.extend({
    * @method _computeTitle
    * @private
    */
-  _computeTitle: task(function* () {
+  _computeTitle: task(function*() {
     while (this.get('activity.active')) {
-      let elapsed  = this.get('activity.duration') || moment.duration()
-      let duration = moment.duration(moment().diff(this.get('activity.activeBlock.from')))
+      let elapsed = this.get('activity.duration') || moment.duration()
+      let duration = moment.duration(
+        moment().diff(this.get('activity.activeBlock.from'))
+      )
 
       let full = moment.duration(elapsed).add(duration)
 
@@ -165,7 +163,7 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  recentTasks: task(function* () {
+  recentTasks: task(function*() {
     return yield this.get('store').query('task', {
       my_most_frequent: 10, // eslint-disable-line camelcase
       include: 'project,project.customer'
@@ -178,7 +176,7 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} filterCustomers
    * @public
    */
-  filterCustomers: task(function* () {
+  filterCustomers: task(function*() {
     yield timeout(500)
 
     return yield this.get('store').query('customer', {})
@@ -190,7 +188,7 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} filterProjects
    * @public
    */
-  filterProjects: task(function* (customer) {
+  filterProjects: task(function*(customer) {
     /* istanbul ignore next */
     if (!customer) {
       // We can't test this because the UI prevents it
@@ -208,7 +206,7 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} filterTask
    * @public
    */
-  filterTasks: task(function* (project) {
+  filterTasks: task(function*(project) {
     /* istanbul ignore next */
     if (!project) {
       // We can't test this because the UI prevents it
@@ -254,7 +252,7 @@ export default Service.extend({
    * @method startActivity
    * @public
    */
-  startActivity: task(function* () {
+  startActivity: task(function*() {
     let activity = this.get('activity')
 
     /* istanbul ignore next */
@@ -273,8 +271,7 @@ export default Service.extend({
       yield block.save()
 
       this.get('notify').success('Activity was started')
-    }
-    catch(e) {
+    } catch (e) {
       /* istanbul ignore next */
       this.get('notify').error('Error while starting the activity')
     }
@@ -286,7 +283,7 @@ export default Service.extend({
    * @method stopActivity
    * @public
    */
-  stopActivity: task(function* () {
+  stopActivity: task(function*() {
     let activity = this.get('activity')
 
     if (!activity.get('active')) {
@@ -303,8 +300,7 @@ export default Service.extend({
       this.set('activity', null)
 
       this.get('notify').success('Activity was stopped')
-    }
-    catch(e) {
+    } catch (e) {
       /* istanbul ignore next */
       this.get('notify').error('Error while stopping the activity')
     }

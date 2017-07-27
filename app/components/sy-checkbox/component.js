@@ -19,7 +19,7 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: [ 'checkbox' ],
+  classNames: ['checkbox'],
 
   /**
    * Action to call if the checked state has changed

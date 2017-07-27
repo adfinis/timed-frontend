@@ -29,5 +29,8 @@ export default {
    * @property {Function} dates
    * @public
    */
-  dates: validateLength({ min: 1, message: 'At least one date must be selected' })
+  dates: validateLength({
+    min: 1,
+    message: 'At least one date must be selected'
+  })
 }

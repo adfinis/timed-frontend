@@ -1,6 +1,6 @@
-import resolver        from './helpers/resolver'
+import resolver from './helpers/resolver'
 import { setResolver } from 'ember-mocha'
-import { mocha }       from 'mocha'
+import { mocha } from 'mocha'
 
 mocha.setup({
   timeout: 10000,

@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component    from 'ember-component'
-import computed     from 'ember-computed-decorators'
+import Component from 'ember-component'
+import computed from 'ember-computed-decorators'
 import { htmlSafe } from 'ember-string'
 
 const { min } = Math
@@ -25,7 +25,7 @@ export default Component.extend({
    * @property {String[]} attributeBindings
    * @public
    */
-  attributeBindings: [ 'style', 'title' ],
+  attributeBindings: ['style', 'title'],
 
   /**
    * Class name bindings
@@ -33,7 +33,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'active', 'workday::weekend', 'absence', 'holiday' ],
+  classNameBindings: ['active', 'workday::weekend', 'absence', 'holiday'],
 
   /**
    * Whether there is an absence on this day

@@ -8,7 +8,6 @@ import Component from 'ember-component'
  * @public
  */
 export default Component.extend({
-
   /**
    * The tagName of the component
    *
@@ -23,5 +22,5 @@ export default Component.extend({
    * @property {string[]} classNames
    * @public
    */
-  classNames: [ 'table', 'table--striped', 'table--hover' ]
+  classNames: ['table', 'table--striped', 'table--hover']
 })

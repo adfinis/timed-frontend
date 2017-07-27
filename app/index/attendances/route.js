@@ -3,7 +3,7 @@
  * @submodule timed-routes
  * @public
  */
-import Route   from 'ember-route'
+import Route from 'ember-route'
 import service from 'ember-service/inject'
 
 /**
@@ -41,8 +41,7 @@ export default Route.extend({
         await attendance.save()
 
         this.get('notify').success('Attendance was saved')
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the attendance')
       }
@@ -60,8 +59,7 @@ export default Route.extend({
         await attendance.destroyRecord()
 
         this.get('notify').success('Attendance was deleted')
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the attendance')
       }
@@ -75,16 +73,21 @@ export default Route.extend({
      */
     async addAttendance() {
       try {
-        let from = this.controllerFor('index').get('date').clone().set({ h: 8, m: 0, s: 0, ms: 0 })
-        let to   = this.controllerFor('index').get('date').clone().set({ h: 11, m: 30, s: 0, ms: 0 })
+        let from = this.controllerFor('index')
+          .get('date')
+          .clone()
+          .set({ h: 8, m: 0, s: 0, ms: 0 })
+        let to = this.controllerFor('index')
+          .get('date')
+          .clone()
+          .set({ h: 11, m: 30, s: 0, ms: 0 })
 
         let attendance = this.store.createRecord('attendance', { from, to })
 
         await attendance.save()
 
         this.get('notify').success('Attendance was added')
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while adding the attendance')
       }

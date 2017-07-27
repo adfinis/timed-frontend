@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from 'ember-controller'
-import computed   from 'ember-computed-decorators'
+import computed from 'ember-computed-decorators'
 
 /**
  * The index activities controller
@@ -33,8 +33,12 @@ export default Controller.extend({
    */
   @computed('_allActivities.@each.{isNew,isDeleted}', 'model')
   activities(activities, day) {
-    return activities.filter((a) => {
-      return a.get('start').isSame(day, 'day') && !a.get('isNew') && !a.get('isDeleted')
+    return activities.filter(a => {
+      return (
+        a.get('start').isSame(day, 'day') &&
+        !a.get('isNew') &&
+        !a.get('isDeleted')
+      )
     })
   }
 })

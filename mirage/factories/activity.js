@@ -1,6 +1,6 @@
 import { Factory, faker, trait } from 'ember-cli-mirage'
-import { randomDuration }        from '../helpers/duration'
-import moment                    from 'moment'
+import { randomDuration } from '../helpers/duration'
+import moment from 'moment'
 
 export default Factory.extend({
   comment: () => faker.lorem.sentence(),
@@ -22,7 +22,7 @@ export default Factory.extend({
 
     let toDatetime = activity.startDatetime.clone()
 
-    let [ hours, minutes, seconds ] = activity.duration.split(':').map(parseInt)
+    let [hours, minutes, seconds] = activity.duration.split(':').map(parseInt)
 
     toDatetime.add({ hours, minutes, seconds })
 

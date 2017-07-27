@@ -4,7 +4,7 @@
  * @public
  */
 import Component from 'ember-component'
-import moment    from 'moment'
+import moment from 'moment'
 
 /**
  * The date navigation component
@@ -20,7 +20,7 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: [ 'btn-toolbar' ],
+  classNames: ['btn-toolbar'],
 
   /**
    * The actions for the date navigation component

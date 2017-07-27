@@ -1,6 +1,6 @@
-import { describe, it }   from 'mocha'
+import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
-import { expect }         from 'chai'
+import { expect } from 'chai'
 
 describe('Unit | Model | employment', function() {
   setupModelTest('employment', {

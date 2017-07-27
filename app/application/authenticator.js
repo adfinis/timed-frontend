@@ -4,15 +4,12 @@
  * @public
  */
 import BaseAuthenticator from 'ember-simple-auth/authenticators/base'
-import { isEmpty }       from 'ember-utils'
-import service           from 'ember-service/inject'
-import RSVP              from 'rsvp'
-import Ember             from 'ember'
+import { isEmpty } from 'ember-utils'
+import service from 'ember-service/inject'
+import RSVP from 'rsvp'
+import Ember from 'ember'
 
-import {
-  later,
-  cancel
-} from 'ember-runloop'
+import { later, cancel } from 'ember-runloop'
 
 const { testing } = Ember
 
@@ -53,13 +50,12 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _parseToken(token) {
-    let [ , payload ] = token.split('.')
+    let [, payload] = token.split('.')
     let tokenData = decodeURIComponent(window.escape(atob(payload)))
 
     try {
       return JSON.parse(tokenData)
-    }
-    catch(e) {
+    } catch (e) {
       return tokenData
     }
   },
@@ -98,13 +94,14 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
         attributes: { username, password }
       }
 
-      this.get('ajax').post('/api/v1/auth/login', { data: { data } })
-        .then((res) => {
+      this.get('ajax')
+        .post('/api/v1/auth/login', { data: { data } })
+        .then(res => {
           let result = this._handleAuthResponse(res.data)
 
           resolve(result)
         })
-        .catch((res) => {
+        .catch(res => {
           reject(res)
         })
     })
@@ -123,8 +120,8 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
   restore(data) {
     return new RSVP.Promise((resolve, reject) => {
       let { token } = data
-      let exp       = this._parseExp(data.exp)
-      let now       = new Date().getTime()
+      let exp = this._parseExp(data.exp)
+      let now = new Date().getTime()
 
       if (isEmpty(token)) {
         reject(new Error('Token is empty'))
@@ -134,8 +131,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
         this._scheduleTokenRefresh(exp, token)
 
         resolve(data)
-      }
-      else {
+      } else {
         reject(new Error('Token is expired'))
       }
     })
@@ -150,7 +146,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @public
    */
   invalidate(data) {
-    return new RSVP.Promise((resolve) => resolve(data))
+    return new RSVP.Promise(resolve => resolve(data))
   },
 
   /**
@@ -169,8 +165,9 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
     }
 
     return new RSVP.Promise((resolve, reject) => {
-      this.get('ajax').post('/api/v1/auth/refresh', { data: { data } })
-        .then((res) => {
+      this.get('ajax')
+        .post('/api/v1/auth/refresh', { data: { data } })
+        .then(res => {
           let result = this._handleAuthResponse(res.data)
 
           this.trigger('sessionDataUpdated', result)
@@ -190,7 +187,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _scheduleTokenRefresh(exp, token) {
-    let now  = new Date().getTime()
+    let now = new Date().getTime()
     let wait = exp - now
 
     cancel(this._refreshTokenTimeout)
@@ -218,7 +215,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
     }
 
     let data = this._parseToken(token)
-    let exp  = this._parseExp(data.exp)
+    let exp = this._parseExp(data.exp)
 
     this._scheduleTokenRefresh(exp, token)
 

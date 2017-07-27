@@ -1,5 +1,5 @@
 import { Factory, trait } from 'ember-cli-mirage'
-import moment             from 'moment'
+import moment from 'moment'
 
 function time(day, hour, minute) {
   return day.clone().millisecond(0).second(0).hour(hour).minute(minute)

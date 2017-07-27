@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component         from 'ember-component'
-import moment            from 'moment'
-import Ember             from 'ember'
+import Component from 'ember-component'
+import moment from 'moment'
+import Ember from 'ember'
 import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
@@ -37,10 +37,10 @@ export default Component.extend({
    * @private
    */
   _update() {
-    let now    = moment()
+    let now = moment()
     let second = now.seconds() * 6
     let minute = now.minutes() * 6 + second / 60
-    let hour   = now.hours() % 12 / 12 * 360 + 90 + minute / 12
+    let hour = now.hours() % 12 / 12 * 360 + 90 + minute / 12
 
     this.$('.second').css('transform', this._rotate(second))
     this.$('.minute').css('transform', this._rotate(minute))
@@ -55,7 +55,7 @@ export default Component.extend({
    * @method timed
    * @public
    */
-  timer: task(function* () {
+  timer: task(function*() {
     for (;;) {
       this._update()
 

@@ -1,7 +1,7 @@
-import { expect }       from 'chai'
+import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import humanizeDuration from 'timed/utils/humanize-duration'
-import moment           from 'moment'
+import moment from 'moment'
 
 describe('Unit | Utility | humanize duration', function() {
   it('works', function() {

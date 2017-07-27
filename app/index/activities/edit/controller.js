@@ -3,9 +3,9 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller         from 'ember-controller'
+import Controller from 'ember-controller'
 import computed, { sort } from 'ember-computed-decorators'
-import moment             from 'moment'
+import moment from 'moment'
 
 /**
  * Controller to edit an activity
@@ -21,7 +21,7 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {String[]} sortBy
    * @public
    */
-  sortBy: [ 'from:desc' ],
+  sortBy: ['from:desc'],
 
   /**
    * The sorted blocks of the activity

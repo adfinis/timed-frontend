@@ -3,7 +3,7 @@
  * @submodule timed-adapters
  * @public
  */
-import JSONAPIAdapter   from 'ember-data/adapters/json-api'
+import JSONAPIAdapter from 'ember-data/adapters/json-api'
 import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin'
 
 /**

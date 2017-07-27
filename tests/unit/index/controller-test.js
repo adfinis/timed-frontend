@@ -1,12 +1,12 @@
-import { expect }                   from 'chai'
+import { expect } from 'chai'
 import { it, describe, beforeEach } from 'mocha'
-import { setupTest }                from 'ember-mocha'
-import { trackingStub }             from 'timed/tests/integration/components/tracking-bar/component-test'
+import { setupTest } from 'ember-mocha'
+import { trackingStub } from 'timed/tests/integration/components/tracking-bar/component-test'
 
 describe('Unit | Controller | index', function() {
   setupTest('controller:index', {
     // Specify the other units that are required for this test.
-    needs: [ 'model:activity', 'model:absence', 'service:session' ]
+    needs: ['model:activity', 'model:absence', 'service:session']
   })
 
   beforeEach(function() {

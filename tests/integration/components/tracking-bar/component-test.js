@@ -1,8 +1,8 @@
-import { expect }                   from 'chai'
+import { expect } from 'chai'
 import { describe, it, beforeEach } from 'mocha'
-import { setupComponentTest }       from 'ember-mocha'
-import hbs                          from 'htmlbars-inline-precompile'
-import Service                      from 'ember-service'
+import { setupComponentTest } from 'ember-mocha'
+import hbs from 'htmlbars-inline-precompile'
+import Service from 'ember-service'
 
 export const trackingStub = Service.extend({
   activity: {

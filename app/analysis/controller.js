@@ -7,19 +7,19 @@ const { testing } = Ember
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
-const clean = (obj) => {
+const clean = obj => {
   return Object.keys(obj)
-    .filter((key) => !!obj[key])
+    .filter(key => !!obj[key])
     .reduce((out, key) => ({ ...out, [key]: obj[key] }), {})
 }
 
-const id = (obj) => obj && obj.get('id')
-const formatDate = (date) => date && date.format(DATE_FORMAT)
+const id = obj => obj && obj.get('id')
+const formatDate = date => date && date.format(DATE_FORMAT)
 
 export default Controller.extend({
   filters: {},
 
-  queryParams: [ 'page' ],
+  queryParams: ['page'],
 
   page: 1,
 
@@ -36,16 +36,18 @@ export default Controller.extend({
       return []
     }
     let task = this.get('reportTask')
-    task.perform(Object.assign({}, cleanFilters, {
-      include: 'user,task,task.project,task.project.customer',
-      page_size: 10,
-      page,
-      ordering: '-date'
-    }))
+    task.perform(
+      Object.assign({}, cleanFilters, {
+        include: 'user,task,task.project,task.project.customer',
+        page_size: 10,
+        page,
+        ordering: '-date'
+      })
+    )
     return task
   },
 
-  reportTask: task(function* (params) {
+  reportTask: task(function*(params) {
     return yield this.store.query('report', params)
   }),
 
@@ -58,9 +60,14 @@ export default Controller.extend({
   download(cleanFilters) {
     /* eslint-disable camelcase */
     let base = 'http://localhost:8000/api/v1/reports/export?'
-    return base + Object.keys(cleanFilters).map((key) => {
-      return `${key}=${cleanFilters[key]}`
-    }).join('&')
+    return (
+      base +
+      Object.keys(cleanFilters)
+        .map(key => {
+          return `${key}=${cleanFilters[key]}`
+        })
+        .join('&')
+    )
   },
 
   actions: {

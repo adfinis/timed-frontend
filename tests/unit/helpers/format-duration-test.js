@@ -1,7 +1,7 @@
-import { describe, it }     from 'mocha'
-import { expect }           from 'chai'
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
 import { formatDurationFn } from 'timed/helpers/format-duration'
-import moment               from 'moment'
+import moment from 'moment'
 
 describe('Unit | Helper | format duration', function() {
   it('works', function() {
@@ -11,7 +11,7 @@ describe('Unit | Helper | format duration', function() {
       seconds: 59
     })
 
-    let result = formatDurationFn([ duration ])
+    let result = formatDurationFn([duration])
 
     expect(result).to.equal('03:56:59')
   })
@@ -23,7 +23,7 @@ describe('Unit | Helper | format duration', function() {
       seconds: 59
     })
 
-    let result = formatDurationFn([ duration, false ])
+    let result = formatDurationFn([duration, false])
 
     expect(result).to.equal('03:56')
   })

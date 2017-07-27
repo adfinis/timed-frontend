@@ -1,10 +1,10 @@
-import { describe, it }   from 'mocha'
+import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
-import { expect }         from 'chai'
+import { expect } from 'chai'
 
 describe('Unit | Model | attendance', function() {
   setupModelTest('attendance', {
-    needs: [ 'model:user' ]
+    needs: ['model:user']
   })
 
   it('exists', function() {

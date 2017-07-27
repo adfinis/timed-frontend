@@ -1,9 +1,9 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
-import EmberObject            from 'ember-object'
-import moment                 from 'moment'
+import hbs from 'htmlbars-inline-precompile'
+import EmberObject from 'ember-object'
+import moment from 'moment'
 
 const ATTENDANCE = EmberObject.create({
   from: moment({ h: 8, m: 0, s: 0, ms: 0 }),
@@ -28,7 +28,7 @@ describe('Integration | Component | attendance slider', function() {
   it('can delete', function() {
     this.set('attendance', ATTENDANCE)
 
-    this.on('delete', (attendance) => {
+    this.on('delete', attendance => {
       expect(attendance).to.be.ok
     })
 

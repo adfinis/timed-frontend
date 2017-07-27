@@ -1,10 +1,10 @@
-import { describe, it }   from 'mocha'
+import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
-import { expect }         from 'chai'
+import { expect } from 'chai'
 
 describe('Unit | Model | public holiday', function() {
   setupModelTest('public-holiday', {
-    needs: [ 'model:location', 'transform:django-date' ]
+    needs: ['model:location', 'transform:django-date']
   })
 
   it('exists', function() {

@@ -3,10 +3,10 @@
  * @submodule timed-models
  * @public
  */
-import Model       from 'ember-data/model'
-import attr        from 'ember-data/attr'
+import Model from 'ember-data/model'
+import attr from 'ember-data/attr'
 import { hasMany } from 'ember-data/relationships'
-import computed    from 'ember-computed-decorators'
+import computed from 'ember-computed-decorators'
 
 /**
  * The user model
@@ -113,6 +113,6 @@ export default Model.extend({
    */
   @computed('employments.[]')
   activeEmployment(employments) {
-    return employments.find((e) => !e.get('end')) || null
+    return employments.find(e => !e.get('end')) || null
   }
 })

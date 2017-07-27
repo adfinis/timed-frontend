@@ -1,7 +1,7 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
+import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy checkbox', function() {
   setupComponentTest('sy-checkbox', {
@@ -23,7 +23,9 @@ describe('Integration | Component | sy checkbox', function() {
   it('changes state', function() {
     this.set('checked', false)
 
-    this.render(hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`)
+    this.render(
+      hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
+    )
 
     expect(this.$('input:checked')).to.have.length(0)
 

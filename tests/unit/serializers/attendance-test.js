@@ -1,14 +1,10 @@
-import { describe, it }   from 'mocha'
+import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
-import { expect }         from 'chai'
+import { expect } from 'chai'
 
 describe('Unit | Serializer | attendance', function() {
   setupModelTest('attendance', {
-    needs: [
-      'serializer:attendance',
-      'transform:django-datetime',
-      'model:user'
-    ]
+    needs: ['serializer:attendance', 'transform:django-datetime', 'model:user']
   })
 
   it('serializes records', function() {

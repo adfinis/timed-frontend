@@ -3,8 +3,8 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller        from 'ember-controller'
-import computed          from 'ember-computed-decorators'
+import Controller from 'ember-controller'
+import computed from 'ember-computed-decorators'
 import ReportValidations from 'timed/validations/report'
 
 /**
@@ -40,7 +40,7 @@ export default Controller.extend({
    */
   @computed('_allReports.@each.{date,isNew,isDeleted}', 'model')
   reports(reports, day) {
-    let reportsToday = reports.filter((r) => {
+    let reportsToday = reports.filter(r => {
       return r.get('date').isSame(day, 'day') && !r.get('isDeleted')
     })
 
@@ -48,6 +48,6 @@ export default Controller.extend({
       this.store.createRecord('report', { date: this.get('model') })
     }
 
-    return reportsToday.sort((a) => a.get('isNew') ? 1 : -1)
+    return reportsToday.sort(a => (a.get('isNew') ? 1 : -1))
   }
 })

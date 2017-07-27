@@ -10,5 +10,4 @@
  * @class ActivityValidations
  * @public
  */
-export default {
-}
+export default {}

@@ -1,9 +1,9 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
-import moment                 from 'moment'
-import $                      from 'jquery'
+import hbs from 'htmlbars-inline-precompile'
+import moment from 'moment'
+import $ from 'jquery'
 
 const event = $.Event
 
@@ -29,12 +29,17 @@ describe('Integration | Component | sy durationpicker', function() {
   })
 
   it('can change the value', function() {
-    this.set('value', moment.duration({
-      h: 12,
-      m: 30
-    }))
+    this.set(
+      'value',
+      moment.duration({
+        h: 12,
+        m: 30
+      })
+    )
 
-    this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
+    this.render(
+      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+    )
 
     this.$('input').val('13:15').trigger(event('input'))
 
@@ -42,13 +47,18 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(15)
   })
 
-  it('can\'t set an invalid value', function() {
-    this.set('value', moment.duration({
-      h: 12,
-      m: 30
-    }))
+  it("can't set an invalid value", function() {
+    this.set(
+      'value',
+      moment.duration({
+        h: 12,
+        m: 30
+      })
+    )
 
-    this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
+    this.render(
+      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+    )
 
     this.$('input').val('24:15').trigger(event('input'))
 
@@ -57,12 +67,17 @@ describe('Integration | Component | sy durationpicker', function() {
   })
 
   it('can increase minutes per arrow', function() {
-    this.set('value', moment.duration({
-      h: 12,
-      m: 15
-    }))
+    this.set(
+      'value',
+      moment.duration({
+        h: 12,
+        m: 15
+      })
+    )
 
-    this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
+    this.render(
+      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+    )
 
     this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
 
@@ -71,12 +86,17 @@ describe('Integration | Component | sy durationpicker', function() {
   })
 
   it('can decrease minutes per arrow', function() {
-    this.set('value', moment.duration({
-      h: 12,
-      m: 15
-    }))
+    this.set(
+      'value',
+      moment.duration({
+        h: 12,
+        m: 15
+      })
+    )
 
-    this.render(hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`)
+    this.render(
+      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+    )
 
     this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
 
@@ -84,23 +104,34 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(0)
   })
 
-  it('can\'t be bigger than max or smaller than min', function() {
-    this.set('value', moment.duration({
-      h: 12,
-      m: 30
-    }))
+  it("can't be bigger than max or smaller than min", function() {
+    this.set(
+      'value',
+      moment.duration({
+        h: 12,
+        m: 30
+      })
+    )
 
-    this.set('min', moment.duration({
-      h: 12,
-      m: 30
-    }))
+    this.set(
+      'min',
+      moment.duration({
+        h: 12,
+        m: 30
+      })
+    )
 
-    this.set('max', moment.duration({
-      h: 12,
-      m: 30
-    }))
+    this.set(
+      'max',
+      moment.duration({
+        h: 12,
+        m: 30
+      })
+    )
 
-    this.render(hbs`{{sy-durationpicker min=min max=max value=value on-change=(action (mut value))}}`)
+    this.render(
+      hbs`{{sy-durationpicker min=min max=max value=value on-change=(action (mut value))}}`
+    )
 
     this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
 

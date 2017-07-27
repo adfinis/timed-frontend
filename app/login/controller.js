@@ -4,8 +4,8 @@
  * @public
  */
 import Controller from 'ember-controller'
-import service    from 'ember-service/inject'
-import { task }   from 'ember-concurrency'
+import service from 'ember-service/inject'
+import { task } from 'ember-concurrency'
 
 /**
  * Login controller
@@ -39,13 +39,15 @@ export default Controller.extend({
    * @param {String} password The password
    * @public
    */
-  authenticate: task(function* (username, password) {
+  authenticate: task(function*(username, password) {
     try {
-      yield this.get('session').authenticate('authenticator:application', { username, password })
+      yield this.get('session').authenticate('authenticator:application', {
+        username,
+        password
+      })
 
       this.store.unloadAll()
-    }
-    catch(e) {
+    } catch (e) {
       this.get('notify').error('Wrong username or password')
     }
   }).drop()

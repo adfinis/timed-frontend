@@ -1,5 +1,5 @@
-import { Factory, faker }      from 'ember-cli-mirage'
-import moment                  from 'moment'
+import { Factory, faker } from 'ember-cli-mirage'
+import moment from 'moment'
 import DjangoDurationTransform from 'timed/transforms/django-duration'
 
 export default Factory.extend({
@@ -9,7 +9,7 @@ export default Factory.extend({
 
   username() {
     let first = this.firstName.toLowerCase()
-    let last  = this.lastName.toLowerCase()
+    let last = this.lastName.toLowerCase()
 
     return `${first}${last.charAt(0)}`
   },
@@ -20,8 +20,10 @@ export default Factory.extend({
 
   worktimeBalance() {
     let balance = moment.duration({
-      h: faker.random.number({ min: 1, max: 50 }) * faker.random.arrayElement([ 1, -1 ]),
-      m: faker.random.arrayElement([ 0, 15, 30, 45 ])
+      h:
+        faker.random.number({ min: 1, max: 50 }) *
+        faker.random.arrayElement([1, -1]),
+      m: faker.random.arrayElement([0, 15, 30, 45])
     })
 
     return DjangoDurationTransform.create().serialize(balance)

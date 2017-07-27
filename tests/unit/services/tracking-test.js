@@ -1,8 +1,8 @@
-import { expect }                   from 'chai'
+import { expect } from 'chai'
 import { describe, it, beforeEach } from 'mocha'
-import { setupTest }                from 'ember-mocha'
-import Service                      from 'ember-service'
-import { A as emberA }              from 'ember-array/utils'
+import { setupTest } from 'ember-mocha'
+import Service from 'ember-service'
+import { A as emberA } from 'ember-array/utils'
 
 const storeStub = Service.extend({
   query() {
@@ -17,11 +17,7 @@ const storeStub = Service.extend({
 describe('Unit | Service | tracking', function() {
   setupTest('service:tracking', {
     // Specify the other units that are required for this test.
-    needs: [
-      'model:activity',
-      'model:activity-block',
-      'service:notify'
-    ]
+    needs: ['model:activity', 'model:activity-block', 'service:notify']
   })
 
   beforeEach(function() {

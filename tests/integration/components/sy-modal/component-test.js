@@ -1,7 +1,7 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
+import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy modal', function() {
   setupComponentTest('sy-modal', {
@@ -26,7 +26,9 @@ describe('Integration | Component | sy modal', function() {
 
     expect(this.$('#sy-modals').children()).to.have.length(1)
 
-    expect(this.$('#sy-modals .modal-header').text().trim()).to.contain('Header')
+    expect(this.$('#sy-modals .modal-header').text().trim()).to.contain(
+      'Header'
+    )
     expect(this.$('#sy-modals .modal-header').text().trim()).to.contain('×')
     expect(this.$('#sy-modals .modal-body').text().trim()).to.equal('Body')
     expect(this.$('#sy-modals .modal-footer').text().trim()).to.equal('Footer')

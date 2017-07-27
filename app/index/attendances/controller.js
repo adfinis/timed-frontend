@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from 'ember-controller'
-import computed   from 'ember-computed-decorators'
+import computed from 'ember-computed-decorators'
 
 /**
  * The index attendances controller
@@ -33,7 +33,7 @@ export default Controller.extend({
    */
   @computed('_allAttendances.@each.isDeleted', 'model')
   attendances(attendances, day) {
-    return attendances.filter((a) => {
+    return attendances.filter(a => {
       return a.get('from').isSame(day, 'day') && !a.get('isDeleted')
     })
   }

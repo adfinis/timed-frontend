@@ -12,5 +12,4 @@ import SyDatepickerComponent from 'timed/components/sy-datepicker/component'
  * @extends SyDatepickerComponent
  * @public
  */
-export default SyDatepickerComponent.extend({
-})
+export default SyDatepickerComponent.extend({})

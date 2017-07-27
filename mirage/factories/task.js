@@ -1,5 +1,5 @@
 import { Factory, faker } from 'ember-cli-mirage'
-import { capitalize }     from 'ember-string'
+import { capitalize } from 'ember-string'
 
 export default Factory.extend({
   name: () => capitalize(faker.hacker.ingverb()),

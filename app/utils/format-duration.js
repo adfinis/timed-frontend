@@ -4,10 +4,10 @@
  * @public
  */
 import { padStartTpl } from 'ember-pad/utils/pad'
-import moment          from 'moment'
+import moment from 'moment'
 
 const { floor, abs } = Math
-const padTpl2        = padStartTpl(2)
+const padTpl2 = padStartTpl(2)
 
 /**
  * Converts a moment duration into a string with zeropadded digits
@@ -29,7 +29,7 @@ export default function formatDuration(duration, seconds = true) {
 
   let prefix = duration.asMinutes() < 0 ? '-' : ''
 
-  let hours   = floor(abs(duration.asHours()))
+  let hours = floor(abs(duration.asHours()))
   let minutes = abs(duration.minutes())
 
   if (seconds) {

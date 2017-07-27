@@ -3,7 +3,7 @@
  * @submodule timed-routes
  * @public
  */
-import Route    from 'ember-route'
+import Route from 'ember-route'
 
 /**
  * The login route
@@ -12,5 +12,4 @@ import Route    from 'ember-route'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({
-})
+export default Route.extend({})

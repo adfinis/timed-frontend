@@ -4,11 +4,11 @@
  * @public
  */
 import SyTimepickerComponent from 'timed/components/sy-timepicker/component'
-import layout                from 'timed/components/sy-timepicker/template'
-import computed              from 'ember-computed-decorators'
-import moment                from 'moment'
-import formatDuration        from 'timed/utils/format-duration'
-import { padStart }          from 'ember-pad/utils/pad'
+import layout from 'timed/components/sy-timepicker/template'
+import computed from 'ember-computed-decorators'
+import moment from 'moment'
+import formatDuration from 'timed/utils/format-duration'
+import { padStart } from 'ember-pad/utils/pad'
 
 /**
  * Duration selector component
@@ -56,10 +56,12 @@ export default SyTimepickerComponent.extend({
    */
   @computed('precision')
   pattern(p) {
-    let count   = 60 / p
+    let count = 60 / p
     let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
 
-    return `([01][0-9]|2[0-3]):(${minutes.map((m) => padStart(m, 2)).join('|')})|24:00`
+    return `([01][0-9]|2[0-3]):(${minutes
+      .map(m => padStart(m, 2))
+      .join('|')})|24:00`
   },
 
   /**

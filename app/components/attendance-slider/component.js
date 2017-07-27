@@ -3,12 +3,12 @@
  * @submodule timed-components
  * @public
  */
-import Component       from 'ember-component'
-import computed        from 'ember-computed-decorators'
-import moment          from 'moment'
-import formatDuration  from 'timed/utils/format-duration'
+import Component from 'ember-component'
+import computed from 'ember-computed-decorators'
+import moment from 'moment'
+import formatDuration from 'timed/utils/format-duration'
 import { padStartTpl } from 'ember-pad/utils/pad'
-import { htmlSafe }    from 'ember-string'
+import { htmlSafe } from 'ember-string'
 
 const padTpl2 = padStartTpl(2)
 
@@ -58,7 +58,7 @@ export default Component.extend({
   init() {
     this._super(...arguments)
 
-    this.set('tooltips', [ Formatter, Formatter ])
+    this.set('tooltips', [Formatter, Formatter])
     this.set('values', this.get('start'))
   },
 
@@ -70,10 +70,7 @@ export default Component.extend({
    */
   @computed('attendance.{from,to}')
   start(from, to) {
-    return [
-      from.hour() * 60 + from.minute(),
-      to.hour() * 60 + to.minute()
-    ]
+    return [from.hour() * 60 + from.minute(), to.hour() * 60 + to.minute()]
   },
 
   /**
@@ -83,9 +80,9 @@ export default Component.extend({
    * @public
    */
   @computed('values')
-  duration([ fromMin, toMin ]) {
+  duration([fromMin, toMin]) {
     let from = moment({ hour: 0 }).minute(fromMin)
-    let to   = moment({ hour: 0 }).minute(toMin)
+    let to = moment({ hour: 0 }).minute(toMin)
 
     return formatDuration(moment.duration(to.diff(from)), false)
   },
@@ -130,10 +127,13 @@ export default Component.extend({
      * @param {Number[]} values The time in minutes
      * @public
      */
-    save([ fromMin, toMin ]) {
+    save([fromMin, toMin]) {
       let attendance = this.get('attendance')
 
-      attendance.set('from', moment(attendance.get('from')).hour(0).minute(fromMin))
+      attendance.set(
+        'from',
+        moment(attendance.get('from')).hour(0).minute(fromMin)
+      )
       attendance.set('to', moment(attendance.get('to')).hour(0).minute(toMin))
 
       this.get('attrs.on-save')(attendance)

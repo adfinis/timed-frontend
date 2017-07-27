@@ -3,10 +3,10 @@
  * @submodule timed-routes
  * @public
  */
-import Route             from 'ember-route'
-import service           from 'ember-service/inject'
-import moment            from 'moment'
-import Changeset         from 'ember-changeset'
+import Route from 'ember-route'
+import service from 'ember-service/inject'
+import moment from 'moment'
+import Changeset from 'ember-changeset'
 import ActivityValidator from 'timed/validations/activity'
 
 /**
@@ -95,7 +95,7 @@ export default Route.extend({
      */
     async save() {
       try {
-        this.get('controller.activity.blocks').forEach(async(block) => {
+        this.get('controller.activity.blocks').forEach(async block => {
           if (block.get('hasDirtyAttributes')) {
             await block.save()
           }
@@ -106,8 +106,7 @@ export default Route.extend({
         this.get('notify').success('Activity was saved')
 
         this.transitionTo('index.activities')
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the activity')
       }
@@ -125,7 +124,7 @@ export default Route.extend({
         // We can't test this because the UI already prevents this by disabling
         // the save button..
 
-        this.get('notify').error('You can\'t delete an active activity')
+        this.get('notify').error("You can't delete an active activity")
 
         return
       }
@@ -136,8 +135,7 @@ export default Route.extend({
         this.get('notify').success('Activity was deleted')
 
         this.transitionTo('index.activities')
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the activity')
       }

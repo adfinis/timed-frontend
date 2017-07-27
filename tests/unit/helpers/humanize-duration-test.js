@@ -1,7 +1,7 @@
-import { describe, it }       from 'mocha'
-import { expect }             from 'chai'
+import { describe, it } from 'mocha'
+import { expect } from 'chai'
 import { humanizeDurationFn } from 'timed/helpers/humanize-duration'
-import moment                 from 'moment'
+import moment from 'moment'
 
 describe('Unit | Helper | humanize duration', function() {
   it('works', function() {
@@ -11,7 +11,7 @@ describe('Unit | Helper | humanize duration', function() {
       seconds: 59
     })
 
-    let result = humanizeDurationFn([ duration ])
+    let result = humanizeDurationFn([duration])
 
     expect(result).to.equal('3h 56m')
   })
@@ -23,7 +23,7 @@ describe('Unit | Helper | humanize duration', function() {
       seconds: 59
     })
 
-    let result = humanizeDurationFn([ duration, true ])
+    let result = humanizeDurationFn([duration, true])
 
     expect(result).to.equal('3h 56m 59s')
   })

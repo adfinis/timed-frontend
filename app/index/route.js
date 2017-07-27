@@ -3,9 +3,9 @@
  * @submodule timed-routes
  * @public
  */
-import Route   from 'ember-route'
-import RSVP    from 'rsvp'
-import moment  from 'moment'
+import Route from 'ember-route'
+import RSVP from 'rsvp'
+import moment from 'moment'
 import service from 'ember-service/inject'
 
 const DATE_FORMAT = 'YYYY-MM-DD'
@@ -69,19 +69,34 @@ export default Route.extend({
    */
   afterModel(model) {
     let user = this.get('session.data.authenticated.user_id')
-    let day  = model.format(DATE_FORMAT)
+    let day = model.format(DATE_FORMAT)
     let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
-    let to   = moment(model).add(10, 'days').format(DATE_FORMAT)
-    let location = this.store.peekRecord('user', user).get('activeEmployment.location.id')
+    let to = moment(model).add(10, 'days').format(DATE_FORMAT)
+    let location = this.store
+      .peekRecord('user', user)
+      .get('activeEmployment.location.id')
 
     return RSVP.all([
-      this.store.query('activity', { include: 'blocks,task,task.project,task.project.customer', day }),
+      this.store.query('activity', {
+        include: 'blocks,task,task.project,task.project.customer',
+        day
+      }),
       this.store.query('attendance', { day }),
       this.store.query('absence-type', {}),
-      this.store.query('report', { include: 'task,task.project,task.project.customer', date: day, user }),
-      this.store.query('report', { 'from_date': from, 'to_date': to, user }),
-      this.store.query('absence', { 'from_date': from, 'to_date': to }),
-      this.store.query('public-holiday', { 'from_date': from, 'to_date': to, location })
+      this.store.query('report', {
+        include: 'task,task.project,task.project.customer',
+        date: day,
+        user
+      }),
+      /* eslint-disable camelcase */
+      this.store.query('report', { from_date: from, to_date: to, user }),
+      this.store.query('absence', { from_date: from, to_date: to }),
+      this.store.query('public-holiday', {
+        from_date: from,
+        to_date: to,
+        location
+      })
+      /* eslint-enable camelcase */
     ])
   },
 
@@ -106,12 +121,10 @@ export default Route.extend({
         await changeset.save()
 
         this.set('controller.showEditModal', false)
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the absence')
-      }
-      finally {
+      } finally {
         this.send('finished')
       }
     },
@@ -128,12 +141,10 @@ export default Route.extend({
         this.send('loading')
 
         await absence.destroyRecord()
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the absence')
-      }
-      finally {
+      } finally {
         this.send('finished')
       }
     },
@@ -147,22 +158,24 @@ export default Route.extend({
      */
     async addAbsence(changeset) {
       try {
-        let type    = changeset.get('type')
+        let type = changeset.get('type')
         let comment = changeset.get('comment')
 
-        changeset.get('dates').forEach(async(date) => {
-          let absence = this.store.createRecord('absence', { type, date, comment })
+        changeset.get('dates').forEach(async date => {
+          let absence = this.store.createRecord('absence', {
+            type,
+            date,
+            comment
+          })
 
           await absence.save()
         })
 
         this.set('controller.showAddModal', false)
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while adding the absence')
-      }
-      finally {
+      } finally {
         this.send('finished')
       }
     }

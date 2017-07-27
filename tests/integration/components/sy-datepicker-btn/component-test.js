@@ -1,9 +1,9 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
-import moment                 from 'moment'
-import { clickTrigger }       from 'timed/tests/helpers/ember-basic-dropdown'
+import hbs from 'htmlbars-inline-precompile'
+import moment from 'moment'
+import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
 
 describe('Integration | Component | sy datepicker btn', function() {
   setupComponentTest('sy-datepicker-btn', {
@@ -33,11 +33,17 @@ describe('Integration | Component | sy datepicker btn', function() {
   it('changes value on selection', function() {
     this.set('value', moment())
 
-    this.render(hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`)
+    this.render(
+      hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
+    )
 
     clickTrigger()
 
-    let target = this.$('.ember-power-calendar-day-grid').children().last().children().last()
+    let target = this.$('.ember-power-calendar-day-grid')
+      .children()
+      .last()
+      .children()
+      .last()
 
     target.click()
 

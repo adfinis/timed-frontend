@@ -1,6 +1,6 @@
 import { Factory, faker } from 'ember-cli-mirage'
 import { randomDuration } from '../helpers/duration'
-import moment             from 'moment'
+import moment from 'moment'
 
 export default Factory.extend({
   comment: () => faker.lorem.sentence(),

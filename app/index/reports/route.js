@@ -3,9 +3,9 @@
  * @submodule timed-routes
  * @public
  */
-import Route   from 'ember-route'
+import Route from 'ember-route'
 import service from 'ember-service/inject'
-import RSVP    from 'rsvp'
+import RSVP from 'rsvp'
 
 /**
  * The index reports route
@@ -67,12 +67,10 @@ export default Route.extend({
         if (absence) {
           await absence.reload()
         }
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the report')
-      }
-      finally {
+      } finally {
         this.send('finished')
       }
     },
@@ -97,12 +95,10 @@ export default Route.extend({
             await absence.reload()
           }
         }
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the report')
-      }
-      finally {
+      } finally {
         this.send('finished')
       }
     },
@@ -110,14 +106,15 @@ export default Route.extend({
     async reschedule(date) {
       try {
         let reports = this.get('controller.reports').filterBy('isNew', false)
-        await RSVP.Promise.all(reports.map(async(report) => {
-          report.set('date', date)
-          return await report.save()
-        }))
+        await RSVP.Promise.all(
+          reports.map(async report => {
+            report.set('date', date)
+            return await report.save()
+          })
+        )
         this.set('controller.showReschedule', false)
         this.controllerFor('index').set('date', date)
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while rescheduling the timesheet')
       }

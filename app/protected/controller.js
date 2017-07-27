@@ -12,5 +12,4 @@ import Controller from 'ember-controller'
  * @extends Ember.Controller
  * @public
  */
-export default Controller.extend({
-})
+export default Controller.extend({})

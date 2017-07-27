@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component    from 'ember-component'
-import computed     from 'ember-computed-decorators'
-import moment       from 'moment'
+import Component from 'ember-component'
+import computed from 'ember-computed-decorators'
+import moment from 'moment'
 import { padStart } from 'ember-pad/utils/pad'
 
 /**
@@ -138,10 +138,10 @@ export default Component.extend({
    */
   @computed('precision')
   pattern(p) {
-    let count   = 60 / p
+    let count = 60 / p
     let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
 
-    return `([01][0-9]|2[0-3]):(${minutes.map((m) => padStart(m, 2)).join('|')})`
+    return `([01][0-9]|2[0-3]):(${minutes.map(m => padStart(m, 2)).join('|')})`
   },
 
   /**
@@ -159,16 +159,14 @@ export default Component.extend({
       case 38:
         if (e.ctrlKey || e.shiftKey) {
           this._addHours(1)
-        }
-        else {
+        } else {
           this._addMinutes(this.get('precision'))
         }
         break
       case 40:
         if (e.ctrlKey || e.shiftKey) {
           this._addHours(-1)
-        }
-        else {
+        } else {
           this._addMinutes(-this.get('precision'))
         }
         break
@@ -196,7 +194,7 @@ export default Component.extend({
      */
     handleInput(e) {
       if (e.target.validity.valid) {
-        let [ h, m ] = e.target.value.split(':').map(Number)
+        let [h, m] = e.target.value.split(':').map(Number)
 
         this._change(this._set(h, m))
       }
@@ -214,7 +212,10 @@ export default Component.extend({
      * @public
      */
     handleKeyDown(e) {
-      if (e.key.length === 1 && (!/[\d:]/.test(e.key) || e.target.value.length === 5)) {
+      if (
+        e.key.length === 1 &&
+        (!/[\d:]/.test(e.key) || e.target.value.length === 5)
+      ) {
         e.preventDefault()
 
         return false

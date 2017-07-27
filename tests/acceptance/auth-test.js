@@ -1,9 +1,9 @@
-import { authenticateSession }                 from 'timed/tests/helpers/ember-simple-auth'
+import { authenticateSession } from 'timed/tests/helpers/ember-simple-auth'
 import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp                              from '../helpers/destroy-app'
-import { expect }                              from 'chai'
-import startApp                                from '../helpers/start-app'
-import testSelector                            from 'ember-test-selectors'
+import destroyApp from '../helpers/destroy-app'
+import { expect } from 'chai'
+import startApp from '../helpers/start-app'
+import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | auth', function() {
   let application
@@ -11,7 +11,11 @@ describe('Acceptance | auth', function() {
   beforeEach(function() {
     application = startApp()
 
-    this.user = server.create('user', { firstName: 'John', lastName: 'Doe', password: '123qwe' })
+    this.user = server.create('user', {
+      firstName: 'John',
+      lastName: 'Doe',
+      password: '123qwe'
+    })
   })
 
   afterEach(function() {
@@ -53,7 +57,8 @@ describe('Acceptance | auth', function() {
   })
 
   it('can logout', async function() {
-    await authenticateSession(application, { 'user_id': this.user.id })
+    // eslint-disable-next-line camelcase
+    await authenticateSession(application, { user_id: this.user.id })
 
     await visit('/')
 
