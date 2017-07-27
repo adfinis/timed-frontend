@@ -2532,6 +2532,12 @@ ember-ajax@3.0.0:
   dependencies:
     ember-cli-babel "^6.0.0"
 
+ember-assign-helper@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/ember-assign-helper/-/ember-assign-helper-0.1.1.tgz#217f221f37781b64657bd371d9da911768c3fbd1"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+
 ember-assign-helper@0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ember-assign-helper/-/ember-assign-helper-0.1.2.tgz#3d1d575f3d4457b3662b214d4c6e671bd462cad0"
@@ -2548,6 +2554,15 @@ ember-aupac-typeahead@2.2.0:
 ember-basic-dropdown@0.32.8:
   version "0.32.8"
   resolved "https://registry.yarnpkg.com/ember-basic-dropdown/-/ember-basic-dropdown-0.32.8.tgz#d460a78ae6eb8128d4bb0128520e6e9efdac2cd3"
+  dependencies:
+    ember-cli-babel "^6.1.0"
+    ember-cli-htmlbars "^1.1.1"
+    ember-native-dom-helpers "^0.5.0"
+    ember-wormhole "^0.5.1"
+
+ember-basic-dropdown@^0.32.0:
+  version "0.32.9"
+  resolved "https://registry.yarnpkg.com/ember-basic-dropdown/-/ember-basic-dropdown-0.32.9.tgz#b5ad98ed7a07dcea098b64402745b662b1835a51"
   dependencies:
     ember-cli-babel "^6.1.0"
     ember-cli-htmlbars "^1.1.1"
@@ -2813,6 +2828,22 @@ ember-cli-moment-shim@3.3.1, ember-cli-moment-shim@^3.1.0:
   dependencies:
     broccoli-funnel "^1.1.0"
     broccoli-merge-trees "^2.0.0"
+    broccoli-stew "^1.4.0"
+    chalk "^1.1.3"
+    ember-cli-babel "^5.1.7"
+    ember-cli-import-polyfill "^0.2.0"
+    exists-sync "^0.0.4"
+    lodash.defaults "^4.2.0"
+    moment "^2.18.1"
+    moment-timezone "~0.5.11"
+
+ember-cli-moment-shim@^3.0.1:
+  version "3.3.3"
+  resolved "https://registry.yarnpkg.com/ember-cli-moment-shim/-/ember-cli-moment-shim-3.3.3.tgz#f0609c6ff606287c3eeee717163310331e0e9397"
+  dependencies:
+    broccoli-funnel "^1.1.0"
+    broccoli-merge-trees "^2.0.0"
+    broccoli-source "^1.1.0"
     broccoli-stew "^1.4.0"
     chalk "^1.1.3"
     ember-cli-babel "^5.1.7"
@@ -3318,6 +3349,26 @@ ember-power-calendar@0.5.0:
     ember-cli-moment-shim "^3.1.0"
     ember-concurrency "^0.8.1"
     ember-moment "^7.3.0"
+
+ember-power-calendar@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.4.1.tgz#7a426cd0b426865ad03e215fa52d153bbd57894e"
+  dependencies:
+    ember-assign-helper "0.1.1"
+    ember-cli-babel "^6.0.0-beta.9"
+    ember-cli-htmlbars "^1.1.1"
+    ember-cli-moment-shim "^3.0.1"
+    ember-concurrency "^0.8.1"
+    ember-moment "^7.3.0"
+
+ember-power-datepicker@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ember-power-datepicker/-/ember-power-datepicker-0.3.0.tgz#1b38fe08cc76dd093a8fe340246cea3b23bc6b01"
+  dependencies:
+    ember-basic-dropdown "^0.32.0"
+    ember-cli-babel "^6.0.0"
+    ember-cli-htmlbars "^1.1.1"
+    ember-power-calendar "^0.4.1"
 
 ember-require-module@0.1.1:
   version "0.1.1"
@@ -6348,6 +6399,12 @@ p-locate@^2.0.0:
   resolved "https://registry.yarnpkg.com/p-locate/-/p-locate-2.0.0.tgz#20a0103b222a70c8fd39cc2e580680f3dde5ec43"
   dependencies:
     p-limit "^1.1.0"
+
+pagination-pager@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/pagination-pager/-/pagination-pager-3.0.0.tgz#d35587799d41655687b18cfc196e0335e3870a9e"
+  dependencies:
+    ember-cli-babel "^5.1.7"
 
 parse-glob@^3.0.4:
   version "3.0.4"

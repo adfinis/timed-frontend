@@ -5,6 +5,7 @@ import config                       from '../../config/environment'
 import registerBasicDropdownHelpers from 'timed/tests/helpers/ember-basic-dropdown'
 
 import 'timed/tests/helpers/task-select'
+import 'timed/tests/helpers/user-select'
 
 registerBasicDropdownHelpers()
 

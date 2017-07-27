@@ -20,6 +20,7 @@ ApplicationRouter.map(function() {
       this.route('reports')
     })
     this.route('me', { resetNamespace })
+    this.route('analysis', { resetNamespace })
     this.route('notfound', { resetNamespace, path: '/*path' })
   })
 })
