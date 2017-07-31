@@ -119,6 +119,8 @@ class Report(models.Model):
                                      related_name='reports')
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='reports')
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         """Save the report with some custom functionality.
