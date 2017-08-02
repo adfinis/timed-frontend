@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
-import { expect }       from 'chai'
-import formatDuration   from 'timed/utils/format-duration'
-import moment           from 'moment'
+import { expect } from 'chai'
+import formatDuration from 'timed/utils/format-duration'
+import moment from 'moment'
 
 describe('Unit | Utility | format duration', function() {
   it('works', function() {

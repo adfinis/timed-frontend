@@ -1,11 +1,11 @@
-import { expect }       from 'chai'
+import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupTest }    from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 
 describe('Unit | Route | index/activities', function() {
   setupTest('route:index/activities', {
     // Specify the other units that are required for this test.
-    needs: [ 'service:notify', 'service:tracking' ]
+    needs: ['service:notify', 'service:tracking']
   })
 
   it('exists', function() {

@@ -1,16 +1,16 @@
-import Component  from 'ember-component'
-import hbs        from 'htmlbars-inline-precompile'
-import service    from 'ember-service/inject'
-import computed   from 'ember-computed-decorators'
+import Component from 'ember-component'
+import hbs from 'htmlbars-inline-precompile'
+import service from 'ember-service/inject'
+import computed from 'ember-computed-decorators'
 import { typeOf } from 'ember-utils'
-import { task }   from 'ember-concurrency'
+import { task } from 'ember-concurrency'
 
-const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('fullName') : ''
+const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('fullName') : '')
 const SUGGESTION_TEMPLATE = hbs`{{model.fullName}}`
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
 
-  return data.filter((i) => re.test(i.get(key)))
+  return data.filter(i => re.test(i.get(key)))
 }
 
 export default Component.extend({
@@ -35,12 +35,12 @@ export default Component.extend({
 
       /* istanbul ignore next */
       customers
-        .then((data) => asyncResults(regexFilter(data, search, 'fullName')))
+        .then(data => asyncResults(regexFilter(data, search, 'fullName')))
         .catch(() => asyncResults([]))
     }
   },
 
-  userTask: task(function* () {
+  userTask: task(function*() {
     return yield this.get('store').query('user', {})
   }).restartable(),
 

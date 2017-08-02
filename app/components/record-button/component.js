@@ -20,7 +20,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'recording' ],
+  classNameBindings: ['recording'],
 
   /**
    * The start time

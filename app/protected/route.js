@@ -3,8 +3,8 @@
  * @submodule timed-routes
  * @public
  */
-import Route                   from 'ember-route'
-import service                 from 'ember-service/inject'
+import Route from 'ember-route'
+import service from 'ember-service/inject'
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin'
 
 /**
@@ -21,7 +21,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
   model() {
     let id = this.get('session.data.authenticated.user_id')
 
-    return this.store.findRecord('user', id, { include: 'employments,employments.location' })
+    return this.store.findRecord('user', id, {
+      include: 'employments,employments.location'
+    })
   },
 
   /**

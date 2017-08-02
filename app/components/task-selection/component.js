@@ -3,20 +3,20 @@
  * @submodule timed-components
  * @public
  */
-import Component        from 'ember-component'
-import computed         from 'ember-computed-decorators'
-import service          from 'ember-service/inject'
-import RSVP             from 'rsvp'
-import hbs              from 'htmlbars-inline-precompile'
-import { typeOf }       from 'ember-utils'
+import Component from 'ember-component'
+import computed from 'ember-computed-decorators'
+import service from 'ember-service/inject'
+import RSVP from 'rsvp'
+import hbs from 'htmlbars-inline-precompile'
+import { typeOf } from 'ember-utils'
 import customerTemplate from '../../customer-suggestion/template'
 
-const FORMAT = (obj) => typeOf(obj) === 'instance' ? obj.get('name') : ''
+const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('name') : '')
 
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
 
-  return data.filter((i) => re.test(i.get(key)))
+  return data.filter(i => re.test(i.get(key)))
 }
 
 /**
@@ -112,7 +112,7 @@ export default Component.extend({
   @computed('task')
   customer: {
     get(task) {
-      return task && task.get('project.customer') || this.get('_customer')
+      return (task && task.get('project.customer')) || this.get('_customer')
     },
     set(value) {
       /**
@@ -154,7 +154,7 @@ export default Component.extend({
   @computed('task')
   project: {
     get(task) {
-      return task && task.get('project') || this.get('_project')
+      return (task && task.get('project')) || this.get('_project')
     },
     set(value) {
       this.set('_project', value)
@@ -196,7 +196,7 @@ export default Component.extend({
 
       /* istanbul ignore next */
       RSVP.hash({ history, customers })
-        .then((hash) => {
+        .then(hash => {
           asyncResults([
             ...regexFilter(hash.history.toArray(), search, 'longName'),
             ...regexFilter(hash.customers.toArray(), search, 'name')
@@ -224,7 +224,7 @@ export default Component.extend({
 
       /* istanbul ignore next */
       projects
-        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .then(data => asyncResults(regexFilter(data, search, 'name')))
         .catch(() => asyncResults([]))
     }
   },
@@ -247,7 +247,7 @@ export default Component.extend({
 
       /* istanbul ignore next */
       tasks
-        .then((data) => asyncResults(regexFilter(data, search, 'name')))
+        .then(data => asyncResults(regexFilter(data, search, 'name')))
         .catch(() => asyncResults([]))
     }
   }

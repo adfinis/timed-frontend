@@ -78,12 +78,15 @@
     "ember-truth-helpers": "1.3.0",
     "ember-validated-form": "^0.4.0",
     "ember-wormhole": "0.5.2",
+    "eslint-config-prettier": "^2.3.0",
     "eslint-plugin-ember": "^3.0.1",
     "eslint-plugin-ember-suave": "^1.0.0",
+    "eslint-plugin-prettier": "^2.1.2",
     "liquid-fire": "0.27.3",
     "loader.js": "^4.1.0",
     "pagination-pager": "^3.0.0",
     "postcss-cssnext": "^2.7.0",
+    "prettier": "^1.5.3",
     "yuidoc-adsy-theme": "^1.1.1"
   }
 }

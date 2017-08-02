@@ -12,7 +12,7 @@ export default Factory.extend({
 
     return start
       .add(faker.random.number({ min: 15, max: 60 }), 'minutes')
-      .add(faker.random.number({ min: 0,  max: 59 }), 'seconds')
+      .add(faker.random.number({ min: 0, max: 59 }), 'seconds')
   },
 
   active: trait({

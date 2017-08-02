@@ -3,14 +3,14 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller                 from 'ember-controller'
-import moment                     from 'moment'
-import computed, { oneWay }       from 'ember-computed-decorators'
-import Ember                      from 'ember'
-import service                    from 'ember-service/inject'
-import { scheduleOnce }           from 'ember-runloop'
-import { task, timeout }          from 'ember-concurrency'
-import AbsenceValidations         from 'timed/validations/absence'
+import Controller from 'ember-controller'
+import moment from 'moment'
+import computed, { oneWay } from 'ember-computed-decorators'
+import Ember from 'ember'
+import service from 'ember-service/inject'
+import { scheduleOnce } from 'ember-runloop'
+import { task, timeout } from 'ember-concurrency'
+import AbsenceValidations from 'timed/validations/absence'
 import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
 
 const { testing } = Ember
@@ -45,7 +45,7 @@ export default Controller.extend({
    * @property {String[]} queryParams
    * @public
    */
-  queryParams: [ 'day' ],
+  queryParams: ['day'],
 
   /**
    * The day
@@ -98,7 +98,7 @@ export default Controller.extend({
    */
   @computed('date', '_allActivities.@each.{start,isDeleted}')
   _activities(day, activities) {
-    return activities.filter((a) => {
+    return activities.filter(a => {
       return a.get('start').isSame(day, 'day') && !a.get('isDeleted')
     })
   },
@@ -117,7 +117,7 @@ export default Controller.extend({
    * @method _activitySum
    * @private
    */
-  _activitySum: task(function* () {
+  _activitySum: task(function*() {
     for (;;) {
       let duration = this.get('_activities').reduce((dur, cur) => {
         dur.add(cur.get('duration'))
@@ -160,7 +160,7 @@ export default Controller.extend({
    */
   @computed('date', '_allAttendances.@each.{from,isDeleted}')
   _attendances(day, attendances) {
-    return attendances.filter((a) => {
+    return attendances.filter(a => {
       return a.get('from').isSame(day, 'day') && !a.get('isDeleted')
     })
   },
@@ -208,8 +208,12 @@ export default Controller.extend({
    */
   @computed('date', '_allReports.@each.{date,isNew,isDeleted}')
   _reports(day, reports) {
-    return reports.filter((r) => {
-      return r.get('date').isSame(day, 'day') && !r.get('isNew') && !r.get('isDeleted')
+    return reports.filter(r => {
+      return (
+        r.get('date').isSame(day, 'day') &&
+        !r.get('isNew') &&
+        !r.get('isDeleted')
+      )
     })
   },
 
@@ -221,8 +225,12 @@ export default Controller.extend({
    */
   @computed('date', '_allAbsences.@each.{date,isNew,isDeleted}')
   _absences(day, absences) {
-    return absences.filter((a) => {
-      return a.get('date').isSame(day, 'day') && !a.get('isNew') && !a.get('isDeleted')
+    return absences.filter(a => {
+      return (
+        a.get('date').isSame(day, 'day') &&
+        !a.get('isNew') &&
+        !a.get('isDeleted')
+      )
     })
   },
 
@@ -234,10 +242,13 @@ export default Controller.extend({
    */
   @computed('_reports.@each.duration', '_absences.@each.duration')
   reportSum(reports, absences) {
-    let reportDurations  = reports.mapBy('duration')
+    let reportDurations = reports.mapBy('duration')
     let absenceDurations = absences.mapBy('duration')
 
-    return [ ...reportDurations, ...absenceDurations ].reduce((val, dur) => val.add(dur), moment.duration())
+    return [...reportDurations, ...absenceDurations].reduce(
+      (val, dur) => val.add(dur),
+      moment.duration()
+    )
   },
 
   /**
@@ -298,8 +309,7 @@ export default Controller.extend({
    * @property {Number[]} workdays
    * @public
    */
-  @oneWay('user.activeEmployment.location.workdays')
-  workdays: [],
+  @oneWay('user.activeEmployment.location.workdays') workdays: [],
 
   /**
    * The data for the weekly overview
@@ -307,7 +317,11 @@ export default Controller.extend({
    * @property {Object[]} weeklyOverviewData
    * @public
    */
-  @computed('_allReports.@each.{duration,date}', '_allAbsences.@each.{duration,date}', 'date')
+  @computed(
+    '_allReports.@each.{duration,date}',
+    '_allAbsences.@each.{duration,date}',
+    'date'
+  )
   weeklyOverviewData(allReports, allAbsences, date) {
     let task = this.get('_weeklyOverviewData')
 
@@ -322,11 +336,13 @@ export default Controller.extend({
    * @property {EmberConcurrency.Task} _weeklyOverviewData
    * @private
    */
-  _weeklyOverviewData: task(function* (allReports, allAbsences, date) {
+  _weeklyOverviewData: task(function*(allReports, allAbsences, date) {
     yield timeout(200)
 
-    allReports  = allReports.filter((r)  => !r.get('isDeleted') && !r.get('isNew'))
-    allAbsences = allAbsences.filter((a) => !a.get('isDeleted') && !a.get('isNew'))
+    allReports = allReports.filter(r => !r.get('isDeleted') && !r.get('isNew'))
+    allAbsences = allAbsences.filter(
+      a => !a.get('isDeleted') && !a.get('isNew')
+    )
 
     let allHolidays = this.store.peekAll('public-holiday')
 
@@ -335,7 +351,7 @@ export default Controller.extend({
     //  '2017-03-21': { reports: [duration1, duration2, ...], absences: [duration1, ...]
     //  ...
     // }
-    let container = [ ...allReports, ...allAbsences ].reduce((obj, model) => {
+    let container = [...allReports, ...allAbsences].reduce((obj, model) => {
       let d = model.get('date').format('YYYY-MM-DD')
 
       obj[d] = obj[d] || { reports: [], absences: [] }
@@ -345,16 +361,23 @@ export default Controller.extend({
       return obj
     }, {})
 
-    return Array.from({ length: 31 }, (v, k) => moment(date).add(k - 20, 'days')).map((d) => {
-      let { reports = [], absences = [] } = container[d.format('YYYY-MM-DD')] || {}
+    return Array.from({ length: 31 }, (v, k) =>
+      moment(date).add(k - 20, 'days')
+    ).map(d => {
+      let { reports = [], absences = [] } =
+        container[d.format('YYYY-MM-DD')] || {}
 
       return {
         day: d,
         active: d.isSame(date, 'day'),
         absence: !!absences.length,
         workday: this.get('workdays').includes(d.isoWeekday()),
-        worktime: [ ...reports, ...absences ].reduce((val, dur) => val.add(dur), moment.duration()),
-        holiday: !!allHolidays.filter((holiday) => holiday.get('date').isSame(d)).length
+        worktime: [...reports, ...absences].reduce(
+          (val, dur) => val.add(dur),
+          moment.duration()
+        ),
+        holiday: !!allHolidays.filter(holiday => holiday.get('date').isSame(d))
+          .length
       }
     })
   }).restartable(),
@@ -379,14 +402,24 @@ export default Controller.extend({
    * @param {Date} value.date The date version of the value
    * @public
    */
-  setCenter: task(function* ({ moment: center }) {
-    let from = moment(center).startOf('month').startOf('week').startOf('day').add(1, 'days')
-    let to   = moment(center).endOf('month').endOf('week').endOf('day').add(1, 'days')
+  setCenter: task(function*({ moment: center }) {
+    let from = moment(center)
+      .startOf('month')
+      .startOf('week')
+      .startOf('day')
+      .add(1, 'days')
+    let to = moment(center)
+      .endOf('month')
+      .endOf('week')
+      .endOf('day')
+      .add(1, 'days')
 
+    /* eslint-disable camelcase */
     let params = {
-      'from_date': from.format('YYYY-MM-DD'),
-      'to_date': to.format('YYYY-MM-DD')
+      from_date: from.format('YYYY-MM-DD'),
+      to_date: to.format('YYYY-MM-DD')
     }
+    /* eslint-enable camelcase */
 
     let absences = yield this.store.query('absence', params)
 
@@ -395,8 +428,8 @@ export default Controller.extend({
       location: this.get('user.activeEmployment.location.id')
     })
 
-    let disabled = [ ...absences.mapBy('date'), ...publicHolidays.mapBy('date') ]
-    let date     = moment(from)
+    let disabled = [...absences.mapBy('date'), ...publicHolidays.mapBy('date')]
+    let date = moment(from)
     let workdays = this.get('workdays')
 
     while (date < to) {
@@ -418,7 +451,7 @@ export default Controller.extend({
    */
   @computed('absence.date', 'disabledDates.[]')
   disabledDatesForEdit(current, disabled) {
-    return disabled.filter((d) => !d.isSame(current, 'day'))
+    return disabled.filter(d => !d.isSame(current, 'day'))
   },
 
   actions: {

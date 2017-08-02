@@ -3,7 +3,7 @@
  * @submodule timed-transforms
  * @public
  */
-import DS     from 'ember-data'
+import DS from 'ember-data'
 import moment from 'moment'
 
 const { Transform } = DS
@@ -47,6 +47,8 @@ export default Transform.extend({
    * @public
    */
   serialize(deserialized) {
-    return deserialized && deserialized.isValid() ? deserialized.format(this.get('format')) : null
+    return deserialized && deserialized.isValid()
+      ? deserialized.format(this.get('format'))
+      : null
   }
 })

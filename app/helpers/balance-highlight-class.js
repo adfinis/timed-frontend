@@ -16,11 +16,10 @@ import { helper } from 'ember-helper'
  * @return {String} The CSS class to apply the color
  * @public
  */
-export function balanceHighlightClass([ balance ]) {
+export function balanceHighlightClass([balance]) {
   if (balance.asMinutes() > 0) {
     return 'color-success'
-  }
-  else if (balance.asMinutes() < 0) {
+  } else if (balance.asMinutes() < 0) {
     return 'color-danger'
   }
 

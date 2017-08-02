@@ -1,5 +1,5 @@
 import { Response } from 'ember-cli-mirage'
-import moment       from 'moment'
+import moment from 'moment'
 
 const { parse } = JSON
 
@@ -8,23 +8,31 @@ export default function() {
 
   this.urlPrefix = ''
   this.namespace = '/api/v1'
-  this.timing    = 400
+  this.timing = 400
 
   this.post('/auth/login', ({ users }, req) => {
-    let { data: { attributes: { username, password } } } = parse(req.requestBody)
+    let { data: { attributes: { username, password } } } = parse(
+      req.requestBody
+    )
 
-    let { models: [ user ] } = users.where({ username, password })
+    let { models: [user] } = users.where({ username, password })
 
     if (!user) {
       return new Response(400, {})
     }
 
-    let exp     = new Date().getTime() + 30 * 60 * 60 // now plus 30 days
+    let exp = new Date().getTime() + 30 * 60 * 60 // now plus 30 days
     let payload = `{"user_id":${user.id},"exp":${exp}}`
 
-    return new Response(200, {}, { data: {
-      token: `${btoa('foo')}.${btoa(payload)}.${btoa('pony')}` }
-    })
+    return new Response(
+      200,
+      {},
+      {
+        data: {
+          token: `${btoa('foo')}.${btoa(payload)}.${btoa('pony')}`
+        }
+      }
+    )
   })
 
   this.post('/auth/refresh', (db, req) => {
@@ -34,7 +42,7 @@ export default function() {
   })
 
   this.get('/attendances', function({ attendances }, { queryParams: { day } }) {
-    return attendances.where((a) => {
+    return attendances.where(a => {
       return moment(a.fromDatetime).format('YYYY-MM-DD') === day
     })
   })
@@ -43,12 +51,15 @@ export default function() {
   this.patch('/attendances/:id')
   this.del('/attendances/:id')
 
-  this.get('/activities', function({ activities, activityBlocks }, { queryParams: { active } }) {
+  this.get('/activities', function(
+    { activities, activityBlocks },
+    { queryParams: { active } }
+  ) {
     if (active) {
-      return activities.where((a) => {
-        let blocks = activityBlocks.where((b) => b.activityId === a.id).models
+      return activities.where(a => {
+        let blocks = activityBlocks.where(b => b.activityId === a.id).models
 
-        return blocks.any((b) => !b.toDatetime)
+        return blocks.any(b => !b.toDatetime)
       })
     }
 
@@ -87,9 +98,12 @@ export default function() {
   this.get('/users')
   this.get('/users/:id')
 
-  this.get('/public-holidays', function({ publicHolidays }, { queryParams: { date } }) {
+  this.get('/public-holidays', function(
+    { publicHolidays },
+    { queryParams: { date } }
+  ) {
     if (date) {
-      publicHolidays.where((l) => {
+      publicHolidays.where(l => {
         return l.format('YYYY-MM-DD') === date
       })
     }
@@ -115,7 +129,10 @@ export default function() {
 
   this.get('/absences')
   this.post('/absences', function({ absences }) {
-    return absences.create({ ...this.normalizedRequestAttrs(), duration: '08:30:00' })
+    return absences.create({
+      ...this.normalizedRequestAttrs(),
+      duration: '08:30:00'
+    })
   })
   this.get('/absences/:id')
   this.patch('/absences/:id')

@@ -12,5 +12,4 @@ import Route from 'ember-route'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({
-})
+export default Route.extend({})

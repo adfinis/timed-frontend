@@ -1,14 +1,10 @@
-import { describe, it }   from 'mocha'
+import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
-import { expect }         from 'chai'
+import { expect } from 'chai'
 
 describe('Unit | Model | activity', function() {
   setupModelTest('activity', {
-    needs: [
-      'model:activity-block',
-      'model:task',
-      'model:user'
-    ]
+    needs: ['model:activity-block', 'model:task', 'model:user']
   })
 
   it('exists', function() {

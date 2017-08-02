@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component         from 'ember-component'
+import Component from 'ember-component'
 import ReportValidations from 'timed/validations/report'
-import Changeset         from 'ember-changeset'
+import Changeset from 'ember-changeset'
 
 const ENTER_CHAR_CODE = 13
 
@@ -74,7 +74,7 @@ const ReportRowComponent = Component.extend({
 })
 
 ReportRowComponent.reopenClass({
-  positionalParams: [ 'report' ]
+  positionalParams: ['report']
 })
 
 export default ReportRowComponent

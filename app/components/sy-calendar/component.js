@@ -14,5 +14,4 @@ import PowerCalendarComponent from 'ember-power-calendar/components/power-calend
  * @extends EmberPowerCalendar.PowerCalendarComponent
  * @public
  */
-export default PowerCalendarComponent.extend({
-})
+export default PowerCalendarComponent.extend({})

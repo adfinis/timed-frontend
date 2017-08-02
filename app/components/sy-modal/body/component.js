@@ -19,5 +19,5 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: [ 'modal-body' ]
+  classNames: ['modal-body']
 })

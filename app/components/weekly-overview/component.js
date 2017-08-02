@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component    from 'ember-component'
-import computed     from 'ember-computed-decorators'
+import Component from 'ember-component'
+import computed from 'ember-computed-decorators'
 import { htmlSafe } from 'ember-string'
 
 /**
@@ -21,7 +21,7 @@ export default Component.extend({
    * @property {String[]} attributeBindings
    * @public
    */
-  attributeBindings: [ 'style' ],
+  attributeBindings: ['style'],
 
   /**
    * The height of the overview in pixels

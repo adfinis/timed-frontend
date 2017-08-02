@@ -3,9 +3,9 @@
  * @submodule timed-routes
  * @public
  */
-import Route   from 'ember-route'
+import Route from 'ember-route'
 import service from 'ember-service/inject'
-import moment  from 'moment'
+import moment from 'moment'
 
 /**
  * The index activities route
@@ -51,8 +51,7 @@ export default Route.extend({
 
       if (id === activity.get('id')) {
         this.transitionTo('index.activities')
-      }
-      else {
+      } else {
         this.transitionTo('index.activities.edit', activity.get('id'))
       }
     },
@@ -66,7 +65,9 @@ export default Route.extend({
      */
     async startActivity(activity) {
       if (!activity.get('start').isSame(moment(), 'day')) {
-        activity = this.store.createRecord('activity', { ...activity.getProperties('task', 'comment') })
+        activity = this.store.createRecord('activity', {
+          ...activity.getProperties('task', 'comment')
+        })
       }
 
       await this.get('tracking.stopActivity').perform()
@@ -75,7 +76,9 @@ export default Route.extend({
 
       await this.get('tracking.startActivity').perform()
 
-      this.transitionTo('index.activities', { queryParams: { day: moment().format('YYYY-MM-DD') } })
+      this.transitionTo('index.activities', {
+        queryParams: { day: moment().format('YYYY-MM-DD') }
+      })
     },
 
     /**
@@ -112,38 +115,38 @@ export default Route.extend({
     async generateReports() {
       this.set('controller.showWarning', false)
       try {
-        await this.get('controller.activities').filterBy('task.id').forEach(async(activity) => {
-          let duration = moment.duration(activity.get('duration'))
+        await this.get('controller.activities')
+          .filterBy('task.id')
+          .forEach(async activity => {
+            let duration = moment.duration(activity.get('duration'))
 
-          if (activity.get('active')) {
-            duration.add(moment().diff(activity.get('activeBlock.from')))
-          }
+            if (activity.get('active')) {
+              duration.add(moment().diff(activity.get('activeBlock.from')))
+            }
 
-          let data = {
-            activity,
-            duration,
-            date: activity.get('start'),
-            task: activity.get('task'),
-            comment: activity.get('comment')
-          }
+            let data = {
+              activity,
+              duration,
+              date: activity.get('start'),
+              task: activity.get('task'),
+              comment: activity.get('comment')
+            }
 
-          let report = this.store.peekAll('report').find((r) => {
-            return r.get('activity.id') == activity.get('id')
+            let report = this.store.peekAll('report').find(r => {
+              return r.get('activity.id') == activity.get('id')
+            })
+
+            if (report) {
+              report.setProperties(data)
+            } else {
+              report = this.store.createRecord('report', data)
+            }
+
+            await report.save()
           })
 
-          if (report) {
-            report.setProperties(data)
-          }
-          else {
-            report = this.store.createRecord('report', data)
-          }
-
-          await report.save()
-        })
-
         this.transitionTo('index.reports')
-      }
-      catch(e) {
+      } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while generating reports')
       }

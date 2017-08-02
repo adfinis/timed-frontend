@@ -3,17 +3,14 @@
  * @submodule timed-transforms
  * @public
  */
-import DS     from 'ember-data'
+import DS from 'ember-data'
 import moment from 'moment'
 
 const { Transform } = DS
 
-import {
-  padTpl,
-  padStart
-} from 'ember-pad/utils/pad'
+import { padTpl, padStart } from 'ember-pad/utils/pad'
 
-const padTpl2   = padTpl(2)
+const padTpl2 = padTpl(2)
 const { round } = Math
 
 /**
@@ -47,14 +44,9 @@ export default Transform.extend({
 
     let re = new RegExp(/^(-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
 
-    let [
-      ,
-      days,
-      hours,
-      minutes,
-      seconds,
-      microseconds
-    ] = serialized.match(re).map((m) => Number(m) || 0)
+    let [, days, hours, minutes, seconds, microseconds] = serialized
+      .match(re)
+      .map(m => Number(m) || 0)
 
     return moment.duration({
       days,
@@ -79,7 +71,7 @@ export default Transform.extend({
    * @private
    */
   _getDurationComponentsTimedeltaLike(duration) {
-    let days         = Math.floor(duration.asDays())
+    let days = Math.floor(duration.asDays())
     let milliseconds = Math.abs(moment.duration({ days }) - duration)
 
     let positiveDuration = moment.duration(milliseconds)

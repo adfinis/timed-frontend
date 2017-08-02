@@ -1,9 +1,12 @@
-import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import destroyApp                                 from '../helpers/destroy-app'
-import { expect }                                 from 'chai'
-import startApp                                   from '../helpers/start-app'
-import testSelector                               from 'ember-test-selectors'
+import {
+  authenticateSession,
+  invalidateSession
+} from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import destroyApp from '../helpers/destroy-app'
+import { expect } from 'chai'
+import startApp from '../helpers/start-app'
+import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | notfound', function() {
   let application
@@ -25,7 +28,8 @@ describe('Acceptance | notfound', function() {
   it('displays a 404 page for undefined routes if logged in', async function() {
     let user = server.create('user')
 
-    await authenticateSession(application, { 'user_id': user.id })
+    // eslint-disable-next-line camelcase
+    await authenticateSession(application, { user_id: user.id })
 
     await visit('/thiswillneverbeavalidrouteurl')
 

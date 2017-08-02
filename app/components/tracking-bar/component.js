@@ -4,7 +4,7 @@
  * @public
  */
 import Component from 'ember-component'
-import service   from 'ember-service/inject'
+import service from 'ember-service/inject'
 
 const ENTER_CHAR_CODE = 13
 
@@ -28,7 +28,10 @@ export default Component.extend({
    * @public
    */
   keyPress(e) {
-    if (e.charCode === ENTER_CHAR_CODE && !e.target.classList.contains('tt-input')) {
+    if (
+      e.charCode === ENTER_CHAR_CODE &&
+      !e.target.classList.contains('tt-input')
+    ) {
       this.get('tracking.startActivity').perform()
     }
   }

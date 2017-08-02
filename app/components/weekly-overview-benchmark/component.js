@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component    from 'ember-component'
-import computed     from 'ember-computed-decorators'
+import Component from 'ember-component'
+import computed from 'ember-computed-decorators'
 import { htmlSafe } from 'ember-string'
 
 /**
@@ -21,7 +21,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: [ 'expected' ],
+  classNameBindings: ['expected'],
 
   /**
    * Maximum worktime

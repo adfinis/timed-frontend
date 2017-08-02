@@ -1,7 +1,7 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
+import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | report row', function() {
   setupComponentTest('report-row', {
@@ -23,7 +23,9 @@ describe('Integration | Component | report row', function() {
     this.set('report', {})
     this.set('didDelete', false)
 
-    this.render(hbs`{{report-row report on-delete=(action (mut didDelete) true)}}`)
+    this.render(
+      hbs`{{report-row report on-delete=(action (mut didDelete) true)}}`
+    )
 
     this.$('.btn-danger').click()
 

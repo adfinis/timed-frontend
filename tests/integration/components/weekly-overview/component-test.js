@@ -1,8 +1,8 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
-import moment                 from 'moment'
+import hbs from 'htmlbars-inline-precompile'
+import moment from 'moment'
 
 describe('Integration | Component | weekly overview', function() {
   setupComponentTest('weekly-overview', {
@@ -26,7 +26,7 @@ describe('Integration | Component | weekly overview', function() {
   })
 
   it('renders the days', function() {
-    this.set('day',      moment())
+    this.set('day', moment())
     this.set('expected', moment.duration({ h: 8 }))
     this.set('worktime', moment.duration({ h: 8 }))
 

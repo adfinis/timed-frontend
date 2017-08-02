@@ -1,7 +1,7 @@
-import { assign }                   from 'ember-platform'
-import run                          from 'ember-runloop'
-import Application                  from '../../app'
-import config                       from '../../config/environment'
+import { assign } from 'ember-platform'
+import run from 'ember-runloop'
+import Application from '../../app'
+import config from '../../config/environment'
 import registerBasicDropdownHelpers from 'timed/tests/helpers/ember-basic-dropdown'
 
 import 'timed/tests/helpers/task-select'

@@ -1,9 +1,12 @@
-import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import destroyApp                                 from '../helpers/destroy-app'
-import { expect }                                 from 'chai'
-import startApp                                   from '../helpers/start-app'
-import testSelector                               from 'ember-test-selectors'
+import {
+  authenticateSession,
+  invalidateSession
+} from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import destroyApp from '../helpers/destroy-app'
+import { expect } from 'chai'
+import startApp from '../helpers/start-app'
+import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | index attendances', function() {
   let application
@@ -13,7 +16,8 @@ describe('Acceptance | index attendances', function() {
 
     let user = server.create('user')
 
-    await authenticateSession(application, { 'user_id': user.id })
+    // eslint-disable-next-line camelcase
+    await authenticateSession(application, { user_id: user.id })
 
     server.create('attendance', 'morning')
     server.create('attendance', 'afternoon')
@@ -57,7 +61,11 @@ describe('Acceptance | index attendances', function() {
   it('can delete an attendance', async function() {
     await visit('/attendances')
 
-    await click(`${testSelector('attendance-slider-id', 1)} ${testSelector('delete-attendance')}`)
+    await click(
+      `${testSelector('attendance-slider-id', 1)} ${testSelector(
+        'delete-attendance'
+      )}`
+    )
 
     expect(find(testSelector('attendance-slider-id'), 1)).to.have.length(0)
 

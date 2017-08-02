@@ -1,22 +1,27 @@
 import { describe, it } from 'mocha'
-import { setupTest }    from 'ember-mocha'
-import { expect }       from 'chai'
-import moment           from 'moment'
+import { setupTest } from 'ember-mocha'
+import { expect } from 'chai'
+import moment from 'moment'
 
 describe('Unit | Transform | django date', function() {
-  setupTest('transform:django-date', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+  setupTest(
+    'transform:django-date',
+    {
+      // Specify the other units that are required for this test.
+      // needs: ['transform:foo']
+    }
+  )
 
   it('serializes', function() {
     let transform = this.subject()
 
-    let result = transform.serialize(moment({
-      y: 2017,
-      M: 2, // moments months are zerobased
-      d: 11
-    }))
+    let result = transform.serialize(
+      moment({
+        y: 2017,
+        M: 2, // moments months are zerobased
+        d: 11
+      })
+    )
 
     expect(result).to.equal('2017-03-11')
   })

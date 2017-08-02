@@ -1,7 +1,7 @@
-import { expect }             from 'chai'
-import { describe, it }       from 'mocha'
+import { expect } from 'chai'
+import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
-import hbs                    from 'htmlbars-inline-precompile'
+import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy modal/header', function() {
   setupComponentTest('sy-modal/header', {
@@ -11,7 +11,9 @@ describe('Integration | Component | sy modal/header', function() {
   it('renders', function() {
     this.set('visible', true)
 
-    this.render(hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`)
+    this.render(
+      hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
+    )
 
     expect(this.$().text().trim()).to.contain('Test')
     expect(this.$().text().trim()).to.contain('×')
@@ -20,7 +22,9 @@ describe('Integration | Component | sy modal/header', function() {
   it('closes on click of the close icon', function() {
     this.set('visible', true)
 
-    this.render(hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`)
+    this.render(
+      hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
+    )
 
     expect(this.get('visible')).to.be.ok
 

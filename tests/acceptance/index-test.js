@@ -1,10 +1,13 @@
-import { authenticateSession, invalidateSession } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach }    from 'mocha'
-import destroyApp                                 from '../helpers/destroy-app'
-import { expect }                                 from 'chai'
-import moment                                     from 'moment'
-import startApp                                   from '../helpers/start-app'
-import testSelector                               from 'ember-test-selectors'
+import {
+  authenticateSession,
+  invalidateSession
+} from 'timed/tests/helpers/ember-simple-auth'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import destroyApp from '../helpers/destroy-app'
+import { expect } from 'chai'
+import moment from 'moment'
+import startApp from '../helpers/start-app'
+import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | index', function() {
   let application
@@ -14,7 +17,8 @@ describe('Acceptance | index', function() {
 
     let user = server.create('user')
 
-    await authenticateSession(application, { 'user_id': user.id })
+    // eslint-disable-next-line camelcase
+    await authenticateSession(application, { user_id: user.id })
   })
 
   afterEach(async function() {
@@ -43,11 +47,15 @@ describe('Acceptance | index', function() {
 
     expect(find(testSelector('record-start'))).to.have.length(1)
 
-    await triggerEvent(testSelector('tracking-comment'), 'keypress', { charCode: 22 })
+    await triggerEvent(testSelector('tracking-comment'), 'keypress', {
+      charCode: 22
+    })
 
     expect(find(testSelector('record-start'))).to.have.length(1)
 
-    await triggerEvent(testSelector('tracking-comment'), 'keypress', { charCode: 13 })
+    await triggerEvent(testSelector('tracking-comment'), 'keypress', {
+      charCode: 13
+    })
 
     expect(find(testSelector('record-start'))).to.have.length(0)
   })
@@ -66,8 +74,12 @@ describe('Acceptance | index', function() {
 
     expect(find(testSelector('record-start'))).to.have.length(0)
     expect(find(testSelector('record-stop'))).to.have.length(1)
-    expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
-    expect(find(`${testSelector('activity-row')}:first-child div small`).text()).to.equal(task.name)
+    expect(
+      find(testSelector('record-stop')).parent().parent().hasClass('recording')
+    ).to.be.ok
+    expect(
+      find(`${testSelector('activity-row')}:first-child div small`).text()
+    ).to.equal(task.name)
   })
 
   it('can start a new activity from the history', async function() {
@@ -83,8 +95,12 @@ describe('Acceptance | index', function() {
 
     expect(find(testSelector('record-start'))).to.have.length(0)
     expect(find(testSelector('record-stop'))).to.have.length(1)
-    expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
-    expect(find(`${testSelector('activity-row')}:first-child div small`).text()).to.equal(task.name)
+    expect(
+      find(testSelector('record-stop')).parent().parent().hasClass('recording')
+    ).to.be.ok
+    expect(
+      find(`${testSelector('activity-row')}:first-child div small`).text()
+    ).to.equal(task.name)
   })
 
   it('can stop an active activity', async function() {
@@ -92,15 +108,21 @@ describe('Acceptance | index', function() {
 
     await visit('/')
 
-    expect(find(testSelector('record-stop')).parent().parent().hasClass('recording')).to.be.ok
+    expect(
+      find(testSelector('record-stop')).parent().parent().hasClass('recording')
+    ).to.be.ok
     expect(find(testSelector('record-stop'))).to.have.length(1)
-    expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal(activity.comment)
+    expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal(
+      activity.comment
+    )
 
     await click(testSelector('record-stop'))
 
     expect(find(testSelector('record-start'))).to.have.length(1)
     expect(find(testSelector('record-stop'))).to.have.length(0)
-    expect(find(testSelector('record-start')).parent().parent().hasClass('recording')).to.not.be.ok
+    expect(
+      find(testSelector('record-start')).parent().parent().hasClass('recording')
+    ).to.not.be.ok
     expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal('')
   })
 
@@ -134,7 +156,9 @@ describe('Acceptance | index', function() {
 
     expect(find(testSelector('add-absence-form'))).to.have.length(1)
 
-    await click(`${testSelector('add-absence-form')} .btn-group .btn:first-child`)
+    await click(
+      `${testSelector('add-absence-form')} .btn-group .btn:first-child`
+    )
 
     await click(find('[data-date=2017-06-28]'))
     await click(find('[data-date=2017-06-29]'))
@@ -156,7 +180,9 @@ describe('Acceptance | index', function() {
 
   it('can edit an absence', async function() {
     server.loadFixtures('absence-types')
-    server.create('absence', { date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD') })
+    server.create('absence', {
+      date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
+    })
 
     await visit('/?day=2017-06-29')
 
@@ -177,7 +203,9 @@ describe('Acceptance | index', function() {
 
   it('can delete an absence', async function() {
     server.loadFixtures('absence-types')
-    server.create('absence', { date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD') })
+    server.create('absence', {
+      date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
+    })
 
     await visit('/?day=2017-06-29')
 

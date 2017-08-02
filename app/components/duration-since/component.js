@@ -3,11 +3,11 @@
  * @submodule timed-components
  * @public
  */
-import Component         from 'ember-component'
-import moment            from 'moment'
-import Ember             from 'ember'
+import Component from 'ember-component'
+import moment from 'moment'
+import Ember from 'ember'
 import { task, timeout } from 'ember-concurrency'
-import { on }            from 'ember-computed-decorators'
+import { on } from 'ember-computed-decorators'
 
 const { testing } = Ember
 
@@ -68,7 +68,10 @@ const DurationSinceComponent = Component.extend({
    */
   @on('init')
   _compute() {
-    this.set('duration', moment.duration(moment().diff(this.get('from'))).add(this.get('elapsed')))
+    this.set(
+      'duration',
+      moment.duration(moment().diff(this.get('from'))).add(this.get('elapsed'))
+    )
   },
 
   /**
@@ -77,7 +80,7 @@ const DurationSinceComponent = Component.extend({
    * @proprety {*} timer
    * @public
    */
-  timer: task(function* () {
+  timer: task(function*() {
     for (;;) {
       this._compute()
 
@@ -93,7 +96,7 @@ const DurationSinceComponent = Component.extend({
 })
 
 DurationSinceComponent.reopenClass({
-  positionalParams: [ 'from' ]
+  positionalParams: ['from']
 })
 
 export default DurationSinceComponent
