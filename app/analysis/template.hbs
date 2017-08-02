@@ -1,6 +1,6 @@
 <h1>Project analysis</h1>
 
-{{#task-selection customer=customer as |t|}}
+{{#task-selection customer=customer history=false as |t|}}
   <form {{action 'search' t.model user from to on='submit'}} class="form-inline">
     <div class="form-group" data-test-tracking-customer>
       {{t.customer}}
