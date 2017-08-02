@@ -8,7 +8,6 @@ import moment from 'moment'
 import computed, { oneWay } from 'ember-computed-decorators'
 import Ember from 'ember'
 import service from 'ember-service/inject'
-import { scheduleOnce } from 'ember-runloop'
 import { task, timeout } from 'ember-concurrency'
 import AbsenceValidations from 'timed/validations/absence'
 import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
@@ -48,7 +47,8 @@ export default Controller.extend({
   queryParams: ['day'],
 
   /**
-   * The day
+   * The currently selected day. Initializing as today, in case
+   * no query param is specified.
    *
    * @property {String} _day
    * @public
@@ -66,16 +66,10 @@ export default Controller.extend({
   init() {
     this._super(...arguments)
 
-    let date = this.get('date')
-
     this.set('newAbsence', {
       dates: [],
       comment: '',
       type: null
-    })
-
-    scheduleOnce('afterRender', this, () => {
-      this.get('setCenter').perform({ moment: date })
     })
   },
 
@@ -277,7 +271,7 @@ export default Controller.extend({
   },
 
   /**
-   * The day as a moment object
+   * The currently selected day as a moment object
    *
    * @property {moment} date
    * @public

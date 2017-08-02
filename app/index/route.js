@@ -100,10 +100,11 @@ export default Route.extend({
     ])
   },
 
-  setupController(controller) {
+  setupController(controller, model) {
     this._super(...arguments)
 
     controller.set('user', this.modelFor('protected'))
+    controller.get('setCenter').perform({ moment: model })
   },
 
   actions: {
