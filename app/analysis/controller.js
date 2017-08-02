@@ -28,10 +28,14 @@ export default Controller.extend({
     return clean(filters)
   },
 
+  @computed('_cleanFilters')
+  hasCriteria(cleanFilters) {
+    return Boolean(Object.keys(cleanFilters).length)
+  },
+
   @computed('_cleanFilters', 'page')
   reports(cleanFilters, page) {
     /* eslint-disable camelcase */
-    this.set('hasCriteria', Boolean(Object.keys(cleanFilters).length))
     if (!this.get('hasCriteria')) {
       return []
     }
@@ -59,7 +63,7 @@ export default Controller.extend({
   @computed('_cleanFilters')
   download(cleanFilters) {
     /* eslint-disable camelcase */
-    let base = 'http://localhost:8000/api/v1/reports/export?'
+    let base = '/api/v1/reports/export?'
     return (
       base +
       Object.keys(cleanFilters)
