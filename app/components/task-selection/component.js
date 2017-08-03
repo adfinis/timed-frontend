@@ -101,6 +101,14 @@ export default Component.extend({
   _project: null,
 
   /**
+   * Whether to show history entries in the customer selection or not
+   *
+   * @property {Boolean} history
+   * @public
+   */
+  history: true,
+
+  /**
    * The selected customer
    *
    * This can be selected manually or automatically, because a task is already
@@ -185,22 +193,31 @@ export default Component.extend({
    * @property {Function} customerSource
    * @public
    */
-  @computed
-  customerSource() {
+  @computed('history')
+  customerSource(history) {
     return (search, syncResults, asyncResults) => {
-      let fnHistory = this.get('tracking.recentTasks')
-      let history = fnHistory.get('last') || fnHistory.perform()
-
       let fnCustomer = this.get('tracking.filterCustomers')
       let customers = fnCustomer.get('last') || fnCustomer.perform()
 
+      let requests = { customers }
+
+      if (history) {
+        let fnHistory = this.get('tracking.recentTasks')
+        requests.history = fnHistory.get('last') || fnHistory.perform()
+      }
+
       /* istanbul ignore next */
-      RSVP.hash({ history, customers })
+      RSVP.hash(requests)
         .then(hash => {
-          asyncResults([
-            ...regexFilter(hash.history.toArray(), search, 'longName'),
-            ...regexFilter(hash.customers.toArray(), search, 'name')
-          ])
+          let data = [...regexFilter(hash.customers.toArray(), search, 'name')]
+
+          if (history) {
+            data = [
+              ...regexFilter(hash.history.toArray(), search, 'longName'),
+              ...data
+            ]
+          }
+          asyncResults(data)
         })
         .catch(() => asyncResults([]))
     }
