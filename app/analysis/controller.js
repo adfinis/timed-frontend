@@ -19,9 +19,11 @@ const formatDate = date => date && date.format(DATE_FORMAT)
 export default Controller.extend({
   filters: {},
 
-  queryParams: ['page'],
+  queryParams: ['page', 'sort'],
 
   page: 1,
+
+  sort: '-date',
 
   @computed('filters.[]')
   _cleanFilters(filters) {
@@ -33,8 +35,8 @@ export default Controller.extend({
     return Boolean(Object.keys(cleanFilters).length)
   },
 
-  @computed('_cleanFilters', 'page')
-  reports(cleanFilters, page) {
+  @computed('_cleanFilters', 'page', 'sort')
+  reports(cleanFilters, page, ordering) {
     /* eslint-disable camelcase */
     if (!this.get('hasCriteria')) {
       return []
@@ -45,7 +47,7 @@ export default Controller.extend({
         include: 'user,task,task.project,task.project.customer',
         page_size: 10,
         page,
-        ordering: '-date'
+        ordering
       })
     )
     return task
@@ -53,7 +55,7 @@ export default Controller.extend({
 
   reportTask: task(function*(params) {
     return yield this.store.query('report', params)
-  }),
+  }).restartable(),
 
   @computed('reports.lastSuccessful.value.meta.pagination.count')
   tooManyResults(count) {
