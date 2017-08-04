@@ -22,6 +22,10 @@
                 <td class="text-right">{{moment-format model.activeEmployment.start 'DD.MM.YYYY'}}</td>
               </tr>
               <tr>
+                <td>Staff member:</td>
+                <td class="text-right"><i class="fa {{if model.isStaff "fa-check" "fa-times"}}" aria-hidden="true"></i></td>
+              </tr>
+              <tr>
                 <td>Percentage:</td>
                 <td class="text-right">{{model.activeEmployment.percentage}}%</td>
               </tr>

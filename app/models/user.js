@@ -57,6 +57,14 @@ export default Model.extend({
   worktimeBalance: attr('django-duration'),
 
   /**
+   * Defines if the user is a staff member or not.
+   *
+   * @property {Boolean} staff
+   * @public
+   */
+  isStaff: attr('boolean'),
+
+  /**
    * The users absence credits
    *
    * @property {AbsenceCredit[]} absenceCredits

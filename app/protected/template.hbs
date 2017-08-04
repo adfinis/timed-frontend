@@ -6,6 +6,11 @@
       {{sy-sidenav-item 'analysis' 'line-chart' 'Analysis'}}
     {{/sy-sidenav-list}}
 
+    {{#if model.isStaff}}
+      {{#sy-sidenav-list 'Staff Menu'}}
+        {{sy-sidenav-item 'reschedule' 'refresh' 'Reschedule'}}
+      {{/sy-sidenav-list}}
+    {{/if}}
     {{#sy-sidenav-list ' '}}
       {{#sy-sidenav-item}}
         <a data-test-logout href="#" {{action 'invalidateSession'}}>

@@ -1,0 +1,49 @@
+<h1>Reschedule</h1>
+
+{{#form-booking-filter page=page as |data|}}
+  {{#paginated-table
+    pages=data.reports.lastSuccessful.value.meta.pagination.pages
+    page=page
+    data-test-search-results=''
+    }}
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Dur.</th>
+        <th>Customer / Project / Task</th>
+        <th>User</th>
+        <th>Comment</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+  {{^}}
+    <tbody>
+      {{#each data.reports.lastSuccessful.value as |report index|}}
+        <tr>
+          <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
+          <td>{{format-duration report.duration false}}</td>
+          <td>
+            {{#task-selection history=false task=report.task as |t|}}
+              <div class="form-group" data-test-tracking-customer=index>
+                {{t.customer}}
+              </div>
+              <div class="form-group" data-test-tracking-project=index>
+                {{t.project}}
+              </div>
+              <div class="form-group" data-test-tracking-task=index>
+                {{t.task}}
+              </div>
+            {{/task-selection}}
+          </td>
+          <td>{{report.user.username}}</td>
+          <td>{{input class='form-control' value=report.comment data-test-report-comment=index}}</td>
+          <td><button data-test-report-save={{index}} class="btn btn-default" {{action 'saveReport' report}}>Save</button></td>
+        </tr>
+      {{^}}
+        <tr>
+          <td colspan="6">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  {{/paginated-table}}
+{{/form-booking-filter}}
