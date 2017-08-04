@@ -17,8 +17,23 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+      REPORTEXPORTS: [
+        {
+          label: 'CSV',
+          filetype: 'csv',
+          action: 'download'
+        },
+        {
+          label: 'ODS',
+          filetype: 'ods',
+          action: 'download'
+        },
+        {
+          label: 'XLSX',
+          filetype: 'xlsx',
+          action: 'download'
+        }
+      ]
     },
 
     'ember-simple-auth': {

@@ -1,5 +1,6 @@
 import Ember from 'ember'
 import Controller from 'ember-controller'
+import config from '../config/environment'
 
 const { testing } = Ember
 
@@ -22,7 +23,7 @@ export default Controller.extend({
   page: 1,
 
   sort: '-date',
-
+  exportLinks: config.APP.REPORTEXPORTS,
   actions: {
     download(type, filters) {
       let target = `${downloadUrl(filters)}&file_type=${type}`

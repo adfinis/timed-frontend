@@ -33,7 +33,7 @@ describe('Acceptance | analysis', function() {
     expect(currentURL()).to.equal('/analysis')
   })
 
-  it('can search and download analysis', async function() {
+  it('can search and download file', async function() {
     await visit('/analysis')
     await userSelect(testSelector('user-select'))
     await click(testSelector('search'))
@@ -42,7 +42,7 @@ describe('Acceptance | analysis', function() {
       6
     )
 
-    await click(testSelector('download-csv'))
+    await click(testSelector('download-file', 0))
     expect(currentURL()).to.equal('/analysis')
   })
 
