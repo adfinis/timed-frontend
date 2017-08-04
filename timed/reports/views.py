@@ -37,13 +37,6 @@ class WorkReport(GenericViewSet):
         form.is_valid()
         return form.cleaned_data
 
-    def _format_user_name(self, user):
-        # in the long run this function should move onto User in timed
-        first_name = user.first_name or ''
-        last_name = user.last_name or ''
-
-        return '{0} {1}'.format(first_name, last_name).strip()
-
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
         count = queryset.count()
@@ -75,7 +68,7 @@ class WorkReport(GenericViewSet):
         _set_value('B5', from_date, date_style, 'date')
         _set_value('B6', to_date, date_style, 'date')
         _set_value('B8', date.today(), date_style, 'date')
-        _set_value('B9', self._format_user_name(request.user))
+        _set_value('B9', request.user.get_full_name())
 
         # for simplicity insert reports in reverse order
         for report in queryset:
@@ -85,7 +78,7 @@ class WorkReport(GenericViewSet):
             hours = report.duration.total_seconds() / 60 / 60
             _set_value('B13', hours, float_style)
 
-            _set_value('C13', self._format_user_name(report.user))
+            _set_value('C13', request.user.get_full_name())
             _set_value('D13', report.comment)
 
         # calculate location of total hours as insert rows moved it
