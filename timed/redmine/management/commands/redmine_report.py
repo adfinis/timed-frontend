@@ -1,3 +1,4 @@
+import sys
 from datetime import timedelta
 
 import redminelib
@@ -27,7 +28,7 @@ class Command(BaseCommand):
         redmine = redminelib.Redmine(
             settings.REDMINE_URL,
             key=settings.REDMINE_APIKEY,
-            requets={
+            requests={
                 'auth': (
                     settings.REDMINE_HTACCESS_USER,
                     settings.REDMINE_HTACCESS_PASSWORD
@@ -55,21 +56,29 @@ class Command(BaseCommand):
 
         for project in projects:
             total_hours = project.total_hours.total_seconds() / 3600
-            issue = redmine.issue.get(project.redmine_project.issue_id)
-            reports = Report.objects.filter(
-                task__project=project, updated__range=[start, end]
-            ).order_by('date')
-            hours = reports.aggregate(hours=Sum('duration'))['hours']
+            try:
+                issue = redmine.issue.get(project.redmine_project.issue_id)
+                reports = Report.objects.filter(
+                    task__project=project, updated__range=[start, end]
+                ).order_by('date')
+                hours = reports.aggregate(hours=Sum('duration'))['hours']
 
-            issue.notes = render_to_string('redmine/weekly_report.txt', {
-                'project': project,
-                'hours': hours.total_seconds() / 3600,
-                'last_days': last_days,
-                'total_hours': total_hours,
-                'reports': reports
-            })
-            issue.custom_fields = [{
-                'id': settings.REDMINE_SPENTHOURS_FIELD,
-                'value': total_hours
-            }]
-            issue.save()
+                issue.notes = render_to_string('redmine/weekly_report.txt', {
+                    'project': project,
+                    'hours': hours.total_seconds() / 3600,
+                    'last_days': last_days,
+                    'total_hours': total_hours,
+                    'reports': reports
+                })
+                issue.custom_fields = [{
+                    'id': settings.REDMINE_SPENTHOURS_FIELD,
+                    'value': total_hours
+                }]
+                issue.save()
+            except redminelib.exceptions.ResourceNotFoundError:
+                sys.stderr.write(
+                    'Project {0} has an invalid Redmine '
+                    'issue {1} assigned. Skipping'.format(
+                        project.name, project.redmine_project.issue_id
+                    )
+                )

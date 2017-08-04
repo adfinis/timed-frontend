@@ -1,5 +1,6 @@
 import pytest
 from django.core.management import call_command
+from redminelib.exceptions import ResourceNotFoundError
 
 from timed.tracking.factories import ReportFactory
 from timed_adfinis.redmine.models import RedmineProject
@@ -37,3 +38,22 @@ def test_redmine_report(db, freezer, mocker):
     assert 'Total hours: {0}'.format(report_hours) in issue.notes
     assert 'Hours in last 7 days: {0}'.format(report_hours) in issue.notes
     issue.save.assert_called_once_with()
+
+
+@pytest.mark.freeze_time
+def test_redmine_report_invalid_issue(db, freezer, mocker, capsys):
+    """Test case when issue is not available."""
+    redmine_instance = mocker.MagicMock()
+    redmine_class = mocker.patch('redminelib.Redmine')
+    redmine_class.return_value = redmine_instance
+    redmine_instance.issue.get.side_effect = ResourceNotFoundError()
+
+    freezer.move_to('2017-07-28')
+    report = ReportFactory.create()
+    RedmineProject.objects.create(project=report.task.project, issue_id=1000)
+
+    freezer.move_to('2017-07-31')
+    call_command('redmine_report', options={'--last-days': '7'})
+
+    _, err = capsys.readouterr()
+    assert 'issue 1000 assigned' in err
