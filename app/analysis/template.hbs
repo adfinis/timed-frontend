@@ -38,8 +38,6 @@
 
   {{#if data.reports.lastSuccessful}}
   <p>
-    {{log data.filters}}
-    {{data.filters}}
     <button {{action 'download' 'csv' data.filters}}
       disabled={{data.tooManyResults}}
       class="btn btn-default"
