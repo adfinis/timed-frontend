@@ -20,8 +20,8 @@ class UserSerializer(ModelSerializer):
     absence_credits  = ResourceRelatedField(many=True, read_only=True)
     worktime_balance = SerializerMethodField()
 
-    def get_worktime_balance_raw(self, instance):
-        """Calculate the worktime balance for the user.
+    def get_worktime(self, user, start=None, end=None):
+        """Calculate the reported, expected and balance for user.
 
         1.  Determine the current employment of the user
         2.  Take the latest of those two as start date:
@@ -42,36 +42,38 @@ class UserSerializer(ModelSerializer):
         10. The balance is the reported time plus the absences plus the
             overtime credit minus the expected worktime
 
-        :returns: The worktime balance of the user
-        :rtype:   datetime.timedelta
+        :param user:       user to get worktime from
+        :param start_date: worktime starting on  given day;
+                           if not set when employment started resp. begining of
+                           the year
+        :param end_date:   worktime till day or if not set today
+        :returns: tuple of 3 values reported, expected and balance in given
+                  time frame
         """
         employment = models.Employment.objects.filter(
-            user=instance,
+            user=user,
             end_date__isnull=True
         ).first()
 
         # If there is no active employment, set the balance to 0
         if employment is None:
-            return timedelta()
+            return timedelta(), timedelta(), timedelta()
 
         location = employment.location
 
-        request            = self.context.get('request')
-        requested_end_date = request.query_params.get('until')
+        if start is None:
+            start = max(
+                employment.start_date, date(date.today().year, 1, 1)
+            )
 
-        start_date = max(employment.start_date, date(date.today().year, 1, 1))
-        end_date   = (
-            datetime.strptime(requested_end_date, '%Y-%m-%d').date()
-            if requested_end_date
-            else date.today()
-        )
+        end = end or date.today()
 
         # workdays is in isoweekday, byweekday expects Monday to be zero
         week_workdays = [int(day) - 1 for day in employment.location.workdays]
         workdays = rrule.rrule(
             rrule.DAILY,
-            dtstart=start_date,
-            until=end_date,
+            dtstart=start,
+            until=end,
             byweekday=week_workdays
         ).count()
 
@@ -83,8 +85,8 @@ class UserSerializer(ModelSerializer):
         ]
         holidays = models.PublicHoliday.objects.filter(
             location=location,
-            date__gte=start_date,
-            date__lte=end_date,
+            date__gte=start,
+            date__lte=end,
             date__week_day__in=workdays_db
         ).count()
 
@@ -92,37 +94,34 @@ class UserSerializer(ModelSerializer):
 
         overtime_credit = sum(
             models.OvertimeCredit.objects.filter(
-                user=instance,
-                date__gte=start_date,
-                date__lte=end_date
+                user=user,
+                date__gte=start,
+                date__lte=end
             ).values_list('duration', flat=True),
             timedelta()
         )
 
         reported_worktime = sum(
             Report.objects.filter(
-                user=instance,
-                date__gte=start_date,
-                date__lte=end_date
+                user=user,
+                date__gte=start,
+                date__lte=end
             ).values_list('duration', flat=True),
             timedelta()
         )
 
         absences = sum(
             Absence.objects.filter(
-                user=instance,
-                date__gte=start_date,
-                date__lte=end_date
+                user=user,
+                date__gte=start,
+                date__lte=end
             ).values_list('duration', flat=True),
             timedelta()
         )
 
-        return (
-            reported_worktime +
-            absences +
-            overtime_credit -
-            expected_worktime
-        )
+        reported = reported_worktime + absences + overtime_credit
+
+        return (reported, expected_worktime, reported - expected_worktime)
 
     def get_worktime_balance(self, instance):
         """Format the worktime balance.
@@ -130,9 +129,12 @@ class UserSerializer(ModelSerializer):
         :return: The formatted worktime balance.
         :rtype:  str
         """
-        worktime_balance = self.get_worktime_balance_raw(instance)
+        request = self.context.get('request')
+        until = request.query_params.get('until')
+        end_date = until and datetime.strptime(until, '%Y-%m-%d').date()
 
-        return duration_string(worktime_balance)
+        _, _, balance = self.get_worktime(instance, None, end_date)
+        return duration_string(balance)
 
     included_serializers = {
         'employments':

@@ -77,7 +77,7 @@ class EmploymentFactory(DjangoModelFactory):
         :return: The generated worktime
         :rtype:  datetime.timedelta
         """
-        return datetime.timedelta(minutes=60 * 8.5 * self.percentage)
+        return datetime.timedelta(minutes=60 * 8.5 * self.percentage / 100)
 
     class Meta:
         """Meta informations for the employment factory."""
