@@ -39,7 +39,7 @@
   {{#if data.reports.lastSuccessful}}
   <p>
     {{#each exportLinks as |link index|}}
-      <button {{action link.action link.filetype data.filters}}
+      <button {{action 'download' link.url data.filters}}
         disabled={{data.tooManyResults}}
         class="btn btn-default"
         data-test-download-file={{index}}>{{link.label}}</button>

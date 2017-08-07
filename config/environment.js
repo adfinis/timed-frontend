@@ -20,18 +20,15 @@ module.exports = function(environment) {
       REPORTEXPORTS: [
         {
           label: 'CSV',
-          filetype: 'csv',
-          action: 'download'
+          url: '/api/v1/reports/export?file_type=csv'
         },
         {
           label: 'ODS',
-          filetype: 'ods',
-          action: 'download'
+          url: '/api/v1/reports/export?file_type=ods'
         },
         {
           label: 'XLSX',
-          filetype: 'xlsx',
-          action: 'download'
+          url: '/api/v1/reports/export?file_type=xlsx'
         }
       ]
     },
