@@ -4,7 +4,7 @@ import config from '../config/environment'
 
 const { testing } = Ember
 
-const downloadUrl = (url, filters) => {
+const appendFilters = (url, filters) => {
   return `${url}&${Object.keys(filters)
     .map(key => {
       return `${key}=${filters[key]}`
@@ -21,7 +21,7 @@ export default Controller.extend({
   exportLinks: config.APP.REPORTEXPORTS,
   actions: {
     download(url, filters) {
-      let target = downloadUrl(url, filters)
+      let target = appendFilters(url, filters)
 
       if (testing) {
         return
