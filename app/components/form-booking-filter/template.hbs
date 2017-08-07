@@ -1,0 +1,30 @@
+{{#task-selection history=false customer=customer as |t|}}
+  <form {{action 'search' t.model user from to on='submit'}} class="form-inline">
+    <div class="form-group" data-test-tracking-customer>
+      {{t.customer}}
+    </div>
+    <div class="form-group" data-test-tracking-project>
+      {{t.project}}
+    </div>
+    <div class="form-group" data-test-tracking-task>
+      {{t.task}}
+    </div>
+    <div style="margin-top:1em;">
+      <div class="form-group" data-test-user-select>
+        {{user-selection selection=user on-change=(action (mut user))}}
+      </div>
+      <div class="form-group">
+        {{sy-datepicker class="force-white" value=from on-change=(action (mut from)) placeholder="From date"}}
+      </div>
+      <div class="form-group">
+        {{sy-datepicker class="force-white" value=to on-change=(action (mut to)) placeholder="To date"}}
+      </div>
+    </div>
+
+    <p style="margin-top:1em;">
+      <button data-test-search type="submit" class="btn btn-primary">Search</button>
+      <button data-test-reset {{action 'reset'}} type="reset" class="btn btn-default">Reset</button>
+    </p>
+  </form>
+{{/task-selection}}
+{{yield (hash reports=reports tooManyResults=tooManyResults filters=cleanFilters)}}

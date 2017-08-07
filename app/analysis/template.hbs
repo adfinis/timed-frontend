@@ -1,82 +1,52 @@
 <h1>Project analysis</h1>
-
-{{#task-selection customer=customer history=false as |t|}}
-  <form {{action 'search' t.model user from to on='submit'}} class="form-inline">
-    <div class="form-group" data-test-tracking-customer>
-      {{t.customer}}
-    </div>
-    <div class="form-group" data-test-tracking-project>
-      {{t.project}}
-    </div>
-    <div class="form-group" data-test-tracking-task>
-      {{t.task}}
-    </div>
-
-    <div style="margin-top:1em;">
-      <div class="form-group" data-test-user-select>
-        {{user-selection selection=user on-change=(action (mut user))}}
-      </div>
-      <div class="form-group">
-        {{sy-datepicker class="force-white" value=from on-change=(action (mut from)) placeholder="From date"}}
-      </div>
-      <div class="form-group">
-        {{sy-datepicker class="force-white" value=to on-change=(action (mut to)) placeholder="To date"}}
-      </div>
-    </div>
-
-    <p style="margin-top:1em;">
-      <button data-test-search type="submit" class="btn btn-primary">Search</button>
-      <button data-test-reset {{action 'reset'}} type="reset" class="btn btn-default">Reset</button>
-    </p>
-  </form>
-{{/task-selection}}
-
-{{#paginated-table
-  pages=reports.lastSuccessful.value.meta.pagination.pages
-  page=page
-  data-test-search-results=''
-  }}
-  <thead>
-    <tr>
-      {{#sort-header update=(action (mut sort)) current=sort by='date'}}Date{{/sort-header}}
-      {{#sort-header update=(action (mut sort)) current=sort by='duration'}}Dur.{{/sort-header}}
-      {{#sort-header update=(action (mut sort)) current=sort by='task__project__customer__name'}}Customer{{/sort-header}}
-      {{#sort-header update=(action (mut sort)) current=sort by='task__project__name'}}Project{{/sort-header}}
-      {{#sort-header update=(action (mut sort)) current=sort by='task__name'}}Task{{/sort-header}}
-      {{#sort-header update=(action (mut sort)) current=sort by='user'}}User{{/sort-header}}
-      {{#sort-header update=(action (mut sort)) current=sort by='comment'}}Comment{{/sort-header}}
-    </tr>
-  </thead>
-{{^}}
-  <tbody>
-    {{#each reports.lastSuccessful.value as |report|}}
+{{#form-booking-filter page=page as |data|}}
+  {{#paginated-table
+    pages=data.reports.lastSuccessful.value.meta.pagination.pages
+    page=page
+    data-test-search-results=''
+    }}
+    <thead>
       <tr>
-        <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
-        <td>{{format-duration report.duration false}}</td>
-        <td>{{report.task.project.customer.name}}</td>
-        <td>{{report.task.project.name}}</td>
-        <td>{{report.task.name}}</td>
-        <td>{{report.user.username}}</td>
-        <td>{{report.comment}}</td>
+        {{#sort-header update=(action (mut sort)) current=sort by='date'}}Date{{/sort-header}}
+        {{#sort-header update=(action (mut sort)) current=sort by='duration'}}Dur.{{/sort-header}}
+        {{#sort-header update=(action (mut sort)) current=sort by='task__project__customer__name'}}Customer{{/sort-header}}
+        {{#sort-header update=(action (mut sort)) current=sort by='task__project__name'}}Project{{/sort-header}}
+        {{#sort-header update=(action (mut sort)) current=sort by='task__name'}}Task{{/sort-header}}
+        {{#sort-header update=(action (mut sort)) current=sort by='user'}}User{{/sort-header}}
+        {{#sort-header update=(action (mut sort)) current=sort by='comment'}}Comment{{/sort-header}}
       </tr>
-    {{^}}
-      <tr>
-        <td colspan="7">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
-      </tr>
-    {{/each}}
-  </tbody>
-{{/paginated-table}}
+    </thead>
+  {{^}}
+    <tbody>
+      {{#each data.reports.lastSuccessful.value as |report|}}
+        <tr>
+          <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
+          <td>{{format-duration report.duration false}}</td>
+          <td>{{report.task.project.customer.name}}</td>
+          <td>{{report.task.project.name}}</td>
+          <td>{{report.task.name}}</td>
+          <td>{{report.user.username}}</td>
+          <td>{{report.comment}}</td>
+        </tr>
+      {{^}}
+        <tr>
+          <td colspan="7">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  {{/paginated-table}}
 
-{{#if reports.lastSuccessful}}
-<p>
-  <button {{action 'download' 'csv'}}
-    disabled={{tooManyResults}}
-    class="btn btn-default"
-    data-test-download-csv>CSV</button>
-  <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'ods'}}>ODS</button>
-  <button disabled={{tooManyResults}} class="btn btn-default" {{action 'download' 'xlsx'}}>XLSX</button>
-  {{#if tooManyResults}}
-    More than 4000 rows were found. Please narrow down your search export results.
+  {{#if data.reports.lastSuccessful}}
+  <p>
+    <button {{action 'download' 'csv' data.filters}}
+      disabled={{data.tooManyResults}}
+      class="btn btn-default"
+      data-test-download-csv>CSV</button>
+    <button disabled={{data.tooManyResults}} class="btn btn-default" {{action 'download' 'ods' data.filters}}>ODS</button>
+    <button disabled={{data.tooManyResults}} class="btn btn-default" {{action 'download' 'xlsx' data.filters}}>XLSX</button>
+    {{#if data.tooManyResults}}
+      More than 4000 rows were found. Please narrow down your search export results.
+    {{/if}}
+  </p>
   {{/if}}
-</p>
-{{/if}}
+{{/form-booking-filter}}
