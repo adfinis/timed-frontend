@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'django.contrib.humanize',
     'multiselectfield',
     'django.forms',
     'django.contrib.auth',
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'timed.employment',
     'timed.projects',
     'timed.tracking',
+    'timed.reports',
 ]
 
 MIDDLEWARE_CLASSES = [
