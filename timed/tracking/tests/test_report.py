@@ -9,8 +9,8 @@ from django.utils.duration import duration_string
 from hypothesis import given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.extra.django.models import models
-from hypothesis.strategies import (builds, characters, dates, sampled_from,
-                                   timedeltas)
+from hypothesis.strategies import (builds, characters, dates, lists,
+                                   sampled_from, timedeltas)
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN)
@@ -326,32 +326,37 @@ class ReportTests(JSONAPITestCase):
 class TestReportHypo(TestCase):
     @given(
         sampled_from(['csv', 'xlsx', 'ods']),
-        models(
-            Report,
-            comment=characters(blacklist_categories=['Cc', 'Cs']),
-            task=builds(TaskFactory.create),
-            user=builds(UserFactory.create),
-            date=dates(
-                min_date=date(2000, 1, 1),
-                max_date=date(2100, 1, 1),
+        lists(
+            models(
+                Report,
+                comment=characters(blacklist_categories=['Cc', 'Cs']),
+                task=builds(TaskFactory.create),
+                user=builds(UserFactory.create),
+                date=dates(
+                    min_date=date(2000, 1, 1),
+                    max_date=date(2100, 1, 1),
+                ),
+                duration=timedeltas(
+                    min_delta=timedelta(0),
+                    max_delta=timedelta(days=1)
+                )
             ),
-            duration=timedeltas(
-                min_delta=timedelta(0),
-                max_delta=timedelta(days=1)
-            )
+            min_size=1,
+            max_size=5,
         )
     )
     @settings(timeout=5)
-    def test_report_export(self, file_type, report):
+    def test_report_export(self, file_type, reports):
         get_user_model().objects.create_user(username='test',
                                              password='1234qwer')
         client = JSONAPIClient()
         client.login('test', '1234qwer')
         url = reverse('report-export')
 
-        user_res = client.get(url, data={
-            'file_type': file_type
-        })
+        with self.assertNumQueries(4):
+            user_res = client.get(url, data={
+                'file_type': file_type
+            })
 
         assert user_res.status_code == HTTP_200_OK
         book = pyexcel.get_book(
@@ -359,4 +364,4 @@ class TestReportHypo(TestCase):
         )
         # bookdict is a dict of tuples(name, content)
         sheet = book.bookdict.popitem()[1]
-        assert len(sheet) == 2
+        assert len(sheet) == len(reports) + 1
