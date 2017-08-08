@@ -7,15 +7,15 @@ Timed timetracking software REST API built with Django
 
 ## Installation
 **Requirements**
-* python 3.5.2 
+* python 3.5.2
 * docker
 * docker-compose
 
 After installing and configuring those requirements, you should be able to run the following
 commands to complete the installation:
 ```bash
+$ echo "ENV=dev" >> .env                       # Django settings will be configured for development
 $ make install                                 # Install Python requirements
-$ cp timed/config.sample.ini timed/config.ini  # Use the sample config file
 $ docker-compose up -d                         # Start the containers
 $ make setup-ldap                              # Configure UCS LDAP container
 $ make create-ldap-user                        # Create a new standard user

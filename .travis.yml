@@ -1,5 +1,8 @@
 language: python
 
+env:
+  - ENV=travis
+
 python:
   - "3.5.2"
 
