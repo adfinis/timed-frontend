@@ -87,7 +87,7 @@ module.exports = function(environment) {
     let envReportExports = process.env.TIMED_REPORT_EXPORT
     if (envReportExports) {
       let additionalReportExports = JSON.parse(envReportExports)
-      if (additionalReportExports && additionalReportExports instanceof Array) {
+      if (additionalReportExports && Array.isArray(additionalReportExports)) {
         ENV.APP.REPORTEXPORTS = [
           ...ENV.APP.REPORTEXPORTS,
           ...additionalReportExports
