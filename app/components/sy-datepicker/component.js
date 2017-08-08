@@ -38,6 +38,12 @@ export default Component.extend({
     change(value) {
       this.get('attrs.on-change')(value)
     },
+
+    /**
+     * Clear the value
+     * @method clear
+     * @public
+     */
     clear() {
       this.set('value', '')
     }
