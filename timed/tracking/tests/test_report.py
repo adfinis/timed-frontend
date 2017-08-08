@@ -6,7 +6,7 @@ import pyexcel
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
-from hypothesis import given, settings
+from hypothesis import HealthCheck, given, settings
 from hypothesis.extra.django import TestCase
 from hypothesis.extra.django.models import models
 from hypothesis.strategies import (builds, characters, dates, lists,
@@ -347,7 +347,7 @@ class TestReportHypo(TestCase):
             max_size=5,
         )
     )
-    @settings(timeout=5)
+    @settings(timeout=5, suppress_health_check=[HealthCheck.too_slow])
     def test_report_export(self, file_type, reports):
         get_user_model().objects.create_user(username='test',
                                              password='1234qwer')
