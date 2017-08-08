@@ -84,17 +84,20 @@ module.exports = function(environment) {
 
   /* global process*/
   try {
-    let additionalReportExports = JSON.parse(process.env.timed_report_export)
-    if (additionalReportExports) {
-      ENV.APP.REPORTEXPORTS = ENV.APP.REPORTEXPORTS.concat(
-        additionalReportExports
-      )
+    let envReportExports = process.env.TIMED_REPORT_EXPORT
+    if (envReportExports) {
+      let additionalReportExports = JSON.parse(envReportExports)
+      if (additionalReportExports && additionalReportExports instanceof Array) {
+        ENV.APP.REPORTEXPORTS = [
+          ...ENV.APP.REPORTEXPORTS,
+          ...additionalReportExports
+        ]
+      }
     }
   } catch (e) {
-    /* eslint no-console: ["error", { allow: ["error"] }] */
+    // eslint-disable-next-line no-console
     console.error(
-      `${process.env.timed_report_export} is not a valid JSON format`,
-      e
+      `${process.env.TIMED_REPORT_EXPORT} is not a valid JSON format`
     )
     process.exit()
   }

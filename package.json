@@ -38,6 +38,7 @@
     "ember-cli-chai": "0.4.2",
     "ember-cli-code-coverage": "github:kategengler/ember-cli-code-coverage#aa099053af65d7b6b87dc97a17a6b13a1df5bc5d",
     "ember-cli-dependency-checker": "^2.0.0",
+    "ember-cli-dotenv": "^1.2.0",
     "ember-cli-eslint": "4.0.0",
     "ember-cli-htmlbars": "^2.0.2",
     "ember-cli-htmlbars-inline-precompile": "^0.4.3",
