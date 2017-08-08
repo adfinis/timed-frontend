@@ -12,6 +12,7 @@ cache:
     - .hypothesis
 
 install:
+  - echo "ENV=travis" > .env
   - make install-dev
   - pip install coveralls
 

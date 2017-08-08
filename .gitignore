@@ -66,3 +66,6 @@ target/
 
 # Editor swap files
 *.swp
+
+# local .env file
+.env
