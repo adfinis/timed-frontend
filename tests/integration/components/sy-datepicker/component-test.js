@@ -30,6 +30,15 @@ describe('Integration | Component | sy datepicker', function() {
     expect(this.$('.ember-power-calendar')).to.have.length(1)
   })
 
+  it('clear value on click on clear symbol', function() {
+    this.set('value', moment())
+    this.render(hbs`{{sy-datepicker value=value}}`)
+
+    expect(this.$('input').val()).to.be.equal(moment().format('DD.MM.YYYY'))
+    this.$('span.clear').click()
+    expect(this.$('input').val()).to.be.equal('')
+  })
+
   it('changes value on selection', function() {
     this.set('value', moment())
 
