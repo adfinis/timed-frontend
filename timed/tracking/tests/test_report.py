@@ -208,6 +208,8 @@ class ReportTests(JSONAPITestCase):
 
     def test_report_update_duration_staff(self):
         report = self.other_reports[0]
+        report.duration = timedelta(hours=2)
+        report.save()
 
         data = {
             'data': {
