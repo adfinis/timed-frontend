@@ -38,6 +38,17 @@ You will need the following things properly installed on your computer.
 * `yarn install`
 * `bower install`
 
+## Configurations
+
+If you wish to add custom exports to the analysis section, you can create an environment variable with the name `TIMED_REPORT_EXPORT` and add a JSON Array as value.
+```
+TIMED_REPORT_EXPORT=[{"label":"Special Export","url":"/api/v1/special/export"}]
+```
+In development you can create a `.env` file and add the environment variable.
+```
+echo 'TIMED_REPORT_EXPORT=[{"label":"Special Export","url":"/api/v1/special/export"}]' > .env
+```
+
 ## Running / Development
 
 * `ember serve`
