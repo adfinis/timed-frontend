@@ -131,7 +131,7 @@ class ReportViewSet(ModelViewSet):
             'task',
             'user',
             'activity'
-        )
+        ).prefetch_related('task__project', 'task__project__customer')
 
 
 class AbsenceViewSet(ModelViewSet):

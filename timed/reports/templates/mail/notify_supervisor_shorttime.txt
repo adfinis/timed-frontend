@@ -1,0 +1,7 @@
+{% load humanize %}
+Time range: {{start}} - {{end}}
+Ratio: {{ratio}}
+
+{% for suspect, worktime in suspects %}
+{{suspect.get_full_name}} {{worktime.0}}/{{worktime.1}} (Ratio {{worktime.3|floatformat:2}} Balance {{worktime.2}})
+{% endfor %}

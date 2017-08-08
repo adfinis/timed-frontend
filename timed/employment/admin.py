@@ -4,10 +4,19 @@ import datetime
 
 from django import forms
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from timed.employment import models
+
+
+class SupervisorInline(admin.TabularInline):
+    model = models.User.supervisors.through
+    extra = 0
+    fk_name = 'from_user'
+    verbose_name = _('Supervisor')
+    verbose_name_plural = _('Supervisors')
 
 
 class EmploymentForm(forms.ModelForm):
@@ -70,21 +79,39 @@ class EmploymentForm(forms.ModelForm):
         model = models.Employment
 
 
+class EmploymentInline(admin.TabularInline):
+    form = EmploymentForm
+    model = models.Employment
+    extra = 0
+
+
+class OvertimeCreditInline(admin.TabularInline):
+    model = models.OvertimeCredit
+    extra = 0
+
+
+class AbsenceCreditInline(admin.TabularInline):
+    model = models.AbsenceCredit
+    extra = 0
+
+
+@admin.register(models.User)
+class UserAdmin(UserAdmin):
+    """Timed specific user admin."""
+
+    inlines = [
+        SupervisorInline, EmploymentInline,
+        OvertimeCreditInline, AbsenceCreditInline
+    ]
+    exclude = ('supervisors', )
+
+
 @admin.register(models.Location)
 class LocationAdmin(admin.ModelAdmin):
     """Location admin view."""
 
     list_display  = ['name']
     search_fields = ['name']
-
-
-@admin.register(models.Employment)
-class EmploymentAdmin(admin.ModelAdmin):
-    """Employment admin view."""
-
-    form         = EmploymentForm
-    list_display = ['__str__', 'percentage', 'location']
-    list_filter  = ['location', 'user']
 
 
 @admin.register(models.PublicHoliday)
@@ -100,19 +127,3 @@ class AbsenceTypeAdmin(admin.ModelAdmin):
     """Absence type admin view."""
 
     list_display = ['name']
-
-
-@admin.register(models.AbsenceCredit)
-class AbsenceCreditAdmin(admin.ModelAdmin):
-    """Absence credit admin view."""
-
-    list_display = ['absence_type', 'user', 'duration', 'date']
-    list_filter  = ['absence_type', 'user']
-
-
-@admin.register(models.OvertimeCredit)
-class OvertimeCreditAdmin(admin.ModelAdmin):
-    """Overtime credit admin view."""
-
-    list_display = ['user', 'duration', 'date']
-    list_filter  = ['user']
