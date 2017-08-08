@@ -17,8 +17,20 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+      REPORTEXPORTS: [
+        {
+          label: 'CSV',
+          url: '/api/v1/reports/export?file_type=csv'
+        },
+        {
+          label: 'ODS',
+          url: '/api/v1/reports/export?file_type=ods'
+        },
+        {
+          label: 'XLSX',
+          url: '/api/v1/reports/export?file_type=xlsx'
+        }
+      ]
     },
 
     'ember-simple-auth': {
@@ -70,5 +82,24 @@ module.exports = function(environment) {
 
   }
 
+  /* global process*/
+  try {
+    let envReportExports = process.env.TIMED_REPORT_EXPORT
+    if (envReportExports) {
+      let additionalReportExports = JSON.parse(envReportExports)
+      if (additionalReportExports && Array.isArray(additionalReportExports)) {
+        ENV.APP.REPORTEXPORTS = [
+          ...ENV.APP.REPORTEXPORTS,
+          ...additionalReportExports
+        ]
+      }
+    }
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error(
+      `${process.env.TIMED_REPORT_EXPORT} is not a valid JSON format`
+    )
+    process.exit()
+  }
   return ENV
 }

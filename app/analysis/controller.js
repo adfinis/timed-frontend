@@ -1,19 +1,15 @@
 import Ember from 'ember'
 import Controller from 'ember-controller'
+import config from '../config/environment'
 
 const { testing } = Ember
 
-const downloadUrl = filters => {
-  /* eslint-disable camelcase */
-  let base = '/api/v1/reports/export?'
-  return (
-    base +
-    Object.keys(filters)
-      .map(key => {
-        return `${key}=${filters[key]}`
-      })
-      .join('&')
-  )
+const appendFilters = (url, filters) => {
+  return `${url}&${Object.keys(filters)
+    .map(key => {
+      return `${key}=${filters[key]}`
+    })
+    .join('&')}`
 }
 
 export default Controller.extend({
@@ -22,10 +18,10 @@ export default Controller.extend({
   page: 1,
 
   sort: '-date',
-
+  exportLinks: config.APP.REPORTEXPORTS,
   actions: {
-    download(type, filters) {
-      let target = `${downloadUrl(filters)}&file_type=${type}`
+    download(url, filters) {
+      let target = appendFilters(url, filters)
 
       if (testing) {
         return

@@ -19,3 +19,6 @@ testem.log
 
 # yuidoc
 /docs
+
+#environment
+.env

@@ -38,6 +38,9 @@ module.exports = function(defaults) {
     },
     'ember-aupac-typeahead': {
       includeTypeahead: false
+    },
+    dotEnv: {
+      clientAllowedKeys: ['TIMED_REPORT_EXPORT']
     }
   })
 

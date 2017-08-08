@@ -38,12 +38,12 @@
 
   {{#if data.reports.lastSuccessful}}
   <p>
-    <button {{action 'download' 'csv' data.filters}}
-      disabled={{data.tooManyResults}}
-      class="btn btn-default"
-      data-test-download-csv>CSV</button>
-    <button disabled={{data.tooManyResults}} class="btn btn-default" {{action 'download' 'ods' data.filters}}>ODS</button>
-    <button disabled={{data.tooManyResults}} class="btn btn-default" {{action 'download' 'xlsx' data.filters}}>XLSX</button>
+    {{#each exportLinks as |link index|}}
+      <button {{action 'download' link.url data.filters}}
+        disabled={{data.tooManyResults}}
+        class="btn btn-default"
+        data-test-download-file={{index}}>{{link.label}}</button>
+    {{/each}}
     {{#if data.tooManyResults}}
       More than 4000 rows were found. Please narrow down your search export results.
     {{/if}}
