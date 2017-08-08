@@ -1,5 +1,5 @@
 <h1>Project analysis</h1>
-{{#form-booking-filter page=page as |data|}}
+{{#form-booking-filter page=page sort=sort as |data|}}
   {{#paginated-table
     pages=data.reports.lastSuccessful.value.meta.pagination.pages
     page=page

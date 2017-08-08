@@ -28,8 +28,8 @@ export default Component.extend({
     return clean(filters)
   },
 
-  @computed('cleanFilters', 'page')
-  reports(cleanFilters, page) {
+  @computed('cleanFilters', 'page', 'sort')
+  reports(cleanFilters, page, ordering) {
     /* eslint-disable camelcase */
     this.set('hasCriteria', Boolean(Object.keys(cleanFilters).length))
     if (!this.get('hasCriteria')) {
@@ -41,7 +41,7 @@ export default Component.extend({
         include: 'user,task,task.project,task.project.customer',
         page_size: 10,
         page,
-        ordering: '-date'
+        ordering
       })
     )
     return task
