@@ -1,5 +1,6 @@
 import datetime
 import os
+import re
 
 import environ
 
@@ -224,3 +225,24 @@ DEFAULT_FROM_EMAIL = env.str(
     'DJANGO_DEFAULT_FROM_EMAIL',
     default('webmaster@localhost')
 )
+
+
+def parse_admins(admins):
+    """
+    Parse env admins to django admins.
+
+    Example of DJANGO_ADMINS environment variable:
+    Test Example <test@example.com>,Test2 <test2@example.com>
+    """
+    result = []
+    for admin in admins:
+        match = re.search('(.+) \<(.+@.+)\>', admin)
+        if not match:
+            raise environ.ImproperlyConfigured(
+                'In DJANGO_ADMINS admin "{0}" is not in correct '
+                '"Firstname Lastname <email@example.com>"'.format(admin))
+        result.append((match.group(1), match.group(2)))
+    return result
+
+
+ADMINS = parse_admins(env.list('DJANGO_ADMINS', default=[]))
