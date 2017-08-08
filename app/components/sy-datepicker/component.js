@@ -37,6 +37,9 @@ export default Component.extend({
      */
     change(value) {
       this.get('attrs.on-change')(value)
+    },
+    clear() {
+      this.set('value', '')
     }
   }
 })

@@ -11,6 +11,9 @@
       value={{moment-format value 'DD.MM.YYYY' allow-empty=true}}
       placeholder={{placeholder}}
     >
+    <span class="clear" {{action 'clear'}}>
+      <i class="fa fa-times" aria-hidden="true"></i>
+    </span>
   {{/dd.trigger}}
 
   {{#dd.content renderInPlace=true}}

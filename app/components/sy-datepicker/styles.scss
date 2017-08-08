@@ -1,0 +1,11 @@
+.ember-basic-dropdown-trigger {
+  position: relative;
+}
+span.clear {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  padding-right: .5rem;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
