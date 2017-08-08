@@ -18,6 +18,7 @@ install:
 
 before_script:
   - psql -c "CREATE ROLE timed CREATEDB LOGIN PASSWORD 'timed';" -U postgres
+  - psql -c "CREATE DATABASE timed;" -U postgres
 
 script: make test
 

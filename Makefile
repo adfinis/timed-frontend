@@ -29,5 +29,7 @@ docs:
 	@make -C docs/ html
 
 test: ## Test the project
+	./manage.py migrate --noinput
+	./manage.py makemigrations --check --dry-run --noinput
 	@flake8
 	@pytest --cov --create-db
