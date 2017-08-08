@@ -79,6 +79,15 @@ class ReportViewSet(ModelViewSet):
     filter_class     = filters.ReportFilterSet
     permission_classes = [IsAuthenticated, IsOwnerOrStaffElseReadOnly]
     ordering = ('id', )
+    ordering_fields = (
+        'date',
+        'duration',
+        'task__project__customer__name',
+        'task__project__name',
+        'task__name',
+        'user__username',
+        'comment',
+    )
 
     @list_route()
     def export(self, request):
