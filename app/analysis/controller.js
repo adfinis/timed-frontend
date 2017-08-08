@@ -5,7 +5,8 @@ import config from '../config/environment'
 const { testing } = Ember
 
 const appendFilters = (url, filters) => {
-  return `${url}&${Object.keys(filters)
+  let joinSymbol = url.includes('?') ? '&' : '?'
+  return `${url}${joinSymbol}${Object.keys(filters)
     .map(key => {
       return `${key}=${filters[key]}`
     })
