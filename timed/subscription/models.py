@@ -43,9 +43,9 @@ class SubscriptionProject(models.Model):
 class Order(models.Model):
     """Order of customer for specific amount of hours."""
 
-    project = models.OneToOneField('projects.Project',
-                                   on_delete=models.CASCADE,
-                                   related_name='subscription')
+    project = models.ForeignKey('projects.Project',
+                                on_delete=models.CASCADE,
+                                related_name='orders')
     duration = models.DurationField()
     ordered = models.DateTimeField(default=timezone.now)
     acknowledged = models.BooleanField(default=False)
