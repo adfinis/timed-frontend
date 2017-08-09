@@ -85,11 +85,16 @@ class JSONAPIClient(APIClient):
         :raises:             Exception
         """
         data = {
-            'username': username,
-            'password': password
+            'data': {
+                'attributes': {
+                    'username': username,
+                    'password': password
+                },
+                'type': 'obtain-json-web-tokens',
+            }
         }
 
-        response = super().post(reverse('login'), data)
+        response = self.post(reverse('login'), data)
 
         if response.status_code != status.HTTP_200_OK:
             raise Exception('Wrong credentials!')  # pragma: no cover
