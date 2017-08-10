@@ -3,17 +3,15 @@ import { describe, it } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
 describe('Unit | Controller | analysis', function() {
-  setupTest(
-    'controller:analysis',
-    {
-      // Specify the other units that are required for this test.
-      // needs: ['controller:foo']
-    }
-  )
+  setupTest('controller:analysis', {
+    needs: ['service:session']
+  })
 
-  // Replace this with your real tests.
-  it('exists', function() {
+  it('computes download URLs correctly', function() {
     let controller = this.subject()
-    expect(controller).to.be.ok
+    controller.set('token', 'foobar')
+    expect(controller.getTarget('test', { foo: 'bar' })).to.equal(
+      'test?foo=bar&jwt=foobar'
+    )
   })
 })
