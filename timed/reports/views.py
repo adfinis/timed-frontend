@@ -78,7 +78,7 @@ class WorkReport(GenericViewSet):
             hours = report.duration.total_seconds() / 60 / 60
             _set_value('B13', hours, float_style)
 
-            _set_value('C13', request.user.get_full_name())
+            _set_value('C13', report.user.get_full_name())
             _set_value('D13', report.comment)
 
         # calculate location of total hours as insert rows moved it
