@@ -19,6 +19,14 @@ class SupervisorInline(admin.TabularInline):
     verbose_name_plural = _('Supervisors')
 
 
+class SuperviseeInline(admin.TabularInline):
+    model = models.User.supervisors.through
+    extra = 0
+    fk_name = 'to_user'
+    verbose_name = _('Supervisee')
+    verbose_name_plural = _('Supervisees')
+
+
 class EmploymentForm(forms.ModelForm):
     """Custom form for the employment admin."""
 
@@ -100,7 +108,7 @@ class UserAdmin(UserAdmin):
     """Timed specific user admin."""
 
     inlines = [
-        SupervisorInline, EmploymentInline,
+        SupervisorInline, SuperviseeInline, EmploymentInline,
         OvertimeCreditInline, AbsenceCreditInline
     ]
     exclude = ('supervisors', )
