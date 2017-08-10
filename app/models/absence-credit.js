@@ -16,28 +16,20 @@ import { belongsTo } from 'ember-data/relationships'
  */
 export default Model.extend({
   /**
-   * The duration
+   * The days
    *
-   * @property {moment.duration} duration
+   * @property {Number} days
    * @public
    */
-  duration: attr('django-duration'),
+  days: attr('number'),
 
   /**
-   * The already used time
+   * The comment
    *
-   * @property {moment.duration} used
+   * @property {String} comment
    * @public
    */
-  used: attr('django-duration'),
-
-  /**
-   * The balance of the credit and the already used time
-   *
-   * @property {moment.duration} balance
-   * @public
-   */
-  balance: attr('django-duration'),
+  comment: attr('string'),
 
   /**
    * The absence type for which this credit counts

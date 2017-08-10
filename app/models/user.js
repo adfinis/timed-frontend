@@ -65,20 +65,20 @@ export default Model.extend({
   isStaff: attr('boolean'),
 
   /**
-   * The users absence credits
-   *
-   * @property {AbsenceCredit[]} absenceCredits
-   * @public
-   */
-  absenceCredits: hasMany('absence-credit'),
-
-  /**
    * The users employments
    *
    * @property {Employment[]} employments
    * @public
    */
   employments: hasMany('employment'),
+
+  /**
+   * The users absence types
+   *
+   * @property {UserAbsenceType[]} userAbsenceTypes
+   * @public
+   */
+  userAbsenceTypes: hasMany('user-absence-type'),
 
   /**
    * The full name
