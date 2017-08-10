@@ -26,7 +26,7 @@ const appendAuth = (url, token) => {
   return join(url, `jwt=${token}`)
 }
 
-export default Controller.extend({
+const AnalysisController = Controller.extend({
   queryParams: ['page', 'sort'],
 
   page: 1,
@@ -60,3 +60,5 @@ export default Controller.extend({
     }
   }
 })
+
+export default AnalysisController
