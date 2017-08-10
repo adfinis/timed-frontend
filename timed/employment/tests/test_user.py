@@ -8,7 +8,8 @@ from django.utils.duration import duration_string
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
-from timed.employment.factories import (EmploymentFactory,
+from timed.employment.factories import (AbsenceCreditFactory,
+                                        AbsenceTypeFactory, EmploymentFactory,
                                         OvertimeCreditFactory,
                                         PublicHolidayFactory, UserFactory)
 from timed.jsonapi_test_case import JSONAPITestCase
@@ -213,3 +214,61 @@ class UserTests(JSONAPITestCase):
         assert result['data']['attributes']['worktime-balance'] == (
             '00:00:00'
         )
+
+    def test_user_absence_types(self):
+        credits = AbsenceCreditFactory.create_batch(3, user=self.user)
+
+        url = reverse('user-detail', args=[
+            self.user.id
+        ])
+
+        res = self.client.get('{0}?include=user_absence_types'.format(url))
+
+        assert res.status_code == HTTP_200_OK
+
+        result = self.result(res)
+
+        rel = result['data']['relationships']
+        inc = result['included']
+
+        assert len(rel['user-absence-types']['data']) == len(credits)
+        assert len(inc) == len(credits)
+
+        assert (
+            inc[0]['id'] ==
+            '{0}-{1}'.format(self.user.id, credits[0].absence_type.id)
+        )
+
+        assert type(inc[0]['attributes']['credit']) == int
+        assert type(inc[0]['attributes']['used-days']) == int
+        assert type(inc[0]['attributes']['balance']) == int
+        assert inc[0]['attributes']['used-duration'] is None
+
+    def test_user_absence_types_fill_worktime(self):
+        absence_type = AbsenceTypeFactory.create(fill_worktime=True)
+
+        url = reverse('user-detail', args=[
+            self.user.id
+        ])
+
+        res = self.client.get('{0}?include=user_absence_types'.format(url))
+
+        assert res.status_code == HTTP_200_OK
+
+        result = self.result(res)
+
+        rel = result['data']['relationships']
+        inc = result['included']
+
+        assert len(rel['user-absence-types']['data']) == 1
+        assert len(inc) == 1
+
+        assert (
+            inc[0]['id'] ==
+            '{0}-{1}'.format(self.user.id, absence_type.id)
+        )
+
+        assert inc[0]['attributes']['credit'] is None
+        assert inc[0]['attributes']['used-days'] is None
+        assert inc[0]['attributes']['balance'] is None
+        assert type(inc[0]['attributes']['used-duration']) == str

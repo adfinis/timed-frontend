@@ -1,7 +1,5 @@
 """Viewsets for the employment app."""
 
-from datetime import date, datetime
-
 from django.contrib.auth import get_user_model
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -19,10 +17,7 @@ class UserViewSet(ReadOnlyModelViewSet):
         :return: The filtered users
         :rtype:  QuerySet
         """
-        return get_user_model().objects.prefetch_related(
-            'employments',
-            'absence_credits'
-        )
+        return get_user_model().objects.prefetch_related('employments')
 
 
 class EmploymentViewSet(ReadOnlyModelViewSet):
@@ -77,34 +72,6 @@ class AbsenceTypeViewSet(ReadOnlyModelViewSet):
     queryset         = models.AbsenceType.objects.all()
     serializer_class = serializers.AbsenceTypeSerializer
     ordering         = ('name',)
-
-
-class AbsenceCreditViewSet(ReadOnlyModelViewSet):
-    """Absence type view set."""
-
-    serializer_class = serializers.AbsenceCreditSerializer
-
-    def get_queryset(self):
-        """Filter the queryset by the user of the request.
-
-        :return: The filtered absence credits
-        :rtype:  QuerySet
-        """
-        requested_end_date = self.request.query_params.get('until')
-
-        end_date = (
-            datetime.strptime(requested_end_date, '%Y-%m-%d').date()
-            if requested_end_date
-            else date.today()
-        )
-
-        return models.AbsenceCredit.objects.select_related(
-            'user',
-            'absence_type'
-        ).filter(
-            user=self.request.user,
-            date__lte=end_date
-        )
 
 
 class OvertimeCreditViewSet(ReadOnlyModelViewSet):

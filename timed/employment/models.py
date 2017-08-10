@@ -163,9 +163,10 @@ class AbsenceCredit(models.Model):
 
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='absence_credits')
+    comment      = models.CharField(max_length=255, blank=True)
     absence_type = models.ForeignKey(AbsenceType)
     date         = models.DateField()
-    duration     = models.DurationField(blank=True, null=True)
+    days         = models.PositiveIntegerField(default=0)
 
 
 class OvertimeCredit(models.Model):
@@ -179,3 +180,31 @@ class OvertimeCredit(models.Model):
                                  related_name='overtime_credits')
     date     = models.DateField()
     duration = models.DurationField(blank=True, null=True)
+
+
+class UserAbsenceTypeManager(models.Manager):
+    def with_user(self, user):
+        return UserAbsenceType.objects.all().annotate(
+            user_id=models.Value(user.id, models.IntegerField())
+        )
+
+
+class UserAbsenceType(AbsenceType):
+    """User absence type.
+
+    This is a proxy for the absence type model used to generate a fake relation
+    between a user and an absence type. This is required so we can expose the
+    absence credits in a clean way to the API.
+
+    The PK of this model is a combination of the user ID and the actual absence
+    type ID.
+    """
+
+    objects = UserAbsenceTypeManager()
+
+    @property
+    def pk(self):
+        return '{0}-{1}'.format(self.user_id, self.id)
+
+    class Meta:
+        proxy = True
