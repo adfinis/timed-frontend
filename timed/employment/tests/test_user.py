@@ -216,7 +216,20 @@ class UserTests(JSONAPITestCase):
         )
 
     def test_user_absence_types(self):
-        credits = AbsenceCreditFactory.create_batch(3, user=self.user)
+        absence_type = AbsenceTypeFactory.create()
+
+        credit = AbsenceCreditFactory.create(date=date.today(),
+                                             user=self.user,
+                                             days=5,
+                                             absence_type=absence_type)
+
+        AbsenceFactory.create(date=date.today(),
+                              user=self.user,
+                              type=absence_type)
+
+        AbsenceFactory.create(date=date.today() - timedelta(days=1),
+                              user=self.user,
+                              type=absence_type)
 
         url = reverse('user-detail', args=[
             self.user.id
@@ -231,21 +244,42 @@ class UserTests(JSONAPITestCase):
         rel = result['data']['relationships']
         inc = result['included']
 
-        assert len(rel['user-absence-types']['data']) == len(credits)
-        assert len(inc) == len(credits)
+        assert len(rel['user-absence-types']['data']) == 1
+        assert len(inc) == 1
 
         assert (
             inc[0]['id'] ==
-            '{0}-{1}'.format(self.user.id, credits[0].absence_type.id)
+            '{0}-{1}'.format(self.user.id, credit.absence_type.id)
         )
 
-        assert type(inc[0]['attributes']['credit']) == int
-        assert type(inc[0]['attributes']['used-days']) == int
-        assert type(inc[0]['attributes']['balance']) == int
+        assert inc[0]['attributes']['credit'] == 5
+        assert inc[0]['attributes']['balance'] == 3
+        assert inc[0]['attributes']['used-days'] == 2
         assert inc[0]['attributes']['used-duration'] is None
 
     def test_user_absence_types_fill_worktime(self):
         absence_type = AbsenceTypeFactory.create(fill_worktime=True)
+
+        employment = self.user.employments.get(end_date__isnull=True)
+
+        employment.worktime_per_day = timedelta(hours=5)
+        employment.start_date       = date.today() - timedelta(days=1)
+
+        employment.save()
+
+        ReportFactory.create(
+            user=self.user,
+            date=date.today(),
+            duration=timedelta(hours=4)
+        )
+
+        AbsenceFactory.create(date=date.today(),
+                              user=self.user,
+                              type=absence_type)
+
+        AbsenceFactory.create(date=date.today() - timedelta(days=1),
+                              user=self.user,
+                              type=absence_type)
 
         url = reverse('user-detail', args=[
             self.user.id
@@ -269,6 +303,6 @@ class UserTests(JSONAPITestCase):
         )
 
         assert inc[0]['attributes']['credit'] is None
-        assert inc[0]['attributes']['used-days'] is None
         assert inc[0]['attributes']['balance'] is None
-        assert type(inc[0]['attributes']['used-duration']) == str
+        assert inc[0]['attributes']['used-days'] is None
+        assert inc[0]['attributes']['used-duration'] == '06:00:00'

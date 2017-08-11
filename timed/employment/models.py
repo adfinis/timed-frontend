@@ -3,6 +3,7 @@
 import datetime
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -164,7 +165,8 @@ class AbsenceCredit(models.Model):
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='absence_credits')
     comment      = models.CharField(max_length=255, blank=True)
-    absence_type = models.ForeignKey(AbsenceType)
+    absence_type = models.ForeignKey(AbsenceType,
+                                     related_name='absence_credits')
     date         = models.DateField()
     days         = models.PositiveIntegerField(default=0)
 
@@ -183,10 +185,70 @@ class OvertimeCredit(models.Model):
 
 
 class UserAbsenceTypeManager(models.Manager):
-    def with_user(self, user):
-        return UserAbsenceType.objects.all().annotate(
-            user_id=models.Value(user.id, models.IntegerField())
-        )
+    def with_user(self, user, start_date, end_date):
+        from timed.tracking.models import Absence
+
+        return UserAbsenceType.objects.raw("""
+            SELECT
+                at.*,
+                %(user_id)s AS user_id,
+                %(start)s AS start_date,
+                %(end)s AS end_date,
+                CASE
+                    WHEN at.fill_worktime THEN NULL
+                    ELSE sq1.credit
+                END AS credit,
+                CASE
+                    WHEN at.fill_worktime THEN NULL
+                    ELSE sq2.used_days
+                END AS used_days,
+                CASE
+                    WHEN at.fill_worktime THEN sq2.used_duration
+                    ELSE NULL
+                END AS used_duration,
+                CASE
+                    WHEN at.fill_worktime THEN NULL
+                    ELSE sq1.credit - sq2.used_days
+                END AS balance
+            FROM {absencetype_table} AS at
+            LEFT JOIN (
+                SELECT
+                    at.id,
+                    SUM(ac.days) AS credit
+                FROM {absencetype_table} AS at
+                LEFT JOIN {absencecredit_table} AS ac ON (
+                    ac.absence_type_id = at.id
+                    AND
+                    ac.user_id = %(user_id)s
+                    AND
+                    ac.date BETWEEN %(start)s AND %(end)s
+                )
+                GROUP BY at.id, ac.absence_type_id
+            ) AS sq1 ON (at.id = sq1.id)
+            LEFT JOIN (
+                SELECT
+                    at.id,
+                    COUNT(a.id) AS used_days,
+                    SUM(a.duration) AS used_duration
+                FROM {absencetype_table} AS at
+                LEFT JOIN {absence_table} AS a ON (
+                    a.type_id = at.id
+                    and
+                    a.user_id = %(user_id)s
+                    AND
+                    a.date BETWEEN %(start)s AND %(end)s
+                )
+                GROUP BY at.id, a.type_id
+            ) AS sq2 ON (at.id = sq2.id)
+        """.format(
+            absence_table=Absence._meta.db_table,
+            absencetype_table=AbsenceType._meta.db_table,
+            absencecredit_table=AbsenceCredit._meta.db_table
+        ), {
+            'user_id': user.id,
+            'start': start_date,
+            'end': end_date
+        })
 
 
 class UserAbsenceType(AbsenceType):

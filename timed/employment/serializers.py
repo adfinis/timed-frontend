@@ -6,7 +6,8 @@ from dateutil import rrule
 from django.contrib.auth import get_user_model
 from django.utils.duration import duration_string
 from rest_framework_json_api import relations
-from rest_framework_json_api.serializers import (ModelSerializer,
+from rest_framework_json_api.serializers import (DurationField, IntegerField,
+                                                 ModelSerializer,
                                                  SerializerMethodField)
 
 from timed.employment import models
@@ -26,12 +27,41 @@ class UserSerializer(ModelSerializer):
         read_only=True
     )
 
+    def get_dates(self, instance):
+        """Get the start and end time for the credits.
+
+        :returns: A tuple of dates
+        """
+        request = self.context.get('request')
+
+        end = datetime.strptime(
+            request.query_params.get(
+                'until',
+                date.today().strftime('%Y-%m-%d')
+            ),
+            '%Y-%m-%d'
+        ).date()
+
+        user = get_user_model().objects.get(pk=instance.id)
+
+        employment = models.Employment.objects.for_user(user, end)
+
+        start = max(
+            employment.start_date, date(date.today().year, 1, 1)
+        )
+
+        return (start, end)
+
     def get_user_absence_types(self, instance):
         """Get the user absence types for this user.
 
         :returns: All absence types for this user
         """
-        return models.UserAbsenceType.objects.with_user(instance)
+        start_date, end_date = self.get_dates(instance)
+
+        return models.UserAbsenceType.objects.with_user(instance,
+                                                        start_date,
+                                                        end_date)
 
     def get_worktime(self, user, start=None, end=None):
         """Calculate the reported, expected and balance for user.
@@ -234,10 +264,16 @@ class UserAbsenceTypeSerializer(ModelSerializer):
     and balances.
     """
 
-    credit        = SerializerMethodField()
-    used_duration = SerializerMethodField()
-    used_days     = SerializerMethodField()
-    balance       = SerializerMethodField()
+    credit          = IntegerField()
+    used_days       = IntegerField()
+    used_duration   = DurationField()
+    balance         = IntegerField()
+
+    user            = relations.SerializerMethodResourceRelatedField(
+        source='get_user',
+        model=get_user_model(),
+        read_only=True
+    )
 
     absence_credits = relations.SerializerMethodResourceRelatedField(
         source='get_absence_credits',
@@ -246,117 +282,17 @@ class UserAbsenceTypeSerializer(ModelSerializer):
         read_only=True
     )
 
-    user = relations.SerializerMethodResourceRelatedField(
-        source='get_user',
-        model=get_user_model(),
-        read_only=True
-    )
+    def get_user(self, instance):
+        return get_user_model().objects.get(pk=instance.user_id)
 
     def get_absence_credits(self, instance):
         """Get the absence credits for the user and type."""
         return models.AbsenceCredit.objects.filter(
             absence_type=instance,
-            user_id=instance.user_id
+            user__id=instance.user_id,
+            date__gte=instance.start_date,
+            date__lte=instance.end_date
         )
-
-    def get_user(self, instance):
-        """Get the user of this user absence type."""
-        return get_user_model().objects.get(pk=instance.user_id)
-
-    def get_dates(self, instance):
-        """Get the start and end time for the credits.
-
-        :returns: A tuple of dates
-        """
-        request = self.context.get('request')
-
-        end = datetime.strptime(
-            request.query_params.get(
-                'until',
-                date.today().strftime('%Y-%m-%d')
-            ),
-            '%Y-%m-%d'
-        )
-
-        user = get_user_model().objects.get(pk=instance.user_id)
-
-        employment = models.Employment.objects.for_user(user, end)
-
-        start = max(
-            employment.start_date, date(date.today().year, 1, 1)
-        )
-
-        return (start, end)
-
-    def get_credit(self, instance):
-        """Calculate the total credited days.
-
-        :return: The total credited days
-        :rtype:  int
-        """
-        if instance.fill_worktime:
-            return None
-
-        start, end = self.get_dates(instance)
-
-        return sum(models.AbsenceCredit.objects.filter(
-            user_id=instance.user_id,
-            absence_type=instance,
-            date__gte=start,
-            date__lte=end
-        ).values_list('days', flat=True))
-
-    def get_used_days(self, instance):
-        """Calculate the total used days.
-
-        :return: The total used days
-        :rtype:  int
-        """
-        if instance.fill_worktime:
-            return None
-
-        start, end = self.get_dates(instance)
-
-        return len(Absence.objects.filter(
-            user_id=instance.user_id,
-            type=instance,
-            date__gte=start,
-            date__lte=end
-        ))
-
-    def get_used_duration(self, instance):
-        """Calculate the total used duration.
-
-        This is only calculated for types which fill the worktime such as
-        sickness.
-
-        :return: The total used duration
-        :rtype:  str
-        """
-        if not instance.fill_worktime:
-            return None
-
-        start, end = self.get_dates(instance)
-
-        return duration_string(sum(Absence.objects.filter(
-            user_id=instance.user_id,
-            type=instance,
-            date__gte=start,
-            date__lte=end
-        ).values_list('duration', flat=True), timedelta()))
-
-    def get_balance(self, instance):
-        """Calculate the balance of credited and used days.
-
-        :return: The balance
-        :rtype:  int
-        """
-        credit = self.get_credit(instance)
-
-        if instance.fill_worktime or credit is None:
-            return None
-
-        return credit - self.get_used_days(instance)
 
     included_serializers = {
         'absence_credits':
