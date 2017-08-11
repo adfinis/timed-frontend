@@ -5,8 +5,7 @@ from datetime import date, datetime, timedelta
 from dateutil import rrule
 from django.contrib.auth import get_user_model
 from django.utils.duration import duration_string
-from rest_framework_json_api.relations import (ResourceRelatedField,  # noqa
-                                               SerializerMethodResourceRelatedField) # noqa
+from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import (ModelSerializer,
                                                  SerializerMethodField)
 
@@ -17,10 +16,10 @@ from timed.tracking.models import Absence, Report
 class UserSerializer(ModelSerializer):
     """User serializer."""
 
-    employments      = ResourceRelatedField(many=True, read_only=True)
-    worktime_balance = SerializerMethodField()
-
-    user_absence_types = SerializerMethodResourceRelatedField(
+    employments        = relations.ResourceRelatedField(many=True,
+                                                        read_only=True)
+    worktime_balance   = SerializerMethodField()
+    user_absence_types = relations.SerializerMethodResourceRelatedField(
         source='get_user_absence_types',
         model=models.UserAbsenceType,
         many=True,
@@ -176,8 +175,8 @@ class UserSerializer(ModelSerializer):
 class EmploymentSerializer(ModelSerializer):
     """Employment serializer."""
 
-    user     = ResourceRelatedField(read_only=True)
-    location = ResourceRelatedField(read_only=True)
+    user     = relations.ResourceRelatedField(read_only=True)
+    location = relations.ResourceRelatedField(read_only=True)
 
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
@@ -211,7 +210,7 @@ class LocationSerializer(ModelSerializer):
 class PublicHolidaySerializer(ModelSerializer):
     """Public holiday serializer."""
 
-    location = ResourceRelatedField(read_only=True)
+    location = relations.ResourceRelatedField(read_only=True)
 
     included_serializers = {
         'location': 'timed.employment.serializers.LocationSerializer'
@@ -240,14 +239,14 @@ class UserAbsenceTypeSerializer(ModelSerializer):
     used_days     = SerializerMethodField()
     balance       = SerializerMethodField()
 
-    absence_credits = SerializerMethodResourceRelatedField(
+    absence_credits = relations.SerializerMethodResourceRelatedField(
         source='get_absence_credits',
         model=models.AbsenceCredit,
         many=True,
         read_only=True
     )
 
-    user = SerializerMethodResourceRelatedField(
+    user = relations.SerializerMethodResourceRelatedField(
         source='get_user',
         model=get_user_model(),
         read_only=True
@@ -396,8 +395,8 @@ class AbsenceTypeSerializer(ModelSerializer):
 class AbsenceCreditSerializer(ModelSerializer):
     """Absence credit serializer."""
 
-    absence_type = ResourceRelatedField(read_only=True)
-    user         = ResourceRelatedField(read_only=True)
+    absence_type = relations.ResourceRelatedField(read_only=True)
+    user         = relations.ResourceRelatedField(read_only=True)
 
     included_serializers = {
         'absence_type': 'timed.employment.serializers.AbsenceTypeSerializer'
@@ -419,7 +418,7 @@ class AbsenceCreditSerializer(ModelSerializer):
 class OvertimeCreditSerializer(ModelSerializer):
     """Overtime credit serializer."""
 
-    user = ResourceRelatedField(read_only=True)
+    user = relations.ResourceRelatedField(read_only=True)
 
     class Meta:
         """Meta information for the overtime credit serializer."""
