@@ -16,7 +16,15 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
+  tracking: service('tracking'),
+
   session: service('session'),
+
+  beforeModel() {
+    // trigger the init function of the tracking service which starts the
+    // computed title
+    this.get('tracking')
+  },
 
   model() {
     let id = this.get('session.data.authenticated.user_id')
