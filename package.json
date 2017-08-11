@@ -67,6 +67,7 @@
     "ember-moment": "github:stefanpenner/ember-moment#3dad2079ddc8e3239256017ed498640a150baa9e",
     "ember-native-dom-helpers": "0.5.0",
     "ember-notify": "5.2.1",
+    "ember-one-way-controls": "^2.0.1",
     "ember-pad": "1.2.2",
     "ember-power-calendar": "0.5.0",
     "ember-power-datepicker": "^0.3.0",

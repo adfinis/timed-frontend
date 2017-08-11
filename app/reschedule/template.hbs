@@ -11,6 +11,7 @@
         <th>Date</th>
         <th>Dur.</th>
         <th>Customer / Project / Task</th>
+        <th>Flags</th>
         <th>User</th>
         <th>Comment</th>
         <th>Action</th>
@@ -35,13 +36,17 @@
               </div>
             {{/task-selection}}
           </td>
+          <td>
+            {{sy-checkbox checked=report.review on-change=(action (mut report.review)) label='Needs feedback'}}
+            {{sy-checkbox checked=report.notBillable on-change=(action (mut report.notBillable)) label='Not billable'}}
+          </td>
           <td>{{report.user.username}}</td>
           <td>{{input class='form-control' value=report.comment data-test-report-comment=index}}</td>
           <td><button data-test-report-save={{index}} class="btn btn-default" {{action 'saveReport' report}}>Save</button></td>
         </tr>
       {{^}}
         <tr>
-          <td colspan="6">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
+          <td colspan="7">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
         </tr>
       {{/each}}
     </tbody>
