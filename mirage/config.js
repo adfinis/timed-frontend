@@ -121,9 +121,6 @@ export default function() {
   this.get('/absence-types')
   this.get('/absence-types/:id')
 
-  this.get('/absence-credits')
-  this.get('/absence-credits/:id')
-
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
 

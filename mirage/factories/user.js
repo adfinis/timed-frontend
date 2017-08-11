@@ -33,6 +33,8 @@ export default Factory.extend({
     server.create('employment', { user })
     server.create('employment', 'active', { user })
 
-    server.createList('absence-credit', 5, { user })
+    server.create('user-absence-type', { user })
+    server.create('user-absence-type', 'withFill', { user })
+    server.create('user-absence-type', 'withCredit', { user })
   }
 })
