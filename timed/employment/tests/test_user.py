@@ -235,7 +235,7 @@ class UserTests(JSONAPITestCase):
             self.user.id
         ])
 
-        res = self.client.get('{0}?include=user_absence_types'.format(url))
+        res = self.client.get(url, {'include': 'user_absence_types'})
 
         assert res.status_code == HTTP_200_OK
 
@@ -285,7 +285,7 @@ class UserTests(JSONAPITestCase):
             self.user.id
         ])
 
-        res = self.client.get('{0}?include=user_absence_types'.format(url))
+        res = self.client.get(url, {'include': 'user_absence_types'})
 
         assert res.status_code == HTTP_200_OK
 

@@ -27,10 +27,10 @@ class UserSerializer(ModelSerializer):
         read_only=True
     )
 
-    def get_dates(self, instance):
-        """Get the start and end time for the credits.
+    def get_user_absence_types(self, instance):
+        """Get the user absence types for this user.
 
-        :returns: A tuple of dates
+        :returns: All absence types for this user
         """
         request = self.context.get('request')
 
@@ -42,26 +42,18 @@ class UserSerializer(ModelSerializer):
             '%Y-%m-%d'
         ).date()
 
-        user = get_user_model().objects.get(pk=instance.id)
-
-        employment = models.Employment.objects.for_user(user, end)
+        try:
+            employment = models.Employment.objects.for_user(instance, end)
+        except models.Employment.DoesNotExist:
+            return models.UserAbsenceType.objects.none()
 
         start = max(
             employment.start_date, date(date.today().year, 1, 1)
         )
 
-        return (start, end)
-
-    def get_user_absence_types(self, instance):
-        """Get the user absence types for this user.
-
-        :returns: All absence types for this user
-        """
-        start_date, end_date = self.get_dates(instance)
-
         return models.UserAbsenceType.objects.with_user(instance,
-                                                        start_date,
-                                                        end_date)
+                                                        start,
+                                                        end)
 
     def get_worktime(self, user, start=None, end=None):
         """Calculate the reported, expected and balance for user.
@@ -93,13 +85,12 @@ class UserSerializer(ModelSerializer):
         :returns: tuple of 3 values reported, expected and balance in given
                   time frame
         """
-        employment = models.Employment.objects.filter(
-            user=user,
-            end_date__isnull=True
-        ).first()
+        end = end or date.today()
 
-        # If there is no active employment, set the balance to 0
-        if employment is None:
+        try:
+            employment = models.Employment.objects.for_user(user, end)
+        except models.Employment.DoesNotExist:
+            # If there is no active employment, set the balance to 0
             return timedelta(), timedelta(), timedelta()
 
         location = employment.location
@@ -108,8 +99,6 @@ class UserSerializer(ModelSerializer):
             start = max(
                 employment.start_date, date(date.today().year, 1, 1)
             )
-
-        end = end or date.today()
 
         # workdays is in isoweekday, byweekday expects Monday to be zero
         week_workdays = [int(day) - 1 for day in employment.location.workdays]
