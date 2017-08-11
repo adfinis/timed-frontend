@@ -28,6 +28,18 @@ describe('Unit | Utility | humanize duration', function() {
     expect(result).to.equal('11h 12m 13s')
   })
 
+  it('renders days as hours', function() {
+    let duration = moment.duration({
+      days: 2,
+      hours: 2,
+      minutes: 0
+    })
+
+    let result = humanizeDuration(duration)
+
+    expect(result).to.equal('50h 0m')
+  })
+
   it('has a fallback', function() {
     let result = humanizeDuration(null)
 

@@ -4,5 +4,5 @@ export default Model.extend({
   activities: hasMany(),
   reports: hasMany(),
   employments: hasMany(),
-  absenceCredits: hasMany()
+  userAbsenceTypes: hasMany()
 })

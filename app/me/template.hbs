@@ -1,79 +1,121 @@
-<h1>{{model.fullName}}</h1>
-<div>
-  <div class="grid grid--6of12">
-    <div class="grid-cell">
-      <div class="card">
-        <div class="card-header text-center">
-          <strong>User information</strong>
-        </div>
-        <div class="card-block">
-          <table class="table table--striped">
-            <tbody>
-              <tr>
-                <td>Username:</td>
-                <td class="text-right">{{model.username}}</td>
-              </tr>
-              <tr>
-                <td>Email:</td>
-                <td class="text-right">{{model.email}}</td>
-              </tr>
-              <tr>
-                <td>Employed since:</td>
-                <td class="text-right">{{moment-format model.activeEmployment.start 'DD.MM.YYYY'}}</td>
-              </tr>
-              <tr>
-                <td>Staff member:</td>
-                <td class="text-right"><i class="fa {{if model.isStaff "fa-check" "fa-times"}}" aria-hidden="true"></i></td>
-              </tr>
-              <tr>
-                <td>Percentage:</td>
-                <td class="text-right">{{model.activeEmployment.percentage}}%</td>
-              </tr>
-              <tr>
-                <td>Worktime per day:</td>
-                <td class="text-right">{{format-duration model.activeEmployment.worktimePerDay false}}</td>
-              </tr>
-              <tr>
-                <td><strong>Worktime balance:</strong></td>
-                <td class="text-right">
-                  <span class="worktime-balance {{balance-highlight-class model.worktimeBalance}}">
-                    {{format-duration model.worktimeBalance false}}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+{{#with model as |user|}}
+  <h1>{{user.fullName}}</h1>
+  <div>
+    <div class="grid grid--6of12">
+      <div class="grid-cell">
+        <div class="card">
+          <div class="card-header text-center">
+            <strong>User information</strong>
+          </div>
+          <div class="card-block">
+            <table class="table table--striped">
+              <tbody>
+                <tr>
+                  <td>Username:</td>
+                  <td class="text-right">{{user.username}}</td>
+                </tr>
+                <tr>
+                  <td>Email:</td>
+                  <td class="text-right">{{user.email}}</td>
+                </tr>
+                <tr>
+                  <td>Employed since:</td>
+                  <td class="text-right">{{moment-format user.activeEmployment.start 'DD.MM.YYYY'}}</td>
+                </tr>
+                <tr>
+                  <td>Staff member:</td>
+                  <td class="text-right"><i class="fa {{if user.isStaff "fa-check" "fa-times"}}" aria-hidden="true"></i></td>
+                </tr>
+                <tr>
+                  <td>Percentage:</td>
+                  <td class="text-right">{{user.activeEmployment.percentage}}%</td>
+                </tr>
+                <tr>
+                  <td>Worktime per day:</td>
+                  <td class="text-right">{{format-duration user.activeEmployment.worktimePerDay false}}</td>
+                </tr>
+                <tr>
+                  <td><strong>Worktime balance:</strong></td>
+                  <td class="text-right">
+                    <span class="worktime-balance {{balance-highlight-class user.worktimeBalance}}">
+                      {{format-duration user.worktimeBalance false}}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="grid-cell">
-      <div class="card">
-        <div class="card-header text-center">
-          <strong>Absences</strong>
-        </div>
-        <div class="card-block">
-          <table class="table table--striped">
-            <thead>
-              <tr>
-                <th>Type</th>
-                <th>Credit</th>
-                <th>Used</th>
-                <th>Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {{#each model.absenceCredits as |absenceCredit|}}
+      <div class="grid-cell">
+        <div class="card">
+          <div class="card-header text-center">
+            <strong>Absences</strong>
+          </div>
+          <div class="card-block">
+            <table class="table table--striped table--absence-types">
+              <thead>
                 <tr>
-                  <td>{{absenceCredit.absenceType.name}}</td>
-                  <td>{{#if absenceCredit.duration}}{{format-duration absenceCredit.duration false}}{{else}}-{{/if}}</td>
-                  <td>{{format-duration absenceCredit.used false}}</td>
-                  <td>{{#if absenceCredit.balance}}{{format-duration absenceCredit.balance false}}{{else}}-{{/if}}</td>
+                  <th>
+                    <div class="grid grid--no-gutters grid--nowrap">
+                      <div class="grid-cell grid-cell--6of12">Type</div>
+                      <div class="grid-cell grid-cell--2of12">Credit</div>
+                      <div class="grid-cell grid-cell--2of12">Used</div>
+                      <div class="grid-cell grid-cell--2of12">Balance</div>
+                    </div>
+                  </th>
                 </tr>
-              {{/each}}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {{#each user.userAbsenceTypes as |absenceType|}}
+                  <tr
+                    class="{{if absenceType.absenceCredits.length 'pointer'}}"
+                    title="{{if absenceType.absenceCredits.length 'Click to see composition of this credit'}}"
+                    {{action (toggle 'showCredits' absenceType) on='click'}}
+                  >
+                    <td>
+                      <div class="grid grid--no-gutters grid--nowrap">
+                        <div class="grid-cell grid-cell--6of12">{{absenceType.name}}</div>
+                        <div class="grid-cell grid-cell--2of12">
+                          {{#if absenceType.credit}}
+                            {{absenceType.credit}} day{{unless (eq absenceType.credit 1) 's'}}
+                          {{else}}
+                            -
+                          {{/if}}
+                        </div>
+                        <div class="grid-cell grid-cell--2of12">
+                          {{#if absenceType.usedDuration}}
+                            {{humanize-duration absenceType.usedDuration false}}
+                          {{else}}
+                            {{absenceType.usedDays}} day{{unless (eq absenceType.usedDays 1) 's'}}
+                          {{/if}}
+                        </div>
+                        <div class="grid-cell grid-cell--2of12">
+                          {{#if absenceType.balance}}
+                            {{absenceType.balance}} day{{unless (eq absenceType.balance 1) 's'}}
+                          {{else}}
+                            -
+                          {{/if}}
+                        </div>
+                      </div>
+                      {{#liquid-if absenceType.showCredits}}
+                        {{#each absenceType.absenceCredits as |credit|}}
+                          <div class="grid grid--no-gutters grid--nowrap credit-row">
+                            <div class="grid-cell grid-cell--6of12">{{credit.comment}}</div>
+                            <div class="grid-cell grid-cell--6of12">
+                              {{credit.days}} day{{unless (eq credit.days 1) 's'}}
+                            </div>
+                          </div>
+                        {{/each}}
+                      {{/liquid-if}}
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   </div>
-</div>
+{{/with}}

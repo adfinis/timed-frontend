@@ -22,5 +22,13 @@ export default Model.extend({
    * @property {String} name
    * @public
    */
-  name: attr('string')
+  name: attr('string'),
+
+  /**
+   * Whether the absence type only fills the worktime
+   *
+   * @property {Boolean} fillWorktime
+   * @public
+   */
+  fillWorktime: attr('boolean')
 })

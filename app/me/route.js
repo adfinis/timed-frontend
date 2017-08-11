@@ -33,7 +33,9 @@ export default Route.extend({
     let id = this.get('session.data.authenticated.user_id')
 
     return this.store.findRecord('user', id, {
-      include: 'employments,absence_credits,absence_credits.absence_type'
+      reload: true,
+      include:
+        'employments,user_absence_types,user_absence_types.absence_credits'
     })
   }
 })
