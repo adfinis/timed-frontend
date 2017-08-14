@@ -170,7 +170,7 @@ class ActivityTests(JSONAPITestCase):
         now      = datetime.now(timezone('Europe/Zurich'))
         activity = self.activities[0]
 
-        activity.start_datetime = now
+        activity.date = now
         activity.save()
 
         url = reverse('activity-list')
