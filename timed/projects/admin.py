@@ -13,20 +13,20 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+class TaskInline(admin.TabularInline):
+    model = models.Task
+    extra = 0
+
+
 @admin.register(models.Project)
 class ProjectAdmin(admin.ModelAdmin):
     """Project admin view."""
 
     list_display  = ['name', 'customer']
     list_filter   = ['customer']
-    search_fields = ['name', 'customer']
+    search_fields = ['name', 'customer__name']
 
-
-@admin.register(models.Task)
-class TaskAdmin(admin.ModelAdmin):
-    """Task admin view."""
-
-    list_display = ['__str__']
+    inlines = [TaskInline]
 
 
 @admin.register(models.TaskTemplate)
