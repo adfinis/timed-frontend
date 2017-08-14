@@ -185,6 +185,19 @@ class OvertimeCredit(models.Model):
 
 class UserAbsenceTypeManager(models.Manager):
     def with_user(self, user, start_date, end_date):
+        """Get all user absence types with the needed calculations.
+
+        This is achieved using a raw query because the calculations were too
+        complicated to do with django annotations / aggregations. Since those
+        proxy models are read only and don't need to be filtered or anything,
+        the raw query shouldn't block any needed functions.
+
+        :param User user: The user of the user absence type
+        :param datetime.date start_date: Start date of the user absence type
+        :param datetime.date end_date: End date of the user absence type
+        :returns: User absence types for the requested user
+        :rtype: django.db.models.QuerySet
+        """
         from timed.tracking.models import Absence
 
         return UserAbsenceType.objects.raw("""
@@ -195,19 +208,19 @@ class UserAbsenceTypeManager(models.Manager):
                 %(end)s AS end_date,
                 CASE
                     WHEN at.fill_worktime THEN NULL
-                    ELSE sq1.credit
+                    ELSE credit_join.credit
                 END AS credit,
                 CASE
                     WHEN at.fill_worktime THEN NULL
-                    ELSE sq2.used_days
+                    ELSE used_join.used_days
                 END AS used_days,
                 CASE
-                    WHEN at.fill_worktime THEN sq2.used_duration
+                    WHEN at.fill_worktime THEN used_join.used_duration
                     ELSE NULL
                 END AS used_duration,
                 CASE
                     WHEN at.fill_worktime THEN NULL
-                    ELSE sq1.credit - sq2.used_days
+                    ELSE credit_join.credit - used_join.used_days
                 END AS balance
             FROM {absencetype_table} AS at
             LEFT JOIN (
@@ -223,7 +236,7 @@ class UserAbsenceTypeManager(models.Manager):
                     ac.date BETWEEN %(start)s AND %(end)s
                 )
                 GROUP BY at.id, ac.absence_type_id
-            ) AS sq1 ON (at.id = sq1.id)
+            ) AS credit_join ON (at.id = credit_join.id)
             LEFT JOIN (
                 SELECT
                     at.id,
@@ -238,7 +251,7 @@ class UserAbsenceTypeManager(models.Manager):
                     a.date BETWEEN %(start)s AND %(end)s
                 )
                 GROUP BY at.id, a.type_id
-            ) AS sq2 ON (at.id = sq2.id)
+            ) AS used_join ON (at.id = used_join.id)
         """.format(
             absence_table=Absence._meta.db_table,
             absencetype_table=AbsenceType._meta.db_table,
