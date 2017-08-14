@@ -163,7 +163,7 @@ describe('Acceptance | index reports', function() {
     await triggerEvent(
       `.table--reports tr:last-child ${testSelector('report-comment')}`,
       'keypress',
-      { charCode: 13 }
+      { which: 13, charCode: 13 }
     )
 
     expect(
