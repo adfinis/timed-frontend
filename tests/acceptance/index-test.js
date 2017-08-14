@@ -43,18 +43,18 @@ describe('Acceptance | index', function() {
   it('can start a activity by pressing enter', async function() {
     await visit('/')
 
-    await triggerEvent('.page-content', 'keypress', { charCode: 13 })
+    await triggerEvent('.page-content', 'keypress', { which: 13 })
 
     expect(find(testSelector('record-start'))).to.have.length(1)
 
     await triggerEvent(testSelector('tracking-comment'), 'keypress', {
-      charCode: 22
+      which: 22
     })
 
     expect(find(testSelector('record-start'))).to.have.length(1)
 
     await triggerEvent(testSelector('tracking-comment'), 'keypress', {
-      charCode: 13
+      which: 13
     })
 
     expect(find(testSelector('record-start'))).to.have.length(0)

@@ -29,7 +29,7 @@ export default Component.extend({
    */
   keyPress(e) {
     if (
-      e.charCode === ENTER_CHAR_CODE &&
+      e.which === ENTER_CHAR_CODE &&
       !e.target.classList.contains('tt-input')
     ) {
       this.get('tracking.startActivity').perform()

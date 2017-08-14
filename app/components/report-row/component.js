@@ -45,7 +45,7 @@ const ReportRowComponent = Component.extend({
    * @public
    */
   keyPress(e) {
-    if (e.charCode === ENTER_CHAR_CODE && !e.target.classList.contains('btn')) {
+    if (e.which === ENTER_CHAR_CODE && !e.target.classList.contains('btn')) {
       this.send('save')
     }
   },
