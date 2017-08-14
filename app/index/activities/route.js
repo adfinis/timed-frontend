@@ -101,9 +101,22 @@ export default Route.extend({
      * @public
      */
     generateReportsCheck() {
-      this.get('controller.activities').filterBy('task.id', undefined).length
-        ? this.set('controller.showWarning', true)
-        : this.send('generateReports')
+      let hasUnknown = this.get('controller.activities').find(
+        a => !a.get('task.id')
+      )
+
+      let hasOverlapping = this.get('controller.activities').any(a => {
+        return a.get('blocks').any(b => {
+          return !(b.get('to') || moment()).isSame(a.get('start'), 'day')
+        })
+      })
+
+      this.set('controller.showUnknownWarning', hasUnknown)
+      this.set('controller.showOverlappingWarning', hasOverlapping)
+
+      if (!hasUnknown && !hasOverlapping) {
+        this.send('generateReports')
+      }
     },
 
     /**
@@ -113,10 +126,19 @@ export default Route.extend({
      * @public
      */
     async generateReports() {
-      this.set('controller.showWarning', false)
+      this.set('controller.showUnknownWarning', false)
+      this.set('controller.showOverlappingWarning', false)
+
       try {
         await this.get('controller.activities')
-          .filterBy('task.id')
+          .filter(a => {
+            return (
+              a.get('task.id') &&
+              a.get('blocks').every(b => {
+                return (b.get('to') || moment()).isSame(a.get('start'), 'day')
+              })
+            )
+          })
           .forEach(async activity => {
             let duration = moment.duration(activity.get('duration'))
 

@@ -62,15 +62,28 @@
   </div>
 </div>
 
-{{#sy-modal visible=showWarning as |modal|}}
+{{#sy-modal visible=showOverlappingWarning as |modal|}}
+  {{#modal.header}}
+    Activities overlap
+  {{/modal.header}}
+  {{#modal.body}}
+    Overlapping activities will not be taken into account for the timesheet.
+  {{/modal.body}}
+  {{#modal.footer data-test-overlap-warning}}
+   <button class="btn btn-primary" {{action (if showUnknownWarning (action (mut showOverlappingWarning) false) 'generateReports')}}>That's fine</button>
+   <button class="btn btn-default" {{action (queue (action (mut showOverlappingWarning) false) (action (mut showUnknownWarning) false))}}>Cancel</button>
+  {{/modal.footer}}
+{{/sy-modal}}
+
+{{#sy-modal visible=showUnknownWarning as |modal|}}
   {{#modal.header}}
     Activities contain unknown tasks
   {{/modal.header}}
   {{#modal.body}}
     Unknown tasks will not be taken into account for the timesheet.
   {{/modal.body}}
-  {{#modal.footer}}
-   <button class="btn btn-primary" {{action 'generateReports'}}>That's fine</button>
-   <button class="btn btn-default" {{action (mut showWarning false)}}>Cancel</button>
+  {{#modal.footer data-test-unknown-warning}}
+   <button class="btn btn-primary" {{action (if showOverlappingWarning (action (mut showUnknownWarning) false) 'generateReports')}}>That's fine</button>
+   <button class="btn btn-default" {{action (queue (action (mut showUnknownWarning) false) (action (mut showOverlappingWarning) false))}}>Cancel</button>
   {{/modal.footer}}
 {{/sy-modal}}

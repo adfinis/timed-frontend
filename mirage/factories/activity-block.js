@@ -2,7 +2,7 @@ import { Factory, faker, trait } from 'ember-cli-mirage'
 
 export default Factory.extend({
   fromDatetime() {
-    let start = this.activity.startDatetime.clone()
+    let start = this.activity.date.clone()
 
     return start
   },

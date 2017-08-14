@@ -9,7 +9,7 @@ import startApp from '../helpers/start-app'
 import testSelector from 'ember-test-selectors'
 import moment from 'moment'
 
-describe('Acceptance | index activities', function() {
+describe('Acceptance | index activities x', function() {
   let application
 
   beforeEach(async function() {
@@ -71,7 +71,7 @@ describe('Acceptance | index activities', function() {
   it('can start an activity of a past day', async function() {
     let lastDay = moment().subtract(1, 'day')
 
-    let activity = server.create('activity', { startDatetime: lastDay })
+    let activity = server.create('activity', { date: lastDay })
 
     await visit(`/?day=${lastDay.format('YYYY-MM-DD')}`)
 
@@ -187,11 +187,74 @@ describe('Acceptance | index activities', function() {
   })
 
   it('shows a warning when generating reports from unknown tasks', async function() {
+    server.db.activities.remove()
     server.create('activity', 'unknown')
 
     await visit('/')
-    await click(find('button:contains(Generate timesheet)'))
+
+    await click('button:contains(Generate timesheet)')
+    await click(`${testSelector('unknown-warning')} button:contains(Cancel)`)
 
     expect(currentURL()).to.equal('/')
+
+    await click('button:contains(Generate timesheet)')
+    await click(`${testSelector('unknown-warning')} button:contains(fine)`)
+
+    expect(currentURL()).to.equal('/reports')
+  })
+
+  it('shows a warning when generating reports which overlap the day', async function() {
+    server.create('activity', 'overlapping')
+
+    await visit('/')
+
+    await click('button:contains(Generate timesheet)')
+    await click(`${testSelector('overlap-warning')} button:contains(Cancel)`)
+
+    expect(currentURL()).to.equal('/')
+
+    await click('button:contains(Generate timesheet)')
+    await click(`${testSelector('overlap-warning')} button:contains(fine)`)
+
+    expect(currentURL()).to.equal('/reports')
+  })
+
+  it('can handle both warnings', async function() {
+    server.create('activity', 'unknown')
+    server.create('activity', 'overlapping')
+
+    await visit('/')
+
+    // both close if one clicks cancel
+    await click('button:contains(Generate timesheet)')
+    expect(find('.modal--visible')).to.have.length(2)
+    await click(`${testSelector('overlap-warning')} button:contains(Cancel)`)
+    expect(find('.modal--visible')).to.have.length(0)
+    expect(currentURL()).to.equal('/')
+
+    // both must be fine if it should continue
+    await click('button:contains(Generate timesheet)')
+    expect(find('.modal--visible')).to.have.length(2)
+    await click(`${testSelector('overlap-warning')} button:contains(fine)`)
+    expect(find('.modal--visible')).to.have.length(1)
+    await click(`${testSelector('unknown-warning')} button:contains(Cancel)`)
+    expect(find('.modal--visible')).to.have.length(0)
+
+    await click('button:contains(Generate timesheet)')
+    expect(find('.modal--visible')).to.have.length(2)
+    await click(`${testSelector('unknown-warning')} button:contains(fine)`)
+    expect(find('.modal--visible')).to.have.length(1)
+    await click(`${testSelector('overlap-warning')} button:contains(Cancel)`)
+    expect(find('.modal--visible')).to.have.length(0)
+    expect(currentURL()).to.equal('/')
+
+    // if both are fine continue
+    await click('button:contains(Generate timesheet)')
+    expect(find('.modal--visible')).to.have.length(2)
+    await click(`${testSelector('overlap-warning')} button:contains(fine)`)
+    expect(find('.modal--visible')).to.have.length(1)
+    await click(`${testSelector('unknown-warning')} button:contains(fine)`)
+    expect(find('.modal--visible')).to.have.length(0)
+    expect(currentURL()).to.equal('/reports')
   })
 })
