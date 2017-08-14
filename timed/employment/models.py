@@ -163,9 +163,11 @@ class AbsenceCredit(models.Model):
 
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='absence_credits')
-    absence_type = models.ForeignKey(AbsenceType)
+    comment      = models.CharField(max_length=255, blank=True)
+    absence_type = models.ForeignKey(AbsenceType,
+                                     related_name='absence_credits')
     date         = models.DateField()
-    duration     = models.DurationField(blank=True, null=True)
+    days         = models.PositiveIntegerField(default=0)
 
 
 class OvertimeCredit(models.Model):
@@ -179,3 +181,104 @@ class OvertimeCredit(models.Model):
                                  related_name='overtime_credits')
     date     = models.DateField()
     duration = models.DurationField(blank=True, null=True)
+
+
+class UserAbsenceTypeManager(models.Manager):
+    def with_user(self, user, start_date, end_date):
+        """Get all user absence types with the needed calculations.
+
+        This is achieved using a raw query because the calculations were too
+        complicated to do with django annotations / aggregations. Since those
+        proxy models are read only and don't need to be filtered or anything,
+        the raw query shouldn't block any needed functions.
+
+        :param User user: The user of the user absence type
+        :param datetime.date start_date: Start date of the user absence type
+        :param datetime.date end_date: End date of the user absence type
+        :returns: User absence types for the requested user
+        :rtype: django.db.models.QuerySet
+        """
+        from timed.tracking.models import Absence
+
+        return UserAbsenceType.objects.raw("""
+            SELECT
+                at.*,
+                %(user_id)s AS user_id,
+                %(start)s AS start_date,
+                %(end)s AS end_date,
+                CASE
+                    WHEN at.fill_worktime THEN NULL
+                    ELSE credit_join.credit
+                END AS credit,
+                CASE
+                    WHEN at.fill_worktime THEN NULL
+                    ELSE used_join.used_days
+                END AS used_days,
+                CASE
+                    WHEN at.fill_worktime THEN used_join.used_duration
+                    ELSE NULL
+                END AS used_duration,
+                CASE
+                    WHEN at.fill_worktime THEN NULL
+                    ELSE credit_join.credit - used_join.used_days
+                END AS balance
+            FROM {absencetype_table} AS at
+            LEFT JOIN (
+                SELECT
+                    at.id,
+                    SUM(ac.days) AS credit
+                FROM {absencetype_table} AS at
+                LEFT JOIN {absencecredit_table} AS ac ON (
+                    ac.absence_type_id = at.id
+                    AND
+                    ac.user_id = %(user_id)s
+                    AND
+                    ac.date BETWEEN %(start)s AND %(end)s
+                )
+                GROUP BY at.id, ac.absence_type_id
+            ) AS credit_join ON (at.id = credit_join.id)
+            LEFT JOIN (
+                SELECT
+                    at.id,
+                    COUNT(a.id) AS used_days,
+                    SUM(a.duration) AS used_duration
+                FROM {absencetype_table} AS at
+                LEFT JOIN {absence_table} AS a ON (
+                    a.type_id = at.id
+                    and
+                    a.user_id = %(user_id)s
+                    AND
+                    a.date BETWEEN %(start)s AND %(end)s
+                )
+                GROUP BY at.id, a.type_id
+            ) AS used_join ON (at.id = used_join.id)
+        """.format(
+            absence_table=Absence._meta.db_table,
+            absencetype_table=AbsenceType._meta.db_table,
+            absencecredit_table=AbsenceCredit._meta.db_table
+        ), {
+            'user_id': user.id,
+            'start': start_date,
+            'end': end_date
+        })
+
+
+class UserAbsenceType(AbsenceType):
+    """User absence type.
+
+    This is a proxy for the absence type model used to generate a fake relation
+    between a user and an absence type. This is required so we can expose the
+    absence credits in a clean way to the API.
+
+    The PK of this model is a combination of the user ID and the actual absence
+    type ID.
+    """
+
+    objects = UserAbsenceTypeManager()
+
+    @property
+    def pk(self):
+        return '{0}-{1}'.format(self.user_id, self.id)
+
+    class Meta:
+        proxy = True

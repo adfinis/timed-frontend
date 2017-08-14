@@ -103,15 +103,7 @@ class AbsenceCreditFactory(DjangoModelFactory):
     absence_type = SubFactory(AbsenceTypeFactory)
     user         = SubFactory(UserFactory)
     date         = Faker('date_object')
-
-    @lazy_attribute
-    def duration(self):
-        """Generate a random duration.
-
-        :return: The generated duration
-        :rtype:  datetime.timedelta
-        """
-        return datetime.timedelta(hours=random.randint(8, 200))
+    days         = Faker('random_int', min=1, max=25)
 
     class Meta:
         """Meta informations for the absence credit factory."""
