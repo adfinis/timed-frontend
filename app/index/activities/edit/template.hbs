@@ -14,14 +14,22 @@
         <tbody>
           {{#each blocks as |block|}}
             {{#if (and block.to (not block.isDeleted))}}
-              <tr class="text-center" data-test-activity-block-row data-test-activity-block-row-id={{block.id}}>
+              <tr
+                class="text-center {{if block.overlaps 'danger'}}"
+                title="{{if block.overlaps 'This block overlaps the day of the activity'}}"
+                data-test-activity-block-row
+                data-test-activity-block-row-id={{block.id}}
+              >
                 <td>
                   <button data-test-delete-activity-block class="btn btn-default" {{action 'deleteBlock' block}}>{{fa-icon 'trash'}}</button>
                 </td>
                 <td>{{sy-timepicker max=block.to precision=1 value=block.from on-change=(action (mut block.from))}}</td>
                 <td>-</td>
                 <td>{{sy-timepicker min=block.from precision=1 value=block.to on-change=(action (mut block.to))}}</td>
-                <td>{{format-duration (moment-diff block.from block.to) false}}</td>
+                <td>
+                  {{#if block.overlaps}}<span class="error-text">{{fa-icon 'warning'}}</span>{{/if}}
+                  {{format-duration (moment-diff block.from block.to) false}}
+                </td>
               </tr>
             {{/if}}
           {{/each}}

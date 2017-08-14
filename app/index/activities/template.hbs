@@ -9,6 +9,8 @@
         <tbody>
           {{#each activities as |activity|}}
           <tr
+            class="{{if activity.overlaps 'danger'}}"
+            title="Click to edit"
             data-test-activity-row
             data-test-activity-row-id={{activity.id}}
             class="pointer {{if activity.active 'primary'}}"
@@ -27,6 +29,12 @@
               </td>
               <td>{{activity.comment}}</td>
               <td>
+                {{#if activity.overlaps}}
+                  <span title="This activity has an overlapping block" class="error-text">
+                    {{fa-icon 'warning'}}
+                    &nbsp;
+                  </span>
+                {{/if}}
                 {{#if activity.active}}
                   {{duration-since activity.activeBlock.from elapsed=activity.duration}}
                 {{else}}

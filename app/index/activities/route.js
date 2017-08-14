@@ -101,14 +101,12 @@ export default Route.extend({
      * @public
      */
     generateReportsCheck() {
-      let hasUnknown = this.get('controller.activities').find(
-        a => !a.get('task.id')
-      )
+      let hasUnknown = this.get('controller.activities').find(a => {
+        return !a.get('task.id')
+      })
 
-      let hasOverlapping = this.get('controller.activities').any(a => {
-        return a.get('blocks').any(b => {
-          return !(b.get('to') || moment()).isSame(a.get('start'), 'day')
-        })
+      let hasOverlapping = this.get('controller.activities').find(a => {
+        return a.get('overlaps')
       })
 
       this.set('controller.showUnknownWarning', hasUnknown)
@@ -131,14 +129,7 @@ export default Route.extend({
 
       try {
         await this.get('controller.activities')
-          .filter(a => {
-            return (
-              a.get('task.id') &&
-              a.get('blocks').every(b => {
-                return (b.get('to') || moment()).isSame(a.get('start'), 'day')
-              })
-            )
-          })
+          .filter(a => a.get('task.id') && !a.get('overlaps'))
           .forEach(async activity => {
             let duration = moment.duration(activity.get('duration'))
 

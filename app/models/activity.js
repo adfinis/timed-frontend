@@ -96,5 +96,16 @@ export default Model.extend({
   @computed('activeBlock')
   active(block) {
     return Boolean(block && block.get('from'))
+  },
+
+  /**
+   * Whether the activity has any overlapping blocks
+   *
+   * @property {Boolean} overlaps
+   * @public
+   */
+  @computed('blocks.@each.overlaps')
+  overlaps(blocks) {
+    return blocks.any(b => b.get('overlaps'))
   }
 })
