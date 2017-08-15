@@ -6,6 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import moment from 'moment'
+import computed from 'ember-computed-decorators'
 
 import { belongsTo } from 'ember-data/relationships'
 
@@ -42,5 +43,16 @@ export default Model.extend({
    * @type {Activity}
    * @public
    */
-  activity: belongsTo('activity')
+  activity: belongsTo('activity'),
+
+  /**
+   * Whether the blocks overlaps a day
+   *
+   * @property {Boolean} overlaps
+   * @public
+   */
+  @computed('activity.start', 'to')
+  overlaps(start, to) {
+    return !(to || moment()).isSame(start, 'day')
+  }
 })

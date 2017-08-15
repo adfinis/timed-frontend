@@ -7,20 +7,18 @@ export default Factory.extend({
   duration: () => randomDuration(1, true),
   // task: association(),
 
-  startDatetime() {
-    let random = moment(faker.date.past())
-
-    return moment().set({
-      h: random.hours(),
-      m: random.minutes(),
-      s: random.seconds()
-    })
-  },
+  date: () =>
+    moment().set({
+      h: 8,
+      m: 30,
+      s: 0,
+      ms: 0
+    }),
 
   afterCreate(activity, server) {
     activity.update({ taskId: server.create('task').id })
 
-    let toDatetime = activity.startDatetime.clone()
+    let toDatetime = activity.date.clone()
 
     let [hours, minutes, seconds] = activity.duration.split(':').map(parseInt)
 
@@ -28,7 +26,7 @@ export default Factory.extend({
 
     server.create('activity-block', {
       activity,
-      fromDatetime: activity.startDatetime.clone(),
+      fromDatetime: activity.date.clone(),
       toDatetime
     })
   },
@@ -46,6 +44,16 @@ export default Factory.extend({
   unknown: trait({
     afterCreate(activity) {
       activity.task.destroy()
+    }
+  }),
+
+  overlapping: trait({
+    afterCreate(activity, server) {
+      server.create('activity-block', {
+        activity,
+        fromDatetime: moment(),
+        toDatetime: moment().add(1, 'days')
+      })
     }
   })
 })

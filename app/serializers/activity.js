@@ -24,6 +24,6 @@ export default ApplicationSerializer.extend({
    * @public
    */
   attrs: {
-    start: 'start-datetime'
+    start: 'date'
   }
 })
