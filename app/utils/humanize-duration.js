@@ -4,6 +4,8 @@
  * @public
  */
 
+const { floor } = Math
+
 /**
  * Converts a moment duration into a string with hours minutes and optionally
  * seconds
@@ -19,7 +21,7 @@ export default function humanizeDuration(duration, seconds = false) {
     return seconds ? '0h 0m 0s' : '0h 0m'
   }
 
-  let h = duration.hours()
+  let h = floor(duration.asHours())
   let m = duration.minutes()
 
   if (seconds) {

@@ -5,6 +5,8 @@
  */
 import Component from 'ember-component'
 import service from 'ember-service/inject'
+import { observes } from 'ember-computed-decorators'
+import { later } from 'ember-runloop'
 
 const ENTER_CHAR_CODE = 13
 
@@ -29,10 +31,28 @@ export default Component.extend({
    */
   keyPress(e) {
     if (
-      e.charCode === ENTER_CHAR_CODE &&
+      e.which === ENTER_CHAR_CODE &&
       !e.target.classList.contains('tt-input')
     ) {
       this.get('tracking.startActivity').perform()
+    }
+  },
+
+  /**
+   * Set the focus to the comment field as soon as the task is selected
+   *
+   * The 'later' needs to be there so that the focus happens after all the
+   * other events are done. Otherwise it'd focus the play button.
+   *
+   * @method _setCommentFocus
+   * @public
+   */
+  @observes('tracking.activity.task')
+  _setCommentFocus() {
+    if (this.get('tracking.activity.task.id')) {
+      later(this, () => {
+        this.$('input[name=comment]').focus()
+      })
     }
   }
 })

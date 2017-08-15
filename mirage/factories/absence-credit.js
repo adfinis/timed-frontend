@@ -1,8 +1,6 @@
-import { Factory } from 'ember-cli-mirage'
-import { randomDuration } from '../helpers/duration'
+import { Factory, faker } from 'ember-cli-mirage'
 
 export default Factory.extend({
-  duration: () => randomDuration(),
-  used: () => randomDuration(),
-  balance: () => randomDuration()
+  days: () => faker.random.number({ min: 1, max: 25 }),
+  comment: () => faker.lorem.word()
 })

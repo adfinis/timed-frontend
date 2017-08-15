@@ -211,3 +211,22 @@ body {
 .force-white input {
   background-color: white !important;
 }
+
+.table--absence-types > thead > tr > th,
+.table--absence-types > tbody > tr > td {
+  .grid {
+    margin: 0;
+  }
+
+  .credit-row {
+    font-size: 70%;
+
+    &:nth-child(1) {
+      padding-top: 0.5rem;
+    }
+
+    .grid-cell:first-child {
+      padding-left: 1rem;
+    }
+  }
+}
