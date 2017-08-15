@@ -101,13 +101,13 @@ export default Route.extend({
      * @public
      */
     generateReportsCheck() {
-      let hasUnknown = this.get('controller.activities').find(a => {
-        return !a.get('task.id')
-      })
-
-      let hasOverlapping = this.get('controller.activities').find(a => {
-        return a.get('overlaps')
-      })
+      let hasUnknown = !!this.get('controller.activities').findBy(
+        'task.id',
+        undefined
+      )
+      let hasOverlapping = !!this.get('controller.activities').findBy(
+        'overlaps'
+      )
 
       this.set('controller.showUnknownWarning', hasUnknown)
       this.set('controller.showOverlappingWarning', hasOverlapping)
