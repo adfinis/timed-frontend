@@ -5,8 +5,7 @@ from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
 from timed.jsonapi_test_case import JSONAPITestCase
-from timed.projects.factories import ProjectFactory, TaskTemplateFactory
-from timed.projects.models import Task
+from timed.projects.factories import ProjectFactory
 
 
 class ProjectTests(JSONAPITestCase):
@@ -91,11 +90,3 @@ class ProjectTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_project_default_tasks(self):
-        """Should generate tasks based on task templates for a new project."""
-        templates = TaskTemplateFactory.create_batch(5)
-        project   = ProjectFactory.create()
-        tasks     = Task.objects.filter(project=project)
-
-        assert len(templates) == len(tasks)
