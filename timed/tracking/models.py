@@ -16,14 +16,14 @@ class Activity(models.Model):
     certain task.
     """
 
-    comment        = models.TextField(blank=True)
-    start_datetime = models.DateTimeField(auto_now_add=True)
-    task           = models.ForeignKey('projects.Task',
-                                       null=True,
-                                       blank=True,
-                                       related_name='activities')
-    user           = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                       related_name='activities')
+    comment  = models.TextField(blank=True)
+    date     = models.DateField(auto_now_add=True)
+    task     = models.ForeignKey('projects.Task',
+                                 null=True,
+                                 blank=True,
+                                 related_name='activities')
+    user     = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                 related_name='activities')
 
     @property
     def duration(self):
@@ -48,7 +48,7 @@ class Activity(models.Model):
         """Meta informations for the activity model."""
 
         verbose_name_plural = 'activities'
-        indexes             = [models.Index(fields=['start_datetime'])]
+        indexes             = [models.Index(fields=['date'])]
 
 
 class ActivityBlock(models.Model):

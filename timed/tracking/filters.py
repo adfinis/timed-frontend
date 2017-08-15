@@ -1,6 +1,5 @@
 """Filters for filtering the data of the tracking app endpoints."""
 
-import datetime
 from functools import wraps
 
 from django_filters import DateFilter, Filter, FilterSet, NumberFilter
@@ -31,24 +30,6 @@ def boolean_filter(func):
     return wrapper
 
 
-class DayFilter(Filter):
-    """Filter to filter a queryset by day."""
-
-    def filter(self, qs, value):
-        """Filter the queryset.
-
-        :param QuerySet qs: The queryset to filter
-        :param str   value: The day to filter to
-        :return:            The filtered queryset
-        :rtype:             QuerySet
-        """
-        date = datetime.datetime.strptime(value, '%Y-%m-%d').date()
-
-        return qs.filter(**{
-            '%s__date' % self.name: date
-        })
-
-
 class ActivityActiveFilter(Filter):
     """Filter to filter activities by being currently active or not.
 
@@ -75,7 +56,7 @@ class ActivityFilterSet(FilterSet):
     """Filter set for the activities endpoint."""
 
     active = ActivityActiveFilter()
-    day    = DayFilter(name='start_datetime')
+    day    = DateFilter(name='date')
 
     class Meta:
         """Meta information for the activity filter set."""
@@ -97,7 +78,7 @@ class ActivityBlockFilterSet(FilterSet):
 class AttendanceFilterSet(FilterSet):
     """Filter set for the attendance endpoint."""
 
-    day = DayFilter(name='from_datetime')
+    day = DateFilter(name='from_datetime', lookup_expr='date')
 
     class Meta:
         """Meta information for the attendance filter set."""

@@ -34,7 +34,7 @@ class ActivitySerializer(ModelSerializer):
         model  = models.Activity
         fields = [
             'comment',
-            'start_datetime',
+            'date',
             'duration',
             'user',
             'task',
