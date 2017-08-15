@@ -7,6 +7,7 @@ import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { hasMany } from 'ember-data/relationships'
 import computed from 'ember-computed-decorators'
+import moment from 'moment'
 
 /**
  * The user model
@@ -121,6 +122,10 @@ export default Model.extend({
    */
   @computed('employments.[]')
   activeEmployment(employments) {
-    return employments.find(e => !e.get('end')) || null
+    return (
+      employments.find(
+        e => !e.get('end') || e.get('end').isSameOrAfter(moment.now(), 'day')
+      ) || null
+    )
   }
 })
