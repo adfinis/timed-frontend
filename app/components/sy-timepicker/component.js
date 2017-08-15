@@ -145,6 +145,14 @@ export default Component.extend({
   },
 
   /**
+   * Whether the picker is disabled
+   *
+   * @property {Boolean} disabled
+   * @public
+   */
+  disabled: false,
+
+  /**
    * Increase or decrease the current value
    *
    * If the shift or ctrl key is pressed it changes the hours instead of the
