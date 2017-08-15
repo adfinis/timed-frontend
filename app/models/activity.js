@@ -104,8 +104,8 @@ export default Model.extend({
    * @property {Boolean} overlaps
    * @public
    */
-  @computed('blocks.@each.overlaps')
-  overlaps(blocks) {
+  @computed('start', 'blocks.@each.to')
+  overlaps(start, blocks) {
     return blocks.any(b => b.get('overlaps'))
   }
 })
