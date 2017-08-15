@@ -1,8 +1,8 @@
 from datetime import date
 from io import BytesIO
 
-import ezodf
 from django.http import HttpResponse, HttpResponseBadRequest
+from ezodf import Cell, opendoc
 from pkg_resources import resource_string
 from rest_framework.viewsets import GenericViewSet
 
@@ -48,38 +48,37 @@ class WorkReport(GenericViewSet):
         project = Project.objects.filter(id=params.get('project')).first()
         from_date = params.get('from_date')
         to_date = params.get('to_date')
+        today = date.today()
 
         tmpl = resource_string('timed_adfinis.reporting', 'workreport.ots')
-        doc = ezodf.opendoc(BytesIO(tmpl))
+        doc = opendoc(BytesIO(tmpl))
         table = doc.sheets[0]
         date_style = table['B5'].style_name
         # in template cell C3 is empty but styled as needed for float
         float_style = table['C3'].style_name
-
-        def _set_value(cell, value, style_name=None, value_type=None):
-            if value is not None:
-                table[cell].set_value(value, value_type=value_type)
-                if style_name is not None:
-                    table[cell].style_name = date_style
+        # in template cell C4 is empty but styled as needed for text with wrap
+        text_style = table['C4'].style_name
 
         # header values
-        _set_value('B3', customer and customer.name)
-        _set_value('B4', project and project.name)
-        _set_value('B5', from_date, date_style, 'date')
-        _set_value('B6', to_date, date_style, 'date')
-        _set_value('B8', date.today(), date_style, 'date')
-        _set_value('B9', request.user.get_full_name())
+        table['B3'] = Cell(customer and customer.name)
+        table['B3'] = Cell(customer and customer.name)
+        table['B4'] = Cell(project and project.name)
+        table['B5'] = Cell(from_date, style_name=date_style, value_type='date')
+        table['B6'] = Cell(to_date, style_name=date_style, value_type='date')
+        table['B8'] = Cell(today, style_name=date_style, value_type='date')
+        table['B9'] = Cell(request.user.get_full_name())
 
         # for simplicity insert reports in reverse order
         for report in queryset:
             table.insert_rows(12, 1)
-            _set_value('A13', report.date, date_style, 'date')
+            table['A13'] = Cell(report.date, style_name=date_style,
+                                value_type='date')
 
             hours = report.duration.total_seconds() / 60 / 60
-            _set_value('B13', hours, float_style)
+            table['B13'] = Cell(hours, style_name=float_style)
 
-            _set_value('C13', report.user.get_full_name())
-            _set_value('D13', report.comment)
+            table['C13'] = Cell(report.user.get_full_name())
+            table['D13'] = Cell(report.comment, style_name=text_style)
 
         # calculate location of total hours as insert rows moved it
         table[13 + count, 2].formula = 'of:=SUM(B13:B{0})'.format(
