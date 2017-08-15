@@ -1,8 +1,6 @@
 """Models for the projects app."""
 
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 
 class Customer(models.Model):
@@ -108,14 +106,3 @@ class TaskTemplate(models.Model):
         :rtype:  str
         """
         return self.name
-
-
-@receiver(post_save, sender=Project)
-def create_default_tasks(sender, instance, created, **kwargs):
-    """Create default tasks on a project.
-
-    This gets executed as soon as a project is created.
-    """
-    if created:
-        for template in TaskTemplate.objects.all():
-            Task.objects.create(name=template.name, project=instance)
