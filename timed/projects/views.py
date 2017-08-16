@@ -20,8 +20,6 @@ class CustomerViewSet(ReadOnlyModelViewSet):
         """
         return models.Customer.objects.prefetch_related(
             'projects'
-        ).filter(
-            archived=False
         )
 
 
@@ -40,8 +38,6 @@ class ProjectViewSet(ReadOnlyModelViewSet):
         """
         return models.Project.objects.select_related(
             'customer'
-        ).filter(
-            archived=False
         )
 
 
@@ -60,8 +56,6 @@ class TaskViewSet(ReadOnlyModelViewSet):
         """
         return models.Task.objects.select_related(
             'project'
-        ).filter(
-            archived=False
         )
 
     def filter_queryset(self, queryset):

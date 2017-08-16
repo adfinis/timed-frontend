@@ -34,3 +34,9 @@ class PublicHolidayFilterSet(FilterSet):
 
         model  = models.PublicHoliday
         fields = ['year', 'location', 'date', 'from_date', 'to_date']
+
+
+class UserFilterSet(FilterSet):
+    class Meta:
+        model  = models.User
+        fields = ['is_active']

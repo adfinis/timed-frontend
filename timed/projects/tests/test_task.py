@@ -29,7 +29,7 @@ class TaskTests(JSONAPITestCase):
         url = reverse('task-list')
 
         noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+        res        = self.client.get(url, data={'archived': False})
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_200_OK
