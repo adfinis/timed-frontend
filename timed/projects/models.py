@@ -1,5 +1,6 @@
 """Models for the projects app."""
 
+from django.conf import settings
 from django.db import models
 
 
@@ -48,6 +49,8 @@ class Project(models.Model):
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     customer        = models.ForeignKey('projects.Customer',
                                         related_name='projects')
+    reviewers       = models.ManyToManyField(settings.AUTH_USER_MODEL,
+                                             related_name='reviews')
 
     def __str__(self):
         """Represent the model as a string.

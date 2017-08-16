@@ -2,6 +2,7 @@
 
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
+from django.utils.translation import ugettext_lazy as _
 
 from timed.projects import models
 
@@ -35,6 +36,13 @@ class TaskInline(admin.TabularInline):
         return models.TaskTemplate.objects.count()
 
 
+class ReviewerInline(admin.TabularInline):
+    model = models.Project.reviewers.through
+    extra = 0
+    verbose_name = _('Reviewer')
+    verbose_name_plural = _('Reviewers')
+
+
 @admin.register(models.Project)
 class ProjectAdmin(admin.ModelAdmin):
     """Project admin view."""
@@ -43,7 +51,8 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter   = ['customer']
     search_fields = ['name', 'customer__name']
 
-    inlines = [TaskInline]
+    inlines = [TaskInline, ReviewerInline]
+    exclude = ('reviewers', )
 
 
 @admin.register(models.TaskTemplate)
