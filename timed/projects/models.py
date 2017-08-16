@@ -31,6 +31,15 @@ class Customer(models.Model):
         indexes = [models.Index(fields=['name', 'archived'])]
 
 
+class BillingType(models.Model):
+    """Billing type defining how a project, resp. reports are being billed."""
+
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Project(models.Model):
     """Project model.
 
@@ -38,16 +47,14 @@ class Project(models.Model):
     belongs to a customer.
     """
 
-    TYPES = (
-        ('GH', 'Github'),
-        ('RM', 'Redmine')
-    )
-
     name            = models.CharField(max_length=255)
     comment         = models.TextField(blank=True)
     archived        = models.BooleanField(default=False)
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     customer        = models.ForeignKey('projects.Customer',
+                                        related_name='projects')
+    billing_type    = models.ForeignKey(BillingType,
+                                        blank=True, null=True,
                                         related_name='projects')
     reviewers       = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                              related_name='reviews')

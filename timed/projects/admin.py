@@ -15,6 +15,12 @@ class CustomerAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
 
+@admin.register(models.BillingType)
+class BillingType(admin.ModelAdmin):
+    list_display = ['name']
+    search_fields = ['name']
+
+
 class TaskInlineFormset(BaseInlineFormSet):
     """Task formset defaulting to task templates when project is created."""
 

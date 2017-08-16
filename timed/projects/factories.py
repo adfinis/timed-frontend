@@ -21,6 +21,13 @@ class CustomerFactory(DjangoModelFactory):
         model = models.Customer
 
 
+class BillingTypeFactory(DjangoModelFactory):
+    name = Faker('uuid4')
+
+    class Meta:
+        model = models.BillingType
+
+
 class ProjectFactory(DjangoModelFactory):
     """Project factory."""
 

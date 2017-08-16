@@ -24,7 +24,7 @@ class ProjectFilterSet(FilterSet):
         """Meta information for the project filter set."""
 
         model  = models.Project
-        fields = ['archived', 'customer']
+        fields = ['archived', 'customer', 'billing_type']
 
 
 class MyMostFrequentTaskFilter(Filter):
