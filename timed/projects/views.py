@@ -23,6 +23,14 @@ class CustomerViewSet(ReadOnlyModelViewSet):
         )
 
 
+class BillingTypeViewSet(ReadOnlyModelViewSet):
+    serializer_class = serializers.BillingTypeSerializer
+    ordering         = 'name'
+
+    def get_queryset(self):
+        return models.BillingType.objects.all()
+
+
 class ProjectViewSet(ReadOnlyModelViewSet):
     """Project view set."""
 

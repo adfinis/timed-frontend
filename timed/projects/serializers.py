@@ -22,13 +22,23 @@ class CustomerSerializer(ModelSerializer):
         ]
 
 
+class BillingTypeSerializer(ModelSerializer):
+    class Meta:
+        model  = models.BillingType
+        fields = ['name']
+
+
 class ProjectSerializer(ModelSerializer):
     """Project serializer."""
 
     customer = ResourceRelatedField(queryset=models.Customer.objects.all())
+    billing_type = ResourceRelatedField(
+        queryset=models.BillingType.objects.all()
+    )
 
     included_serializers = {
-        'customer': 'timed.projects.serializers.CustomerSerializer'
+        'customer': 'timed.projects.serializers.CustomerSerializer',
+        'billing_type': 'timed.projects.serializers.BillingTypeSerializer'
     }
 
     class Meta:
@@ -41,6 +51,7 @@ class ProjectSerializer(ModelSerializer):
             'estimated_hours',
             'archived',
             'customer',
+            'billing_type'
         ]
 
 
