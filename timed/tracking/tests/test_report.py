@@ -91,6 +91,16 @@ class ReportTests(JSONAPITestCase):
         result = self.result(res)
         assert len(result['data']) == 10
 
+    def test_report_list_verify_non_admin(self):
+        """Non admin resp. non staff user may not verify reports."""
+        self.user.is_staff = False
+        self.user.save()
+
+        url_verify = reverse('report-verify')
+        res = self.client.post(url_verify, QUERY_STRING='user=%s' %
+                               self.user.id)
+        assert res.status_code == HTTP_403_FORBIDDEN
+
     def test_report_list_verify_page(self):
         url_verify = reverse('report-verify')
         res = self.client.post(url_verify, QUERY_STRING='user=%s&page_size=5' %
