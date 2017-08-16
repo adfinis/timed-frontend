@@ -103,16 +103,6 @@ class ReportTests(JSONAPITestCase):
         result = self.result(res)
         assert len(result['data']) == 5
 
-    def test_report_detail_verify(self):
-        report = self.reports[0]
-        url = reverse('report-verify', args=[report.id])
-        res = self.client.post(url)
-
-        assert res.status_code == HTTP_200_OK
-        reports = Report.objects.filter(verified_by=self.user)
-        assert reports.count() == 1
-        assert reports.first().id == report.id
-
     def test_report_export_missing_type(self):
         """Should respond with a list of filtered reports."""
         url = reverse('report-export')
@@ -157,6 +147,9 @@ class ReportTests(JSONAPITestCase):
                             'id': task.id
                         }
                     },
+                    'verified-by': {
+                        'data': None
+                    },
                 }
             }
         }
@@ -184,7 +177,6 @@ class ReportTests(JSONAPITestCase):
     def test_report_update_owner(self):
         """Should update an existing report."""
         report = self.reports[0]
-
         task = TaskFactory.create()
 
         data = {
@@ -303,7 +295,11 @@ class ReportTests(JSONAPITestCase):
         res = client.patch(url, data)
         assert res.status_code == HTTP_403_FORBIDDEN
 
-    def test_report_update_staff_user(self):
+    def test_report_set_verified_by_not_staff_user(self):
+        """Not staff user may not set verified by."""
+        self.user.is_staff = False
+        self.user.save()
+
         report = self.reports[0]
         data = {
             'data': {
@@ -312,6 +308,70 @@ class ReportTests(JSONAPITestCase):
                 'attributes': {
                     'comment':  'foobar',
                 },
+                'relationships': {
+                    'verified-by': {
+                        'data': {
+                            'id': self.user.id,
+                            'type': 'users'
+                        }
+                    },
+                }
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        res = self.client.patch(url, data)
+        assert res.status_code == HTTP_400_BAD_REQUEST
+
+    def test_report_update_staff_user(self):
+        report = self.reports[0]
+
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'comment':  'foobar',
+                },
+                'relationships': {
+                    'verified-by': {
+                        'data': {
+                            'id': self.user.id,
+                            'type': 'users'
+                        }
+                    },
+                }
+            }
+        }
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        res = self.client.patch(url, data)
+        assert res.status_code == HTTP_200_OK
+
+    def test_report_reset_verified_by_staff_user(self):
+        """Staff user may reset verified by on report."""
+        report = self.reports[0]
+        report.verified_by = self.user
+        report.save()
+
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'comment':  'foobar',
+                },
+                'relationships': {
+                    'verified-by': {
+                        'data': None
+                    },
+                }
             }
         }
 
