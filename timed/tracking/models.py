@@ -108,10 +108,7 @@ class Report(models.Model):
     duration     = models.DurationField()
     review       = models.BooleanField(default=False)
     not_billable = models.BooleanField(default=False)
-    task         = models.ForeignKey('projects.Task',
-                                     null=True,
-                                     blank=True,
-                                     related_name='reports')
+    task         = models.ForeignKey('projects.Task', related_name='reports')
     activity     = models.ForeignKey(Activity,
                                      null=True,
                                      blank=True,
