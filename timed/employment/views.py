@@ -10,6 +10,7 @@ class UserViewSet(ReadOnlyModelViewSet):
     """User view set."""
 
     serializer_class = serializers.UserSerializer
+    filter_class = filters.UserFilterSet
 
     def get_queryset(self):
         """Filter the queryset by the user of the request.
