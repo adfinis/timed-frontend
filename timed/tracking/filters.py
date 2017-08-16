@@ -2,7 +2,8 @@
 
 from functools import wraps
 
-from django_filters import DateFilter, Filter, FilterSet, NumberFilter
+from django_filters import (BooleanFilter, DateFilter, Filter, FilterSet,
+                            NumberFilter)
 
 from timed.tracking import models
 
@@ -94,12 +95,23 @@ class ReportFilterSet(FilterSet):
     to_date    = DateFilter(name='date', lookup_expr='lte')
     project    = NumberFilter(name='task__project')
     customer   = NumberFilter(name='task__project__customer')
+    not_verified = BooleanFilter(name='verified_by', lookup_expr='isnull')
 
     class Meta:
         """Meta information for the report filter set."""
 
         model  = models.Report
-        fields = ['date', 'from_date', 'to_date', 'user', 'task', 'project']
+        fields = (
+            'date',
+            'from_date',
+            'to_date',
+            'user',
+            'task',
+            'project',
+            'not_verified',
+            'not_billable',
+            'review',
+        )
 
 
 class AbsenceFilterSet(FilterSet):

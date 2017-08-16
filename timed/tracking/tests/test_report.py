@@ -60,6 +60,45 @@ class ReportTests(JSONAPITestCase):
         assert len(result['data']) == 1
         assert result['data'][0]['id'] == str(self.reports[0].id)
 
+    def test_report_list_verify(self):
+        url_list = reverse('report-list')
+        res = self.client.get(url_list, data={'not_verified': True})
+        assert res.status_code == HTTP_200_OK
+        result = self.result(res)
+        assert len(result['data']) == 20
+
+        url_verify = reverse('report-verify')
+        res = self.client.post(url_verify, QUERY_STRING='user=%s' %
+                               self.user.id)
+        assert res.status_code == HTTP_200_OK
+
+        res = self.client.get(url_list, data={'not_verified': False})
+        assert res.status_code == HTTP_200_OK
+        result = self.result(res)
+        assert len(result['data']) == 10
+
+    def test_report_list_verify_page(self):
+        url_verify = reverse('report-verify')
+        res = self.client.post(url_verify, QUERY_STRING='user=%s&page_size=5' %
+                               self.user.id)
+        assert res.status_code == HTTP_200_OK
+
+        url_list = reverse('report-list')
+        res = self.client.get(url_list, data={'not_verified': False})
+        assert res.status_code == HTTP_200_OK
+        result = self.result(res)
+        assert len(result['data']) == 5
+
+    def test_report_detail_verify(self):
+        report = self.reports[0]
+        url = reverse('report-verify', args=[report.id])
+        res = self.client.post(url)
+
+        assert res.status_code == HTTP_200_OK
+        reports = Report.objects.filter(verified_by=self.user)
+        assert reports.count() == 1
+        assert reports.first().id == report.id
+
     def test_report_export_missing_type(self):
         """Should respond with a list of filtered reports."""
         url = reverse('report-export')

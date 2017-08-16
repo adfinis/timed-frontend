@@ -119,6 +119,9 @@ class Report(models.Model):
                                      related_name='reports')
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='reports')
+    verified_by  = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                     on_delete=models.SET_NULL,
+                                     null=True, blank=True)
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

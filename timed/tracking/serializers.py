@@ -115,10 +115,12 @@ class ReportSerializer(ModelSerializer):
                                         required=False)
     user         = ResourceRelatedField(read_only=True,
                                         default=CurrentUserDefault())
+    verified_by  = ResourceRelatedField(read_only=True)
 
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
-        'user': 'timed.employment.serializers.UserSerializer'
+        'user': 'timed.employment.serializers.UserSerializer',
+        'verified_by': 'timed.employment.serializers.UserSerializer'
     }
 
     def validate_date(self, value):
@@ -151,6 +153,7 @@ class ReportSerializer(ModelSerializer):
             'duration',
             'review',
             'not_billable',
+            'verified_by',
             'task',
             'activity',
             'user',
