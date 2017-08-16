@@ -1,5 +1,7 @@
 """Serializers for the tracking app."""
 
+from django.contrib.auth import get_user_model
+from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  DurationField,
@@ -115,7 +117,8 @@ class ReportSerializer(ModelSerializer):
                                         required=False)
     user         = ResourceRelatedField(read_only=True,
                                         default=CurrentUserDefault())
-    verified_by  = ResourceRelatedField(read_only=True)
+    verified_by  = ResourceRelatedField(queryset=get_user_model().objects,
+                                        required=False, allow_null=True)
 
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
@@ -129,9 +132,27 @@ class ReportSerializer(ModelSerializer):
             user = self.context['request'].user
             owner = self.instance.user
             if self.instance.date != value and user != owner:
-                raise ValidationError('Only owner may change date')
+                raise ValidationError(_('Only owner may change date'))
 
         return value
+
+    def validate_verified_by(self, value):
+        user = self.context['request'].user
+        current_verified_by = self.instance and self.instance.verified_by
+
+        if value == current_verified_by:
+            # no validation needed when nothing has changed
+            return value
+
+        if value is None and user.is_staff:
+            # staff is allowed to reset verified by
+            return value
+
+        if value is not None and user.is_staff and value == user:
+            # staff user is allowed to set it's own user as verified by
+            return value
+
+        raise ValidationError(_('Only staff user may verify reports.'))
 
     def validate_duration(self, value):
         """Only owner is allowed to change duration."""
@@ -139,7 +160,7 @@ class ReportSerializer(ModelSerializer):
             user = self.context['request'].user
             owner = self.instance.user
             if self.instance.duration != value and user != owner:
-                raise ValidationError('Only owner may change duration')
+                raise ValidationError(_('Only owner may change duration'))
 
         return value
 
@@ -190,12 +211,14 @@ class AbsenceSerializer(ModelSerializer):
             date=data.get('date')
         ).exists():
             raise ValidationError(
-                'You can\'t create an absence on a public holiday'
+                _('You can\'t create an absence on a public holiday')
             )
 
         workdays = [int(day) for day in location.workdays]
         if data.get('date').isoweekday() not in workdays:
-            raise ValidationError('You can\'t create an absence on a weekend')
+            raise ValidationError(
+                _('You can\'t create an absence on a weekend')
+            )
 
         return data
 

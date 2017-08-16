@@ -2,8 +2,8 @@
 
 import django_excel
 from django.http import HttpResponseBadRequest
-from rest_framework.decorators import detail_route, list_route
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import list_route
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -122,10 +122,11 @@ class ReportViewSet(ModelViewSet):
             sheet, file_type=file_type, file_name='report.%s' % file_type
         )
 
-    @list_route(methods=['post'], url_path='verify')
+    @list_route(methods=['post'], url_path='verify',
+                permission_classes=[IsAuthenticated, IsAdminUser])
     def verify_list(self, request):
         """
-        Verify all reports by given filter.
+        Bulk verify all reports by given filter.
 
         Authenticated user will be set as verified_by on given
         reports.
@@ -137,20 +138,6 @@ class ReportViewSet(ModelViewSet):
             ids = [report.id for report in page]
             queryset = models.Report.objects.filter(id__in=ids)
         queryset.update(verified_by=request.user)
-
-        return Response(data={})
-
-    @detail_route(methods=['post'], url_path='verify')
-    def verify_detail(self, request, pk=None):
-        """
-        Verify given report.
-
-        Authenticated user will be set as verified_by on given
-        report.
-        """
-        report = self.get_object()
-        report.verified_by = request.user
-        report.save()
 
         return Response(data={})
 
