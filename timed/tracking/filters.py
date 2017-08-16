@@ -97,6 +97,7 @@ class ReportFilterSet(FilterSet):
     customer   = NumberFilter(name='task__project__customer')
     not_verified = BooleanFilter(name='verified_by', lookup_expr='isnull')
     reviewer   = NumberFilter(name='task__project__reviewers')
+    billing_type = NumberFilter(name='task__project__billing_type')
 
     class Meta:
         """Meta information for the report filter set."""
@@ -113,6 +114,7 @@ class ReportFilterSet(FilterSet):
             'not_billable',
             'review',
             'reviewer',
+            'billing_type'
         )
 
 
