@@ -49,7 +49,9 @@ class ReportTests(JSONAPITestCase):
             'task': self.reports[0].task.id,
             'project': self.reports[0].task.project.id,
             'customer': self.reports[0].task.project.customer.id,
-            'include': 'user,task,task.project,task.project.customer'
+            'include': (
+                'user,task,task.project,task.project.customer,verified_by'
+            )
         })
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
@@ -59,6 +61,18 @@ class ReportTests(JSONAPITestCase):
 
         assert len(result['data']) == 1
         assert result['data'][0]['id'] == str(self.reports[0].id)
+
+    def test_report_list_filter_reviewer(self):
+        report = self.reports[0]
+        report.task.project.reviewers.add(self.user)
+
+        url = reverse('report-list')
+
+        res = self.client.get(url, data={'reviewer': self.user.id})
+        assert res.status_code == HTTP_200_OK
+        result = self.result(res)
+        assert len(result['data']) == 1
+        assert result['data'][0]['id'] == str(report.id)
 
     def test_report_list_verify(self):
         url_list = reverse('report-list')
