@@ -49,10 +49,10 @@ export default Component.extend({
    */
   @observes('tracking.activity.task')
   _setCommentFocus() {
-    if (this.get('tracking.activity.task.id')) {
-      later(this, () => {
+    later(this, () => {
+      if (this.get('tracking.activity.task.id')) {
         this.$('input[name=comment]').focus()
-      })
-    }
+      }
+    })
   }
 })
