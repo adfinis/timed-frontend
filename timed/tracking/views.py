@@ -131,7 +131,11 @@ class ReportViewSet(ModelViewSet):
         reports.
         """
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = self.paginate_queryset(queryset) or queryset
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            # page is a list so need to convert it to queryset
+            ids = [report.id for report in page]
+            queryset = models.Report.objects.filter(id__in=ids)
         queryset.update(verified_by=request.user)
 
         return Response(data={})

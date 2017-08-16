@@ -77,6 +77,18 @@ class ReportTests(JSONAPITestCase):
         result = self.result(res)
         assert len(result['data']) == 10
 
+    def test_report_list_verify_page(self):
+        url_verify = reverse('report-verify')
+        res = self.client.post(url_verify, QUERY_STRING='user=%s&page_size=5' %
+                               self.user.id)
+        assert res.status_code == HTTP_200_OK
+
+        url_list = reverse('report-list')
+        res = self.client.get(url_list, data={'not_verified': False})
+        assert res.status_code == HTTP_200_OK
+        result = self.result(res)
+        assert len(result['data']) == 5
+
     def test_report_detail_verify(self):
         report = self.reports[0]
         url = reverse('report-verify', args=[report.id])
