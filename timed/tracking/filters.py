@@ -91,12 +91,14 @@ class AttendanceFilterSet(FilterSet):
 class ReportFilterSet(FilterSet):
     """Filter set for the reports endpoint."""
 
-    from_date  = DateFilter(name='date', lookup_expr='gte')
-    to_date    = DateFilter(name='date', lookup_expr='lte')
-    project    = NumberFilter(name='task__project')
-    customer   = NumberFilter(name='task__project__customer')
-    not_verified = BooleanFilter(name='verified_by', lookup_expr='isnull')
-    reviewer   = NumberFilter(name='task__project__reviewers')
+    from_date    = DateFilter(name='date', lookup_expr='gte')
+    to_date      = DateFilter(name='date', lookup_expr='lte')
+    project      = NumberFilter(name='task__project')
+    customer     = NumberFilter(name='task__project__customer')
+    review       = NumberFilter(name='review')
+    not_billable = NumberFilter(name='not_billable')
+    not_verified = NumberFilter(name='verified_by', lookup_expr='isnull')
+    reviewer     = NumberFilter(name='task__project__reviewers')
     billing_type = NumberFilter(name='task__project__billing_type')
 
     class Meta:
