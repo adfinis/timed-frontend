@@ -16,67 +16,18 @@ tzinfo = timezone('Europe/Zurich')
 faker = FakerFactory.create()
 
 
-def begin_of_day(day):
-    """Determine the start of a day.
-
-    :param datetime.datetime day: The datetime to get the day from
-    :return:                      The start of the day
-    :rtype:                       datetime.datetime
-    """
-    return datetime.datetime(
-        day.year,
-        day.month,
-        day.day,
-        0, 0, 0,
-        tzinfo=tzinfo
-    )
-
-
-def end_of_day(day):
-    """Determine the end of a day.
-
-    :param datetime.datetime day: The datetime to get the day from
-    :return:                      The end of the day
-    :rtype:                       datetime.datetime
-    """
-    return begin_of_day(day) + datetime.timedelta(days=1)
-
-
 class AttendanceFactory(DjangoModelFactory):
     """Attendance factory."""
 
-    date = datetime.date.today()
+    date = Faker('date')
+    from_time = Faker('time')
+    to_time = Faker('time')
     user = SubFactory('timed.employment.factories.UserFactory')
-
-    @lazy_attribute
-    def from_datetime(self):
-        """Generate a datetime between the start and the end of the day.
-
-        :return: The generated datetime
-        :rtype:  datetime.datetime
-        """
-        return faker.date_time_between_dates(
-            datetime_start=begin_of_day(self.date),
-            datetime_end=end_of_day(self.date),
-            tzinfo=tzinfo
-        )
-
-    @lazy_attribute
-    def to_datetime(self):
-        """Generate a datetime based on from_datetime.
-
-        :return: The generated datetime
-        :rtype:  datetime.datetime
-        """
-        hours = randint(1, 5)
-
-        return self.from_datetime + datetime.timedelta(hours=hours)
 
     class Meta:
         """Meta informations for the attendance factory."""
 
         model   = models.Attendance
-        exclude = ('date',)
 
 
 class ReportFactory(DjangoModelFactory):
