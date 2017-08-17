@@ -1,26 +1,81 @@
 import io
+from datetime import date
+from zipfile import ZipFile
 
 import ezodf
+import pytest
 from django.core.urlresolvers import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
+from timed.projects.factories import (CustomerFactory, ProjectFactory,
+                                      TaskFactory)
 from timed.tracking.factories import ReportFactory
 
 
-def test_work_report(auth_client):
+@pytest.mark.freeze_time('2017-09-01')
+def test_work_report_single_project(auth_client):
     user = auth_client.user
-    ReportFactory.create_batch(10, user=user)
+    # spaces should be replaced with underscore
+    customer = CustomerFactory.create(name='Customer Name')
+    # slashes should be dropped from file name
+    project = ProjectFactory.create(customer=customer, name='Project/')
+    task = TaskFactory.create(project=project)
+    ReportFactory.create_batch(
+        10, user=user, task=task, date=date(2017, 8, 17)
+    )
+
+    url = reverse('work-reports-list')
+    res = auth_client.get(url, data={
+        'user': auth_client.user.id,
+        'from_date': '2017-08-01',
+        'to_date': '2017-08-31',
+    })
+    assert res.status_code == HTTP_200_OK
+    assert '1708-20170901-Customer_Name-Project.ods' in (
+        res['Content-Disposition']
+    )
+
+    content = io.BytesIO(res.content)
+    doc = ezodf.opendoc(content)
+    table = doc.sheets[0]
+    assert table['B5'].value == '2017-08-01'
+    assert table['B6'].value == '2017-08-31'
+    assert table['B9'].value == 'Test User'
+
+
+@pytest.mark.freeze_time('2017-09-01')
+def test_work_report_multiple_projects(auth_client):
+    NUM_PROJECTS = 2
+
+    user = auth_client.user
+    customer = CustomerFactory.create(name='Customer')
+    report_date = date(2017, 8, 17)
+    for i in range(NUM_PROJECTS):
+        project = ProjectFactory.create(
+            customer=customer, name='Project{0}'.format(i)
+        )
+        task = TaskFactory.create(project=project)
+        ReportFactory.create_batch(10, user=user, task=task, date=report_date)
 
     url = reverse('work-reports-list')
     res = auth_client.get(url, data={
         'user': auth_client.user.id
     })
     assert res.status_code == HTTP_200_OK
+    assert '20170901-WorkReports.zip' in (
+        res['Content-Disposition']
+    )
 
     content = io.BytesIO(res.content)
-    doc = ezodf.opendoc(content)
-    table = doc.sheets[0]
-    assert table['B9'].value == 'Test User'
+    with ZipFile(content, 'r') as zipfile:
+        for i in range(NUM_PROJECTS):
+            ods_content = zipfile.read(
+                '1708-20170901-Customer-Project{0}.ods'.format(i)
+            )
+            doc = ezodf.opendoc(io.BytesIO(ods_content))
+            table = doc.sheets[0]
+            assert table['B5'].value == '2017-08-17'
+            assert table['B6'].value == '2017-08-17'
 
 
 def test_work_report_empty(auth_client):
