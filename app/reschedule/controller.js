@@ -1,22 +1,49 @@
+/**
+ * @module timed
+ * @submodule timed-controllers
+ * @public
+ */
 import Controller from 'ember-controller'
-import service from 'ember-service/inject'
+import ReportFilterControllerMixin from 'timed/mixins/report-filter-controller'
 
-export default Controller.extend({
-  notify: service(),
+/**
+ * Controller for filtering and rescheduling reports
+ *
+ * @class RescheduleController
+ * @extends Ember.Controller
+ * @using ReportFilterControllerMixin
+ * @public
+ */
+export default Controller.extend(ReportFilterControllerMixin, {
+  /**
+   * Some more query params to filter by
+   *
+   * @property {String[]} queryParams
+   * @public
+   */
+  queryParams: ['review', 'not_billable', 'not_verified'],
 
-  queryParams: ['page'],
+  /**
+   * Whether the reports need a review
+   *
+   * @property {Number} review
+   * @public
+   */
+  review: null,
 
-  page: 1,
+  /**
+   * Whether the reports are not billable
+   *
+   * @property {Number} not_billable
+   * @public
+   */
+  not_billable: null, // eslint-disable-line camelcase
 
-  actions: {
-    async saveReport(report) {
-      try {
-        await report.save()
-        this.get('notify').success('Report was saved')
-      } catch (e) {
-        /* istanbul ignore next */
-        this.get('notify').error('Error while saving the report')
-      }
-    }
-  }
+  /**
+   * Whether the reports are not verified yet
+   *
+   * @property {Number} not_verified
+   * @public
+   */
+  not_verified: null // eslint-disable-line camelcase
 })

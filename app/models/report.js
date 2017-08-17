@@ -79,5 +79,13 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo('user')
+  user: belongsTo('user'),
+
+  /**
+   * The user which verified this report
+   *
+   * @property {User} verifiedBy
+   * @public
+   */
+  verifiedBy: belongsTo('user')
 })

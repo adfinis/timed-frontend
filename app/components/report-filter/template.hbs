@@ -1,0 +1,87 @@
+<div class="grid grid--2of12">
+  {{#task-selection
+    history         = false
+    on-set-customer = (action (mut filters.customer))
+    on-set-project  = (action (mut filters.project))
+    on-set-task     = (action (mut filters.task))
+    initial         = (hash
+      customer      = filters.customer
+      project       = filters.project
+      task          = filters.task
+    )
+  as |t|}}
+    {{#if (contains 'customer' _enabledFilters)}}
+      <div class="grid-cell form-group" data-test-filter-customer>
+        {{t.customer}}
+      </div>
+    {{/if}}
+    {{#if (contains 'project' _enabledFilters)}}
+      <div class="grid-cell form-group" data-test-filter-project>
+        {{t.project}}
+      </div>
+    {{/if}}
+    {{#if (contains 'task' _enabledFilters)}}
+      <div class="grid-cell form-group" data-test-filter-task>
+        {{t.task}}
+      </div>
+    {{/if}}
+  {{/task-selection}}
+  {{#if (contains 'user' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-user>
+      {{user-selection selection=filters.user on-change=(action (mut filters.user))}}
+    </div>
+  {{/if}}
+  {{#if (contains 'fromDate' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-from-date>
+      {{sy-datepicker
+        class       = 'force-white'
+        value       = filters.fromDate
+        on-change   = (action (mut filters.fromDate))
+        placeholder = 'From date'
+      }}
+    </div>
+  {{/if}}
+  {{#if (contains 'toDate' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-to-date>
+      {{sy-datepicker
+        class       = 'force-white'
+        value       = filters.toDate
+        on-change   = (action (mut filters.toDate))
+        placeholder = 'To date'
+      }}
+    </div>
+  {{/if}}
+</div>
+<div class="grid grid--2of12">
+  {{#if (contains 'review' _enabledFilters )}}
+    <div class="grid-cell form-group" data-test-filter-review>
+      <select class="form-control" onchange={{action (mut filters.review) value='target.value'}}>
+        <option value=""  selected={{if (not filters.review) 'selected'}}>Not filtered by review needed</option>
+        <option value="1" selected={{if (eq filters.review 1) 'selected'}}>Only review needed</option>
+        <option value="0" selected={{if (eq filters.review 0) 'selected'}}>Only review not needed</option>
+      </select>
+    </div>
+  {{/if}}
+  {{#if (contains 'notBillable' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-not-billable>
+      <select class="form-control" onchange={{action (mut filters.notBillable) value='target.value'}}>
+        <option value=""  selected={{if (not filters.notBillable) 'selected'}}>Not filtered by billability</option>
+        <option value="0" selected={{if (eq filters.notBillable 0) 'selected'}}>Only billable</option>
+        <option value="1" selected={{if (eq filters.notBillable 1) 'selected'}}>Only not billable</option>
+      </select>
+    </div>
+  {{/if}}
+  {{#if (contains 'notVerified' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-not-verified>
+      <select class="form-control" onchange={{action (mut filters.notVerified) value='target.value'}}>
+        <option value=""  selected={{if (not filters.notVerified) 'selected'}}>Not filtered by verification</option>
+        <option value="0" selected={{if (eq filters.notVerified 0) 'selected'}}>Only verified</option>
+        <option value="1" selected={{if (eq filters.notVerified 1) 'selected'}}>Only unverified</option>
+      </select>
+    </div>
+  {{/if}}
+</div>
+<div class="form-group">
+  <button data-test-filter-apply class="btn btn-primary" type="submit">Apply</button>
+  <button data-test-filter-reset class="btn btn-default" type="button" {{action 'reset'}}>Reset</button>
+</div>

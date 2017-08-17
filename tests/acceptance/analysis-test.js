@@ -35,33 +35,28 @@ describe('Acceptance | analysis', function() {
 
   it('can search and download file', async function() {
     await visit('/analysis')
-    await userSelect(testSelector('user-select'))
-    await click(testSelector('search'))
+    await userSelect(testSelector('filter-user'))
+    await click(testSelector('filter-apply'))
 
-    expect(find(`${testSelector('search-results')} tbody tr`).length).to.equal(
+    expect(find(`${testSelector('filter-results')} tbody tr`).length).to.equal(
       6
     )
 
     await click(testSelector('download-file', 0))
-    expect(currentURL()).to.equal('/analysis')
+    expect(currentURL()).to.equal('/analysis?user=1')
   })
 
   it('can reset the search params', async function() {
     await visit('/analysis')
-    await userSelect(testSelector('user-select'))
-    await taskSelect(testSelector('tracking-customer'), { fromHistory: true })
+    await userSelect(testSelector('filter-user'))
+    await taskSelect(testSelector('filter-customer'), { fromHistory: true })
 
-    expect(find(`${testSelector('user-select')} input[name='user']`).val()).to
-      .be.ok
-    expect(
-      find(`${testSelector('tracking-customer')} input[name='customer']`).val()
-    ).to.be.ok
-    await click(testSelector('reset'))
-    expect(
-      find(`${testSelector('user-select')} input[name='user']`).val()
-    ).to.equal('')
-    expect(
-      find(`${testSelector('tracking-customer')} input[name='customer']`).val()
-    ).to.equal('')
+    await click(testSelector('filter-apply'))
+
+    expect(currentURL()).to.equal('/analysis?customer=1&user=1')
+
+    await click(testSelector('filter-reset'))
+
+    expect(currentURL()).to.equal('/analysis')
   })
 })
