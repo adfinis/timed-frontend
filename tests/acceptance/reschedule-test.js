@@ -133,11 +133,21 @@ describe('Acceptance | reschedule', function() {
   it('can filter by user', async function() {
     await visit('/reschedule')
 
-    userSelect('')
+    userSelect(testSelector('filter-user'))
 
     await click(testSelector('filter-apply'))
 
     expect(currentURL()).to.contain('user')
+  })
+
+  it('can filter by reviewer', async function() {
+    await visit('/reschedule')
+
+    userSelect(testSelector('filter-reviewer'))
+
+    await click(testSelector('filter-apply'))
+
+    expect(currentURL()).to.contain('reviewer')
   })
 
   it('can filter by billing type', async function() {
@@ -173,7 +183,7 @@ describe('Acceptance | reschedule', function() {
 
     await visit('/reschedule')
 
-    userSelect('')
+    userSelect(testSelector('filter-user'))
 
     await click(testSelector('filter-apply'))
 

@@ -21,7 +21,21 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {String[]} queryParams
    * @public
    */
-  queryParams: ['billing_type', 'review', 'not_billable', 'not_verified'],
+  queryParams: [
+    'reviewer',
+    'billing_type',
+    'review',
+    'not_billable',
+    'not_verified'
+  ],
+
+  /**
+   * The person which is assigned to review the project
+   *
+   * @property {Number} reviewer
+   * @public
+   */
+  reviewer: null,
 
   /**
    * The billing type to filter by

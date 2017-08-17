@@ -31,6 +31,23 @@
       {{user-selection selection=filters.user on-change=(action (mut filters.user))}}
     </div>
   {{/if}}
+  {{#if (contains 'reviewer' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-reviewer>
+      {{user-selection selection=filters.reviewer on-change=(action (mut filters.reviewer)) placeholder='Select reviewer...'}}
+    </div>
+  {{/if}}
+  {{#if (contains 'billingType' _enabledFilters)}}
+    <div class="grid-cell form-group" data-test-filter-billing-type>
+      <select class="form-control" onchange={{action (mut filters.billingType) value='target.value'}}>
+        <option value="">All billing types</option>
+        {{#each billingTypes as |bt|}}
+          <option selected={{if (eq bt.id filters.billingType) 'selected'}} value={{bt.id}}>{{bt.name}}</option>
+        {{/each}}
+      </select>
+    </div>
+  {{/if}}
+</div>
+<div class="grid grid--2of12">
   {{#if (contains 'fromDate' _enabledFilters)}}
     <div class="grid-cell form-group" data-test-filter-from-date>
       {{sy-datepicker
@@ -51,8 +68,6 @@
       }}
     </div>
   {{/if}}
-</div>
-<div class="grid grid--2of12">
   {{#if (contains 'review' _enabledFilters )}}
     <div class="grid-cell form-group" data-test-filter-review>
       <select class="form-control" onchange={{action (mut filters.review) value='target.value'}}>
@@ -77,16 +92,6 @@
         <option value="">Not filtered by verification</option>
         <option value="0" selected={{if (eq filters.notVerified '0') 'selected'}}>Only verified</option>
         <option value="1" selected={{if (eq filters.notVerified '1') 'selected'}}>Only unverified</option>
-      </select>
-    </div>
-  {{/if}}
-  {{#if (contains 'billingType' _enabledFilters)}}
-    <div class="grid-cell form-group" data-test-filter-billing-type>
-      <select class="form-control" onchange={{action (mut filters.billingType) value='target.value'}}>
-        <option value="">All billing types</option>
-        {{#each billingTypes as |bt|}}
-          <option selected={{if (eq bt.id filters.billingType) 'selected'}} value={{bt.id}}>{{bt.name}}</option>
-        {{/each}}
       </select>
     </div>
   {{/if}}

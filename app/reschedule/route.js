@@ -25,6 +25,7 @@ export default Route.extend(ReportFilterRouteMixin, {
    * @public
    */
   queryParams: {
+    reviewer: { refreshModel: true },
     billing_type: { refreshModel: true }, // eslint-disable-line camelcase
     review: { refreshModel: true },
     not_billable: { refreshModel: true }, // eslint-disable-line camelcase
@@ -55,7 +56,13 @@ export default Route.extend(ReportFilterRouteMixin, {
   async setupController(controller) {
     this._super(...arguments)
 
+    let reviewerId = controller.get('reviewer')
+
     controller.set('billingTypes', await this.store.findAll('billingType'))
+
+    if (reviewerId) {
+      controller.set('_reviewer', this.store.peekRecord('user', reviewerId))
+    }
   },
 
   actions: {

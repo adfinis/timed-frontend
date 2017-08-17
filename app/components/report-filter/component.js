@@ -19,9 +19,10 @@ const FILTERS = {
   project: { default: null, cast: id },
   task: { default: null, cast: id },
   user: { default: null, cast: id },
+  reviewer: { default: null, cast: id },
+  billingType: { default: null, cast: intOrNull },
   fromDate: { default: null, cast: date },
   toDate: { default: null, cast: date },
-  billingType: { default: null, cast: intOrNull },
   review: { default: null, cast: boolAsInt },
   notBillable: { default: null, cast: boolAsInt },
   notVerified: { default: null, cast: boolAsInt }
