@@ -57,8 +57,8 @@
     <div class="grid-cell form-group" data-test-filter-review>
       <select class="form-control" onchange={{action (mut filters.review) value='target.value'}}>
         <option value=""  selected={{if (not filters.review) 'selected'}}>Not filtered by review needed</option>
-        <option value="1" selected={{if (eq filters.review 1) 'selected'}}>Only review needed</option>
-        <option value="0" selected={{if (eq filters.review 0) 'selected'}}>Only review not needed</option>
+        <option value="1" selected={{if (eq filters.review '1') 'selected'}}>Only review needed</option>
+        <option value="0" selected={{if (eq filters.review '0') 'selected'}}>Only review not needed</option>
       </select>
     </div>
   {{/if}}
@@ -66,8 +66,8 @@
     <div class="grid-cell form-group" data-test-filter-not-billable>
       <select class="form-control" onchange={{action (mut filters.notBillable) value='target.value'}}>
         <option value=""  selected={{if (not filters.notBillable) 'selected'}}>Not filtered by billability</option>
-        <option value="0" selected={{if (eq filters.notBillable 0) 'selected'}}>Only billable</option>
-        <option value="1" selected={{if (eq filters.notBillable 1) 'selected'}}>Only not billable</option>
+        <option value="0" selected={{if (eq filters.notBillable '0') 'selected'}}>Only billable</option>
+        <option value="1" selected={{if (eq filters.notBillable '1') 'selected'}}>Only not billable</option>
       </select>
     </div>
   {{/if}}
@@ -75,8 +75,8 @@
     <div class="grid-cell form-group" data-test-filter-not-verified>
       <select class="form-control" onchange={{action (mut filters.notVerified) value='target.value'}}>
         <option value=""  selected={{if (not filters.notVerified) 'selected'}}>Not filtered by verification</option>
-        <option value="0" selected={{if (eq filters.notVerified 0) 'selected'}}>Only verified</option>
-        <option value="1" selected={{if (eq filters.notVerified 1) 'selected'}}>Only unverified</option>
+        <option value="0" selected={{if (eq filters.notVerified '0') 'selected'}}>Only verified</option>
+        <option value="1" selected={{if (eq filters.notVerified '1') 'selected'}}>Only unverified</option>
       </select>
     </div>
   {{/if}}

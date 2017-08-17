@@ -179,4 +179,26 @@ describe('Acceptance | reschedule', function() {
 
     expect(find('input[name=user]').val()).to.be.ok
   })
+
+  it('can verify a page', async function() {
+    await visit('/reschedule?user=1')
+
+    expect(
+      find(
+        `${testSelector(
+          'reschedule-report'
+        )} td .checkbox:contains(Verified) input:checked`
+      )
+    ).to.have.length(0)
+
+    await click(testSelector('verify-page'))
+
+    expect(
+      find(
+        `${testSelector(
+          'reschedule-report'
+        )} td .checkbox:contains(Verified) input:checked`
+      )
+    ).to.have.length(6)
+  })
 })

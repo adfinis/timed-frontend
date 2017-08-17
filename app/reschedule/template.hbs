@@ -32,7 +32,11 @@
       <th width="8%"></th>
       <th width="8%"></th>
       <th width="6%"></th>
-      <th width="4%"></th>
+      <th width="4%">
+        {{#if model.length}}
+          <button data-test-verify-page class="btn btn-success" title="Verify page" {{action 'verifyPage'}}>{{fa-icon 'check'}}</button>
+        {{/if}}
+      </th>
     </tr>
   </thead>
 {{^}}

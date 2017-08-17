@@ -134,4 +134,12 @@ export default function() {
   this.get('/absences/:id')
   this.patch('/absences/:id')
   this.del('/absences/:id')
+
+  this.post('/reports/verify', ({ reports, users }) => {
+    let user = users.first()
+
+    reports.all().update('verifiedBy', user)
+
+    return new Response(200, {}, {})
+  })
 }

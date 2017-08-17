@@ -6,6 +6,7 @@
 import Component from 'ember-component'
 import ReportValidations from 'timed/validations/report'
 import Changeset from 'ember-changeset'
+import computed from 'ember-computed-decorators'
 
 const ENTER_CHAR_CODE = 13
 
@@ -26,15 +27,14 @@ const ReportRowComponent = Component.extend({
   tagName: 'tr',
 
   /**
-   * Init hook, create the changeset
+   * The changeset to edit
    *
-   * @method init
+   * @property {EmberChangeset.Changeset} changeset
    * @public
    */
-  init() {
-    this._super(...arguments)
-
-    this.set('changeset', new Changeset(this.get('report'), ReportValidations))
+  @computed('report.{id,verifiedBy}')
+  changeset() {
+    return new Changeset(this.get('report'), ReportValidations)
   },
 
   /**
