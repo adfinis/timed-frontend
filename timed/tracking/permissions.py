@@ -1,16 +1,50 @@
-from rest_framework.permissions import SAFE_METHODS, BasePermission
+from rest_framework.permissions import (SAFE_METHODS, BasePermission,
+                                        IsAdminUser, IsAuthenticated)
 
 
-class IsOwnerOrStaffElseReadOnly(BasePermission):
+class IsOwner(BasePermission):
+    """Allows access to object only to owners."""
+
+    def has_object_permission(self, request, view, obj):
+        return obj.user_id == request.user.id
+
+
+class IsUnverified(BasePermission):
+    """Allows access only to verified objects."""
+
+    def has_object_permission(self, request, view, obj):
+        return obj.verified_by_id is None
+
+
+class IsReadOnly(BasePermission):
+    """Allows read only methods."""
+
+    def has_permission(self, request, view):
+        return request.method in SAFE_METHODS
+
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
+
+
+class IsAuthenticated(IsAuthenticated):
     """
-    Restrict writing to object for owner or staff only.
+    Support mixing permission IsAuthenticated with object permission.
 
-    Changing an object is only allowed if object belongs to current user
-    or user is a staff member.
+    This is needed to use IsAdminUser with rest condition and or
+    operator.
     """
 
     def has_object_permission(self, request, view, obj):
-        if request.method in SAFE_METHODS:
-            return True
+        return self.has_permission(request, view)
 
-        return obj.user_id == request.user.id or request.user.is_staff
+
+class IsAdminUser(IsAdminUser):
+    """
+    Support mixing permission IsAdminUser with object permission.
+
+    This is needed to use IsAdminUser with rest condition and or
+    operator.
+    """
+
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)

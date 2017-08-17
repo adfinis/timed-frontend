@@ -2,13 +2,14 @@
 
 import django_excel
 from django.http import HttpResponseBadRequest
+from rest_condition import C
 from rest_framework.decorators import list_route
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from timed.tracking import filters, models, serializers
-from timed.tracking.permissions import IsOwnerOrStaffElseReadOnly
+from timed.tracking.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
+                                        IsReadOnly, IsUnverified)
 
 
 class ActivityViewSet(ModelViewSet):
@@ -78,7 +79,14 @@ class ReportViewSet(ModelViewSet):
 
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
-    permission_classes = [IsAuthenticated, IsOwnerOrStaffElseReadOnly]
+    permission_classes = [
+        # admin user can change all
+        C(IsAuthenticated) & C(IsAdminUser) |
+        # owner may only change its own unverified reports
+        C(IsAuthenticated) & C(IsOwner) & C(IsUnverified) |
+        # all authenticated users may read all reports
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
     ordering = ('id', )
     ordering_fields = (
         'date',
