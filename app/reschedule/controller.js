@@ -45,5 +45,21 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {Number} not_verified
    * @public
    */
-  not_verified: null // eslint-disable-line camelcase
+  not_verified: null, // eslint-disable-line camelcase
+
+  /**
+   * Reset all filters
+   *
+   * @method resetFilters
+   * @public
+   */
+  resetFilters() {
+    this._super(...arguments)
+
+    this.setProperties({
+      review: null,
+      not_billable: null, // eslint-disable-line camelcase
+      not_verified: null // eslint-disable-line camelcase
+    })
+  }
 })

@@ -8,6 +8,18 @@ import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import { underscore } from 'ember-string'
 
+const INITIAL_FILTERS = {
+  customer: null,
+  project: null,
+  task: null,
+  user: null,
+  from_date: null, // eslint-disable-line camelcase
+  to_date: null, // eslint-disable-line camelcase
+  page_size: 10, // eslint-disable-line camelcase
+  page: 1,
+  ordering: 'date'
+}
+
 /**
  * A mixin to create a page which filters reports by given values
  *
@@ -42,7 +54,7 @@ export default Mixin.create({
    * @property {Number} customer
    * @public
    */
-  customer: null,
+  customer: INITIAL_FILTERS.customer,
 
   /**
    * The project ID to filter by
@@ -50,7 +62,7 @@ export default Mixin.create({
    * @property {Number} project
    * @public
    */
-  project: null,
+  project: INITIAL_FILTERS.project,
 
   /**
    * The task ID to filter by
@@ -58,7 +70,7 @@ export default Mixin.create({
    * @property {Number} task
    * @public
    */
-  task: null,
+  task: INITIAL_FILTERS.task,
 
   /**
    * The user ID to filter by
@@ -66,7 +78,7 @@ export default Mixin.create({
    * @property {Number} user
    * @public
    */
-  user: null,
+  user: INITIAL_FILTERS.user,
 
   /**
    * The start of the filter interval
@@ -74,7 +86,7 @@ export default Mixin.create({
    * @property {String} from_date
    * @public
    */
-  from_date: null, // eslint-disable-line camelcase
+  from_date: INITIAL_FILTERS.from_date, // eslint-disable-line camelcase
 
   /**
    * The end of the filter interval
@@ -82,7 +94,7 @@ export default Mixin.create({
    * @property {String} to_date
    * @public
    */
-  to_date: null, // eslint-disable-line camelcase
+  to_date: INITIAL_FILTERS.to_date, // eslint-disable-line camelcase
 
   /**
    * The page size
@@ -90,7 +102,7 @@ export default Mixin.create({
    * @property {Number} page_size
    * @public
    */
-  page_size: 10, // eslint-disable-line camelcase
+  page_size: INITIAL_FILTERS.page_size, // eslint-disable-line camelcase
 
   /**
    * The current page
@@ -98,7 +110,7 @@ export default Mixin.create({
    * @property {Number} page
    * @public
    */
-  page: 1,
+  page: INITIAL_FILTERS.page,
 
   /**
    * The ordering
@@ -106,7 +118,7 @@ export default Mixin.create({
    * @property {String} ordering
    * @public
    */
-  ordering: 'date',
+  ordering: INITIAL_FILTERS.ordering,
 
   /**
    * The start of the filter interval as moment object
@@ -145,6 +157,16 @@ export default Mixin.create({
       .filter(k => !['page_size', 'page', 'ordering'].includes(k))
       .map(k => this.get(k))
       .any(arg => !!arg)
+  },
+
+  /**
+   * Reset the filters
+   *
+   * @method resetFilters
+   * @public
+   */
+  resetFilters() {
+    this.setProperties(INITIAL_FILTERS)
   },
 
   actions: {
