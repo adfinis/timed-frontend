@@ -130,23 +130,6 @@ export default Mixin.create({
     return to ? moment(to) : null
   },
 
-  /**
-   * Whether any filters are applied
-   *
-   * This ignores page_size, page and ordering since those are not relevant and
-   * always set.
-   *
-   * @property {Boolean} hasFilters
-   * @public
-   */
-  @computed('model.[]')
-  hasFilters() {
-    return this.get('queryParams')
-      .filter(k => !['page_size', 'page', 'ordering'].includes(k))
-      .map(k => this.get(k))
-      .any(arg => !!arg)
-  },
-
   actions: {
     /**
      * Apply the given filters to the query params
