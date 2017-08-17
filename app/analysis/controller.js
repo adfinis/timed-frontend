@@ -3,6 +3,7 @@ import Controller from 'ember-controller'
 import service from 'ember-service/inject'
 import config from '../config/environment'
 import { oneWay } from 'ember-computed-decorators'
+import ReportFilterControllerMixin from 'timed/mixins/report-filter-controller'
 
 const { testing } = Ember
 
@@ -26,11 +27,7 @@ const appendAuth = (url, token) => {
   return join(url, `jwt=${token}`)
 }
 
-const AnalysisController = Controller.extend({
-  queryParams: ['page', 'sort'],
-
-  page: 1,
-
+const AnalysisController = Controller.extend(ReportFilterControllerMixin, {
   session: service(),
 
   /**
@@ -41,16 +38,25 @@ const AnalysisController = Controller.extend({
    */
   @oneWay('session.data.authenticated.token') token: null,
 
-  sort: '-date',
   exportLinks: config.APP.REPORTEXPORTS,
 
-  getTarget(url, filters) {
+  getTarget(url) {
+    let filters = this.get('queryParams').reduce((obj, key) => {
+      let val = this.get(key)
+
+      if (val !== null && val !== undefined) {
+        obj[key] = val
+      }
+
+      return obj
+    }, {})
+
     return appendAuth(appendFilters(url, filters), this.get('token'))
   },
 
   actions: {
-    download(url, filters) {
-      let target = this.getTarget(url, filters)
+    download(url) {
+      let target = this.getTarget(url)
 
       if (testing) {
         return

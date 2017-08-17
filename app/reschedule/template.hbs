@@ -1,54 +1,59 @@
 <h1>Reschedule</h1>
 
-{{#form-booking-filter page=page as |data|}}
-  {{#paginated-table
-    pages=data.reports.lastSuccessful.value.meta.pagination.pages
-    page=page
-    data-test-search-results=''
-    }}
-    <thead>
+{{report-filter
+  initial       = (hash
+    customer    = _customer
+    project     = _project
+    task        = _task
+    user        = _user
+    from        = _from
+    to          = _to
+    review      = review
+    notBillable = not_billable
+    notVerified = not_verified
+  )
+  on-apply      = (action 'applyFilter')
+}}
+
+{{#paginated-table
+  data-test-filter-results
+  pages = model.meta.pagination.pages
+  page  = page
+}}
+  <thead>
+    <tr>
+      <th width="4%">User</th>
+      <th width="6%">Date</th>
+      <th width="4%">Duration</th>
+      <th width="10%">Customer</th>
+      <th width="10%">Project</th>
+      <th width="10%">Task</th>
+      <th width="30%">Comment</th>
+      <th width="8%"></th>
+      <th width="8%"></th>
+      <th width="6%"></th>
+      <th width="4%"></th>
+    </tr>
+  </thead>
+{{^}}
+  <tbody>
+    {{#each model as |report|}}
+      {{report-reschedule-row report
+        data-test-reschedule-report
+        data-test-reschedule-report-id = report.id
+        verifyUser                     = currentUser
+        on-save                        = (route-action 'saveReport')
+      }}
+    {{^}}
       <tr>
-        <th>Date</th>
-        <th>Dur.</th>
-        <th>Customer / Project / Task</th>
-        <th>Flags</th>
-        <th>User</th>
-        <th>Comment</th>
-        <th>Action</th>
+        <td colspan="11" class="text-center">
+          {{#if (is-array model)}}
+            I didn't find any results - try broadening your filters!
+          {{else}}
+            Please specify some filter parameters.
+          {{/if}}
+        </td>
       </tr>
-    </thead>
-  {{^}}
-    <tbody>
-      {{#each data.reports.lastSuccessful.value as |report index|}}
-        <tr>
-          <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
-          <td>{{format-duration report.duration false}}</td>
-          <td>
-            {{#task-selection history=false task=report.task as |t|}}
-              <div class="form-group" data-test-tracking-customer=index>
-                {{t.customer}}
-              </div>
-              <div class="form-group" data-test-tracking-project=index>
-                {{t.project}}
-              </div>
-              <div class="form-group" data-test-tracking-task=index>
-                {{t.task}}
-              </div>
-            {{/task-selection}}
-          </td>
-          <td>
-            {{sy-checkbox checked=report.review on-change=(action (mut report.review)) label='Needs feedback'}}
-            {{sy-checkbox checked=report.notBillable on-change=(action (mut report.notBillable)) label='Not billable'}}
-          </td>
-          <td>{{report.user.username}}</td>
-          <td>{{input class='form-control' value=report.comment data-test-report-comment=index}}</td>
-          <td><button data-test-report-save={{index}} class="btn btn-default" {{action 'saveReport' report}}>Save</button></td>
-        </tr>
-      {{^}}
-        <tr>
-          <td colspan="7">{{if hasCriteria "I didn't find any results - try broadening your search!" "Please specify some search parameters."}}</td>
-        </tr>
-      {{/each}}
-    </tbody>
-  {{/paginated-table}}
-{{/form-booking-filter}}
+    {{/each}}
+  </tbody>
+{{/paginated-table}}
