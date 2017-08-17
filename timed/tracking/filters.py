@@ -2,8 +2,7 @@
 
 from functools import wraps
 
-from django_filters import (BooleanFilter, DateFilter, Filter, FilterSet,
-                            NumberFilter)
+from django_filters import DateFilter, Filter, FilterSet, NumberFilter
 
 from timed.tracking import models
 

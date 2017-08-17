@@ -76,7 +76,7 @@ class ReportTests(JSONAPITestCase):
 
     def test_report_list_verify(self):
         url_list = reverse('report-list')
-        res = self.client.get(url_list, data={'not_verified': True})
+        res = self.client.get(url_list, data={'not_verified': 1})
         assert res.status_code == HTTP_200_OK
         result = self.result(res)
         assert len(result['data']) == 20
@@ -86,7 +86,7 @@ class ReportTests(JSONAPITestCase):
                                self.user.id)
         assert res.status_code == HTTP_200_OK
 
-        res = self.client.get(url_list, data={'not_verified': False})
+        res = self.client.get(url_list, data={'not_verified': 0})
         assert res.status_code == HTTP_200_OK
         result = self.result(res)
         assert len(result['data']) == 10
@@ -108,7 +108,7 @@ class ReportTests(JSONAPITestCase):
         assert res.status_code == HTTP_200_OK
 
         url_list = reverse('report-list')
-        res = self.client.get(url_list, data={'not_verified': False})
+        res = self.client.get(url_list, data={'not_verified': 0})
         assert res.status_code == HTTP_200_OK
         result = self.result(res)
         assert len(result['data']) == 5
