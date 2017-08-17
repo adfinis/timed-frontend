@@ -1,6 +1,7 @@
 <h1>Reschedule</h1>
 
 {{report-filter
+  billingTypes  = billingTypes
   initial       = (hash
     customer    = _customer
     project     = _project
@@ -8,6 +9,7 @@
     user        = _user
     from        = _from
     to          = _to
+    billingType = billing_type
     review      = review
     notBillable = not_billable
     notVerified = not_verified

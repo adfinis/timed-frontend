@@ -130,6 +130,34 @@ describe('Acceptance | reschedule', function() {
     expect(currentURL()).to.contain('task')
   })
 
+  it('can filter by user', async function() {
+    await visit('/reschedule')
+
+    userSelect('')
+
+    await click(testSelector('filter-apply'))
+
+    expect(currentURL()).to.contain('user')
+  })
+
+  it('can filter by billing type', async function() {
+    server.createList('billing-type', 5)
+
+    await visit('/reschedule')
+
+    let options = find(`${testSelector('filter-billing-type')} select option`)
+
+    expect(options).to.have.length(6)
+
+    let [, { value }] = options
+
+    await fillIn(`${testSelector('filter-billing-type')} select`, value)
+
+    await click(testSelector('filter-apply'))
+
+    expect(currentURL()).to.contain('billing_type')
+  })
+
   it('shows proper empty state messages', async function() {
     server.db.reports.remove()
 

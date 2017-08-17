@@ -3,6 +3,8 @@ export default function(server) {
 
   server.loadFixtures('absence-types')
 
+  server.createList('billing-type', 3)
+
   server.create('user', {
     firstName: 'John',
     lastName: 'Doe',

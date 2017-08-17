@@ -12,6 +12,7 @@ const DATE_FORMAT = 'YYYY-MM-DD'
 const id = obj => (obj ? obj.get('id') : null)
 const boolAsInt = val => ([0, 1].includes(parseInt(val)) ? parseInt(val) : null)
 const date = date => (date ? date.format(DATE_FORMAT) : null)
+const intOrNull = val => parseInt(val) || null
 
 const FILTERS = {
   customer: { default: null, cast: id },
@@ -20,6 +21,7 @@ const FILTERS = {
   user: { default: null, cast: id },
   fromDate: { default: null, cast: date },
   toDate: { default: null, cast: date },
+  billingType: { default: null, cast: intOrNull },
   review: { default: null, cast: boolAsInt },
   notBillable: { default: null, cast: boolAsInt },
   notVerified: { default: null, cast: boolAsInt }

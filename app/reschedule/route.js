@@ -19,6 +19,19 @@ export default Route.extend(ReportFilterRouteMixin, {
   ajax: service('ajax'),
 
   /**
+   * Some more query params to filter by
+   *
+   * @property {Object} queryParams
+   * @public
+   */
+  queryParams: {
+    billing_type: { refreshModel: true }, // eslint-disable-line camelcase
+    review: { refreshModel: true },
+    not_billable: { refreshModel: true }, // eslint-disable-line camelcase
+    not_verified: { refreshModel: true } // eslint-disable-line camelcase
+  },
+
+  /**
    * Model hook, save the current params so we can use them to verify the page
    *
    * @method model
@@ -33,15 +46,16 @@ export default Route.extend(ReportFilterRouteMixin, {
   },
 
   /**
-   * Some more query params to filter by
+   * Setup controller hook, set all billing types
    *
-   * @property {Object} queryParams
+   * @method setupController
+   * @param {Ember.Controller} controller The controller
    * @public
    */
-  queryParams: {
-    review: { refreshModel: true },
-    not_billable: { refreshModel: true }, // eslint-disable-line camelcase
-    not_verified: { refreshModel: true } // eslint-disable-line camelcase
+  async setupController(controller) {
+    this._super(...arguments)
+
+    controller.set('billingTypes', await this.store.findAll('billingType'))
   },
 
   actions: {

@@ -21,7 +21,15 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {String[]} queryParams
    * @public
    */
-  queryParams: ['review', 'not_billable', 'not_verified'],
+  queryParams: ['billing_type', 'review', 'not_billable', 'not_verified'],
+
+  /**
+   * The billing type to filter by
+   *
+   * @property {Number} billingType
+   * @public
+   */
+  billing_type: null, // eslint-disable-line camelcase
 
   /**
    * Whether the reports need a review

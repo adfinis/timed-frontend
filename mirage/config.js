@@ -121,6 +121,9 @@ export default function() {
   this.get('/absence-types')
   this.get('/absence-types/:id')
 
+  this.get('/billing-types')
+  this.get('/billing-types/:id')
+
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
 
