@@ -7,8 +7,11 @@ import Component from 'ember-component'
 import computed from 'ember-computed-decorators'
 import service from 'ember-service/inject'
 import RSVP from 'rsvp'
+import Ember from 'ember'
 import hbs from 'htmlbars-inline-precompile'
 import { typeOf } from 'ember-utils'
+
+const { testing } = Ember
 
 const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('name') : '')
 
@@ -110,7 +113,11 @@ export default Component.extend({
       this.set('customer', customer)
     }
 
-    if (!customer && !project && !task) {
+    // We need to 'refresh' the customers when initializing a new selection
+    // component because it is possible that another component filtered them
+    // before but with other parameters
+    /* istanbul ignore next */
+    if (!customer && !project && !task && !testing) {
       this.get('tracking.filterCustomers').perform(this.get('archived'))
     }
   },
