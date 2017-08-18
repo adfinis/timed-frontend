@@ -7,6 +7,8 @@ export default Factory.extend({
   lastName: () => faker.name.lastName(),
   password: () => faker.internet.password(),
 
+  isStaff: true,
+
   username() {
     let first = this.firstName.toLowerCase()
     let last = this.lastName.toLowerCase()
