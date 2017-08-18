@@ -102,8 +102,9 @@ class AttendanceSerializer(ModelSerializer):
 
         model  = models.Attendance
         fields = [
-            'from_datetime',
-            'to_datetime',
+            'date',
+            'from_time',
+            'to_time',
             'user',
         ]
 

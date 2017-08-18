@@ -75,10 +75,13 @@ class Attendance(models.Model):
     """Attendance model.
 
     An attendance is a timespan in which a user was present at work.
+    Timespan should not be time zone aware hence splitting into date and
+    from resp. to time fields.
     """
 
-    from_datetime = models.DateTimeField()
-    to_datetime   = models.DateTimeField()
+    date          = models.DateField()
+    from_time     = models.TimeField()
+    to_time       = models.TimeField()
     user          = models.ForeignKey(settings.AUTH_USER_MODEL,
                                       related_name='attendances')
 
@@ -88,10 +91,11 @@ class Attendance(models.Model):
         :return: The string representation
         :rtype:  str
         """
-        return '{0}: {1} - {2}'.format(
+        return '{0}: {1} {2} - {3}'.format(
             self.user,
-            self.from_datetime.strftime('%d.%m.%Y %h:%i'),
-            self.to_datetime.strftime('%d.%m.%Y %h:%i')
+            self.date.strftime('%Y-%m-%d'),
+            self.from_time.strftime('%H:%M'),
+            self.to_time.strftime('%H:%M')
         )
 
 
