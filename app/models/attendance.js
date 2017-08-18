@@ -16,22 +16,28 @@ import { belongsTo } from 'ember-data/relationships'
  */
 export default Model.extend({
   /**
-   * The start date and time
+   * The date of the attendance
    *
-   * @property from
-   * @type {moment}
+   * @property {moment} date
    * @public
    */
-  from: attr('django-datetime'),
+  date: attr('django-date'),
 
   /**
-   * The end date and time
+   * The start time
    *
-   * @property to
-   * @type {moment}
+   * @property {moment} from
    * @public
    */
-  to: attr('django-datetime'),
+  from: attr('django-time'),
+
+  /**
+   * The end time
+   *
+   * @property {moment} to
+   * @public
+   */
+  to: attr('django-time'),
 
   /**
    * The user

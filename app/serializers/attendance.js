@@ -25,7 +25,7 @@ export default ApplicationSerializer.extend({
    * @public
    */
   attrs: {
-    from: 'from-datetime',
-    to: 'to-datetime'
+    from: 'from-time',
+    to: 'to-time'
   }
 })

@@ -73,16 +73,16 @@ export default Route.extend({
      */
     async addAttendance() {
       try {
-        let from = this.controllerFor('index')
-          .get('date')
-          .clone()
-          .set({ h: 8, m: 0, s: 0, ms: 0 })
-        let to = this.controllerFor('index')
-          .get('date')
-          .clone()
-          .set({ h: 11, m: 30, s: 0, ms: 0 })
+        let date = this.controllerFor('index').get('date').clone()
 
-        let attendance = this.store.createRecord('attendance', { from, to })
+        let from = date.clone().set({ h: 8, m: 0, s: 0, ms: 0 })
+        let to = date.clone().set({ h: 11, m: 30, s: 0, ms: 0 })
+
+        let attendance = this.store.createRecord('attendance', {
+          date,
+          from,
+          to
+        })
 
         await attendance.save()
 
