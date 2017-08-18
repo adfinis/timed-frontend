@@ -10,6 +10,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from timed.projects.factories import (CustomerFactory, ProjectFactory,
                                       TaskFactory)
 from timed.tracking.factories import ReportFactory
+from timed_adfinis.reporting.views import WorkReport
 
 
 @pytest.mark.freeze_time('2017-09-01')
@@ -84,3 +85,21 @@ def test_work_report_empty(auth_client):
         'user': auth_client.user.id
     })
     assert res.status_code == HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.parametrize('customer_name,project_name,expected', [
+    ('Customer Name', 'Project/', '1708-20170818-Customer_Name-Project.ods'),
+    ('Customer-Name', 'Project', '1708-20170818-Customer-Name-Project.ods'),
+    ('Customer$Name', 'Project', '1708-20170818-CustomerName-Project.ods'),
+])
+def test_generate_work_report_name(db, customer_name, project_name, expected):
+    test_date = date(2017, 8, 18)
+    view = WorkReport()
+
+    # spaces should be replaced with underscore
+    customer = CustomerFactory.create(name=customer_name)
+    # slashes should be dropped from file name
+    project = ProjectFactory.create(customer=customer, name=project_name)
+
+    name = view._generate_workreport_name(test_date, test_date, project)
+    assert name == expected
