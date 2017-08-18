@@ -11,9 +11,10 @@ from rest_framework.viewsets import GenericViewSet
 
 from timed.tracking.filters import ReportFilterSet
 from timed.tracking.models import Report
+from timed.tracking.views import ReportViewSet
 
 
-class WorkReport(GenericViewSet):
+class WorkReportViewSet(GenericViewSet):
     """
     Build a ods work report of reports with given filters.
 
@@ -25,7 +26,8 @@ class WorkReport(GenericViewSet):
     """
 
     filter_class = ReportFilterSet
-    ordering = ('-date', )
+    ordering = ReportViewSet.ordering
+    ordering_fields = ReportViewSet.ordering_fields
 
     def get_queryset(self):
         return Report.objects.select_related(
@@ -119,6 +121,8 @@ class WorkReport(GenericViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+        # needed as we add items in reverse order to work report
+        queryset = queryset.reverse()
         count = queryset.count()
         if count == 0:
             return HttpResponseBadRequest()

@@ -5,6 +5,6 @@ from timed_adfinis.reporting import views
 
 r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
 
-r.register(r'work-report', views.WorkReport, 'work-reports')
+r.register(r'work-report', views.WorkReportViewSet, 'work-reports')
 
 urlpatterns = r.urls

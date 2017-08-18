@@ -10,7 +10,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from timed.projects.factories import (CustomerFactory, ProjectFactory,
                                       TaskFactory)
 from timed.tracking.factories import ReportFactory
-from timed_adfinis.reporting.views import WorkReport
+from timed_adfinis.reporting.views import WorkReportViewSet
 
 
 @pytest.mark.freeze_time('2017-09-01')
@@ -94,7 +94,7 @@ def test_work_report_empty(auth_client):
 ])
 def test_generate_work_report_name(db, customer_name, project_name, expected):
     test_date = date(2017, 8, 18)
-    view = WorkReport()
+    view = WorkReportViewSet()
 
     # spaces should be replaced with underscore
     customer = CustomerFactory.create(name=customer_name)
