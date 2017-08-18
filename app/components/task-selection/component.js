@@ -19,6 +19,9 @@ const regexFilter = (data, term, key) => {
   return data.filter(i => re.test(i.get(key)))
 }
 
+const performOrLast = (task, ...args) =>
+  task.get('last') || task.perform(...args)
+
 /**
  * Component for selecting a task, which consists of selecting a customer and
  * project first.
@@ -83,6 +86,14 @@ export default Component.extend({
       this.set('customer', customer)
     }
   },
+
+  /**
+   * Whether to show archived customers, projects or tasks
+   *
+   * @property {Boolean} archived
+   * @public
+   */
+  archived: false,
 
   /**
    * The limit of search results
@@ -234,14 +245,17 @@ export default Component.extend({
   @computed('history')
   customerSource(history) {
     return (search, syncResults, asyncResults) => {
-      let fnCustomer = this.get('tracking.filterCustomers')
-      let customers = fnCustomer.get('last') || fnCustomer.perform()
+      let customers = performOrLast(
+        this.get('tracking.filterCustomers'),
+        this.get('archived')
+      )
 
       let requests = { customers }
 
       if (history) {
         let fnHistory = this.get('tracking.recentTasks')
-        requests.history = fnHistory.get('last') || fnHistory.perform()
+        requests.history =
+          fnHistory.get('last') || fnHistory.perform(this.get('archived'))
       }
 
       /* istanbul ignore next */
@@ -273,9 +287,11 @@ export default Component.extend({
   @computed
   projectSource() {
     return (search, syncResults, asyncResults) => {
-      let fn = this.get('tracking.filterProjects')
-
-      let projects = fn.get('last') || fn.perform(this.get('customer.id'))
+      let projects = performOrLast(
+        this.get('tracking.filterProjects'),
+        this.get('customer.id'),
+        this.get('archived')
+      )
 
       /* istanbul ignore next */
       projects
@@ -296,9 +312,11 @@ export default Component.extend({
   @computed
   taskSource() {
     return (search, syncResults, asyncResults) => {
-      let fn = this.get('tracking.filterTasks')
-
-      let tasks = fn.get('last') || fn.perform(this.get('project.id'))
+      let tasks = performOrLast(
+        this.get('tracking.filterTasks'),
+        this.get('project.id'),
+        this.get('archived')
+      )
 
       /* istanbul ignore next */
       tasks

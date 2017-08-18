@@ -19,6 +19,8 @@ import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
 
+const boolToInt = bool => (bool ? 1 : 0)
+
 /**
  * Tracking service
  *
@@ -163,9 +165,10 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  recentTasks: task(function*() {
+  recentTasks: task(function*(archived) {
     return yield this.get('store').query('task', {
       my_most_frequent: 10, // eslint-disable-line camelcase
+      archived: boolToInt(archived),
       include: 'project,project.customer'
     })
   }).restartable(),
@@ -174,21 +177,26 @@ export default Service.extend({
    * Filter all customers
    *
    * @property {EmberConcurrency.Task} filterCustomers
+   * @param {Boolean} archived Whether to show archived customer
    * @public
    */
-  filterCustomers: task(function*() {
+  filterCustomers: task(function*(archived) {
     yield timeout(500)
 
-    return yield this.get('store').query('customer', {})
+    return yield this.get('store').query('customer', {
+      archived: boolToInt(archived)
+    })
   }).restartable(),
 
   /**
    * Filter all projects by customer
    *
    * @property {EmberConcurrency.Task} filterProjects
+   * @param {Number} customer The customer id to filter by
+   * @param {Boolean} archived Whether to show archived projects
    * @public
    */
-  filterProjects: task(function*(customer) {
+  filterProjects: task(function*(customer, archived) {
     /* istanbul ignore next */
     if (!customer) {
       // We can't test this because the UI prevents it
@@ -197,16 +205,21 @@ export default Service.extend({
 
     yield timeout(500)
 
-    return yield this.get('store').query('project', { customer })
+    return yield this.get('store').query('project', {
+      customer,
+      archived: boolToInt(archived)
+    })
   }).restartable(),
 
   /**
    * Filter all tasks by project
    *
    * @property {EmberConcurrency.Task} filterTask
+   * @param {Number} project The project id to filter by
+   * @param {Boolean} archived Whether to show archived tasks
    * @public
    */
-  filterTasks: task(function*(project) {
+  filterTasks: task(function*(project, archived) {
     /* istanbul ignore next */
     if (!project) {
       // We can't test this because the UI prevents it
@@ -215,7 +228,10 @@ export default Service.extend({
 
     yield timeout(500)
 
-    return yield this.get('store').query('task', { project })
+    return yield this.get('store').query('task', {
+      project,
+      archived: boolToInt(archived)
+    })
   }).restartable(),
 
   /**
