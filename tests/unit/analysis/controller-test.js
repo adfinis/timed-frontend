@@ -9,9 +9,15 @@ describe('Unit | Controller | analysis', function() {
 
   it('computes download URLs correctly', function() {
     let controller = this.subject()
-    controller.set('token', 'foobar')
-    expect(controller.getTarget('test', { foo: 'bar' })).to.equal(
-      'test?foo=bar&jwt=foobar'
-    )
+
+    controller.set('jwt', 'foobar')
+    controller.set('user', 1)
+    controller.set('customer', 1)
+
+    let target = controller.getTarget('test')
+
+    expect(target).to.contain('jwt=foobar')
+    expect(target).to.contain('user=1')
+    expect(target).to.contain('customer=1')
   })
 })

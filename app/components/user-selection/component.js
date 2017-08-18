@@ -26,6 +26,8 @@ export default Component.extend({
 
   suggestionTemplate: SUGGESTION_TEMPLATE,
 
+  placeholder: 'Select user...',
+
   @computed
   source() {
     return (search, syncResults, asyncResults) => {
