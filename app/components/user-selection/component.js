@@ -5,8 +5,8 @@ import computed from 'ember-computed-decorators'
 import { typeOf } from 'ember-utils'
 import { task } from 'ember-concurrency'
 
-const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('fullName') : '')
-const SUGGESTION_TEMPLATE = hbs`{{model.fullName}}`
+const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('longName') : '')
+const SUGGESTION_TEMPLATE = hbs`{{model.longName}}`
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
 
@@ -26,6 +26,8 @@ export default Component.extend({
 
   suggestionTemplate: SUGGESTION_TEMPLATE,
 
+  placeholder: 'Select user...',
+
   @computed
   source() {
     return (search, syncResults, asyncResults) => {
@@ -35,7 +37,7 @@ export default Component.extend({
 
       /* istanbul ignore next */
       customers
-        .then(data => asyncResults(regexFilter(data, search, 'fullName')))
+        .then(data => asyncResults(regexFilter(data, search, 'longName')))
         .catch(() => asyncResults([]))
     }
   },
