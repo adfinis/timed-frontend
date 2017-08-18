@@ -166,6 +166,7 @@ export default Service.extend({
   recentTasks: task(function*() {
     return yield this.get('store').query('task', {
       my_most_frequent: 10, // eslint-disable-line camelcase
+      archived: 0,
       include: 'project,project.customer'
     })
   }).restartable(),
@@ -179,7 +180,7 @@ export default Service.extend({
   filterCustomers: task(function*() {
     yield timeout(500)
 
-    return yield this.get('store').query('customer', {})
+    return yield this.get('store').query('customer', { archived: 0 })
   }).restartable(),
 
   /**
@@ -197,7 +198,10 @@ export default Service.extend({
 
     yield timeout(500)
 
-    return yield this.get('store').query('project', { customer })
+    return yield this.get('store').query('project', {
+      customer,
+      archived: 0
+    })
   }).restartable(),
 
   /**
@@ -215,7 +219,7 @@ export default Service.extend({
 
     yield timeout(500)
 
-    return yield this.get('store').query('task', { project })
+    return yield this.get('store').query('task', { project, archived: 0 })
   }).restartable(),
 
   /**
