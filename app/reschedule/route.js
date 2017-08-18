@@ -6,6 +6,7 @@
 import Route from 'ember-route'
 import ReportFilterRouteMixin from 'timed/mixins/report-filter-route'
 import service from 'ember-service/inject'
+import { cleanParams, toQueryString } from 'timed/utils/url'
 
 /**
  * Route for filtering and rescheduling reports
@@ -101,17 +102,7 @@ export default Route.extend(ReportFilterRouteMixin, {
 
         let params = this.get('params')
 
-        let queryString = Object.keys(params)
-          .reduce((arr, key) => {
-            let val = params[key]
-
-            if (val !== null && val !== undefined) {
-              arr.push(`${key}=${val}`)
-            }
-
-            return arr
-          }, [])
-          .join('&')
+        let queryString = toQueryString(cleanParams(params))
 
         let url = `/api/v1/reports/verify?${queryString}`
 

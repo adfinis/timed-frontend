@@ -1,31 +1,37 @@
 <div class="grid grid--2of12">
-  {{#task-selection
-    history         = false
-    on-set-customer = (action (mut filters.customer))
-    on-set-project  = (action (mut filters.project))
-    on-set-task     = (action (mut filters.task))
-    initial         = (hash
-      customer      = filters.customer
-      project       = filters.project
-      task          = filters.task
-    )
-  as |t|}}
-    {{#if (contains 'customer' _enabledFilters)}}
-      <div class="grid-cell form-group" data-test-filter-customer>
-        {{t.customer}}
-      </div>
-    {{/if}}
-    {{#if (contains 'project' _enabledFilters)}}
-      <div class="grid-cell form-group" data-test-filter-project>
-        {{t.project}}
-      </div>
-    {{/if}}
-    {{#if (contains 'task' _enabledFilters)}}
-      <div class="grid-cell form-group" data-test-filter-task>
-        {{t.task}}
-      </div>
-    {{/if}}
-  {{/task-selection}}
+  {{#unless
+    (not (contains 'customer' _enabledFilters))
+    (not (contains 'project' _enabledFilters))
+    (not (contains 'task' _enabledFilters))
+  }}
+    {{#task-selection
+      history         = false
+      on-set-customer = (action (mut filters.customer))
+      on-set-project  = (action (mut filters.project))
+      on-set-task     = (action (mut filters.task))
+      initial         = (hash
+        customer      = filters.customer
+        project       = filters.project
+        task          = filters.task
+      )
+    as |t|}}
+      {{#if (contains 'customer' _enabledFilters)}}
+        <div class="grid-cell form-group" data-test-filter-customer>
+          {{t.customer}}
+        </div>
+      {{/if}}
+      {{#if (contains 'project' _enabledFilters)}}
+        <div class="grid-cell form-group" data-test-filter-project>
+          {{t.project}}
+        </div>
+      {{/if}}
+      {{#if (contains 'task' _enabledFilters)}}
+        <div class="grid-cell form-group" data-test-filter-task>
+          {{t.task}}
+        </div>
+      {{/if}}
+    {{/task-selection}}
+  {{/unless}}
   {{#if (contains 'user' _enabledFilters)}}
     <div class="grid-cell form-group" data-test-filter-user>
       {{user-selection selection=filters.user on-change=(action (mut filters.user))}}

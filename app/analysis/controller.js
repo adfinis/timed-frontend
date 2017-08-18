@@ -3,29 +3,10 @@ import Controller from 'ember-controller'
 import service from 'ember-service/inject'
 import config from '../config/environment'
 import { oneWay } from 'ember-computed-decorators'
+import { cleanParams, toQueryString } from 'timed/utils/url'
 import ReportFilterControllerMixin from 'timed/mixins/report-filter-controller'
 
 const { testing } = Ember
-
-const join = (url, toAppend) => {
-  let joinSymbol = url.includes('?') ? '&' : '?'
-  return url + joinSymbol + toAppend
-}
-
-const appendFilters = (url, filters) => {
-  return join(
-    url,
-    Object.keys(filters)
-      .map(key => {
-        return `${key}=${filters[key]}`
-      })
-      .join('&')
-  )
-}
-
-const appendAuth = (url, token) => {
-  return join(url, `jwt=${token}`)
-}
 
 const AnalysisController = Controller.extend(ReportFilterControllerMixin, {
   session: service(),
@@ -33,36 +14,30 @@ const AnalysisController = Controller.extend(ReportFilterControllerMixin, {
   /**
    * The current JWT token
    *
-   * @property {string} token
+   * @property {string} jwt
    * @public
    */
-  @oneWay('session.data.authenticated.token') token: null,
+  @oneWay('session.data.authenticated.token') jtw: null,
 
   exportLinks: config.APP.REPORTEXPORTS,
 
   getTarget(url) {
-    let filters = this.get('queryParams').reduce((obj, key) => {
-      let val = this.get(key)
+    let queryString = toQueryString(
+      cleanParams(this.getProperties(...this.get('queryParams'), 'jwt'))
+    )
 
-      if (val !== null && val !== undefined) {
-        obj[key] = val
-      }
-
-      return obj
-    }, {})
-
-    return appendAuth(appendFilters(url, filters), this.get('token'))
+    return `${url}&${queryString}`
   },
 
   actions: {
     download(url) {
-      let target = this.getTarget(url)
-
+      /* istanbul ignore else */
       if (testing) {
         return
       }
+
       /* istanbul ignore next */
-      window.location.href = target
+      window.location.href = this.getTarget(url)
     }
   }
 })
