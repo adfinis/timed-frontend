@@ -9,8 +9,19 @@ const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('longName') : '')
 const SUGGESTION_TEMPLATE = hbs`{{model.longName}}`
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
-
-  return data.filter(i => re.test(i.get(key)))
+  return sortUserList(data.filter(i => re.test(i.get(key))))
+}
+const sortUserList = list => {
+  return list.sort(function(modelA, modelB) {
+    let valueA = modelA.get('fullName').toUpperCase()
+    let valueB = modelB.get('fullName').toUpperCase()
+    if (valueA < valueB) {
+      return -1
+    } else if (valueA > valueB) {
+      return 1
+    }
+    return 0
+  })
 }
 
 export default Component.extend({
