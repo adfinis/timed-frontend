@@ -4,7 +4,12 @@ import { expect } from 'chai'
 
 describe('Unit | Serializer | attendance', function() {
   setupModelTest('attendance', {
-    needs: ['serializer:attendance', 'transform:django-datetime', 'model:user']
+    needs: [
+      'serializer:attendance',
+      'transform:django-time',
+      'transform:django-date',
+      'model:user'
+    ]
   })
 
   it('serializes records', function() {

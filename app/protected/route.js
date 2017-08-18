@@ -51,7 +51,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
       if (transition) {
         transition.promise.finally(() => {
-          this.send('finished')
+          transition.send('finished')
         })
       }
     },

@@ -31,7 +31,7 @@
   )
   task = (component 'aupac-typeahead'
     name               = 'task'
-    action             = (action (mut task))
+    action             = (action (queue (action (mut task)) (action on-set-task)))
     class              = 'form-control'
     disabled           = (or disabled (not project))
     placeholder        = 'Select task...'

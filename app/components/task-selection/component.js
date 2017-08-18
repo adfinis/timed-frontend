@@ -50,6 +50,40 @@ export default Component.extend({
    */
   tracking: service('tracking'),
 
+  'on-set-customer': () => {},
+  'on-set-project': () => {},
+  'on-set-task': () => {},
+
+  /**
+   * Init hook, set initial values if given
+   *
+   * @method init
+   * @public
+   */
+  init() {
+    this._super(...arguments)
+
+    let { customer, project, task } = this.getWithDefault('initial', {
+      customer: null,
+      project: null,
+      task: null
+    })
+
+    if (task) {
+      this.set('task', task)
+
+      return
+    }
+
+    if (project && !this.get('project')) {
+      this.set('project', project)
+    }
+
+    if (customer && !this.get('customer')) {
+      this.set('customer', customer)
+    }
+  },
+
   /**
    * Whether to show archived customers, projects or tasks
    *
@@ -131,11 +165,10 @@ export default Component.extend({
       return (task && task.get('project.customer')) || this.get('_customer')
     },
     set(value) {
-      /**
-       * It is also possible a task was selected from the history.
-       */
+      // It is also possible a task was selected from the history.
       if (value && value.get('constructor.modelName') === 'task') {
         this.set('task', value)
+        this.getWithDefault('attrs.on-set-task', () => {})(value)
         this.set('_project', value.get('project'))
         this.set('_customer', value.get('project.customer'))
 
@@ -153,6 +186,8 @@ export default Component.extend({
       if (value) {
         this.get('tracking.filterProjects').perform(value.get('id'))
       }
+
+      this.getWithDefault('attrs.on-set-customer', () => {})(value)
 
       return value
     }
@@ -178,12 +213,15 @@ export default Component.extend({
       /* istanbul ignore else */
       if (value === null || value.get('id') !== this.get('task.project.id')) {
         this.set('task', null)
+        this.getWithDefault('attrs.on-set-task', () => {})(null)
       }
 
       /* istanbul ignore else */
       if (value) {
         this.get('tracking.filterTasks').perform(value.get('id'))
       }
+
+      this.getWithDefault('attrs.on-set-project', () => {})(value)
 
       return value
     }
