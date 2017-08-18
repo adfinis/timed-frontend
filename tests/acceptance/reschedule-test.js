@@ -34,6 +34,17 @@ describe('Acceptance | reschedule', function() {
     expect(currentURL()).to.equal('/reschedule')
   })
 
+  it('can not visit /reschedule as non staff user', async function() {
+    let nonStaffUser = server.create('user', { isStaff: false })
+
+    // eslint-disable-next-line camelcase
+    await authenticateSession(application, { user_id: nonStaffUser.id })
+
+    await visit('/reschedule')
+
+    expect(currentURL()).to.equal('/')
+  })
+
   it('can search and edit a report', async function() {
     await visit('/reschedule')
     await userSelect(testSelector('filter-user'))
