@@ -87,9 +87,7 @@ export default Component.extend({
   _setDefaultFilters(initial = {}) {
     let filters = EmberObject.create(
       this.get('_enabledFilters').reduce((obj, key) => {
-        obj[key] = initial[key] || FILTERS[key].default
-
-        return obj
+        return { ...obj, [key]: initial[key] || FILTERS[key].default }
       }, {})
     )
 

@@ -143,9 +143,7 @@ export default Mixin.create({
      */
     applyFilter(filters) {
       let parsed = Object.keys(filters).reduce((obj, key) => {
-        obj[underscore(key)] = filters[key]
-
-        return obj
+        return { ...obj, [underscore(key)]: filters[key] }
       }, {})
 
       this.setProperties(parsed)

@@ -10,7 +10,7 @@ describe('Unit | Controller | analysis', function() {
   it('computes download URLs correctly', function() {
     let controller = this.subject()
 
-    controller.set('token', 'foobar')
+    controller.set('jwt', 'foobar')
     controller.set('user', 1)
     controller.set('customer', 1)
 
