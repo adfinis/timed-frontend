@@ -6,6 +6,14 @@
 import Controller from 'ember-controller'
 import ReportFilterControllerMixin from 'timed/mixins/report-filter-controller'
 
+const INITIAL_FILTERS = {
+  reviewer: null,
+  billing_type: null, // eslint-disable-line camelcase
+  review: null,
+  not_billable: null, // eslint-disable-line camelcase
+  not_verified: null // eslint-disable-line camelcase
+}
+
 /**
  * Controller for filtering and rescheduling reports
  *
@@ -35,7 +43,7 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {Number} reviewer
    * @public
    */
-  reviewer: null,
+  reviewer: INITIAL_FILTERS.reviewer,
 
   /**
    * The billing type to filter by
@@ -43,7 +51,7 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {Number} billingType
    * @public
    */
-  billing_type: null, // eslint-disable-line camelcase
+  billing_type: INITIAL_FILTERS.billing_type, // eslint-disable-line camelcase
 
   /**
    * Whether the reports need a review
@@ -51,7 +59,7 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {Number} review
    * @public
    */
-  review: null,
+  review: INITIAL_FILTERS.review,
 
   /**
    * Whether the reports are not billable
@@ -59,7 +67,7 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {Number} not_billable
    * @public
    */
-  not_billable: null, // eslint-disable-line camelcase
+  not_billable: INITIAL_FILTERS.not_billable, // eslint-disable-line camelcase
 
   /**
    * Whether the reports are not verified yet
@@ -67,5 +75,17 @@ export default Controller.extend(ReportFilterControllerMixin, {
    * @property {Number} not_verified
    * @public
    */
-  not_verified: null // eslint-disable-line camelcase
+  not_verified: INITIAL_FILTERS.not_verified, // eslint-disable-line camelcase
+
+  /**
+   * Reset all filters
+   *
+   * @method resetFilters
+   * @public
+   */
+  resetFilters() {
+    this._super(...arguments)
+
+    this.setProperties(INITIAL_FILTERS)
+  }
 })
