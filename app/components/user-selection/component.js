@@ -6,7 +6,15 @@ import { typeOf } from 'ember-utils'
 import { task } from 'ember-concurrency'
 
 const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('longName') : '')
-const SUGGESTION_TEMPLATE = hbs`{{model.longName}}`
+
+const SUGGESTION_TEMPLATE = hbs`
+  {{#unless model.isActive}}
+    <div class="inactive" title="This user is inactive">{{model.longName}} <i class="fa fa-ban"></i></div>
+  {{else}}
+    {{model.longName}}
+  {{/unless}}
+`
+
 const regexFilter = (data, term, key) => {
   let re = new RegExp(`.*${term}.*`, 'i')
 
@@ -37,7 +45,9 @@ export default Component.extend({
 
       /* istanbul ignore next */
       customers
-        .then(data => asyncResults(regexFilter(data, search, 'longName')))
+        .then(data =>
+          asyncResults(regexFilter(data.sortBy('username'), search, 'longName'))
+        )
         .catch(() => asyncResults([]))
     }
   },

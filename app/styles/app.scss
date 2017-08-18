@@ -230,3 +230,16 @@ body {
     }
   }
 }
+
+.tt-suggestion .inactive {
+  margin: -3px -20px;
+  padding: 3px 20px;
+
+  .fa {
+    margin-left: 5px;
+  }
+}
+
+.tt-suggestion:not(:hover) .inactive {
+  background-color: rgb(230, 230, 230);
+}

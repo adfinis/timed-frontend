@@ -9,7 +9,6 @@ import service from 'ember-service/inject'
 import RSVP from 'rsvp'
 import hbs from 'htmlbars-inline-precompile'
 import { typeOf } from 'ember-utils'
-import customerTemplate from '../../customer-suggestion/template'
 
 const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('name') : '')
 
@@ -18,6 +17,31 @@ const regexFilter = (data, term, key) => {
 
   return data.filter(i => re.test(i.get(key)))
 }
+
+const SUGGESTION_TEMPLATE = hbs`
+  {{#if model.archived}}
+    <div class="inactive" title="This entry is archived">
+      {{model.name}}
+      <i class="fa fa-archive"></i>
+    </div>
+  {{else}}
+    {{model.name}}
+  {{/if}}
+`
+
+const CUSTOMER_SUGGESTION_TEMPLATE = hbs`
+  {{#if model.isTask}}
+    <i class="fa fa-history"></i>
+    {{model.longName}}
+  {{else if model.archived}}
+    <div class="inactive" title="This entry is archived">
+      {{model.name}}
+      <i class="fa fa-archive"></i>
+    </div>
+  {{else}}
+    {{model.name}}
+  {{/if}}
+`
 
 const performOrLast = (task, ...args) =>
   task.get('last') || task.perform(...args)
@@ -85,6 +109,10 @@ export default Component.extend({
     if (customer && !this.get('customer')) {
       this.set('customer', customer)
     }
+
+    if (!customer && !project && !task) {
+      this.get('tracking.filterCustomers').perform(this.get('archived'))
+    }
   },
 
   /**
@@ -125,9 +153,15 @@ export default Component.extend({
    * @property {*} suggestionTemplate
    * @public
    */
-  suggestionTemplate: hbs`{{model.name}}`,
+  suggestionTemplate: SUGGESTION_TEMPLATE,
 
-  customerTemplate,
+  /**
+   * Template for displaying the customer suggestions
+   *
+   * @property {*} suggestionTemplate
+   * @public
+   */
+  customerSuggestionTemplate: CUSTOMER_SUGGESTION_TEMPLATE,
 
   /**
    * The manually selected customer
@@ -187,7 +221,10 @@ export default Component.extend({
 
       /* istanbul ignore else */
       if (value) {
-        this.get('tracking.filterProjects').perform(value.get('id'))
+        this.get('tracking.filterProjects').perform(
+          value.get('id'),
+          this.get('archived')
+        )
       }
 
       this.getWithDefault('attrs.on-set-customer', () => {})(value)
@@ -221,7 +258,10 @@ export default Component.extend({
 
       /* istanbul ignore else */
       if (value) {
-        this.get('tracking.filterTasks').perform(value.get('id'))
+        this.get('tracking.filterTasks').perform(
+          value.get('id'),
+          this.get('archived')
+        )
       }
 
       this.getWithDefault('attrs.on-set-project', () => {})(value)
@@ -253,9 +293,10 @@ export default Component.extend({
       let requests = { customers }
 
       if (history) {
-        let fnHistory = this.get('tracking.recentTasks')
-        requests.history =
-          fnHistory.get('last') || fnHistory.perform(this.get('archived'))
+        requests.history = performOrLast(
+          this.get('tracking.recentTasks'),
+          this.get('archived')
+        )
       }
 
       /* istanbul ignore next */

@@ -1,16 +1,15 @@
 <h1>Project analysis</h1>
 
 {{report-filter
-  initial        = (hash
-    customer     = _customer
-    project      = _project
-    task         = _task
-    user         = _user
-    from         = _from
-    to           = _to
+  initial    = (hash
+    customer = _customer
+    project  = _project
+    task     = _task
+    user     = _user
+    from     = _from
+    to       = _to
   )
-  enabledFilters = (array 'customer' 'project' 'task' 'user' 'fromDate' 'toDate')
-  on-apply       = (action 'applyFilter')
+  on-apply   = (action 'applyFilter')
 }}
 
 {{#paginated-table
