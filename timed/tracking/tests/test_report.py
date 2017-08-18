@@ -184,6 +184,32 @@ class ReportTests(JSONAPITestCase):
             int(data['data']['relationships']['task']['data']['id'])
         )
 
+    def test_report_update_verified_as_non_staff_but_owner(self):
+        """Test that an owner (not staff) may not change a verified report."""
+        report = self.reports[0]
+        report.verified_by = self.user
+        report.duration = timedelta(hours=2)
+        report.save()
+
+        url = reverse('report-detail', args=[
+            report.id
+        ])
+
+        data = {
+            'data': {
+                'type': 'reports',
+                'id': report.id,
+                'attributes': {
+                    'duration': '01:00:00',
+                },
+            }
+        }
+
+        client = JSONAPIClient()
+        client.login('test', '123qweasd')
+        res = client.patch(url, data)
+        assert res.status_code == HTTP_403_FORBIDDEN
+
     def test_report_update_owner(self):
         """Should update an existing report."""
         report = self.reports[0]
@@ -315,9 +341,6 @@ class ReportTests(JSONAPITestCase):
             'data': {
                 'type': 'reports',
                 'id': report.id,
-                'attributes': {
-                    'comment':  'foobar',
-                },
                 'relationships': {
                     'verified-by': {
                         'data': {

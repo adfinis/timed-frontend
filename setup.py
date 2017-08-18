@@ -33,6 +33,7 @@ setup(
         'pyexcel-ods3==0.4.0',
         'pyexcel-xlsx==0.4.1',
         'django-environ==0.4.3',
+        'rest_condition==1.0.3',
     ),
     keywords='timetracking',
     url='https://adfinis-sygroup.ch/',
