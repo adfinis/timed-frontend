@@ -121,6 +121,9 @@ export default function() {
   this.get('/absence-types')
   this.get('/absence-types/:id')
 
+  this.get('/billing-types')
+  this.get('/billing-types/:id')
+
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
 
@@ -134,4 +137,12 @@ export default function() {
   this.get('/absences/:id')
   this.patch('/absences/:id')
   this.del('/absences/:id')
+
+  this.post('/reports/verify', ({ reports, users }) => {
+    let user = users.first()
+
+    reports.all().update('verifiedBy', user)
+
+    return new Response(200, {}, {})
+  })
 }

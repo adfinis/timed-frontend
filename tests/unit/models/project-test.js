@@ -4,7 +4,7 @@ import { expect } from 'chai'
 
 describe('Unit | Model | project', function() {
   setupModelTest('project', {
-    needs: ['model:customer', 'model:task', 'model:user']
+    needs: ['model:customer', 'model:task', 'model:user', 'model:billing-type']
   })
 
   it('exists', function() {

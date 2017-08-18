@@ -44,6 +44,14 @@ export default Model.extend({
   customer: belongsTo('customer'),
 
   /**
+   * The billing
+   *
+   * @property {BillingType} billingType
+   * @public
+   */
+  billingType: belongsTo('billing-type'),
+
+  /**
    * The tasks
    *
    * @property tasks
