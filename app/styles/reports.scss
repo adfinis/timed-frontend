@@ -1,4 +1,6 @@
 .table--reports tbody > tr > td {
+  vertical-align: middle;
+
   &:nth-child(1),
   &:nth-child(2),
   &:nth-child(3) {
@@ -9,8 +11,8 @@
     }
   }
 
-  &:nth-child(4) { width: 80px; }
-  &:nth-child(5) { width: 20%; }
+  &:nth-child(4) { width: 20%; }
+  &:nth-child(5) { width: 80px; }
 
   &:nth-child(8) {
     width: 130px;

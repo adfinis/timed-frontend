@@ -7,7 +7,7 @@
   <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</td>
 {{/task-selection}}
 <td class="form-group">
-  {{input class='form-control' value=changeset.comment}}
+  {{input placeholder='Comment...' class='form-control' value=changeset.comment}}
 </td>
 <td class="form-group">
   {{sy-checkbox checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
