@@ -78,13 +78,11 @@ class ActivityBlockFilterSet(FilterSet):
 class AttendanceFilterSet(FilterSet):
     """Filter set for the attendance endpoint."""
 
-    day = DateFilter(name='from_datetime', lookup_expr='date')
-
     class Meta:
         """Meta information for the attendance filter set."""
 
         model  = models.Attendance
-        fields = ['day']
+        fields = ['date']
 
 
 class ReportFilterSet(FilterSet):
