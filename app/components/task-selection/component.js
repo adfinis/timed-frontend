@@ -51,6 +51,14 @@ export default Component.extend({
   tracking: service('tracking'),
 
   /**
+   * Whether to show archived customers, projects or tasks
+   *
+   * @property {Boolean} archived
+   * @public
+   */
+  archived: false,
+
+  /**
    * The limit of search results
    *
    * @property {Number} limit
@@ -197,13 +205,15 @@ export default Component.extend({
   customerSource(history) {
     return (search, syncResults, asyncResults) => {
       let fnCustomer = this.get('tracking.filterCustomers')
-      let customers = fnCustomer.get('last') || fnCustomer.perform()
+      let customers =
+        fnCustomer.get('last') || fnCustomer.perform(this.get('archived'))
 
       let requests = { customers }
 
       if (history) {
         let fnHistory = this.get('tracking.recentTasks')
-        requests.history = fnHistory.get('last') || fnHistory.perform()
+        requests.history =
+          fnHistory.get('last') || fnHistory.perform(this.get('archived'))
       }
 
       /* istanbul ignore next */
@@ -237,7 +247,9 @@ export default Component.extend({
     return (search, syncResults, asyncResults) => {
       let fn = this.get('tracking.filterProjects')
 
-      let projects = fn.get('last') || fn.perform(this.get('customer.id'))
+      let projects =
+        fn.get('last') ||
+        fn.perform(this.get('customer.id'), this.get('archived'))
 
       /* istanbul ignore next */
       projects
@@ -260,7 +272,9 @@ export default Component.extend({
     return (search, syncResults, asyncResults) => {
       let fn = this.get('tracking.filterTasks')
 
-      let tasks = fn.get('last') || fn.perform(this.get('project.id'))
+      let tasks =
+        fn.get('last') ||
+        fn.perform(this.get('project.id'), this.get('archived'))
 
       /* istanbul ignore next */
       tasks
