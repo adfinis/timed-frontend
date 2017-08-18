@@ -81,7 +81,7 @@ export default Route.extend({
         include: 'blocks,task,task.project,task.project.customer',
         day
       }),
-      this.store.query('attendance', { day }),
+      this.store.query('attendance', { date: day }),
       this.store.query('absence-type', {}),
       this.store.query('report', {
         include: 'task,task.project,task.project.customer',

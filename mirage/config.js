@@ -41,9 +41,12 @@ export default function() {
     return new Response(200, {}, { data: { token } })
   })
 
-  this.get('/attendances', function({ attendances }, { queryParams: { day } }) {
+  this.get('/attendances', function(
+    { attendances },
+    { queryParams: { date } }
+  ) {
     return attendances.where(a => {
-      return moment(a.fromDatetime).format('YYYY-MM-DD') === day
+      return a.date === date
     })
   })
   this.post('/attendances')
