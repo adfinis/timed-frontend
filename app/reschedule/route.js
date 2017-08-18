@@ -4,6 +4,7 @@
  * @public
  */
 import Route from 'ember-route'
+import StaffRouteMixin from 'timed/mixins/staff-route'
 import ReportFilterRouteMixin from 'timed/mixins/report-filter-route'
 import service from 'ember-service/inject'
 
@@ -12,10 +13,11 @@ import service from 'ember-service/inject'
  *
  * @class RescheduleRoute
  * @extends Ember.Route
+ * @using StaffRouteMixin
  * @using ReportFilterRouteMixin
  * @public
  */
-export default Route.extend(ReportFilterRouteMixin, {
+export default Route.extend(StaffRouteMixin, ReportFilterRouteMixin, {
   ajax: service('ajax'),
 
   /**

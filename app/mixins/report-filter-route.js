@@ -41,6 +41,8 @@ export default Mixin.create({
    * @public
    */
   async beforeModel({ queryParams: { customer, project, task, user } }) {
+    this._super(...arguments)
+
     if (task) {
       await this.store.findRecord('task', task, {
         include: 'project,project.customer'
