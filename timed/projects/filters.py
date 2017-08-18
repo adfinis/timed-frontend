@@ -2,13 +2,15 @@
 from datetime import date, timedelta
 
 from django.db.models import Count
-from django_filters import Filter, FilterSet
+from django_filters import Filter, FilterSet, NumberFilter
 
 from timed.projects import models
 
 
 class CustomerFilterSet(FilterSet):
     """Filter set for the customers endpoint."""
+
+    archived = NumberFilter(name='archived')
 
     class Meta:
         """Meta information for the customer filter set."""
@@ -19,6 +21,8 @@ class CustomerFilterSet(FilterSet):
 
 class ProjectFilterSet(FilterSet):
     """Filter set for the projects endpoint."""
+
+    archived = NumberFilter(name='archived')
 
     class Meta:
         """Meta information for the project filter set."""
@@ -63,6 +67,7 @@ class TaskFilterSet(FilterSet):
     """Filter set for the tasks endpoint."""
 
     my_most_frequent = MyMostFrequentTaskFilter()
+    archived         = NumberFilter(name='archived')
 
     class Meta:
         """Meta information for the task filter set."""
