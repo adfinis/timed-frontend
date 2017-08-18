@@ -250,4 +250,16 @@ describe('Acceptance | reschedule', function() {
       )
     ).to.have.length(6)
   })
+
+  it('resets filters when leaving the page', async function() {
+    await visit('/reschedule?user=1&not_billable=1')
+
+    await click('a[href="/me"]')
+
+    expect(currentURL()).to.equal('/me')
+
+    await click('a[href="/reschedule"]')
+
+    expect(currentURL()).to.equal('/reschedule')
+  })
 })
