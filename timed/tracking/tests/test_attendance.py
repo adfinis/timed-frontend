@@ -1,7 +1,5 @@
 """Tests for the attendances endpoint."""
 
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
@@ -63,15 +61,14 @@ class AttendanceTests(JSONAPITestCase):
 
     def test_attendance_create(self):
         """Should create a new attendance and automatically set the user."""
-        attendance = AttendanceFactory.build()
-
         data = {
             'data': {
                 'type': 'attendances',
                 'id': None,
                 'attributes': {
-                    'from-datetime': attendance.from_datetime.isoformat(),
-                    'to-datetime': attendance.from_datetime.isoformat()
+                    'date': '2017-01-01',
+                    'from-time': '08:00',
+                    'to-time': '10:00'
                 }
             }
         }
@@ -97,15 +94,12 @@ class AttendanceTests(JSONAPITestCase):
         """Should update and existing attendance."""
         attendance = self.attendances[0]
 
-        attendance.to_datetime += timedelta(hours=1)
-
         data = {
             'data': {
                 'type': 'attendances',
                 'id': attendance.id,
                 'attributes': {
-                    'from-datetime': attendance.from_datetime.isoformat(),
-                    'to-datetime': attendance.to_datetime.isoformat()
+                    'to-time': '15:00:00'
                 }
             }
         }
@@ -123,8 +117,8 @@ class AttendanceTests(JSONAPITestCase):
         result = self.result(res)
 
         assert (
-            result['data']['attributes']['to-datetime'] ==
-            data['data']['attributes']['to-datetime']
+            result['data']['attributes']['to-time'] ==
+            data['data']['attributes']['to-time']
         )
 
     def test_attendance_delete(self):
