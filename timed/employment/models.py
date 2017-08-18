@@ -58,6 +58,11 @@ class UserManager(UserManager):
             supervisees_count=models.Count('supervisees'))
         return objects.filter(supervisees_count__gt=0)
 
+    def all_reviewers(self):
+        objects = self.model.objects.annotate(
+            reviews_count=models.Count('reviews'))
+        return objects.filter(reviews__gt=0)
+
     def all_supervisees(self):
         objects = self.model.objects.annotate(
             supervisors_count=models.Count('supervisors'))

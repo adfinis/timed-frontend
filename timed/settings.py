@@ -35,6 +35,8 @@ DATABASES = {
 DEBUG = env.bool('DJANGO_DEBUG', default=default(True, False))
 SECRET_KEY = env.str('DJANGO_SECRET_KEY', default=default('uuuuuuuuuu'))
 ALLOWED_HOSTS = env.list('DJANGO_ALLOWED_HOSTS', default=default(['*']))
+HOST_PROTOCOL = env.str('DJANGO_HOST_PROTOCOL', default=default('http'))
+HOST_DOMAIN = env.str('DJANGO_HOST_DOMAIN', default=default('localhost:4200'))
 
 
 INSTALLED_APPS = [
