@@ -106,5 +106,21 @@ export default Mixin.create({
       _user: userId && this.store.peekRecord('user', userId),
       currentUser: this.modelFor('protected')
     })
+  },
+
+  /**
+   * Reset controller hook, reset all query params if exiting
+   *
+   * @method resetController
+   * @param {Controller} controller The controller
+   * @param {Boolean} isExiting Whether we are exiting the route
+   * @public
+   */
+  resetController(controller, isExiting) {
+    this._super(...arguments)
+
+    if (isExiting) {
+      controller.resetFilters()
+    }
   }
 })
