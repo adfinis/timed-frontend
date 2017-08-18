@@ -17,7 +17,7 @@ const AnalysisController = Controller.extend(ReportFilterControllerMixin, {
    * @property {string} jwt
    * @public
    */
-  @oneWay('session.data.authenticated.token') jtw: null,
+  @oneWay('session.data.authenticated.token') jwt: null,
 
   exportLinks: config.APP.REPORTEXPORTS,
 
