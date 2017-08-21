@@ -1,6 +1,7 @@
 <h1>Project analysis</h1>
 
 {{report-filter
+  on-apply   = (action 'applyFilter')
   initial    = (hash
     customer = _customer
     project  = _project
@@ -9,7 +10,6 @@
     from     = _from
     to       = _to
   )
-  on-apply   = (action 'applyFilter')
 }}
 
 {{#paginated-table
