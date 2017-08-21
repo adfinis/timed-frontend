@@ -4,13 +4,26 @@
 <table class="table table--striped table--reports">
   <tbody>
     {{#each reports as |report|}}
-      {{report-row
-        report
-        data-test-report-row
-        data-test-report-row-id = report.id
-        on-save                 = (route-action 'saveReport')
-        on-delete               = (route-action 'deleteReport')
-      }}
+      {{#if report.verifiedBy}}
+        <tr title="This entry is already verified and therefore not editable anymore">
+          <td>{{report.task.project.customer.name}}</td>
+          <td>{{report.task.project.name}}</td>
+          <td>{{report.task.name}}</td>
+          <td>{{report.comment}}</td>
+          <td>{{format-duration report.duration false}}</td>
+          <td>{{sy-checkbox disabled=true value=report.review label='Needs review'}}</td>
+          <td>{{sy-checkbox disabled=true value=report.notBillable label='Not billable'}}</td>
+          <td></td>
+        </tr>
+      {{else}}
+        {{report-row
+          report
+          data-test-report-row
+          data-test-report-row-id = report.id
+          on-save                 = (route-action 'saveReport')
+          on-delete               = (route-action 'deleteReport')
+        }}
+      {{/if}}
     {{^}}
       <tr>
         <td colspan="8" class="text-center">
