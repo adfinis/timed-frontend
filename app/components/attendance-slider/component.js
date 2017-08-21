@@ -70,7 +70,12 @@ export default Component.extend({
    */
   @computed('attendance.{from,to}')
   start(from, to) {
-    return [from.hour() * 60 + from.minute(), to.hour() * 60 + to.minute()]
+    return [
+      from.hour() * 60 + from.minute(),
+      // If the end time is 00:00 we need to clarify that this would be 00:00
+      // of the next day
+      to.hour() * 60 + to.minute() || 24 * 60
+    ]
   },
 
   /**

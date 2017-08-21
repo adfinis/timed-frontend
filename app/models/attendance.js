@@ -6,6 +6,8 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { belongsTo } from 'ember-data/relationships'
+import computed from 'ember-computed-decorators'
+import moment from 'moment'
 
 /**
  * The attendance model
@@ -46,5 +48,21 @@ export default Model.extend({
    * @type {User}
    * @public
    */
-  user: belongsTo('user')
+  user: belongsTo('user'),
+
+  /**
+   * The duration between start and end time
+   *
+   * This needs to use 00:00 of the next day if the end time is 00:00 so the
+   * difference is correct.
+   *
+   * @property {moment.duration} duration
+   * @public
+   */
+  @computed('from', 'to')
+  duration(from, to) {
+    let calcTo = to.format('HH:mm') === '00:00' ? to.clone().add(1, 'day') : to
+
+    return moment.duration(calcTo.diff(from))
+  }
 })
