@@ -168,7 +168,7 @@ export default Controller.extend({
   @computed('_attendances.@each.{from,to}')
   attendanceSum(attendances) {
     return attendances.reduce((dur, cur) => {
-      return dur.add(cur.get('to').diff(cur.get('from')), 'milliseconds')
+      return dur.add(cur.get('duration'))
     }, moment.duration())
   },
 
