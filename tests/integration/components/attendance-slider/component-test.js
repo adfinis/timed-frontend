@@ -41,4 +41,20 @@ describe('Integration | Component | attendance slider', function() {
 
     this.$('.fa-trash').click()
   })
+
+  it('can handle attendances until 00:00', function() {
+    this.set(
+      'attendance',
+      EmberObject.create({
+        from: moment({ h: 0, m: 0, s: 0 }),
+        to: moment({ h: 0, m: 0, s: 0 })
+      })
+    )
+
+    this.render(hbs`
+      {{attendance-slider attendance=attendance}}
+    `)
+
+    expect(this.$('span').text().trim()).to.equal('24:00')
+  })
 })
