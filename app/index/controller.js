@@ -153,9 +153,9 @@ export default Controller.extend({
    * @private
    */
   @computed('date', '_allAttendances.@each.{from,isDeleted}')
-  _attendances(day, attendances) {
+  _attendances(date, attendances) {
     return attendances.filter(a => {
-      return a.get('from').isSame(day, 'day') && !a.get('isDeleted')
+      return a.get('date').isSame(date, 'day') && !a.get('isDeleted')
     })
   },
 
