@@ -167,7 +167,7 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('report-row'))).to.have.length(6)
 
     expect(
-      find(`${testSelector('report-row')}:eq(0) td:eq(3) input`).val()
+      find(`${testSelector('report-row')}:eq(0) td:eq(4) input`).val()
     ).to.equal('02:30')
 
     await server.db.activities.update(this.activities[0].id, {
@@ -182,7 +182,7 @@ describe('Acceptance | index activities', function() {
     expect(currentURL()).to.equal('/reports')
 
     expect(
-      find(`${testSelector('report-row')}:eq(0) td:eq(3) input`).val()
+      find(`${testSelector('report-row')}:eq(0) td:eq(4) input`).val()
     ).to.equal('05:30')
   })
 
