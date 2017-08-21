@@ -3,7 +3,7 @@
   <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</td>
   <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</td>
 {{/task-selection}}
-<td class="form-group">{{input data-test-report-comment name='comment' placeholder='Comment...' class='form-control' value=changeset.comment}}</td>
+<td class="form-group">{{input data-test-report-comment name='comment' placeholder='Comment' class='form-control' value=changeset.comment}}</td>
 <td class="form-group">{{sy-durationpicker data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</td>
 <td class="form-group">
   {{sy-checkbox data-test-report-review checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
