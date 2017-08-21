@@ -60,10 +60,18 @@ export default Model.extend({
   /**
    * Defines if the user is a staff member or not.
    *
-   * @property {Boolean} staff
+   * @property {Boolean} isStaff
    * @public
    */
   isStaff: attr('boolean'),
+
+  /**
+   * Whether a user is active
+   *
+   * @property {Boolean} isActive
+   * @public
+   */
+  isActive: attr('boolean'),
 
   /**
    * The users employments

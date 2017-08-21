@@ -19,7 +19,7 @@ import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
 
-const boolToInt = bool => (bool ? 1 : 0)
+const zeroIfFalse = bool => (bool ? null : 0)
 
 /**
  * Tracking service
@@ -168,7 +168,7 @@ export default Service.extend({
   recentTasks: task(function*(archived) {
     return yield this.get('store').query('task', {
       my_most_frequent: 10, // eslint-disable-line camelcase
-      archived: boolToInt(archived),
+      archived: zeroIfFalse(archived),
       include: 'project,project.customer'
     })
   }).restartable(),
@@ -184,7 +184,7 @@ export default Service.extend({
     yield timeout(500)
 
     return yield this.get('store').query('customer', {
-      archived: boolToInt(archived)
+      archived: zeroIfFalse(archived)
     })
   }).restartable(),
 
@@ -207,7 +207,7 @@ export default Service.extend({
 
     return yield this.get('store').query('project', {
       customer,
-      archived: boolToInt(archived)
+      archived: zeroIfFalse(archived)
     })
   }).restartable(),
 
@@ -230,7 +230,7 @@ export default Service.extend({
 
     return yield this.get('store').query('task', {
       project,
-      archived: boolToInt(archived)
+      archived: zeroIfFalse(archived)
     })
   }).restartable(),
 
