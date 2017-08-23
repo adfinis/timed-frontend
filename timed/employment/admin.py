@@ -10,6 +10,10 @@ from django.utils.translation import ugettext_lazy as _
 
 from timed.employment import models
 
+# do not allow deletion of objects site wide
+# objects need to be deactivated resp. archived
+admin.site.disable_action('delete_selected')
+
 
 class SupervisorInline(admin.TabularInline):
     model = models.User.supervisors.through
