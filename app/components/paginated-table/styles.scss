@@ -1,3 +1,15 @@
 tfoot tr td {
-  align-items: center;
+  nav,
+  .limit {
+    display: inline-block;
+  }
+
+  .limit {
+    margin-top: 5px;
+
+    span:not(:last-child)::after {
+      content: ',';
+      margin-left: -2px;
+    }
+  }
 }
