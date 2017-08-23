@@ -115,7 +115,35 @@ class UserAdmin(UserAdmin):
         SupervisorInline, SuperviseeInline, EmploymentInline,
         OvertimeCreditInline, AbsenceCreditInline
     ]
-    exclude = ('supervisors', )
+    list_display = ('username', 'first_name', 'last_name', 'is_staff',
+                    'is_active')
+
+    actions = [
+        'disable_users',
+        'enable_users',
+        'disable_staff_status',
+        'enable_staff_status'
+    ]
+
+    def disable_users(self, request, queryset):
+        queryset.update(is_active=False)
+    disable_users.short_description = _('Disable selected users')
+
+    def enable_users(self, request, queryset):
+        queryset.update(is_active=True)
+    enable_users.short_description = _('Enable selected users')
+
+    def disable_staff_status(self, request, queryset):
+        queryset.update(is_staff=False)
+    disable_staff_status.short_description = _(
+        'Disable staff status of selected users'
+    )
+
+    def enable_staff_status(self, request, queryset):
+        queryset.update(is_staff=True)
+    enable_staff_status.short_description = _(
+        'Enable staff status of selected users'
+    )
 
     def has_delete_permission(self, request, obj=None):
         """Users may not be deleted to keep tracking history."""
