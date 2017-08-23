@@ -96,6 +96,9 @@ class EmploymentInline(admin.TabularInline):
     model = models.Employment
     extra = 0
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class OvertimeCreditInline(admin.TabularInline):
     model = models.OvertimeCredit
@@ -157,6 +160,9 @@ class LocationAdmin(admin.ModelAdmin):
     list_display  = ['name']
     search_fields = ['name']
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(models.PublicHoliday)
 class PublicHolidayAdmin(admin.ModelAdmin):
@@ -171,3 +177,6 @@ class AbsenceTypeAdmin(admin.ModelAdmin):
     """Absence type admin view."""
 
     list_display = ['name']
+
+    def has_delete_permission(self, request, obj=None):
+        return False

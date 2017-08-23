@@ -14,6 +14,9 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 @admin.register(models.BillingType)
 class BillingType(admin.ModelAdmin):
@@ -41,6 +44,9 @@ class TaskInline(admin.TabularInline):
             return 0
         return models.TaskTemplate.objects.count()
 
+    def has_delete_permission(self, request, obj=None):
+        return False
+
 
 class ReviewerInline(admin.TabularInline):
     model = models.Project.reviewers.through
@@ -59,6 +65,9 @@ class ProjectAdmin(admin.ModelAdmin):
 
     inlines = [TaskInline, ReviewerInline]
     exclude = ('reviewers', )
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
 
 @admin.register(models.TaskTemplate)
