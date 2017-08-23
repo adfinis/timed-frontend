@@ -45,7 +45,10 @@ class TaskInline(admin.TabularInline):
         return models.TaskTemplate.objects.count()
 
     def has_delete_permission(self, request, obj=None):
-        return obj and not obj.reports.exists()
+        # for some reason obj is parent object and not task
+        # so this doesn't work
+        # return obj and not obj.reports.exists()
+        return False
 
 
 class ReviewerInline(admin.TabularInline):
