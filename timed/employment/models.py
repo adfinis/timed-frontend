@@ -86,7 +86,7 @@ class Employment(models.Model):
 
     user             = models.ForeignKey(settings.AUTH_USER_MODEL,
                                          related_name='employments')
-    location         = models.ForeignKey(Location)
+    location         = models.ForeignKey(Location, related_name='employments')
     percentage       = models.IntegerField(validators=[
                                            MinValueValidator(0),
                                            MaxValueValidator(100)])

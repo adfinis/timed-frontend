@@ -96,9 +96,6 @@ class EmploymentInline(admin.TabularInline):
     model = models.Employment
     extra = 0
 
-    def has_delete_permission(self, request, obj=None):
-        return False
-
 
 class OvertimeCreditInline(admin.TabularInline):
     model = models.OvertimeCredit
@@ -149,8 +146,7 @@ class UserAdmin(UserAdmin):
     )
 
     def has_delete_permission(self, request, obj=None):
-        """Users may not be deleted to keep tracking history."""
-        return False
+        return obj and not obj.reports.exists()
 
 
 @admin.register(models.Location)
@@ -161,7 +157,7 @@ class LocationAdmin(admin.ModelAdmin):
     search_fields = ['name']
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return obj and not obj.employments.exists()
 
 
 @admin.register(models.PublicHoliday)
@@ -179,4 +175,8 @@ class AbsenceTypeAdmin(admin.ModelAdmin):
     list_display = ['name']
 
     def has_delete_permission(self, request, obj=None):
-        return False
+        return (
+            obj and
+            not obj.absences.exists() and
+            not obj.absence_credits.exists()
+        )
