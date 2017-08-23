@@ -53,7 +53,7 @@ class Project(models.Model):
     estimated_hours = models.PositiveIntegerField(blank=True, null=True)
     customer        = models.ForeignKey('projects.Customer',
                                         related_name='projects')
-    billing_type    = models.ForeignKey(BillingType,
+    billing_type    = models.ForeignKey(BillingType, on_delete=models.SET_NULL,
                                         blank=True, null=True,
                                         related_name='projects')
     reviewers       = models.ManyToManyField(settings.AUTH_USER_MODEL,

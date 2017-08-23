@@ -14,6 +14,9 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ['name']
     search_fields = ['name']
 
+    def has_delete_permission(self, request, obj=None):
+        return obj and not obj.projects.exists()
+
 
 @admin.register(models.BillingType)
 class BillingType(admin.ModelAdmin):
@@ -41,6 +44,12 @@ class TaskInline(admin.TabularInline):
             return 0
         return models.TaskTemplate.objects.count()
 
+    def has_delete_permission(self, request, obj=None):
+        # for some reason obj is parent object and not task
+        # so this doesn't work
+        # return obj and not obj.reports.exists()
+        return False
+
 
 class ReviewerInline(admin.TabularInline):
     model = models.Project.reviewers.through
@@ -59,6 +68,9 @@ class ProjectAdmin(admin.ModelAdmin):
 
     inlines = [TaskInline, ReviewerInline]
     exclude = ('reviewers', )
+
+    def has_delete_permission(self, request, obj=None):
+        return obj and not obj.tasks.exists()
 
 
 @admin.register(models.TaskTemplate)
