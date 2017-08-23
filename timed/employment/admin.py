@@ -117,6 +117,10 @@ class UserAdmin(UserAdmin):
     ]
     exclude = ('supervisors', )
 
+    def has_delete_permission(self, request, obj=None):
+        """Users may not be deleted to keep tracking history."""
+        return False
+
 
 @admin.register(models.Location)
 class LocationAdmin(admin.ModelAdmin):
