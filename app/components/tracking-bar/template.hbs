@@ -1,5 +1,11 @@
-<form class="form-inline" {{action 'start' on='submit'}}>
-  {{#task-selection task=tracking.activity.task disabled=tracking.activity.active as |t|}}
+<form {{action 'start' on='submit'}}>
+  {{#task-selection
+    disabled    = tracking.activity.active
+    on-set-task = (action (mut tracking.activity.task))
+    initial     = (hash
+      task      = tracking.activity.task
+    )
+  as |t|}}
     <div class="form-group" data-test-tracking-customer>
       {{t.customer}}
     </div>

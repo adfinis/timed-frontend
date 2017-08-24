@@ -74,11 +74,15 @@
   transition: opacity 200ms ease 300ms;
 }
 
-@media (--sm-viewport) {
+@media (--lg-viewport) {
+  & {
+    width: 7rem;
+    justify-content: flex-start;
+  }
+
   .record-button-container {
     height: 2rem;
     width: 2rem;
-    margin-right: 0.5rem;
   }
 
   .record-button {

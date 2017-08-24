@@ -1,52 +1,48 @@
 {{yield (hash
-  customer = (component 'aupac-typeahead'
-    name               = 'customer'
-    action             = (action (mut customer))
-    class              = 'form-control'
+  customer             = (component 'power-select'
+    options            = customersAndRecentTasks
     disabled           = disabled
-    source             = customerSource
-    selection          = (readonly customer)
+    selected           = customer
     placeholder        = 'Select customer...'
-    async              = true
-    minLength          = -1
-    limit              = limit
-    display            = display
-    transformSelection = transformSelection
-    suggestionTemplate = customerSuggestionTemplate
+    searchField        = 'name'
+    allowClear         = true
+    onfocus            = (action 'handleFocus')
+    onblur             = (action 'handleBlur')
+    onchange           = (action (mut customer))
+    extra              = (hash
+      selectedTemplate = selectedTemplate
+      optionTemplate   = customerOptionTemplate
+    )
   )
-  project = (component 'aupac-typeahead'
-    name               = 'project'
-    action             = (action (mut project))
-    class              = 'form-control'
+  project              = (component 'power-select'
+    options            = projects
     disabled           = (or disabled (not customer))
-    source             = projectSource
-    selection          = (readonly project)
+    selected           = project
     placeholder        = 'Select project...'
-    async              = true
-    minLength          = -1
-    limit              = limit
-    display            = display
-    transformSelection = transformSelection
-    suggestionTemplate = suggestionTemplate
+    searchField        = 'name'
+    allowClear         = true
+    onfocus            = (action 'handleFocus')
+    onblur             = (action 'handleBlur')
+    onchange           = (action (mut project))
+    extra              = (hash
+      selectedTemplate = selectedTemplate
+      optionTemplate   = optionTemplate
+    )
   )
-  task = (component 'aupac-typeahead'
-    name               = 'task'
-    action             = (action (queue (action (mut task)) (action on-set-task)))
-    class              = 'form-control'
+  task                 = (component 'power-select'
+    options            = tasks
     disabled           = (or disabled (not project))
+    selected           = task
     placeholder        = 'Select task...'
-    source             = taskSource
-    selection          = (readonly task)
-    async              = true
-    minLength          = -1
-    limit              = limit
-    display            = display
-    transformSelection = transformSelection
-    suggestionTemplate = suggestionTemplate
+    searchField        = 'name'
+    allowClear         = true
+    onfocus            = (action 'handleFocus')
+    onblur             = (action 'handleBlur')
+    onchange           = (action (mut task))
+    extra              = (hash
+      selectedTemplate = selectedTemplate
+      optionTemplate   = optionTemplate
+    )
   )
-  model = (hash
-    customer = customer
-    project  = project
-    task     = task
-  )
+  clear                = (action 'clear')
 )}}

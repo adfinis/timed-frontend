@@ -1,0 +1,20 @@
+{{#if (or select.loading options.isPending)}}
+  {{#if loadingMessage}}
+    <li class="ember-power-select-option ember-power-select-option--loading-message" role="option">{{loadingMessage}}</li>
+  {{/if}}
+{{/if}}
+
+{{#vertical-collection options estimateHeight=28 as |opt index|}}
+  <li class="ember-power-select-option"
+    aria-selected="{{ember-power-select-is-selected opt select.selected}}"
+    aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}
+    aria-current="{{eq opt select.highlighted}}"
+    data-option-index="{{groupIndex}}{{index}}"
+    role="option">
+    {{#if extra.optionTemplate}}
+      {{component 'power-select/option' layout=extra.optionTemplate option=opt}}
+    {{else}}
+      {{yield opt select}}
+    {{/if}}
+  </li>
+{{/vertical-collection}}

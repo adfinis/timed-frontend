@@ -5,8 +5,25 @@
   margin-bottom: 1.5rem;
 }
 
-@media (--sm-viewport) {
+@media (--lg-viewport) {
+  form {
+    display: flex;
+    flex-direction: row;
+
+    .form-group:not(:last-child) {
+      margin-right: 0.5rem;
+    }
+
+    .form-group:not(:last-child) {
+      flex-grow: 2;
+    }
+
+    .form-group:nth-last-child(2) {
+      flex-grow: 3;
+    }
+  }
+
   .form-control {
-    min-width: 15rem;
+    width: 100%;
   }
 }
