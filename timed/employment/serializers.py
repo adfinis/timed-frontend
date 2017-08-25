@@ -5,6 +5,7 @@ from datetime import date, datetime, timedelta
 from dateutil import rrule
 from django.contrib.auth import get_user_model
 from django.utils.duration import duration_string
+from rest_framework.exceptions import PermissionDenied
 from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import (DurationField, IntegerField,
                                                  ModelSerializer,
@@ -168,6 +169,15 @@ class UserSerializer(ModelSerializer):
         _, _, balance = self.get_worktime(instance, None, end_date)
         return duration_string(balance)
 
+    def validate(self, data):
+        user = self.context['request'].user
+
+        # users may only change their own profile
+        if self.instance.id != user.id:
+            raise PermissionDenied()
+
+        return data
+
     included_serializers = {
         'employments':
             'timed.employment.serializers.EmploymentSerializer',
@@ -189,6 +199,14 @@ class UserSerializer(ModelSerializer):
             'is_staff',
             'is_active',
             'user_absence_types',
+            'tour_done'
+        ]
+        read_only_fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'is_staff',
+            'is_active',
         ]
 
 

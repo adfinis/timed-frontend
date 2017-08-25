@@ -1,23 +1,27 @@
 """Viewsets for the employment app."""
 
 from django.contrib.auth import get_user_model
+from rest_framework import mixins, viewsets
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from timed.employment import filters, models, serializers
 
 
-class UserViewSet(ReadOnlyModelViewSet):
-    """User view set."""
+class UserViewSet(mixins.RetrieveModelMixin,
+                  mixins.UpdateModelMixin,
+                  mixins.ListModelMixin,
+                  viewsets.GenericViewSet):
+    """
+    Expose user actions.
+
+    Users are managed in admin therefore this end point
+    only allows retrieving and updating.
+    """
 
     serializer_class = serializers.UserSerializer
     filter_class = filters.UserFilterSet
 
     def get_queryset(self):
-        """Filter the queryset by the user of the request.
-
-        :return: The filtered users
-        :rtype:  QuerySet
-        """
         return get_user_model().objects.prefetch_related('employments')
 
 
