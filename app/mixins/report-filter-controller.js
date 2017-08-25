@@ -4,9 +4,10 @@
  * @public
  */
 import Mixin from 'ember-metal/mixin'
-import computed from 'ember-computed-decorators'
+import computed, { observes } from 'ember-computed-decorators'
 import moment from 'moment'
 import { underscore } from 'ember-string'
+import $ from 'jquery'
 
 const INITIAL_FILTERS = {
   customer: null,
@@ -143,13 +144,28 @@ export default Mixin.create({
   },
 
   /**
-   * Reset the filters
+   * Reset the filters except page_size which we want to preserve
    *
    * @method resetFilters
    * @public
    */
   resetFilters() {
-    this.setProperties(INITIAL_FILTERS)
+    let filtersToReset = Object.keys(INITIAL_FILTERS)
+      .filter(k => k !== 'page_size')
+      .reduce((obj, k) => ({ ...obj, [k]: INITIAL_FILTERS[k] }), {})
+
+    this.setProperties(filtersToReset)
+  },
+
+  /**
+   * Scroll to the top of the page when the displayed data changes
+   *
+   * @method _scrollTop
+   * @private
+   */
+  @observes('model.[]')
+  _scrollTop() {
+    $('.page-content').animate({ scrollTop: 0 })
   },
 
   actions: {

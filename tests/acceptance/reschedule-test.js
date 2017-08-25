@@ -262,4 +262,16 @@ describe('Acceptance | reschedule', function() {
 
     expect(currentURL()).to.equal('/reschedule')
   })
+
+  it('does not reset page size when leaving the page', async function() {
+    await visit('/reschedule?page_size=100')
+
+    await click('a[href="/me"]')
+
+    expect(currentURL()).to.equal('/me')
+
+    await click('a[href^="/reschedule"]')
+
+    expect(currentURL()).to.equal('/reschedule?page_size=100')
+  })
 })

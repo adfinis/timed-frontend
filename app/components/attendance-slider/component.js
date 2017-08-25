@@ -9,6 +9,7 @@ import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { padStartTpl } from 'ember-pad/utils/pad'
 import { htmlSafe } from 'ember-string'
+import { task } from 'ember-concurrency'
 
 const padTpl2 = padStartTpl(2)
 
@@ -119,39 +120,31 @@ export default Component.extend({
   },
 
   /**
-   * The actions of the attendance slider component
+   * Save the attendance
    *
-   * @property {Object} actions
+   * @method save
+   * @param {Number[]} values The time in minutes
    * @public
    */
-  actions: {
-    /**
-     * Save the attendance
-     *
-     * @method save
-     * @param {Number[]} values The time in minutes
-     * @public
-     */
-    save([fromMin, toMin]) {
-      let attendance = this.get('attendance')
+  save: task(function*([fromMin, toMin]) {
+    let attendance = this.get('attendance')
 
-      attendance.set(
-        'from',
-        moment(attendance.get('from')).hour(0).minute(fromMin)
-      )
-      attendance.set('to', moment(attendance.get('to')).hour(0).minute(toMin))
+    attendance.set(
+      'from',
+      moment(attendance.get('from')).hour(0).minute(fromMin)
+    )
+    attendance.set('to', moment(attendance.get('to')).hour(0).minute(toMin))
 
-      this.get('attrs.on-save')(attendance)
-    },
+    yield this.get('attrs.on-save')(attendance)
+  }).drop(),
 
-    /**
-     * Delete the attendance
-     *
-     * @method delete
-     * @public
-     */
-    delete() {
-      this.get('attrs.on-delete')(this.get('attendance'))
-    }
-  }
+  /**
+   * Delete the attendance
+   *
+   * @method delete
+   * @public
+   */
+  delete: task(function*() {
+    yield this.get('attrs.on-delete')(this.get('attendance'))
+  }).drop()
 })
