@@ -25,12 +25,7 @@ export default Service.extend({
    * @property {String[]} tours
    * @public
    */
-  tours: [
-    'index.activities',
-    'index.activities.edit',
-    'index.attendances',
-    'index.reports'
-  ],
+  tours: ['index.activities', 'index.attendances', 'index.reports'],
 
   /**
    * All done tours

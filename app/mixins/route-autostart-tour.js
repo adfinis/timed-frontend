@@ -1,6 +1,6 @@
 import Mixin from 'ember-metal/mixin'
 import RouteTourMixin from 'ember-site-tour/mixins/route-tour'
-import { schedule } from 'ember-runloop'
+import { schedule, later } from 'ember-runloop'
 import service from 'ember-service/inject'
 
 /**
@@ -141,7 +141,9 @@ export default Mixin.create(RouteTourMixin, {
           }
         })
 
-        tour.start()
+        later(this, () => {
+          tour.start()
+        })
       })
     }
   },
