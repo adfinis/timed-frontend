@@ -5,6 +5,7 @@ from datetime import date, timedelta
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
+from rest_framework import status
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
@@ -83,19 +84,45 @@ class UserTests(JSONAPITestCase):
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
 
-    def test_user_update(self):
-        """Should not be able to update an existing user."""
+    def test_user_update_self(self):
+        """User may only change self."""
         user = self.user
+        user.is_staff = False
+        user.save()
+
+        data = {
+            'data': {
+                'type': 'users',
+                'id': user.id,
+                'attributes': {
+                    'is_staff': True,
+                    'tour_done': True
+                },
+            }
+        }
 
         url = reverse('user-detail', args=[
             user.id
         ])
 
         noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
+        res        = self.client.patch(url, data=data)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+        assert res.status_code == status.HTTP_200_OK
+
+        user.refresh_from_db()
+        assert self.user.tour_done
+        assert not self.user.is_staff
+
+    def test_user_update_other(self):
+        """User may not change other user."""
+        url = reverse('user-detail', args=[
+            self.users[0].id
+        ])
+        res = self.client.patch(url)
+
+        assert res.status_code == status.HTTP_403_FORBIDDEN
 
     def test_user_delete(self):
         """Should not be able delete a user."""
@@ -106,7 +133,7 @@ class UserTests(JSONAPITestCase):
         ])
 
         noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
+        res        = self.client.delete(url)
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED

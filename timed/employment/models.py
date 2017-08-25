@@ -74,6 +74,12 @@ class User(AbstractUser):
 
     supervisors = models.ManyToManyField('self', symmetrical=False,
                                          related_name='supervisees')
+
+    tour_done = models.BooleanField(default=False)
+    """
+    Indicate whether user has finished tour through Timed in frontend.
+    """
+
     objects = UserManager()
 
 
