@@ -25,6 +25,8 @@ export default Route.extend(ApplicationRouteMixin, {
    */
   session: service('session'),
 
+  autostartTour: service('autostart-tour'),
+
   /**
    * After model hook
    *
@@ -44,7 +46,9 @@ export default Route.extend(ApplicationRouteMixin, {
    * @public
    */
   sessionInvalidated() {
-    this.transitionTo('login')
+    this.transitionTo('login').then(() => {
+      location.reload()
+    })
   },
 
   /**
@@ -61,6 +65,8 @@ export default Route.extend(ApplicationRouteMixin, {
      * @public
      */
     invalidateSession() {
+      this.set('autostartTour.done', [])
+
       this.get('session').invalidate()
     }
   }

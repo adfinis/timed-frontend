@@ -34,8 +34,7 @@ module.exports = function(environment) {
     },
 
     'ember-simple-auth': {
-      authorizer: 'authorizer:token',
-      routeAfterAuthentication: 'welcome'
+      authorizer: 'authorizer:token'
     },
 
     'ember-validated-form': {

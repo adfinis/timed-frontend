@@ -18,12 +18,56 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 export default Route.extend(AuthenticatedRouteMixin, {
   session: service('session'),
 
+  autostartTour: service('autostart-tour'),
+
+  tourManager: service('tour-manager'),
+
+  routing: service('-routing'),
+
   model() {
     let id = this.get('session.data.authenticated.user_id')
 
     return this.store.findRecord('user', id, {
       include: 'employments,employments.location'
     })
+  },
+
+  /**
+   * Setup controller hook, evaluate if the welcome modal must be shown
+   *
+   * @method setupController
+   * @param {Ember.Controller} controller The controller
+   * @param {User} model The current user
+   * @public
+   */
+  setupController(controller, model) {
+    this._super(...arguments)
+
+    let visible =
+      !this.get('autostartTour').allDone() &&
+      !model.get('tourDone') &&
+      !this.get('media.isMo') &&
+      !this.get('media.isXs') &&
+      !this.get('media.isSm')
+
+    controller.set('visible', visible)
+  },
+
+  /**
+   * Close the current tour
+   *
+   * @method _closeCurrentTour
+   * @private
+   */
+  _closeCurrentTour() {
+    let currentRoute = this.get('routing.router.currentRouteName').replace(
+      /\.index$/,
+      ''
+    )
+
+    if (this.get('autostartTour.tours').includes(currentRoute)) {
+      this.controllerFor(currentRoute).get('tour').close()
+    }
   },
 
   /**
@@ -68,6 +112,55 @@ export default Route.extend(AuthenticatedRouteMixin, {
       if (controller) {
         controller.set('loading', false)
       }
+    },
+
+    /**
+     * Never start the tour, set the tour done property on the current user
+     *
+     * @method neverTour
+     * @public
+     */
+    async neverTour() {
+      try {
+        let user = this.get('currentModel')
+
+        user.set('tourDone', true)
+
+        await user.save()
+
+        this._closeCurrentTour()
+        this.set('controller.visible', false)
+      } catch (e) {
+        /* istanbul ignore next */
+        this.get('notify').error('Error while saving the user')
+      }
+    },
+
+    /**
+     * Skip the tour for now
+     *
+     * @method laterTour
+     * @public
+     */
+    laterTour() {
+      this._closeCurrentTour()
+      this.set('autostartTour.done', this.get('autostartTour.tours'))
+      this.set('controller.visible', false)
+
+      this.transitionTo('index.activities')
+    },
+
+    /**
+     * Start the tour
+     *
+     * @method startTour
+     * @public
+     */
+    startTour() {
+      this.set('autostartTour.done', [])
+      this.set('controller.visible', false)
+
+      this.transitionTo('index.activities')
     }
   }
 })
