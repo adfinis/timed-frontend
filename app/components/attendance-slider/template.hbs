@@ -8,7 +8,7 @@
   behaviour = "drag"
   tooltips  = tooltips
   on-slide  = (action (mut values))
-  on-change = 'save'
+  on-change = (action (perform save))
 }}
 
 <div class="slider-labels">
@@ -22,5 +22,5 @@
 </div>
 
 <div class="slider-title">
-  <span>{{duration}}</span> {{fa-icon data-test-delete-attendance 'trash' click=(action 'delete')}}
+  <span>{{duration}}</span> {{fa-icon data-test-delete-attendance 'trash' click=(perform delete)}}
 </div>
