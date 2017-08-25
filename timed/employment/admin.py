@@ -125,6 +125,16 @@ class UserAdmin(UserAdmin):
         'enable_staff_status'
     ]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fieldsets += (
+            (_('Extra fields'), {
+                'fields': [
+                    'tour_done',
+                ],
+            }),
+        )
+
     def disable_users(self, request, queryset):
         queryset.update(is_active=False)
     disable_users.short_description = _('Disable selected users')
