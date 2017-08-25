@@ -1,7 +1,7 @@
 export default [
   {
     target: '.card',
-    placement: 'left',
+    placement: 'top',
     title: 'Editing activities',
     content: `You can edit the customer, project, task and comment of the
     activity. Also, you can edit the single activity blocks and their start and

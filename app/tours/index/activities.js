@@ -1,6 +1,6 @@
 export default [
   {
-    target: '.record-button-container',
+    target: '.tracking-bar',
     placement: 'bottom',
     title: 'Tracking activities',
     content: `

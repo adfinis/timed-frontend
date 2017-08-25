@@ -1,10 +1,10 @@
 <div class="text-center welcome-container">
-  <img src="/assets/logo.svg">
+  <img style="max-width:100%" src="/assets/logo.svg">
   <h1>Welcome to timed!</h1>
   <p>Would you like to take a tour?</p>
-  <p>
+  <div>
     <button class="btn btn-never" {{action 'declineTour'}}>Never</button>
     <button class="btn btn-default" {{action 'skipTour'}}>Later</button>
     <button class="btn btn-primary" {{action 'startTour'}}>Sure</button>
-  </p>
+  </div>
 </div>

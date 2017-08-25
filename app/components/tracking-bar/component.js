@@ -20,6 +20,8 @@ const ENTER_CHAR_CODE = 13
 export default Component.extend({
   tracking: service('tracking'),
 
+  classNames: ['tracking-bar'],
+
   /**
    * Key press event
    *
