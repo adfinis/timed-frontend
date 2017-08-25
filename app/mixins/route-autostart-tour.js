@@ -43,15 +43,16 @@ export default Mixin.create(RouteTourMixin, {
    *
    * @method _wantsTour
    * @param {String} routeName The name of the route to check
+   * @param {User[]} user The current user
    * @return {Boolean} Whether the user wants a tour
    * @private
    */
-  _wantsTour(routeName) {
+  _wantsTour(routeName, user) {
     return (
       (this.get('media.isMd') ||
         this.get('media.isLg') ||
         this.get('media.isXl')) &&
-      !this.modelFor('protected').get('tourDone') &&
+      !user.get('tourDone') &&
       !this.get('autostartTour').get('done').includes(routeName)
     )
   },
@@ -91,7 +92,7 @@ export default Mixin.create(RouteTourMixin, {
       return
     }
 
-    if (this._wantsTour(parentRouteName)) {
+    if (this._wantsTour(parentRouteName, this.modelFor('protected'))) {
       let tour = this.controllerFor(parentRouteName).get('tour')
 
       if (tour) {
@@ -109,7 +110,7 @@ export default Mixin.create(RouteTourMixin, {
    * @public
    */
   startTour() {
-    if (this._wantsTour(this.get('routeName'))) {
+    if (this._wantsTour(this.get('routeName'), this.modelFor('protected'))) {
       schedule('afterRender', this, () => {
         let tour = this.get('controller.tour')
 
