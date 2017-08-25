@@ -34,14 +34,8 @@ module.exports = function(environment) {
     },
 
     'ember-simple-auth': {
-      authorizer: 'authorizer:token'
-    },
-
-    'ember-simple-auth-token': {
-      serverTokenEndpoint: '/api/v1/auth/login',
-      serverTokenRefreshEndpoint: '/api/v1/auth/refresh',
-      refreshAccessTokens: true,
-      refreshLeeway: 300
+      authorizer: 'authorizer:token',
+      routeAfterAuthentication: 'welcome'
     },
 
     'ember-validated-form': {
@@ -79,7 +73,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
   }
 
   /* global process*/
