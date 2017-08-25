@@ -18,6 +18,8 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 export default Route.extend(AuthenticatedRouteMixin, {
   session: service('session'),
 
+  notify: service('notify'),
+
   autostartTour: service('autostart-tour'),
 
   tourManager: service('tour-manager'),
@@ -46,9 +48,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
     let visible =
       !this.get('autostartTour').allDone() &&
       !model.get('tourDone') &&
-      !this.get('media.isMo') &&
-      !this.get('media.isXs') &&
-      !this.get('media.isSm')
+      (this.get('media.isMd') ||
+        this.get('media.isLg') ||
+        this.get('media.isXl'))
 
     controller.set('visible', visible)
   },

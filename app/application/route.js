@@ -6,7 +6,10 @@
 import Route from 'ember-route'
 import service from 'ember-service/inject'
 import $ from 'jquery'
+import Ember from 'ember'
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin'
+
+const { testing } = Ember
 
 /**
  * The application route
@@ -47,7 +50,10 @@ export default Route.extend(ApplicationRouteMixin, {
    */
   sessionInvalidated() {
     this.transitionTo('login').then(() => {
-      location.reload()
+      if (!testing) {
+        /* istanbul ignore next */
+        location.reload()
+      }
     })
   },
 

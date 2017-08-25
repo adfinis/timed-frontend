@@ -1,60 +1,63 @@
-import Ember from 'ember';
-import MediaService from 'ember-responsive/media';
+import Ember from 'ember'
+import MediaService from 'ember-responsive/media'
 
 const {
-  getOwner
-} = Ember;
-const { classify } = Ember.String;
+  getOwner,
+  computed,
+  A,
+  String: { classify },
+  Test: { registerAsyncHelper }
+} = Ember
 
 MediaService.reopen({
   // Change this if you want a different default breakpoint in tests.
-  _defaultBreakpoint: 'desktop',
+  _defaultBreakpoint: 'xl',
 
-  _breakpointArr: Ember.computed('breakpoints', function() {
-    return Object.keys(this.get('breakpoints')) || Ember.A([]);
+  _breakpointArr: computed('breakpoints', function() {
+    return Object.keys(this.get('breakpoints')) || A([])
   }),
 
   _forceSetBreakpoint(breakpoint) {
-    let found = false;
+    let found = false
 
-    const props = {};
+    let props = {}
     this.get('_breakpointArr').forEach(function(bp) {
-      const val = bp === breakpoint;
+      let val = bp === breakpoint
       if (val) {
-        found = true;
+        found = true
       }
 
-      props[`is${classify(bp)}`] = val;
-    });
+      props[`is${classify(bp)}`] = val
+    })
 
     if (found) {
-      this.setProperties(props);
+      this.setProperties(props)
     } else {
       throw new Error(
         `You tried to set the breakpoint to ${breakpoint}, which is not in your app/breakpoint.js file.`
-      );
+      )
     }
   },
 
   match() {}, // do not set up listeners in test
 
   init() {
-    this._super(...arguments);
+    this._super(...arguments)
 
-    this._forceSetBreakpoint(this.get('_defaultBreakpoint'));
+    this._forceSetBreakpoint(this.get('_defaultBreakpoint'))
   }
-});
+})
 
-export default Ember.Test.registerAsyncHelper('setBreakpoint', function(app, breakpoint) {
+export default registerAsyncHelper('setBreakpoint', function(app, breakpoint) {
   // this should use getOwner once that's supported
-  const mediaService = app.__deprecatedInstance__.lookup('service:media');
-  mediaService._forceSetBreakpoint(breakpoint);
-});
+  let mediaService = app.__deprecatedInstance__.lookup('service:media')
+  mediaService._forceSetBreakpoint(breakpoint)
+})
 
 export function setBreakpointForIntegrationTest(container, breakpoint) {
-  const mediaService = getOwner(container).lookup('service:media');
-  mediaService._forceSetBreakpoint(breakpoint);
-  container.set('media', mediaService);
+  let mediaService = getOwner(container).lookup('service:media')
+  mediaService._forceSetBreakpoint(breakpoint)
+  container.set('media', mediaService)
 
-  return mediaService;
+  return mediaService
 }

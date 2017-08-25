@@ -1,6 +1,6 @@
 import Mixin from 'ember-metal/mixin'
 import RouteTourMixin from 'ember-site-tour/mixins/route-tour'
-import { later, schedule } from 'ember-runloop'
+import { schedule } from 'ember-runloop'
 import service from 'ember-service/inject'
 
 /**
@@ -49,11 +49,11 @@ export default Mixin.create(RouteTourMixin, {
    */
   _wantsTour(routeName, user) {
     return (
+      !user.get('tourDone') &&
+      !this.get('autostartTour').get('done').includes(routeName) &&
       (this.get('media.isMd') ||
         this.get('media.isLg') ||
-        this.get('media.isXl')) &&
-      !user.get('tourDone') &&
-      !this.get('autostartTour').get('done').includes(routeName)
+        this.get('media.isXl'))
     )
   },
 
@@ -114,6 +114,7 @@ export default Mixin.create(RouteTourMixin, {
       schedule('afterRender', this, () => {
         let tour = this.get('controller.tour')
 
+        /* istanbul ignore next */
         tour.on('tour.end', async e => {
           if (e.currentStep + 1 !== e.tour._steps.length) {
             return
@@ -140,27 +141,9 @@ export default Mixin.create(RouteTourMixin, {
           }
         })
 
-        later(
-          this,
-          () => {
-            tour.start()
-          },
-          100
-        )
+        tour.start()
       })
     }
-  },
-
-  /**
-   * Stop the current tour
-   *
-   * @method stopTour
-   * @public
-   */
-  stopTour() {
-    schedule('afterRender', this, () => {
-      this.get('controller.tour').close()
-    })
   },
 
   /**
