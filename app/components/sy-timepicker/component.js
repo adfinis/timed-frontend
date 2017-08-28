@@ -220,10 +220,7 @@ export default Component.extend({
      * @public
      */
     handleKeyDown(e) {
-      if (
-        e.key.length === 1 &&
-        (!/[\d:]/.test(e.key) || e.target.value.length === 5)
-      ) {
+      if (e.key.length === 1 && !/[\d:]/.test(e.key)) {
         e.preventDefault()
 
         return false
