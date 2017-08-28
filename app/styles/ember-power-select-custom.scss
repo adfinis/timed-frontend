@@ -1,7 +1,7 @@
 @import 'ember-power-select';
 
 .ember-power-select-options[role='listbox'] {
-  max-height: calc(28px * 8);
+  max-height: 300px;
 }
 
 .ember-power-select-option:not(
@@ -22,7 +22,6 @@
     .history {
       display: inline-flex;
       align-items: center;
-      height: 56px;
 
       .fa {
         padding-right: 0.5rem;
@@ -67,6 +66,8 @@
 .ember-power-select-selected-item {
   margin: 0;
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .ember-power-select-trigger {
