@@ -329,7 +329,6 @@ export default Component.extend({
   @computed('customer.id', 'archived')
   async projects(id, archived) {
     try {
-      console.log('something changed yoo', id, archived)
       if (!id) {
         throw new Error('Customer must be set to filter projects')
       }
