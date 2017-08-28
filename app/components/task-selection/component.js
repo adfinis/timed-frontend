@@ -81,7 +81,8 @@ export default Component.extend({
   /**
    * Init hook, set initial values if given
    *
-   * @method init
+   * @method didReceiveAttrs
+   * @return {Task|Project|Customer} The setted task, project or customer
    * @public
    */
   didReceiveAttrs() {
