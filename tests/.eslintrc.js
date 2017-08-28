@@ -8,7 +8,8 @@ module.exports = {
   globals: {
     server: true,
     taskSelect: true,
-    userSelect: true
+    userSelect: true,
+    setBreakpoint: true
   },
   rules: {
     'no-magic-numbers': 'off',

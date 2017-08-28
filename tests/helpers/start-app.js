@@ -6,6 +6,7 @@ import registerBasicDropdownHelpers from 'timed/tests/helpers/ember-basic-dropdo
 
 import 'timed/tests/helpers/task-select'
 import 'timed/tests/helpers/user-select'
+import 'timed/tests/helpers/responsive'
 
 registerBasicDropdownHelpers()
 

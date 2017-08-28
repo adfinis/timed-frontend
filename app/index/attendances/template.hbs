@@ -1,45 +1,47 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
   <button class="btn btn-success" data-test-add-attendance {{action 'addAttendance'}}>Add attendance</button>
 </div>
-{{#if attendances}}
-  <div class="visible-md">
-    {{#each attendances as |attendance|}}
-      {{attendance-slider
-        data-test-attendance-slider
-        data-test-attendance-slider-id=attendance.id
-        attendance = attendance
-        on-save    = (route-action 'saveAttendance')
-        on-delete  = (route-action 'deleteAttendance')
-      }}
-    {{/each}}
+<div class="attendances">
+  {{#if attendances}}
+    <div class="visible-md">
+      {{#each attendances as |attendance|}}
+        {{attendance-slider
+          data-test-attendance-slider
+          data-test-attendance-slider-id=attendance.id
+          attendance = attendance
+          on-save    = (route-action 'saveAttendance')
+          on-delete  = (route-action 'deleteAttendance')
+        }}
+      {{/each}}
+    </div>
+    <div class="hidden-md">
+      <table class="table table--striped">
+        <tbody>
+          {{#each attendances as |attendance|}}
+            <tr>
+              <td>
+                <form class="form-inline">
+                  <div class="form-group">
+                    {{sy-timepicker value=attendance.from on-change=(action (mut attendance.from))}}
+                  </div>
+                  <div class="form-group">
+                    {{sy-timepicker value=attendance.to on-change=(action (mut attendance.to))}}
+                  </div>
+                  <div class="form-group text-right">
+                    <button class="btn btn-danger" {{action 'deleteAttendance' attendance}}>{{fa-icon 'trash'}} Delete</button>
+                    <button class="btn btn-primary" {{action 'saveAttendance' attendance}}>{{fa-icon 'save'}} Save</button>
+                  </div>
+                </form>
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+  {{else}}
+    <div class="text-center"><em>No attendances yet</em></div>
+  {{/if}}
+  <div class="text-center">
+    <br>
   </div>
-  <div class="hidden-md">
-    <table class="table table--striped">
-      <tbody>
-        {{#each attendances as |attendance|}}
-          <tr>
-            <td>
-              <form class="form-inline">
-                <div class="form-group">
-                  {{sy-timepicker value=attendance.from on-change=(action (mut attendance.from))}}
-                </div>
-                <div class="form-group">
-                  {{sy-timepicker value=attendance.to on-change=(action (mut attendance.to))}}
-                </div>
-                <div class="form-group text-right">
-                  <button class="btn btn-danger" {{action 'deleteAttendance' attendance}}>{{fa-icon 'trash'}} Delete</button>
-                  <button class="btn btn-primary" {{action 'saveAttendance' attendance}}>{{fa-icon 'save'}} Save</button>
-                </div>
-              </form>
-            </td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
-  </div>
-{{else}}
-  <div class="text-center"><em>No attendances yet</em></div>
-{{/if}}
-<div class="text-center">
-  <br>
 </div>

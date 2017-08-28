@@ -8,6 +8,7 @@ import service from 'ember-service/inject'
 import moment from 'moment'
 import Changeset from 'ember-changeset'
 import ActivityValidator from 'timed/validations/activity'
+import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 /**
  * Route to edit an activity
@@ -16,7 +17,7 @@ import ActivityValidator from 'timed/validations/activity'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({
+export default Route.extend(RouteAutostartTourMixin, {
   /**
    * The notify service
    *
