@@ -36,7 +36,11 @@ def test_redmine_report(db, freezer, mocker):
         'value': report_hours
     }]
     assert 'Total hours: {0}'.format(report_hours) in issue.notes
-    assert 'Hours in last 7 days: {0}'.format(report_hours) in issue.notes
+    assert 'Hours in last 7 days: {0}\n'.format(report_hours) in issue.notes
+    assert '{0}\n'.format(report.comment) in issue.notes
+    assert '{0}\n\n'.format(report.comment) not in issue.notes, (
+        'Only one new line after report line'
+    )
     issue.save.assert_called_once_with()
 
 
