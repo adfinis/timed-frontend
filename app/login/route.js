@@ -4,6 +4,7 @@
  * @public
  */
 import Route from 'ember-route'
+import UnauthenticatedRouteMixin from 'ember-simple-auth/mixins/unauthenticated-route-mixin'
 
 /**
  * The login route
@@ -12,4 +13,4 @@ import Route from 'ember-route'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({})
+export default Route.extend(UnauthenticatedRouteMixin, {})

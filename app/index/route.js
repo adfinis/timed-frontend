@@ -7,6 +7,7 @@ import Route from 'ember-route'
 import RSVP from 'rsvp'
 import moment from 'moment'
 import service from 'ember-service/inject'
+import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
@@ -17,7 +18,7 @@ const DATE_FORMAT = 'YYYY-MM-DD'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({
+export default Route.extend(RouteAutostartTourMixin, {
   /**
    * The query params
    *

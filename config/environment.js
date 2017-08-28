@@ -37,13 +37,6 @@ module.exports = function(environment) {
       authorizer: 'authorizer:token'
     },
 
-    'ember-simple-auth-token': {
-      serverTokenEndpoint: '/api/v1/auth/login',
-      serverTokenRefreshEndpoint: '/api/v1/auth/refresh',
-      refreshAccessTokens: true,
-      refreshLeeway: 300
-    },
-
     'ember-validated-form': {
       css: {
         // adcssy classes
@@ -79,7 +72,6 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-
   }
 
   /* global process*/

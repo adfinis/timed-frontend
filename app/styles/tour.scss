@@ -1,0 +1,85 @@
+div.hopscotch-bubble {
+  z-index: 99; // The dropdowns have 100 and we don't want to hide them
+  border: 1px solid var(--color-border);
+  border-color: color(var(--color-primary) tint(20%));
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+              0 0   8px color(var(--color-primary) a(60%));
+
+  .hopscotch-bubble-number {
+    display: none;
+  }
+
+  .hopscotch-bubble-content {
+    margin: 0;
+  }
+
+  .hopscotch-title,
+  .hopscotch-content {
+    color: var(--body-color);
+  }
+
+  .hopscotch-title {
+    margin: 5px 0 0;
+  }
+
+  .hopscotch-content {
+    margin: 10px 0;
+    padding: 0;
+  }
+
+  .hopscotch-pagination {
+    display: none;
+  }
+
+  .hopscotch-bubble-arrow-container {
+    pointer-events: none;
+
+    &.up {
+      top: -17px;
+
+      .hopscotch-bubble-arrow {
+        top: -16px;
+      }
+
+      .hopscotch-bubble-arrow-border {
+        border-bottom-color: color(var(--color-primary) tint(20%));
+      }
+    }
+
+    &.down {
+      bottom: -35px;
+
+      .hopscotch-bubble-arrow {
+        top: -19px;
+      }
+
+      .hopscotch-bubble-arrow-border {
+        border-top-color: color(var(--color-primary) tint(20%));
+      }
+    }
+
+    &.left {
+      left: -17px;
+
+      .hopscotch-bubble-arrow {
+        left: 2px;
+      }
+
+      .hopscotch-bubble-arrow-border {
+        border-right-color: color(var(--color-primary) tint(20%));
+      }
+    }
+
+    &.right {
+      right: -35px;
+
+      .hopscotch-bubble-arrow {
+        left: -2px;
+      }
+
+      .hopscotch-bubble-arrow-border {
+        border-left-color: color(var(--color-primary) tint(20%));
+      }
+    }
+  }
+}

@@ -7,7 +7,7 @@ let EmberApp = require('ember-cli/lib/broccoli/ember-app')
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     sassOptions: {
-      includePaths: [ 'bower_components/adcssy/css' ],
+      includePaths: ['bower_components/adcssy/css'],
       onlyIncluded: true
     },
     postcssOptions: {
@@ -21,17 +21,14 @@ module.exports = function(defaults) {
           {
             module: require('postcss-cssnext'),
             options: {
-              browsers: [ '>1%' ]
+              browsers: ['>1%']
             }
           }
         ]
       }
     },
     babel: {
-      plugins: [
-        'transform-decorators-legacy',
-        'transform-object-rest-spread'
-      ]
+      plugins: ['transform-decorators-legacy', 'transform-object-rest-spread']
     },
     'ember-cli-babel': {
       includePolyfill: true
@@ -41,6 +38,10 @@ module.exports = function(defaults) {
     },
     dotEnv: {
       clientAllowedKeys: ['TIMED_REPORT_EXPORT']
+    },
+    'ember-site-tour': {
+      importHopscotchJS: true,
+      importHopscotchCSS: true
     }
   })
 

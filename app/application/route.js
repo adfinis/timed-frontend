@@ -6,7 +6,10 @@
 import Route from 'ember-route'
 import service from 'ember-service/inject'
 import $ from 'jquery'
+import Ember from 'ember'
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin'
+
+const { testing } = Ember
 
 /**
  * The application route
@@ -24,6 +27,8 @@ export default Route.extend(ApplicationRouteMixin, {
    * @public
    */
   session: service('session'),
+
+  autostartTour: service('autostart-tour'),
 
   /**
    * After model hook
@@ -44,7 +49,12 @@ export default Route.extend(ApplicationRouteMixin, {
    * @public
    */
   sessionInvalidated() {
-    this.transitionTo('login')
+    this.transitionTo('login').then(() => {
+      if (!testing) {
+        /* istanbul ignore next */
+        location.reload()
+      }
+    })
   },
 
   /**
@@ -61,6 +71,8 @@ export default Route.extend(ApplicationRouteMixin, {
      * @public
      */
     invalidateSession() {
+      this.set('autostartTour.done', [])
+
       this.get('session').invalidate()
     }
   }

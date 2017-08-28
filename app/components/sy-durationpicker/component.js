@@ -20,6 +20,8 @@ import { padStart } from 'ember-pad/utils/pad'
 export default SyTimepickerComponent.extend({
   layout,
 
+  name: 'duration',
+
   /**
    * Init hook, set min and max if not passed
    *
