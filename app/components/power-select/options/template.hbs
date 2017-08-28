@@ -4,7 +4,7 @@
   {{/if}}
 {{/if}}
 
-{{#vertical-collection options estimateHeight=28 as |opt index|}}
+{{#vertical-collection options estimateHeight=28 bufferSize=5 as |opt index|}}
   <li class="ember-power-select-option"
     aria-selected="{{ember-power-select-is-selected opt select.selected}}"
     aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}

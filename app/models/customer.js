@@ -6,6 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { hasMany } from 'ember-data/relationships'
+import { oneWay } from 'ember-computed-decorators'
 
 /**
  * The customer model
@@ -40,5 +41,13 @@ export default Model.extend({
    * @type {Project[]}
    * @public
    */
-  projects: hasMany('project')
+  projects: hasMany('project'),
+
+  /**
+   * Long name - alias for name, used for filtering in the customer box
+   *
+   * @property {String} longName
+   * @public
+   */
+  @oneWay('name') longName: ''
 })

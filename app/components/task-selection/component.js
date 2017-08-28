@@ -293,30 +293,28 @@ export default Component.extend({
    */
   @computed('history', 'archived')
   async customersAndRecentTasks(history, archived) {
+    let ids = []
+
     try {
       await this.get('tracking.customers.last')
 
-      let ids = history
-        ? await this.get('tracking.recentTasks.last.value').mapBy('id')
-        : []
+      if (history) {
+        ids = await this.get('tracking.recentTasks.last.value').mapBy('id')
+      }
+    } catch (e) {}
 
-      let customers = this.get('store')
-        .peekAll('customer')
-        .filter(c => {
-          return archived ? true : !c.get('archived')
-        })
-        .sortBy('name')
-
-      let tasks = this.get('store').peekAll('task').filter(t => {
-        return (
-          ids.includes(t.get('id')) && (archived ? true : !t.get('archived'))
-        )
+    let customers = this.get('store')
+      .peekAll('customer')
+      .filter(c => {
+        return archived ? true : !c.get('archived')
       })
+      .sortBy('name')
 
-      return [...tasks.toArray(), ...customers.toArray()]
-    } catch (e) {
-      return []
-    }
+    let tasks = this.get('store').peekAll('task').filter(t => {
+      return ids.includes(t.get('id')) && (archived ? true : !t.get('archived'))
+    })
+
+    return [...tasks.toArray(), ...customers.toArray()]
   },
 
   /**
@@ -335,19 +333,16 @@ export default Component.extend({
       }
 
       await this.get('tracking.projects').perform(id)
+    } catch (e) {}
 
-      return this.get('store')
-        .peekAll('project')
-        .filter(p => {
-          return (
-            p.get('customer.id') === id &&
-            (archived ? true : !p.get('archived'))
-          )
-        })
-        .sortBy('name')
-    } catch (e) {
-      return []
-    }
+    return this.get('store')
+      .peekAll('project')
+      .filter(p => {
+        return (
+          p.get('customer.id') === id && (archived ? true : !p.get('archived'))
+        )
+      })
+      .sortBy('name')
   },
 
   /**
@@ -366,18 +361,16 @@ export default Component.extend({
       }
 
       await this.get('tracking.tasks').perform(id)
+    } catch (e) {}
 
-      return this.get('store')
-        .peekAll('task')
-        .filter(t => {
-          return (
-            t.get('project.id') === id && (archived ? true : !t.get('archived'))
-          )
-        })
-        .sortBy('name')
-    } catch (e) {
-      return []
-    }
+    return this.get('store')
+      .peekAll('task')
+      .filter(t => {
+        return (
+          t.get('project.id') === id && (archived ? true : !t.get('archived'))
+        )
+      })
+      .sortBy('name')
   },
 
   _focusComesFromOutside(e) {

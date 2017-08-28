@@ -1,7 +1,7 @@
 @import 'ember-power-select';
 
 .ember-power-select-options[role='listbox'] {
-  max-height: 300px;
+  max-height: 390px;
 }
 
 .ember-power-select-option:not(
@@ -13,7 +13,7 @@
 
   div {
     padding: 0 8px;
-    line-height: 1.75;
+    line-height: 1.6;
 
     &.inactive {
       background-color: rgb(230, 230, 230);
@@ -102,6 +102,8 @@
     background-color: rgb(255,255,255);
     padding: 0 2px;
     right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .ember-power-select-status-icon {

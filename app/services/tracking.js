@@ -256,7 +256,7 @@ export default Service.extend({
       my_most_frequent: 10, // eslint-disable-line camelcase
       include: 'project,project.customer'
     })
-  }).restartable(),
+  }),
 
   /**
    * All users
@@ -266,7 +266,7 @@ export default Service.extend({
    */
   users: task(function*() {
     return yield this.get('store').query('user', {})
-  }).restartable(),
+  }),
 
   /**
    * All customers
@@ -276,7 +276,7 @@ export default Service.extend({
    */
   customers: task(function*() {
     return yield this.get('store').query('customer', {})
-  }).restartable(),
+  }),
 
   /**
    * Projects filtered by customer
@@ -293,7 +293,7 @@ export default Service.extend({
     }
 
     return yield this.get('store').query('project', { customer })
-  }).restartable(),
+  }),
 
   /**
    * Tasks filtered by project
@@ -310,5 +310,5 @@ export default Service.extend({
     }
 
     return yield this.get('store').query('task', { project })
-  }).restartable()
+  })
 })
