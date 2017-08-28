@@ -187,10 +187,10 @@ export default Component.extend({
    * @property {Customer} customer
    * @public
    */
-  @computed()
+  @computed('_customer')
   customer: {
-    get() {
-      return this.get('_customer')
+    get(customer) {
+      return customer
     },
     set(value) {
       // It is also possible a task was selected from the history.
@@ -227,16 +227,16 @@ export default Component.extend({
    * @property {Project} project
    * @public
    */
-  @computed()
+  @computed('_project')
   project: {
-    get() {
-      return this.get('_project')
+    get(project) {
+      return project
     },
     set(value) {
       this.set('_project', value)
 
-      if (value) {
-        this.set('customer', value.get('customer'))
+      if (value && value.get('customer')) {
+        this.set('_customer', value.get('customer'))
       }
 
       /* istanbul ignore else */
@@ -261,18 +261,18 @@ export default Component.extend({
    * @property {Task} task
    * @public
    */
-  @computed()
+  @computed('_task')
   task: {
-    get() {
-      return this.get('_task')
+    get(task) {
+      return task
     },
     set(value) {
       this.set('_task', value)
 
-      if (value) {
+      if (value && value.get('project')) {
         this.setProperties({
-          project: value.get('project'),
-          customer: value.get('project.customer')
+          _project: value.get('project'),
+          _customer: value.get('project.customer')
         })
       }
 
@@ -326,11 +326,10 @@ export default Component.extend({
    * @property {Project[]} projects
    * @public
    */
-  @computed('customer', 'archived')
-  async projects(customer, archived) {
+  @computed('customer.id', 'archived')
+  async projects(id, archived) {
     try {
-      let id = customer.get('id')
-
+      console.log('something changed yoo', id, archived)
       if (!id) {
         throw new Error('Customer must be set to filter projects')
       }
@@ -359,11 +358,9 @@ export default Component.extend({
    * @property {Task[]} tasks
    * @public
    */
-  @computed('project', 'archived')
-  async tasks(project, archived) {
+  @computed('project.id', 'archived')
+  async tasks(id, archived) {
     try {
-      let id = project.get('id')
-
       if (!id) {
         throw new Error('Project must be set to filter tasks')
       }

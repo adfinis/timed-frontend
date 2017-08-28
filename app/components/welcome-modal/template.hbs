@@ -1,0 +1,14 @@
+{{#sy-modal visible=visible as |modal|}}
+  {{#modal.body}}
+    <div class="text-center">
+      <h1>Welcome to Timed!</h1>
+      <img style="max-width:50%" src="/assets/logo.svg">
+      <h4>Would you like to take a tour?</h4>
+    </div>
+  {{/modal.body}}
+  {{#modal.footer}}
+    <button class="btn btn-never" {{action on-never}}>Never</button>
+    <button class="btn btn-default" {{action on-later}}>Later</button>
+    <button class="btn btn-primary" {{action on-start}}>Sure</button>
+  {{/modal.footer}}
+{{/sy-modal}}

@@ -35,6 +35,10 @@ module.exports = function(defaults) {
     },
     dotEnv: {
       clientAllowedKeys: ['TIMED_REPORT_EXPORT']
+    },
+    'ember-site-tour': {
+      importHopscotchJS: true,
+      importHopscotchCSS: true
     }
   })
 

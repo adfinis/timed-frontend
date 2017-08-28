@@ -74,6 +74,14 @@ export default Model.extend({
   isActive: attr('boolean'),
 
   /**
+   * Whether the user completed the app tour
+   *
+   * @property {Boolean} tourDone
+   * @public
+   */
+  tourDone: attr('boolean'),
+
+  /**
    * The users employments
    *
    * @property {Employment[]} employments

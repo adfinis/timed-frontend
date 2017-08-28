@@ -30,3 +30,10 @@
     </main>
   {{/if}}
 {{/sy-sidenav}}
+
+{{welcome-modal
+  visible  = visible
+  on-never = (route-action 'neverTour')
+  on-later = (route-action 'laterTour')
+  on-start = (route-action 'startTour')
+}}

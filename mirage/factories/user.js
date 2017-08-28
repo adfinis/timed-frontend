@@ -8,6 +8,8 @@ export default Factory.extend({
   password: () => faker.internet.password(),
 
   isStaff: true,
+  isActive: true,
+  tourDone: true,
 
   username() {
     let first = this.firstName.toLowerCase()

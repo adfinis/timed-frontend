@@ -6,6 +6,7 @@
 import Route from 'ember-route'
 import service from 'ember-service/inject'
 import RSVP from 'rsvp'
+import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 /**
  * The index reports route
@@ -14,7 +15,7 @@ import RSVP from 'rsvp'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({
+export default Route.extend(RouteAutostartTourMixin, {
   /**
    * The notify service
    *

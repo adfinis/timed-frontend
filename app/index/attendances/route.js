@@ -5,6 +5,7 @@
  */
 import Route from 'ember-route'
 import service from 'ember-service/inject'
+import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 /**
  * The index attendances route
@@ -13,7 +14,7 @@ import service from 'ember-service/inject'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({
+export default Route.extend(RouteAutostartTourMixin, {
   /**
    * The notify service
    *
