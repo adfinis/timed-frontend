@@ -39,9 +39,9 @@ def test_work_report_single_project(auth_client):
     content = io.BytesIO(res.content)
     doc = ezodf.opendoc(content)
     table = doc.sheets[0]
-    assert table['B5'].value == '2017-08-01'
-    assert table['B6'].value == '2017-08-31'
-    assert table['B9'].value == 'Test User'
+    assert table['C5'].value == '2017-08-01'
+    assert table['C6'].value == '2017-08-31'
+    assert table['C9'].value == 'Test User'
 
 
 @pytest.mark.freeze_time('2017-09-01')
@@ -75,8 +75,8 @@ def test_work_report_multiple_projects(auth_client):
             )
             doc = ezodf.opendoc(io.BytesIO(ods_content))
             table = doc.sheets[0]
-            assert table['B5'].value == '2017-08-17'
-            assert table['B6'].value == '2017-08-17'
+            assert table['C5'].value == '2017-08-17'
+            assert table['C6'].value == '2017-08-17'
 
 
 def test_work_report_empty(auth_client):

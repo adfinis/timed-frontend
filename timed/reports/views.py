@@ -82,22 +82,26 @@ class WorkReportViewSet(GenericViewSet):
         tmpl = resource_string('timed_adfinis.reporting', 'workreport.ots')
         doc = opendoc(BytesIO(tmpl))
         table = doc.sheets[0]
-        date_style = table['B5'].style_name
-        # in template cell C3 is empty but styled as needed for float
-        float_style = table['C3'].style_name
-        # in template cell C4 is empty but styled as needed for text with wrap
-        text_style = table['C4'].style_name
+        date_style = table['C5'].style_name
+        # in template cell D3 is empty but styled for float and borders
+        float_style = table['D3'].style_name
+        # in template cell D4 is empty but styled for text wrap and borders
+        text_style = table['D4'].style_name
+        # in template cell D8 is empty but styled for date with borders
+        date_style_report = table['D8'].style_name
 
         # for simplicity insert reports in reverse order
         for report in reports:
             table.insert_rows(12, 1)
-            table['A13'] = Cell(report.date, style_name=date_style,
+            table['A13'] = Cell(report.date,
+                                style_name=date_style_report,
                                 value_type='date')
 
             hours = report.duration.total_seconds() / 60 / 60
             table['B13'] = Cell(hours, style_name=float_style)
 
-            table['C13'] = Cell(report.user.get_full_name())
+            table['C13'] = Cell(report.user.get_full_name(),
+                                style_name=text_style)
             table['D13'] = Cell(report.comment, style_name=text_style)
 
             # when from and to date are None find lowest and biggest date
@@ -105,12 +109,17 @@ class WorkReportViewSet(GenericViewSet):
             to_date = max(report.date, to_date or date.min)
 
         # header values
-        table['B3'] = Cell(customer and customer.name)
-        table['B4'] = Cell(project and project.name)
-        table['B5'] = Cell(from_date, style_name=date_style, value_type='date')
-        table['B6'] = Cell(to_date, style_name=date_style, value_type='date')
-        table['B8'] = Cell(today, style_name=date_style, value_type='date')
-        table['B9'] = Cell(user.get_full_name())
+        table['C3'] = Cell(customer and customer.name)
+        table['C4'] = Cell(project and project.name)
+        table['C5'] = Cell(from_date, style_name=date_style, value_type='date')
+        table['C6'] = Cell(to_date, style_name=date_style, value_type='date')
+        table['C8'] = Cell(today, style_name=date_style, value_type='date')
+        table['C9'] = Cell(user.get_full_name())
+
+        # reset temporary styles (mainly because of borders)
+        table['D3'].style_name = ''
+        table['D4'].style_name = ''
+        table['D8'].style_name = ''
 
         # calculate location of total hours as insert rows moved it
         table[13 + len(reports), 2].formula = 'of:=SUM(B13:B{0})'.format(
