@@ -1,34 +1,14 @@
 """Models for the employment app."""
 
-import datetime
+from datetime import date, timedelta
 
+from dateutil import rrule
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 from timed.models import WeekdaysField
-
-
-class EmploymentManager(models.Manager):
-    """Custom manager for employments."""
-
-    def for_user(self, user, date=datetime.date.today()):
-        """Get the employment on a date for a user.
-
-        :param User user: The user of the searched employment
-        :param datetime.date date: The date of the searched employment
-        :returns: The employment on the date for the user
-        :rtype: timed.employment.models.Employment
-        """
-        return self.get(
-            (
-                models.Q(end_date__gte=date) |
-                models.Q(end_date__isnull=True)
-            ),
-            start_date__lte=date,
-            user=user
-        )
 
 
 class Location(models.Model):
@@ -81,42 +61,6 @@ class User(AbstractUser):
     """
 
     objects = UserManager()
-
-
-class Employment(models.Model):
-    """Employment model.
-
-    An employment represents a contract which defines where an employee works
-    and from when to when.
-    """
-
-    user             = models.ForeignKey(settings.AUTH_USER_MODEL,
-                                         related_name='employments')
-    location         = models.ForeignKey(Location, related_name='employments')
-    percentage       = models.IntegerField(validators=[
-                                           MinValueValidator(0),
-                                           MaxValueValidator(100)])
-    worktime_per_day = models.DurationField()
-    start_date       = models.DateField()
-    end_date         = models.DateField(blank=True, null=True)
-    objects          = EmploymentManager()
-
-    def __str__(self):
-        """Represent the model as a string.
-
-        :return: The string representation
-        :rtype:  str
-        """
-        return '{0} ({1} - {2})'.format(
-            self.user.username,
-            self.start_date.strftime('%d.%m.%Y'),
-            self.end_date.strftime('%d.%m.%Y') if self.end_date else 'today'
-        )
-
-    class Meta:
-        """Meta information for the employment model."""
-
-        indexes = [models.Index(fields=['start_date', 'end_date'])]
 
 
 class PublicHoliday(models.Model):
@@ -293,3 +237,143 @@ class UserAbsenceType(AbsenceType):
 
     class Meta:
         proxy = True
+
+
+class EmploymentManager(models.Manager):
+    """Custom manager for employments."""
+
+    def for_user(self, user, date=date.today()):
+        """Get the employment on a date for a user.
+
+        :param User user: The user of the searched employment
+        :param datetime.date date: The date of the searched employment
+        :returns: The employment on the date for the user
+        :rtype: timed.employment.models.Employment
+        """
+        return self.get(
+            (
+                models.Q(end_date__gte=date) |
+                models.Q(end_date__isnull=True)
+            ),
+            start_date__lte=date,
+            user=user
+        )
+
+
+class Employment(models.Model):
+    """Employment model.
+
+    An employment represents a contract which defines where an employee works
+    and from when to when.
+    """
+
+    user             = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                         related_name='employments')
+    location         = models.ForeignKey(Location, related_name='employments')
+    percentage       = models.IntegerField(validators=[
+                                           MinValueValidator(0),
+                                           MaxValueValidator(100)])
+    worktime_per_day = models.DurationField()
+    start_date       = models.DateField()
+    end_date         = models.DateField(blank=True, null=True)
+    objects          = EmploymentManager()
+
+    def __str__(self):
+        """Represent the model as a string.
+
+        :return: The string representation
+        :rtype:  str
+        """
+        return '{0} ({1} - {2})'.format(
+            self.user.username,
+            self.start_date.strftime('%d.%m.%Y'),
+            self.end_date.strftime('%d.%m.%Y') if self.end_date else 'today'
+        )
+
+    def calculate_worktime(self, start, end):
+        """Calculate reported, expected and balance for employment.
+
+        1. It shortens the time frame so it is within given employment
+        1. Determine the count of workdays within time frame
+        2. Determine the count of public holidays within time frame
+        3. The expected worktime consists of following elements:
+            * Workdays
+            * Subtracted by holidays
+            * Multiplicated with the worktime per day of the employment
+        4. Determine the overtime credit duration within time frame
+        5. The reported worktime is the sum of the durations of all reports
+           for this user within time frame
+        6. The absences are all absences for this user within time frame
+        7. The balance is the reported time plus the absences plus the
+            overtime credit minus the expected worktime
+
+        :param start: calculate worktime starting on given day.
+        :param end:   calculate worktime till given day
+        :returns:     tuple of 3 values reported, expected and balance in given
+                      time frame
+        """
+        from timed.tracking.models import Absence, Report
+
+        # shorten time frame to employment
+        start = max(start, self.start_date)
+        end = min(self.end_date or date.today(), end)
+
+        # workdays is in isoweekday, byweekday expects Monday to be zero
+        week_workdays = [int(day) - 1 for day in self.location.workdays]
+        workdays = rrule.rrule(
+            rrule.DAILY,
+            dtstart=start,
+            until=end,
+            byweekday=week_workdays
+        ).count()
+
+        # converting workdays as db expects 1 (Sunday) to 7 (Saturday)
+        workdays_db = [
+            # special case for Sunday
+            int(day) == 7 and 1 or int(day) + 1
+            for day in self.location.workdays
+        ]
+        holidays = PublicHoliday.objects.filter(
+            location=self.location,
+            date__gte=start,
+            date__lte=end,
+            date__week_day__in=workdays_db
+        ).count()
+
+        expected_worktime = self.worktime_per_day * (workdays - holidays)
+
+        overtime_credit = sum(
+            OvertimeCredit.objects.filter(
+                user=self.user,
+                date__gte=start,
+                date__lte=end
+            ).values_list('duration', flat=True),
+            timedelta()
+        )
+
+        reported_worktime = sum(
+            Report.objects.filter(
+                user=self.user,
+                date__gte=start,
+                date__lte=end
+            ).values_list('duration', flat=True),
+            timedelta()
+        )
+
+        absences = sum(
+            Absence.objects.filter(
+                user=self.user,
+                date__gte=start,
+                date__lte=end
+            ).values_list('duration', flat=True),
+            timedelta()
+        )
+
+        reported = reported_worktime + absences + overtime_credit
+
+        return (reported, expected_worktime, reported - expected_worktime)
+
+    class Meta:
+        """Meta information for the employment model."""
+
+        indexes = [models.Index(fields=['start_date', 'end_date'])]
