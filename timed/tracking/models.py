@@ -187,7 +187,7 @@ class Absence(models.Model):
         difference between the reported time and the worktime per day.
         """
         from timed.employment.models import Employment
-        employment = Employment.objects.for_user(self.user, self.date)
+        employment = Employment.objects.get_at(self.user, self.date)
 
         if self.type.fill_worktime:
             worktime = sum(

@@ -202,7 +202,7 @@ class AbsenceSerializer(ModelSerializer):
         :returns: The validated data
         :rtype:   dict
         """
-        location = Employment.objects.for_user(
+        location = Employment.objects.get_at(
             data.get('user'),
             data.get('date')
         ).location

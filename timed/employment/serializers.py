@@ -42,15 +42,7 @@ class UserSerializer(ModelSerializer):
             ),
             '%Y-%m-%d'
         ).date()
-
-        try:
-            employment = models.Employment.objects.for_user(instance, end)
-        except models.Employment.DoesNotExist:
-            return models.UserAbsenceType.objects.none()
-
-        start = max(
-            employment.start_date, date(date.today().year, 1, 1)
-        )
+        start = date(end.year, 1, 1)
 
         return models.UserAbsenceType.objects.with_user(instance,
                                                         start,
@@ -89,7 +81,7 @@ class UserSerializer(ModelSerializer):
         end = end or date.today()
 
         try:
-            employment = models.Employment.objects.for_user(user, end)
+            employment = models.Employment.objects.get_at(user, end)
         except models.Employment.DoesNotExist:
             # If there is no active employment, set the balance to 0
             return timedelta(), timedelta(), timedelta()

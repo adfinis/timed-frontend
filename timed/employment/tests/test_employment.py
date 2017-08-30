@@ -123,13 +123,13 @@ class EmploymentTests(JSONAPITestCase):
         with pytest.raises(ValueError):
             form.save()
 
-    def test_employment_at(self):
+    def test_employment_get_at(self):
         """Should return the right employment on a date."""
         employment = Employment.objects.get(user=self.user,
                                             end_date__isnull=True)
 
         assert (
-            Employment.objects.for_user(self.user, employment.start_date) ==
+            Employment.objects.get_at(self.user, employment.start_date) ==
             employment
         )
 
@@ -141,7 +141,7 @@ class EmploymentTests(JSONAPITestCase):
         employment.save()
 
         with pytest.raises(Employment.DoesNotExist):
-            Employment.objects.for_user(
+            Employment.objects.get_at(
                 self.user,
                 employment.start_date + timedelta(days=21)
             )

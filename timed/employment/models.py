@@ -242,13 +242,12 @@ class UserAbsenceType(AbsenceType):
 class EmploymentManager(models.Manager):
     """Custom manager for employments."""
 
-    def for_user(self, user, date=date.today()):
-        """Get the employment on a date for a user.
+    def get_at(self, user, date):
+        """Get employment of user at given date.
 
-        :param User user: The user of the searched employment
-        :param datetime.date date: The date of the searched employment
-        :returns: The employment on the date for the user
-        :rtype: timed.employment.models.Employment
+        :param User user: The user of the searched employments
+        :param datetime.date date: date of employment
+        :returns: Employment
         """
         return self.get(
             (
@@ -256,6 +255,23 @@ class EmploymentManager(models.Manager):
                 models.Q(end_date__isnull=True)
             ),
             start_date__lte=date,
+            user=user
+        )
+
+    def for_user(self, user, start, end):
+        """Get employments in given time frame for current user.
+
+        :param User user: The user of the searched employments
+        :param datetime.date start: start of time frame
+        :param datetime.date end: end of time frame
+        :returns: queryset of employments
+        """
+        return self.filter(
+            (
+                models.Q(end_date__gte=end) |
+                models.Q(end_date__isnull=True)
+            ),
+            start_date__lte=start,
             user=user
         )
 
