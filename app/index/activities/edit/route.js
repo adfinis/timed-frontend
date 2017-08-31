@@ -7,6 +7,7 @@ import Route from 'ember-route'
 import service from 'ember-service/inject'
 import moment from 'moment'
 import Changeset from 'ember-changeset'
+import lookupValidator from 'ember-changeset-validations'
 import ActivityValidator from 'timed/validations/activity'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
@@ -50,7 +51,14 @@ export default Route.extend(RouteAutostartTourMixin, {
   setupController(controller, model) {
     this._super(...arguments)
 
-    controller.set('activity', new Changeset(model, ActivityValidator))
+    controller.set(
+      'activity',
+      new Changeset(
+        model,
+        lookupValidator(ActivityValidator),
+        ActivityValidator
+      )
+    )
   },
 
   /**
