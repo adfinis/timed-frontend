@@ -286,6 +286,11 @@ export default Service.extend({
 
       yield block.save()
 
+      // Sadly, we need to do this here since the computed property
+      // 'activeBlock' on the activity does not sense a change when the blocks
+      // change from new to actually loaded
+      activity.notifyPropertyChange('blocks')
+
       this.get('notify').success('Activity was started')
     } catch (e) {
       /* istanbul ignore next */

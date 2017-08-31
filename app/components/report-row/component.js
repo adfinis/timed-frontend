@@ -6,6 +6,7 @@
 import Component from 'ember-component'
 import ReportValidations from 'timed/validations/report'
 import Changeset from 'ember-changeset'
+import lookupValidator from 'ember-changeset-validations'
 import computed, { observes } from 'ember-computed-decorators'
 import { later } from 'ember-runloop'
 
@@ -35,7 +36,11 @@ const ReportRowComponent = Component.extend({
    */
   @computed('report.{id,verifiedBy}')
   changeset() {
-    return new Changeset(this.get('report'), ReportValidations)
+    return new Changeset(
+      this.get('report'),
+      lookupValidator(ReportValidations),
+      ReportValidations
+    )
   },
 
   /**
