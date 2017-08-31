@@ -26,27 +26,31 @@ export default Component.extend({
 
   inactive: false,
 
-  init() {
+  async init() {
     this._super(...arguments)
 
-    if (!this.get('tracking.users.last')) {
-      this.get('tracking.users').perform()
+    try {
+      await this.get('tracking.users').perform()
+    } catch (e) {
+      /* istanbul ignore next */
+      if (e.taskInstance && e.taskInstance.isCanceling) {
+        return
+      }
+
+      /* istanbul ignore next */
+      throw e
     }
   },
 
   @computed('inactive')
   async users(inactive) {
-    try {
-      await this.get('tracking.users.last')
+    await this.get('tracking.users.last')
 
-      return this.get('store')
-        .peekAll('user')
-        .filter(u => {
-          return inactive ? true : u.get('isActive')
-        })
-        .sortBy('username')
-    } catch (e) {
-      return []
-    }
+    return this.get('store')
+      .peekAll('user')
+      .filter(u => {
+        return inactive ? true : u.get('isActive')
+      })
+      .sortBy('username')
   }
 })

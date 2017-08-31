@@ -9,7 +9,7 @@ import startApp from '../helpers/start-app'
 import testSelector from 'ember-test-selectors'
 import moment from 'moment'
 
-describe('Acceptance | index activities', function() {
+describe('Acceptance | index activities x', function() {
   let application
 
   beforeEach(async function() {
@@ -125,13 +125,34 @@ describe('Acceptance | index activities', function() {
     expect(find(testSelector('report-row'))).to.have.length(7)
 
     expect(
-      find(`${testSelector('report-row-id', id)} td:eq(0) .tt-input`).val()
+      find(
+        `${testSelector(
+          'report-row-id',
+          id
+        )} td:eq(0) .ember-power-select-selected-item`
+      )
+        .text()
+        .trim()
     ).to.equal(activity.task.project.customer.name)
     expect(
-      find(`${testSelector('report-row-id', id)} td:eq(1) .tt-input`).val()
+      find(
+        `${testSelector(
+          'report-row-id',
+          id
+        )} td:eq(1) .ember-power-select-selected-item`
+      )
+        .text()
+        .trim()
     ).to.equal(activity.task.project.name)
     expect(
-      find(`${testSelector('report-row-id', id)} td:eq(2) .tt-input`).val()
+      find(
+        `${testSelector(
+          'report-row-id',
+          id
+        )} td:eq(2) .ember-power-select-selected-item`
+      )
+        .text()
+        .trim()
     ).to.equal(activity.task.name)
   })
 
@@ -187,7 +208,6 @@ describe('Acceptance | index activities', function() {
   })
 
   it('shows a warning when generating reports from unknown tasks', async function() {
-    server.db.activities.remove()
     server.create('activity', 'unknown')
 
     await visit('/')

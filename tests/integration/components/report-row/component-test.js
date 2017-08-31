@@ -1,11 +1,20 @@
 import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
+import { startMirage } from 'timed/initializers/ember-cli-mirage'
 
 describe('Integration | Component | report row', function() {
   setupComponentTest('report-row', {
     integration: true
+  })
+
+  beforeEach(function() {
+    this.server = startMirage()
+  })
+
+  afterEach(function() {
+    this.server.shutdown()
   })
 
   it('renders', function() {

@@ -4,17 +4,34 @@
   {{/if}}
 {{/if}}
 
-{{#vertical-collection options estimateHeight=28 bufferSize=5 as |opt index|}}
-  <li class="ember-power-select-option"
-    aria-selected="{{ember-power-select-is-selected opt select.selected}}"
-    aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}
-    aria-current="{{eq opt select.highlighted}}"
-    data-option-index="{{groupIndex}}{{index}}"
-    role="option">
-    {{#if extra.optionTemplate}}
-      {{component 'power-select/option' layout=extra.optionTemplate option=opt}}
-    {{else}}
-      {{yield opt select}}
-    {{/if}}
-  </li>
-{{/vertical-collection}}
+{{#if extra.testing}}
+  {{#each options as |opt index|}}
+    <li class="ember-power-select-option"
+      aria-selected="{{ember-power-select-is-selected opt select.selected}}"
+      aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}
+      aria-current="{{eq opt select.highlighted}}"
+      data-option-index="{{groupIndex}}{{index}}"
+      role="option">
+      {{#if extra.optionTemplate}}
+        {{component 'power-select/option' layout=extra.optionTemplate option=opt}}
+      {{else}}
+        {{yield opt select}}
+      {{/if}}
+    </li>
+  {{/each}}
+{{else}}
+  {{#vertical-collection options estimateHeight=30 bufferSize=5 as |opt index|}}
+    <li class="ember-power-select-option"
+      aria-selected="{{ember-power-select-is-selected opt select.selected}}"
+      aria-disabled={{ember-power-select-true-string-if-present opt.disabled}}
+      aria-current="{{eq opt select.highlighted}}"
+      data-option-index="{{groupIndex}}{{index}}"
+      role="option">
+      {{#if extra.optionTemplate}}
+        {{component 'power-select/option' layout=extra.optionTemplate option=opt}}
+      {{else}}
+        {{yield opt select}}
+      {{/if}}
+    </li>
+  {{/vertical-collection}}
+{{/if}}

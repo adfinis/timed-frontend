@@ -1,12 +1,21 @@
 import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
+import { startMirage } from 'timed/initializers/ember-cli-mirage'
 
 describe('Integration | Component | report filter', function() {
   setupComponentTest('report-filter', {
     integration: true
+  })
+
+  beforeEach(function() {
+    this.server = startMirage()
+  })
+
+  afterEach(function() {
+    this.server.shutdown()
   })
 
   it('renders', function() {

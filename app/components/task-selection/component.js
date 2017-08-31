@@ -10,7 +10,7 @@ import Ember from 'ember'
 import hbs from 'htmlbars-inline-precompile'
 import { later } from 'ember-runloop'
 
-const { testing, isBlank } = Ember
+const { isBlank } = Ember
 
 const SELECTED_TEMPLATE = hbs`{{selected.name}}`
 
@@ -57,14 +57,7 @@ const CUSTOMER_OPTION_TEMPLATE = hbs`
  * @public
  */
 export default Component.extend({
-  /**
-   * The store service
-   *
-   * @property {Ember.Store} store
-   * @public
-   */
   store: service('store'),
-
   tracking: service('tracking'),
 
   /**
@@ -79,13 +72,36 @@ export default Component.extend({
   tagName: '',
 
   /**
-   * Init hook, set initial values if given
+   * Init hook, initially load customers and recent tasks
+   *
+   * @method init
+   * @public
+   */
+  async init() {
+    this._super(...arguments)
+
+    try {
+      await this.get('tracking.customers').perform()
+      await this.get('tracking.recentTasks').perform()
+    } catch (e) {
+      /* istanbul ignore next */
+      if (e.taskInstance && e.taskInstance.isCanceling) {
+        return
+      }
+
+      /* istanbul ignore next */
+      throw e
+    }
+  },
+
+  /**
+   * Set the initial values when receiving the attributes
    *
    * @method didReceiveAttrs
    * @return {Task|Project|Customer} The setted task, project or customer
    * @public
    */
-  didReceiveAttrs() {
+  async didReceiveAttrs() {
     this._super(...arguments)
 
     let { customer, project, task } = this.getWithDefault('initial', {
@@ -93,14 +109,6 @@ export default Component.extend({
       project: null,
       task: null
     })
-
-    if (!this.get('tracking.customers.last') && !testing) {
-      this.get('tracking.customers').perform()
-    }
-
-    if (!this.get('tracking.recentTasks.last') && !testing) {
-      this.get('tracking.recentTasks').perform()
-    }
 
     if (task && !this.get('task')) {
       return this.set('task', task)
@@ -295,13 +303,15 @@ export default Component.extend({
   async customersAndRecentTasks(history, archived) {
     let ids = []
 
-    try {
-      await this.get('tracking.customers.last')
+    await this.get('tracking.customers.last')
 
-      if (history) {
-        ids = await this.get('tracking.recentTasks.last.value').mapBy('id')
-      }
-    } catch (e) {}
+    if (history) {
+      await this.get('tracking.recentTasks.last')
+
+      let last = this.get('tracking.recentTasks.last.value')
+
+      ids = last ? last.mapBy('id') : []
+    }
 
     let customers = this.get('store')
       .peekAll('customer')
@@ -327,13 +337,9 @@ export default Component.extend({
    */
   @computed('customer.id', 'archived')
   async projects(id, archived) {
-    try {
-      if (!id) {
-        throw new Error('Customer must be set to filter projects')
-      }
-
+    if (id) {
       await this.get('tracking.projects').perform(id)
-    } catch (e) {}
+    }
 
     return this.get('store')
       .peekAll('project')
@@ -355,13 +361,9 @@ export default Component.extend({
    */
   @computed('project.id', 'archived')
   async tasks(id, archived) {
-    try {
-      if (!id) {
-        throw new Error('Project must be set to filter tasks')
-      }
-
+    if (id) {
       await this.get('tracking.tasks').perform(id)
-    } catch (e) {}
+    }
 
     return this.get('store')
       .peekAll('task')
@@ -373,27 +375,65 @@ export default Component.extend({
       .sortBy('name')
   },
 
+  /**
+   * Check if the focus comes from outside the combobox
+   *
+   * @method _focusComesFromOutside
+   * @param {jQuery.Event} e The jquery event
+   * @return {Boolean} Whether the focus comes from outside
+   * @private
+   */
   _focusComesFromOutside(e) {
     let blurredEl = e.relatedTarget
+
+    // Can't test this since dropdowns are rendered in place in tests
+    /* istanbul ignore next */
     if (isBlank(blurredEl)) {
       return false
     }
+
     return !blurredEl.classList.contains('ember-power-select-search-input')
   },
 
   actions: {
+    /**
+     * Handle focusing of a combobox - open it on focus
+     *
+     * @method handleFocus
+     * @param {*} select The combobox
+     * @param {jQuery.Event} e The jquery focus event
+     * @public
+     */
     handleFocus(select, e) {
       if (this._focusComesFromOutside(e)) {
+        // Can't test this since dropdowns are rendered in place in tests
+        /* istanbul ignore next */
         select.actions.open()
       }
     },
 
+    /**
+     * Handle blurring of a combobox - close it on blur
+     *
+     * @method handleBlur
+     * @param {*} select The combobox
+     * @param {jQuery.Event} e The jquery blur event
+     * @public
+     */
     handleBlur(select, e) {
       if (this._focusComesFromOutside(e)) {
+        // Can't test this since dropdowns are rendered in place in tests
+        /* istanbul ignore next */
         select.actions.close()
       }
     },
 
+    /**
+     * Clear all comboboxes
+     *
+     * @method clear
+     * @public
+     */
     clear() {
       this.setProperties({
         customer: null,

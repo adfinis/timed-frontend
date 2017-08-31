@@ -1,12 +1,21 @@
 import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { click } from 'ember-native-dom-helpers'
+import { startMirage } from 'timed/initializers/ember-cli-mirage'
 
 describe('Integration | Component | report reschedule row', function() {
   setupComponentTest('report-reschedule-row', {
     integration: true
+  })
+
+  beforeEach(function() {
+    this.server = startMirage()
+  })
+
+  afterEach(function() {
+    this.server.shutdown()
   })
 
   it('renders', function() {

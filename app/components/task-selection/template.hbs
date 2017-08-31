@@ -6,6 +6,8 @@
     placeholder        = 'Select customer...'
     searchField        = 'longName'
     allowClear         = true
+    tagName            = 'div'
+    class              = 'customer-select'
     onfocus            = (action 'handleFocus')
     onblur             = (action 'handleBlur')
     onchange           = (action (mut customer))
@@ -21,6 +23,8 @@
     placeholder        = 'Select project...'
     searchField        = 'name'
     allowClear         = true
+    tagName            = 'div'
+    class              = 'project-select'
     onfocus            = (action 'handleFocus')
     onblur             = (action 'handleBlur')
     onchange           = (action (mut project))
@@ -36,6 +40,8 @@
     placeholder        = 'Select task...'
     searchField        = 'name'
     allowClear         = true
+    tagName            = 'div'
+    class              = 'task-select'
     onfocus            = (action 'handleFocus')
     onblur             = (action 'handleBlur')
     onchange           = (action (mut task))
