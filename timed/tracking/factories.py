@@ -108,7 +108,7 @@ class AbsenceFactory(DjangoModelFactory):
         :return: The computed duration
         :rtype:  datetime.timedelta
         """
-        return Employment.objects.for_user(
+        return Employment.objects.get_at(
             self.user,
             self.date
         ).worktime_per_day

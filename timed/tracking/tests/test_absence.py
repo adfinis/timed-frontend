@@ -170,7 +170,7 @@ class AbsenceTests(JSONAPITestCase):
         """Should create an absence which fills the worktime."""
         date       = datetime.date(2017, 5, 10)
         type       = AbsenceTypeFactory.create(fill_worktime=True)
-        employment = Employment.objects.for_user(self.user, date)
+        employment = Employment.objects.get_at(self.user, date)
 
         employment.worktime_per_day = datetime.timedelta(hours=8)
         employment.save()
@@ -244,7 +244,7 @@ class AbsenceTests(JSONAPITestCase):
         type = AbsenceTypeFactory.create()
 
         PublicHolidayFactory.create(
-            location=Employment.objects.for_user(self.user, date).location,
+            location=Employment.objects.get_at(self.user, date).location,
             date=date
         )
 
