@@ -1,8 +1,7 @@
 """Serializers for the employment app."""
 
-from datetime import date, datetime, timedelta
+from datetime import date, datetime
 
-from dateutil import rrule
 from django.contrib.auth import get_user_model
 from django.utils.duration import duration_string
 from rest_framework.exceptions import PermissionDenied
@@ -12,7 +11,6 @@ from rest_framework_json_api.serializers import (DurationField, IntegerField,
                                                  SerializerMethodField)
 
 from timed.employment import models
-from timed.tracking.models import Absence, Report
 
 
 class UserSerializer(ModelSerializer):
@@ -49,104 +47,11 @@ class UserSerializer(ModelSerializer):
                                                         end)
 
     def get_worktime(self, user, start=None, end=None):
-        """Calculate the reported, expected and balance for user.
-
-        1.  Determine the current employment of the user
-        2.  Take the latest of those two as start date:
-             * The start of the year
-             * The start of the current employment
-        3.  Take the delivered date if given or the current date as end date
-        4.  Determine the count of workdays within start and end date
-        5.  Determine the count of public holidays within start and end date
-        6.  The expected worktime consists of following elements:
-             * Workdays
-             * Subtracted by holidays
-             * Multiplicated with the worktime per day of the employment
-        7.  Determine the overtime credit duration within start and end date
-        8.  The reported worktime is the sum of the durations of all reports
-            for this user within start and end date
-        9.  The absences are all absences for this user between the start and
-            end time
-        10. The balance is the reported time plus the absences plus the
-            overtime credit minus the expected worktime
-
-        :param user:       user to get worktime from
-        :param start_date: worktime starting on  given day;
-                           if not set when employment started resp. begining of
-                           the year
-        :param end_date:   worktime till day or if not set today
-        :returns: tuple of 3 values reported, expected and balance in given
-                  time frame
-        """
         end = end or date.today()
+        start = date(end.year, 1, 1)
 
-        try:
-            employment = models.Employment.objects.get_at(user, end)
-        except models.Employment.DoesNotExist:
-            # If there is no active employment, set the balance to 0
-            return timedelta(), timedelta(), timedelta()
-
-        location = employment.location
-
-        if start is None:
-            start = max(
-                employment.start_date, date(date.today().year, 1, 1)
-            )
-
-        # workdays is in isoweekday, byweekday expects Monday to be zero
-        week_workdays = [int(day) - 1 for day in employment.location.workdays]
-        workdays = rrule.rrule(
-            rrule.DAILY,
-            dtstart=start,
-            until=end,
-            byweekday=week_workdays
-        ).count()
-
-        # converting workdays as db expects 1 (Sunday) to 7 (Saturday)
-        workdays_db = [
-            # special case for Sunday
-            int(day) == 7 and 1 or int(day) + 1
-            for day in location.workdays
-        ]
-        holidays = models.PublicHoliday.objects.filter(
-            location=location,
-            date__gte=start,
-            date__lte=end,
-            date__week_day__in=workdays_db
-        ).count()
-
-        expected_worktime = employment.worktime_per_day * (workdays - holidays)
-
-        overtime_credit = sum(
-            models.OvertimeCredit.objects.filter(
-                user=user,
-                date__gte=start,
-                date__lte=end
-            ).values_list('duration', flat=True),
-            timedelta()
-        )
-
-        reported_worktime = sum(
-            Report.objects.filter(
-                user=user,
-                date__gte=start,
-                date__lte=end
-            ).values_list('duration', flat=True),
-            timedelta()
-        )
-
-        absences = sum(
-            Absence.objects.filter(
-                user=user,
-                date__gte=start,
-                date__lte=end
-            ).values_list('duration', flat=True),
-            timedelta()
-        )
-
-        reported = reported_worktime + absences + overtime_credit
-
-        return (reported, expected_worktime, reported - expected_worktime)
+        balance_tuple = user.calculate_worktime(start, end)
+        return balance_tuple
 
     def get_worktime_balance(self, instance):
         """Format the worktime balance.

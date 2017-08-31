@@ -264,3 +264,37 @@ def test_worktime_balance_longer(db):
     assert expected == expected_expected
     assert reported == expected_reported
     assert balance == expected_balance
+
+
+def test_employment_for_user(db):
+    user = factories.UserFactory.create()
+    # employment overlapping time frame (early start)
+    factories.EmploymentFactory.create(
+        start_date=date(2017, 1, 1),
+        end_date=date(2017, 2, 28),
+        user=user
+    )
+    # employment overlapping time frame (early end)
+    factories.EmploymentFactory.create(
+        start_date=date(2017, 3, 1),
+        end_date=date(2017, 3, 31),
+        user=user
+    )
+    # employment within time frame
+    factories.EmploymentFactory.create(
+        start_date=date(2017, 4, 1),
+        end_date=date(2017, 4, 30),
+        user=user
+    )
+    # employment without end date
+    factories.EmploymentFactory.create(
+        start_date=date(2017, 5, 1),
+        end_date=None,
+        user=user
+    )
+
+    employments = Employment.objects.for_user(
+        user, date(2017, 2, 1), date(2017, 12, 1)
+    )
+
+    assert employments.count() == 4

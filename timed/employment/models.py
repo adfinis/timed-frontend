@@ -7,6 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.db.models import functions
 
 from timed.models import WeekdaysField
 
@@ -30,37 +31,6 @@ class Location(models.Model):
         :rtype:  str
         """
         return self.name
-
-
-class UserManager(UserManager):
-    def all_supervisors(self):
-        objects = self.model.objects.annotate(
-            supervisees_count=models.Count('supervisees'))
-        return objects.filter(supervisees_count__gt=0)
-
-    def all_reviewers(self):
-        objects = self.model.objects.annotate(
-            reviews_count=models.Count('reviews'))
-        return objects.filter(reviews__gt=0)
-
-    def all_supervisees(self):
-        objects = self.model.objects.annotate(
-            supervisors_count=models.Count('supervisors'))
-        return objects.filter(supervisors_count__gt=0)
-
-
-class User(AbstractUser):
-    """Timed specific user."""
-
-    supervisors = models.ManyToManyField('self', symmetrical=False,
-                                         related_name='supervisees')
-
-    tour_done = models.BooleanField(default=False)
-    """
-    Indicate whether user has finished tour through Timed in frontend.
-    """
-
-    objects = UserManager()
 
 
 class PublicHoliday(models.Model):
@@ -261,17 +231,23 @@ class EmploymentManager(models.Manager):
     def for_user(self, user, start, end):
         """Get employments in given time frame for current user.
 
+        This includes overlapping employments.
+
         :param User user: The user of the searched employments
         :param datetime.date start: start of time frame
         :param datetime.date end: end of time frame
         :returns: queryset of employments
         """
-        return self.filter(
+        # end date NULL on database is like employment is ending today
+        queryset = self.annotate(
+            end=functions.Coalesce('end_date', models.Value(date.today()))
+        )
+        return queryset.filter(
+            # using end field as defined as Coalesce above
             (
-                models.Q(end_date__gte=end) |
-                models.Q(end_date__isnull=True)
+                models.Q(start_date__range=[start, end]) |
+                models.Q(end__range=[start, end])
             ),
-            start_date__lte=start,
             user=user
         )
 
@@ -393,3 +369,58 @@ class Employment(models.Model):
         """Meta information for the employment model."""
 
         indexes = [models.Index(fields=['start_date', 'end_date'])]
+
+
+class UserManager(UserManager):
+    def all_supervisors(self):
+        objects = self.model.objects.annotate(
+            supervisees_count=models.Count('supervisees'))
+        return objects.filter(supervisees_count__gt=0)
+
+    def all_reviewers(self):
+        objects = self.model.objects.annotate(
+            reviews_count=models.Count('reviews'))
+        return objects.filter(reviews__gt=0)
+
+    def all_supervisees(self):
+        objects = self.model.objects.annotate(
+            supervisors_count=models.Count('supervisors'))
+        return objects.filter(supervisors_count__gt=0)
+
+
+class User(AbstractUser):
+    """Timed specific user."""
+
+    supervisors = models.ManyToManyField('self', symmetrical=False,
+                                         related_name='supervisees')
+
+    tour_done = models.BooleanField(default=False)
+    """
+    Indicate whether user has finished tour through Timed in frontend.
+    """
+
+    objects = UserManager()
+
+    def calculate_worktime(self, start, end):
+        """Calculate reported, expected and balance for user.
+
+        This calculates summarizes worktime for all employments of users which
+        are in given time frame.
+
+        :param start: calculate worktime starting on given day.
+        :param end:   calculate worktime till given day
+        :returns:     tuple of 3 values reported, expected and balance in given
+                      time frame
+        """
+        employments = Employment.objects.for_user(self, start, end)
+
+        balances = [
+            employment.calculate_worktime(start, end)
+            for employment in employments
+        ]
+
+        reported = sum([balance[0] for balance in balances], timedelta())
+        expected = sum([balance[1] for balance in balances], timedelta())
+        balance = sum([balance[2] for balance in balances], timedelta())
+
+        return (reported, expected, balance)
