@@ -10,7 +10,7 @@ import Ember from 'ember'
 import hbs from 'htmlbars-inline-precompile'
 import { later } from 'ember-runloop'
 
-const { isBlank } = Ember
+const { isBlank, testing } = Ember
 
 const SELECTED_TEMPLATE = hbs`{{selected.name}}`
 
@@ -386,7 +386,7 @@ export default Component.extend({
   _focusComesFromOutside(e) {
     let blurredEl = e.relatedTarget
 
-    if (isBlank(blurredEl)) {
+    if (isBlank(blurredEl) || testing) {
       return false
     }
 
