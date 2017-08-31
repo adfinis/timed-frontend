@@ -1,5 +1,6 @@
 """Views for the admin interface."""
 
+from django import forms
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
@@ -24,25 +25,41 @@ class BillingType(admin.ModelAdmin):
     search_fields = ['name']
 
 
+class TaskForm(forms.ModelForm):
+    """
+    Task form making sure that initial forms are marked as changed.
+
+    Otherwise when saving project default tasks would not be saved.
+    """
+
+    model = models.Task
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        initial = kwargs.get('initial')
+        if initial:
+            self.changed_data = ['name']
+
+
 class TaskInlineFormset(BaseInlineFormSet):
     """Task formset defaulting to task templates when project is created."""
 
     def __init__(self, *args, **kwargs):
-        kwargs['initial'] = [
-            {'name': tmpl.name}
-            for tmpl in models.TaskTemplate.objects.order_by('name')
-        ]
         super().__init__(*args, **kwargs)
+        project = kwargs['instance']
+        if project.tasks.count() == 0:
+            self.initial = [
+                {'name': tmpl.name}
+                for tmpl in models.TaskTemplate.objects.order_by('name')
+            ]
+            self.extra += len(self.initial)
 
 
 class TaskInline(admin.TabularInline):
     formset = TaskInlineFormset
+    form = TaskForm
     model = models.Task
-
-    def get_extra(self, request, obj=None, **kwargs):
-        if obj is not None:
-            return 0
-        return models.TaskTemplate.objects.count()
+    extra = 0
 
     def has_delete_permission(self, request, obj=None):
         # for some reason obj is parent object and not task
