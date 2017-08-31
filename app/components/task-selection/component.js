@@ -386,12 +386,12 @@ export default Component.extend({
   _focusComesFromOutside(e) {
     let blurredEl = e.relatedTarget
 
-    // Can't test this since dropdowns are rendered in place in tests
-    /* istanbul ignore next */
     if (isBlank(blurredEl)) {
       return false
     }
 
+    // Can't test this since dropdowns are rendered in place in tests
+    /* istanbul ignore next */
     return !blurredEl.classList.contains('ember-power-select-search-input')
   },
 
@@ -405,9 +405,9 @@ export default Component.extend({
      * @public
      */
     handleFocus(select, e) {
+      // Can't test this since dropdowns are rendered in place in tests
+      /* istanbul ignore next */
       if (this._focusComesFromOutside(e)) {
-        // Can't test this since dropdowns are rendered in place in tests
-        /* istanbul ignore next */
         select.actions.open()
       }
     },
@@ -421,9 +421,9 @@ export default Component.extend({
      * @public
      */
     handleBlur(select, e) {
+      // Can't test this since dropdowns are rendered in place in tests
+      /* istanbul ignore next */
       if (this._focusComesFromOutside(e)) {
-        // Can't test this since dropdowns are rendered in place in tests
-        /* istanbul ignore next */
         select.actions.close()
       }
     },

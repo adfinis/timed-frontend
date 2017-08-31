@@ -15,7 +15,7 @@ import { oneWay } from 'ember-computed-decorators'
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+const Customer = Model.extend({
   /**
    * The name
    *
@@ -51,3 +51,5 @@ export default Model.extend({
    */
   @oneWay('name') longName: ''
 })
+
+export default Customer
