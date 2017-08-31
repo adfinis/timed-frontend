@@ -243,12 +243,9 @@ class EmploymentManager(models.Manager):
             end=functions.Coalesce('end_date', models.Value(date.today()))
         )
         return queryset.filter(
-            # using end field as defined as Coalesce above
-            (
-                models.Q(start_date__range=[start, end]) |
-                models.Q(end__range=[start, end])
-            ),
             user=user
+        ).exclude(
+            models.Q(end__lt=start) | models.Q(start_date__gt=end)
         )
 
 
