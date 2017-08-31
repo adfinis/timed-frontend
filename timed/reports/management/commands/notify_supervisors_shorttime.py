@@ -6,8 +6,6 @@ from django.core.mail import send_mass_mail
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
 
-from timed.employment.serializers import UserSerializer
-
 
 class Command(BaseCommand):
     """
@@ -28,10 +26,6 @@ class Command(BaseCommand):
     """
 
     help = 'Notify supervisors when supervisees have reported shortime.'
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.serializer = UserSerializer()
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -85,7 +79,7 @@ class Command(BaseCommand):
         supervisees_shorttime = {}
         supervisees = get_user_model().objects.all_supervisees()
         for supervisee in supervisees:
-            worktime = self.serializer.get_worktime(supervisee, start, end)
+            worktime = supervisee.calculate_worktime(start, end)
             reported, expected, balance = worktime
             if expected == timedelta(0):
                 continue

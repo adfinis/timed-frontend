@@ -6,8 +6,6 @@ from django.conf import settings
 from django.db import models
 from django.db.models import F, Sum
 
-from timed.employment.models import Employment
-
 
 class Activity(models.Model):
     """Activity model.
@@ -188,7 +186,8 @@ class Absence(models.Model):
         sickness), in which case the duration of the absence needs to fill the
         difference between the reported time and the worktime per day.
         """
-        employment = Employment.objects.for_user(self.user, self.date)
+        from timed.employment.models import Employment
+        employment = Employment.objects.get_at(self.user, self.date)
 
         if self.type.fill_worktime:
             worktime = sum(
