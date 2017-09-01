@@ -34,8 +34,8 @@ describe('Integration | Component | report filter', function() {
 
     this.render(hbs`
       {{report-filter
-        initial=(hash fromDate=from review=1)
-        enabledFilters=(array 'fromDate' 'review')
+        initial=(hash fromDate=from review='1' notBillable=null notVerified='0')
+        enabledFilters=(array 'fromDate' 'review' 'notBillable' 'notVerified')
         on-apply=(action (mut filters))
       }}
     `)
@@ -44,7 +44,9 @@ describe('Integration | Component | report filter', function() {
 
     expect(this.get('filters')).to.deep.equal({
       fromDate: '2017-01-01',
-      review: 1
+      review: '1',
+      notBillable: null,
+      notVerified: '0'
     })
   })
 })

@@ -9,8 +9,9 @@ import computed from 'ember-computed-decorators'
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
+// Options can be '', '0' or '1' from a select box
+const option = val => (['0', '1'].includes(val) ? val : null)
 const id = obj => (obj ? obj.get('id') : null)
-const boolAsInt = val => ([0, 1].includes(parseInt(val)) ? parseInt(val) : null)
 const date = date => (date ? date.format(DATE_FORMAT) : null)
 const intOrNull = val => parseInt(val) || null
 
@@ -23,9 +24,9 @@ const FILTERS = {
   billingType: { default: null, cast: intOrNull },
   fromDate: { default: null, cast: date },
   toDate: { default: null, cast: date },
-  review: { default: null, cast: boolAsInt },
-  notBillable: { default: null, cast: boolAsInt },
-  notVerified: { default: null, cast: boolAsInt }
+  review: { default: null, cast: option },
+  notBillable: { default: null, cast: option },
+  notVerified: { default: null, cast: option }
 }
 
 /**
@@ -87,7 +88,11 @@ export default Component.extend({
   _setDefaultFilters(initial = {}) {
     let filters = EmberObject.create(
       this.get('_enabledFilters').reduce((obj, key) => {
-        return { ...obj, [key]: initial[key] || FILTERS[key].default }
+        return {
+          ...obj,
+          [key]:
+            initial[key] === undefined ? FILTERS[key].default : initial[key]
+        }
       }, {})
     )
 
