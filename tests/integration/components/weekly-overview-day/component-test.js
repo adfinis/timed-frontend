@@ -29,10 +29,10 @@ describe('Integration | Component | weekly overview day', function() {
     this.set('worktime', moment.duration({ h: 8, m: 30 }))
 
     this.render(
-      hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
+      hbs`{{weekly-overview-day day=day expected=expected worktime=worktime prefix='Ferien'}}`
     )
 
-    expect(this.$(':eq(0)').attr('title')).to.equal('8h 30m')
+    expect(this.$(':eq(0)').attr('title')).to.equal('Ferien, 8h 30m')
   })
 
   it('fires on-click action on click', function() {

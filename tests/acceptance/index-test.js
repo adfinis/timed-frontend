@@ -9,7 +9,7 @@ import moment from 'moment'
 import startApp from '../helpers/start-app'
 import testSelector from 'ember-test-selectors'
 
-describe('Acceptance | indexxx', function() {
+describe('Acceptance | index', function() {
   let application
 
   beforeEach(async function() {

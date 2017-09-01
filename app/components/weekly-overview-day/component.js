@@ -68,6 +68,14 @@ export default Component.extend({
   max: 20,
 
   /**
+   * A prefix to the title
+   *
+   * @property {String} prefix
+   * @public
+   */
+  prefix: '',
+
+  /**
    * The element title
    *
    * This is shown on hover. It contains the worktime.
@@ -75,15 +83,17 @@ export default Component.extend({
    * @property {String} title
    * @public
    */
-  @computed('worktime')
-  title(worktime) {
+  @computed('worktime', 'prefix')
+  title(worktime, prefix) {
+    let pre = prefix.length ? `${prefix}, ` : ''
+
     let title = `${worktime.hours()}h`
 
     if (worktime.minutes()) {
       title += ` ${worktime.minutes()}m`
     }
 
-    return title
+    return `${pre}${title}`
   },
 
   /**

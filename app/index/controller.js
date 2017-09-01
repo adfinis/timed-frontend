@@ -12,6 +12,7 @@ import { task, timeout } from 'ember-concurrency'
 import AbsenceValidations from 'timed/validations/absence'
 import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
 import { scheduleOnce } from 'ember-runloop'
+import { camelize } from 'ember-string'
 
 const { testing } = Ember
 
@@ -352,20 +353,27 @@ export default Controller.extend({
     allAbsences = allAbsences.filter(
       a => !a.get('isDeleted') && !a.get('isNew')
     )
-
     let allHolidays = this.store.peekAll('public-holiday')
 
-    // Build an object containing report and absence durations by date:
+    // Build an object containing reports, absences and holidays
     // {
-    //  '2017-03-21': { reports: [duration1, duration2, ...], absences: [duration1, ...]
+    //  '2017-03-21': {
+    //    reports: [report1, report2, ...],
+    //    absences: [absence1, ...],
+    //    publicHolidays: [publicHoliday1, ...]
+    //  }
     //  ...
     // }
-    let container = [...allReports, ...allAbsences].reduce((obj, model) => {
+    let container = [
+      ...allReports.toArray(),
+      ...allAbsences.toArray(),
+      ...allHolidays.toArray()
+    ].reduce((obj, model) => {
       let d = model.get('date').format('YYYY-MM-DD')
 
-      obj[d] = obj[d] || { reports: [], absences: [] }
+      obj[d] = obj[d] || { reports: [], absences: [], publicHolidays: [] }
 
-      obj[d][`${model.constructor.modelName}s`].push(model.get('duration'))
+      obj[d][`${camelize(model.constructor.modelName)}s`].push(model)
 
       return obj
     }, {})
@@ -373,20 +381,28 @@ export default Controller.extend({
     return Array.from({ length: 31 }, (v, k) =>
       moment(date).add(k - 20, 'days')
     ).map(d => {
-      let { reports = [], absences = [] } =
+      let { reports = [], absences = [], publicHolidays = [] } =
         container[d.format('YYYY-MM-DD')] || {}
+
+      let prefix = ''
+
+      if (publicHolidays.length) {
+        prefix = publicHolidays.get('firstObject.name')
+      } else if (absences.length) {
+        prefix = absences.get('firstObject.type.name')
+      }
 
       return {
         day: d,
         active: d.isSame(date, 'day'),
         absence: !!absences.length,
         workday: this.get('workdays').includes(d.isoWeekday()),
-        worktime: [...reports, ...absences].reduce(
-          (val, dur) => val.add(dur),
-          moment.duration()
-        ),
-        holiday: !!allHolidays.filter(holiday => holiday.get('date').isSame(d))
-          .length
+        worktime: [
+          ...reports.mapBy('duration'),
+          ...absences.mapBy('duration')
+        ].reduce((val, dur) => val.add(dur), moment.duration()),
+        holiday: !!publicHolidays.length,
+        prefix
       }
     })
   }).restartable(),
