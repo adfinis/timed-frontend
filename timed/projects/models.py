@@ -29,6 +29,7 @@ class Customer(models.Model):
         """Meta informations for the customer model."""
 
         indexes = [models.Index(fields=['name', 'archived'])]
+        ordering = ['name']
 
 
 class BillingType(models.Model):
@@ -71,6 +72,7 @@ class Project(models.Model):
         """Meta informations for the project model."""
 
         indexes = [models.Index(fields=['name', 'archived'])]
+        ordering = ['name']
 
 
 class Task(models.Model):
@@ -98,6 +100,7 @@ class Task(models.Model):
         """Meta informations for the task model."""
 
         indexes = [models.Index(fields=['name', 'archived'])]
+        ordering = ['name']
 
 
 class TaskTemplate(models.Model):
@@ -116,3 +119,6 @@ class TaskTemplate(models.Model):
         :rtype:  str
         """
         return self.name
+
+    class Meta:
+        ordering = ['name']
