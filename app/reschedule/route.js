@@ -22,20 +22,6 @@ export default Route.extend(StaffRouteMixin, ReportFilterRouteMixin, {
   ajax: service('ajax'),
 
   /**
-   * Some more query params to filter by
-   *
-   * @property {Object} queryParams
-   * @public
-   */
-  queryParams: {
-    reviewer: { refreshModel: true },
-    billing_type: { refreshModel: true }, // eslint-disable-line camelcase
-    review: { refreshModel: true },
-    not_billable: { refreshModel: true }, // eslint-disable-line camelcase
-    not_verified: { refreshModel: true } // eslint-disable-line camelcase
-  },
-
-  /**
    * Model hook, save the current params so we can use them to verify the page
    *
    * @method model
@@ -47,25 +33,6 @@ export default Route.extend(StaffRouteMixin, ReportFilterRouteMixin, {
     this.set('params', params)
 
     return this._super(...arguments)
-  },
-
-  /**
-   * Setup controller hook, set all billing types
-   *
-   * @method setupController
-   * @param {Ember.Controller} controller The controller
-   * @public
-   */
-  async setupController(controller) {
-    this._super(...arguments)
-
-    let reviewerId = controller.get('reviewer')
-
-    controller.set('billingTypes', await this.store.findAll('billingType'))
-
-    if (reviewerId) {
-      controller.set('_reviewer', this.store.peekRecord('user', reviewerId))
-    }
   },
 
   actions: {
