@@ -66,12 +66,12 @@ export default Component.extend({
   },
 
   /**
-   * Init hook, set the default filters or initial values
+   * Did receive attrs hook, set the default filters or initial values
    *
-   * @method init
+   * @method didReceiveAttrs
    * @public
    */
-  init() {
+  didReceiveAttrs() {
     this._super(...arguments)
 
     this._setDefaultFilters(this.get('initial'))
