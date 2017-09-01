@@ -12,14 +12,9 @@ import { task, timeout } from 'ember-concurrency'
 import AbsenceValidations from 'timed/validations/absence'
 import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
 import { scheduleOnce } from 'ember-runloop'
+import { camelize } from 'ember-string'
 
 const { testing } = Ember
-
-const MODEL_NAME_MAPPING = {
-  report: 'reports',
-  absence: 'absences',
-  'public-holiday': 'holidays'
-}
 
 /**
  * The index controller
@@ -362,7 +357,11 @@ export default Controller.extend({
 
     // Build an object containing reports, absences and holidays
     // {
-    //  '2017-03-21': { reports: [duration1, duration2, ...], absences: [duration1, ...]
+    //  '2017-03-21': {
+    //    reports: [report1, report2, ...],
+    //    absences: [absence1, ...],
+    //    publicHolidays: [publicHoliday1, ...]
+    //  }
     //  ...
     // }
     let container = [
@@ -372,9 +371,9 @@ export default Controller.extend({
     ].reduce((obj, model) => {
       let d = model.get('date').format('YYYY-MM-DD')
 
-      obj[d] = obj[d] || { reports: [], absences: [], holidays: [] }
+      obj[d] = obj[d] || { reports: [], absences: [], publicHolidays: [] }
 
-      obj[d][MODEL_NAME_MAPPING[model.constructor.modelName]].push(model)
+      obj[d][`${camelize(model.constructor.modelName)}s`].push(model)
 
       return obj
     }, {})
@@ -382,13 +381,13 @@ export default Controller.extend({
     return Array.from({ length: 31 }, (v, k) =>
       moment(date).add(k - 20, 'days')
     ).map(d => {
-      let { reports = [], absences = [], holidays = [] } =
+      let { reports = [], absences = [], publicHolidays = [] } =
         container[d.format('YYYY-MM-DD')] || {}
 
       let prefix = ''
 
-      if (holidays.length) {
-        prefix = holidays.get('firstObject.name')
+      if (publicHolidays.length) {
+        prefix = publicHolidays.get('firstObject.name')
       } else if (absences.length) {
         prefix = absences.get('firstObject.type.name')
       }
@@ -402,7 +401,7 @@ export default Controller.extend({
           ...reports.mapBy('duration'),
           ...absences.mapBy('duration')
         ].reduce((val, dur) => val.add(dur), moment.duration()),
-        holiday: !!holidays.length,
+        holiday: !!publicHolidays.length,
         prefix
       }
     })
