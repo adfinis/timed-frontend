@@ -28,6 +28,11 @@ export default Mixin.create({
     user: { refreshModel: true },
     from_date: { refreshModel: true }, // eslint-disable-line camelcase
     to_date: { refreshModel: true }, // eslint-disable-line camelcase
+    reviewer: { refreshModel: true },
+    billing_type: { refreshModel: true }, // eslint-disable-line camelcase
+    review: { refreshModel: true },
+    not_billable: { refreshModel: true }, // eslint-disable-line camelcase
+    not_verified: { refreshModel: true }, // eslint-disable-line camelcase
     page_size: { refreshModel: true }, // eslint-disable-line camelcase
     page: { refreshModel: true },
     ordering: { refreshModel: true }
@@ -40,7 +45,9 @@ export default Mixin.create({
    * @param {Ember.Transition} The transition
    * @public
    */
-  async beforeModel({ queryParams: { customer, project, task, user } }) {
+  async beforeModel({
+    queryParams: { customer, project, task, user, reviewer }
+  }) {
     this._super(...arguments)
 
     if (task) {
@@ -55,6 +62,10 @@ export default Mixin.create({
 
     if (user) {
       await this.store.findRecord('user', user)
+    }
+
+    if (reviewer) {
+      await this.store.findRecord('user', reviewer)
     }
   },
 
@@ -84,26 +95,29 @@ export default Mixin.create({
   },
 
   /**
-   * Setup controller hook, set the customer, project, task or user and the
-   * currently logged in user.
+   * Setup controller hook, set the customer, project, task, user, reviewer and
+   * all available billing types and the currently logged in user.
    *
    * @method setupController
    * @param {Controller} controller The controller
    * @public
    */
-  setupController(controller) {
+  async setupController(controller) {
     this._super(...arguments)
 
     let customerId = controller.get('customer')
     let projectId = controller.get('project')
     let taskId = controller.get('task')
     let userId = controller.get('user')
+    let reviewerId = controller.get('reviewer')
 
     controller.setProperties({
       _task: taskId && this.store.peekRecord('task', taskId),
       _project: projectId && this.store.peekRecord('project', projectId),
       _customer: customerId && this.store.peekRecord('customer', customerId),
       _user: userId && this.store.peekRecord('user', userId),
+      _reviewer: reviewerId && this.store.peekRecord('user', reviewerId),
+      billingTypes: await this.store.findAll('billingType'),
       currentUser: this.modelFor('protected')
     })
   },

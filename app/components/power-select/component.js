@@ -2,7 +2,7 @@ import PowerSelectComponent from 'ember-power-select/components/power-select'
 import Ember from 'ember'
 import $ from 'jquery'
 
-const { testing } = Ember
+const { isBlank, testing } = Ember
 
 export default PowerSelectComponent.extend({
   init() {
@@ -15,7 +15,28 @@ export default PowerSelectComponent.extend({
     this._handleKeyEnter(...arguments)
   },
 
+  _focusComesFromOutside(e) {
+    let blurredEl = e.relatedTarget
+
+    if (isBlank(blurredEl) || testing) {
+      return false
+    }
+
+    // Can't test this since dropdowns are rendered in place in tests
+    /* istanbul ignore next */
+    return !blurredEl.classList.contains('ember-power-select-search-input')
+  },
+
   actions: {
+    onTriggerFocus(_, e) {
+      this._super(...arguments)
+
+      /* istanbul ignore next */
+      if (this._focusComesFromOutside(e)) {
+        this.get('publicAPI.actions').open()
+      }
+    },
+
     scrollTo() {
       let options = $(
         `#ember-power-select-options-${this.get('publicAPI').uniqueId}`

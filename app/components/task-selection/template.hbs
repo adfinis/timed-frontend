@@ -8,8 +8,6 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'customer-select'
-    onfocus            = (action 'handleFocus')
-    onblur             = (action 'handleBlur')
     onchange           = (action (mut customer))
     extra              = (hash
       selectedTemplate = selectedTemplate
@@ -25,8 +23,6 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'project-select'
-    onfocus            = (action 'handleFocus')
-    onblur             = (action 'handleBlur')
     onchange           = (action (mut project))
     extra              = (hash
       selectedTemplate = selectedTemplate
@@ -42,8 +38,6 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'task-select'
-    onfocus            = (action 'handleFocus')
-    onblur             = (action 'handleBlur')
     onchange           = (action (mut task))
     extra              = (hash
       selectedTemplate = selectedTemplate

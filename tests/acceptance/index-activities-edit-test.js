@@ -51,7 +51,10 @@ describe('Acceptance | index activities edit', function() {
       { key: 'ArrowDown', keyCode: 40 }
     )
 
-    await fillIn(`${testSelector('activity-edit-form')} textarea`, 'Test')
+    await fillIn(
+      `${testSelector('activity-edit-form')} input[name=comment]`,
+      'Test'
+    )
 
     await click(find('button:contains(Save)'))
 

@@ -6,11 +6,8 @@
 import Component from 'ember-component'
 import computed from 'ember-computed-decorators'
 import service from 'ember-service/inject'
-import Ember from 'ember'
 import hbs from 'htmlbars-inline-precompile'
 import { later } from 'ember-runloop'
-
-const { isBlank, testing } = Ember
 
 const SELECTED_TEMPLATE = hbs`{{selected.name}}`
 
@@ -375,59 +372,7 @@ export default Component.extend({
       .sortBy('name')
   },
 
-  /**
-   * Check if the focus comes from outside the combobox
-   *
-   * @method _focusComesFromOutside
-   * @param {jQuery.Event} e The jquery event
-   * @return {Boolean} Whether the focus comes from outside
-   * @private
-   */
-  _focusComesFromOutside(e) {
-    let blurredEl = e.relatedTarget
-
-    if (isBlank(blurredEl) || testing) {
-      return false
-    }
-
-    // Can't test this since dropdowns are rendered in place in tests
-    /* istanbul ignore next */
-    return !blurredEl.classList.contains('ember-power-select-search-input')
-  },
-
   actions: {
-    /**
-     * Handle focusing of a combobox - open it on focus
-     *
-     * @method handleFocus
-     * @param {*} select The combobox
-     * @param {jQuery.Event} e The jquery focus event
-     * @public
-     */
-    handleFocus(select, e) {
-      // Can't test this since dropdowns are rendered in place in tests
-      /* istanbul ignore next */
-      if (this._focusComesFromOutside(e)) {
-        select.actions.open()
-      }
-    },
-
-    /**
-     * Handle blurring of a combobox - close it on blur
-     *
-     * @method handleBlur
-     * @param {*} select The combobox
-     * @param {jQuery.Event} e The jquery blur event
-     * @public
-     */
-    handleBlur(select, e) {
-      // Can't test this since dropdowns are rendered in place in tests
-      /* istanbul ignore next */
-      if (this._focusComesFromOutside(e)) {
-        select.actions.close()
-      }
-    },
-
     /**
      * Clear all comboboxes
      *
