@@ -9,7 +9,7 @@ import computed from 'ember-computed-decorators'
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
-// Options can be '', '1' or '2' from a select box
+// Options can be '', '0' or '1' from a select box
 const option = val => (['0', '1'].includes(val) ? val : null)
 const id = obj => (obj ? obj.get('id') : null)
 const date = date => (date ? date.format(DATE_FORMAT) : null)
