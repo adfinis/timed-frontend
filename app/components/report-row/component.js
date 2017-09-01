@@ -7,8 +7,7 @@ import Component from 'ember-component'
 import ReportValidations from 'timed/validations/report'
 import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
-import computed, { observes } from 'ember-computed-decorators'
-import { later } from 'ember-runloop'
+import computed from 'ember-computed-decorators'
 
 const ENTER_CHAR_CODE = 13
 
@@ -41,24 +40,6 @@ const ReportRowComponent = Component.extend({
       lookupValidator(ReportValidations),
       ReportValidations
     )
-  },
-
-  /**
-   * Set the focus to the comment field as soon as the task is selected
-   *
-   * The 'later' needs to be there so that the focus happens after all the
-   * other events are done. Otherwise it'd focus the play button.
-   *
-   * @method _setCommentFocus
-   * @public
-   */
-  @observes('changeset.task')
-  _setCommentFocus() {
-    later(this, () => {
-      if (this.get('changeset.task.id')) {
-        this.$('input[name=comment]').focus()
-      }
-    })
   },
 
   /**

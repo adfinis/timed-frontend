@@ -33,7 +33,16 @@ export default PowerSelectComponent.extend({
 
       /* istanbul ignore next */
       if (this._focusComesFromOutside(e)) {
-        this.get('publicAPI.actions').open()
+        this.get('publicAPI.actions').open(e)
+      }
+    },
+
+    onBlur(e) {
+      this._super(...arguments)
+
+      /* istanbul ignore next */
+      if (this._focusComesFromOutside(e)) {
+        this.get('publicAPI.actions').close(e)
       }
     },
 
