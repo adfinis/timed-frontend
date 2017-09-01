@@ -1,5 +1,5 @@
 export default function(server) {
-  // server.logging = false
+  server.logging = false
 
   server.loadFixtures('absence-types')
 

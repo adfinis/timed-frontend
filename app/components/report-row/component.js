@@ -54,11 +54,15 @@ const ReportRowComponent = Component.extend({
    */
   @observes('changeset.task')
   _setCommentFocus() {
-    later(this, () => {
-      if (this.get('changeset.task.id')) {
-        this.$('input[name=comment]').focus()
-      }
-    })
+    later(
+      this,
+      () => {
+        if (this.get('changeset.task.id')) {
+          this.$('input[name=comment]').focus()
+        }
+      },
+      100
+    )
   },
 
   /**
