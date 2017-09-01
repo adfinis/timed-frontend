@@ -1,13 +1,20 @@
 import { expect } from 'chai'
 import { describe, it, beforeEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
+import { task } from 'ember-concurrency'
 import hbs from 'htmlbars-inline-precompile'
 import Service from 'ember-service'
 
 export const trackingStub = Service.extend({
   activity: {
     comment: 'asdf'
-  }
+  },
+  customers: task(function*() {
+    return yield []
+  }),
+  recentTasks: task(function*() {
+    return yield []
+  })
 })
 
 describe('Integration | Component | tracking bar', function() {

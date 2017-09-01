@@ -8,6 +8,7 @@ import { expect } from 'chai'
 import startApp from '../helpers/start-app'
 import testSelector from 'ember-test-selectors'
 import moment from 'moment'
+import { Response } from 'ember-cli-mirage'
 
 describe('Acceptance | reschedule', function() {
   let application
@@ -95,12 +96,7 @@ describe('Acceptance | reschedule', function() {
   it('can filter by customer', async function() {
     await visit('/reschedule')
 
-    let c = find('input[name=customer]')
-
-    await triggerEvent(`#${c.attr('id')}`, 'focus')
-    await click(
-      `#${c.parent().find('.tt-suggestion:eq(1)').children().attr('id')}`
-    )
+    await selectChoose(`.customer-select`, '.ember-power-select-option', 1)
 
     await click(testSelector('filter-apply'))
 
@@ -110,18 +106,8 @@ describe('Acceptance | reschedule', function() {
   it('can filter by project', async function() {
     await visit('/reschedule')
 
-    let c = find('input[name=customer]')
-    let p = find('input[name=project]')
-
-    await triggerEvent(`#${c.attr('id')}`, 'focus')
-    await click(
-      `#${c.parent().find('.tt-suggestion:eq(1)').children().attr('id')}`
-    )
-
-    await triggerEvent(`#${p.attr('id')}`, 'focus')
-    await click(
-      `#${p.parent().find('.tt-suggestion:eq(0)').children().attr('id')}`
-    )
+    await selectChoose(`.customer-select`, '.ember-power-select-option', 1)
+    await selectChoose(`.project-select`, '.ember-power-select-option', 1)
 
     await click(testSelector('filter-apply'))
 
@@ -132,7 +118,7 @@ describe('Acceptance | reschedule', function() {
   it('can filter by task', async function() {
     await visit('/reschedule')
 
-    taskSelect('')
+    taskSelect()
 
     await click(testSelector('filter-apply'))
 
@@ -180,7 +166,7 @@ describe('Acceptance | reschedule', function() {
   })
 
   it('shows proper empty state messages', async function() {
-    server.db.reports.remove()
+    server.get('/reports', () => new Response(200, {}, { data: [] }))
 
     await visit('/reschedule')
 
@@ -208,25 +194,45 @@ describe('Acceptance | reschedule', function() {
   it('can take initial customer', async function() {
     await visit('/reschedule?customer=1')
 
-    expect(find('input[name=customer]').val()).to.be.ok
+    expect(
+      find(
+        `${testSelector('filter-customer')} .ember-power-select-selected-item`
+      )
+        .text()
+        .trim()
+    ).to.be.ok
   })
 
   it('can take initial project', async function() {
     await visit('/reschedule?project=1')
 
-    expect(find('input[name=project]').val()).to.be.ok
+    expect(
+      find(
+        `${testSelector('filter-project')} .ember-power-select-selected-item`
+      )
+        .text()
+        .trim()
+    ).to.be.ok
   })
 
   it('can take initial task', async function() {
     await visit('/reschedule?task=1')
 
-    expect(find('input[name=task]').val()).to.be.ok
+    expect(
+      find(`${testSelector('filter-task')} .ember-power-select-selected-item`)
+        .text()
+        .trim()
+    ).to.be.ok
   })
 
   it('can take initial user', async function() {
     await visit('/reschedule?user=1')
 
-    expect(find('input[name=user]').val()).to.be.ok
+    expect(
+      find(`${testSelector('filter-user')} .ember-power-select-selected-item`)
+        .text()
+        .trim()
+    ).to.be.ok
   })
 
   it('can verify a page', async function() {

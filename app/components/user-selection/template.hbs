@@ -1,14 +1,16 @@
-{{aupac-typeahead
-  name               = 'user'
-  selection          = selection
-  action             = (action 'change')
-  class              = 'form-control'
-  source             = source
-  placeholder        = placeholder
-  async              = true
-  minLength          = -1
-  limit              = limit
-  display            = display
-  transformSelection = transformSelection
-  suggestionTemplate = suggestionTemplate
-  }}
+{{yield (hash
+  user                 = (component 'power-select'
+    options            = users
+    disabled           = disabled
+    selected           = user
+    placeholder        = 'Select user...'
+    searchField        = 'longName'
+    tagName            = 'div'
+    class              = 'user-select'
+    onchange           = (action on-change)
+    extra              = (hash
+      selectedTemplate = selectedTemplate
+      optionTemplate   = optionTemplate
+    )
+  )
+)}}

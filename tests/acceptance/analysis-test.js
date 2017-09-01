@@ -48,12 +48,16 @@ describe('Acceptance | analysis', function() {
 
   it('can reset the search params', async function() {
     await visit('/analysis')
-    await userSelect(testSelector('filter-user'))
-    await taskSelect(testSelector('filter-customer'), { fromHistory: true })
+
+    await userSelect()
+    await taskSelect()
 
     await click(testSelector('filter-apply'))
 
-    expect(currentURL()).to.equal('/analysis?customer=1&user=1')
+    expect(currentURL()).to.contain('customer')
+    expect(currentURL()).to.contain('project')
+    expect(currentURL()).to.contain('task')
+    expect(currentURL()).to.contain('user')
 
     await click(testSelector('filter-reset'))
 

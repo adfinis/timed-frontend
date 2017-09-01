@@ -7,6 +7,7 @@
 @import 'tour';
 @import 'ember-power-calendar';
 @import 'ember-basic-dropdown';
+@import 'ember-power-select-custom';
 @import 'pod-styles';
 
 :root {
@@ -119,10 +120,6 @@ body {
   }
 }
 
-.grid-cell.form-group {
-  margin-bottom: 0;
-}
-
 .btn-group--auto .btn {
   flex-grow: 1;
 }
@@ -202,11 +199,6 @@ body {
       }
     }
   }
-}
-
-.twitter-typeahead .tt-menu {
-  width: auto;
-  cursor: pointer;
 }
 
 .force-white input {

@@ -9,7 +9,11 @@ module.exports = {
     server: true,
     taskSelect: true,
     userSelect: true,
-    setBreakpoint: true
+    setBreakpoint: true,
+    selectChoose: true,
+    selectSearch: true,
+    removeMultipleOption: true,
+    clearSelected: true
   },
   rules: {
     'no-magic-numbers': 'off',

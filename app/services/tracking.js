@@ -19,8 +19,6 @@ import { task, timeout } from 'ember-concurrency'
 
 const { testing } = Ember
 
-const zeroIfFalse = bool => (bool ? null : 0)
-
 /**
  * Tracking service
  *
@@ -160,81 +158,6 @@ export default Service.extend({
   }),
 
   /**
-   * Returns recently used tasks
-   *
-   * @property {EmberConcurrency.Task} recentTasks
-   * @public
-   */
-  recentTasks: task(function*(archived) {
-    return yield this.get('store').query('task', {
-      my_most_frequent: 10, // eslint-disable-line camelcase
-      archived: zeroIfFalse(archived),
-      include: 'project,project.customer'
-    })
-  }).restartable(),
-
-  /**
-   * Filter all customers
-   *
-   * @property {EmberConcurrency.Task} filterCustomers
-   * @param {Boolean} archived Whether to show archived customer
-   * @public
-   */
-  filterCustomers: task(function*(archived) {
-    yield timeout(500)
-
-    return yield this.get('store').query('customer', {
-      archived: zeroIfFalse(archived)
-    })
-  }).restartable(),
-
-  /**
-   * Filter all projects by customer
-   *
-   * @property {EmberConcurrency.Task} filterProjects
-   * @param {Number} customer The customer id to filter by
-   * @param {Boolean} archived Whether to show archived projects
-   * @public
-   */
-  filterProjects: task(function*(customer, archived) {
-    /* istanbul ignore next */
-    if (!customer) {
-      // We can't test this because the UI prevents it
-      throw new Error('No customer selected')
-    }
-
-    yield timeout(500)
-
-    return yield this.get('store').query('project', {
-      customer,
-      archived: zeroIfFalse(archived)
-    })
-  }).restartable(),
-
-  /**
-   * Filter all tasks by project
-   *
-   * @property {EmberConcurrency.Task} filterTask
-   * @param {Number} project The project id to filter by
-   * @param {Boolean} archived Whether to show archived tasks
-   * @public
-   */
-  filterTasks: task(function*(project, archived) {
-    /* istanbul ignore next */
-    if (!project) {
-      // We can't test this because the UI prevents it
-      throw new Error('No project selected')
-    }
-
-    yield timeout(500)
-
-    return yield this.get('store').query('task', {
-      project,
-      archived: zeroIfFalse(archived)
-    })
-  }).restartable(),
-
-  /**
    * The current activity
    *
    * @property {Activity} currentActivity
@@ -325,5 +248,72 @@ export default Service.extend({
       /* istanbul ignore next */
       this.get('notify').error('Error while stopping the activity')
     }
-  }).drop()
+  }).drop(),
+
+  /**
+   * The 10 last used tasks
+   *
+   * @property {EmberConcurrency.Task} recentTasks
+   * @public
+   */
+  recentTasks: task(function*() {
+    return yield this.get('store').query('task', {
+      my_most_frequent: 10, // eslint-disable-line camelcase
+      include: 'project,project.customer'
+    })
+  }),
+
+  /**
+   * All users
+   *
+   * @property {EmberConcurrency.Task} users
+   * @public
+   */
+  users: task(function*() {
+    return yield this.get('store').query('user', {})
+  }),
+
+  /**
+   * All customers
+   *
+   * @property {EmberConcurrency.Task} customers
+   * @public
+   */
+  customers: task(function*() {
+    return yield this.get('store').query('customer', {})
+  }),
+
+  /**
+   * Projects filtered by customer
+   *
+   * @property {EmberConcurrency.Task} projects
+   * @param {Number} customer The customer id to filter by
+   * @public
+   */
+  projects: task(function*(customer) {
+    /* istanbul ignore next */
+    if (!customer) {
+      // We can't test this because the UI prevents it
+      throw new Error('No customer selected')
+    }
+
+    return yield this.get('store').query('project', { customer })
+  }),
+
+  /**
+   * Tasks filtered by project
+   *
+   * @property {EmberConcurrency.Task} tasks
+   * @param {Number} project The project id to filter by
+   * @public
+   */
+  tasks: task(function*(project) {
+    /* istanbul ignore next */
+    if (!project) {
+      // We can't test this because the UI prevents it
+      throw new Error('No project selected')
+    }
+
+    return yield this.get('store').query('task', { project })
+  })
 })

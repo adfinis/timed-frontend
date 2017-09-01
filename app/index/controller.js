@@ -11,6 +11,7 @@ import service from 'ember-service/inject'
 import { task, timeout } from 'ember-concurrency'
 import AbsenceValidations from 'timed/validations/absence'
 import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
+import { scheduleOnce } from 'ember-runloop'
 
 const { testing } = Ember
 
@@ -92,9 +93,17 @@ export default Controller.extend({
    */
   @computed('date', '_allActivities.@each.{start,isDeleted}')
   _activities(day, activities) {
-    return activities.filter(a => {
+    let activitiesThen = activities.filter(a => {
       return a.get('start').isSame(day, 'day') && !a.get('isDeleted')
     })
+
+    if (activitiesThen.get('length')) {
+      scheduleOnce('afterRender', this, () => {
+        this.get('_activitySum').perform()
+      })
+    }
+
+    return activitiesThen
   },
 
   /**
@@ -103,7 +112,14 @@ export default Controller.extend({
    * @property {moment.duration} activitySum
    * @public
    */
-  activitySum: moment.duration(),
+  @computed('_activities.@each.{from,to}', '_activeActivityBlockDuration')
+  activitySum(activities, additional) {
+    return activities.reduce((dur, cur) => {
+      return dur.add(cur.get('duration'))
+    }, additional)
+  },
+
+  _activeActivityBlockDuration: moment.duration(),
 
   /**
    * Compute the current activity sum
@@ -113,17 +129,16 @@ export default Controller.extend({
    */
   _activitySum: task(function*() {
     for (;;) {
-      let duration = this.get('_activities').reduce((dur, cur) => {
-        dur.add(cur.get('duration'))
+      let duration = this.get('_activities')
+        .filterBy('activeBlock')
+        .reduce((dur, cur) => {
+          return dur.add(
+            moment().diff(cur.get('activeBlock.from')),
+            'milliseconds'
+          )
+        }, moment.duration())
 
-        if (cur.get('activeBlock')) {
-          dur.add(moment().diff(cur.get('activeBlock.from')), 'milliseconds')
-        }
-
-        return dur
-      }, moment.duration())
-
-      this.set('activitySum', duration)
+      this.set('_activeActivityBlockDuration', duration)
 
       /* istanbul ignore else */
       if (testing) {
@@ -133,7 +148,7 @@ export default Controller.extend({
       /* istanbul ignore next */
       yield timeout(1000)
     }
-  }).on('init'),
+  }).drop(),
 
   /**
    * All attendances

@@ -6,48 +6,47 @@
 import Component from 'ember-component'
 import computed from 'ember-computed-decorators'
 import service from 'ember-service/inject'
-import RSVP from 'rsvp'
 import Ember from 'ember'
 import hbs from 'htmlbars-inline-precompile'
-import { typeOf } from 'ember-utils'
+import { later } from 'ember-runloop'
 
-const { testing } = Ember
+const { isBlank, testing } = Ember
 
-const FORMAT = obj => (typeOf(obj) === 'instance' ? obj.get('name') : '')
+const SELECTED_TEMPLATE = hbs`{{selected.name}}`
 
-const regexFilter = (data, term, key) => {
-  let re = new RegExp(`.*${term}.*`, 'i')
-
-  return data.filter(i => re.test(i.get(key)))
-}
-
-const SUGGESTION_TEMPLATE = hbs`
-  {{#if model.archived}}
-    <div class="inactive" title="This entry is archived">
-      {{model.name}}
+const OPTION_TEMPLATE = hbs`
+  <div
+    title="{{option.name}}{{if option.archived ' (archived)'}}"
+    class="{{if option.archived 'inactive'}}"
+  >
+    {{option.name}}
+    {{#if option.archived}}
       <i class="fa fa-archive"></i>
-    </div>
-  {{else}}
-    {{model.name}}
-  {{/if}}
+    {{/if}}
+  </div>
 `
 
-const CUSTOMER_SUGGESTION_TEMPLATE = hbs`
-  {{#if model.isTask}}
-    <i class="fa fa-history"></i>
-    {{model.longName}}
-  {{else if model.archived}}
-    <div class="inactive" title="This entry is archived">
-      {{model.name}}
+const CUSTOMER_OPTION_TEMPLATE = hbs`
+  <div
+    class="{{if option.archived 'inactive'}}"
+    title="{{if option.isTask option.longName option.name}}{{if option.archived ' (archived)'}}"
+  >
+    {{#if option.isTask}}
+      <span class="history">
+        <i class="fa fa-history"></i>
+        <span class="history-text">
+          <small>{{option.project.customer.name}}</small>
+          {{option.project.name}} > {{option.name}}
+        </span>
+      </span>
+    {{else}}
+      {{option.name}}
+    {{/if}}
+    {{#if option.archived}}
       <i class="fa fa-archive"></i>
-    </div>
-  {{else}}
-    {{model.name}}
-  {{/if}}
+    {{/if}}
+  </div>
 `
-
-const performOrLast = (task, ...args) =>
-  task.get('last') || task.perform(...args)
 
 /**
  * Component for selecting a task, which consists of selecting a customer and
@@ -58,6 +57,9 @@ const performOrLast = (task, ...args) =>
  * @public
  */
 export default Component.extend({
+  store: service('store'),
+  tracking: service('tracking'),
+
   /**
    * HTML tag name for the component
    *
@@ -70,27 +72,36 @@ export default Component.extend({
   tagName: '',
 
   /**
-   * Tracking service
-   *
-   * This service delivers the tasks to fetch the needed data, so we don't have
-   * to pass them to the component every time.
-   *
-   * @property {TrackingService} tracking
-   * @public
-   */
-  tracking: service('tracking'),
-
-  'on-set-customer': () => {},
-  'on-set-project': () => {},
-  'on-set-task': () => {},
-
-  /**
-   * Init hook, set initial values if given
+   * Init hook, initially load customers and recent tasks
    *
    * @method init
    * @public
    */
-  init() {
+  async init() {
+    this._super(...arguments)
+
+    try {
+      await this.get('tracking.customers').perform()
+      await this.get('tracking.recentTasks').perform()
+    } catch (e) {
+      /* istanbul ignore next */
+      if (e.taskInstance && e.taskInstance.isCanceling) {
+        return
+      }
+
+      /* istanbul ignore next */
+      throw e
+    }
+  },
+
+  /**
+   * Set the initial values when receiving the attributes
+   *
+   * @method didReceiveAttrs
+   * @return {Task|Project|Customer} The setted task, project or customer
+   * @public
+   */
+  async didReceiveAttrs() {
     this._super(...arguments)
 
     let { customer, project, task } = this.getWithDefault('initial', {
@@ -99,26 +110,16 @@ export default Component.extend({
       task: null
     })
 
-    if (task) {
-      this.set('task', task)
-
-      return
+    if (task && !this.get('task')) {
+      return this.set('task', task)
     }
 
     if (project && !this.get('project')) {
-      this.set('project', project)
+      return this.set('project', project)
     }
 
     if (customer && !this.get('customer')) {
-      this.set('customer', customer)
-    }
-
-    // We need to 'refresh' the customers when initializing a new selection
-    // component because it is possible that another component filtered them
-    // before but with other parameters
-    /* istanbul ignore next */
-    if (!customer && !project && !task && !testing) {
-      this.get('tracking.filterCustomers').perform(this.get('archived'))
+      return this.set('customer', customer)
     }
   },
 
@@ -131,44 +132,28 @@ export default Component.extend({
   archived: false,
 
   /**
-   * The limit of search results
+   * Template for displaying the options
    *
-   * @property {Number} limit
+   * @property {*} optionTemplate
    * @public
    */
-  limit: Number.MAX_SAFE_INTEGER,
+  optionTemplate: OPTION_TEMPLATE,
 
   /**
-   * Display function for the autocomplete component
+   * Template for displaying the customer options
    *
-   * @property {Function} display
+   * @property {*} customerOptionTemplate
    * @public
    */
-  display: FORMAT,
+  customerOptionTemplate: CUSTOMER_OPTION_TEMPLATE,
 
   /**
-   * Transform selection function for the autocomplete component
+   * Template for displaying the selected option
    *
-   * @property {Function} transformSelection
+   * @property {*} selectedTemplate
    * @public
    */
-  transformSelection: FORMAT,
-
-  /**
-   * Template for displaying the suggestions
-   *
-   * @property {*} suggestionTemplate
-   * @public
-   */
-  suggestionTemplate: SUGGESTION_TEMPLATE,
-
-  /**
-   * Template for displaying the customer suggestions
-   *
-   * @property {*} suggestionTemplate
-   * @public
-   */
-  customerSuggestionTemplate: CUSTOMER_SUGGESTION_TEMPLATE,
+  selectedTemplate: SELECTED_TEMPLATE,
 
   /**
    * The manually selected customer
@@ -187,6 +172,14 @@ export default Component.extend({
   _project: null,
 
   /**
+   * The manually selected task
+   *
+   * @property {Task} _task
+   * @private
+   */
+  _task: null,
+
+  /**
    * Whether to show history entries in the customer selection or not
    *
    * @property {Boolean} history
@@ -203,38 +196,32 @@ export default Component.extend({
    * @property {Customer} customer
    * @public
    */
-  @computed('task')
+  @computed('_customer')
   customer: {
-    get(task) {
-      return (task && task.get('project.customer')) || this.get('_customer')
+    get(customer) {
+      return customer
     },
     set(value) {
       // It is also possible a task was selected from the history.
       if (value && value.get('constructor.modelName') === 'task') {
         this.set('task', value)
-        this.getWithDefault('attrs.on-set-task', () => {})(value)
-        this.set('_project', value.get('project'))
-        this.set('_customer', value.get('project.customer'))
 
-        return this.get('_customer')
+        return value.get('project.customer')
       }
 
       this.set('_customer', value)
 
       /* istanbul ignore else */
-      if (!value || value.get('id') !== this.get('project.customer.id')) {
+      if (
+        this.get('project') &&
+        (!value || value.get('id') !== this.get('project.customer.id'))
+      ) {
         this.set('project', null)
       }
 
-      /* istanbul ignore else */
-      if (value) {
-        this.get('tracking.filterProjects').perform(
-          value.get('id'),
-          this.get('archived')
-        )
-      }
-
-      this.getWithDefault('attrs.on-set-customer', () => {})(value)
+      later(this, () => {
+        this.getWithDefault('attrs.on-set-customer', () => {})(value)
+      })
 
       return value
     }
@@ -249,127 +236,210 @@ export default Component.extend({
    * @property {Project} project
    * @public
    */
-  @computed('task')
+  @computed('_project')
   project: {
-    get(task) {
-      return (task && task.get('project')) || this.get('_project')
+    get(project) {
+      return project
     },
     set(value) {
       this.set('_project', value)
 
+      if (value && value.get('customer')) {
+        this.set('_customer', value.get('customer'))
+      }
+
       /* istanbul ignore else */
-      if (value === null || value.get('id') !== this.get('task.project.id')) {
+      if (
+        this.get('task') &&
+        (value === null || value.get('id') !== this.get('task.project.id'))
+      ) {
         this.set('task', null)
-        this.getWithDefault('attrs.on-set-task', () => {})(null)
       }
 
-      /* istanbul ignore else */
-      if (value) {
-        this.get('tracking.filterTasks').perform(
-          value.get('id'),
-          this.get('archived')
-        )
-      }
-
-      this.getWithDefault('attrs.on-set-project', () => {})(value)
+      later(this, () => {
+        this.getWithDefault('attrs.on-set-project', () => {})(value)
+      })
 
       return value
     }
   },
 
   /**
-   * Source function for the customer autocomplete component
+   * The currently selected task
    *
-   * Creates a list starting with the recent history of activities or reports
-   * and following with all customers.
-   *
-   * This either takes the last fetched data and filters them, or triggers
-   * the call first if none was triggered before.
-   *
-   * @property {Function} customerSource
+   * @property {Task} task
    * @public
    */
-  @computed('history')
-  customerSource(history) {
-    return (search, syncResults, asyncResults) => {
-      let customers = performOrLast(
-        this.get('tracking.filterCustomers'),
-        this.get('archived')
-      )
+  @computed('_task')
+  task: {
+    get(task) {
+      return task
+    },
+    set(value) {
+      this.set('_task', value)
 
-      let requests = { customers }
-
-      if (history) {
-        requests.history = performOrLast(
-          this.get('tracking.recentTasks'),
-          this.get('archived')
-        )
+      if (value && value.get('project')) {
+        this.setProperties({
+          _project: value.get('project'),
+          _customer: value.get('project.customer')
+        })
       }
 
-      /* istanbul ignore next */
-      RSVP.hash(requests)
-        .then(hash => {
-          let data = [...regexFilter(hash.customers.toArray(), search, 'name')]
+      later(this, () => {
+        this.getWithDefault('attrs.on-set-task', () => {})(value)
+      })
 
-          if (history) {
-            data = [
-              ...regexFilter(hash.history.toArray(), search, 'longName'),
-              ...data
-            ]
-          }
-          asyncResults(data)
-        })
-        .catch(() => asyncResults([]))
+      return value
     }
   },
 
   /**
-   * Source function for the project autocomplete component
+   * All customers and recent tasks which are selectable in the dropdown
    *
-   * This either takes the last fetched projects and filters them, or triggers
-   * the call first if none was triggered before.
-   *
-   * @property {Function} projectSource
+   * @property {Array} customersAndRecentTasks
    * @public
    */
-  @computed
-  projectSource() {
-    return (search, syncResults, asyncResults) => {
-      let projects = performOrLast(
-        this.get('tracking.filterProjects'),
-        this.get('customer.id'),
-        this.get('archived')
-      )
+  @computed('history', 'archived')
+  async customersAndRecentTasks(history, archived) {
+    let ids = []
 
-      /* istanbul ignore next */
-      projects
-        .then(data => asyncResults(regexFilter(data, search, 'name')))
-        .catch(() => asyncResults([]))
+    await this.get('tracking.customers.last')
+
+    if (history) {
+      await this.get('tracking.recentTasks.last')
+
+      let last = this.get('tracking.recentTasks.last.value')
+
+      ids = last ? last.mapBy('id') : []
     }
+
+    let customers = this.get('store')
+      .peekAll('customer')
+      .filter(c => {
+        return archived ? true : !c.get('archived')
+      })
+      .sortBy('name')
+
+    let tasks = this.get('store').peekAll('task').filter(t => {
+      return ids.includes(t.get('id')) && (archived ? true : !t.get('archived'))
+    })
+
+    return [...tasks.toArray(), ...customers.toArray()]
   },
 
   /**
-   * Source function for the task autocomplete component
+   * All projects which are selectable in the dropdown
    *
-   * This either takes the last fetched projects and filters them, or triggers
-   * the call first if none was triggered before.
+   * Those depend on the selected customer
    *
-   * @property {Function} taskSource
+   * @property {Project[]} projects
    * @public
    */
-  @computed
-  taskSource() {
-    return (search, syncResults, asyncResults) => {
-      let tasks = performOrLast(
-        this.get('tracking.filterTasks'),
-        this.get('project.id'),
-        this.get('archived')
-      )
+  @computed('customer.id', 'archived')
+  async projects(id, archived) {
+    if (id) {
+      await this.get('tracking.projects').perform(id)
+    }
 
+    return this.get('store')
+      .peekAll('project')
+      .filter(p => {
+        return (
+          p.get('customer.id') === id && (archived ? true : !p.get('archived'))
+        )
+      })
+      .sortBy('name')
+  },
+
+  /**
+   * All tasks which are selectable in the dropdown
+   *
+   * Those depend on the selected project
+   *
+   * @property {Task[]} tasks
+   * @public
+   */
+  @computed('project.id', 'archived')
+  async tasks(id, archived) {
+    if (id) {
+      await this.get('tracking.tasks').perform(id)
+    }
+
+    return this.get('store')
+      .peekAll('task')
+      .filter(t => {
+        return (
+          t.get('project.id') === id && (archived ? true : !t.get('archived'))
+        )
+      })
+      .sortBy('name')
+  },
+
+  /**
+   * Check if the focus comes from outside the combobox
+   *
+   * @method _focusComesFromOutside
+   * @param {jQuery.Event} e The jquery event
+   * @return {Boolean} Whether the focus comes from outside
+   * @private
+   */
+  _focusComesFromOutside(e) {
+    let blurredEl = e.relatedTarget
+
+    if (isBlank(blurredEl) || testing) {
+      return false
+    }
+
+    // Can't test this since dropdowns are rendered in place in tests
+    /* istanbul ignore next */
+    return !blurredEl.classList.contains('ember-power-select-search-input')
+  },
+
+  actions: {
+    /**
+     * Handle focusing of a combobox - open it on focus
+     *
+     * @method handleFocus
+     * @param {*} select The combobox
+     * @param {jQuery.Event} e The jquery focus event
+     * @public
+     */
+    handleFocus(select, e) {
+      // Can't test this since dropdowns are rendered in place in tests
       /* istanbul ignore next */
-      tasks
-        .then(data => asyncResults(regexFilter(data, search, 'name')))
-        .catch(() => asyncResults([]))
+      if (this._focusComesFromOutside(e)) {
+        select.actions.open()
+      }
+    },
+
+    /**
+     * Handle blurring of a combobox - close it on blur
+     *
+     * @method handleBlur
+     * @param {*} select The combobox
+     * @param {jQuery.Event} e The jquery blur event
+     * @public
+     */
+    handleBlur(select, e) {
+      // Can't test this since dropdowns are rendered in place in tests
+      /* istanbul ignore next */
+      if (this._focusComesFromOutside(e)) {
+        select.actions.close()
+      }
+    },
+
+    /**
+     * Clear all comboboxes
+     *
+     * @method clear
+     * @public
+     */
+    clear() {
+      this.setProperties({
+        customer: null,
+        project: null,
+        task: null
+      })
     }
   }
 })

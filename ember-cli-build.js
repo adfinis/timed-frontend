@@ -33,9 +33,6 @@ module.exports = function(defaults) {
     'ember-cli-babel': {
       includePolyfill: true
     },
-    'ember-aupac-typeahead': {
-      includeTypeahead: false
-    },
     dotEnv: {
       clientAllowedKeys: ['TIMED_REPORT_EXPORT']
     },
@@ -44,8 +41,6 @@ module.exports = function(defaults) {
       importHopscotchCSS: true
     }
   })
-
-  app.import('bower_components/corejs-typeahead/dist/typeahead.jquery.js')
 
   return app.toTree()
 }

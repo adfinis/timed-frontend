@@ -1,7 +1,13 @@
 <td>{{changeset.user.username}}</td>
 <td>{{moment-format changeset.date 'DD.MM.YYYY'}}</td>
 <td>{{format-duration changeset.duration false}}</td>
-{{#task-selection history=false task=changeset.task as |t|}}
+{{#task-selection
+  history     = false
+  on-set-task = (action (mut changeset.task))
+  initial     = (hash
+    task      = changeset.task
+  )
+as |t|}}
   <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</td>
   <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</td>
   <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</td>
