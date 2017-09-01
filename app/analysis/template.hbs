@@ -1,15 +1,21 @@
 <h1>Project analysis</h1>
 
 {{report-filter
-  on-apply   = (action 'applyFilter')
-  initial    = (hash
-    customer = _customer
-    project  = _project
-    task     = _task
-    user     = _user
-    from     = _from
-    to       = _to
+  billingTypes  = billingTypes
+  initial       = (hash
+    customer    = _customer
+    project     = _project
+    task        = _task
+    user        = _user
+    reviewer    = _reviewer
+    billingType = billing_type
+    fromDate    = _from
+    toDate      = _to
+    review      = review
+    notBillable = not_billable
+    notVerified = not_verified
   )
+  on-apply      = (action 'applyFilter')
 }}
 
 {{#paginated-table
