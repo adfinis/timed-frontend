@@ -240,9 +240,7 @@ describe('Acceptance | reschedule', function() {
 
     expect(
       find(
-        `${testSelector(
-          'reschedule-report'
-        )} td .checkbox:contains(Verified) input:checked`
+        `${testSelector('reschedule-report')} td:nth-child(10) input:checked`
       )
     ).to.have.length(0)
 
@@ -250,9 +248,7 @@ describe('Acceptance | reschedule', function() {
 
     expect(
       find(
-        `${testSelector(
-          'reschedule-report'
-        )} td .checkbox:contains(Verified) input:checked`
+        `${testSelector('reschedule-report')} td:nth-child(10) input:checked`
       )
     ).to.have.length(6)
   })
