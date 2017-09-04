@@ -40,6 +40,7 @@ export default Route.extend(RouteAutostartTourMixin, {
   setupController(controller, model) {
     this._super(...arguments)
 
+    controller.set('user', this.modelFor('protected'))
     controller.set('rescheduleDate', model)
   },
 
