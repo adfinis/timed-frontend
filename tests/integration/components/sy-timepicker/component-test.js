@@ -283,4 +283,43 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').hour()).to.equal(10)
     expect(this.get('value').minute()).to.equal(5)
   })
+
+  it('can handle null values', function() {
+    this.set('value', moment({ h: 12, m: 30 }))
+
+    this.render(
+      hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
+    )
+
+    this.$('input').val('')
+    this.$('input').trigger('input')
+
+    expect(this.get('value')).to.be.null
+  })
+
+  it('can handle null values with arrow up', function() {
+    this.set('value', null)
+
+    this.render(
+      hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
+    )
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+
+    expect(this.get('value').hour()).to.equal(0)
+    expect(this.get('value').minute()).to.equal(15)
+  })
+
+  it('can handle null values with arrow down', function() {
+    this.set('value', null)
+
+    this.render(
+      hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
+    )
+
+    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 40 }))
+
+    expect(this.get('value').hour()).to.equal(23)
+    expect(this.get('value').minute()).to.equal(45)
+  })
 })
