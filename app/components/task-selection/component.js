@@ -32,8 +32,8 @@ const CUSTOMER_OPTION_TEMPLATE = hbs`
       <span class="history">
         <i class="fa fa-history"></i>
         <span class="history-text">
-          <small>{{option.project.customer.name}}</small>
-          {{option.project.name}} > {{option.name}}
+          <small>{{option.project.customer.name}} > {{option.project.name}}</small>
+          {{option.name}}
         </span>
       </span>
     {{else}}
