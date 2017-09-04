@@ -50,20 +50,8 @@
         <td>{{report.task.project.name}}</td>
         <td>{{report.task.name}}</td>
         <td>{{report.comment}}</td>
-        <td>
-          {{#if report.review}}
-            {{fa-icon 'check-square-o'}}
-          {{else}}
-            {{fa-icon 'square-o'}}
-          {{/if}}
-        </td>
-        <td>
-          {{#if report.notBillable}}
-            {{fa-icon 'check-square-o'}}
-          {{else}}
-            {{fa-icon 'square-o'}}
-          {{/if}}
-        </td>
+        <td>{{sy-checkmark checked=report.review}}</td>
+        <td>{{sy-checkmark checked=report.notBillable}}</td>
         <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
       </tr>
     {{^}}
