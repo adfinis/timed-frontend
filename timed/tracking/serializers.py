@@ -1,4 +1,5 @@
 """Serializers for the tracking app."""
+from datetime import timedelta
 
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
@@ -173,7 +174,9 @@ class ReportSerializer(ModelSerializer):
             view = self.context['view']
             queryset = view.filter_queryset(view.get_queryset())
             data = queryset.aggregate(total_hours=Sum('duration'))
-            data['total_hours'] = duration_string(data['total_hours'])
+            data['total_hours'] = duration_string(
+                data['total_hours'] or timedelta(0)
+            )
             return data
         return {}
 

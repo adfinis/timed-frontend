@@ -516,3 +516,12 @@ class TestReportHypo(TestCase):
         # bookdict is a dict of tuples(name, content)
         sheet = book.bookdict.popitem()[1]
         assert len(sheet) == len(reports) + 1
+
+
+def test_report_list_no_result(admin_client):
+    url = reverse('report-list')
+    res = admin_client.get(url)
+
+    assert res.status_code == HTTP_200_OK
+    json = res.json()
+    assert json['meta']['total-hours'] == '00:00:00'
