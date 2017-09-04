@@ -21,7 +21,7 @@ def test_redmine_report(db, freezer, mocker):
     redmine_class.return_value = redmine_instance
 
     freezer.move_to('2017-07-28')
-    report = ReportFactory.create()
+    report = ReportFactory.create(comment='ADSY <=> Other')
     report_hours = report.duration.total_seconds() / 3600
     RedmineProject.objects.create(project=report.task.project, issue_id=1000)
     # report not attached to redmine

@@ -69,7 +69,7 @@ class Command(BaseCommand):
                     'last_days': last_days,
                     'total_hours': total_hours,
                     'reports': reports
-                })
+                }, using='text')
                 issue.custom_fields = [{
                     'id': settings.REDMINE_SPENTHOURS_FIELD,
                     'value': total_hours
