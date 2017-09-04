@@ -98,7 +98,7 @@ class Command(BaseCommand):
                         'reviewer': reviewer,
                         'protocol': settings.HOST_PROTOCOL,
                         'domain': settings.HOST_DOMAIN,
-                    }
+                    }, using='text'
                 )
 
                 mails.append((subject, body, from_email, [reviewer.email]))

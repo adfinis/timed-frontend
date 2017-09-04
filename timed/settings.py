@@ -86,6 +86,22 @@ TEMPLATES = [
             ],
         },
     },
+    # template backend for plain text (no escaping)
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [django_root('timed', 'templates')],
+        'NAME': 'text',
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'autoescape': False,
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
 ]
 
 WSGI_APPLICATION = 'timed.wsgi.application'
