@@ -32,6 +32,9 @@ class Location(models.Model):
         """
         return self.name
 
+    class Meta:
+        ordering = ('name', )
+
 
 class PublicHoliday(models.Model):
     """Public holiday model.
@@ -57,6 +60,7 @@ class PublicHoliday(models.Model):
         """Meta information for the public holiday model."""
 
         indexes = [models.Index(fields=['date'])]
+        ordering = ('date', )
 
 
 class AbsenceType(models.Model):
@@ -77,6 +81,9 @@ class AbsenceType(models.Model):
         """
         return self.name
 
+    class Meta:
+        ordering = ('name', )
+
 
 class AbsenceCredit(models.Model):
     """Absence credit model.
@@ -92,7 +99,7 @@ class AbsenceCredit(models.Model):
     absence_type = models.ForeignKey(AbsenceType,
                                      related_name='absence_credits')
     date         = models.DateField()
-    days         = models.PositiveIntegerField(default=0)
+    days         = models.IntegerField(default=0)
 
 
 class OvertimeCredit(models.Model):
