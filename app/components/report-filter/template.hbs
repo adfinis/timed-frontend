@@ -44,7 +44,7 @@ as |t|}}
           user      = filters.reviewer
           on-change = (action (mut filters.reviewer))
         as |u|}}
-          {{u.user}}
+          {{u.user placeholder='Select reviewer...'}}
         {{/user-selection}}
       </div>
     {{/if}}
