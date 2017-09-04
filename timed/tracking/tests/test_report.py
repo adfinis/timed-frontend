@@ -35,7 +35,8 @@ class ReportTests(JSONAPITestCase):
             password='123qweasd'
         )
 
-        self.reports = ReportFactory.create_batch(10, user=self.user)
+        self.reports = ReportFactory.create_batch(10, user=self.user,
+                                                  duration=timedelta(hours=1))
         self.other_reports = ReportFactory.create_batch(10, user=other_user)
 
     def test_report_list(self):
@@ -61,6 +62,7 @@ class ReportTests(JSONAPITestCase):
 
         assert len(result['data']) == 1
         assert result['data'][0]['id'] == str(self.reports[0].id)
+        assert result['meta']['total-hours'] == '01:00:00'
 
     def test_report_list_filter_reviewer(self):
         report = self.reports[0]
@@ -90,6 +92,7 @@ class ReportTests(JSONAPITestCase):
         assert res.status_code == HTTP_200_OK
         result = self.result(res)
         assert len(result['data']) == 10
+        assert result['meta']['total-hours'] == '10:00:00'
 
     def test_report_list_verify_non_admin(self):
         """Non admin resp. non staff user may not verify reports."""

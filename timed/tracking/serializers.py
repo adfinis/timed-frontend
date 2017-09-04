@@ -1,6 +1,8 @@
 """Serializers for the tracking app."""
 
 from django.contrib.auth import get_user_model
+from django.db.models import Sum
+from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
@@ -164,6 +166,16 @@ class ReportSerializer(ModelSerializer):
                 raise ValidationError(_('Only owner may change duration'))
 
         return value
+
+    def get_root_meta(self, resource, many):
+        """Add total hours over whole result (not just page) to meta."""
+        if many:
+            view = self.context['view']
+            queryset = view.filter_queryset(view.get_queryset())
+            data = queryset.aggregate(total_hours=Sum('duration'))
+            data['total_hours'] = duration_string(data['total_hours'])
+            return data
+        return {}
 
     class Meta:
         """Meta information for the report serializer."""
