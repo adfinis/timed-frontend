@@ -123,7 +123,7 @@ class Command(BaseCommand):
                         # format:
                         # [(user, (reported, expected, balance, ratio)), ...]
                         'suspects': suspects_shorttime
-                    }
+                    }, using='text'
                 )
                 mails.append((subject, body, from_email, [supervisor.email]))
 
