@@ -5,6 +5,7 @@
  */
 import Controller from 'ember-controller'
 import computed from 'ember-computed-decorators'
+import AttendanceValidator from 'timed/validations/attendance'
 
 /**
  * The index attendances controller
@@ -14,6 +15,8 @@ import computed from 'ember-computed-decorators'
  * @public
  */
 export default Controller.extend({
+  AttendanceValidator,
+
   /**
    * All attendances currently in the store
    *

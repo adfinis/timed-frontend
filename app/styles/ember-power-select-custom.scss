@@ -1,5 +1,9 @@
 @import 'ember-power-select';
 
+.ember-power-select-dropdown {
+  min-width: 250px;
+}
+
 .ember-power-select-options[role='listbox'] {
   max-height: 425px;
 }

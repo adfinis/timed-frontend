@@ -34,7 +34,7 @@ export default Route.extend(RouteAutostartTourMixin, {
      * Save an attendance
      *
      * @method saveAttendance
-     * @param {Attendance} attendance The attendance to save
+     * @param {Changeset} attendance The attendance to save
      * @public
      */
     async saveAttendance(attendance) {
@@ -57,7 +57,9 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async deleteAttendance(attendance) {
       try {
-        await attendance.destroyRecord()
+        await this.store
+          .peekRecord('attendance', attendance.get('id'))
+          .destroyRecord()
 
         this.get('notify').success('Attendance was deleted')
       } catch (e) {

@@ -3,41 +3,38 @@
 </div>
 <div class="attendances">
   {{#if attendances}}
-    <div class="visible-md">
+    {{#if (or media.isXl media.isLg media.isMd)}}
       {{#each attendances as |attendance|}}
         {{attendance-slider
           data-test-attendance-slider
           data-test-attendance-slider-id=attendance.id
-          attendance = attendance
+          attendance = (changeset attendance AttendanceValidator)
           on-save    = (route-action 'saveAttendance')
           on-delete  = (route-action 'deleteAttendance')
         }}
       {{/each}}
-    </div>
-    <div class="hidden-md">
-      <table class="table table--striped">
+    {{else}}
+      <table class="table table--striped table--attendances">
         <tbody>
           {{#each attendances as |attendance|}}
-            <tr>
-              <td>
-                <form class="form-inline">
-                  <div class="form-group">
-                    {{sy-timepicker value=attendance.from on-change=(action (mut attendance.from))}}
-                  </div>
-                  <div class="form-group">
-                    {{sy-timepicker value=attendance.to on-change=(action (mut attendance.to))}}
-                  </div>
-                  <div class="form-group text-right">
-                    <button class="btn btn-danger" {{action 'deleteAttendance' attendance}}>{{fa-icon 'trash'}} Delete</button>
-                    <button class="btn btn-primary" {{action 'saveAttendance' attendance}}>{{fa-icon 'save'}} Save</button>
-                  </div>
-                </form>
-              </td>
-            </tr>
+            {{#with (changeset attendance AttendanceValidator) as |model|}}
+              <tr>
+                <td>
+                  {{sy-timepicker value=model.from on-change=(action (mut model.from))}}
+                </td>
+                <td>
+                  {{sy-timepicker value=model.to on-change=(action (mut model.to))}}
+                </td>
+                <td>
+                  <button class="btn btn-danger" {{action 'deleteAttendance' model}}>{{fa-icon 'trash'}}</button>
+                  <button class="btn btn-primary" disabled={{not (and model.isDirty model.isValid)}} {{action 'saveAttendance' model}}>{{fa-icon 'save'}}</button>
+                </td>
+              </tr>
+            {{/with}}
           {{/each}}
         </tbody>
       </table>
-    </div>
+    {{/if}}
   {{else}}
     <div class="text-center"><em>No attendances yet</em></div>
   {{/if}}

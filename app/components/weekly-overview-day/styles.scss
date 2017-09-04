@@ -16,21 +16,25 @@
   }
 }
 
-&.active {
-  .bar {
-    background-color: var(--color-primary);
-  }
-  .day {
-    color: var(--color-primary);
-  }
-}
-
 &.absence {
   .bar {
     background-color: var(--color-warning);
   }
   .day {
     color: var(--color-warning);
+  }
+}
+
+&.active {
+  .bar {
+    background-color: var(--color-primary);
+  }
+  .day {
+    color: var(--color-primary);
+    font-weight: bold;
+    padding: 0 5px 5px;
+    margin-bottom: -5px;
+    border-bottom:  2px solid var(--color-primary);
   }
 }
 
