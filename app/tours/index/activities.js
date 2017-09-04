@@ -11,8 +11,8 @@ export default [
     </p>
     <p>
       One thing to note here is that those long customers with the icons are
-      your recently used tasks. If you select one of them the it will
-      automatically fill the other dropdowns. This might come in handy.
+      your recently used tasks. If you select one of them it will automatically
+      fill the other dropdowns. This might come in handy.
     </p>
     <p>
       Let's begin by starting a new activity! Select a task of your choice,
