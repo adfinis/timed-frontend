@@ -23,7 +23,14 @@ const AnalysisController = Controller.extend(ReportFilterControllerMixin, {
 
   getTarget(url) {
     let queryString = toQueryString(
-      cleanParams(this.getProperties(...this.get('queryParams'), 'jwt'))
+      cleanParams(
+        this.getProperties(
+          ...this.get('queryParams').filter(
+            key => !['page', 'page_size'].includes(key)
+          ),
+          'jwt'
+        )
+      )
     )
 
     return `${url}&${queryString}`
