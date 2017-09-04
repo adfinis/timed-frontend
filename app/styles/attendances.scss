@@ -1,0 +1,15 @@
+.table--attendances > tbody > tr > td {
+  &:nth-child(1),
+  &:nth-child(2) {
+    width: auto;
+  }
+
+  &:nth-child(3) {
+    width: 105px;
+    text-align: right;
+
+    .btn {
+      display: inline-flex;
+    }
+  }
+}
