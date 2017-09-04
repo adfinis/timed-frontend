@@ -36,7 +36,7 @@
       {{#sort-header update=(action (mut ordering)) current=ordering by='comment'}}Comment{{/sort-header}}
       <th>Needs review</th>
       <th>Not billable</th>
-      <th>Verified</th>
+      <th>Verifier</th>
     </tr>
   </thead>
 {{^}}
@@ -64,13 +64,7 @@
             {{fa-icon 'square-o'}}
           {{/if}}
         </td>
-        <td>
-          {{#if report.verifiedBy}}
-            {{fa-icon 'check-square-o' title=(concat 'Verified by ' report.verifiedBy.username)}}
-          {{else}}
-            {{fa-icon 'square-o'}}
-          {{/if}}
-        </td>
+        <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
       </tr>
     {{^}}
       <tr>
