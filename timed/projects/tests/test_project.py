@@ -1,13 +1,11 @@
 """Tests for the projects endpoint."""
-from datetime import timedelta
 
 from django.core.urlresolvers import reverse
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
 from timed.jsonapi_test_case import JSONAPITestCase
-from timed.projects.factories import ProjectFactory, TaskFactory
-from timed.tracking.factories import ReportFactory
+from timed.projects.factories import ProjectFactory
 
 
 class ProjectTests(JSONAPITestCase):
@@ -20,7 +18,7 @@ class ProjectTests(JSONAPITestCase):
         """Set the environment for the tests up."""
         super().setUp()
 
-        self.project = ProjectFactory.create()
+        self.projects = ProjectFactory.create_batch(10)
 
         ProjectFactory.create_batch(
             10,
@@ -29,9 +27,6 @@ class ProjectTests(JSONAPITestCase):
 
     def test_project_list(self):
         """Should respond with a list of projects."""
-        task = TaskFactory.create(project=self.project)
-        ReportFactory.create_batch(10, task=task, duration=timedelta(hours=1))
-
         url = reverse('project-list')
 
         noauth_res = self.noauth_client.get(url)
@@ -42,15 +37,14 @@ class ProjectTests(JSONAPITestCase):
 
         result = self.result(res)
 
-        assert len(result['data']) == 1
-        assert result['data'][0]['attributes']['spent-hours'] == (
-            '10:00:00'
-        )
+        assert len(result['data']) == len(self.projects)
 
     def test_project_detail(self):
         """Should respond with a single project."""
+        project = self.projects[0]
+
         url = reverse('project-detail', args=[
-            self.project.id
+            project.id
         ])
 
         noauth_res = self.noauth_client.get(url)
@@ -71,8 +65,10 @@ class ProjectTests(JSONAPITestCase):
 
     def test_project_update(self):
         """Should not be able to update an existing project."""
+        project  = self.projects[0]
+
         url = reverse('project-detail', args=[
-            self.project.id
+            project.id
         ])
 
         noauth_res = self.noauth_client.patch(url)
@@ -83,8 +79,10 @@ class ProjectTests(JSONAPITestCase):
 
     def test_project_delete(self):
         """Should not be able to delete a project."""
+        project = self.projects[0]
+
         url = reverse('project-detail', args=[
-            self.project.id
+            project.id
         ])
 
         noauth_res = self.noauth_client.delete(url)
