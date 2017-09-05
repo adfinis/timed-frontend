@@ -5,17 +5,17 @@ export default function(server) {
 
   server.createList('billing-type', 3)
 
-  server.create('user', {
+  let user = server.create('user', {
     firstName: 'John',
     lastName: 'Doe',
     password: '123qwe'
   })
 
-  server.createList('report', 5)
+  server.createList('report', 5, { userId: user.id })
 
-  server.createList('activity', 3)
-  server.create('activity', 'active')
+  server.createList('activity', 3, { userId: user.id })
+  server.create('activity', 'active', { userId: user.id })
 
-  server.create('attendance', 'morning')
-  server.create('attendance', 'afternoon')
+  server.create('attendance', 'morning', { userId: user.id })
+  server.create('attendance', 'afternoon', { userId: user.id })
 }

@@ -19,6 +19,8 @@ describe('Acceptance | index', function() {
 
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
+
+    this.user = user
   })
 
   afterEach(async function() {
@@ -109,7 +111,7 @@ describe('Acceptance | index', function() {
   })
 
   it('can stop an active activity', async function() {
-    let activity = server.create('activity', 'active')
+    let activity = server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
@@ -132,7 +134,7 @@ describe('Acceptance | index', function() {
   })
 
   it('can set the document title', async function() {
-    server.create('activity', 'active')
+    server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
@@ -144,7 +146,7 @@ describe('Acceptance | index', function() {
   })
 
   it('can set the document title without task', async function() {
-    let a = server.create('activity', 'active')
+    let a = server.create('activity', 'active', { userId: this.user.id })
     a.update('task', null)
 
     await visit('/')
@@ -186,7 +188,8 @@ describe('Acceptance | index', function() {
   it('can edit an absence', async function() {
     server.loadFixtures('absence-types')
     server.create('absence', {
-      date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
+      date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD'),
+      userId: this.user.id
     })
 
     await visit('/?day=2017-06-29')
@@ -209,7 +212,8 @@ describe('Acceptance | index', function() {
   it('can delete an absence', async function() {
     server.loadFixtures('absence-types')
     server.create('absence', {
-      date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
+      date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD'),
+      userId: this.user.id
     })
 
     await visit('/?day=2017-06-29')

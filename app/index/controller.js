@@ -87,15 +87,19 @@ export default Controller.extend({
   },
 
   /**
-   * All activities filtered by the selected day
+   * All activities filtered by the selected day and the current user
    *
    * @property {Activity[]} _activities
    * @private
    */
-  @computed('date', '_allActivities.@each.{start,isDeleted}')
-  _activities(day, activities) {
+  @computed('date', '_allActivities.@each.{start,user,isDeleted}', 'user')
+  _activities(day, activities, user) {
     let activitiesThen = activities.filter(a => {
-      return a.get('start').isSame(day, 'day') && !a.get('isDeleted')
+      return (
+        a.get('start').isSame(day, 'day') &&
+        a.get('user.id') === user.get('id') &&
+        !a.get('isDeleted')
+      )
     })
 
     if (activitiesThen.get('length')) {
@@ -163,15 +167,19 @@ export default Controller.extend({
   },
 
   /**
-   * All attendances filtered by the selected day
+   * All attendances filtered by the selected day and the current user
    *
    * @property {Attendance[]} _attendances
    * @private
    */
-  @computed('date', '_allAttendances.@each.{from,isDeleted}')
-  _attendances(date, attendances) {
+  @computed('date', '_allAttendances.@each.{date,user,isDeleted}', 'user')
+  _attendances(date, attendances, user) {
     return attendances.filter(a => {
-      return a.get('date').isSame(date, 'day') && !a.get('isDeleted')
+      return (
+        a.get('date').isSame(date, 'day') &&
+        a.get('user.id') === user.get('id') &&
+        !a.get('isDeleted')
+      )
     })
   },
 
@@ -211,16 +219,17 @@ export default Controller.extend({
   },
 
   /**
-   * All reports filtered by the selected day
+   * All reports filtered by the selected day and the current user
    *
    * @property {Report[]} _reports
    * @private
    */
-  @computed('date', '_allReports.@each.{date,isNew,isDeleted}')
-  _reports(day, reports) {
+  @computed('date', '_allReports.@each.{date,user,isNew,isDeleted}', 'user')
+  _reports(day, reports, user) {
     return reports.filter(r => {
       return (
         r.get('date').isSame(day, 'day') &&
+        r.get('user.id') === user.get('id') &&
         !r.get('isNew') &&
         !r.get('isDeleted')
       )
@@ -228,16 +237,17 @@ export default Controller.extend({
   },
 
   /**
-   * All absences filtered by the selected day
+   * All absences filtered by the selected day and the current user
    *
    * @property {Absence[]} _absences
    * @private
    */
-  @computed('date', '_allAbsences.@each.{date,isNew,isDeleted}')
-  _absences(day, absences) {
+  @computed('date', '_allAbsences.@each.{date,user,isNew,isDeleted}', 'user')
+  _absences(day, absences, user) {
     return absences.filter(a => {
       return (
         a.get('date').isSame(day, 'day') &&
+        a.get('user.id') === user.get('id') &&
         !a.get('isNew') &&
         !a.get('isDeleted')
       )
@@ -328,14 +338,15 @@ export default Controller.extend({
    * @public
    */
   @computed(
-    '_allReports.@each.{duration,date}',
-    '_allAbsences.@each.{duration,date}',
-    'date'
+    '_allReports.@each.{duration,date,user}',
+    '_allAbsences.@each.{duration,date,user}',
+    'date',
+    'user'
   )
-  weeklyOverviewData(allReports, allAbsences, date) {
+  weeklyOverviewData(allReports, allAbsences, date, user) {
     let task = this.get('_weeklyOverviewData')
 
-    task.perform(allReports, allAbsences, date)
+    task.perform(allReports, allAbsences, date, user)
 
     return task
   },
@@ -346,13 +357,23 @@ export default Controller.extend({
    * @property {EmberConcurrency.Task} _weeklyOverviewData
    * @private
    */
-  _weeklyOverviewData: task(function*(allReports, allAbsences, date) {
+  _weeklyOverviewData: task(function*(allReports, allAbsences, date, user) {
     yield timeout(200)
 
-    allReports = allReports.filter(r => !r.get('isDeleted') && !r.get('isNew'))
-    allAbsences = allAbsences.filter(
-      a => !a.get('isDeleted') && !a.get('isNew')
+    allReports = allReports.filter(
+      r =>
+        r.get('user.id') === user.get('id') &&
+        !r.get('isDeleted') &&
+        !r.get('isNew')
     )
+
+    allAbsences = allAbsences.filter(
+      a =>
+        a.get('user.id') === user.get('id') &&
+        !a.get('isDeleted') &&
+        !a.get('isNew')
+    )
+
     let allHolidays = this.store.peekAll('public-holiday')
 
     // Build an object containing reports, absences and holidays

@@ -38,10 +38,14 @@ export default Controller.extend({
    * @property {Report[]} reports
    * @public
    */
-  @computed('_allReports.@each.{date,isNew,isDeleted}', 'model')
-  reports(reports, day) {
+  @computed('_allReports.@each.{user,date,isNew,isDeleted}', 'model', 'user')
+  reports(reports, day, user) {
     let reportsToday = reports.filter(r => {
-      return r.get('date').isSame(day, 'day') && !r.get('isDeleted')
+      return (
+        (!r.get('user.id') || r.get('user.id') === user.get('id')) &&
+        r.get('date').isSame(day, 'day') &&
+        !r.get('isDeleted')
+      )
     })
 
     if (!reportsToday.filterBy('isNew', true).get('length')) {
