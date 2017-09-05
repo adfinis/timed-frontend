@@ -23,6 +23,7 @@
   pages     = model.meta.pagination.pages
   page      = page
   page_size = page_size
+  class     = 'table--analysis-reschedule'
 }}
   <thead>
     <tr>
@@ -33,6 +34,9 @@
       {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__name'}}Project{{/sort-header}}
       {{#sort-header update=(action (mut ordering)) current=ordering by='task__name'}}Task{{/sort-header}}
       {{#sort-header update=(action (mut ordering)) current=ordering by='comment'}}Comment{{/sort-header}}
+      {{#sort-header update=(action (mut ordering)) current=ordering by='verified_by__username'}}Verified by{{/sort-header}}
+      <th>Needs review</th>
+      <th>Not billable</th>
     </tr>
   </thead>
 {{^}}
@@ -46,6 +50,9 @@
         <td>{{report.task.project.name}}</td>
         <td>{{report.task.name}}</td>
         <td>{{report.comment}}</td>
+        <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
+        <td>{{sy-checkmark checked=report.review}}</td>
+        <td>{{sy-checkmark checked=report.notBillable}}</td>
       </tr>
     {{^}}
       <tr>

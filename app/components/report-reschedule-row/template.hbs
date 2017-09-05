@@ -16,13 +16,13 @@ as |t|}}
   {{input placeholder='Comment' class='form-control' value=changeset.comment}}
 </td>
 <td class="form-group">
-  {{sy-checkbox checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
+  {{sy-checkbox checked=changeset.review on-change=(action (mut changeset.review))}}
 </td>
 <td class="form-group">
-  {{sy-checkbox checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
+  {{sy-checkbox checked=changeset.notBillable on-change=(action (mut changeset.notBillable))}}
 </td>
 <td class="form-group">
-  {{sy-checkbox title=(if changeset.verifiedBy.id (concat 'Verified by ' changeset.verifiedBy.username)) checked=changeset.verifiedBy.id on-change=(action 'setVerified') label='Verified'}}
+  {{sy-checkbox title=(if changeset.verifiedBy.id (concat 'Verified by ' changeset.verifiedBy.username)) checked=changeset.verifiedBy.id on-change=(action 'setVerified')}}
 </td>
 <td>
   <button
