@@ -34,6 +34,19 @@ export default Route.extend(RouteAutostartTourMixin, {
   tracking: service('tracking'),
 
   /**
+   * Setup controller hook, set the current user
+   *
+   * @method setupContrller
+   * @param {Ember.Controller} controller The controller
+   * @public
+   */
+  setupController(controller) {
+    this._super(...arguments)
+
+    controller.set('user', this.modelFor('protected'))
+  },
+
+  /**
    * The actions for the index activities route
    *
    * @property {Object} actions

@@ -9,7 +9,7 @@ import startApp from '../helpers/start-app'
 import testSelector from 'ember-test-selectors'
 import moment from 'moment'
 
-describe('Acceptance | index activities x', function() {
+describe('Acceptance | index activities', function() {
   let application
 
   beforeEach(async function() {
@@ -20,7 +20,9 @@ describe('Acceptance | index activities x', function() {
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
 
-    this.activities = server.createList('activity', 5)
+    this.activities = server.createList('activity', 5, { userId: user.id })
+
+    this.user = user
   })
 
   afterEach(async function() {
@@ -71,7 +73,10 @@ describe('Acceptance | index activities x', function() {
   it('can start an activity of a past day', async function() {
     let lastDay = moment().subtract(1, 'day')
 
-    let activity = server.create('activity', { date: lastDay })
+    let activity = server.create('activity', {
+      date: lastDay,
+      userId: this.user.id
+    })
 
     await visit(`/?day=${lastDay.format('YYYY-MM-DD')}`)
 
@@ -113,7 +118,7 @@ describe('Acceptance | index activities x', function() {
   })
 
   it('can generate reports', async function() {
-    let activity = server.create('activity', 'active')
+    let activity = server.create('activity', 'active', { userId: this.user.id })
     let { id } = activity
 
     await visit('/')
@@ -208,7 +213,7 @@ describe('Acceptance | index activities x', function() {
   })
 
   it('shows a warning when generating reports from unknown tasks', async function() {
-    server.create('activity', 'unknown')
+    server.create('activity', 'unknown', { userId: this.user.id })
 
     await visit('/')
 
@@ -224,7 +229,7 @@ describe('Acceptance | index activities x', function() {
   })
 
   it('shows a warning when generating reports which overlap the day', async function() {
-    server.create('activity', 'overlapping')
+    server.create('activity', 'overlapping', { userId: this.user.id })
 
     await visit('/')
 
@@ -240,8 +245,8 @@ describe('Acceptance | index activities x', function() {
   })
 
   it('can handle both warnings', async function() {
-    server.create('activity', 'unknown')
-    server.create('activity', 'overlapping')
+    server.create('activity', 'unknown', { userId: this.user.id })
+    server.create('activity', 'overlapping', { userId: this.user.id })
 
     await visit('/')
 

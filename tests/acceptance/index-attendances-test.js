@@ -19,8 +19,8 @@ describe('Acceptance | index attendances', function() {
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
 
-    server.create('attendance', 'morning')
-    server.create('attendance', 'afternoon')
+    server.create('attendance', 'morning', { userId: user.id })
+    server.create('attendance', 'afternoon', { userId: user.id })
   })
 
   afterEach(async function() {

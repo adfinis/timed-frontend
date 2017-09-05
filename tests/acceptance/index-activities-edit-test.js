@@ -20,7 +20,9 @@ describe('Acceptance | index activities edit', function() {
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
 
-    server.createList('activity', 5)
+    server.createList('activity', 5, { userId: user.id })
+
+    this.user = user
   })
 
   afterEach(async function() {
@@ -112,7 +114,7 @@ describe('Acceptance | index activities edit', function() {
   })
 
   it("can't delete an active activity", async function() {
-    let { id } = server.create('activity', 'active')
+    let { id } = server.create('activity', 'active', { userId: this.user.id })
 
     await visit(`/edit/${id}`)
 

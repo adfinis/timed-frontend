@@ -24,6 +24,19 @@ export default Route.extend(RouteAutostartTourMixin, {
   notify: service('notify'),
 
   /**
+   * Setup controller hook, set the current user
+   *
+   * @method setupContrller
+   * @param {Ember.Controller} controller The controller
+   * @public
+   */
+  setupController(controller) {
+    this._super(...arguments)
+
+    controller.set('user', this.modelFor('protected'))
+  },
+
+  /**
    * The actions for the index attendance route
    *
    * @property {Object} actions
