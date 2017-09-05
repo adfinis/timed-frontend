@@ -1,7 +1,7 @@
 """Serializers for the projects app."""
 
 from rest_framework_json_api.relations import ResourceRelatedField
-from rest_framework_json_api.serializers import DurationField, ModelSerializer
+from rest_framework_json_api.serializers import ModelSerializer
 
 from timed.projects import models
 
@@ -35,7 +35,6 @@ class ProjectSerializer(ModelSerializer):
     billing_type = ResourceRelatedField(
         queryset=models.BillingType.objects.all()
     )
-    spent_hours = DurationField(read_only=True)
 
     included_serializers = {
         'customer': 'timed.projects.serializers.CustomerSerializer',
@@ -50,7 +49,6 @@ class ProjectSerializer(ModelSerializer):
             'name',
             'comment',
             'estimated_hours',
-            'spent_hours',
             'archived',
             'customer',
             'billing_type'
