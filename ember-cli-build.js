@@ -7,7 +7,10 @@ let EmberApp = require('ember-cli/lib/broccoli/ember-app')
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     sassOptions: {
-      includePaths: ['bower_components/adcssy/css'],
+      includePaths: [
+        'bower_components/adcssy/css',
+        'node_modules/ember-tooltips/addon/styles'
+      ],
       onlyIncluded: true
     },
     postcssOptions: {

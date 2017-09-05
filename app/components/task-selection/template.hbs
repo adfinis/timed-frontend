@@ -26,7 +26,7 @@
     onchange           = (action (mut project))
     extra              = (hash
       selectedTemplate = selectedTemplate
-      optionTemplate   = optionTemplate
+      optionTemplate   = projectOptionTemplate
     )
   )
   task                 = (component 'power-select'
@@ -41,7 +41,7 @@
     onchange           = (action (mut task))
     extra              = (hash
       selectedTemplate = selectedTemplate
-      optionTemplate   = optionTemplate
+      optionTemplate   = taskOptionTemplate
     )
   )
   clear                = (action 'clear')

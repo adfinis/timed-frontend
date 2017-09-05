@@ -11,18 +11,6 @@ import { later } from 'ember-runloop'
 
 const SELECTED_TEMPLATE = hbs`{{selected.name}}`
 
-const OPTION_TEMPLATE = hbs`
-  <div
-    title="{{option.name}}{{if option.archived ' (archived)'}}"
-    class="{{if option.archived 'inactive'}}"
-  >
-    {{option.name}}
-    {{#if option.archived}}
-      <i class="fa fa-archive"></i>
-    {{/if}}
-  </div>
-`
-
 const CUSTOMER_OPTION_TEMPLATE = hbs`
   <div
     class="{{if option.archived 'inactive'}}"
@@ -39,6 +27,35 @@ const CUSTOMER_OPTION_TEMPLATE = hbs`
     {{else}}
       {{option.name}}
     {{/if}}
+    {{#if option.archived}}
+      <i class="fa fa-archive"></i>
+    {{/if}}
+  </div>
+`
+
+const PROJECT_OPTION_TEMPLATE = hbs`
+  <div
+    title="{{option.name}}{{if option.archived ' (archived)'}}"
+    class="{{if option.archived 'inactive'}}"
+  >
+    {{#if option.estimatedTime}}
+      {{#tooltip-on-element isShown=current delay=1000 spacing=20 side='left' event='none'}}
+        Used {{humanize-duration option.spentTime}} of {{humanize-duration option.estimatedTime}}
+      {{/tooltip-on-element}}
+    {{/if}}
+    {{option.name}}
+    {{#if option.archived}}
+      <i class="fa fa-archive"></i>
+    {{/if}}
+  </div>
+`
+
+const TASK_OPTION_TEMPLATE = hbs`
+  <div
+    title="{{option.name}}{{if option.archived ' (archived)'}}"
+    class="{{if option.archived 'inactive'}}"
+  >
+    {{option.name}}
     {{#if option.archived}}
       <i class="fa fa-archive"></i>
     {{/if}}
@@ -129,20 +146,28 @@ export default Component.extend({
   archived: false,
 
   /**
-   * Template for displaying the options
-   *
-   * @property {*} optionTemplate
-   * @public
-   */
-  optionTemplate: OPTION_TEMPLATE,
-
-  /**
    * Template for displaying the customer options
    *
    * @property {*} customerOptionTemplate
    * @public
    */
   customerOptionTemplate: CUSTOMER_OPTION_TEMPLATE,
+
+  /**
+   * Template for displaying the project options
+   *
+   * @property {*} projectOptionTemplate
+   * @public
+   */
+  projectOptionTemplate: PROJECT_OPTION_TEMPLATE,
+
+  /**
+   * Template for displaying the task options
+   *
+   * @property {*} taskOptionTemplate
+   * @public
+   */
+  taskOptionTemplate: TASK_OPTION_TEMPLATE,
 
   /**
    * Template for displaying the selected option
