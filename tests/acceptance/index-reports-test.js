@@ -21,7 +21,9 @@ describe('Acceptance | index reports', function() {
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
 
-    server.createList('report', 5)
+    server.createList('report', 5, { userId: user.id })
+
+    this.user = user
   })
 
   afterEach(async function() {
@@ -82,7 +84,7 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can edit report', async function() {
-    let { id } = server.create('report')
+    let { id } = server.create('report', { userId: this.user.id })
 
     await visit('/reports')
 
@@ -132,7 +134,7 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can delete report', async function() {
-    let { id } = server.create('report')
+    let { id } = server.create('report', { userId: this.user.id })
 
     await visit('/reports')
 
@@ -187,8 +189,8 @@ describe('Acceptance | index reports', function() {
   it('reloads absences after saving or deleting a report', async function() {
     server.loadFixtures('absence-types')
 
-    let absence = server.create('absence')
-    let report = server.create('report')
+    let absence = server.create('absence', { userId: this.user.id })
+    let report = server.create('report', { userId: this.user.id })
 
     server.get('/absences/:id', ({ absences }, { params: { id } }) => {
       let a = absences.find(id)

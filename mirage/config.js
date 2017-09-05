@@ -49,7 +49,12 @@ export default function() {
       return a.date === date
     })
   })
-  this.post('/attendances')
+  this.post('/attendances', function({ attendances, users }) {
+    return attendances.create({
+      ...this.normalizedRequestAttrs(),
+      userId: users.first().id
+    })
+  })
   this.get('/attendances/:id')
   this.patch('/attendances/:id')
   this.del('/attendances/:id')
@@ -68,22 +73,33 @@ export default function() {
 
     return activities.all()
   })
-  this.post('/activities')
+  this.post('/activities', function({ activities, users }) {
+    return activities.create({
+      ...this.normalizedRequestAttrs(),
+      userId: users.first().id
+    })
+  })
   this.get('/activities/:id')
   this.patch('/activities/:id')
   this.del('/activities/:id')
 
   this.get('/reports')
-  this.post('/reports')
+  this.post('/reports', function({ reports, users }) {
+    return reports.create({
+      ...this.normalizedRequestAttrs(),
+      userId: users.first().id
+    })
+  })
   this.get('/reports/:id')
   this.patch('/reports/:id')
   this.del('/reports/:id')
 
   this.get('/activity-blocks')
   this.post('/activity-blocks', function({ activityBlocks }) {
-    let attrs = this.normalizedRequestAttrs()
-
-    return activityBlocks.create({ ...attrs, fromDatetime: moment().format() })
+    return activityBlocks.create({
+      ...this.normalizedRequestAttrs(),
+      fromDatetime: moment().format()
+    })
   })
   this.get('/activity-blocks/:id')
   this.patch('/activity-blocks/:id')
@@ -132,9 +148,10 @@ export default function() {
   this.get('/overtime-credits/:id')
 
   this.get('/absences')
-  this.post('/absences', function({ absences }) {
+  this.post('/absences', function({ absences, users }) {
     return absences.create({
       ...this.normalizedRequestAttrs(),
+      userId: users.first().id,
       duration: '08:30:00'
     })
   })
