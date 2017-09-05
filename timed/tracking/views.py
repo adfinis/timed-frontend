@@ -96,6 +96,9 @@ class ReportViewSet(ModelViewSet):
         'task__name',
         'user__username',
         'comment',
+        'verified_by__username',
+        'review',
+        'not_billable'
     )
 
     @list_route()
