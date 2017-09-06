@@ -1,0 +1,3 @@
+Changed employments:
+{% for employment in employments %}
+{{employment.start_date}} - {{employment.end_date|ljust:10}} {{employment.percentage|stringformat:"s"|add:'%'|rjust:4}} {{employment.user.get_full_name}}{% endfor %}
