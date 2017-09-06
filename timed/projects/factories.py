@@ -32,7 +32,7 @@ class ProjectFactory(DjangoModelFactory):
     """Project factory."""
 
     name            = Faker('catch_phrase')
-    estimated_hours = Faker('random_int', min=0, max=2000)
+    estimated_time  = Faker('time_delta')
     archived        = False
     comment         = Faker('sentence')
     customer        = SubFactory('timed.projects.factories.CustomerFactory')
@@ -47,7 +47,7 @@ class TaskFactory(DjangoModelFactory):
     """Task factory."""
 
     name            = Faker('company_suffix')
-    estimated_hours = Faker('random_int', min=0, max=2000)
+    estimated_time  = Faker('time_delta')
     archived        = False
     project         = SubFactory('timed.projects.factories.ProjectFactory')
 

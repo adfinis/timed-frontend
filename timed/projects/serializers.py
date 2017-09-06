@@ -48,7 +48,7 @@ class ProjectSerializer(ModelSerializer):
         fields = [
             'name',
             'comment',
-            'estimated_hours',
+            'estimated_time',
             'archived',
             'customer',
             'billing_type'
@@ -71,7 +71,7 @@ class TaskSerializer(ModelSerializer):
         model  = models.Task
         fields = [
             'name',
-            'estimated_hours',
+            'estimated_time',
             'archived',
             'project',
         ]
