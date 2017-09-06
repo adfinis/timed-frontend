@@ -274,6 +274,9 @@ class Employment(models.Model):
     end_date         = models.DateField(blank=True, null=True)
     objects          = EmploymentManager()
 
+    added = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
     def __str__(self):
         """Represent the model as a string.
 
