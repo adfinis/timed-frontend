@@ -128,3 +128,34 @@ class TaskTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+
+
+def test_task_detail_no_reports(auth_client):
+    task = TaskFactory.create()
+
+    url = reverse('task-detail', args=[
+        task.id
+    ])
+
+    res = auth_client.get(url)
+
+    assert res.status_code == HTTP_200_OK
+
+    json = res.json()
+    assert json['meta']['spent-time'] == '00:00:00'
+
+
+def test_task_detail_with_reports(auth_client):
+    task = TaskFactory.create()
+    ReportFactory.create_batch(5, task=task, duration=timedelta(minutes=30))
+
+    url = reverse('task-detail', args=[
+        task.id
+    ])
+
+    res = auth_client.get(url)
+
+    assert res.status_code == HTTP_200_OK
+
+    json = res.json()
+    assert json['meta']['spent-time'] == '02:30:00'
