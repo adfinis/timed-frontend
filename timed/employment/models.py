@@ -112,7 +112,7 @@ class OvertimeCredit(models.Model):
     user     = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  related_name='overtime_credits')
     date     = models.DateField()
-    duration = models.DurationField(blank=True, null=True)
+    duration = models.DurationField(default=timedelta(0))
 
 
 class UserAbsenceTypeManager(models.Manager):
