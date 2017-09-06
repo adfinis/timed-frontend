@@ -1,5 +1,5 @@
 import Component from 'ember-component'
-import computed, { oneWay, observes } from 'ember-computed-decorators'
+import computed, { oneWay } from 'ember-computed-decorators'
 import moment from 'moment'
 import { task, timeout } from 'ember-concurrency'
 import service from 'ember-service/inject'
@@ -8,12 +8,10 @@ export default Component.extend({
   tagName: '',
 
   requestDelay: 200,
-  tooltipDelay: 750,
+
+  tooltipDelay: 500,
 
   projectMetaFetcher: service('project-meta-fetcher'),
-
-  visible: false,
-  tooltipVisible: false,
 
   @computed('progress')
   badgeColor(progress) {
@@ -26,14 +24,16 @@ export default Component.extend({
     return 'success'
   },
 
-  @observes('visible')
-  _perform() {
-    this.get('_computeTooltipVisible').perform()
+  @computed('visible')
+  tooltipVisible(visible) {
+    let task = this.get('_computeTooltipVisible')
+
+    task.perform(visible)
+
+    return task
   },
 
-  _computeTooltipVisible: task(function*() {
-    let visible = this.get('visible')
-
+  _computeTooltipVisible: task(function*(visible) {
     if (visible) {
       let { requestDelay, tooltipDelay } = this.getProperties(
         'requestDelay',
@@ -61,17 +61,10 @@ export default Component.extend({
       }
     }
 
-    this.set('tooltipVisible', visible)
-  })
-    .restartable()
-    .on('init'),
-
-  side: 'left',
-
-  event: 'none',
+    return visible
+  }).restartable(),
 
   @oneWay('project.estimatedTime') estimated: moment.duration(),
-
   spent: moment.duration(),
 
   @computed('estimated', 'spent')

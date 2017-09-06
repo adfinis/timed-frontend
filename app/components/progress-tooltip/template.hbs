@@ -1,26 +1,21 @@
-{{#tooltip-on-element
-class               = 'progress-tooltip'
-isShown             = tooltipVisible
-spacing             = 20
-side                = side
-event               = event
-enableLazyRendering = true
-}}
-  <div class="time-info">
-    <div class="time-info-durations">
-      <p>Spent: {{humanize-duration spent}}</p>
-      <p>Estimate: {{if progress (humanize-duration estimated) 'None'}}</p>
+{{#if tooltipVisible.lastSuccessful.value}}
+  {{#ember-tether class='progress-tooltip' target=target targetAttachment='middle left' attachment='middle right' offset='0 20px'}}
+    <div class="time-info">
+      <div class="time-info-durations">
+        <p>Spent: {{humanize-duration spent}}</p>
+        <p>Estimate: {{if progress (humanize-duration estimated) 'None'}}</p>
+      </div>
+      {{#if progress}}
+        <div class="time-info-percentage">
+          <span class="badge badge--{{badgeColor}}">
+            {{#if (gt progress 1)}}{{fa-icon 'warning'}} {{/if}}
+            {{round (mult 100 progress)}}%
+          </span>
+        </div>
+      {{/if}}
     </div>
     {{#if progress}}
-      <div class="time-info-percentage">
-        <span class="badge badge--{{badgeColor}}">
-          {{#if (gt progress 1)}}{{fa-icon 'warning'}} {{/if}}
-          {{round (mult 100 progress)}}%
-        </span>
-      </div>
+      {{progress-bar progress}}
     {{/if}}
-  </div>
-  {{#if progress}}
-    {{progress-bar progress}}
-  {{/if}}
-{{/tooltip-on-element}}
+  {{/ember-tether}}
+{{/if}}
