@@ -12,7 +12,10 @@
   background-color: lightgrey;
 }
 
-&.progress-bar::-webkit-progress-value,
+&.progress-bar::-webkit-progress-value {
+  background-color: var(--color-primary);
+}
+
 &.progress-bar.success::-webkit-progress-value {
   background-color: var(--color-success);
 }
@@ -27,7 +30,10 @@
 
 /* Firefox */
 
-&.progress-bar::-moz-progress-bar,
+&.progress-bar::-moz-progress-bar {
+  background-color: var(--color-primary);
+}
+
 &.progress-bar.success::-moz-progress-bar {
   background-color: var(--color-success);
 }

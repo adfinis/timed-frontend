@@ -13,6 +13,8 @@ const ProgressBarComponent = Component.extend({
 
   classNameBindings: ['color'],
 
+  color: null,
+
   @computed('progress')
   value(progress) {
     return round(progress * 100)
@@ -20,25 +22,9 @@ const ProgressBarComponent = Component.extend({
 
   max: 100,
 
-  @computed('value')
-  title(value) {
-    return `${value}% done`
-  },
-
   @computed('progress')
   width(progress) {
     return htmlSafe(`width: ${progress * 100}%`)
-  },
-
-  @computed('progress')
-  color(progress) {
-    if (progress > 1) {
-      return 'danger'
-    } else if (progress >= 0.9) {
-      return 'warning'
-    }
-
-    return 'success'
   }
 })
 

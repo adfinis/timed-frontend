@@ -7,14 +7,20 @@ import service from 'ember-service/inject'
 export default Component.extend({
   tagName: '',
 
-  requestDelay: 200,
-
-  tooltipDelay: 500,
+  delay: 500,
 
   projectMetaFetcher: service('project-meta-fetcher'),
 
+  @oneWay('project.estimatedTime') estimated: moment.duration(),
+  spent: moment.duration(),
+
+  @computed('estimated', 'spent')
+  progress(estimated, spent) {
+    return estimated && estimated.asHours() ? spent / estimated : 0
+  },
+
   @computed('progress')
-  badgeColor(progress) {
+  color(progress) {
     if (progress > 1) {
       return 'danger'
     } else if (progress >= 0.9) {
@@ -35,40 +41,15 @@ export default Component.extend({
 
   _computeTooltipVisible: task(function*(visible) {
     if (visible) {
-      let { requestDelay, tooltipDelay } = this.getProperties(
-        'requestDelay',
-        'tooltipDelay'
-      )
-
-      yield timeout(requestDelay)
-
-      let startTime = moment()
+      yield timeout(this.get('delay'))
 
       let { spentTime } = yield this.get(
         'projectMetaFetcher.fetchProjectMetadata'
       ).perform(this.get('project.id'))
 
       this.set('spent', spentTime)
-
-      let endTime = moment()
-
-      let diff = endTime - startTime
-
-      let delay = tooltipDelay - requestDelay - diff
-
-      if (delay > 0) {
-        yield timeout(delay)
-      }
     }
 
     return visible
-  }).restartable(),
-
-  @oneWay('project.estimatedTime') estimated: moment.duration(),
-  spent: moment.duration(),
-
-  @computed('estimated', 'spent')
-  progress(estimated, spent) {
-    return estimated && estimated.asHours() ? spent / estimated : null
-  }
+  }).restartable()
 })

@@ -7,7 +7,7 @@
       </div>
       {{#if progress}}
         <div class="time-info-percentage">
-          <span class="badge badge--{{badgeColor}}">
+          <span class="badge badge--{{color}}">
             {{#if (gt progress 1)}}{{fa-icon 'warning'}} {{/if}}
             {{round (mult 100 progress)}}%
           </span>
@@ -15,7 +15,7 @@
       {{/if}}
     </div>
     {{#if progress}}
-      {{progress-bar progress}}
+      {{progress-bar progress color=color}}
     {{/if}}
   {{/ember-tether}}
 {{/if}}
