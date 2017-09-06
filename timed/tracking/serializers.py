@@ -173,9 +173,9 @@ class ReportSerializer(ModelSerializer):
         if many:
             view = self.context['view']
             queryset = view.filter_queryset(view.get_queryset())
-            data = queryset.aggregate(total_hours=Sum('duration'))
-            data['total_hours'] = duration_string(
-                data['total_hours'] or timedelta(0)
+            data = queryset.aggregate(total_time=Sum('duration'))
+            data['total_time'] = duration_string(
+                data['total_time'] or timedelta(0)
             )
             return data
         return {}
