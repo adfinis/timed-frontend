@@ -51,7 +51,7 @@ class Project(models.Model):
     name            = models.CharField(max_length=255)
     comment         = models.TextField(blank=True)
     archived        = models.BooleanField(default=False)
-    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
+    estimated_time  = models.DurationField(blank=True, null=True)
     customer        = models.ForeignKey('projects.Customer',
                                         related_name='projects')
     billing_type    = models.ForeignKey(BillingType, on_delete=models.SET_NULL,
@@ -83,7 +83,7 @@ class Task(models.Model):
     """
 
     name            = models.CharField(max_length=255)
-    estimated_hours = models.PositiveIntegerField(blank=True, null=True)
+    estimated_time  = models.DurationField(blank=True, null=True)
     archived        = models.BooleanField(default=False)
     project         = models.ForeignKey('projects.Project',
                                         related_name='tasks')

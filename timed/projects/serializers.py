@@ -1,9 +1,13 @@
 """Serializers for the projects app."""
+from datetime import timedelta
 
+from django.db.models import Sum
+from django.utils.duration import duration_string
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import ModelSerializer
 
 from timed.projects import models
+from timed.tracking.models import Report
 
 
 class CustomerSerializer(ModelSerializer):
@@ -41,6 +45,17 @@ class ProjectSerializer(ModelSerializer):
         'billing_type': 'timed.projects.serializers.BillingTypeSerializer'
     }
 
+    def get_root_meta(self, resource, many):
+        if not many:
+            queryset = Report.objects.filter(task__project=self.instance)
+            data = queryset.aggregate(spent_time=Sum('duration'))
+            data['spent_time'] = duration_string(
+                data['spent_time'] or timedelta(0)
+            )
+            return data
+
+        return {}
+
     class Meta:
         """Meta information for the project serializer."""
 
@@ -48,7 +63,7 @@ class ProjectSerializer(ModelSerializer):
         fields = [
             'name',
             'comment',
-            'estimated_hours',
+            'estimated_time',
             'archived',
             'customer',
             'billing_type'
@@ -65,13 +80,24 @@ class TaskSerializer(ModelSerializer):
         'project':    'timed.projects.serializers.ProjectSerializer'
     }
 
+    def get_root_meta(self, resource, many):
+        if not many:
+            queryset = Report.objects.filter(task=self.instance)
+            data = queryset.aggregate(spent_time=Sum('duration'))
+            data['spent_time'] = duration_string(
+                data['spent_time'] or timedelta(0)
+            )
+            return data
+
+        return {}
+
     class Meta:
         """Meta information for the task serializer."""
 
         model  = models.Task
         fields = [
             'name',
-            'estimated_hours',
+            'estimated_time',
             'archived',
             'project',
         ]
