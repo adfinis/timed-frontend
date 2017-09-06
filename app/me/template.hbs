@@ -62,7 +62,7 @@
                 {{#each user.userAbsenceTypes as |absenceType|}}
                   <tr
                     class="{{if absenceType.absenceCredits.length 'pointer'}}"
-                    title="{{if absenceType.absenceCredits.length 'Click to see composition of this credit'}}"
+                    title="{{if absenceType.absenceCredits.length 'Click to toggle the composition of this credit'}}"
                     {{action (toggle 'showCredits' absenceType) on='click'}}
                   >
                     <td>
