@@ -8,59 +8,11 @@ import computed from 'ember-computed-decorators'
 import service from 'ember-service/inject'
 import hbs from 'htmlbars-inline-precompile'
 import { later } from 'ember-runloop'
+import customerOptionTemplate from 'timed/templates/customer-option'
+import projectOptionTemplate from 'timed/templates/project-option'
+import taskOptionTemplate from 'timed/templates/task-option'
 
 const SELECTED_TEMPLATE = hbs`{{selected.name}}`
-
-const CUSTOMER_OPTION_TEMPLATE = hbs`
-  <div
-    class="{{if option.archived 'inactive'}}"
-    title="{{if option.isTask option.longName option.name}}{{if option.archived ' (archived)'}}"
-  >
-    {{#if option.isTask}}
-      <span class="history">
-        <i class="fa fa-history"></i>
-        <span class="history-text">
-          <small>{{option.project.customer.name}} > {{option.project.name}}</small>
-          {{option.name}}
-        </span>
-      </span>
-    {{else}}
-      {{option.name}}
-    {{/if}}
-    {{#if option.archived}}
-      <i class="fa fa-archive"></i>
-    {{/if}}
-  </div>
-`
-
-const PROJECT_OPTION_TEMPLATE = hbs`
-  <div
-    title="{{option.name}}{{if option.archived ' (archived)'}}"
-    class="{{if option.archived 'inactive'}}"
-  >
-    {{#if option.estimatedTime}}
-      {{#tooltip-on-element isShown=current delay=1000 spacing=20 side='left' event='none'}}
-        Used {{humanize-duration option.spentTime}} of {{humanize-duration option.estimatedTime}}
-      {{/tooltip-on-element}}
-    {{/if}}
-    {{option.name}}
-    {{#if option.archived}}
-      <i class="fa fa-archive"></i>
-    {{/if}}
-  </div>
-`
-
-const TASK_OPTION_TEMPLATE = hbs`
-  <div
-    title="{{option.name}}{{if option.archived ' (archived)'}}"
-    class="{{if option.archived 'inactive'}}"
-  >
-    {{option.name}}
-    {{#if option.archived}}
-      <i class="fa fa-archive"></i>
-    {{/if}}
-  </div>
-`
 
 /**
  * Component for selecting a task, which consists of selecting a customer and
@@ -151,7 +103,7 @@ export default Component.extend({
    * @property {*} customerOptionTemplate
    * @public
    */
-  customerOptionTemplate: CUSTOMER_OPTION_TEMPLATE,
+  customerOptionTemplate,
 
   /**
    * Template for displaying the project options
@@ -159,7 +111,7 @@ export default Component.extend({
    * @property {*} projectOptionTemplate
    * @public
    */
-  projectOptionTemplate: PROJECT_OPTION_TEMPLATE,
+  projectOptionTemplate,
 
   /**
    * Template for displaying the task options
@@ -167,7 +119,7 @@ export default Component.extend({
    * @property {*} taskOptionTemplate
    * @public
    */
-  taskOptionTemplate: TASK_OPTION_TEMPLATE,
+  taskOptionTemplate,
 
   /**
    * Template for displaying the selected option

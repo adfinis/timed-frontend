@@ -1,0 +1,33 @@
+:root {
+  --progress-tooltip-padding-right: 1rem;
+  --progress-tooltip-text-space: 0.4rem;
+}
+
+.progress-tooltip {
+  z-index: 1000;
+  background: rgb(87,87,87);
+  box-shadow: 0 1px 5px rgba(23, 23, 23, 0.5);
+  max-width: initial;
+
+  .time-info {
+    display: flex;
+
+    .time-info-durations {
+      padding-right: var(--progress-tooltip-padding-right);
+
+      p {
+        white-space: nowrap;
+        margin: 0;
+
+        &:not(:last-of-type) {
+          padding-bottom: var(--progress-tooltip-text-space);
+        }
+      }
+    }
+
+    .time-info-percentage {
+      display: flex;
+      align-items: center;
+    }
+  }
+}

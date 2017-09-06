@@ -1,0 +1,9 @@
+<div
+  title="{{option.name}}{{if option.archived ' (archived)'}}"
+  class="{{if option.archived 'inactive'}}"
+>
+  {{option.name}}
+  {{#if option.archived}}
+    <i class="fa fa-archive"></i>
+  {{/if}}
+</div>
