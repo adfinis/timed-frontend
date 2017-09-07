@@ -53,12 +53,12 @@ describe('Unit | Utility | humanize duration', function() {
   })
 
   it('splits big numbers', function() {
-    let duration = moment.duration({
-      hours: 1000000
-    })
+    let hours = 1000000
+
+    let duration = moment.duration({ hours })
 
     let result = humanizeDuration(duration)
 
-    expect(result).to.equal('1’000’000h 0m')
+    expect(result).to.equal(`${hours.toLocaleString('de-CH')}h 0m`)
   })
 })
