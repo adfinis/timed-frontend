@@ -11,7 +11,7 @@ import service from 'ember-service/inject'
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
+const ProgressTooltipComponent = Component.extend({
   /**
    * No tag name, since we attach the tooltip to a given target
    *
@@ -137,3 +137,5 @@ export default Component.extend({
     return visible
   }).restartable()
 })
+
+export default ProgressTooltipComponent

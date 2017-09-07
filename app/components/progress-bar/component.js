@@ -45,6 +45,14 @@ const ProgressBarComponent = Component.extend({
   classNameBindings: ['color'],
 
   /**
+   * The current progress as a factor
+   *
+   * @property {Number} progress
+   * @public
+   */
+  progress: 0,
+
+  /**
    * Custom color of the progress bar, this is added as a class
    *
    * @property {String} color

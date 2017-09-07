@@ -9,16 +9,8 @@ describe('Integration | Component | progress bar', function() {
   })
 
   it('renders', function() {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.on('myAction', function(val) { ... });
-    // Template block usage:
-    // this.render(hbs`
-    //   {{#progress-bar}}
-    //     template content
-    //   {{/progress-bar}}
-    // `);
+    this.render(hbs`{{progress-bar 0.5}}`)
 
-    this.render(hbs`{{progress-bar}}`)
-    expect(this.$()).to.have.length(1)
+    expect(parseInt(this.$('progress').attr('value'))).to.equal(50)
   })
 })
