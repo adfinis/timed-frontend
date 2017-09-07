@@ -51,4 +51,14 @@ describe('Unit | Utility | humanize duration', function() {
 
     expect(result).to.equal('0h 0m 0s')
   })
+
+  it('splits big numbers', function() {
+    let duration = moment.duration({
+      hours: 1000000
+    })
+
+    let result = humanizeDuration(duration)
+
+    expect(result).to.equal('1’000’000h 0m')
+  })
 })
