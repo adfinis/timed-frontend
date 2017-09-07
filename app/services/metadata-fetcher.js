@@ -14,9 +14,32 @@ const META_MODELS = {
     spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
   }
 }
+
+/**
+ * Service to fetch metadata and transform it if necessary
+ *
+ * @class MetadataFetcherService
+ * @extends Ember.Service
+ * @public
+ */
 export default Service.extend({
+  /**
+   * Ajax service to handle HTTP requests
+   *
+   * @property {EmberAjax.AjaxService} ajax
+   * @public
+   */
   ajax: service('ajax'),
 
+  /**
+   * Task to fetch a single records metadata
+   *
+   * @method fetchSingleRecordMetadata
+   * @param {String} type The type to fetch
+   * @param {Number} id The id of the object to fetch
+   * @return {Object} An object with the parsed metadata
+   * @public
+   */
   fetchSingleRecordMetadata: task(function*(type, id) {
     if (!id) {
       throw new Error('Project ID is missing')
