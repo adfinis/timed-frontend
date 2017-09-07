@@ -41,21 +41,20 @@ export default Service.extend({
    * @public
    */
   fetchSingleRecordMetadata: task(function*(type, id) {
+    /* istanbul ignore next */
     if (!id) {
       throw new Error('Project ID is missing')
     }
 
-    let { meta } = yield this.get('ajax').request(
+    let { meta = {} } = yield this.get('ajax').request(
       `/api/v1/${dasherize(type)}s/${id}`
     )
 
     return Object.keys(
       META_MODELS[camelize(type)]
     ).reduce((parsedMeta, key) => {
-      let { defaultValue, transform, value } = {
-        ...META_MODELS[camelize(type)][key],
-        value: meta[dasherize(key)]
-      }
+      let { defaultValue, transform } = META_MODELS[camelize(type)][key]
+      let value = meta[dasherize(key)]
 
       return {
         ...parsedMeta,
