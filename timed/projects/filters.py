@@ -16,7 +16,10 @@ class CustomerFilterSet(FilterSet):
         """Meta information for the customer filter set."""
 
         model  = models.Customer
-        fields = ['archived']
+        fields = [
+            'archived',
+            'reference'
+        ]
 
 
 class ProjectFilterSet(FilterSet):
@@ -28,7 +31,12 @@ class ProjectFilterSet(FilterSet):
         """Meta information for the project filter set."""
 
         model  = models.Project
-        fields = ['archived', 'customer', 'billing_type']
+        fields = [
+            'archived',
+            'customer',
+            'billing_type',
+            'reference'
+        ]
 
 
 class MyMostFrequentTaskFilter(Filter):
@@ -73,4 +81,9 @@ class TaskFilterSet(FilterSet):
         """Meta information for the task filter set."""
 
         model  = models.Task
-        fields = ['archived', 'project', 'my_most_frequent']
+        fields = [
+            'archived',
+            'project',
+            'my_most_frequent',
+            'reference'
+        ]

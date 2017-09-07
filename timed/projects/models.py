@@ -11,11 +11,13 @@ class Customer(models.Model):
     reported on their projects.
     """
 
-    name     = models.CharField(max_length=255)
-    email    = models.EmailField(blank=True)
-    website  = models.URLField(blank=True)
-    comment  = models.TextField(blank=True)
-    archived = models.BooleanField(default=False)
+    name      = models.CharField(max_length=255, unique=True)
+    reference = models.CharField(max_length=255, db_index=True,
+                                 blank=True, null=True)
+    email     = models.EmailField(blank=True)
+    website   = models.URLField(blank=True)
+    comment   = models.TextField(blank=True)
+    archived  = models.BooleanField(default=False)
 
     def __str__(self):
         """Represent the model as a string.
@@ -28,17 +30,20 @@ class Customer(models.Model):
     class Meta:
         """Meta informations for the customer model."""
 
-        indexes = [models.Index(fields=['name', 'archived'])]
         ordering = ['name']
 
 
 class BillingType(models.Model):
     """Billing type defining how a project, resp. reports are being billed."""
 
-    name = models.CharField(max_length=255, unique=True)
+    name      = models.CharField(max_length=255, unique=True)
+    reference = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ['name']
 
 
 class Project(models.Model):
@@ -48,7 +53,9 @@ class Project(models.Model):
     belongs to a customer.
     """
 
-    name            = models.CharField(max_length=255)
+    name            = models.CharField(max_length=255, db_index=True)
+    reference       = models.CharField(max_length=255, db_index=True,
+                                       blank=True, null=True)
     comment         = models.TextField(blank=True)
     archived        = models.BooleanField(default=False)
     estimated_time  = models.DurationField(blank=True, null=True)
@@ -69,9 +76,6 @@ class Project(models.Model):
         return '{0} > {1}'.format(self.customer, self.name)
 
     class Meta:
-        """Meta informations for the project model."""
-
-        indexes = [models.Index(fields=['name', 'archived'])]
         ordering = ['name']
 
 
@@ -83,6 +87,8 @@ class Task(models.Model):
     """
 
     name            = models.CharField(max_length=255)
+    reference       = models.CharField(max_length=255, db_index=True,
+                                       blank=True, null=True)
     estimated_time  = models.DurationField(blank=True, null=True)
     archived        = models.BooleanField(default=False)
     project         = models.ForeignKey('projects.Project',
@@ -99,7 +105,6 @@ class Task(models.Model):
     class Meta:
         """Meta informations for the task model."""
 
-        indexes = [models.Index(fields=['name', 'archived'])]
         ordering = ['name']
 
 

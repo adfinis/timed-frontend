@@ -9,7 +9,7 @@ from timed.projects import models
 class CustomerFactory(DjangoModelFactory):
     """Customer factory."""
 
-    name     = Faker('company')
+    name     = Faker('uuid4')
     email    = Faker('company_email')
     website  = Faker('url')
     comment  = Faker('sentence')
