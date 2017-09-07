@@ -46,10 +46,15 @@ describe('Integration | Component | power select', function() {
 
     return wait().then(() => {
       expect(
-        this.$('.ember-power-select-selected-item').text().trim()
+        this.$('.ember-power-select-selected-item')
+          .text()
+          .trim()
       ).to.equal('Selected: Test 1')
       expect(
-        this.$('.ember-power-select-option').first().text().trim()
+        this.$('.ember-power-select-option')
+          .first()
+          .text()
+          .trim()
       ).to.equal('Option: Test 1')
     })
   })

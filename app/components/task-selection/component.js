@@ -294,9 +294,13 @@ export default Component.extend({
       })
       .sortBy('name')
 
-    let tasks = this.get('store').peekAll('task').filter(t => {
-      return ids.includes(t.get('id')) && (archived ? true : !t.get('archived'))
-    })
+    let tasks = this.get('store')
+      .peekAll('task')
+      .filter(t => {
+        return (
+          ids.includes(t.get('id')) && (archived ? true : !t.get('archived'))
+        )
+      })
 
     return [...tasks.toArray(), ...customers.toArray()]
   },

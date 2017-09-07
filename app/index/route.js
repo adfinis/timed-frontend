@@ -71,8 +71,12 @@ export default Route.extend(RouteAutostartTourMixin, {
   afterModel(model) {
     let user = this.get('session.data.authenticated.user_id')
     let day = model.format(DATE_FORMAT)
-    let from = moment(model).subtract(20, 'days').format(DATE_FORMAT)
-    let to = moment(model).add(10, 'days').format(DATE_FORMAT)
+    let from = moment(model)
+      .subtract(20, 'days')
+      .format(DATE_FORMAT)
+    let to = moment(model)
+      .add(10, 'days')
+      .format(DATE_FORMAT)
     let location = this.store
       .peekRecord('user', user)
       .get('activeEmployment.location.id')

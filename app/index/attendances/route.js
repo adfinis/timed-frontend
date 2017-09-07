@@ -89,7 +89,9 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async addAttendance() {
       try {
-        let date = this.controllerFor('index').get('date').clone()
+        let date = this.controllerFor('index')
+          .get('date')
+          .clone()
 
         let from = date.clone().set({ h: 8, m: 0, s: 0, ms: 0 })
         let to = date.clone().set({ h: 11, m: 30, s: 0, ms: 0 })

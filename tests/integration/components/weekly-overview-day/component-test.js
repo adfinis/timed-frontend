@@ -20,7 +20,11 @@ describe('Integration | Component | weekly overview day', function() {
 
     expect(this.$()).to.have.length(1)
 
-    expect(this.$('.day').text().trim()).to.equal('05\n  Th')
+    expect(
+      this.$('.day')
+        .text()
+        .trim()
+    ).to.equal('05\n  Th')
   })
 
   it('computes a title', function() {

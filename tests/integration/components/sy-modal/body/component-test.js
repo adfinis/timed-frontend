@@ -11,6 +11,10 @@ describe('Integration | Component | sy modal/body', function() {
   it('renders', function() {
     this.render(hbs`{{#sy-modal/body}}Test{{/sy-modal/body}}`)
 
-    expect(this.$().text().trim()).to.equal('Test')
+    expect(
+      this.$()
+        .text()
+        .trim()
+    ).to.equal('Test')
   })
 })

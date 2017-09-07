@@ -12,13 +12,21 @@ describe('Integration | Component | sy checkbox', function() {
   it('works', function() {
     this.render(hbs`{{sy-checkbox label='Test Label'}}`)
 
-    expect(this.$('label').text().trim()).to.equal('Test Label')
+    expect(
+      this.$('label')
+        .text()
+        .trim()
+    ).to.equal('Test Label')
   })
 
   it('works in block style', function() {
     this.render(hbs`{{#sy-checkbox}}Test Label{{/sy-checkbox}}`)
 
-    expect(this.$('label').text().trim()).to.equal('Test Label')
+    expect(
+      this.$('label')
+        .text()
+        .trim()
+    ).to.equal('Test Label')
   })
 
   it('changes state', function() {

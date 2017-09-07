@@ -55,6 +55,10 @@ describe('Integration | Component | attendance slider', function() {
       {{attendance-slider attendance=attendance}}
     `)
 
-    expect(this.$('span').text().trim()).to.equal('24:00')
+    expect(
+      this.$('span')
+        .text()
+        .trim()
+    ).to.equal('24:00')
   })
 })
