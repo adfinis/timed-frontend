@@ -35,6 +35,14 @@ export default Model.extend({
   archived: attr('boolean', { defaultValue: false }),
 
   /**
+   * The estimated time for this project
+   *
+   * @property {moment.duration} estimatedTime
+   * @public
+   */
+  estimatedTime: attr('django-duration'),
+
+  /**
    * The customer
    *
    * @property customer

@@ -50,7 +50,9 @@ export default Mixin.create(RouteTourMixin, {
   _wantsTour(routeName, user) {
     return (
       !user.get('tourDone') &&
-      !this.get('autostartTour').get('done').includes(routeName) &&
+      !this.get('autostartTour')
+        .get('done')
+        .includes(routeName) &&
       (this.get('media.isMd') ||
         this.get('media.isLg') ||
         this.get('media.isXl'))

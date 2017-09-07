@@ -30,7 +30,9 @@ const Formatter = {
    * @public
    */
   to(value) {
-    return moment({ hour: 0 }).minute(value).format('HH:mm')
+    return moment({ hour: 0 })
+      .minute(value)
+      .format('HH:mm')
   }
 }
 
@@ -131,9 +133,16 @@ export default Component.extend({
 
     attendance.set(
       'from',
-      moment(attendance.get('from')).hour(0).minute(fromMin)
+      moment(attendance.get('from'))
+        .hour(0)
+        .minute(fromMin)
     )
-    attendance.set('to', moment(attendance.get('to')).hour(0).minute(toMin))
+    attendance.set(
+      'to',
+      moment(attendance.get('to'))
+        .hour(0)
+        .minute(toMin)
+    )
 
     yield this.get('attrs.on-save')(attendance)
   }).drop(),

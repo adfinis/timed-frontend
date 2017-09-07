@@ -15,8 +15,16 @@ describe('Integration | Component | sy modal/header', function() {
       hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
     )
 
-    expect(this.$().text().trim()).to.contain('Test')
-    expect(this.$().text().trim()).to.contain('×')
+    expect(
+      this.$()
+        .text()
+        .trim()
+    ).to.contain('Test')
+    expect(
+      this.$()
+        .text()
+        .trim()
+    ).to.contain('×')
   })
 
   it('closes on click of the close icon', function() {

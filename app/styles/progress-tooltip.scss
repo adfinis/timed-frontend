@@ -1,0 +1,62 @@
+:root {
+  --progress-tooltip-arrow-size: 0.5rem;
+  --progress-tooltip-color: rgb(87,87,87);
+}
+
+.progress-tooltip {
+  z-index: 1000;
+  background: var(--progress-tooltip-color);
+  box-shadow: 0 1px 5px rgba(23,23,23,0.5);
+  max-width: initial;
+  color: rgb(255,255,255);
+  font-size: 0.9rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 0.3rem;
+  animation: 200ms ease slide-in;
+
+  .time-info {
+    display: flex;
+
+    .time-info-durations {
+      p {
+        white-space: nowrap;
+        margin: 0;
+
+        &:not(:last-of-type) {
+          padding-bottom: 0.4rem;
+        }
+      }
+    }
+
+    .time-info-percentage {
+      display: flex;
+      align-items: center;
+      padding-left: 1rem;
+    }
+  }
+
+  &::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translate(100%, -50%);
+    border-top: var(--progress-tooltip-arrow-size) solid transparent;
+    border-bottom: var(--progress-tooltip-arrow-size) solid transparent;
+    border-left: var(--progress-tooltip-arrow-size) solid var(--progress-tooltip-color);
+  }
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    left: -15px;
+  }
+  to {
+    opacity: 1;
+    left: 0;
+  }
+}

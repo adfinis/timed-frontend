@@ -1,0 +1,47 @@
+&.progress-bar {
+  width: 100%;
+  height: 3px;
+  border: none;
+  appearance: none;
+  vertical-align: middle;
+}
+
+/* Chrome */
+
+&.progress-bar::-webkit-progress-bar {
+  background-color: lightgrey;
+}
+
+&.progress-bar::-webkit-progress-value {
+  background-color: var(--color-primary);
+}
+
+&.progress-bar.success::-webkit-progress-value {
+  background-color: var(--color-success);
+}
+
+&.progress-bar.warning::-webkit-progress-value {
+  background-color: var(--color-warning);
+}
+
+&.progress-bar.danger::-webkit-progress-value {
+  background-color: var(--color-danger);
+}
+
+/* Firefox */
+
+&.progress-bar::-moz-progress-bar {
+  background-color: var(--color-primary);
+}
+
+&.progress-bar.success::-moz-progress-bar {
+  background-color: var(--color-success);
+}
+
+&.progress-bar.warning::-moz-progress-bar {
+  background-color: var(--color-warning);
+}
+
+&.progress-bar.danger::-moz-progress-bar {
+  background-color: var(--color-danger);
+}

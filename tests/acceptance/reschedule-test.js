@@ -78,13 +78,17 @@ describe('Acceptance | reschedule', function() {
     click(`${testSelector('filter-from-date')} input`)
 
     await click(
-      `[data-date=${moment().subtract(2, 'day').format('YYYY-MM-DD')}]`
+      `[data-date=${moment()
+        .subtract(2, 'day')
+        .format('YYYY-MM-DD')}]`
     )
 
     click(`${testSelector('filter-to-date')} input`)
 
     await click(
-      `[data-date=${moment().subtract(1, 'day').format('YYYY-MM-DD')}]`
+      `[data-date=${moment()
+        .subtract(1, 'day')
+        .format('YYYY-MM-DD')}]`
     )
 
     await click(testSelector('filter-apply'))

@@ -68,7 +68,9 @@ export default Route.extend(AuthenticatedRouteMixin, {
     )
 
     if (this.get('autostartTour.tours').includes(currentRoute)) {
-      this.controllerFor(currentRoute).get('tour').close()
+      this.controllerFor(currentRoute)
+        .get('tour')
+        .close()
     }
   },
 

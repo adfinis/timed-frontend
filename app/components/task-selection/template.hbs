@@ -10,6 +10,7 @@
     class              = 'customer-select'
     onchange           = (action (mut customer))
     extra              = (hash
+      lazy             = true
       selectedTemplate = selectedTemplate
       optionTemplate   = customerOptionTemplate
     )
@@ -26,7 +27,7 @@
     onchange           = (action (mut project))
     extra              = (hash
       selectedTemplate = selectedTemplate
-      optionTemplate   = optionTemplate
+      optionTemplate   = projectOptionTemplate
     )
   )
   task                 = (component 'power-select'
@@ -41,7 +42,7 @@
     onchange           = (action (mut task))
     extra              = (hash
       selectedTemplate = selectedTemplate
-      optionTemplate   = optionTemplate
+      optionTemplate   = taskOptionTemplate
     )
   )
   clear                = (action 'clear')

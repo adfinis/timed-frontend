@@ -6,4 +6,6 @@ export const cleanParams = params =>
     .reduce((cleaned, key) => ({ ...cleaned, [key]: params[key] }), {})
 
 export const toQueryString = params =>
-  Object.keys(params).map(key => `${key}=${params[key]}`).join('&')
+  Object.keys(params)
+    .map(key => `${key}=${params[key]}`)
+    .join('&')

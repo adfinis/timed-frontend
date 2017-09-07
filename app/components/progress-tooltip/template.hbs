@@ -1,0 +1,21 @@
+{{#if tooltipVisible.lastSuccessful.value}}
+  {{#ember-tether class='progress-tooltip' target=target targetAttachment='middle left' attachment='middle right' offset='0 20px'}}
+    <div class="time-info">
+      <div class="time-info-durations">
+        <p>Spent: {{humanize-duration spent}}</p>
+        <p>Estimate: {{if estimated (humanize-duration estimated) 'None'}}</p>
+      </div>
+      {{#if progress}}
+        <div class="time-info-percentage">
+          <span class="badge badge--{{color}}">
+            {{#if (gt progress 1)}}{{fa-icon 'warning'}} {{/if}}
+            {{round (mult 100 progress)}}%
+          </span>
+        </div>
+      {{/if}}
+    </div>
+    {{#if progress}}
+      {{progress-bar progress color=color}}
+    {{/if}}
+  {{/ember-tether}}
+{{/if}}

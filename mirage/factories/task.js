@@ -1,9 +1,10 @@
 import { Factory, faker } from 'ember-cli-mirage'
 import { capitalize } from 'ember-string'
+import { randomDuration } from '../helpers/duration'
 
 export default Factory.extend({
   name: () => capitalize(faker.hacker.ingverb()),
-  estimatedTime: () => faker.list.random(50, 200, 300, 400, 500, 1000),
+  estimatedTime: () => randomDuration(),
   // project: association()
 
   afterCreate(task, server) {

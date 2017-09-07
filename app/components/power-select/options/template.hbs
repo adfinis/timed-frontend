@@ -13,7 +13,11 @@
       data-option-index="{{groupIndex}}{{index}}"
       role="option">
       {{#if extra.optionTemplate}}
-        {{component 'power-select/option' layout=extra.optionTemplate option=opt}}
+        {{component 'power-select/option'
+          layout  = extra.optionTemplate
+          option  = opt
+          current = (eq opt select.highlighted)
+        }}
       {{else}}
         {{yield opt select}}
       {{/if}}
@@ -28,7 +32,11 @@
       data-option-index="{{groupIndex}}{{index}}"
       role="option">
       {{#if extra.optionTemplate}}
-        {{component 'power-select/option' layout=extra.optionTemplate option=opt}}
+        {{component 'power-select/option'
+          layout  = extra.optionTemplate
+          option  = opt
+          current = (eq opt select.highlighted)
+        }}
       {{else}}
         {{yield opt select}}
       {{/if}}
