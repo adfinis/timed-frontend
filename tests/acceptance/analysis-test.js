@@ -63,4 +63,14 @@ describe('Acceptance | analysis', function() {
 
     expect(currentURL()).to.equal('/analysis')
   })
+
+  it('shows a total', async function() {
+    await visit('/analysis?customer=1')
+
+    expect(
+      find('tfoot tr:first-child td:nth-child(2)')
+        .text()
+        .trim()
+    ).to.match(/\d{2}:\d{2}/)
+  })
 })

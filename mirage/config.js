@@ -1,5 +1,6 @@
 import { Response } from 'ember-cli-mirage'
 import moment from 'moment'
+import { randomDuration } from './helpers/duration'
 
 const { parse } = JSON
 
@@ -83,7 +84,14 @@ export default function() {
   this.patch('/activities/:id')
   this.del('/activities/:id')
 
-  this.get('/reports')
+  this.get('/reports', function({ reports }) {
+    return {
+      ...this.serialize(reports.all()),
+      meta: {
+        'total-time': randomDuration()
+      }
+    }
+  })
   this.post('/reports', function({ reports, users }) {
     return reports.create({
       ...this.normalizedRequestAttrs(),

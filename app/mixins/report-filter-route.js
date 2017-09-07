@@ -4,6 +4,9 @@
  * @public
  */
 import Mixin from 'ember-metal/mixin'
+import DjangoDurationTransform from 'timed/transforms/django-duration'
+
+const DJANGO_DURATION_TRANSFORM = new DjangoDurationTransform()
 
 /**
  * A mixin to create a page which filters reports by given values
@@ -77,7 +80,7 @@ export default Mixin.create({
    * @return {Report[]} The filtered reports
    * @public
    */
-  model(params) {
+  async model(params) {
     let filterValues = Object.keys(params).reduce((values, key) => {
       if (!['page', 'page_size', 'ordering'].includes(key)) {
         values.push(params[key])
@@ -86,12 +89,21 @@ export default Mixin.create({
       return values
     }, [])
 
-    return filterValues.any(arg => !!arg)
-      ? this.store.query('report', {
-          include: 'task,task.project,task.project.customer,user',
-          ...params
-        })
-      : null
+    if (!filterValues.any(arg => !!arg)) {
+      return null
+    }
+
+    let results = await this.store.query('report', {
+      include: 'task,task.project,task.project.customer,user',
+      ...params
+    })
+
+    results.set(
+      'meta.totalTime',
+      DJANGO_DURATION_TRANSFORM.deserialize(results.get('meta.total-time'))
+    )
+
+    return results
   },
 
   /**

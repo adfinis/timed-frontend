@@ -1,0 +1,21 @@
+{{yield}}
+{{#if (gt pages 1)}}
+  <tr>
+    <td colspan="42">
+      {{pagination-pager current=page count=pages}}
+      <div class="limit pull-right">
+        Per page:
+        {{#each limits as |l i|}}
+          <span>
+            {{#if (eq page_size l)}}
+              {{l}}
+            {{else}}
+              <a href="#" {{action 'setLimit' l}}>{{l}}</a>
+            {{/if}}
+          </span>
+        {{/each}}
+      </div>
+    </td>
+  </tr>
+{{/if}}
+{{yield to='inverse'}}

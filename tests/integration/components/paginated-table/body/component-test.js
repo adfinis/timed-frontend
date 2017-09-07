@@ -3,8 +3,8 @@ import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | paginated table', function() {
-  setupComponentTest('paginated-table', {
+describe('Integration | Component | paginated table/body', function() {
+  setupComponentTest('paginated-table/body', {
     integration: true
   })
 
@@ -13,12 +13,12 @@ describe('Integration | Component | paginated table', function() {
     // Handle any actions with this.on('myAction', function(val) { ... });
     // Template block usage:
     // this.render(hbs`
-    //   {{#paginated-table}}
+    //   {{#paginated-table/body}}
     //     template content
-    //   {{/paginated-table}}
+    //   {{/paginated-table/body}}
     // `);
 
-    this.render(hbs`{{paginated-table}}`)
+    this.render(hbs`{{paginated-table/body}}`)
     expect(this.$()).to.have.length(1)
   })
 })
