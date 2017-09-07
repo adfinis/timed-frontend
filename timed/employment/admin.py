@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from timed.employment import models
+from timed.forms import DurationInHoursField
 
 # do not allow deletion of objects site wide
 # objects need to be deactivated resp. archived
@@ -33,6 +34,10 @@ class SuperviseeInline(admin.TabularInline):
 
 class EmploymentForm(forms.ModelForm):
     """Custom form for the employment admin."""
+
+    worktime_per_day = DurationInHoursField(
+        label=_('Worktime per day in hours')
+    )
 
     def clean(self):
         """Validate the employment as a whole.
@@ -97,8 +102,14 @@ class EmploymentInline(admin.TabularInline):
     extra = 0
 
 
+class OvertimeCreditForm(forms.ModelForm):
+    model = models.OvertimeCredit
+    duration = DurationInHoursField(label=_('Duration in hours'))
+
+
 class OvertimeCreditInline(admin.TabularInline):
     model = models.OvertimeCredit
+    form = OvertimeCreditForm
     extra = 0
 
 

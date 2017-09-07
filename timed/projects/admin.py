@@ -5,6 +5,7 @@ from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import ugettext_lazy as _
 
+from timed.forms import DurationInHoursField
 from timed.projects import models
 
 
@@ -33,6 +34,10 @@ class TaskForm(forms.ModelForm):
     """
 
     model = models.Task
+    estimated_time = DurationInHoursField(
+        label=_('Estimated time in hours'),
+        required=False,
+    )
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -75,10 +80,19 @@ class ReviewerInline(admin.TabularInline):
     verbose_name_plural = _('Reviewers')
 
 
+class ProjectForm(forms.ModelForm):
+    model = models.Project
+    estimated_time = DurationInHoursField(
+        label=_('Estimated time in hours'),
+        required=False,
+    )
+
+
 @admin.register(models.Project)
 class ProjectAdmin(admin.ModelAdmin):
     """Project admin view."""
 
+    form = ProjectForm
     list_display  = ['name', 'customer']
     list_filter   = ['customer']
     search_fields = ['name', 'customer__name']
