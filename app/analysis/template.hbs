@@ -18,14 +18,8 @@
   on-apply      = (action 'applyFilter')
 }}
 
-{{#paginated-table
-  data-test-filter-results
-  pages     = model.meta.pagination.pages
-  page      = page
-  page_size = page_size
-  class     = 'table--analysis-reschedule'
-}}
-  <thead>
+{{#paginated-table data-test-filter-results class='table--analysis-reschedule' as |t|}}
+  {{#t.head}}
     <tr>
       {{#sort-header update=(action (mut ordering)) current=ordering by='user__username'}}User{{/sort-header}}
       {{#sort-header update=(action (mut ordering)) current=ordering by='date'}}Date{{/sort-header}}
@@ -38,9 +32,8 @@
       <th>Needs review</th>
       <th>Not billable</th>
     </tr>
-  </thead>
-{{^}}
-  <tbody>
+  {{/t.head}}
+  {{#t.body}}
     {{#each model as |report|}}
       <tr>
         <td>{{report.user.username}}</td>
@@ -65,7 +58,19 @@
         </td>
       </tr>
     {{/each}}
-  </tbody>
+  {{/t.body}}
+  {{#t.foot
+    pages     = model.meta.pagination.pages
+    page      = page
+    page_size = page_size
+  }}
+    {{#if (is-array model)}}
+      <tr>
+        <td colspan="2"><strong>Total:</strong></td>
+        <td colspan="9"><strong class="total">{{format-duration model.meta.totalTime false}}</strong></td>
+      </tr>
+    {{/if}}
+  {{/t.foot}}
 {{/paginated-table}}
 
 {{#if model}}

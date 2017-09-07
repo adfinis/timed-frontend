@@ -204,8 +204,8 @@ body {
   }
 }
 
-.force-white input {
-  background-color: white !important;
+.total {
+  border-bottom: 3px double var(--body-color);
 }
 
 .table--absence-types > thead > tr > th,
