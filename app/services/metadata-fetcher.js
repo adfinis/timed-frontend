@@ -1,7 +1,7 @@
 import Service from 'ember-service'
 import service from 'ember-service/inject'
 import DjangoDurationTransform from 'timed/transforms/django-duration'
-import { camelize, dasherize } from 'ember-string'
+import { camelize, capitalize, dasherize } from 'ember-string'
 import { task } from 'ember-concurrency'
 
 const DJANGO_DURATION_TRANSFORM = new DjangoDurationTransform()
@@ -43,7 +43,7 @@ export default Service.extend({
   fetchSingleRecordMetadata: task(function*(type, id) {
     /* istanbul ignore next */
     if (!id) {
-      throw new Error('Project ID is missing')
+      throw new Error(`${capitalize(type)} ID is missing`)
     }
 
     let { meta = {} } = yield this.get('ajax').request(
