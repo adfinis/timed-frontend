@@ -7,11 +7,11 @@ import service from 'ember-service/inject'
 export default Component.extend({
   tagName: '',
 
-  delay: 500,
+  delay: 300,
 
-  projectMetaFetcher: service('project-meta-fetcher'),
+  metadataFetcher: service('metadata-fetcher'),
 
-  @oneWay('project.estimatedTime') estimated: moment.duration(),
+  @oneWay('model.estimatedTime') estimated: moment.duration(),
   spent: moment.duration(),
 
   @computed('estimated', 'spent')
@@ -44,8 +44,8 @@ export default Component.extend({
       yield timeout(this.get('delay'))
 
       let { spentTime } = yield this.get(
-        'projectMetaFetcher.fetchProjectMetadata'
-      ).perform(this.get('project.id'))
+        'metadataFetcher.fetchSingleRecordMetadata'
+      ).perform(this.get('model.constructor.modelName'), this.get('model.id'))
 
       this.set('spent', spentTime)
     }

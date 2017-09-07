@@ -1,7 +1,11 @@
 <div
   title="{{option.name}}{{if option.archived ' (archived)'}}"
   class="{{if option.archived 'inactive'}}"
+  id="task-option-{{option.id}}"
 >
+  {{#if (and current (or media.isMd media.isLg media.isXl))}}
+    {{progress-tooltip target=(concat '#task-option-' option.id) visible=current model=option}}
+  {{/if}}
   {{option.name}}
   {{#if option.archived}}
     <i class="fa fa-archive"></i>
