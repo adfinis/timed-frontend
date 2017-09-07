@@ -117,10 +117,24 @@ export default function() {
   this.get('/customers/:id')
 
   this.get('/projects')
-  this.get('/projects/:id')
+  this.get('/projects/:id', function({ projects }, request) {
+    return {
+      ...this.serialize(projects.find(request.params.id)),
+      meta: {
+        'spent-time': randomDuration()
+      }
+    }
+  })
 
   this.get('/tasks')
-  this.get('/tasks/:id')
+  this.get('/tasks/:id', function({ tasks }, request) {
+    return {
+      ...this.serialize(tasks.find(request.params.id)),
+      meta: {
+        'spent-time': randomDuration()
+      }
+    }
+  })
 
   this.get('/users')
   this.get('/users/:id')

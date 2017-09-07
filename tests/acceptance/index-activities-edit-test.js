@@ -74,7 +74,11 @@ describe('Acceptance | index activities edit', function() {
           'activity-edit-form'
         )} .table--activity-blocks tr:eq(0) td:eq(1) input`
       ).val()
-    ).to.equal(moment(from, 'HH:mm').subtract(1, 'minutes').format('HH:mm'))
+    ).to.equal(
+      moment(from, 'HH:mm')
+        .subtract(1, 'minutes')
+        .format('HH:mm')
+    )
   })
 
   it('can delete an activity', async function() {

@@ -28,11 +28,10 @@ export default Model.extend({
   /**
    * The estimated time
    *
-   * @property estimatedTime
-   * @type {Number}
+   * @property {moment.duration} estimatedTime
    * @public
    */
-  estimatedTime: attr('number'),
+  estimatedTime: attr('django-duration'),
 
   /**
    * Whether the task is archived

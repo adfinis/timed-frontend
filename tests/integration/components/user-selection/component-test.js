@@ -38,7 +38,9 @@ describe('Integration | Component | user selection', function() {
 
     return wait().then(() => {
       expect(
-        this.$('.user-select .ember-power-select-selected-item').text().trim()
+        this.$('.user-select .ember-power-select-selected-item')
+          .text()
+          .trim()
       ).to.equal(USER.longName)
     })
   })

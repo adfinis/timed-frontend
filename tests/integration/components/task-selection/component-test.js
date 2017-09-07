@@ -142,7 +142,9 @@ describe('Integration | Component | task selection', function() {
           .trim()
       ).to.equal(PROJECT.name)
       expect(
-        this.$('.task-select .ember-power-select-selected-item').text().trim()
+        this.$('.task-select .ember-power-select-selected-item')
+          .text()
+          .trim()
       ).to.equal(TASK.name)
     })
   })

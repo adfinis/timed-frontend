@@ -82,7 +82,10 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-start'))).to.have.length(0)
     expect(find(testSelector('record-stop'))).to.have.length(1)
     expect(
-      find(testSelector('record-stop')).parent().parent().hasClass('recording')
+      find(testSelector('record-stop'))
+        .parent()
+        .parent()
+        .hasClass('recording')
     ).to.be.ok
     expect(
       find(`${testSelector('activity-row')}:first-child div small`).text()
@@ -103,7 +106,10 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-start'))).to.have.length(0)
     expect(find(testSelector('record-stop'))).to.have.length(1)
     expect(
-      find(testSelector('record-stop')).parent().parent().hasClass('recording')
+      find(testSelector('record-stop'))
+        .parent()
+        .parent()
+        .hasClass('recording')
     ).to.be.ok
     expect(
       find(`${testSelector('activity-row')}:first-child div small`).text()
@@ -116,7 +122,10 @@ describe('Acceptance | index', function() {
     await visit('/')
 
     expect(
-      find(testSelector('record-stop')).parent().parent().hasClass('recording')
+      find(testSelector('record-stop'))
+        .parent()
+        .parent()
+        .hasClass('recording')
     ).to.be.ok
     expect(find(testSelector('record-stop'))).to.have.length(1)
     expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal(
@@ -128,7 +137,10 @@ describe('Acceptance | index', function() {
     expect(find(testSelector('record-start'))).to.have.length(1)
     expect(find(testSelector('record-stop'))).to.have.length(0)
     expect(
-      find(testSelector('record-start')).parent().parent().hasClass('recording')
+      find(testSelector('record-start'))
+        .parent()
+        .parent()
+        .hasClass('recording')
     ).to.not.be.ok
     expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal('')
   })

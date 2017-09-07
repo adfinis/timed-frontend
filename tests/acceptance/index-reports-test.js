@@ -242,7 +242,9 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can reschedule reports', async function() {
-    let tomorrow = moment().add(1, 'days').format('YYYY-MM-DD')
+    let tomorrow = moment()
+      .add(1, 'days')
+      .format('YYYY-MM-DD')
 
     await visit('/reports')
     expect(find(testSelector('report-row'))).to.have.length(6)

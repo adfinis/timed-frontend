@@ -56,7 +56,9 @@ describe('Integration | Component | sy datepicker', function() {
 
     target.click()
 
-    let expected = moment().endOf('month').endOf('week')
+    let expected = moment()
+      .endOf('month')
+      .endOf('week')
 
     expect(this.get('value').isSame(expected, 'day')).to.be.ok
   })

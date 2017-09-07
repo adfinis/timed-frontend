@@ -69,6 +69,10 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false
 
     ENV.APP.rootElement = '#ember-testing'
+
+    ENV['ember-tether'] = {
+      bodyElementId: 'ember-testing'
+    }
   }
 
   if (environment === 'production') {
