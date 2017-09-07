@@ -19,6 +19,7 @@ class CustomerSerializer(ModelSerializer):
         model  = models.Customer
         fields = [
             'name',
+            'reference',
             'email',
             'website',
             'comment',
@@ -29,7 +30,10 @@ class CustomerSerializer(ModelSerializer):
 class BillingTypeSerializer(ModelSerializer):
     class Meta:
         model  = models.BillingType
-        fields = ['name']
+        fields = [
+            'name',
+            'reference'
+        ]
 
 
 class ProjectSerializer(ModelSerializer):
@@ -62,6 +66,7 @@ class ProjectSerializer(ModelSerializer):
         model  = models.Project
         fields = [
             'name',
+            'reference',
             'comment',
             'estimated_time',
             'archived',
@@ -97,6 +102,7 @@ class TaskSerializer(ModelSerializer):
         model  = models.Task
         fields = [
             'name',
+            'reference',
             'estimated_time',
             'archived',
             'project',
