@@ -1,5 +1,5 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
-  <button class="btn btn-success" title="Move all entries to another date" {{action (mut showReschedule) true}}>reschedule</button>
+  <button type="button" class="btn btn-success" title="Move all entries to another date" {{action (mut showReschedule) true}}>Reschedule</button>
 </div>
 <table class="table table--striped table--reports">
   <tbody>
@@ -53,6 +53,6 @@
     {{/power-calendar}}
   {{/modal.body}}
   {{#modal.footer}}
-    <button class="btn btn-primary" {{action 'reschedule' rescheduleDate}}>save</button>
+    <button type="submit" class="btn btn-primary" {{action 'reschedule' rescheduleDate}}>Save</button>
   {{/modal.footer}}
 {{/sy-modal}}

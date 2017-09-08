@@ -143,4 +143,28 @@ describe('Acceptance | index activities edit', function() {
 
     expect(currentURL()).to.equal('/')
   })
+
+  it('can delete a just added block', async function() {
+    let { id } = server.create('activity', { userId: this.user.id })
+
+    await visit(`/edit/${id}`)
+
+    await click(find(testSelector('add-activity-block')))
+
+    expect(find(testSelector('activity-block-row'))).to.have.length(2)
+
+    await click(
+      `${testSelector('activity-block-row')}:nth-child(2) ${testSelector(
+        'delete-activity-block'
+      )}`
+    )
+
+    expect(find(testSelector('activity-block-row'))).to.have.length(1)
+
+    await click(find('button:contains(Save)'))
+
+    await visit(`/edit/${id}`)
+
+    expect(find(testSelector('activity-block-row'))).to.have.length(1)
+  })
 })

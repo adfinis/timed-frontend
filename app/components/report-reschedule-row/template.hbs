@@ -26,6 +26,7 @@ as |t|}}
 </td>
 <td>
   <button
+    type="submit"
     class="btn btn-primary"
     disabled={{or (not changeset.isDirty) (not changeset.isValid)}}
     {{action 'save'}}

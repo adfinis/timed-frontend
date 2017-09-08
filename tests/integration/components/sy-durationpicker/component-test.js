@@ -4,6 +4,7 @@ import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import $ from 'jquery'
+import wait from 'ember-test-helpers/wait'
 
 const event = $.Event
 
@@ -38,15 +39,17 @@ describe('Integration | Component | sy durationpicker', function() {
     )
 
     this.render(
-      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+      hbs`{{sy-durationpicker delay=0 value=value on-change=(action (mut value))}}`
     )
 
     this.$('input')
       .val('13:15')
       .trigger(event('input'))
 
-    expect(this.get('value').hours()).to.equal(13)
-    expect(this.get('value').minutes()).to.equal(15)
+    return wait().then(() => {
+      expect(this.get('value').hours()).to.equal(13)
+      expect(this.get('value').minutes()).to.equal(15)
+    })
   })
 
   it("can't set an invalid value", function() {

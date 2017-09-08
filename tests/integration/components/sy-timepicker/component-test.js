@@ -4,6 +4,7 @@ import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import $ from 'jquery'
+import wait from 'ember-test-helpers/wait'
 
 const event = $.Event
 
@@ -30,15 +31,17 @@ describe('Integration | Component | sy timepicker', function() {
     )
 
     this.render(
-      hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
+      hbs`{{sy-timepicker delay=0 value=value on-change=(action (mut value))}}`
     )
 
     this.$('input')
       .val('13:15')
       .trigger(event('input'))
 
-    expect(this.get('value').hour()).to.equal(13)
-    expect(this.get('value').minute()).to.equal(15)
+    return wait().then(() => {
+      expect(this.get('value').hour()).to.equal(13)
+      expect(this.get('value').minute()).to.equal(15)
+    })
   })
 
   it("can't set an invalid value", function() {
@@ -292,13 +295,15 @@ describe('Integration | Component | sy timepicker', function() {
     this.set('value', moment({ h: 12, m: 30 }))
 
     this.render(
-      hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
+      hbs`{{sy-timepicker delay=0 value=value on-change=(action (mut value))}}`
     )
 
     this.$('input').val('')
     this.$('input').trigger('input')
 
-    expect(this.get('value')).to.be.null
+    return wait().then(() => {
+      expect(this.get('value')).to.be.null
+    })
   })
 
   it('can handle null values with arrow up', function() {

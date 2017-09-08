@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from 'ember-controller'
-import computed, { sort } from 'ember-computed-decorators'
+import computed from 'ember-computed-decorators'
 import moment from 'moment'
 
 /**
@@ -16,31 +16,14 @@ import moment from 'moment'
  */
 const IndexActivitiesEditController = Controller.extend({
   /**
-   * The sort key by which the blocks should be sorted
-   *
-   * @property {String[]} sortBy
-   * @public
-   */
-  sortBy: ['from:desc'],
-
-  /**
-   * The sorted blocks of the activity
-   *
-   * @property {ActivitBlock[]} blocks
-   * @public
-   */
-  @sort('activity.blocks.[]', 'sortBy')
-  blocks: [],
-
-  /**
    * The total duration of all inactive blocks
    *
    * @property {moment.duration} total
    * @public
    */
-  @computed('blocks.@each.{from,to}')
+  @computed('blocks.@each.{from,to,isDeleted}')
   total(blocks) {
-    return blocks.reduce((dur, block) => {
+    return blocks.filterBy('isDeleted', false).reduce((dur, block) => {
       let { from, to } = block.getProperties('from', 'to')
 
       if (to) {
@@ -49,6 +32,19 @@ const IndexActivitiesEditController = Controller.extend({
 
       return dur
     }, moment.duration())
+  },
+
+  @computed(
+    'blocks.@each.{isValid,isDirty,isDeleted}',
+    'activity.{isValid,isDirty}'
+  )
+  saveEnabled(blocks, activityValid, activityDirty) {
+    return (
+      (activityDirty ||
+        blocks.some(b => b.get('isDirty') || b.get('isDeleted'))) &&
+      activityValid &&
+      blocks.every(b => b.get('isDeleted') || b.get('isValid'))
+    )
   }
 })
 

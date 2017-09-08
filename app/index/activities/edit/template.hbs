@@ -9,36 +9,67 @@
         <div class="form-group">{{t.project}}</div>
         <div class="form-group">{{t.task}}</div>
       {{/task-selection}}
-      <div class="form-group">{{input class='form-control' name='comment' placeholder='Enter comment...' value=activity.comment}}</div>
+      <div class="form-group">
+        {{input class='form-control' name='comment' placeholder='Comment' value=activity.comment}}
+      </div>
       <table class="table table--striped table--activity-blocks">
         <tbody>
-          {{#each blocks as |block|}}
-            {{#unless block.isDeleted}}
-              <tr
-                class="text-center {{if block.overlaps 'danger'}}"
-                title="{{if block.overlaps 'This block overlaps the day of the activity'}}"
-                data-test-activity-block-row
-                data-test-activity-block-row-id={{block.id}}
-              >
-                <td>
-                  <button data-test-delete-activity-block class="btn btn-default" {{action 'deleteBlock' block}}>{{fa-icon 'trash'}}</button>
-                </td>
-                <td>{{sy-timepicker disabled=(not block.to) max=block.to precision=1 value=block.from on-change=(action (mut block.from))}}</td>
-                <td>-</td>
-                <td>{{sy-timepicker disabled=(not block.to) min=block.from precision=1 value=block.to on-change=(action (mut block.to))}}</td>
-                <td>
-                  {{#if block.overlaps}}
-                    <span class="error-text">{{fa-icon 'warning'}}</span>
-                  {{/if}}
-                  {{#if block.to}}
-                    {{format-duration (moment-diff block.from block.to) false}}
-                  {{/if}}
-                </td>
-              </tr>
-            {{/unless}}
+          {{#each (reject-by 'isDeleted' true blocks) as |block|}}
+            <tr
+              class="{{if block.model.overlaps 'danger'}}"
+              data-test-activity-block-row
+              data-test-activity-block-row-id={{block.model.id}}
+            >
+              <td>
+                <button
+                  data-test-delete-activity-block
+                  class="btn btn-default"
+                  type="button"
+                  {{action 'deleteBlock' block}}
+                >
+                  {{fa-icon 'trash'}}
+                </button>
+              </td>
+              <td class="form-group {{if block.changeset.error.from 'has-error'}}">
+                {{sy-timepicker
+                  value     = block.changeset.from
+                  max       = block.changeset.to
+                  precision = 1
+                  on-change = (action (mut block.changeset.from))
+                }}
+              </td>
+              <td>-</td>
+              <td class="form-group {{if block.changeset.error.to 'has-error'}}">
+                {{sy-timepicker
+                  value     = block.changeset.to
+                  min       = block.changeset.from
+                  precision = 1
+                  on-change = (action (mut block.changeset.to))
+                }}
+              </td>
+              <td>
+                {{#if block.model.overlaps}}
+                  <span title="This block overlaps the day of the activity" class="error-text">
+                    {{fa-icon 'warning'}}
+                  </span>
+                {{/if}}
+                {{#if (and block.changeset.from block.changeset.to)}}
+                  {{format-duration (moment-diff block.changeset.from block.changeset.to) false}}
+                {{/if}}
+              </td>
+            </tr>
           {{/each}}
           <tr>
-            <td><button data-test-add-activity-block class="btn btn-default" {{action 'addBlock'}}>{{fa-icon 'plus'}}</button></td>
+            <td>
+              <button
+                data-test-add-activity-block
+                class="btn btn-default"
+                type="button"
+                {{action 'addBlock'}}
+              >
+                {{fa-icon 'plus'}}
+              </button>
+            </td>
             <td><strong><u>Total:</u></strong></td>
             <td></td>
             <td></td>
@@ -48,8 +79,8 @@
       </table>
     </div>
     <div class="card-footer text-right">
-      <button class="btn btn-danger" disabled={{model.active}} {{action 'delete'}}>Delete</button>
-      <button class="btn btn-primary" type="submit" disabled={{not activity.isValid}}>Save</button>
+      <button class="btn btn-danger" type="button" disabled={{model.active}} {{action 'delete'}}>Delete</button>
+      <button class="btn btn-primary" type="submit" disabled={{not saveEnabled}}>Save</button>
     </div>
   </div>
 </form>

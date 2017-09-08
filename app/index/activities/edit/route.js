@@ -5,11 +5,34 @@
  */
 import Route from 'ember-route'
 import service from 'ember-service/inject'
-import moment from 'moment'
 import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
 import ActivityValidator from 'timed/validations/activity'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
+import ActivityBlockValidator from 'timed/validations/activity-block'
+import EmberObject from 'ember-object'
+import { oneWay } from 'ember-computed-decorators'
+import RSVP from 'rsvp'
+
+const changesetFromBlock = block => {
+  let changeset = new Changeset(
+    block,
+    lookupValidator(ActivityBlockValidator),
+    ActivityBlockValidator
+  )
+
+  changeset.validate()
+
+  return EmberObject.create({
+    changeset,
+    model: block,
+    @oneWay('model.isDeleted') isDeleted: false,
+    @oneWay('changeset.isValid') isValid: false,
+    @oneWay('changeset.isDirty') isDirty: false,
+    @oneWay('changeset.from') from: null,
+    @oneWay('changeset.to') to: null
+  })
+}
 
 /**
  * Route to edit an activity
@@ -51,14 +74,20 @@ export default Route.extend(RouteAutostartTourMixin, {
   setupController(controller, model) {
     this._super(...arguments)
 
-    controller.set(
-      'activity',
-      new Changeset(
-        model,
-        lookupValidator(ActivityValidator),
-        ActivityValidator
-      )
+    let activity = new Changeset(
+      model,
+      lookupValidator(ActivityValidator),
+      ActivityValidator
     )
+
+    activity.validate()
+
+    let blocks = model
+      .get('blocks')
+      .sortBy('id')
+      .map(changesetFromBlock)
+
+    controller.setProperties({ activity, blocks })
   },
 
   /**
@@ -75,11 +104,11 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     addBlock() {
-      this.store.createRecord('activity-block', {
-        activity: this.get('currentModel'),
-        from: moment(),
-        to: moment().add(1, 'hour')
+      let newBlock = this.store.createRecord('activity-block', {
+        activity: this.get('currentModel')
       })
+
+      this.get('controller.blocks').pushObject(changesetFromBlock(newBlock))
     },
 
     /**
@@ -89,11 +118,18 @@ export default Route.extend(RouteAutostartTourMixin, {
      * after saving the activity.
      *
      * @method deleteBlock
-     * @param {ActivityBlock} block The block to delete
+     * @param {Object} block The block (changeset and model) to delete
      * @public
      */
     deleteBlock(block) {
-      block.deleteRecord()
+      let { changeset, model } = block
+
+      changeset.rollback()
+      model.deleteRecord()
+
+      if (!model.get('id')) {
+        this.get('controller.blocks').removeObject(block)
+      }
     },
 
     /**
@@ -103,12 +139,26 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     async save() {
+      /* istanbul ignore next */
+      if (!this.get('controller.saveEnabled')) {
+        /* UI prevents this, but could be executed by pressing enter */
+        return
+      }
+
       try {
-        this.get('controller.activity.blocks').forEach(async block => {
-          if (block.get('hasDirtyAttributes')) {
-            await block.save()
-          }
-        })
+        await RSVP.all(
+          this.get('controller.blocks')
+            .filter(({ changeset, model }) => {
+              return changeset.get('isDirty') || model.get('isDeleted')
+            })
+            .map(async ({ changeset, model }) => {
+              if (changeset.get('isDirty')) {
+                changeset.execute()
+              }
+
+              await model.save()
+            })
+        )
 
         await this.get('controller.activity').save()
 

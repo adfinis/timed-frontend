@@ -205,7 +205,10 @@ export default Service.extend({
         yield activity.save()
       }
 
-      let block = this.get('store').createRecord('activity-block', { activity })
+      let block = this.get('store').createRecord('activity-block', {
+        activity,
+        from: moment()
+      })
 
       yield block.save()
 

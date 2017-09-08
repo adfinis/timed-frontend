@@ -249,9 +249,9 @@ describe('Acceptance | index reports', function() {
     await visit('/reports')
     expect(find(testSelector('report-row'))).to.have.length(6)
 
-    await click(find('button:contains(reschedule)'))
+    await click(find('button:contains(Reschedule)'))
     await click(find(`button[data-date="${tomorrow}"]`))
-    await click(find('button:contains(save)'))
+    await click(find('button:contains(Save)'))
 
     expect(currentURL()).to.equal(`/reports?day=${tomorrow}`)
     expect(find(testSelector('report-row'))).to.have.length(6)

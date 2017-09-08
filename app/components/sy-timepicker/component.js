@@ -7,6 +7,7 @@ import Component from 'ember-component'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import { padStart } from 'ember-pad/utils/pad'
+import { debounce } from 'ember-runloop'
 
 /**
  * Timepicker component
@@ -103,7 +104,11 @@ export default Component.extend({
    * @private
    */
   _addMinutes(value) {
-    this._change(this._add(0, value))
+    let newValue = this._add(0, value)
+
+    if (this._validate(newValue)) {
+      this._change(newValue)
+    }
   },
 
   /**
@@ -114,7 +119,11 @@ export default Component.extend({
    * @private
    */
   _addHours(value) {
-    this._change(this._add(value, 0))
+    let newValue = this._add(value, 0)
+
+    if (this._validate(newValue)) {
+      this._change(newValue)
+    }
   },
 
   /**
@@ -125,9 +134,7 @@ export default Component.extend({
    * @private
    */
   _change(value) {
-    if (value === null || this._validate(value)) {
-      this.get('attrs.on-change')(value)
-    }
+    this.get('attrs.on-change')(value)
   },
 
   /**
@@ -161,6 +168,14 @@ export default Component.extend({
    * @public
    */
   disabled: false,
+
+  /**
+   * The delay to debounce the input handler
+   *
+   * @property {Number} delay
+   * @public
+   */
+  delay: 500,
 
   /**
    * Increase or decrease the current value
@@ -214,11 +229,12 @@ export default Component.extend({
       if (e.target.validity.valid) {
         let [h = NaN, m = NaN] = e.target.value.split(':').map(n => parseInt(n))
 
-        if ([h, m].any(isNaN)) {
-          this._change(null)
-        }
-
-        this._change(this._set(h, m))
+        debounce(
+          this,
+          this._change,
+          [h, m].some(isNaN) ? null : this._set(h, m),
+          this.get('delay')
+        )
       }
     },
 

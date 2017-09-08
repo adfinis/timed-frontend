@@ -1,5 +1,5 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
-  <button class="btn btn-success" data-test-add-attendance {{action 'addAttendance'}}>Add attendance</button>
+  <button type="button" class="btn btn-success" data-test-add-attendance {{action 'addAttendance'}}>Add attendance</button>
 </div>
 <div class="attendances">
   {{#if attendances}}
@@ -26,8 +26,8 @@
                   {{sy-timepicker value=model.to on-change=(action (mut model.to))}}
                 </td>
                 <td>
-                  <button class="btn btn-danger" {{action 'deleteAttendance' model}}>{{fa-icon 'trash'}}</button>
-                  <button class="btn btn-primary" disabled={{not (and model.isDirty model.isValid)}} {{action 'saveAttendance' model}}>{{fa-icon 'save'}}</button>
+                  <button type="button" class="btn btn-danger" {{action 'deleteAttendance' model}}>{{fa-icon 'trash'}}</button>
+                  <button type="submit" class="btn btn-primary" disabled={{not (and model.isDirty model.isValid)}} {{action 'saveAttendance' model}}>{{fa-icon 'save'}}</button>
                 </td>
               </tr>
             {{/with}}

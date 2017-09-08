@@ -26,17 +26,18 @@
     </div>
     <div class="grid-cell hidden-sm">
       <div class="btn-group btn-group--vertical">
-        {{#link-to 'index.activities' tagName='button' class='btn'}}
+        {{#link-to 'index.activities' tagName='button' type='button' class='btn'}}
           Activities <span class="badge">{{humanize-duration activitySum true}}</span>
         {{/link-to}}
-        {{#link-to 'index.attendances' tagName='button' class='btn'}}
+        {{#link-to 'index.attendances' tagName='button' type='button' class='btn'}}
           Attendances <span class="badge">{{humanize-duration attendanceSum}}</span>
         {{/link-to}}
-        {{#link-to 'index.reports' tagName='button' class='btn'}}
+        {{#link-to 'index.reports' tagName='button' type='button' class='btn'}}
           Timesheet <span class="badge">{{humanize-duration reportSum}}</span>
         {{/link-to}}
         {{#if absence}}
           <button
+            type="button"
             data-test-edit-absence
             class="btn btn-warning"
             {{action (toggle 'showEditModal' this)}}
@@ -45,6 +46,7 @@
           </button>
         {{/if}}
         <button
+          type="button"
           data-test-add-absence
           class="btn btn-default"
           {{action (toggle 'showAddModal' this)}}
@@ -73,6 +75,7 @@
         <li class="nav-tab--buttons">
           {{#if absence}}
             <button
+              type="button"
               data-test-edit-absence
               class="btn btn-warning"
               {{action (toggle 'showEditModal' this)}}
@@ -81,6 +84,7 @@
             </button>
           {{/if}}
           <button
+            type="button"
             data-test-add-absence
             class="btn btn-default"
             {{action (toggle 'showAddModal' this)}}
@@ -109,7 +113,7 @@
           {{#f.input name='type' as |fi|}}
             <div class="btn-group btn-group--auto">
               {{#each absenceTypes as |at|}}
-                <button class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
+                <button type="button" class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
               {{/each}}
             </div>
           {{/f.input}}
@@ -131,7 +135,7 @@
           {{f.input type='textarea' placeholder='Enter comment...' name='comment'}}
         {{/modal.body}}
         {{#modal.footer}}
-          <button class="btn btn-danger" {{action 'deleteAbsence' absence}}>Delete</button>
+          <button type="button" class="btn btn-danger" {{action 'deleteAbsence' absence}}>Delete</button>
           {{f.submit label='Save'}}
         {{/modal.footer}}
       {{/validated-form}}
@@ -149,7 +153,7 @@
         {{#f.input name='type' as |fi|}}
           <div class="btn-group btn-group--auto">
             {{#each absenceTypes as |at|}}
-              <button class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
+              <button type="button" class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
             {{/each}}
           </div>
         {{/f.input}}

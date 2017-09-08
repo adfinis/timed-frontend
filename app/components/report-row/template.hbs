@@ -12,6 +12,6 @@
   {{sy-checkbox data-test-report-not-billable checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
 </td>
 <td>
-  <button data-test-delete-report class="btn btn-danger" {{action 'delete'}}>{{fa-icon 'trash'}}</button>
-  <button data-test-save-report class="btn btn-primary" disabled={{or (not changeset.isDirty) (not changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
+  <button type="button" data-test-delete-report class="btn btn-danger" {{action 'delete'}}>{{fa-icon 'trash'}}</button>
+  <button type="submit" data-test-save-report class="btn btn-primary" disabled={{or (not changeset.isDirty) (not changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
 </td>
