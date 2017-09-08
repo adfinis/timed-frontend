@@ -3,6 +3,9 @@ language: node_js
 node_js:
   - "6"
 
+addons:
+  firefox: "latest"
+
 sudo: false
 
 cache:
@@ -20,17 +23,8 @@ install:
   - yarn install
   - bower install
 
-before_script:
-  - ember sauce:connect
-
 script:
   - COVERAGE=true ember test
 
 after_script:
-  - ember sauce:disconnect
   - cat coverage/lcov.info | coveralls
-
-env:
-  global:
-    - SAUCE_USERNAME=adsy-timed
-    - SAUCE_ACCESS_KEY=2ce2a4cf-10cb-4af8-9429-3506d16b3a35
