@@ -15,12 +15,6 @@
   </a>
 </p>
 
-<p align="center">
-  <a href="https://saucelabs.com/u/adsy-timed">
-    <img alt="Browser Matrix" src="https://saucelabs.com/browser-matrix/adsy-timed.svg">
-  </a>
-</p>
-
 ## Requirements
 
 You will need the following things properly installed on your computer.
