@@ -4,7 +4,8 @@ import $ from 'jquery'
 
 const { isBlank, testing } = Ember
 
-export default PowerSelectComponent.extend({
+/* istanbul ignore next */
+const PowerSelectCustomComponent = PowerSelectComponent.extend({
   init() {
     this._super(...arguments)
 
@@ -22,8 +23,6 @@ export default PowerSelectComponent.extend({
       return false
     }
 
-    // Can't test this since dropdowns are rendered in place in tests
-    /* istanbul ignore next */
     return !blurredEl.classList.contains('ember-power-select-search-input')
   },
 
@@ -31,7 +30,6 @@ export default PowerSelectComponent.extend({
     onTriggerFocus(_, e) {
       this._super(...arguments)
 
-      /* istanbul ignore next */
       if (this._focusComesFromOutside(e)) {
         this.get('publicAPI.actions').open(e)
       }
@@ -40,7 +38,6 @@ export default PowerSelectComponent.extend({
     onBlur(e) {
       this._super(...arguments)
 
-      /* istanbul ignore next */
       if (this._focusComesFromOutside(e)) {
         this.get('publicAPI.actions').close(e)
       }
@@ -61,7 +58,6 @@ export default PowerSelectComponent.extend({
       let { top } = current.position()
       let bottomOfOption = top + current.height()
 
-      /* istanbul ignore next */
       if (bottomOfOption > currentScrollY + options.height()) {
         options.scrollTop(bottomOfOption - options.height())
       } else if (top < currentScrollY) {
@@ -70,3 +66,5 @@ export default PowerSelectComponent.extend({
     }
   }
 })
+
+export default PowerSelectCustomComponent
