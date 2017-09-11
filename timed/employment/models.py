@@ -96,8 +96,7 @@ class AbsenceCredit(models.Model):
     user         = models.ForeignKey(settings.AUTH_USER_MODEL,
                                      related_name='absence_credits')
     comment      = models.CharField(max_length=255, blank=True)
-    absence_type = models.ForeignKey(AbsenceType,
-                                     related_name='absence_credits')
+    absence_type = models.ForeignKey(AbsenceType)
     date         = models.DateField()
     days         = models.IntegerField(default=0)
 
