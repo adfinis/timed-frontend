@@ -161,10 +161,13 @@ class UserTests(JSONAPITestCase):
     def test_user_absence_types(self):
         absence_type = AbsenceTypeFactory.create()
 
-        credit = AbsenceCreditFactory.create(date=date.today(),
-                                             user=self.user,
-                                             days=5,
-                                             absence_type=absence_type)
+        absence_credit = AbsenceCreditFactory.create(date=date.today(),
+                                                     user=self.user, days=5,
+                                                     absence_type=absence_type)
+
+        # credit on different user, may not show up on included
+        AbsenceCreditFactory.create(date=date.today(),
+                                    absence_type=absence_type)
 
         AbsenceFactory.create(date=date.today(),
                               user=self.user,
@@ -178,7 +181,9 @@ class UserTests(JSONAPITestCase):
             self.user.id
         ])
 
-        res = self.client.get(url, {'include': 'user_absence_types'})
+        res = self.client.get(url, {
+            'include': 'user_absence_types,user_absence_types.absence_credits'
+        })
 
         assert res.status_code == HTTP_200_OK
 
@@ -188,17 +193,20 @@ class UserTests(JSONAPITestCase):
         inc = result['included']
 
         assert len(rel['user-absence-types']['data']) == 1
-        assert len(inc) == 1
+        assert len(inc) == 2
 
+        absence_type_inc = inc[0]
+        assert absence_type_inc['id'] == str(absence_credit.id)
+
+        absence_credit_inc = inc[1]
         assert (
-            inc[0]['id'] ==
-            '{0}-{1}'.format(self.user.id, credit.absence_type.id)
+            absence_credit_inc['id'] ==
+            '{0}-{1}'.format(self.user.id, absence_credit.absence_type.id)
         )
-
-        assert inc[0]['attributes']['credit'] == 5
-        assert inc[0]['attributes']['balance'] == 3
-        assert inc[0]['attributes']['used-days'] == 2
-        assert inc[0]['attributes']['used-duration'] is None
+        assert absence_credit_inc['attributes']['credit'] == 5
+        assert absence_credit_inc['attributes']['balance'] == 3
+        assert absence_credit_inc['attributes']['used-days'] == 2
+        assert absence_credit_inc['attributes']['used-duration'] is None
 
     def test_user_absence_types_fill_worktime(self):
         absence_type = AbsenceTypeFactory.create(fill_worktime=True)

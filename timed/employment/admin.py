@@ -199,5 +199,5 @@ class AbsenceTypeAdmin(admin.ModelAdmin):
         return (
             obj and
             not obj.absences.exists() and
-            not obj.absence_credits.exists()
+            not obj.absencecredit_set.exists()
         )
