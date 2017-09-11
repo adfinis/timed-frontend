@@ -151,12 +151,8 @@ export default Route.extend(RouteAutostartTourMixin, {
             .filter(({ changeset, model }) => {
               return changeset.get('isDirty') || model.get('isDeleted')
             })
-            .map(async ({ changeset, model }) => {
-              if (changeset.get('isDirty')) {
-                changeset.execute()
-              }
-
-              await model.save()
+            .map(async ({ changeset }) => {
+              await changeset.save()
             })
         )
 
