@@ -1,5 +1,5 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
-  <button class="btn btn-success" title="Generate timesheet for all the activities listed above" {{action 'generateReportsCheck'}}>Generate timesheet</button>
+  <button type="button" class="btn btn-success" title="Generate timesheet for all the activities listed above" {{action 'generateReportsCheck'}}>Generate timesheet</button>
 </div>
 <div class="activities">
   <div class="activities-edit">{{outlet}}</div>
@@ -44,6 +44,7 @@
               <td>
                 {{#if activity.active}}
                   <button
+                    type="button"
                     data-test-stop-activity
                     class="btn btn-danger"
                     {{action 'stopActivity' activity bubbles=false}}
@@ -52,6 +53,7 @@
                   </button>
                 {{else}}
                   <button
+                    type="button"
                     data-test-start-activity
                     class="btn btn-success"
                     {{action 'startActivity' activity bubbles=false}}

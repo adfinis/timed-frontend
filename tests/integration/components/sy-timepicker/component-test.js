@@ -35,7 +35,7 @@ describe('Integration | Component | sy timepicker', function() {
 
     this.$('input')
       .val('13:15')
-      .trigger(event('input'))
+      .change()
 
     expect(this.get('value').hour()).to.equal(13)
     expect(this.get('value').minute()).to.equal(15)
@@ -56,7 +56,7 @@ describe('Integration | Component | sy timepicker', function() {
 
     this.$('input')
       .val('24:15')
-      .trigger(event('input'))
+      .change()
 
     expect(this.get('value').hour()).to.equal(12)
     expect(this.get('value').minute()).to.equal(30)
@@ -295,8 +295,9 @@ describe('Integration | Component | sy timepicker', function() {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').val('')
-    this.$('input').trigger('input')
+    this.$('input')
+      .val('')
+      .change()
 
     expect(this.get('value')).to.be.null
   })

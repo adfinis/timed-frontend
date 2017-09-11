@@ -43,7 +43,7 @@ describe('Integration | Component | sy durationpicker', function() {
 
     this.$('input')
       .val('13:15')
-      .trigger(event('input'))
+      .change()
 
     expect(this.get('value').hours()).to.equal(13)
     expect(this.get('value').minutes()).to.equal(15)
@@ -64,7 +64,7 @@ describe('Integration | Component | sy durationpicker', function() {
 
     this.$('input')
       .val('24:15')
-      .trigger(event('input'))
+      .change()
 
     expect(this.get('value').hours()).to.equal(12)
     expect(this.get('value').minutes()).to.equal(30)

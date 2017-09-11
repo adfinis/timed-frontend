@@ -25,7 +25,7 @@ export default Model.extend({
    * @type {moment}
    * @public
    */
-  from: attr('django-datetime', { defaultValue: () => moment() }),
+  from: attr('django-datetime'),
 
   /**
    * The end date and time

@@ -84,14 +84,14 @@ export default Component.extend({
   },
 
   /**
-   * Validate a value
+   * Get the validity status of a value
    *
-   * @method _validate
+   * @method _isValid
    * @param {moment} value The value to check
    * @return {Boolean} Whether the value is valid
    * @private
    */
-  _validate(value) {
+  _isValid(value) {
     return value < this.get('max') && value > this.get('min')
   },
 
@@ -103,7 +103,11 @@ export default Component.extend({
    * @private
    */
   _addMinutes(value) {
-    this._change(this._add(0, value))
+    let newValue = this._add(0, value)
+
+    if (this._isValid(newValue)) {
+      this._change(newValue)
+    }
   },
 
   /**
@@ -114,7 +118,11 @@ export default Component.extend({
    * @private
    */
   _addHours(value) {
-    this._change(this._add(value, 0))
+    let newValue = this._add(value, 0)
+
+    if (this._isValid(newValue)) {
+      this._change(newValue)
+    }
   },
 
   /**
@@ -125,9 +133,7 @@ export default Component.extend({
    * @private
    */
   _change(value) {
-    if (value === null || this._validate(value)) {
-      this.get('attrs.on-change')(value)
-    }
+    this.get('attrs.on-change')(value)
   },
 
   /**
@@ -206,19 +212,15 @@ export default Component.extend({
      * This is called when the value in the input box was changed. It ensures
      * that the value is valid and updates the value accordingly.
      *
-     * @method handleInput
-     * @param {jQuery.Event} e The jquery input event
+     * @method handleChange
+     * @param {jQuery.Event} e The jquery change event
      * @public
      */
-    handleInput(e) {
+    handleChange(e) {
       if (e.target.validity.valid) {
         let [h = NaN, m = NaN] = e.target.value.split(':').map(n => parseInt(n))
 
-        if ([h, m].any(isNaN)) {
-          this._change(null)
-        }
-
-        this._change(this._set(h, m))
+        this._change([h, m].some(isNaN) ? null : this._set(h, m))
       }
     },
 

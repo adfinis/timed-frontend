@@ -35,11 +35,15 @@ const ReportRowComponent = Component.extend({
    */
   @computed('report.{id,verifiedBy}')
   changeset() {
-    return new Changeset(
+    let c = new Changeset(
       this.get('report'),
       lookupValidator(ReportValidations),
       ReportValidations
     )
+
+    c.validate()
+
+    return c
   },
 
   /**

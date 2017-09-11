@@ -4,6 +4,8 @@ import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { click } from 'ember-native-dom-helpers'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
+import EmberObject from 'ember-object'
+import Changeset from 'ember-changeset'
 
 describe('Integration | Component | report reschedule row', function() {
   setupComponentTest('report-reschedule-row', {
@@ -29,17 +31,17 @@ describe('Integration | Component | report reschedule row', function() {
   })
 
   it('can verify a row', function() {
-    this.set('report', { verifiedBy: null })
+    this.set('report', EmberObject.create({ verifiedBy: null }))
+    this.set('changeset', new Changeset(this.get('report'))) // pass changeset to disable verification
     this.set('savedReport', null)
-    this.set('verifyUser', { id: 1, username: 'test' })
+    this.set('verifyUser', EmberObject.create({ id: 1, username: 'test' }))
 
     this.render(
-      hbs`{{report-reschedule-row report verifyUser=verifyUser on-save=(action (mut savedReport))}}`
+      hbs`{{report-reschedule-row report changeset=changeset verifyUser=verifyUser on-save=(action (mut savedReport))}}`
     )
 
     click('td:nth-child(10) label')
-
-    this.$('.btn-primary').click()
+    click('.btn-primary')
 
     expect(this.get('savedReport.verifiedBy.username')).to.equal('test')
   })
