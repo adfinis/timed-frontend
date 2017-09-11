@@ -7,7 +7,6 @@ import Component from 'ember-component'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import { padStart } from 'ember-pad/utils/pad'
-import { debounce } from 'ember-runloop'
 
 /**
  * Timepicker component
@@ -85,14 +84,14 @@ export default Component.extend({
   },
 
   /**
-   * Validate a value
+   * Get the validity status of a value
    *
-   * @method _validate
+   * @method _isValid
    * @param {moment} value The value to check
    * @return {Boolean} Whether the value is valid
    * @private
    */
-  _validate(value) {
+  _isValid(value) {
     return value < this.get('max') && value > this.get('min')
   },
 
@@ -106,7 +105,7 @@ export default Component.extend({
   _addMinutes(value) {
     let newValue = this._add(0, value)
 
-    if (this._validate(newValue)) {
+    if (this._isValid(newValue)) {
       this._change(newValue)
     }
   },
@@ -121,7 +120,7 @@ export default Component.extend({
   _addHours(value) {
     let newValue = this._add(value, 0)
 
-    if (this._validate(newValue)) {
+    if (this._isValid(newValue)) {
       this._change(newValue)
     }
   },
@@ -170,14 +169,6 @@ export default Component.extend({
   disabled: false,
 
   /**
-   * The delay to debounce the input handler
-   *
-   * @property {Number} delay
-   * @public
-   */
-  delay: 500,
-
-  /**
    * Increase or decrease the current value
    *
    * If the shift or ctrl key is pressed it changes the hours instead of the
@@ -221,20 +212,15 @@ export default Component.extend({
      * This is called when the value in the input box was changed. It ensures
      * that the value is valid and updates the value accordingly.
      *
-     * @method handleInput
-     * @param {jQuery.Event} e The jquery input event
+     * @method handleChange
+     * @param {jQuery.Event} e The jquery change event
      * @public
      */
-    handleInput(e) {
+    handleChange(e) {
       if (e.target.validity.valid) {
         let [h = NaN, m = NaN] = e.target.value.split(':').map(n => parseInt(n))
 
-        debounce(
-          this,
-          this._change,
-          [h, m].some(isNaN) ? null : this._set(h, m),
-          this.get('delay')
-        )
+        this._change([h, m].some(isNaN) ? null : this._set(h, m))
       }
     },
 
