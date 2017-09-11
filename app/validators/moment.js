@@ -29,7 +29,6 @@ export default function validateMoment(options = { gt: null, lt: null }) {
 
       if (newValue >= ltVal) {
         valid = false
-        valid = false
       }
     }
 
