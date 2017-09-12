@@ -3,15 +3,17 @@
     {{#sy-sidenav-list}}
       {{sy-sidenav-item 'index' 'clock-o' 'Tracking'}}
       {{sy-sidenav-item 'me' 'user' 'Profile'}}
-      {{sy-sidenav-item 'analysis' 'line-chart' 'Analysis'}}
+      {{#if (or media.isMd media.isLg media.isXl)}}
+        {{sy-sidenav-item 'analysis' 'line-chart' 'Analysis'}}
+      {{/if}}
     {{/sy-sidenav-list}}
 
-    {{#if model.isStaff}}
+    {{#if (and model.isStaff (or media.isMd media.isLg media.isXl))}}
       {{#sy-sidenav-list 'Staff Menu'}}
         {{sy-sidenav-item 'reschedule' 'refresh' 'Reschedule'}}
       {{/sy-sidenav-list}}
     {{/if}}
-    {{#sy-sidenav-list ' '}}
+    {{#sy-sidenav-list class='sy-sidenav-list--logout'}}
       {{#sy-sidenav-item}}
         <a data-test-logout href="#" {{action 'invalidateSession'}}>
           <i class="fa fa-sign-out"></i>

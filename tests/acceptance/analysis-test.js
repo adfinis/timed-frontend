@@ -27,6 +27,14 @@ describe('Acceptance | analysis', function() {
     destroyApp(application)
   })
 
+  it("can't visit /analysis on mobile", async function() {
+    setBreakpoint('mo')
+
+    await visit('/analysis')
+
+    expect(currentURL()).to.equal('/')
+  })
+
   it('can visit /analysis', async function() {
     await visit('/analysis')
 

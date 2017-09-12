@@ -29,6 +29,14 @@ describe('Acceptance | reschedule', function() {
     destroyApp(application)
   })
 
+  it("can't visit /reschedule on mobile", async function() {
+    setBreakpoint('mo')
+
+    await visit('/reschedule')
+
+    expect(currentURL()).to.equal('/')
+  })
+
   it('can visit /reschedule', async function() {
     await visit('/reschedule')
 
