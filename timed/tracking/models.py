@@ -31,7 +31,7 @@ class Activity(models.Model):
         :rtype:  datetime.timedelta
         """
         return self.blocks.all().aggregate(
-            duration=Sum(F('to_datetime') - F('from_datetime'))
+            duration=Sum(F('to_time') - F('from_time'))
         ).get('duration')
 
     def __str__(self):
@@ -57,16 +57,12 @@ class ActivityBlock(models.Model):
 
     activity      = models.ForeignKey('tracking.Activity',
                                       related_name='blocks')
-    from_datetime = models.DateTimeField()
-    to_datetime   = models.DateTimeField(blank=True, null=True)
+    from_time = models.TimeField()
+    to_time   = models.TimeField(blank=True, null=True)
 
     def __str__(self):
-        """Represent the model as a string.
-
-        :return: The string representation
-        :rtype:  str
-        """
-        return '{1} ({0})'.format(self.activity, self.duration)
+        return '{0} ({1} - {2})'.format(self.activity, self.from_time,
+                                        self.to_time)
 
 
 class Attendance(models.Model):

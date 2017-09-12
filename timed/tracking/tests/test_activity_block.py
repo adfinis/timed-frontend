@@ -1,10 +1,9 @@
 """Tests for the activity blocks endpoint."""
 
-from datetime import datetime
+from datetime import time
 
 from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from pytz import timezone
 from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED)
@@ -69,14 +68,13 @@ class ActivityBlockTests(JSONAPITestCase):
     def test_activity_block_create(self):
         """Should create a new activity block."""
         activity = self.activity_blocks[0].activity
-        tz = timezone('Europe/Zurich')
 
         data = {
             'data': {
                 'type': 'activity-blocks',
                 'id': None,
                 'attributes': {
-                    'from-datetime': datetime.now(tz).isoformat()
+                    'from-time': '08:00'
                 },
                 'relationships': {
                     'activity': {
@@ -99,20 +97,21 @@ class ActivityBlockTests(JSONAPITestCase):
 
         result = self.result(res)
 
-        assert not result['data']['attributes']['from-datetime'] is None
-        assert result['data']['attributes']['to-datetime'] is None
+        assert not result['data']['attributes']['from-time'] == '08:00'
+        assert result['data']['attributes']['to-time'] is None
 
     def test_activity_block_update(self):
         """Should update an existing activity block."""
         activity_block = self.activity_blocks[0]
-        tz = timezone('Europe/Zurich')
+        activity_block.from_time = time(10, 0)
+        activity_block.save()
 
         data = {
             'data': {
                 'type': 'activity-blocks',
                 'id': activity_block.id,
                 'attributes': {
-                    'to-datetime': datetime.now(tz).isoformat()
+                    'to-time': '23:59:00'
                 }
             }
         }
@@ -130,8 +129,8 @@ class ActivityBlockTests(JSONAPITestCase):
         result = self.result(res)
 
         assert (
-            result['data']['attributes']['to-datetime'] ==
-            data['data']['attributes']['to-datetime']
+            result['data']['attributes']['to-time'] ==
+            data['data']['attributes']['to-time']
         )
 
     def test_activity_block_delete(self):
@@ -148,34 +147,66 @@ class ActivityBlockTests(JSONAPITestCase):
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_204_NO_CONTENT
 
-    def test_activity_block_active_unique(self):
-        """Should not be able to have two active blocks."""
-        block = self.activity_blocks[0]
-        tz = timezone('Europe/Zurich')
 
-        block.to_datetime = None
-        block.save()
+def test_activity_block_active_unique(auth_client):
+    """Should not be able to have two active blocks."""
+    activity = ActivityFactory.create(user=auth_client.user)
+    block = ActivityBlockFactory.create(to_time=None, activity=activity)
 
-        data = {
-            'data': {
-                'type': 'activity-blocks',
-                'id': None,
-                'attributes': {
-                    'from-datetime': datetime.now(tz).isoformat()
-                },
-                'relationships': {
-                    'activity': {
-                        'data': {
-                            'type': 'activities',
-                            'id': block.activity.id
-                        }
+    data = {
+        'data': {
+            'type': 'activity-blocks',
+            'id': None,
+            'attributes': {
+                'from-time': '08:00',
+            },
+            'relationships': {
+                'activity': {
+                    'data': {
+                        'type': 'activities',
+                        'id': block.activity.id
                     }
                 }
             }
         }
+    }
 
-        url = reverse('activity-block-list')
+    url = reverse('activity-block-list')
 
-        res = self.client.post(url, data)
+    res = auth_client.post(url, data)
 
-        assert res.status_code == HTTP_400_BAD_REQUEST
+    assert res.status_code == HTTP_400_BAD_REQUEST
+    json = res.json()
+    assert json['errors'][0]['detail'] == (
+        'A user can only have one active activity'
+    )
+
+
+def test_activity_block_to_before_from(auth_client):
+    """Test that to is not before from."""
+    activity = ActivityFactory.create(user=auth_client.user)
+    block = ActivityBlockFactory.create(
+        from_time=time(7, 30),
+        to_time=None,
+        activity=activity
+    )
+
+    data = {
+        'data': {
+            'type': 'activity-blocks',
+            'id': block.id,
+            'attributes': {
+                'to-time': '07:00',
+            }
+        }
+    }
+
+    url = reverse('activity-block-detail', args=[block.id])
+
+    res = auth_client.patch(url, data)
+
+    assert res.status_code == HTTP_400_BAD_REQUEST
+    json = res.json()
+    assert json['errors'][0]['detail'] == (
+        'An activity block may not end before it starts.'
+    )

@@ -51,7 +51,6 @@ class ActivitySerializer(ModelSerializer):
 class ActivityBlockSerializer(ModelSerializer):
     """Activity block serializer."""
 
-    duration = DurationField(read_only=True)
     activity = ResourceRelatedField(queryset=models.Activity.objects.all())
 
     included_serializers = {
@@ -61,22 +60,26 @@ class ActivityBlockSerializer(ModelSerializer):
     def validate(self, data):
         """Validate the activity block.
 
-        Ensure that a user can only have one activity with an active block.
+        Ensure that a user can only have one activity with an active block
+        which doesn't end before it started.
         """
-        if self.instance:
-            user = self.instance.activity.user
-            to_datetime = data.get('to_datetime', self.instance.to_datetime)
-        else:
-            user = data.get('activity').user
-            to_datetime = data.get('to_datetime', None)
+        instance = self.instance
+        from_time = data.get('from_time', instance and instance.from_time)
+        to_time = data.get('to_time', instance and instance.to_time)
+        user = instance and instance.activity.user or data.get('activity').user
 
+        # validate that there is only one active activity
         blocks = models.ActivityBlock.objects.filter(activity__user=user)
+        if blocks.filter(to_time__isnull=True) and to_time is None:
+            raise ValidationError(
+                _('A user can only have one active activity')
+            )
 
-        if (
-            blocks.filter(to_datetime__isnull=True) and
-            to_datetime is None
-        ):
-            raise ValidationError('A user can only have one active activity')
+        # validate that to is not before from
+        if to_time is not None and to_time < from_time:
+            raise ValidationError(
+                _('An activity block may not end before it starts.')
+            )
 
         return data
 
@@ -86,9 +89,8 @@ class ActivityBlockSerializer(ModelSerializer):
         model  = models.ActivityBlock
         fields = [
             'activity',
-            'duration',
-            'from_datetime',
-            'to_datetime',
+            'from_time',
+            'to_time',
         ]
 
 

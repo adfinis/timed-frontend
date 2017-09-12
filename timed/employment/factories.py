@@ -17,18 +17,7 @@ class UserFactory(DjangoModelFactory):
     last_name  = Faker('last_name')
     email      = Faker('email')
     password   = Faker('password', length=12)
-
-    @lazy_attribute
-    def username(self):
-        """Generate a username from first and last name.
-
-        :return: The generated username
-        :rtype:  str
-        """
-        return '{0}.{1}'.format(
-            self.first_name,
-            self.last_name,
-        ).lower()
+    username   = Faker('uuid4')
 
     class Meta:
         """Meta informations for the user factory."""

@@ -152,7 +152,7 @@ class ActivityTests(JSONAPITestCase):
         activity = self.activities[0]
         block    = ActivityBlockFactory.create(activity=activity)
 
-        block.to_datetime = None
+        block.to_time = None
         block.save()
 
         url = reverse('activity-list')
