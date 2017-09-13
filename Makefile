@@ -32,4 +32,4 @@ test: ## Test the project
 	./manage.py migrate --noinput
 	./manage.py makemigrations --check --dry-run --noinput
 	@flake8
-	@pytest --cov --create-db
+	@pytest --no-cov-on-fail --cov --create-db
