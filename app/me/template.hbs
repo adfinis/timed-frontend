@@ -90,7 +90,7 @@
                           {{/if}}
                         </div>
                       </div>
-                      {{#liquid-if absenceType.showCredits}}
+                      {{#if absenceType.showCredits}}
                         {{#each absenceType.absenceCredits as |credit|}}
                           <div class="grid grid--no-gutters grid--nowrap credit-row">
                             <div class="grid-cell grid-cell--6of12">{{credit.comment}}</div>
@@ -99,7 +99,7 @@
                             </div>
                           </div>
                         {{/each}}
-                      {{/liquid-if}}
+                      {{/if}}
                     </td>
                   </tr>
                 {{/each}}

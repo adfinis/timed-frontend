@@ -6,7 +6,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 import moment from 'moment'
 
 describe('Acceptance | index activities', function() {
@@ -39,7 +38,7 @@ describe('Acceptance | index activities', function() {
   it('can list activities', async function() {
     await visit('/')
 
-    expect(find(testSelector('activity-row'))).to.have.length(5)
+    expect(find('[data-test-activity-row]')).to.have.length(5)
   })
 
   it('can not start an active activity', async function() {
@@ -48,26 +47,21 @@ describe('Acceptance | index activities', function() {
     await visit('/')
 
     await click(
-      `${testSelector('activity-row-id', id)} ${testSelector('start-activity')}`
+      `${`[data-test-activity-row-id="${id}"]`} [data-test-start-activity]`
     )
 
-    expect(find(testSelector('activity-row-id', id)).hasClass('primary')).to.be
-      .ok
+    expect(find(`[data-test-activity-row-id="${id}"]`).hasClass('primary')).to
+      .be.ok
   })
 
   it('can start an activity', async function() {
     await visit('/')
 
     await click(
-      find(
-        `${testSelector('activity-row-id', 1)} ${testSelector(
-          'start-activity'
-        )}`
-      )
+      find('[data-test-activity-row-id="1"] [data-test-start-activity]')
     )
 
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be
-      .ok
+    expect(find('[data-test-activity-row-id="1"]').hasClass('primary')).to.be.ok
   })
 
   it('can start an activity of a past day', async function() {
@@ -81,15 +75,13 @@ describe('Acceptance | index activities', function() {
     await visit(`/?day=${lastDay.format('YYYY-MM-DD')}`)
 
     await click(
-      `${testSelector('activity-row-id', activity.id)} ${testSelector(
-        'start-activity'
-      )}`
+      `[data-test-activity-row-id="${activity.id}"] [data-test-start-activity]`
     )
 
     expect(currentURL()).to.equal('/')
 
     expect(
-      find(`${testSelector('activity-row')}:last-child td:eq(1)`).text()
+      find('[data-test-activity-row]:last-child td:eq(1)').text()
     ).to.equal(activity.comment)
   })
 
@@ -97,23 +89,16 @@ describe('Acceptance | index activities', function() {
     await visit('/')
 
     await click(
-      find(
-        `${testSelector('activity-row-id', 1)} ${testSelector(
-          'start-activity'
-        )}`
-      )
+      find('[data-test-activity-row-id="1"] [data-test-start-activity]')
     )
 
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.be
-      .ok
+    expect(find('[data-test-activity-row-id="1"]').hasClass('primary')).to.be.ok
 
     await click(
-      find(
-        `${testSelector('activity-row-id', 1)} ${testSelector('stop-activity')}`
-      )
+      find('[data-test-activity-row-id="1"] [data-test-stop-activity]')
     )
 
-    expect(find(testSelector('activity-row-id', 1)).hasClass('primary')).to.not
+    expect(find('[data-test-activity-row-id="1"]').hasClass('primary')).to.not
       .be.ok
   })
 
@@ -127,34 +112,25 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(7)
+    expect(find('[data-test-report-row]')).to.have.length(7)
 
     expect(
       find(
-        `${testSelector(
-          'report-row-id',
-          id
-        )} td:eq(0) .ember-power-select-selected-item`
+        `${`[data-test-report-row-id="${id}"]`} td:eq(0) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.project.customer.name)
     expect(
       find(
-        `${testSelector(
-          'report-row-id',
-          id
-        )} td:eq(1) .ember-power-select-selected-item`
+        `${`[data-test-report-row-id="${id}"]`} td:eq(1) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.project.name)
     expect(
       find(
-        `${testSelector(
-          'report-row-id',
-          id
-        )} td:eq(2) .ember-power-select-selected-item`
+        `${`[data-test-report-row-id="${id}"]`} td:eq(2) .ember-power-select-selected-item`
       )
         .text()
         .trim()
@@ -168,7 +144,7 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(6)
+    expect(find('[data-test-report-row]')).to.have.length(6)
 
     await visit('/')
 
@@ -176,7 +152,7 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(6)
+    expect(find('[data-test-report-row]')).to.have.length(6)
   })
 
   it('can update reports when generating', async function() {
@@ -190,11 +166,11 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find(testSelector('report-row'))).to.have.length(6)
+    expect(find('[data-test-report-row]')).to.have.length(6)
 
-    expect(
-      find(`${testSelector('report-row')}:eq(0) td:eq(4) input`).val()
-    ).to.equal('02:30')
+    expect(find('[data-test-report-row]:eq(0) td:eq(4) input').val()).to.equal(
+      '02:30'
+    )
 
     await server.db.activities.update(this.activities[0].id, {
       duration: '05:30:00'
@@ -207,9 +183,9 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(
-      find(`${testSelector('report-row')}:eq(0) td:eq(4) input`).val()
-    ).to.equal('05:30')
+    expect(find('[data-test-report-row]:eq(0) td:eq(4) input').val()).to.equal(
+      '05:30'
+    )
   })
 
   it('shows a warning when generating reports from unknown tasks', async function() {
@@ -218,12 +194,12 @@ describe('Acceptance | index activities', function() {
     await visit('/')
 
     await click('button:contains(Generate timesheet)')
-    await click(`${testSelector('unknown-warning')} button:contains(Cancel)`)
+    await click('[data-test-unknown-warning] button:contains(Cancel)')
 
     expect(currentURL()).to.equal('/')
 
     await click('button:contains(Generate timesheet)')
-    await click(`${testSelector('unknown-warning')} button:contains(fine)`)
+    await click('[data-test-unknown-warning] button:contains(fine)')
 
     expect(currentURL()).to.equal('/reports')
   })
@@ -234,12 +210,12 @@ describe('Acceptance | index activities', function() {
     await visit('/')
 
     await click('button:contains(Generate timesheet)')
-    await click(`${testSelector('overlap-warning')} button:contains(Cancel)`)
+    await click('[data-test-overlap-warning] button:contains(Cancel)')
 
     expect(currentURL()).to.equal('/')
 
     await click('button:contains(Generate timesheet)')
-    await click(`${testSelector('overlap-warning')} button:contains(fine)`)
+    await click('[data-test-overlap-warning] button:contains(fine)')
 
     expect(currentURL()).to.equal('/reports')
   })
@@ -253,32 +229,32 @@ describe('Acceptance | index activities', function() {
     // both close if one clicks cancel
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click(`${testSelector('overlap-warning')} button:contains(Cancel)`)
+    await click('[data-test-overlap-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
     expect(currentURL()).to.equal('/')
 
     // both must be fine if it should continue
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click(`${testSelector('overlap-warning')} button:contains(fine)`)
+    await click('[data-test-overlap-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
-    await click(`${testSelector('unknown-warning')} button:contains(Cancel)`)
+    await click('[data-test-unknown-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
 
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click(`${testSelector('unknown-warning')} button:contains(fine)`)
+    await click('[data-test-unknown-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
-    await click(`${testSelector('overlap-warning')} button:contains(Cancel)`)
+    await click('[data-test-overlap-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
     expect(currentURL()).to.equal('/')
 
     // if both are fine continue
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click(`${testSelector('overlap-warning')} button:contains(fine)`)
+    await click('[data-test-overlap-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
-    await click(`${testSelector('unknown-warning')} button:contains(fine)`)
+    await click('[data-test-unknown-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(0)
     expect(currentURL()).to.equal('/reports')
   })

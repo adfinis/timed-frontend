@@ -6,7 +6,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | index attendances', function() {
   let application
@@ -37,38 +36,36 @@ describe('Acceptance | index attendances', function() {
   it('can list attendances', async function() {
     await visit('/attendances')
 
-    expect(find(testSelector('attendance-slider'))).to.have.length(2)
+    expect(find('[data-test-attendance-slider]')).to.have.length(2)
   })
 
   it('can save an attendances', async function() {
     await visit('/attendances')
 
-    expect(find(testSelector('attendance-slider'))).to.have.length(2)
+    expect(find('[data-test-attendance-slider]')).to.have.length(2)
 
-    await click(`${testSelector('attendance-slider-id', 1)} .noUi-draggable`)
+    await click('[data-test-attendance-slider-id="1"] .noUi-draggable')
 
-    expect(find(testSelector('attendance-slider'))).to.have.length(2)
+    expect(find('[data-test-attendance-slider]')).to.have.length(2)
   })
 
   it('can add an attendance', async function() {
     await visit('/attendances')
 
-    await click(testSelector('add-attendance'))
+    await click('[data-test-add-attendance]')
 
-    expect(find(testSelector('attendance-slider'))).to.have.length(3)
+    expect(find('[data-test-attendance-slider]')).to.have.length(3)
   })
 
   it('can delete an attendance', async function() {
     await visit('/attendances')
 
     await click(
-      `${testSelector('attendance-slider-id', 1)} ${testSelector(
-        'delete-attendance'
-      )}`
+      '[data-test-attendance-slider-id="1"] [data-test-delete-attendance]'
     )
 
-    expect(find(testSelector('attendance-slider-id'), 1)).to.have.length(0)
+    expect(find('[data-test-attendance-slider-id]', 1)).to.have.length(0)
 
-    expect(find(testSelector('attendance-slider'))).to.have.length(1)
+    expect(find('[data-test-attendance-slider]')).to.have.length(1)
   })
 })

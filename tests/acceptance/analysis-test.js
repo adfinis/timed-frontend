@@ -6,7 +6,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | analysis', function() {
   let application
@@ -35,14 +34,12 @@ describe('Acceptance | analysis', function() {
 
   it('can search and download file', async function() {
     await visit('/analysis')
-    await userSelect(testSelector('filter-user'))
-    await click(testSelector('filter-apply'))
+    await userSelect('[data-test-filter-user]')
+    await click('[data-test-filter-apply]')
 
-    expect(find(`${testSelector('filter-results')} tbody tr`).length).to.equal(
-      6
-    )
+    expect(find('[data-test-filter-results] tbody tr').length).to.equal(6)
 
-    await click(testSelector('download-file', 0))
+    await click('[data-test-download-file="0"]')
     expect(currentURL()).to.equal('/analysis?user=1')
   })
 
@@ -52,14 +49,14 @@ describe('Acceptance | analysis', function() {
     await userSelect()
     await taskSelect()
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('customer')
     expect(currentURL()).to.contain('project')
     expect(currentURL()).to.contain('task')
     expect(currentURL()).to.contain('user')
 
-    await click(testSelector('filter-reset'))
+    await click('[data-test-filter-reset]')
 
     expect(currentURL()).to.equal('/analysis')
   })

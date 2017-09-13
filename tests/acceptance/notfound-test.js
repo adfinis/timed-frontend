@@ -6,7 +6,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | notfound', function() {
   let application
@@ -33,7 +32,7 @@ describe('Acceptance | notfound', function() {
 
     await visit('/thiswillneverbeavalidrouteurl')
 
-    expect(find(testSelector('notfound'))).to.have.length(1)
+    expect(find('[data-test-notfound]')).to.have.length(1)
 
     await invalidateSession(application)
   })

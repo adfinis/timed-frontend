@@ -6,6 +6,7 @@ import { click } from 'ember-native-dom-helpers'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from 'ember-object'
 import Changeset from 'ember-changeset'
+import moment from 'moment'
 
 describe('Integration | Component | report reschedule row', function() {
   setupComponentTest('report-reschedule-row', {
@@ -21,7 +22,7 @@ describe('Integration | Component | report reschedule row', function() {
   })
 
   it('renders', function() {
-    this.set('report', {})
+    this.set('report', EmberObject.create({ date: moment() }))
 
     this.render(hbs`{{report-reschedule-row report}}`)
 
@@ -31,7 +32,7 @@ describe('Integration | Component | report reschedule row', function() {
   })
 
   it('can verify a row', function() {
-    this.set('report', EmberObject.create({ verifiedBy: null }))
+    this.set('report', EmberObject.create({ verifiedBy: null, date: moment() }))
     this.set('changeset', new Changeset(this.get('report'))) // pass changeset to disable verification
     this.set('savedReport', null)
     this.set('verifyUser', EmberObject.create({ id: 1, username: 'test' }))

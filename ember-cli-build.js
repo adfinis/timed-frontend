@@ -28,7 +28,11 @@ module.exports = function(defaults) {
       }
     },
     babel: {
-      plugins: ['transform-decorators-legacy', 'transform-object-rest-spread']
+      plugins: [
+        'transform-async-to-generator',
+        'transform-decorators-legacy',
+        'transform-object-rest-spread'
+      ]
     },
     'ember-cli-babel': {
       includePolyfill: true
