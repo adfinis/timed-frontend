@@ -12,7 +12,7 @@ RUN mkdir -p /var/www/static
 
 ENV DJANGO_SETTINGS_MODULE timed.settings
 ENV STATIC_ROOT /var/www/static
-ENV UWSGI_INI /app/docker/backend/uwsgi.ini
+ENV UWSGI_INI /app/uwsgi.ini
 
 COPY . /app
 WORKDIR /app
