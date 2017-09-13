@@ -179,7 +179,7 @@ AUTH_LDAP_USER_ATTR_MAP = env.dict('DJANGO_AUTH_LDAP_USER_ATTR_MAP', default={
     'email':      'mail'
 })
 
-LDAP_BASE = 'dc=adsy-ext,dc=becs,dc=adfinis-sygroup,dc=ch'
+LDAP_BASE = env.str('DJANGO_LDAP_BASE', default='dc=example,dc=com')
 AUTH_LDAP_SERVER_URI = env.str(
     'DJANGO_AUTH_LDAP_SERVER_URI',
     default('ldap://localhost:389')
