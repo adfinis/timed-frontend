@@ -13,14 +13,13 @@ RUN mkdir -p /var/www/static
 ENV DJANGO_SETTINGS_MODULE timed.settings
 ENV STATIC_ROOT /var/www/static
 ENV UWSGI_INI /app/uwsgi.ini
-ENV ENV docker
 
 COPY . /app
 WORKDIR /app
 
 RUN make install
 
-RUN ./manage.py collectstatic --noinput
+RUN ENV=docker ./manage.py collectstatic --noinput
 
 EXPOSE 80
 CMD ["uwsgi"]
