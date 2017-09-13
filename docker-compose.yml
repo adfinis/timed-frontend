@@ -1,20 +1,31 @@
 version: '2'
 services:
   db:
-    image: postgres
+    image: postgres:9.4
     ports:
       - '5432:5432'
     environment:
       - POSTGRES_USER=timed
       - POSTGRES_PASSWORD=timed
   ucs:
-    build: ./docker/ucs
+    image: univention/ucs-master-amd64:4.2-1
     hostname: timed-ucs
+    expose:
+      - 80
+      - 389
     volumes:
       - ./docker/ucs/timed-ucs.profile:/var/cache/univention-system-setup/profile
       - ./docker/ucs/scripts:/usr/ucs/scripts
+  backend:
+    build: .
     ports:
-      - '389:389'
-      - '8080:80'
+      - '8000:80'
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+      - ucs
     environment:
-      - rootpwd=univention
+      - DATABASE_URL=psql://timed:timed@db:5432/timed
+      - ENV=docker
+      - STATIC_ROOT=/var/www/static

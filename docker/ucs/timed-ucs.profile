@@ -1,7 +1,7 @@
 hostname="timed-ucs"
-domainname="adsy-ext.becs.adfinis-sygroup.ch"
-windows/domain="ADSY-EXT"
-ldap/base="dc=adsy-ext,dc=becs,dc=adfinis-sygroup,dc=ch"
+domainname="example.com"
+windows/domain="EXAMPLE"
+ldap/base="dc=example,dc=com"
 root_password="univention"
 
 server/role="domaincontroller_master"
