@@ -23,9 +23,9 @@ export default Mixin.create({
    */
   beforeModel(transition) {
     if (
-      Object.values(
-        this.getProperties('media.isMd', 'media.isLg', 'media.isXl')
-      ).some(i => i)
+      this.get('media.isMd') ||
+      this.get('media.isLg') ||
+      this.get('media.isXl')
     ) {
       return this._super(...arguments)
     }
