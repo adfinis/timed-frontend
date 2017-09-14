@@ -13,8 +13,6 @@ addons:
 cache:
   directories:
     - $HOME/.npm
-    - node_modules
-    - bower_components
 
 before_install:
   - npm install -g npm@5
