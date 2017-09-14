@@ -24,5 +24,8 @@ install:
 script:
   - npm test
 
+after_success:
+  - npm run coveralls
+
 env:
   - COVERAGE=true JOBS=2

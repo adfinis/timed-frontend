@@ -8,7 +8,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server --proxy http://localhost:8000",
-    "test": "ember test"
+    "test": "ember test",
+    "coveralls": "cat coverage/lcov.info | coveralls"
   },
   "repository": "https://github.com/adfinis-sygroup/timed-frontend",
   "engines": {
