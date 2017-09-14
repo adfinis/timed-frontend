@@ -3,7 +3,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | auth', function() {
   let application
@@ -64,7 +63,7 @@ describe('Acceptance | auth', function() {
 
     expect(currentURL()).to.equal('/')
 
-    await click(testSelector('logout'))
+    await click('[data-test-logout]')
 
     expect(currentURL()).to.equal('/login')
   })

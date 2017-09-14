@@ -7,7 +7,6 @@ import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import moment from 'moment'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 
 describe('Acceptance | index', function() {
   let application
@@ -31,13 +30,13 @@ describe('Acceptance | index', function() {
   it('can select a day', async function() {
     await visit('/')
 
-    await click(testSelector('previous'))
+    await click('[data-test-previous]')
 
     let lastDay = moment().subtract(1, 'day')
 
     expect(currentURL()).to.equal(`/?day=${lastDay.format('YYYY-MM-DD')}`)
 
-    await click(testSelector('today'))
+    await click('[data-test-today]')
 
     expect(currentURL()).to.equal('/')
   })
@@ -46,24 +45,24 @@ describe('Acceptance | index', function() {
     let task = server.create('task')
     await visit('/')
 
-    await taskSelect(testSelector('tracking-bar'))
+    await taskSelect('[data-test-tracking-bar]')
 
-    await fillIn(testSelector('tracking-comment'), 'Some Random Comment')
+    await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
 
-    expect(find(testSelector('record-start'))).to.have.length(1)
+    expect(find('[data-test-record-start]')).to.have.length(1)
 
-    await click(testSelector('record-start'))
+    await click('[data-test-record-start]')
 
-    expect(find(testSelector('record-start'))).to.have.length(0)
-    expect(find(testSelector('record-stop'))).to.have.length(1)
+    expect(find('[data-test-record-start]')).to.have.length(0)
+    expect(find('[data-test-record-stop]')).to.have.length(1)
     expect(
-      find(testSelector('record-stop'))
+      find('[data-test-record-stop]')
         .parent()
         .parent()
         .hasClass('recording')
     ).to.be.ok
     expect(
-      find(`${testSelector('activity-row')}:first-child div small`).text()
+      find('[data-test-activity-row]:first-child div small').text()
     ).to.equal(task.name)
   })
 
@@ -72,22 +71,22 @@ describe('Acceptance | index', function() {
 
     await visit('/')
 
-    await taskSelect(testSelector('tracking-bar'), { fromHistory: true })
+    await taskSelect('[data-test-tracking-bar]', { fromHistory: true })
 
-    await fillIn(testSelector('tracking-comment'), 'Some Random Comment')
+    await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
 
-    await click(testSelector('record-start'))
+    await click('[data-test-record-start]')
 
-    expect(find(testSelector('record-start'))).to.have.length(0)
-    expect(find(testSelector('record-stop'))).to.have.length(1)
+    expect(find('[data-test-record-start]')).to.have.length(0)
+    expect(find('[data-test-record-stop]')).to.have.length(1)
     expect(
-      find(testSelector('record-stop'))
+      find('[data-test-record-stop]')
         .parent()
         .parent()
         .hasClass('recording')
     ).to.be.ok
     expect(
-      find(`${testSelector('activity-row')}:first-child div small`).text()
+      find('[data-test-activity-row]:first-child div small').text()
     ).to.equal(task.name)
   })
 
@@ -97,27 +96,27 @@ describe('Acceptance | index', function() {
     await visit('/')
 
     expect(
-      find(testSelector('record-stop'))
+      find('[data-test-record-stop]')
         .parent()
         .parent()
         .hasClass('recording')
     ).to.be.ok
-    expect(find(testSelector('record-stop'))).to.have.length(1)
-    expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal(
+    expect(find('[data-test-record-stop]')).to.have.length(1)
+    expect(find('[data-test-tracking-comment] input').val()).to.equal(
       activity.comment
     )
 
-    await click(testSelector('record-stop'))
+    await click('[data-test-record-stop]')
 
-    expect(find(testSelector('record-start'))).to.have.length(1)
-    expect(find(testSelector('record-stop'))).to.have.length(0)
+    expect(find('[data-test-record-start]')).to.have.length(1)
+    expect(find('[data-test-record-stop]')).to.have.length(0)
     expect(
-      find(testSelector('record-start'))
+      find('[data-test-record-start]')
         .parent()
         .parent()
         .hasClass('recording')
     ).to.not.be.ok
-    expect(find(`${testSelector('tracking-comment')} input`).val()).to.equal('')
+    expect(find('[data-test-tracking-comment] input').val()).to.equal('')
   })
 
   it('can set the document title', async function() {
@@ -127,7 +126,7 @@ describe('Acceptance | index', function() {
 
     expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
 
-    await click(testSelector('record-stop'))
+    await click('[data-test-record-stop]')
 
     expect(document.title).to.not.match(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
   })
@@ -146,30 +145,28 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    await click(testSelector('add-absence'))
+    await click('[data-test-add-absence]')
 
-    expect(find(testSelector('add-absence-form'))).to.have.length(1)
+    expect(find('[data-test-add-absence-form]')).to.have.length(1)
 
-    await click(
-      `${testSelector('add-absence-form')} .btn-group .btn:first-child`
-    )
+    await click('[data-test-add-absence-form] .btn-group .btn:first-child')
 
     await click(find('[data-date=2017-06-28]'))
     await click(find('[data-date=2017-06-29]'))
     await click(find('[data-date=2017-06-30]'))
 
-    await click(`${testSelector('add-absence-form')} button:contains(Save)`)
+    await click('[data-test-add-absence-form] button:contains(Save)')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
 
-    await click(testSelector('next'))
+    await click('[data-test-next]')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
 
-    await click(testSelector('previous'))
-    await click(testSelector('previous'))
+    await click('[data-test-previous]')
+    await click('[data-test-previous]')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
   })
 
   it('can edit an absence', async function() {
@@ -181,19 +178,19 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
 
-    await click(testSelector('edit-absence'))
+    await click('[data-test-edit-absence]')
 
     await click(find('[data-date=2017-06-30]'))
 
-    await click(`${testSelector('edit-absence-form')} button:contains(Save)`)
+    await click('[data-test-edit-absence-form] button:contains(Save)')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(0)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(0)
 
-    await click(testSelector('next'))
+    await click('[data-test-next]')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
   })
 
   it('can delete an absence', async function() {
@@ -205,13 +202,13 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(1)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
 
-    await click(testSelector('edit-absence'))
+    await click('[data-test-edit-absence]')
 
-    await click(`${testSelector('edit-absence-form')} button:contains(Delete)`)
+    await click('[data-test-edit-absence-form] button:contains(Delete)')
 
-    expect(find(`${testSelector('edit-absence')}:visible`)).to.have.length(0)
+    expect(find('[data-test-edit-absence]:visible')).to.have.length(0)
   })
 
   it('highlights holidays', async function() {

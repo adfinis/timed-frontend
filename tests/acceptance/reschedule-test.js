@@ -6,7 +6,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import testSelector from 'ember-test-selectors'
 import moment from 'moment'
 import { Response } from 'ember-cli-mirage'
 
@@ -56,25 +55,24 @@ describe('Acceptance | reschedule', function() {
 
   it('can search and edit a report', async function() {
     await visit('/reschedule')
-    await userSelect(testSelector('filter-user'))
-    await click(testSelector('filter-apply'))
+    await userSelect('[data-test-filter-user]')
+    await click('[data-test-filter-apply]')
 
-    expect(find(testSelector('reschedule-report')).length).to.equal(6)
+    expect(find('[data-test-reschedule-report]').length).to.equal(6)
 
     await fillIn(
-      `${testSelector('reschedule-report-id', 1)} td:eq(6) input`,
+      '[data-test-reschedule-report-id="1"] td:eq(6) input',
       'Changed'
     )
 
     expect(
-      find(`${testSelector('reschedule-report-id', 1)} button:disabled`).length
+      find(`${'[data-test-reschedule-report-id="1"]'} button:disabled`).length
     ).to.not.be.ok
 
-    await click(`${testSelector('reschedule-report-id', 1)} button`)
+    await click('[data-test-reschedule-report-id="1"] button')
 
-    expect(
-      find(`${testSelector('reschedule-report-id', 1)} button:disabled`).length
-    ).to.be.ok
+    expect(find('[data-test-reschedule-report-id="1"] button:disabled').length)
+      .to.be.ok
   })
 
   it('can filter by interval', async function() {
@@ -83,7 +81,7 @@ describe('Acceptance | reschedule', function() {
     expect(currentURL()).to.not.contain('from_date')
     expect(currentURL()).to.not.contain('to_date')
 
-    click(`${testSelector('filter-from-date')} input`)
+    click('[data-test-filter-from-date] input')
 
     await click(
       `[data-date=${moment()
@@ -91,7 +89,7 @@ describe('Acceptance | reschedule', function() {
         .format('YYYY-MM-DD')}]`
     )
 
-    click(`${testSelector('filter-to-date')} input`)
+    click('[data-test-filter-to-date] input')
 
     await click(
       `[data-date=${moment()
@@ -99,7 +97,7 @@ describe('Acceptance | reschedule', function() {
         .format('YYYY-MM-DD')}]`
     )
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('from_date')
     expect(currentURL()).to.contain('to_date')
@@ -110,7 +108,7 @@ describe('Acceptance | reschedule', function() {
 
     await selectChoose(`.customer-select`, '.ember-power-select-option', 1)
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('customer')
   })
@@ -121,7 +119,7 @@ describe('Acceptance | reschedule', function() {
     await selectChoose(`.customer-select`, '.ember-power-select-option', 1)
     await selectChoose(`.project-select`, '.ember-power-select-option', 1)
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('customer')
     expect(currentURL()).to.contain('project')
@@ -132,7 +130,7 @@ describe('Acceptance | reschedule', function() {
 
     taskSelect()
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('customer')
     expect(currentURL()).to.contain('project')
@@ -142,9 +140,9 @@ describe('Acceptance | reschedule', function() {
   it('can filter by user', async function() {
     await visit('/reschedule')
 
-    userSelect(testSelector('filter-user'))
+    userSelect('[data-test-filter-user]')
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('user')
   })
@@ -152,9 +150,9 @@ describe('Acceptance | reschedule', function() {
   it('can filter by reviewer', async function() {
     await visit('/reschedule')
 
-    userSelect(testSelector('filter-reviewer'))
+    userSelect('[data-test-filter-reviewer]')
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('reviewer')
   })
@@ -164,15 +162,15 @@ describe('Acceptance | reschedule', function() {
 
     await visit('/reschedule')
 
-    let options = find(`${testSelector('filter-billing-type')} select option`)
+    let options = find('[data-test-filter-billing-type] select option')
 
     expect(options).to.have.length(6)
 
     let [, { value }] = options
 
-    await fillIn(`${testSelector('filter-billing-type')} select`, value)
+    await fillIn('[data-test-filter-billing-type] select', value)
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
     expect(currentURL()).to.contain('billing_type')
   })
@@ -182,23 +180,23 @@ describe('Acceptance | reschedule', function() {
 
     await visit('/reschedule')
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
-    expect(find(testSelector('filter-results')).length).to.equal(1)
+    expect(find('[data-test-filter-results]').length).to.equal(1)
 
-    expect(find(`${testSelector('filter-results')} tr td`).text()).to.contain(
+    expect(find('[data-test-filter-results] tr td').text()).to.contain(
       'filter parameters'
     )
 
     await visit('/reschedule')
 
-    userSelect(testSelector('filter-user'))
+    userSelect('[data-test-filter-user]')
 
-    await click(testSelector('filter-apply'))
+    await click('[data-test-filter-apply]')
 
-    expect(find(testSelector('filter-results')).length).to.equal(1)
+    expect(find('[data-test-filter-results]').length).to.equal(1)
 
-    expect(find(`${testSelector('filter-results')} tr td`).text()).to.contain(
+    expect(find('[data-test-filter-results] tr td').text()).to.contain(
       'any results'
     )
   })
@@ -207,9 +205,7 @@ describe('Acceptance | reschedule', function() {
     await visit('/reschedule?customer=1')
 
     expect(
-      find(
-        `${testSelector('filter-customer')} .ember-power-select-selected-item`
-      )
+      find('[data-test-filter-customer] .ember-power-select-selected-item')
         .text()
         .trim()
     ).to.be.ok
@@ -219,9 +215,7 @@ describe('Acceptance | reschedule', function() {
     await visit('/reschedule?project=1')
 
     expect(
-      find(
-        `${testSelector('filter-project')} .ember-power-select-selected-item`
-      )
+      find('[data-test-filter-project] .ember-power-select-selected-item')
         .text()
         .trim()
     ).to.be.ok
@@ -231,7 +225,7 @@ describe('Acceptance | reschedule', function() {
     await visit('/reschedule?task=1')
 
     expect(
-      find(`${testSelector('filter-task')} .ember-power-select-selected-item`)
+      find('[data-test-filter-task] .ember-power-select-selected-item')
         .text()
         .trim()
     ).to.be.ok
@@ -241,7 +235,7 @@ describe('Acceptance | reschedule', function() {
     await visit('/reschedule?user=1')
 
     expect(
-      find(`${testSelector('filter-user')} .ember-power-select-selected-item`)
+      find('[data-test-filter-user] .ember-power-select-selected-item')
         .text()
         .trim()
     ).to.be.ok
@@ -251,17 +245,13 @@ describe('Acceptance | reschedule', function() {
     await visit('/reschedule?user=1')
 
     expect(
-      find(
-        `${testSelector('reschedule-report')} td:nth-child(10) input:checked`
-      )
+      find('[data-test-reschedule-report] td:nth-child(10) input:checked')
     ).to.have.length(0)
 
-    await click(testSelector('verify-page'))
+    await click('[data-test-verify-page]')
 
     expect(
-      find(
-        `${testSelector('reschedule-report')} td:nth-child(10) input:checked`
-      )
+      find('[data-test-reschedule-report] td:nth-child(10) input:checked')
     ).to.have.length(6)
   })
 
