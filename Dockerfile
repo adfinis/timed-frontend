@@ -1,6 +1,8 @@
 FROM node:6
 
-RUN npm install -g \
+RUN yarn global add \
+      npm@5 \
+ && npm install -g \
       bower \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -16,7 +18,7 @@ WORKDIR /usr/src/app
 
 RUN npm install \
  && bower install --allow-root \
- && npm run-script build -- --environment=production \
+ && npm run build -- --environment=production \
  && cp -r /usr/src/app/dist/* /var/www/html/ \
  && mv contrib/nginx.conf /etc/nginx/sites-enabled/default
 
