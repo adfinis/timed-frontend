@@ -24,8 +24,5 @@ install:
 script:
   - npm test
 
-after_script:
-  - cat coverage/lcov.info | coveralls
-
 env:
   - COVERAGE=true JOBS=2
