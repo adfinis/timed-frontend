@@ -6,8 +6,16 @@
 import Route from 'ember-route'
 import StaffRouteMixin from 'timed/mixins/staff-route'
 import ReportFilterRouteMixin from 'timed/mixins/report-filter-route'
+import DesktopOnlyRouteMixin from 'timed/mixins/desktop-only-route'
 import service from 'ember-service/inject'
 import { cleanParams, toQueryString } from 'timed/utils/url'
+
+const BaseRoute = Route.extend(
+  StaffRouteMixin,
+  ReportFilterRouteMixin,
+  DesktopOnlyRouteMixin,
+  {}
+)
 
 /**
  * Route for filtering and rescheduling reports
@@ -16,9 +24,10 @@ import { cleanParams, toQueryString } from 'timed/utils/url'
  * @extends Ember.Route
  * @using StaffRouteMixin
  * @using ReportFilterRouteMixin
+ * @using DesktopOnlyRouteMixin
  * @public
  */
-export default Route.extend(StaffRouteMixin, ReportFilterRouteMixin, {
+export default BaseRoute.extend({
   ajax: service('ajax'),
 
   /**
