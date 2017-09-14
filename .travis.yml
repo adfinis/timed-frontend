@@ -28,5 +28,4 @@ after_script:
   - cat coverage/lcov.info | coveralls
 
 env:
-  - COVERAGE=true
-  - JOBS=2
+  - COVERAGE=true JOBS=2
