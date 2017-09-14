@@ -1,13 +1,9 @@
-import Ember from 'ember'
 import MediaService from 'ember-responsive/media'
-
-const {
-  getOwner,
-  computed,
-  A,
-  String: { classify },
-  Test: { registerAsyncHelper }
-} = Ember
+import { getOwner } from '@ember/application'
+import { computed } from '@ember/object'
+import { A } from '@ember/array'
+import { classify } from '@ember/string'
+import { registerAsyncHelper } from '@ember/test'
 
 MediaService.reopen({
   // Change this if you want a different default breakpoint in tests.

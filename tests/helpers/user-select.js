@@ -1,6 +1,4 @@
-import Ember from 'ember'
-
-const { Test: { registerAsyncHelper } } = Ember
+import { registerAsyncHelper } from '@ember/test'
 
 export default registerAsyncHelper('userSelect', async function(
   app,
