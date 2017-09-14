@@ -1,6 +1,6 @@
 import Ember from 'ember'
-import Controller from 'ember-controller'
-import service from 'ember-service/inject'
+import Controller from '@ember/controller'
+import { inject as service } from '@ember/service'
 import config from '../config/environment'
 import { oneWay } from 'ember-computed-decorators'
 import { cleanParams, toQueryString } from 'timed/utils/url'

@@ -3,7 +3,7 @@
  * @submodule timed-routes
  * @public
  */
-import Route from 'ember-route'
+import Route from '@ember/routing/route'
 
 /**
  * The notfound route

@@ -1,4 +1,4 @@
-import Router from 'ember-router'
+import Router from '@ember/routing/router'
 import config from './config/environment'
 
 const ApplicationRouter = Router.extend({

@@ -4,16 +4,16 @@
  * @public
  */
 import Ember from 'ember'
-import Service from 'ember-service'
-import service from 'ember-service/inject'
+import Service from '@ember/service'
+import { inject as service } from '@ember/service'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
-import getOwner from 'ember-owner/get'
-import { scheduleOnce } from 'ember-runloop'
+import { getOwner } from '@ember/application'
+import { scheduleOnce } from '@ember/runloop'
 
 import computed, { observes } from 'ember-computed-decorators'
 
-import { camelize, capitalize } from 'ember-string'
+import { camelize, capitalize } from '@ember/string'
 
 import { task, timeout } from 'ember-concurrency'
 

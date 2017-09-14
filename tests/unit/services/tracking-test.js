@@ -1,8 +1,8 @@
 import { expect } from 'chai'
 import { describe, it, beforeEach } from 'mocha'
 import { setupTest } from 'ember-mocha'
-import Service from 'ember-service'
-import { A as emberA } from 'ember-array/utils'
+import Service from '@ember/service'
+import { A as emberA } from '@ember/array'
 
 const storeStub = Service.extend({
   query() {

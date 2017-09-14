@@ -3,10 +3,10 @@
  * @submodule timed-routes
  * @public
  */
-import Route from 'ember-route'
+import Route from '@ember/routing/route'
 import StaffRouteMixin from 'timed/mixins/staff-route'
 import ReportFilterRouteMixin from 'timed/mixins/report-filter-route'
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 import { cleanParams, toQueryString } from 'timed/utils/url'
 
 /**

@@ -3,7 +3,7 @@
  * @submodule timed-mixins
  * @public
  */
-import Mixin from 'ember-metal/mixin'
+import Mixin from '@ember/object/mixin'
 import DjangoDurationTransform from 'timed/transforms/django-duration'
 
 const DJANGO_DURATION_TRANSFORM = new DjangoDurationTransform()

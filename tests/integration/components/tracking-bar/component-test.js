@@ -3,7 +3,7 @@ import { describe, it, beforeEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import { task } from 'ember-concurrency'
 import hbs from 'htmlbars-inline-precompile'
-import Service from 'ember-service'
+import Service from '@ember/service'
 
 export const trackingStub = Service.extend({
   activity: {

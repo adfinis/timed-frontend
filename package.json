@@ -49,7 +49,6 @@
     "ember-cli-postcss": "^3.5.2",
     "ember-cli-release": "^1.0.0-beta.2",
     "ember-cli-sass": "^7.0.0",
-    "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-test-loader": "^2.1.0",
     "ember-cli-uglify-es": "^1.0.4",

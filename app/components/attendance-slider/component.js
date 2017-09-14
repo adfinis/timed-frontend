@@ -3,12 +3,12 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { padStartTpl } from 'ember-pad/utils/pad'
-import { htmlSafe } from 'ember-string'
+import { htmlSafe } from '@ember/string'
 import { task } from 'ember-concurrency'
 
 const padTpl2 = padStartTpl(2)

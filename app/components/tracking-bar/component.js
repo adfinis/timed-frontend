@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
-import service from 'ember-service/inject'
+import Component from '@ember/component'
+import { inject as service } from '@ember/service'
 
 /**
  * The tracking bar component

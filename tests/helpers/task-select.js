@@ -1,6 +1,8 @@
-import Test from 'ember-test'
+import Ember from 'ember'
 
-export default Test.registerAsyncHelper('taskSelect', async function(
+const { Test: { registerAsyncHelper } } = Ember
+
+export default registerAsyncHelper('taskSelect', async function(
   app,
   selector = '',
   options = { fromHistory: false }
