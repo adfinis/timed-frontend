@@ -3,15 +3,15 @@ language: node_js
 node_js:
   - "6"
 
-sudo: false
-dist: trusty
-
 addons:
+  firefox: latest
   chrome: stable
 
 cache:
   directories:
     - $HOME/.npm
+    - node_modules
+    - bower_components
 
 before_install:
   - npm install -g npm@5
