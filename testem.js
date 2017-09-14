@@ -6,7 +6,7 @@ module.exports = {
   disable_watching: true,
   parallel: -1,
   launch_in_dev: [],
-  launch_in_ci: ['chromium'],
+  launch_in_ci: ['chromium', 'firefox'],
   browser_args: {
     chromium: [
       '--headless',
