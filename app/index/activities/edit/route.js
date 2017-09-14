@@ -160,7 +160,7 @@ export default Route.extend(RouteAutostartTourMixin, {
 
         this.get('notify').success('Activity was saved')
 
-        this.transitionTo('index.activities')
+        await this.transitionTo('index.activities')
       } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the activity')
@@ -189,7 +189,7 @@ export default Route.extend(RouteAutostartTourMixin, {
 
         this.get('notify').success('Activity was deleted')
 
-        this.transitionTo('index.activities')
+        await this.transitionTo('index.activities')
       } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while deleting the activity')
