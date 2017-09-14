@@ -35,6 +35,7 @@
                   value     = block.changeset.from
                   max       = block.changeset.to
                   precision = 1
+                  on-blur   = (action 'validateChangeset' block.changeset)
                   on-change = (action (mut block.changeset.from))
                 }}
               </td>
@@ -44,6 +45,7 @@
                   value     = block.changeset.to
                   min       = block.changeset.from
                   precision = 1
+                  on-blur   = (action 'validateChangeset' block.changeset)
                   on-change = (action (mut block.changeset.to))
                 }}
               </td>

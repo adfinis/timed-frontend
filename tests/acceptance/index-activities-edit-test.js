@@ -151,4 +151,40 @@ describe('Acceptance | index activities edit', function() {
 
     expect(find('[data-test-activity-block-row]')).to.have.length(1)
   })
+
+  it('validates blocks on blur', async function() {
+    let { id } = server.create('activity', { userId: this.user.id })
+
+    await visit(`/edit/${id}`)
+
+    await fillIn(
+      '[data-test-activity-block-row] td:nth-child(2) input',
+      '09:30'
+    )
+    await fillIn(
+      '[data-test-activity-block-row] td:nth-child(4) input',
+      '08:30'
+    )
+
+    expect(
+      find('[data-test-activity-block-row] td:nth-child(4)').hasClass(
+        'has-error'
+      )
+    ).to.be.ok
+
+    await fillIn(
+      '[data-test-activity-block-row] td:nth-child(2) input',
+      '07:30'
+    )
+    await triggerEvent(
+      '[data-test-activity-block-row] td:nth-child(2) input',
+      'blur'
+    )
+
+    expect(
+      find('[data-test-activity-block-row] td:nth-child(4)').hasClass(
+        'has-error'
+      )
+    ).to.not.be.ok
+  })
 })

@@ -2,7 +2,6 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import validateMoment from 'timed/validators/moment'
 import moment from 'moment'
-import EmberObject from 'ember-object'
 
 describe('Unit | Validator | moment', function() {
   it('works without value', function() {
@@ -17,7 +16,7 @@ describe('Unit | Validator | moment', function() {
         moment(),
         null,
         {},
-        EmberObject.create({ otherKey: moment().add(-1, 'second') })
+        { otherKey: moment().add(-1, 'second') }
       )
     ).to.be.true
 
@@ -27,7 +26,7 @@ describe('Unit | Validator | moment', function() {
         moment(),
         null,
         {},
-        EmberObject.create({ otherKey: moment().add(1, 'second') })
+        { otherKey: moment().add(1, 'second') }
       )
     ).to.be.false
   })
@@ -39,7 +38,7 @@ describe('Unit | Validator | moment', function() {
         moment(),
         null,
         {},
-        EmberObject.create({ otherKey: moment().add(1, 'second') })
+        { otherKey: moment().add(1, 'second') }
       )
     ).to.be.true
 
@@ -49,7 +48,7 @@ describe('Unit | Validator | moment', function() {
         moment(),
         null,
         {},
-        EmberObject.create({ otherKey: moment().add(-1, 'second') })
+        { otherKey: moment().add(-1, 'second') }
       )
     ).to.be.false
   })
@@ -61,10 +60,10 @@ describe('Unit | Validator | moment', function() {
         moment(),
         null,
         {},
-        EmberObject.create({
+        {
           gtKey: moment().add(-1, 'second'),
           ltKey: moment().add(1, 'second')
-        })
+        }
       )
     ).to.be.true
   })
@@ -79,7 +78,23 @@ describe('Unit | Validator | moment', function() {
           gtKey: moment().add(-1, 'second'),
           ltKey: moment().add(1, 'second')
         },
-        EmberObject.create({})
+        {}
+      )
+    ).to.be.true
+  })
+
+  it('prefers changes before the original object', function() {
+    expect(
+      validateMoment({ gt: 'gtKey' })(
+        'key',
+        moment(),
+        null,
+        {
+          gtKey: moment().add(-1, 'second')
+        },
+        {
+          gtKey: moment().add(1, 'second')
+        }
       )
     ).to.be.true
   })
