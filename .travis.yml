@@ -22,7 +22,7 @@ install:
   - bower install
 
 script:
-  - COVERAGE=true npm test
+  - travis_wait COVERAGE=true npm test
 
 after_script:
   - cat coverage/lcov.info | coveralls
