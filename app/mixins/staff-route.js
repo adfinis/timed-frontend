@@ -3,7 +3,7 @@
  * @submodule timed-mixins
  * @public
  */
-import Mixin from 'ember-metal/mixin'
+import Mixin from '@ember/object/mixin'
 
 /**
  * Mixin to prevent non staff users to access the page

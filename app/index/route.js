@@ -3,10 +3,10 @@
  * @submodule timed-routes
  * @public
  */
-import Route from 'ember-route'
+import Route from '@ember/routing/route'
 import RSVP from 'rsvp'
 import moment from 'moment'
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 const DATE_FORMAT = 'YYYY-MM-DD'

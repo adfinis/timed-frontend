@@ -3,16 +3,16 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from 'ember-controller'
+import Controller from '@ember/controller'
 import moment from 'moment'
 import computed, { oneWay } from 'ember-computed-decorators'
 import Ember from 'ember'
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 import { task, timeout } from 'ember-concurrency'
 import AbsenceValidations from 'timed/validations/absence'
 import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
-import { scheduleOnce } from 'ember-runloop'
-import { camelize } from 'ember-string'
+import { scheduleOnce } from '@ember/runloop'
+import { camelize } from '@ember/string'
 
 const { testing } = Ember
 

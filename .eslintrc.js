@@ -32,6 +32,7 @@ module.exports = {
     'ember/order-in-components': 'off',
     'ember/order-in-controllers': 'off',
     'ember/order-in-routes': 'off',
+    'ember/no-old-shims': 'error',
     'prettier/prettier': ['error', { singleQuote: true, semi: false }]
   }
 }

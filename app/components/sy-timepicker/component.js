@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import { padStart } from 'ember-pad/utils/pad'

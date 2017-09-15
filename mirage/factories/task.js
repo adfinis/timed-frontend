@@ -1,5 +1,5 @@
 import { Factory, faker } from 'ember-cli-mirage'
-import { capitalize } from 'ember-string'
+import { capitalize } from '@ember/string'
 import { randomDuration } from '../helpers/duration'
 
 export default Factory.extend({

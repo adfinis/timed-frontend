@@ -3,10 +3,10 @@
  * @submodule timed-mixins
  * @public
  */
-import Mixin from 'ember-metal/mixin'
+import Mixin from '@ember/object/mixin'
 import computed, { observes } from 'ember-computed-decorators'
 import moment from 'moment'
-import { underscore } from 'ember-string'
+import { underscore } from '@ember/string'
 import $ from 'jquery'
 
 const INITIAL_FILTERS = {

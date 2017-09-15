@@ -4,12 +4,12 @@
  * @public
  */
 import BaseAuthenticator from 'ember-simple-auth/authenticators/base'
-import { isEmpty } from 'ember-utils'
-import service from 'ember-service/inject'
+import { isEmpty } from '@ember/utils'
+import { inject as service } from '@ember/service'
 import RSVP from 'rsvp'
 import Ember from 'ember'
 
-import { later, cancel } from 'ember-runloop'
+import { later, cancel } from '@ember/runloop'
 
 const { testing } = Ember
 

@@ -1,4 +1,4 @@
-import Route from 'ember-route'
+import Route from '@ember/routing/route'
 import ReportFilterRouteMixin from 'timed/mixins/report-filter-route'
 import DesktopOnlyRouteMixin from 'timed/mixins/desktop-only-route'
 

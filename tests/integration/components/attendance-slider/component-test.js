@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 import moment from 'moment'
 
 const ATTENDANCE = EmberObject.create({

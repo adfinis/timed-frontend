@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 import StaffRouteMixin from 'timed/mixins/staff-route'
 
 describe('Unit | Mixin | staff route', function() {

@@ -3,7 +3,7 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from 'ember-controller'
+import Controller from '@ember/controller'
 import computed from 'ember-computed-decorators'
 
 /**

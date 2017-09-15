@@ -1,4 +1,4 @@
-import Component from 'ember-component'
+import Component from '@ember/component'
 
 import computed, { readOnly } from 'ember-computed-decorators'
 

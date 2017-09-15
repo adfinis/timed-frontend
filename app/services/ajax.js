@@ -3,7 +3,7 @@
  * @submodule timed-services
  * @public
  */
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 import computed from 'ember-computed-decorators'
 import AjaxService from 'ember-ajax/services/ajax'
 

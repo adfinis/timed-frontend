@@ -1,8 +1,8 @@
-import Component from 'ember-component'
+import Component from '@ember/component'
 import computed, { oneWay } from 'ember-computed-decorators'
 import moment from 'moment'
 import { task, timeout } from 'ember-concurrency'
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 
 /**
  * Component for a tooltip showing the progress of a task or project

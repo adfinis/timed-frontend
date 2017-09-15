@@ -1,7 +1,7 @@
-import Service from 'ember-service'
-import service from 'ember-service/inject'
+import Service from '@ember/service'
+import { inject as service } from '@ember/service'
 import DjangoDurationTransform from 'timed/transforms/django-duration'
-import { camelize, capitalize, dasherize } from 'ember-string'
+import { camelize, capitalize, dasherize } from '@ember/string'
 import { task } from 'ember-concurrency'
 
 const DJANGO_DURATION_TRANSFORM = new DjangoDurationTransform()

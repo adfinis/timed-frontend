@@ -2,7 +2,7 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import validateMoment from 'timed/validators/moment'
 import moment from 'moment'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 
 describe('Unit | Validator | moment', function() {
   it('works without value', function() {
