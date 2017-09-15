@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 import computed from 'ember-computed-decorators'
-import { htmlSafe } from 'ember-string'
+import { htmlSafe } from '@ember/string'
 
 const { min } = Math
 

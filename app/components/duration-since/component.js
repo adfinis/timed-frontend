@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 import moment from 'moment'
 import Ember from 'ember'
 import { task, timeout } from 'ember-concurrency'

@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 
 /**
  * Body component for sy modal

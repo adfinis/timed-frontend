@@ -1,7 +1,7 @@
-import Mixin from 'ember-metal/mixin'
+import Mixin from '@ember/object/mixin'
 import RouteTourMixin from 'ember-site-tour/mixins/route-tour'
-import { schedule, later } from 'ember-runloop'
-import service from 'ember-service/inject'
+import { schedule, later } from '@ember/runloop'
+import { inject as service } from '@ember/service'
 
 /**
  * Mixin for a route which has a tour

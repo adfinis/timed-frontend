@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 import ReportValidations from 'timed/validations/report'
 import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'

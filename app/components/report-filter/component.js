@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
-import EmberObject from 'ember-object'
+import Component from '@ember/component'
+import EmberObject from '@ember/object'
 import computed from 'ember-computed-decorators'
 
 const DATE_FORMAT = 'YYYY-MM-DD'

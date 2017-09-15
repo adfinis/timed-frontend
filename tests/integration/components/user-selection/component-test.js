@@ -4,7 +4,7 @@ import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import wait from 'ember-test-helpers/wait'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 
 const USER = EmberObject.create({
   id: 1,

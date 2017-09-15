@@ -1,6 +1,6 @@
-import Component from 'ember-component'
+import Component from '@ember/component'
 import hbs from 'htmlbars-inline-precompile'
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 import computed from 'ember-computed-decorators'
 
 const SELECTED_TEMPLATE = hbs`{{selected.longName}}`

@@ -1,6 +1,6 @@
-import Test from 'ember-test'
+import { registerAsyncHelper } from '@ember/test'
 
-export default Test.registerAsyncHelper('taskSelect', async function(
+export default registerAsyncHelper('taskSelect', async function(
   app,
   selector = '',
   options = { fromHistory: false }

@@ -3,7 +3,7 @@
  * @submodule timed-helpers
  * @public
  */
-import { helper } from 'ember-helper'
+import { helper } from '@ember/component/helper'
 
 /**
  * Helper to determine the color of a balance

@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 describe('Unit | Mixin | route autostart tour', function() {

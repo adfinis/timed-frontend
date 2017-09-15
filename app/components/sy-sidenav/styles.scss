@@ -26,6 +26,10 @@
   font-size: 10px;
 }
 
+.sy-sidenav-list--logout {
+  margin-top: 3rem;
+}
+
 @media (--nav-side-mobile-width-unhide) {
   .app-version {
     display: block;

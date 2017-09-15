@@ -3,14 +3,14 @@
  * @submodule timed-routes
  * @public
  */
-import Route from 'ember-route'
-import service from 'ember-service/inject'
+import Route from '@ember/routing/route'
+import { inject as service } from '@ember/service'
 import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
 import ActivityValidator from 'timed/validations/activity'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 import ActivityBlockValidator from 'timed/validations/activity-block'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 import { oneWay } from 'ember-computed-decorators'
 import RSVP from 'rsvp'
 

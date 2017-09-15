@@ -3,8 +3,8 @@
  * @submodule timed-routes
  * @public
  */
-import Route from 'ember-route'
-import service from 'ember-service/inject'
+import Route from '@ember/routing/route'
+import { inject as service } from '@ember/service'
 import $ from 'jquery'
 import Ember from 'ember'
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin'

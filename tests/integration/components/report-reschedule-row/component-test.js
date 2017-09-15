@@ -4,7 +4,7 @@ import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { click } from 'ember-native-dom-helpers'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
-import EmberObject from 'ember-object'
+import EmberObject from '@ember/object'
 import Changeset from 'ember-changeset'
 import moment from 'moment'
 

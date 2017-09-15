@@ -3,11 +3,11 @@
  * @submodule timed-components
  * @public
  */
-import Component from 'ember-component'
+import Component from '@ember/component'
 import computed from 'ember-computed-decorators'
-import service from 'ember-service/inject'
+import { inject as service } from '@ember/service'
 import hbs from 'htmlbars-inline-precompile'
-import { later } from 'ember-runloop'
+import { later } from '@ember/runloop'
 import customerOptionTemplate from 'timed/templates/customer-option'
 import projectOptionTemplate from 'timed/templates/project-option'
 import taskOptionTemplate from 'timed/templates/task-option'

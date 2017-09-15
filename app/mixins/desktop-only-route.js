@@ -6,15 +6,15 @@
 import Mixin from '@ember/object/mixin'
 
 /**
- * Mixin to prevent non staff users to access the page
+ * Mixin to prevent mobile devices to access the page
  *
- * @class StaffRouteMixin
+ * @class DesktopOnlyRouteMixin
  * @extends Ember.Mixin
  * @public
  */
 export default Mixin.create({
   /**
-   * Before model hook, ensure the user is a staff member. If this isn't the case redirect to index page.
+   * Before model hook, ensure the device is large enough. If this isn't the case redirect to index page.
    *
    * @method beforeModel
    * @param {Ember.Transition} transition The transition
@@ -22,7 +22,11 @@ export default Mixin.create({
    * @public
    */
   beforeModel(transition) {
-    if (this.modelFor('protected').get('isStaff')) {
+    if (
+      this.get('media.isMd') ||
+      this.get('media.isLg') ||
+      this.get('media.isXl')
+    ) {
       return this._super(...arguments)
     }
 
