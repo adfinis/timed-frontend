@@ -18,7 +18,7 @@
   on-apply      = (action 'applyFilter')
 }}
 
-{{#paginated-table data-test-filter-results class='table--analysis-reschedule' as |t|}}
+{{#paginated-table data-test-filter-results class='table--analysis-reschedule table--form table--form-inline' as |t|}}
   {{#t.head}}
     <tr>
       {{#sort-header update=(action (mut ordering)) current=ordering by='user__username'}}User{{/sort-header}}

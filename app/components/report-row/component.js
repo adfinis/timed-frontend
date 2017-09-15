@@ -9,8 +9,6 @@ import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
 import computed from 'ember-computed-decorators'
 
-const ENTER_CHAR_CODE = 13
-
 /**
  * Component for the editable report row
  *
@@ -25,7 +23,7 @@ const ReportRowComponent = Component.extend({
    * @property {String} tagName
    * @public
    */
-  tagName: 'tr',
+  tagName: 'form',
 
   /**
    * The changeset to edit
@@ -44,19 +42,6 @@ const ReportRowComponent = Component.extend({
     c.validate()
 
     return c
-  },
-
-  /**
-   * Key press event, save the row
-   *
-   * @event keyPress
-   * @param {jQuery.Event} e The jquery event
-   * @public
-   */
-  keyPress(e) {
-    if (e.which === ENTER_CHAR_CODE && !e.target.classList.contains('btn')) {
-      this.send('save')
-    }
   },
 
   actions: {

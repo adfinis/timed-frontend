@@ -46,21 +46,23 @@ describe('Acceptance | index reports', function() {
   it('can add report', async function() {
     await visit('/reports')
 
-    await taskSelect('.table--reports tr:last-child')
+    await taskSelect('.table--reports form:last-child')
 
     await fillIn(
-      '.table--reports tr:last-child [data-test-report-duration]',
+      '.table--reports form:last-child [data-test-report-duration]',
       '03:30'
     )
     await fillIn(
-      '.table--reports tr:last-child [data-test-report-comment]',
+      '.table--reports form:last-child [data-test-report-comment]',
       'Test comment report'
     )
 
-    await click('.table--reports tr:last-child [data-test-report-review]')
-    await click('.table--reports tr:last-child [data-test-report-not-billable]')
+    await click('.table--reports form:last-child [data-test-report-review]')
+    await click(
+      '.table--reports form:last-child [data-test-report-not-billable]'
+    )
 
-    await click('.table--reports tr:last-child [data-test-save-report]')
+    await click('.table--reports form:last-child [data-test-save-report]')
 
     expect(
       find(
@@ -134,41 +136,6 @@ describe('Acceptance | index reports', function() {
     )
 
     expect(find(`[data-test-report-row-id="${id}"]`)).to.have.length(0)
-  })
-
-  it('can submit report by pressing enter', async function() {
-    await visit('/reports')
-
-    expect(find('[data-test-report-row]')).to.have.length(6)
-
-    await taskSelect('.table--reports tr:last-child')
-    await fillIn(
-      '.table--reports tr:last-child [data-test-report-duration]',
-      '03:30'
-    )
-    await fillIn(
-      '.table--reports tr:last-child [data-test-report-comment]',
-      'Test comment report'
-    )
-
-    await triggerEvent(
-      '.table--reports tr:last-child [data-test-report-comment]',
-      'keypress',
-      { which: 13, charCode: 13 }
-    )
-
-    expect(
-      find(
-        '[data-test-report-row]:nth-last-child(2) [data-test-report-duration]'
-      ).val()
-    ).to.equal('03:30')
-    expect(
-      find(
-        '[data-test-report-row]:nth-last-child(2) [data-test-report-comment]'
-      ).val()
-    ).to.equal('Test comment report')
-
-    expect(find('[data-test-report-row]')).to.have.length(7)
   })
 
   it('reloads absences after saving or deleting a report', async function() {

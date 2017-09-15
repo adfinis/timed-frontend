@@ -1,17 +1,17 @@
 {{#task-selection task=changeset.task as |t|}}
-  <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</td>
-  <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</td>
-  <td class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</td>
+  <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</div>
+  <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</div>
+  <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
 {{/task-selection}}
-<td class="form-group">{{input data-test-report-comment name='comment' placeholder='Comment' class='form-control' value=changeset.comment}}</td>
-<td class="form-group">{{sy-durationpicker data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</td>
-<td class="form-group">
+<div class="form-group">{{input data-test-report-comment name='comment' placeholder='Comment' class='form-control' value=changeset.comment}}</div>
+<div class="form-group">{{sy-durationpicker data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</div>
+<div class="form-group">
   {{sy-checkbox data-test-report-review checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
-</td>
-<td class="form-group">
+</div>
+<div class="form-group">
   {{sy-checkbox data-test-report-not-billable checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
-</td>
-<td>
+</div>
+<div class="form-group">
   <button type="button" data-test-delete-report class="btn btn-danger" {{action 'delete'}}>{{fa-icon 'trash'}}</button>
   <button type="submit" data-test-save-report class="btn btn-primary" disabled={{or (not changeset.isDirty) (not changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
-</td>
+</div>

@@ -1,79 +1,47 @@
-.table--reports > tbody {
-  display: flex;
-  flex-direction: column;
+.table--reports > tbody > form > .form-group {
+  &:nth-child(5),
+  &:nth-child(6),
+  &:nth-child(7),
+  &:nth-child(8) {
+    flex-basis: 25%;
+    flex-grow: 0;
+    margin: 0;
+  }
 
-  > tr {
-    display: flex;
-    padding: 0.5rem;
-    flex-wrap: wrap;
-    border-top: 1px solid var(--color-border);
+  &:nth-child(6) {
+    padding-left: 1rem;
+  }
 
-    > td {
-      flex: 1 0 100%;
-      padding: 0;
-      border: 0;
+  &:nth-child(8) {
+    text-align: right;
+    flex-grow: 1;
 
-      &:nth-child(5),
-      &:nth-child(6),
-      &:nth-child(7),
-      &:nth-child(8) {
-        flex-basis: 25%;
-        flex-grow: 0;
-        margin: 0;
-      }
-
-      &:nth-child(6) {
-        padding-left: 1rem;
-      }
-
-      &:nth-child(8) {
-        text-align: right;
-        flex-grow: 1;
-
-        .btn {
-          display: inline-flex;
-        }
-      }
+    .btn {
+      display: inline-flex;
     }
   }
 }
 
 @media (--lg-viewport) {
-  .table--reports > tbody {
-    > tr {
-      padding: 0;
-      border: none;
-      flex-wrap: nowrap;
+  .table--reports > tbody > form > .form-group {
+    &:nth-child(1),
+    &:nth-child(2),
+    &:nth-child(3),
+    &:nth-child(4) {
+      width: 14%;
+    }
 
-      > td {
-        padding: 0.5rem;
-        margin: 0;
-        border-top: 1px solid var(--color-border);
+    &:nth-child(5) {
+      width: 75px;
+    }
 
-        &:nth-child(1),
-        &:nth-child(2),
-        &:nth-child(3),
-        &:nth-child(4) {
-          flex-basis: 14%;
-        }
+    &:nth-child(6),
+    &:nth-child(7) {
+      width: 140px;
+    }
 
-        &:nth-child(5) {
-          flex-basis: 75px;
-        }
-
-        &:nth-child(6),
-        &:nth-child(7) {
-          flex-basis: 140px;
-          flex-shrink: 0;
-          white-space: nowrap;
-        }
-
-        &:nth-child(8) {
-          flex-basis: 50px;
-          flex-shrink: 0;
-          white-space: nowrap;
-        }
-      }
+    &:nth-child(8) {
+      width: 100px;
     }
   }
 }

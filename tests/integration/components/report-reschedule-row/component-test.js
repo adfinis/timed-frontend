@@ -26,8 +26,8 @@ describe('Integration | Component | report reschedule row', function() {
 
     this.render(hbs`{{report-reschedule-row report}}`)
 
-    expect(this.$('tr')).to.have.length(1)
-    expect(this.$('td')).to.have.length(11)
+    expect(this.$('form')).to.have.length(1)
+    expect(this.$('.form-group')).to.have.length(11)
     expect(this.$('.btn-primary')).to.have.length(1)
   })
 
@@ -41,7 +41,7 @@ describe('Integration | Component | report reschedule row', function() {
       hbs`{{report-reschedule-row report changeset=changeset verifyUser=verifyUser on-save=(action (mut savedReport))}}`
     )
 
-    click('td:nth-child(10) label')
+    click('.form-group:nth-child(10) label')
     click('.btn-primary')
 
     expect(this.get('savedReport.verifiedBy.username')).to.equal('test')

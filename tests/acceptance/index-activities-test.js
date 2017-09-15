@@ -116,21 +116,21 @@ describe('Acceptance | index activities', function() {
 
     expect(
       find(
-        `${`[data-test-report-row-id="${id}"]`} td:eq(0) .ember-power-select-selected-item`
+        `${`[data-test-report-row-id="${id}"]`} .form-group:eq(0) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.project.customer.name)
     expect(
       find(
-        `${`[data-test-report-row-id="${id}"]`} td:eq(1) .ember-power-select-selected-item`
+        `${`[data-test-report-row-id="${id}"]`} .form-group:eq(1) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.project.name)
     expect(
       find(
-        `${`[data-test-report-row-id="${id}"]`} td:eq(2) .ember-power-select-selected-item`
+        `${`[data-test-report-row-id="${id}"]`} .form-group:eq(2) .ember-power-select-selected-item`
       )
         .text()
         .trim()
@@ -168,9 +168,9 @@ describe('Acceptance | index activities', function() {
 
     expect(find('[data-test-report-row]')).to.have.length(6)
 
-    expect(find('[data-test-report-row]:eq(0) td:eq(4) input').val()).to.equal(
-      '02:30'
-    )
+    expect(
+      find('[data-test-report-row]:eq(0) .form-group:eq(4) input').val()
+    ).to.equal('02:30')
 
     await server.db.activities.update(this.activities[0].id, {
       duration: '05:30:00'
@@ -183,9 +183,9 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/reports')
 
-    expect(find('[data-test-report-row]:eq(0) td:eq(4) input').val()).to.equal(
-      '05:30'
-    )
+    expect(
+      find('[data-test-report-row]:eq(0) .form-group:eq(4) input').val()
+    ).to.equal('05:30')
   })
 
   it('shows a warning when generating reports from unknown tasks', async function() {
