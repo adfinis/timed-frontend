@@ -173,36 +173,28 @@ APPEND_SLASH = False
 
 # Authentication definition
 
-AUTH_LDAP_USER_ATTR_MAP = env.dict('DJANGO_AUTH_LDAP_USER_ATTR_MAP', default={
-    'first_name': 'givenName',
-    'last_name':  'sn',
-    'email':      'mail'
-})
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
 
-LDAP_BASE = env.str('DJANGO_LDAP_BASE', default='dc=example,dc=com')
-AUTH_LDAP_SERVER_URI = env.str(
-    'DJANGO_AUTH_LDAP_SERVER_URI',
-    default('ldap://localhost:389')
-)
-AUTH_LDAP_BIND_DN = env.str(
-    'DJANGO_AUTH_LDAP_BIND_DN',
-    default('uid=Administrator,cn=users,{0}'.format(LDAP_BASE))
-)
-AUTH_LDAP_PASSWORD = env.str(
-    'DJANGO_AUTH_LDAP_PASSWORD',
-    default('univention')
-)
-AUTH_LDAP_USER_DN_TEMPLATE = env.str(
-    'DJANGO_AUTH_LDAP_USER_DN_TEMPLATE',
-    default('uid=%(user)s,cn=users,{0}'.format(LDAP_BASE))
-)
+AUTH_LDAP_ENABLED = env.dict('DJANGO_AUTH_LDAP_ENABLED', default=False)
+if AUTH_LDAP_ENABLED:  # pragma: todo cover
+    AUTH_LDAP_USER_ATTR_MAP = env.dict(
+        'DJANGO_AUTH_LDAP_USER_ATTR_MAP',
+        default={
+            'first_name': 'givenName',
+            'last_name':  'sn',
+            'email':      'mail'
+        }
+    )
+
+    AUTH_LDAP_SERVER_URI = env.str('DJANGO_AUTH_LDAP_SERVER_URI')
+    AUTH_LDAP_BIND_DN = env.str('DJANGO_AUTH_LDAP_BIND_DN')
+    AUTH_LDAP_PASSWORD = env.str('DJANGO_AUTH_LDAP_PASSWORD')
+    AUTH_LDAP_USER_DN_TEMPLATE = env.str('DJANGO_AUTH_LDAP_USER_DN_TEMPLATE')
+    AUTHENTICATION_BACKENDS.insert(0, 'django_auth_ldap.backend.LDAPBackend')
 
 AUTH_USER_MODEL = 'employment.User'
-
-AUTHENTICATION_BACKENDS = (
-    'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend',
-)
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(days=2),
