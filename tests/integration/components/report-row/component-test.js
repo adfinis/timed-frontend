@@ -22,8 +22,8 @@ describe('Integration | Component | report row', function() {
 
     this.render(hbs`{{report-row report}}`)
 
-    expect(this.$('tr')).to.have.length(1)
-    expect(this.$('td')).to.have.length(8)
+    expect(this.$('form')).to.have.length(1)
+    expect(this.$('.form-group')).to.have.length(8)
     expect(this.$('.btn-danger')).to.have.length(1)
     expect(this.$('.btn-primary')).to.have.length(1)
   })

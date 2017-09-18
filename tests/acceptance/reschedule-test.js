@@ -61,7 +61,7 @@ describe('Acceptance | reschedule', function() {
     expect(find('[data-test-reschedule-report]').length).to.equal(6)
 
     await fillIn(
-      '[data-test-reschedule-report-id="1"] td:eq(6) input',
+      '[data-test-reschedule-report-id="1"] .form-group:eq(6) input',
       'Changed'
     )
 
@@ -245,13 +245,17 @@ describe('Acceptance | reschedule', function() {
     await visit('/reschedule?user=1')
 
     expect(
-      find('[data-test-reschedule-report] td:nth-child(10) input:checked')
+      find(
+        '[data-test-reschedule-report] .form-group:nth-child(10) input:checked'
+      )
     ).to.have.length(0)
 
     await click('[data-test-verify-page]')
 
     expect(
-      find('[data-test-reschedule-report] td:nth-child(10) input:checked')
+      find(
+        '[data-test-reschedule-report] .form-group:nth-child(10) input:checked'
+      )
     ).to.have.length(6)
   })
 
