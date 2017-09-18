@@ -12,13 +12,6 @@ install-dev: ## Install development environment
 	@pip install --upgrade pip
 	@pip install --upgrade -r dev_requirements.txt -e .
 
-setup-ldap: ## Setup the LDAP container
-	docker-compose exec ucs /usr/lib/univention-system-setup/scripts/setup-join.sh
-	docker-compose exec ucs /usr/ucs/scripts/init.sh
-
-create-ldap-user: ## Create a new user in the LDAP
-	docker-compose exec ucs /usr/ucs/scripts/create-new-user.sh
-
 start: ## Start the development server
 	@docker-compose start
 	@python manage.py runserver
