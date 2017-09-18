@@ -296,8 +296,6 @@ export default Component.extend({
           this._addMinutes(-this.get('precision'))
         }
         break
-      default:
-        break
     }
   }
 })
