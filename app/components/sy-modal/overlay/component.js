@@ -38,7 +38,7 @@ export default Component.extend({
    */
   click(e) {
     if (e.target === this.get('element')) {
-      this.set('visible', false)
+      this.get('attrs.on-close')()
     }
   }
 })
