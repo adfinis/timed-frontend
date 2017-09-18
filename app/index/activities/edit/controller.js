@@ -34,6 +34,15 @@ const IndexActivitiesEditController = Controller.extend({
     }, moment.duration())
   },
 
+  /**
+   * Whether the save button is enabled
+   *
+   * This is true if the activity and all its block is valid and there are some
+   * kind of changes on the activity or its blocks
+   *
+   * @property {Boolean} saveEnabled
+   * @public
+   */
   @computed(
     'blocks.@each.{isValid,isDirty,isDeleted}',
     'activity.{isValid,isDirty}'
@@ -45,6 +54,19 @@ const IndexActivitiesEditController = Controller.extend({
       activityValid &&
       blocks.every(b => b.get('isDeleted') || b.get('isValid'))
     )
+  },
+
+  actions: {
+    /**
+     * Validate the given changeset
+     *
+     * @method validateChangeset
+     * @param {EmberChangeset.Changeset} changeset The changeset to validate
+     * @public
+     */
+    validateChangeset(changeset) {
+      changeset.validate()
+    }
   }
 })
 

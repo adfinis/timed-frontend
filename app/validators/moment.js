@@ -1,3 +1,5 @@
+import { get } from '@ember/object'
+
 /**
  * Validator to determine if a value is a valid moment object and if it is
  * greater or smaller than another property of the content.
@@ -18,14 +20,14 @@ export default function validateMoment(options = { gt: null, lt: null }) {
     }
 
     if (options.gt) {
-      let gtVal = content.get(options.gt) || changes[options.gt]
+      let gtVal = get(changes, options.gt) || get(content, options.gt)
 
       if (newValue <= gtVal) {
         valid = false
       }
     }
     if (options.lt) {
-      let ltVal = content.get(options.lt) || changes[options.lt]
+      let ltVal = get(changes, options.lt) || get(content, options.lt)
 
       if (newValue >= ltVal) {
         valid = false

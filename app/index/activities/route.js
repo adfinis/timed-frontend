@@ -91,7 +91,7 @@ export default Route.extend(RouteAutostartTourMixin, {
 
       await this.get('tracking.startActivity').perform()
 
-      this.transitionTo('index.activities', {
+      await this.transitionTo('index.activities', {
         queryParams: { day: moment().format('YYYY-MM-DD') }
       })
     },
@@ -175,7 +175,7 @@ export default Route.extend(RouteAutostartTourMixin, {
             })
         )
 
-        this.transitionTo('index.reports')
+        await this.transitionTo('index.reports')
       } catch (e) {
         /* istanbul ignore next */
         this.get('notify').error('Error while generating reports')

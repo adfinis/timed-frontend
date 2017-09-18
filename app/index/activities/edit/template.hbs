@@ -32,19 +32,21 @@
               </td>
               <td class="form-group {{if block.changeset.error.from 'has-error'}}">
                 {{sy-timepicker
-                  value     = block.changeset.from
-                  max       = block.changeset.to
-                  precision = 1
-                  on-change = (action (mut block.changeset.from))
+                  value        = block.changeset.from
+                  max          = block.changeset.to
+                  precision    = 1
+                  on-focus-out = (action 'validateChangeset' block.changeset)
+                  on-change    = (action (mut block.changeset.from))
                 }}
               </td>
               <td>-</td>
               <td class="form-group {{if block.changeset.error.to 'has-error'}}">
                 {{sy-timepicker
-                  value     = block.changeset.to
-                  min       = block.changeset.from
-                  precision = 1
-                  on-change = (action (mut block.changeset.to))
+                  value        = block.changeset.to
+                  min          = block.changeset.from
+                  precision    = 1
+                  on-focus-out = (action 'validateChangeset' block.changeset)
+                  on-change    = (action (mut block.changeset.to))
                 }}
               </td>
               <td>

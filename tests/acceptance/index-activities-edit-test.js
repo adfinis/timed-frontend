@@ -6,7 +6,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import moment from 'moment'
 
 describe('Acceptance | index activities edit', function() {
   let application
@@ -38,14 +37,13 @@ describe('Acceptance | index activities edit', function() {
 
     await taskSelect('[data-test-activity-edit-form]')
 
-    let from = find(
-      '[data-test-activity-edit-form] .table--activity-blocks tr:eq(0) td:eq(1) input'
-    ).val()
-
-    await triggerEvent(
-      '[data-test-activity-edit-form] .table--activity-blocks tr:eq(0) td:eq(1) input',
-      'keydown',
-      { key: 'ArrowDown', keyCode: 40 }
+    await fillIn(
+      '[data-test-activity-edit-form] [data-test-activity-block-row]:eq(0) td:nth-child(2) input',
+      '03:30'
+    )
+    await fillIn(
+      '[data-test-activity-edit-form] [data-test-activity-block-row]:eq(0) td:nth-child(4) input',
+      '04:30'
     )
 
     await fillIn('[data-test-activity-edit-form] input[name=comment]', 'Test')
@@ -55,18 +53,6 @@ describe('Acceptance | index activities edit', function() {
     expect(currentURL()).to.equal('/')
 
     expect(find('[data-test-activity-row] td:eq(1)').text()).to.equal('Test')
-
-    await click(find('[data-test-activity-row-id="1"]'))
-
-    expect(
-      find(
-        '[data-test-activity-edit-form] .table--activity-blocks tr:eq(0) td:eq(1) input'
-      ).val()
-    ).to.equal(
-      moment(from, 'HH:mm')
-        .subtract(1, 'minutes')
-        .format('HH:mm')
-    )
   })
 
   it('can delete an activity', async function() {
@@ -150,5 +136,41 @@ describe('Acceptance | index activities edit', function() {
     await visit(`/edit/${id}`)
 
     expect(find('[data-test-activity-block-row]')).to.have.length(1)
+  })
+
+  it('validates blocks on blur', async function() {
+    let { id } = server.create('activity', { userId: this.user.id })
+
+    await visit(`/edit/${id}`)
+
+    await fillIn(
+      '[data-test-activity-block-row] td:nth-child(2) input',
+      '09:30'
+    )
+    await fillIn(
+      '[data-test-activity-block-row] td:nth-child(4) input',
+      '08:30'
+    )
+
+    expect(
+      find('[data-test-activity-block-row] td:nth-child(4)').hasClass(
+        'has-error'
+      )
+    ).to.be.ok
+
+    await fillIn(
+      '[data-test-activity-block-row] td:nth-child(2) input',
+      '07:30'
+    )
+    await triggerEvent(
+      '[data-test-activity-block-row] td:nth-child(2) input',
+      'blur'
+    )
+
+    expect(
+      find('[data-test-activity-block-row] td:nth-child(4)').hasClass(
+        'has-error'
+      )
+    ).to.not.be.ok
   })
 })
