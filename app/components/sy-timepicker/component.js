@@ -8,6 +8,10 @@ import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import { padStart } from 'ember-pad/utils/pad'
 
+const noop = () => {}
+
+const sanitize = value => value.replace(/[^\d:]/, '')
+
 /**
  * Timepicker component
  *
@@ -16,6 +20,107 @@ import { padStart } from 'ember-pad/utils/pad'
  * @public
  */
 export default Component.extend({
+  /**
+   * Tag name, use input so we don't have an additional element in the DOM
+   *
+   * @property {String} tagName
+   * @public
+   */
+  tagName: 'input',
+
+  /**
+   * CSS class names
+   *
+   * @property {String[]} classNames
+   * @public
+   */
+  classNames: ['form-control'],
+
+  /**
+   * Attribute bindings
+   *
+   * @property {String[]} attributeBindings
+   * @public
+   */
+  attributeBindings: [
+    'pattern',
+    'displayValue:value',
+    'name',
+    'maxlength',
+    'placeholder',
+    'type',
+    'disabled'
+  ],
+
+  /**
+   * The input placeholder
+   *
+   * @property {String} placeholder
+   * @public
+   */
+  placeholder: '00:00',
+
+  /**
+   * The input type
+   *
+   * @property {String} type
+   * @public
+   */
+  type: 'text',
+
+  /**
+   * The maximal length of the value
+   *
+   * @property {Number} maxlength
+   * @public
+   */
+  maxlength: 5,
+
+  /**
+   * The precision of the time
+   *
+   * 60 needs to be divisible by this
+   *
+   * @property {Number} precision
+   * @public
+   */
+  precision: 15,
+
+  /**
+   * Whether the picker is disabled
+   *
+   * @property {Boolean} disabled
+   * @public
+   */
+  disabled: false,
+
+  /**
+   * The regex for the input
+   *
+   * @property {String} pattern
+   * @public
+   */
+  @computed('precision')
+  pattern(p) {
+    let count = 60 / p
+    let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
+
+    return `([01]?[0-9]|2[0-3]):(${minutes.map(m => padStart(m, 2)).join('|')})`
+  },
+
+  /**
+   * The display representation of the value
+   *
+   * This is the value in the input field.
+   *
+   * @property {String} displayValue
+   * @public
+   */
+  @computed('value')
+  displayValue(value) {
+    return value && value.isValid() ? value.format('HH:mm') : ''
+  },
+
   /**
    * Init hook, set min and max if not passed
    *
@@ -37,16 +142,45 @@ export default Component.extend({
   },
 
   /**
-   * The display representation of the value
+   * Handle focus out
    *
-   * This is the value in the input field.
-   *
-   * @property {String} displayValue
+   * @event focusOut
+   * @param {jQuery.Event} e The jquery focus out event
    * @public
    */
-  @computed('value')
-  displayValue(value) {
-    return value && value.isValid() ? value.format('HH:mm') : ''
+  focusOut() {
+    this.getWithDefault('attrs.on-focus-out', noop)()
+  },
+
+  /**
+   * Handle input event
+   *
+   * @event change
+   * @param {jQuery.Event} e The jquery change event
+   * @public
+   */
+  change(e) {
+    if (e.target.validity.valid) {
+      let [h = NaN, m = NaN] = sanitize(e.target.value)
+        .split(':')
+        .map(n => parseInt(n))
+
+      this._change([h, m].some(isNaN) ? null : this._set(h, m))
+    }
+  },
+
+  /**
+   * Handle keydown event
+   *
+   * @event keyDown
+   * @param {jQuery.Event} e The jquery input event
+   * @return {Boolean} Whether to bubble the event or not
+   * @public
+   */
+  keyDown(e) {
+    this._handleArrows(e)
+
+    return true
   },
 
   /**
@@ -137,38 +271,6 @@ export default Component.extend({
   },
 
   /**
-   * The precision of the time
-   *
-   * 60 needs to be divisible by this
-   *
-   * @property {Number} precision
-   * @public
-   */
-  precision: 15,
-
-  /**
-   * The regex for the input
-   *
-   * @property {String} pattern
-   * @public
-   */
-  @computed('precision')
-  pattern(p) {
-    let count = 60 / p
-    let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
-
-    return `([01]?[0-9]|2[0-3]):(${minutes.map(m => padStart(m, 2)).join('|')})`
-  },
-
-  /**
-   * Whether the picker is disabled
-   *
-   * @property {Boolean} disabled
-   * @public
-   */
-  disabled: false,
-
-  /**
    * Increase or decrease the current value
    *
    * If the shift or ctrl key is pressed it changes the hours instead of the
@@ -196,55 +298,6 @@ export default Component.extend({
         break
       default:
         break
-    }
-  },
-
-  /**
-   * Actions for the timepicker component
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Handle input event
-     *
-     * This is called when the value in the input box was changed. It ensures
-     * that the value is valid and updates the value accordingly.
-     *
-     * @method handleChange
-     * @param {jQuery.Event} e The jquery change event
-     * @public
-     */
-    handleChange(e) {
-      if (e.target.validity.valid) {
-        let [h = NaN, m = NaN] = e.target.value.split(':').map(n => parseInt(n))
-
-        this._change([h, m].some(isNaN) ? null : this._set(h, m))
-      }
-    },
-
-    /**
-     * Handle keydown event
-     *
-     * This is called when the input is focused and a key was pressed. It
-     * ensures that the pressed key can be used for changing the value.
-     *
-     * @method handleKeyDown
-     * @param {jQuery.Event} e The jquery input event
-     * @return {Boolean} Whether to bubble the event or not
-     * @public
-     */
-    handleKeyDown(e) {
-      if (e.key.length === 1 && !/[\d:]/.test(e.key)) {
-        e.preventDefault()
-
-        return false
-      }
-
-      this._handleArrows(e)
-
-      return true
     }
   }
 })

@@ -69,23 +69,17 @@ describe('Integration | Component | sy timepicker', function() {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    let e1 = event('keydown', { key: 'a' })
+    this.$('input')
+      .val('xx:xx')
+      .change()
 
-    this.$('input').trigger(e1)
+    expect(this.get('value')).to.be.null
 
-    expect(e1.isDefaultPrevented()).to.be.ok
+    this.$('input')
+      .val('01:30')
+      .change()
 
-    let e2 = event('keydown', { key: ':' })
-
-    this.$('input').trigger(e2)
-
-    expect(e2.isDefaultPrevented()).to.not.be.ok
-
-    let e3 = event('keydown', { key: '5' })
-
-    this.$('input').trigger(e3)
-
-    expect(e3.isDefaultPrevented()).to.not.be.ok
+    expect(this.get('value')).to.not.be.null
   })
 
   it('can increase minutes per arrow', function() {

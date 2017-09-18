@@ -4,7 +4,6 @@
  * @public
  */
 import SyTimepickerComponent from 'timed/components/sy-timepicker/component'
-import layout from 'timed/components/sy-timepicker/template'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
@@ -18,8 +17,6 @@ import { padStart } from 'ember-pad/utils/pad'
  * @public
  */
 export default SyTimepickerComponent.extend({
-  layout,
-
   name: 'duration',
 
   /**
