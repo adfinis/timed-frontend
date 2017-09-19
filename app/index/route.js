@@ -110,6 +110,12 @@ export default Route.extend(RouteAutostartTourMixin, {
 
     controller.set('user', this.modelFor('protected'))
     controller.get('setCenter').perform({ moment: model })
+
+    controller.set('newAbsence', {
+      dates: [model],
+      comment: '',
+      type: null
+    })
   },
 
   actions: {
@@ -176,6 +182,8 @@ export default Route.extend(RouteAutostartTourMixin, {
 
           await absence.save()
         })
+
+        changeset.rollback()
 
         this.set('controller.showAddModal', false)
       } catch (e) {

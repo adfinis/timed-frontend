@@ -65,16 +65,6 @@ export default Controller.extend({
    */
   session: service('session'),
 
-  init() {
-    this._super(...arguments)
-
-    this.set('newAbsence', {
-      dates: [],
-      comment: '',
-      type: null
-    })
-  },
-
   /**
    * All activities
    *
@@ -509,6 +499,8 @@ export default Controller.extend({
      * @public
      */
     rollback(changeset) {
+      this.get('setCenter').perform({ moment: this.get('date') })
+
       changeset.rollback()
     }
   }

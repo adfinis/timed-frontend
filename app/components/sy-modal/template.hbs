@@ -1,5 +1,5 @@
 {{#ember-wormhole to='sy-modals'}}
-  {{#sy-modal/overlay visible=visible}}
+  {{#sy-modal/overlay visible=visible on-close=(action 'close')}}
     <div class="modal-dialog {{if size (concat 'modal-dialog--' size)}}">
       {{yield (hash
         header = (component 'sy-modal/header' close=(action 'close'))

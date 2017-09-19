@@ -140,7 +140,7 @@ describe('Acceptance | index', function() {
     expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/)
   })
 
-  it('can add an absence for multiple days', async function() {
+  it('can add an absence for multiple days and current day is preselected', async function() {
     server.loadFixtures('absence-types')
 
     await visit('/?day=2017-06-29')
@@ -152,7 +152,6 @@ describe('Acceptance | index', function() {
     await click('[data-test-add-absence-form] .btn-group .btn:first-child')
 
     await click(find('[data-date=2017-06-28]'))
-    await click(find('[data-date=2017-06-29]'))
     await click(find('[data-date=2017-06-30]'))
 
     await click('[data-test-add-absence-form] button:contains(Save)')
@@ -218,5 +217,29 @@ describe('Acceptance | index', function() {
 
     expect(find('[data-test-weekly-overview-day=29].holiday')).to.have.length(1)
     expect(find('[data-test-weekly-overview-day=28].holiday')).to.have.length(0)
+  })
+
+  it('rollbacks the absence modal', async function() {
+    await visit('/?day=2017-06-29')
+
+    await click('[data-test-add-absence]')
+
+    expect(
+      find('[data-date=2017-06-29].ember-power-calendar-day--selected')
+    ).to.have.length(1)
+
+    await click('[data-date=2017-06-30]')
+
+    expect(
+      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
+    ).to.have.length(1)
+
+    await click('[data-test-add-absence-form] .close')
+
+    await click('[data-test-add-absence]')
+
+    expect(
+      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
+    ).to.have.length(0)
   })
 })
