@@ -224,10 +224,14 @@ describe('Acceptance | index', function() {
 
     await click('[data-test-add-absence]')
 
+    expect(
+      find('[data-date=2017-06-29].ember-power-calendar-day--selected')
+    ).to.have.length(1)
+
     await click('[data-date=2017-06-30]')
 
     expect(
-      find('[data-date=2017-06-29].ember-power-calendar-day--selected')
+      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
     ).to.have.length(1)
 
     await click('[data-test-add-absence-form] .close')
