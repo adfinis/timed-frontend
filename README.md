@@ -19,17 +19,18 @@
 
 You will need the following things properly installed on your computer.
 
-* [Git](http://git-scm.com/)
-* [Node.js](http://nodejs.org/) (with NPM)
-* [Bower](http://bower.io/)
-* [Ember CLI](http://ember-cli.com/)
-* [PhantomJS](http://phantomjs.org/)
+* [Git](https://git-scm.com/)
+* [Node.js](https://nodejs.org/) (with NPM v5+)
+* [Bower](https://bower.io/)
+* [Ember CLI](https://ember-cli.com/)
+* [Chrome](https://www.google.com/chrome/)
+* [Firefox](https://www.mozilla.org/firefox/)
 
 ## Installation
 
 * `git clone git@github.com/adfinis-sygroup/timed-frontend`
 * `cd timed-frontend`
-* `yarn install`
+* `npm install`
 * `bower install`
 
 ## Configurations
@@ -47,6 +48,10 @@ echo 'TIMED_REPORT_EXPORT=[{"label":"Special Export","url":"/api/v1/special/expo
 
 * `ember serve`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
+
+If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend) you need to run
+
+* `ember serve --proxy=http://localhost:8000`
 
 ### Running Tests
 
