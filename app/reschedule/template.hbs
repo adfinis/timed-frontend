@@ -18,8 +18,8 @@
   on-apply      = (action 'applyFilter')
 }}
 
-{{#paginated-table data-test-filter-results class='table--analysis-reschedule table--form table--form-inline' as |t|}}
-  {{#t.head}}
+{{#paginated-table data-test-filter-results tagName='div' class='table--analysis-reschedule table--form table--form-inline' as |t|}}
+  {{#t.head tagName='div' class='table-head'}}
     <tr>
       {{#sort-header update=(action (mut ordering)) current=ordering by='user__username'}}User{{/sort-header}}
       {{#sort-header update=(action (mut ordering)) current=ordering by='date'}}Date{{/sort-header}}
@@ -38,7 +38,7 @@
       </th>
     </tr>
   {{/t.head}}
-  {{#t.body}}
+  {{#t.body tagName='div' class='table-body'}}
     {{#each model as |report|}}
       {{report-reschedule-row report
         data-test-reschedule-report
@@ -59,6 +59,8 @@
     {{/each}}
   {{/t.body}}
   {{#t.foot
+    tagName   = 'div'
+    class     = 'table-foot'
     pages     = model.meta.pagination.pages
     page      = page
     page_size = page_size

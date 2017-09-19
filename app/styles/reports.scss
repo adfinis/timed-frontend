@@ -1,4 +1,6 @@
-.table--reports > tbody > form > .form-group {
+.table--reports > .table-body > form > .form-group {
+  white-space: nowrap;
+
   &:nth-child(5),
   &:nth-child(6),
   &:nth-child(7),
@@ -23,12 +25,15 @@
 }
 
 @media (--lg-viewport) {
-  .table--reports > tbody > form > .form-group {
+  .table--reports > .table-body > form > .form-group {
     &:nth-child(1),
     &:nth-child(2),
-    &:nth-child(3),
+    &:nth-child(3) {
+      width: 15%;
+    }
+
     &:nth-child(4) {
-      width: 14%;
+      width: auto;
     }
 
     &:nth-child(5) {

@@ -13,7 +13,14 @@ as |t|}}
   <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
 {{/task-selection}}
 <div class="form-group">
-  {{input placeholder='Comment' class='form-control' value=changeset.comment}}
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Comment"
+    name="comment"
+    value={{changeset.comment}}
+    onchange={{action (mut changeset.comment) value='target.value'}}
+  >
 </div>
 <div class="form-group">
   {{sy-checkbox checked=changeset.review on-change=(action (mut changeset.review))}}

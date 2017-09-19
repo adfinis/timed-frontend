@@ -1,21 +1,25 @@
-.table--form.table--striped > tbody > form:nth-child(2n+1) {
+.table--form.table--striped > .table-body > tr:nth-child(2n+1),
+.table--form.table--striped > .table-body > form:nth-child(2n+1) {
   background-color: color(var(--body-background-color) b(5%));
 }
 
-.table--form.table--hover > tbody > form:hover {
+.table--form.table--hover > .table-body > tr:hover,
+.table--form.table--hover > .table-body > form:hover {
   background-color: color(var(--body-background-color) b(7.5%));
 }
 
-.table--form > tbody {
+.table--form > .table-body {
   display: flex;
   flex-direction: column;
 
+  > tr,
   > form {
     display: flex;
     padding: 0.5rem;
     flex-wrap: wrap;
     border-top: 1px solid var(--color-border);
 
+    > td,
     > .form-group {
       flex: 1 0 100%;
       padding: 0;
@@ -24,15 +28,47 @@
   }
 }
 
+.table--form > .table-foot,
+.table--form > .table-head {
+  display: none;
+}
+
 @mixin inline {
-  > tbody {
+  display: table;
+
+  > .table-head {
+    display: table-header-group;
+
+    > tr > th {
+      padding: 0.5rem;
+      vertical-align: top;
+      font-weight: 500;
+      text-align: left;
+      vertical-align: bottom;
+      border-bottom: 2px solid var(--color-border);
+    }
+  }
+
+  > .table-foot {
+    display: table-footer-group;
+
+    > tr > td {
+      padding: 0.5rem;
+      vertical-align: top;
+      border-top: 1px solid var(--color-border);
+    }
+  }
+
+  > .table-body {
     display: table-row-group;
 
+    > tr,
     > form {
       display: table-row;
       padding: 0;
       border: none;
 
+      > td,
       > .form-group {
         display: table-cell;
         vertical-align: middle;
