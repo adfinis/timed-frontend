@@ -1,22 +1,26 @@
+/* AdCSSy variables */
 @import 'variables';
-@import 'toolbar';
-@import 'badge';
-@import 'loader';
+
+/* Custom styles */
 @import 'activities';
+@import 'analysis';
 @import 'attendances';
-@import 'analysis-reschedule';
-@import 'reports';
-@import 'form-table';
+@import 'badge';
+@import 'form-list';
+@import 'loader';
 @import 'progress-tooltip';
+@import 'reports';
+@import 'reschedule';
+@import 'toolbar';
 @import 'tour';
+
+/* Plugin customizations */
 @import 'ember-power-calendar';
 @import 'ember-basic-dropdown';
 @import 'ember-power-select-custom';
-@import 'pod-styles';
 
-:root {
-  --tracking-indicator-size: 10px;
-}
+/* Component styles */
+@import 'pod-styles';
 
 html {
   height: 100vh;
@@ -93,18 +97,9 @@ body {
   }
 }
 
-.table tr.is-absence {
-  background-color: var(--color-danger) !important;
-  border-bottom-color: color(var(--color-danger) tint(10%)) !important;
-}
-
 .error-text {
   font-size: 80%;
   margin: 0;
-  color: var(--color-danger);
-}
-
-.required {
   color: var(--color-danger);
 }
 
@@ -130,10 +125,6 @@ body {
 
 .no-margin  { margin: 0 !important  }
 .no-padding { padding: 0 !important }
-
-.table--activities tr td:last-child {
-  display: none;
-}
 
 .nav-tab--buttons {
   position: absolute;
@@ -226,17 +217,4 @@ body {
       padding-left: 1rem;
     }
   }
-}
-
-.tt-suggestion .inactive {
-  margin: -3px -20px;
-  padding: 3px 20px;
-
-  .fa {
-    margin-left: 5px;
-  }
-}
-
-.tt-suggestion:not(:hover) .inactive {
-  background-color: rgb(230, 230, 230);
 }

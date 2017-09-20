@@ -4,13 +4,10 @@ import { expect } from 'chai'
 import moment from 'moment'
 
 describe('Unit | Transform | django datetime', function() {
-  setupTest(
-    'transform:django-datetime',
-    {
-      // Specify the other units that are required for this test.
-      // needs: ['transform:foo']
-    }
-  )
+  setupTest('transform:django-datetime', {
+    // Specify the other units that are required for this test.
+    // needs: ['transform:foo']
+  })
 
   it('serializes', function() {
     let transform = this.subject()

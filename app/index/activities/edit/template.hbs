@@ -10,7 +10,14 @@
         <div class="form-group">{{t.task}}</div>
       {{/task-selection}}
       <div class="form-group">
-        {{input class='form-control' name='comment' placeholder='Comment' value=activity.comment}}
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Comment"
+          name="comment"
+          value={{activity.comment}}
+          onchange={{action (mut activity.comment) value='target.value'}}
+        >
       </div>
       <table class="table table--striped table--activity-blocks">
         <tbody>

@@ -1,5 +1,5 @@
-.table--analysis-reschedule > thead > tr > th,
-.table--analysis-reschedule > tbody > form > .form-group {
+.table--analysis > thead > tr > th,
+.table--analysis > tbody > tr > td {
   &:nth-child(1),
   &:nth-child(2),
   &:nth-child(3) {
@@ -19,11 +19,6 @@
   &:nth-child(8),
   &:nth-child(9),
   &:nth-child(10) {
-    width: 80px;
-  }
-
-  &:nth-child(11) {
-    width: 70px;
-    text-align: right;
+    width: 110px;
   }
 }

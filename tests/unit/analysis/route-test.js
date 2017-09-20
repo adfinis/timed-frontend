@@ -3,13 +3,10 @@ import { describe, it } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
 describe('Unit | Route | analysis', function() {
-  setupTest(
-    'route:analysis',
-    {
-      // Specify the other units that are required for this test.
-      // needs: ['controller:foo']
-    }
-  )
+  setupTest('route:analysis', {
+    // Specify the other units that are required for this test.
+    // needs: ['controller:foo']
+  })
 
   it('exists', function() {
     let route = this.subject()

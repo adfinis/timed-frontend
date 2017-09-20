@@ -46,23 +46,27 @@ describe('Acceptance | index reports', function() {
   it('can add report', async function() {
     await visit('/reports')
 
-    await taskSelect('.table--reports form:last-child')
+    await taskSelect('.form-list--reports .form-list-row:last-child')
 
     await fillIn(
-      '.table--reports form:last-child [data-test-report-duration]',
+      '.form-list--reports .form-list-row:last-child [data-test-report-duration]',
       '03:30'
     )
     await fillIn(
-      '.table--reports form:last-child [data-test-report-comment]',
+      '.form-list--reports .form-list-row:last-child [data-test-report-comment]',
       'Test comment report'
     )
 
-    await click('.table--reports form:last-child [data-test-report-review]')
     await click(
-      '.table--reports form:last-child [data-test-report-not-billable]'
+      '.form-list--reports .form-list-row:last-child [data-test-report-review]'
+    )
+    await click(
+      '.form-list--reports .form-list-row:last-child [data-test-report-not-billable]'
     )
 
-    await click('.table--reports form:last-child [data-test-save-report]')
+    await click(
+      '.form-list--reports .form-list-row:last-child [data-test-save-report]'
+    )
 
     expect(
       find(

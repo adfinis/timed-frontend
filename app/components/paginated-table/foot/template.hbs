@@ -2,20 +2,9 @@
 <tr>
   <td colspan="42">
     {{#if (gt pages 1)}}
-      {{pagination-pager current=page count=pages}}
+      {{pagination-pager current=page count=pages class='pagination-nav'}}
     {{/if}}
-    <div class="limit pull-right">
-      Per page:
-      {{#each limits as |l i|}}
-        <span>
-          {{#if (eq page_size l)}}
-            {{l}}
-          {{else}}
-            <a href="#" {{action 'setLimit' l}}>{{l}}</a>
-          {{/if}}
-        </span>
-      {{/each}}
-    </div>
+    {{pagination-limit page=page page_size=page_size}}
   </td>
 </tr>
 {{yield to='inverse'}}
