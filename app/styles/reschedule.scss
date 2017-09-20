@@ -23,6 +23,10 @@
   .form-list--reschedule {
     @include form-list--inline;
 
+    .form-list-cell {
+      vertical-align: middle;
+    }
+
     .form-list-caption {
       border-top: 1px solid var(--color-border);
       padding: 0.5rem;
