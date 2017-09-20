@@ -3,13 +3,10 @@ import { describe, it, afterEach } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
 describe('Unit | Service | autostart tour', function() {
-  setupTest(
-    'service:autostart-tour',
-    {
-      // Specify the other units that are required for this test.
-      // needs: ['service:foo']
-    }
-  )
+  setupTest('service:autostart-tour', {
+    // Specify the other units that are required for this test.
+    // needs: ['service:foo']
+  })
 
   afterEach(function() {
     localStorage.removeItem('timed-tour-test')

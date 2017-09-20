@@ -1,0 +1,122 @@
+.form-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+
+  .form-list-body,
+  .form-list-row {
+    display: flex;
+  }
+
+  .form-list-body {
+    flex-direction: column;
+  }
+
+  .form-list-row {
+    border-top: 1px solid var(--color-border);
+    flex: 1 0 100%;
+    flex-wrap: wrap;
+    padding: 0.5rem;
+  }
+
+  .form-list-cell {
+    flex: 1 0 100%;
+  }
+
+  .form-list-body > .form-list-row:nth-of-type(2n+1) {
+    background-color: color(var(--body-background-color) b(5%));
+  }
+
+  .form-list-body > .form-list-row:hover {
+    background-color: color(var(--body-background-color) b(7.5%));
+  }
+
+  /* Form list head, foot and caption are not allowed for mobile devices */
+  .form-list-head,
+  .form-list-foot,
+  .form-list-caption {
+    display: none;
+  }
+}
+
+@mixin form-list--inline {
+  display: table;
+
+  .form-list-head {
+    display: table-header-group;
+
+    .form-list-row:first-child > .form-list-cell {
+      border-top: 0;
+    }
+
+    .form-list-row > .form-list-cell {
+      font-weight: 500;
+      text-align: left;
+      vertical-align: bottom;
+      border-bottom: 2px solid var(--color-border);
+    }
+  }
+
+  .form-list-body {
+    display: table-row-group;
+
+    .form-list-row:first-child > .form-list-cell {
+      border-top: 0;
+    }
+  }
+
+  .form-list-foot {
+    display: table-footer-group;
+  }
+
+  .form-list-row {
+    display: table-row;
+  }
+
+  .form-list-cell {
+    display: table-cell;
+    padding: 0.5rem;
+    vertical-align: top;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .form-list-caption {
+    display: table-caption;
+    caption-side: bottom;
+  }
+}
+
+.form-list--inline {
+  @include form-list--inline;
+}
+
+@media (--xs-viewport) {
+  .form-list-xs--inline {
+    @include form-list--inline;
+  }
+}
+
+@media (--sm-viewport) {
+  .form-list-sm--inline {
+    @include form-list--inline;
+  }
+}
+
+@media (--md-viewport) {
+  .form-list-md--inline {
+    @include form-list--inline;
+  }
+}
+
+@media (--lg-viewport) {
+  .form-list-lg--inline {
+    @include form-list--inline;
+  }
+}
+
+@media (--xl-viewport) {
+  .form-list-xl--inline {
+    @include form-list--inline;
+  }
+}

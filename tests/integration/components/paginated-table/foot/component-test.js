@@ -21,17 +21,4 @@ describe('Integration | Component | paginated table/foot', function() {
     this.render(hbs`{{paginated-table/foot}}`)
     expect(this.$()).to.have.length(1)
   })
-
-  it('can change limit', function() {
-    this.set('limit', 10)
-
-    this.render(hbs`{{paginated-table/foot page=1 pages=5 page_size=limit}}`)
-
-    expect(this.$('.limit span')).to.have.length(4)
-    expect(this.$('.limit a')).to.have.length(3)
-
-    this.$('a:contains(100)').click()
-
-    expect(this.get('limit')).to.equal(100)
-  })
 })
