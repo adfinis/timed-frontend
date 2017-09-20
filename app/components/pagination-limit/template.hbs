@@ -1,0 +1,10 @@
+Per page:
+{{#each limits as |l i|}}
+  <span>
+    {{#if (eq page_size l)}}
+      {{l}}
+    {{else}}
+      <a href="#" {{action (queue (action (mut page) 1) (action (mut page_size) l))}}>{{l}}</a>
+    {{/if}}
+  </span>
+{{/each}}

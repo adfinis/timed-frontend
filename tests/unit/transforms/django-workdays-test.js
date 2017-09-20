@@ -3,13 +3,10 @@ import { setupTest } from 'ember-mocha'
 import { expect } from 'chai'
 
 describe('Unit | Transform | django workdays', function() {
-  setupTest(
-    'transform:django-workdays',
-    {
-      // Specify the other units that are required for this test.
-      // needs: ['transform:foo']
-    }
-  )
+  setupTest('transform:django-workdays', {
+    // Specify the other units that are required for this test.
+    // needs: ['transform:foo']
+  })
 
   it('serializes', function() {
     let transform = this.subject()

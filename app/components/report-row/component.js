@@ -26,6 +26,14 @@ const ReportRowComponent = Component.extend({
   tagName: 'form',
 
   /**
+   * CSS class names
+   *
+   * @property {String[]} classNames
+   * @public
+   */
+  classNames: ['form-list-row'],
+
+  /**
    * The changeset to edit
    *
    * @property {EmberChangeset.Changeset} changeset

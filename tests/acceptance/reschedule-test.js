@@ -182,11 +182,9 @@ describe('Acceptance | reschedule', function() {
 
     await click('[data-test-filter-apply]')
 
-    expect(find('[data-test-filter-results]').length).to.equal(1)
+    expect(find('[data-test-filter-results]').length).to.equal(0)
 
-    expect(find('[data-test-filter-results] tr td').text()).to.contain(
-      'filter parameters'
-    )
+    expect(find('div.text-center').text()).to.contain('filter parameters')
 
     await visit('/reschedule')
 
@@ -194,11 +192,9 @@ describe('Acceptance | reschedule', function() {
 
     await click('[data-test-filter-apply]')
 
-    expect(find('[data-test-filter-results]').length).to.equal(1)
+    expect(find('[data-test-filter-results]').length).to.equal(0)
 
-    expect(find('[data-test-filter-results] tr td').text()).to.contain(
-      'any results'
-    )
+    expect(find('div.text-center').text()).to.contain('any results')
   })
 
   it('can take initial customer', async function() {
