@@ -24,3 +24,6 @@ package.json.ember-try
 
 # vscode
 jsconfig.json
+
+# dotenv
+.env
