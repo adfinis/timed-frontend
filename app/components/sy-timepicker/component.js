@@ -49,7 +49,8 @@ export default Component.extend({
     'maxlength',
     'placeholder',
     'type',
-    'disabled'
+    'disabled',
+    'autocomplete'
   ],
 
   /**
@@ -93,6 +94,14 @@ export default Component.extend({
    * @public
    */
   disabled: false,
+
+  /**
+   * Whether to autocomplete this field
+   *
+   * @property {String} autocomplete
+   * @public
+   */
+  autocomplete: 'off',
 
   /**
    * The regex for the input
