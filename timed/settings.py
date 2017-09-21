@@ -24,9 +24,20 @@ def default(default_dev=env.NOTSET, default_prod=env.NOTSET):
 
 # Database definition
 
-DATABASE_URL = default('psql://timed:timed@127.0.0.1:5432/timed')
 DATABASES = {
-    'default': env.db(default=DATABASE_URL)
+    'default': {
+        'ENGINE': env.str(
+            'DJANGO_DATABASE_ENGINE',
+            default='django.db.backends.postgresql_psycopg2'
+        ),
+        'NAME': env.str('DJANGO_DATABASE_NAME', default='timed'),
+        'USER': env.str('DJANGO_DATABASE_USER', default='timed'),
+        'PASSWORD': env.str(
+            'DJANGO_DATABASE_PASSWORD', default=default('timed')
+        ),
+        'HOST': env.str('DJANGO_DATABASE_HOST', default='localhost'),
+        'PORT': env.str('DJANGO_DATABASE_PORT', default='')
+    }
 }
 
 
