@@ -79,7 +79,7 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     async startActivity(activity) {
-      if (!activity.get('start').isSame(moment(), 'day')) {
+      if (!activity.get('date').isSame(moment(), 'day')) {
         activity = this.store.createRecord('activity', {
           ...activity.getProperties('task', 'comment')
         })
@@ -156,7 +156,7 @@ export default Route.extend(RouteAutostartTourMixin, {
               let data = {
                 activity,
                 duration,
-                date: activity.get('start'),
+                date: activity.get('date'),
                 task: activity.get('task'),
                 comment: activity.get('comment')
               }

@@ -25,5 +25,19 @@ export default ApplicationAdapter.extend({
    */
   urlForUpdateRecord() {
     return `${this._super(...arguments)}?include=activity`
+  },
+
+  /**
+   * Custom url for creating records
+   *
+   * This causes a reload of the activity so we don't have to do the reload
+   * ourselves
+   *
+   * @method urlForCreateRecord
+   * @return {String} The URL
+   * @public
+   */
+  urlForCreateRecord() {
+    return `${this._super(...arguments)}?include=activity`
   }
 })

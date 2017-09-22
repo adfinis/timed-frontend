@@ -192,30 +192,8 @@ export default Service.extend({
    * @public
    */
   startActivity: task(function*() {
-    let activity = this.get('activity')
-
-    /* istanbul ignore next */
-    if (activity.get('active')) {
-      // We can't test this because the UI prevents it
-      return
-    }
-
     try {
-      if (activity.get('isNew')) {
-        yield activity.save()
-      }
-
-      let block = this.get('store').createRecord('activity-block', {
-        activity,
-        from: moment()
-      })
-
-      yield block.save()
-
-      // Sadly, we need to do this here since the computed property
-      // 'activeBlock' on the activity does not sense a change when the blocks
-      // change from new to actually loaded
-      activity.notifyPropertyChange('blocks')
+      yield this.get('activity').start()
 
       this.get('notify').success('Activity was started')
     } catch (e) {
@@ -231,18 +209,8 @@ export default Service.extend({
    * @public
    */
   stopActivity: task(function*() {
-    let activity = this.get('activity')
-
-    if (!activity.get('active')) {
-      return
-    }
-
     try {
-      let block = yield activity.get('activeBlock')
-
-      block.set('to', moment())
-
-      yield block.save()
+      yield this.get('activity').stop()
 
       this.set('activity', null)
 

@@ -1,21 +1,18 @@
 import { Factory, faker, trait } from 'ember-cli-mirage'
 
 export default Factory.extend({
-  fromDatetime() {
-    let start = this.activity.date.clone()
+  fromTime: () => this.activity.date.clone().format('HH:mm:ss'),
 
-    return start
-  },
-
-  toDatetime() {
+  toTime() {
     let start = this.fromDatetime.clone()
 
     return start
       .add(faker.random.number({ min: 15, max: 60 }), 'minutes')
       .add(faker.random.number({ min: 0, max: 59 }), 'seconds')
+      .format('HH:mm:ss')
   },
 
   active: trait({
-    toDatetime: null
+    toTime: null
   })
 })

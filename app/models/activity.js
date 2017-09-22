@@ -7,8 +7,11 @@ import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import moment from 'moment'
 import computed from 'ember-computed-decorators'
+import RSVP from 'rsvp'
 
 import { belongsTo, hasMany } from 'ember-data/relationships'
+
+const { min } = Math
 
 /**
  * The activity model
@@ -28,13 +31,12 @@ export default Model.extend({
   comment: attr('string', { defaultValue: '' }),
 
   /**
-   * The start date and time
+   * The date
    *
-   * @property start
-   * @type {moment}
+   * @property {moment} date
    * @public
    */
-  start: attr('django-datetime', { defaultValue: () => moment() }),
+  date: attr('django-date'),
 
   /**
    * The duration
@@ -104,8 +106,97 @@ export default Model.extend({
    * @property {Boolean} overlaps
    * @public
    */
-  @computed('start', 'blocks.@each.to')
-  overlaps(start, blocks) {
-    return blocks.any(b => b.get('overlaps'))
+  @computed('date', 'active')
+  overlaps(date, active) {
+    return active && !date.isSame(moment(), 'day')
+  },
+
+  /**
+   * Start the activity
+   * 
+   * @method start
+   * @public
+   */
+  async start() {
+    /* istanbul ignore next */
+    if (this.get('active')) {
+      return
+    }
+
+    if (this.get('isNew')) {
+      await this.save()
+    }
+
+    let block = this.get('store').createRecord('activity-block', {
+      activity: this,
+      fromTime: moment()
+    })
+
+    await block.save()
+
+    // Sadly, we need to do this here since the computed property
+    // 'activeBlock' on the activity does not sense a change when the blocks
+    // change from new to actually loaded
+    this.notifyPropertyChange('blocks')
+  },
+
+  /**
+   * Stop the activity
+   * 
+   * When stopping an activity of a past day, we need to split it
+   * 
+   * @method stop
+   * @public
+   */
+  async stop() {
+    /* istanbul ignore next */
+    if (!this.get('active')) {
+      return
+    }
+
+    let daysBetween = moment().diff(this.get('date'), 'days')
+
+    await RSVP.all(
+      [
+        this,
+        ...Object.keys(Array(daysBetween).fill())
+          .map(Number)
+          .map(n => {
+            return this.get('store').createRecord('activity', {
+              task: this.get('task'),
+              comment: this.get('comment'),
+              user: this.get('user'),
+              date: moment(this.get('date')).add(n + 1, 'days')
+            })
+          })
+      ].map(async activity => {
+        if (activity.get('isNew')) {
+          await activity.save()
+        }
+
+        let block =
+          activity.get('activeBlock') ||
+          this.get('store').createRecord('activity-block', {
+            activity,
+            fromTime: moment({ h: 0, m: 0, s: 0 })
+          })
+
+        block.set(
+          'toTime',
+          moment(
+            min(
+              moment(activity.get('date')).set({
+                h: 23,
+                m: 59,
+                s: 59
+              }),
+              moment()
+            )
+          )
+        )
+
+        await block.save({ adapterOptions: { include: 'activity' } })
+      })
+    )
   }
 })
