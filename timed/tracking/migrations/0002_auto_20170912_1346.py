@@ -19,7 +19,8 @@ def migrate_activity_block_time(apps, schema_editor):
     current_tz = timezone(settings.TIME_ZONE)
     ActivityBlock = apps.get_model('tracking', 'ActivityBlock')
     for block in ActivityBlock.objects.all():
-        block.to_datetime = block.to_datetime.astimezone(current_tz).replace(tzinfo=utc)
+        if block.to_datetime is not None:
+            block.to_datetime = block.to_datetime.astimezone(current_tz).replace(tzinfo=utc)
         block.from_datetime = block.from_datetime.astimezone(current_tz).replace(tzinfo=utc)
         block.save()
 
