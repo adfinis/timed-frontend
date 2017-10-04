@@ -146,10 +146,6 @@ class UserAbsenceTypeManager(models.Manager):
                     ELSE used_join.used_days
                 END AS used_days,
                 CASE
-                    WHEN at.fill_worktime THEN used_join.used_duration
-                    ELSE NULL
-                END AS used_duration,
-                CASE
                     WHEN at.fill_worktime THEN NULL
                     ELSE credit_join.credit - used_join.used_days
                 END AS balance
@@ -171,8 +167,7 @@ class UserAbsenceTypeManager(models.Manager):
             LEFT JOIN (
                 SELECT
                     at.id,
-                    COUNT(a.id) AS used_days,
-                    SUM(a.duration) AS used_duration
+                    COUNT(a.id) AS used_days
                 FROM {absencetype_table} AS at
                 LEFT JOIN {absence_table} AS a ON (
                     a.type_id = at.id
@@ -358,14 +353,14 @@ class Employment(models.Model):
             timedelta()
         )
 
-        absences = sum(
-            Absence.objects.filter(
+        absences = sum([
+            absence.calculate_duration(self)
+            for absence in Absence.objects.filter(
                 user=self.user,
                 date__gte=start,
-                date__lte=end
-            ).values_list('duration', flat=True),
-            timedelta()
-        )
+                date__lte=end,
+            )
+        ], timedelta())
 
         reported = reported_worktime + absences + overtime_credit
 

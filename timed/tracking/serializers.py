@@ -9,6 +9,7 @@ from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  DurationField,
                                                  ModelSerializer,
+                                                 SerializerMethodField,
                                                  ValidationError)
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
@@ -200,7 +201,7 @@ class ReportSerializer(ModelSerializer):
 class AbsenceSerializer(ModelSerializer):
     """Absence serializer."""
 
-    duration = DurationField(read_only=True)
+    duration = SerializerMethodField(source='get_duration')
     type     = ResourceRelatedField(queryset=AbsenceType.objects.all())
     user     = ResourceRelatedField(read_only=True,
                                     default=CurrentUserDefault())
@@ -208,6 +209,17 @@ class AbsenceSerializer(ModelSerializer):
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
     }
+
+    def get_duration(self, instance):
+        try:
+            employment = Employment.objects.get_at(
+                instance.user, instance.date
+            )
+        except Employment.DoesNotExist:
+            # absence is invalid if no employment exists on absence date
+            return duration_string(timedelta())
+
+        return duration_string(instance.calculate_duration(employment))
 
     def validate(self, data):
         """Validate the absence data.
@@ -217,10 +229,15 @@ class AbsenceSerializer(ModelSerializer):
         :returns: The validated data
         :rtype:   dict
         """
-        location = Employment.objects.get_at(
-            data.get('user'),
-            data.get('date')
-        ).location
+        try:
+            location = Employment.objects.get_at(
+                data.get('user'),
+                data.get('date')
+            ).location
+        except Employment.DoesNotExist:
+            raise ValidationError(
+                _('You can\'t create an absence on an unemployed day.')
+            )
 
         if PublicHoliday.objects.filter(
             location_id=location.id,
