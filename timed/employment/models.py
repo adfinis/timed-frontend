@@ -7,7 +7,7 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.db.models import functions
+from django.db.models import Sum, functions
 
 from timed.models import WeekdaysField
 
@@ -335,22 +335,20 @@ class Employment(models.Model):
 
         expected_worktime = self.worktime_per_day * (workdays - holidays)
 
-        overtime_credit = sum(
-            OvertimeCredit.objects.filter(
-                user=self.user,
-                date__gte=start,
-                date__lte=end
-            ).values_list('duration', flat=True),
-            timedelta()
-        )
+        overtime_credit_data = OvertimeCredit.objects.filter(
+            user=self.user,
+            date__gte=start,
+            date__lte=end
+        ).aggregate(total_duration=Sum('duration'))
+        overtime_credit = overtime_credit_data['total_duration'] or timedelta()
 
-        reported_worktime = sum(
-            Report.objects.filter(
-                user=self.user,
-                date__gte=start,
-                date__lte=end
-            ).values_list('duration', flat=True),
-            timedelta()
+        reported_worktime_data = Report.objects.filter(
+            user=self.user,
+            date__gte=start,
+            date__lte=end
+        ).aggregate(duration_total=Sum('duration'))
+        reported_worktime = (
+            reported_worktime_data['duration_total'] or timedelta()
         )
 
         absences = sum([
