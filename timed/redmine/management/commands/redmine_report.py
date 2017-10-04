@@ -55,6 +55,7 @@ class Command(BaseCommand):
         ).annotate(total_hours=Sum('tasks__reports__duration'))
 
         for project in projects:
+            estimated_hours = project.estimated_time.total_seconds() / 3600
             total_hours = project.total_hours.total_seconds() / 3600
             try:
                 issue = redmine.issue.get(project.redmine_project.issue_id)
@@ -68,6 +69,7 @@ class Command(BaseCommand):
                     'hours': hours.total_seconds() / 3600,
                     'last_days': last_days,
                     'total_hours': total_hours,
+                    'estimated_hours': estimated_hours,
                     'reports': reports
                 }, using='text')
                 issue.custom_fields = [{

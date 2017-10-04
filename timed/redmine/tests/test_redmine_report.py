@@ -23,6 +23,7 @@ def test_redmine_report(db, freezer, mocker):
     freezer.move_to('2017-07-28')
     report = ReportFactory.create(comment='ADSY <=> Other')
     report_hours = report.duration.total_seconds() / 3600
+    estimated_hours = report.task.project.estimated_time.total_seconds() / 3600
     RedmineProject.objects.create(project=report.task.project, issue_id=1000)
     # report not attached to redmine
     ReportFactory.create()
@@ -36,6 +37,7 @@ def test_redmine_report(db, freezer, mocker):
         'value': report_hours
     }]
     assert 'Total hours: {0}'.format(report_hours) in issue.notes
+    assert 'Estimated hours: {0}'.format(estimated_hours) in issue.notes
     assert 'Hours in last 7 days: {0}\n'.format(report_hours) in issue.notes
     assert '{0}\n'.format(report.comment) in issue.notes
     assert '{0}\n\n'.format(report.comment) not in issue.notes, (

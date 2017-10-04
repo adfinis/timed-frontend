@@ -4,6 +4,7 @@ Customer: {{project.customer.name}}
 Project: {{project.name}}
 Hours in last {{last_days}} days: {{hours}}
 Total hours: {{total_hours}}
+Estimated hours: {{estimated_hours}}
 
 
 Reported in last {{last_days}} days:
