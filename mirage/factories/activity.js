@@ -29,7 +29,7 @@ export default Factory.extend({
     afterCreate(activity, server) {
       server.create('activity-block', {
         activity,
-        fromTime: moment(),
+        fromTime: moment().format('HH:mm:ss'),
         toTime: null
       })
     }
@@ -38,16 +38,6 @@ export default Factory.extend({
   unknown: trait({
     afterCreate(activity) {
       activity.task.destroy()
-    }
-  }),
-
-  overlapping: trait({
-    afterCreate(activity, server) {
-      server.create('activity-block', {
-        activity,
-        fromTime: moment().subtract(1, 'days'),
-        toTime: null
-      })
     }
   })
 })

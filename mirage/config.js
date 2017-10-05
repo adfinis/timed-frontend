@@ -68,7 +68,7 @@ export default function() {
       return activities.where(a => {
         let blocks = activityBlocks.where(b => b.activityId === a.id).models
 
-        return blocks.any(b => !b.toDatetime)
+        return blocks.any(b => !b.toTime)
       })
     }
 

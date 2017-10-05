@@ -103,7 +103,7 @@ describe('Acceptance | index activities', function() {
   })
 
   it('can generate reports', async function() {
-    let activity = server.create('activity', 'active', { userId: this.user.id })
+    let activity = server.create('activity', { userId: this.user.id })
     let { id } = activity
 
     await visit('/')
@@ -204,39 +204,39 @@ describe('Acceptance | index activities', function() {
     expect(currentURL()).to.equal('/reports')
   })
 
-  it('shows a warning when generating reports which overlap the day', async function() {
-    server.create('activity', 'overlapping', { userId: this.user.id })
+  it('shows a warning when generating reports from active activities', async function() {
+    server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
     await click('button:contains(Generate timesheet)')
-    await click('[data-test-overlap-warning] button:contains(Cancel)')
+    await click('[data-test-active-warning] button:contains(Cancel)')
 
     expect(currentURL()).to.equal('/')
 
     await click('button:contains(Generate timesheet)')
-    await click('[data-test-overlap-warning] button:contains(fine)')
+    await click('[data-test-active-warning] button:contains(fine)')
 
     expect(currentURL()).to.equal('/reports')
   })
 
   it('can handle both warnings', async function() {
     server.create('activity', 'unknown', { userId: this.user.id })
-    server.create('activity', 'overlapping', { userId: this.user.id })
+    server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
     // both close if one clicks cancel
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-overlap-warning] button:contains(Cancel)')
+    await click('[data-test-active-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
     expect(currentURL()).to.equal('/')
 
     // both must be fine if it should continue
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-overlap-warning] button:contains(fine)')
+    await click('[data-test-active-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
     await click('[data-test-unknown-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
@@ -245,17 +245,69 @@ describe('Acceptance | index activities', function() {
     expect(find('.modal--visible')).to.have.length(2)
     await click('[data-test-unknown-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
-    await click('[data-test-overlap-warning] button:contains(Cancel)')
+    await click('[data-test-active-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
     expect(currentURL()).to.equal('/')
 
     // if both are fine continue
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-overlap-warning] button:contains(fine)')
+    await click('[data-test-active-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
     await click('[data-test-unknown-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(0)
     expect(currentURL()).to.equal('/reports')
+  })
+
+  it('splits overlapping activities when stopping', async function() {
+    let activity = server.create('activity', 'active', {
+      userId: this.user.id,
+      date: moment().subtract(2, 'days')
+    })
+
+    await visit('/')
+
+    await click('[data-test-record-stop]')
+
+    // todayday block should be from 00:00 to now
+    expect(find(`[data-test-activity-row] td:contains(${activity.comment})`)).to
+      .be.ok
+
+    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+
+    expect(
+      find('[data-test-activity-block-row] td:eq(1) input').val()
+    ).to.equal('00:00')
+
+    // yesterday block should be from 00:00 to now
+    await visit('/')
+    await click('[data-test-previous]')
+
+    expect(find(`[data-test-activity-row] td:contains(${activity.comment})`)).to
+      .be.ok
+
+    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+
+    expect(
+      find('[data-test-activity-block-row] td:eq(1) input').val()
+    ).to.equal('00:00')
+
+    expect(
+      find('[data-test-activity-block-row] td:eq(3) input').val()
+    ).to.equal('23:59')
+
+    // day before yesterday block should be from old start time to 23:59
+    await visit('/')
+    await click('[data-test-previous]')
+    await click('[data-test-previous]')
+
+    expect(find(`[data-test-activity-row] td:contains(${activity.comment})`)).to
+      .be.ok
+
+    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+
+    expect(
+      find('[data-test-activity-block-row]:last td:eq(3) input').val()
+    ).to.equal('23:59')
   })
 })
