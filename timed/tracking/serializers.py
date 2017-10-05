@@ -7,13 +7,14 @@ from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
-                                                 DurationField,
+                                                 DurationField, IntegerField,
                                                  ModelSerializer,
                                                  SerializerMethodField,
                                                  ValidationError)
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
 from timed.projects.models import Task
+from timed.serializers import PkDictSerializer
 from timed.tracking import models
 
 
@@ -113,6 +114,15 @@ class AttendanceSerializer(ModelSerializer):
             'to_time',
             'user',
         ]
+
+
+class ReportByYearSerializer(PkDictSerializer):
+    duration = DurationField(read_only=True)
+    year = IntegerField(read_only=True)
+
+    class Meta:
+        resource_name = 'report-year'
+        pk_key = 'year'
 
 
 class ReportSerializer(ModelSerializer):

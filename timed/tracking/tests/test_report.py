@@ -502,3 +502,54 @@ def test_report_list_no_result(admin_client):
     assert res.status_code == HTTP_200_OK
     json = res.json()
     assert json['meta']['total-time'] == '00:00:00'
+
+
+def test_report_by_year(auth_client):
+    ReportFactory.create(duration=timedelta(hours=1), date=date(2017, 1, 1))
+    ReportFactory.create(duration=timedelta(hours=1), date=date(2015, 2, 28))
+    ReportFactory.create(duration=timedelta(hours=1), date=date(2015, 12, 31))
+
+    url = reverse('report-by-year')
+    result = auth_client.get(url, data={'ordering': 'year'})
+    assert result.status_code == 200
+
+    json = result.json()
+    expected_json = [
+        {
+            'type': 'report-year',
+            'id': '2015',
+            'attributes': {
+                'year': 2015,
+                'duration': '02:00:00'
+            }
+        },
+        {
+            'type': 'report-year',
+            'id': '2017',
+            'attributes': {
+                'year': 2017,
+                'duration': '01:00:00'
+            }
+        }
+    ]
+
+    assert json['data'] == expected_json
+
+
+def test_report_by_month(auth_client):
+    ReportFactory.create(duration=timedelta(hours=1), date=date(2016, 1, 1))
+    ReportFactory.create(duration=timedelta(hours=1), date=date(2015, 12, 4))
+    ReportFactory.create(duration=timedelta(hours=2), date=date(2015, 12, 31))
+
+    url = reverse('report-by-month')
+    result = auth_client.get(url, data={'ordering': 'year,month'})
+    assert result.status_code == 200
+
+    json = result.json()
+    assert len(json['data']) == 2
+    assert json['data'][0]['year'] == 2015
+    assert json['data'][0]['month'] == 12
+    assert json['data'][0]['duration'] == '03:00:00'
+    assert json['data'][1]['year'] == 2016
+    assert json['data'][1]['month'] == 1
+    assert json['data'][1]['duration'] == '01:00:00'
