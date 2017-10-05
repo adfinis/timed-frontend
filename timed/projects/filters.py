@@ -63,7 +63,12 @@ class MyMostFrequentTaskFilter(Filter):
         user = self.parent.request.user
         from_date = date.today() - timedelta(days=60)
 
-        qs = qs.filter(reports__user=user, reports__date__gt=from_date)
+        qs = qs.filter(
+            reports__user=user,
+            reports__date__gt=from_date,
+            archived=False,
+            project__archived=False
+        )
         qs = qs.annotate(frequency=Count('reports')).order_by('-frequency')
         # limit number of results to given value
         qs = qs[:int(value)]
