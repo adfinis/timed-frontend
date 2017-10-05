@@ -15,7 +15,7 @@ class Activity(models.Model):
     """
 
     comment  = models.TextField(blank=True)
-    date     = models.DateField(auto_now_add=True)
+    date     = models.DateField()
     task     = models.ForeignKey('projects.Task',
                                  null=True,
                                  blank=True,

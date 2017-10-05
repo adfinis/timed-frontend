@@ -56,6 +56,7 @@ class ActivityFactory(DjangoModelFactory):
 
     comment = Faker('sentence')
     task    = SubFactory('timed.projects.factories.TaskFactory')
+    date    = Faker('date')
     user    = SubFactory('timed.employment.factories.UserFactory')
 
     class Meta:

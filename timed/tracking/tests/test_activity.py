@@ -74,6 +74,7 @@ class ActivityTests(JSONAPITestCase):
                 'type': 'activities',
                 'id': None,
                 'attributes': {
+                    'date': '2017-01-01',
                     'comment': 'Test activity'
                 },
                 'relationships': {
@@ -197,6 +198,7 @@ class ActivityTests(JSONAPITestCase):
                 'type': 'activities',
                 'id': None,
                 'attributes': {
+                    'date': '2017-01-01',
                     'comment': 'Test activity'
                 },
                 'relationships': {
