@@ -9,7 +9,6 @@
         <tbody>
           {{#each activities as |activity|}}
           <tr
-            class="{{if activity.overlaps 'danger'}}"
             title="Click to edit"
             data-test-activity-row
             data-test-activity-row-id={{activity.id}}
@@ -29,12 +28,6 @@
               </td>
               <td>{{activity.comment}}</td>
               <td>
-                {{#if activity.overlaps}}
-                  <span title="This activity has an overlapping block" class="error-text">
-                    {{fa-icon 'warning'}}
-                    &nbsp;
-                  </span>
-                {{/if}}
                 {{#if activity.active}}
                   {{duration-since activity.activeBlock.from elapsed=activity.duration}}
                 {{else}}
@@ -72,16 +65,16 @@
   </div>
 </div>
 
-{{#sy-modal visible=showOverlappingWarning as |modal|}}
+{{#sy-modal visible=showActiveWarning as |modal|}}
   {{#modal.header}}
-    Activities overlap
+    Active activity
   {{/modal.header}}
   {{#modal.body}}
-    Overlapping activities will not be taken into account for the timesheet.
+    Active activities will not be taken into account for the timesheet.
   {{/modal.body}}
-  {{#modal.footer data-test-overlap-warning}}
-   <button class="btn btn-primary" {{action (if showUnknownWarning (action (mut showOverlappingWarning) false) 'generateReports')}}>That's fine</button>
-   <button class="btn btn-default" {{action (queue (action (mut showOverlappingWarning) false) (action (mut showUnknownWarning) false))}}>Cancel</button>
+  {{#modal.footer data-test-active-warning}}
+   <button class="btn btn-primary" {{action (if showUnknownWarning (action (mut showActiveWarning) false) 'generateReports')}}>That's fine</button>
+   <button class="btn btn-default" {{action (queue (action (mut showActiveWarning) false) (action (mut showUnknownWarning) false))}}>Cancel</button>
   {{/modal.footer}}
 {{/sy-modal}}
 
@@ -93,7 +86,7 @@
     Unknown tasks will not be taken into account for the timesheet.
   {{/modal.body}}
   {{#modal.footer data-test-unknown-warning}}
-   <button class="btn btn-primary" {{action (if showOverlappingWarning (action (mut showUnknownWarning) false) 'generateReports')}}>That's fine</button>
-   <button class="btn btn-default" {{action (queue (action (mut showUnknownWarning) false) (action (mut showOverlappingWarning) false))}}>Cancel</button>
+   <button class="btn btn-primary" {{action (if showActiveWarning (action (mut showUnknownWarning) false) 'generateReports')}}>That's fine</button>
+   <button class="btn btn-default" {{action (queue (action (mut showUnknownWarning) false) (action (mut showActiveWarning) false))}}>Cancel</button>
   {{/modal.footer}}
 {{/sy-modal}}

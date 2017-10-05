@@ -101,19 +101,8 @@ export default Model.extend({
   },
 
   /**
-   * Whether the activity has any overlapping blocks
-   *
-   * @property {Boolean} overlaps
-   * @public
-   */
-  @computed('date', 'active')
-  overlaps(date, active) {
-    return active && !date.isSame(moment(), 'day')
-  },
-
-  /**
    * Start the activity
-   * 
+   *
    * @method start
    * @public
    */
@@ -142,9 +131,9 @@ export default Model.extend({
 
   /**
    * Stop the activity
-   * 
+   *
    * When stopping an activity of a past day, we need to split it
-   * 
+   *
    * @method stop
    * @public
    */
