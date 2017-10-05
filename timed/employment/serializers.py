@@ -1,16 +1,16 @@
 """Serializers for the employment app."""
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 from django.contrib.auth import get_user_model
 from django.utils.duration import duration_string
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_json_api import relations
-from rest_framework_json_api.serializers import (DurationField, IntegerField,
-                                                 ModelSerializer,
+from rest_framework_json_api.serializers import (IntegerField, ModelSerializer,
                                                  SerializerMethodField)
 
 from timed.employment import models
+from timed.tracking.models import Absence
 
 
 class UserSerializer(ModelSerializer):
@@ -171,7 +171,7 @@ class UserAbsenceTypeSerializer(ModelSerializer):
 
     credit          = IntegerField()
     used_days       = IntegerField()
-    used_duration   = DurationField()
+    used_duration   = SerializerMethodField(source='get_used_duration')
     balance         = IntegerField()
 
     user            = relations.SerializerMethodResourceRelatedField(
@@ -189,6 +189,26 @@ class UserAbsenceTypeSerializer(ModelSerializer):
 
     def get_user(self, instance):
         return get_user_model().objects.get(pk=instance.user_id)
+
+    def get_used_duration(self, instance):
+        # only calculate worktime if it fills up day
+        if not instance.fill_worktime:
+            return None
+
+        absences = sum([
+            absence.calculate_duration(
+                models.Employment.objects.get_at(
+                    instance.user_id, absence.date
+                )
+            )
+            for absence in Absence.objects.filter(
+                user=instance.user_id,
+                date__gte=instance.start_date,
+                date__lte=instance.end_date,
+                type_id=instance.id
+            )
+        ], timedelta())
+        return duration_string(absences)
 
     def get_absence_credits(self, instance):
         """Get the absence credits for the user and type."""

@@ -129,9 +129,6 @@ class Report(models.Model):
 
         This rounds the duration of the report to the nearest 15 minutes.
         However, the duration must at least be 15 minutes long.
-        It also checks if an absence which should fill the expected worktime
-        exists on this date. If so, the duration of the absence needs to be
-        updated, by saving the absence again.
         """
         self.duration = timedelta(
             seconds=max(
@@ -141,13 +138,6 @@ class Report(models.Model):
         )
 
         super().save(*args, **kwargs)
-
-        for absence in Absence.objects.filter(
-            user=self.user,
-            date=self.date,
-            type__fill_worktime=True
-        ):
-            absence.save()
 
     def __str__(self):
         """Represent the model as a string.
@@ -172,40 +162,31 @@ class Absence(models.Model):
 
     comment  = models.TextField(blank=True)
     date     = models.DateField()
-    duration = models.DurationField(default=timedelta())
     type     = models.ForeignKey('employment.AbsenceType',
                                  related_name='absences')
     user     = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  related_name='absences')
 
-    def save(self, *args, **kwargs):
-        """Compute the duration of the absence and save it.
-
-        The duration of an absence should be the worktime per day of the
-        employment. Unless an absence type should only fill the worktime (e.g
-        sickness), in which case the duration of the absence needs to fill the
-        difference between the reported time and the worktime per day.
+    def calculate_duration(self, employment):
         """
-        from timed.employment.models import Employment
-        employment = Employment.objects.get_at(self.user, self.date)
+        Calculate duration of absence with given employment.
 
-        if self.type.fill_worktime:
-            worktime = sum(
-                Report.objects.filter(
-                    date=self.date,
-                    user=self.user
-                ).values_list('duration', flat=True),
-                timedelta()
-            )
+        For fullday absences duration is equal worktime per day of employment
+        for absences which need to fill day calcuation needs to check
+        how much time has been reported on that day.
+        """
+        if not self.type.fill_worktime:
+            return employment.worktime_per_day
 
-            self.duration = max(
-                timedelta(),
-                employment.worktime_per_day - worktime
-            )
-        else:
-            self.duration = employment.worktime_per_day
+        reports = Report.objects.filter(date=self.date, user=self.user)
+        data = reports.aggregate(reported_time=models.Sum('duration'))
+        reported_time = data['reported_time'] or timedelta()
+        if reported_time >= employment.worktime_per_day:
+            # prevent negative duration in case user already
+            # reported more time than worktime per day
+            return timedelta()
 
-        super().save(*args, **kwargs)
+        return employment.worktime_per_day - reported_time
 
     class Meta:
         """Meta informations for the absence model."""

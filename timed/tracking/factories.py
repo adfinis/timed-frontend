@@ -8,7 +8,6 @@ from factory.django import DjangoModelFactory
 from faker import Factory as FakerFactory
 from pytz import timezone
 
-from timed.employment.models import Employment
 from timed.tracking import models
 
 tzinfo = timezone('Europe/Zurich')
@@ -100,18 +99,6 @@ class AbsenceFactory(DjangoModelFactory):
     user = SubFactory('timed.employment.factories.UserFactory')
     type = SubFactory('timed.employment.factories.AbsenceTypeFactory')
     date = Faker('date')
-
-    @lazy_attribute
-    def duration(self):
-        """Take the users employment worktime per day as duration.
-
-        :return: The computed duration
-        :rtype:  datetime.timedelta
-        """
-        return Employment.objects.get_at(
-            self.user,
-            self.date
-        ).worktime_per_day
 
     class Meta:
         """Meta informations for the absence factory."""
