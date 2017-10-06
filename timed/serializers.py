@@ -19,7 +19,7 @@ class DictObjectSerializer(Serializer):
     Serializer wrapping object into a `DictObject`.
 
     Adds support to serialize plain dicts with json api renderer
-    as such expects a values to be attributes.
+    as such expects values to be attributes.
     Note that dict needs to have a pk key to work as json api resource.
 
     Example:
