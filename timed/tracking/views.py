@@ -188,6 +188,21 @@ class ReportViewSet(ModelViewSet):
         serializer = serializers.ReportByMonthSerializer(queryset, many=True)
         return Response(data=serializer.data)
 
+    @list_route(
+        methods=['get'],
+        url_path='by-user',
+        serializer_class=serializers.ReportByUserSerializer,
+        ordering_fields=('user__username', 'duration')
+    )
+    def by_user(self, request):
+        """Group report durations by user."""
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.values('user')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('user'))
+        serializer = serializers.ReportByUserSerializer(queryset, many=True)
+        return Response(data=serializer.data)
+
     def get_queryset(self):
         """Select related to reduce queries.
 

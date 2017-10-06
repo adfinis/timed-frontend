@@ -14,6 +14,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
 from timed.projects.models import Task
+from timed.relations import IdResourceRelatedField
 from timed.serializers import DictObjectSerializer
 from timed.tracking import models
 
@@ -131,6 +132,14 @@ class ReportByMonthSerializer(DictObjectSerializer):
 
     class Meta:
         resource_name = 'report-month'
+
+
+class ReportByUserSerializer(DictObjectSerializer):
+    duration = DurationField(read_only=True)
+    user = IdResourceRelatedField(model=get_user_model(), read_only=True)
+
+    class Meta:
+        resource_name = 'report-user'
 
 
 class ReportSerializer(ModelSerializer):
