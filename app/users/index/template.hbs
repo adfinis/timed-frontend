@@ -28,7 +28,7 @@
   <button type="button" class="btn" {{action 'resetFilters'}}>Reset</button>
 </form>
 
-{{#paginated-table data-test-users class='table--hover' as |t|}}
+{{#paginated-table class='table--hover' as |t|}}
   {{#t.head}}
     <tr>
       <th>Name</th>
@@ -39,7 +39,7 @@
   {{/t.head}}
   {{#t.body}}
     {{#each model as |user|}}
-      {{#link-to 'users.edit' user.id tagName='tr' class='pointer'}}
+      {{#link-to 'users.edit' user.id data-test-user-row tagName='tr' class='pointer'}}
         <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
         {{#if user.activeEmployment}}
           <td>{{user.activeEmployment.percentage}}%</td>
