@@ -1,8 +1,8 @@
 """Viewsets for the tracking app."""
 
 import django_excel
-from django.db.models import Sum
-from django.db.models.functions import ExtractMonth, ExtractYear
+from django.db.models import F, Sum, Value
+from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
 from rest_condition import C
 from rest_framework.decorators import list_route
@@ -165,6 +165,7 @@ class ReportViewSet(ModelViewSet):
         queryset = self.filter_queryset(self.get_queryset())
         queryset = queryset.annotate(year=ExtractYear('date')).values('year')
         queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('year'))
 
         serializer = serializers.ReportByYearSerializer(queryset, many=True)
         return Response(data=serializer.data)
@@ -183,6 +184,7 @@ class ReportViewSet(ModelViewSet):
         )
         queryset = queryset.values('year', 'month')
         queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=Concat('year', Value('-'), 'month'))
         serializer = serializers.ReportByMonthSerializer(queryset, many=True)
         return Response(data=serializer.data)
 

@@ -14,7 +14,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
 from timed.projects.models import Task
-from timed.serializers import PkDictSerializer
+from timed.serializers import DictObjectSerializer
 from timed.tracking import models
 
 
@@ -116,23 +116,18 @@ class AttendanceSerializer(ModelSerializer):
         ]
 
 
-class ReportByYearSerializer(PkDictSerializer):
+class ReportByYearSerializer(DictObjectSerializer):
     duration = DurationField(read_only=True)
     year = IntegerField(read_only=True)
 
     class Meta:
         resource_name = 'report-year'
-        pk_key = 'year'
 
 
-class ReportByMonthSerializer(PkDictSerializer):
+class ReportByMonthSerializer(DictObjectSerializer):
     duration = DurationField(read_only=True)
     year = IntegerField(read_only=True)
     month = IntegerField(read_only=True)
-
-    @classmethod
-    def get_pk(cls, item):
-        return '{0}-{1}'.format(item['year'], item['month'])
 
     class Meta:
         resource_name = 'report-month'

@@ -3,10 +3,10 @@ from datetime import timedelta
 import pytest
 from rest_framework_json_api.serializers import DurationField, IntegerField
 
-from timed.serializers import PkDictSerializer
+from timed.serializers import DictObjectSerializer
 
 
-class MyPkDictSerializer(PkDictSerializer):
+class MyPkDictSerializer(DictObjectSerializer):
     test_duration = DurationField()
     test_nr = IntegerField()
 
