@@ -118,6 +118,7 @@ class AttendanceSerializer(ModelSerializer):
 
 
 class ReportByYearSerializer(DictObjectSerializer):
+    # TODO add total
     duration = DurationField(read_only=True)
     year = IntegerField(read_only=True)
 
@@ -140,6 +141,14 @@ class ReportByUserSerializer(DictObjectSerializer):
 
     class Meta:
         resource_name = 'report-user'
+
+
+class ReportByTaskSerializer(DictObjectSerializer):
+    duration = DurationField(read_only=True)
+    task = IdResourceRelatedField(model=Task, read_only=True)
+
+    class Meta:
+        resource_name = 'report-task'
 
 
 class ReportSerializer(ModelSerializer):
