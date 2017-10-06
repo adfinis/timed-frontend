@@ -218,6 +218,21 @@ class ReportViewSet(ModelViewSet):
         serializer = serializers.ReportByTaskSerializer(queryset, many=True)
         return Response(data=serializer.data)
 
+    @list_route(
+        methods=['get'],
+        url_path='by-project',
+        serializer_class=serializers.ReportByProjectSerializer,
+        ordering_fields=('task__project__name', 'duration')
+    )
+    def by_project(self, request):
+        """Group report durations by project."""
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.values('task__project')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('task__project'))
+        serializer = serializers.ReportByProjectSerializer(queryset, many=True)
+        return Response(data=serializer.data)
+
     def get_queryset(self):
         """Select related to reduce queries.
 

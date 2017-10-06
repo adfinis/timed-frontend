@@ -663,3 +663,49 @@ def test_report_by_task(auth_client):
     ]
 
     assert json['data'] == expected_json
+
+
+def test_report_by_project(auth_client):
+    report = ReportFactory.create(duration=timedelta(hours=1))
+    ReportFactory.create(duration=timedelta(hours=2), task=report.task)
+    report2 = ReportFactory.create(duration=timedelta(hours=4))
+
+    url = reverse('report-by-project')
+    result = auth_client.get(url, data={'ordering': 'duration'})
+    assert result.status_code == 200
+
+    json = result.json()
+    expected_json = [
+        {
+            'type': 'report-project',
+            'id': str(report.task.project.id),
+            'attributes': {
+                'duration': '03:00:00'
+            },
+            'relationships': {
+                'project': {
+                    'data': {
+                        'id': str(report.task.project.id),
+                        'type': 'projects'
+                    }
+                }
+            }
+        },
+        {
+            'type': 'report-project',
+            'id': str(report2.task.project.id),
+            'attributes': {
+                'duration': '04:00:00'
+            },
+            'relationships': {
+                'project': {
+                    'data': {
+                        'id': str(report2.task.project.id),
+                        'type': 'projects'
+                    }
+                }
+            }
+        }
+    ]
+
+    assert json['data'] == expected_json

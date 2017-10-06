@@ -13,7 +13,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  ValidationError)
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
-from timed.projects.models import Task
+from timed.projects.models import Project, Task
 from timed.relations import IdResourceRelatedField
 from timed.serializers import DictObjectSerializer
 from timed.tracking import models
@@ -149,6 +149,15 @@ class ReportByTaskSerializer(DictObjectSerializer):
 
     class Meta:
         resource_name = 'report-task'
+
+
+class ReportByProjectSerializer(DictObjectSerializer):
+    duration = DurationField(read_only=True)
+    project = IdResourceRelatedField(source='task__project', model=Project,
+                                     read_only=True)
+
+    class Meta:
+        resource_name = 'report-project'
 
 
 class ReportSerializer(ModelSerializer):
