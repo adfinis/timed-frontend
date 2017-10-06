@@ -12,8 +12,11 @@ class PkDict(dict):
 class PkDictList(list):
     """List of pk dicts with additional pk attribute."""
 
-    def __init__(self, pk_key, data):
-        super().__init__([PkDict(val[pk_key], val) for val in data])
+    def __init__(self, serializer, data):
+        super().__init__([
+            PkDict(serializer.get_pk(val), val)
+            for val in data
+        ])
 
 
 class PkDictSerializer(Serializer):
@@ -38,9 +41,17 @@ class PkDictSerializer(Serializer):
     """
 
     def __new__(cls, instance, **kwargs):
-        pk_key = cls.Meta.pk_key
         if isinstance(instance, dict):
-            instance = PkDict(instance[pk_key], instance)
+            instance = PkDict(cls.get_pk(instance), instance)
         else:
-            instance = PkDictList(pk_key, instance)
+            instance = PkDictList(cls, instance)
         return super().__new__(cls, instance, **kwargs)
+
+    @classmethod
+    def get_pk(cls, item):
+        """
+        Get primary key of given item.
+
+        Takes dict value of configured pk_key.
+        """
+        return item[cls.Meta.pk_key]

@@ -546,10 +546,25 @@ def test_report_by_month(auth_client):
     assert result.status_code == 200
 
     json = result.json()
-    assert len(json['data']) == 2
-    assert json['data'][0]['year'] == 2015
-    assert json['data'][0]['month'] == 12
-    assert json['data'][0]['duration'] == '03:00:00'
-    assert json['data'][1]['year'] == 2016
-    assert json['data'][1]['month'] == 1
-    assert json['data'][1]['duration'] == '01:00:00'
+    expected_json = [
+        {
+            'type': 'report-month',
+            'id': '2015-12',
+            'attributes': {
+                'year': 2015,
+                'month': 12,
+                'duration': '03:00:00'
+            }
+        },
+        {
+            'type': 'report-month',
+            'id': '2016-1',
+            'attributes': {
+                'year': 2016,
+                'month': 1,
+                'duration': '01:00:00'
+            }
+        }
+    ]
+
+    assert json['data'] == expected_json

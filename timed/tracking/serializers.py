@@ -125,6 +125,19 @@ class ReportByYearSerializer(PkDictSerializer):
         pk_key = 'year'
 
 
+class ReportByMonthSerializer(PkDictSerializer):
+    duration = DurationField(read_only=True)
+    year = IntegerField(read_only=True)
+    month = IntegerField(read_only=True)
+
+    @classmethod
+    def get_pk(cls, item):
+        return '{0}-{1}'.format(item['year'], item['month'])
+
+    class Meta:
+        resource_name = 'report-month'
+
+
 class ReportSerializer(ModelSerializer):
     """Report serializer."""
 

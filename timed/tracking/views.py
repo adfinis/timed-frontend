@@ -4,7 +4,6 @@ import django_excel
 from django.db.models import Sum
 from django.db.models.functions import ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
-from django.utils.duration import duration_string
 from rest_condition import C
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
@@ -168,6 +167,23 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.annotate(duration=Sum('duration'))
 
         serializer = serializers.ReportByYearSerializer(queryset, many=True)
+        return Response(data=serializer.data)
+
+    @list_route(
+        methods=['get'],
+        url_path='by-month',
+        serializer_class=serializers.ReportByMonthSerializer,
+        ordering_fields=('year', 'month', 'duration')
+    )
+    def by_month(self, request):
+        """Group report durations by month."""
+        queryset = self.filter_queryset(self.get_queryset())
+        queryset = queryset.annotate(
+            year=ExtractYear('date'), month=ExtractMonth('date')
+        )
+        queryset = queryset.values('year', 'month')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        serializer = serializers.ReportByMonthSerializer(queryset, many=True)
         return Response(data=serializer.data)
 
     def get_queryset(self):
