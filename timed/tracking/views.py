@@ -167,7 +167,9 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('year'))
 
-        serializer = serializers.ReportByYearSerializer(queryset, many=True)
+        serializer = serializers.ReportByYearSerializer(
+            queryset, many=True, context={'view': self}
+        )
         return Response(data=serializer.data)
 
     @list_route(
@@ -185,7 +187,9 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.values('year', 'month')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=Concat('year', Value('-'), 'month'))
-        serializer = serializers.ReportByMonthSerializer(queryset, many=True)
+        serializer = serializers.ReportByMonthSerializer(
+            queryset, many=True, context={'view': self}
+        )
         return Response(data=serializer.data)
 
     @list_route(
@@ -200,7 +204,9 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.values('user')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('user'))
-        serializer = serializers.ReportByUserSerializer(queryset, many=True)
+        serializer = serializers.ReportByUserSerializer(
+            queryset, many=True, context={'view': self}
+        )
         return Response(data=serializer.data)
 
     @list_route(
@@ -215,7 +221,9 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.values('task')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('task'))
-        serializer = serializers.ReportByTaskSerializer(queryset, many=True)
+        serializer = serializers.ReportByTaskSerializer(
+            queryset, many=True, context={'view': self}
+        )
         return Response(data=serializer.data)
 
     @list_route(
@@ -230,7 +238,9 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.values('task__project')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('task__project'))
-        serializer = serializers.ReportByProjectSerializer(queryset, many=True)
+        serializer = serializers.ReportByProjectSerializer(
+            queryset, many=True, context={'view': self}
+        )
         return Response(data=serializer.data)
 
     @list_route(
@@ -246,7 +256,7 @@ class ReportViewSet(ModelViewSet):
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('task__project__customer'))
         serializer = serializers.ReportByCustomerSerializer(
-            queryset, many=True
+            queryset, many=True, context={'view': self}
         )
         return Response(data=serializer.data)
 

@@ -534,6 +534,7 @@ def test_report_by_year(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert json['meta']['total-time'] == '03:00:00'
 
 
 def test_report_by_month(auth_client):
@@ -568,6 +569,7 @@ def test_report_by_month(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert json['meta']['total-time'] == '04:00:00'
 
 
 def test_report_by_user(auth_client):
@@ -615,6 +617,7 @@ def test_report_by_user(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert json['meta']['total-time'] == '05:00:00'
 
 
 def test_report_by_task(auth_client):
@@ -663,6 +666,7 @@ def test_report_by_task(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert json['meta']['total-time'] == '05:00:00'
 
 
 def test_report_by_project(auth_client):
@@ -709,6 +713,7 @@ def test_report_by_project(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert json['meta']['total-time'] == '07:00:00'
 
 
 def test_report_by_customer(auth_client):
@@ -721,7 +726,7 @@ def test_report_by_customer(auth_client):
     assert result.status_code == 200
 
     json = result.json()
-    expected_json = [
+    expected_data = [
         {
             'type': 'report-customer',
             'id': str(report.task.project.customer.id),
@@ -754,4 +759,5 @@ def test_report_by_customer(auth_client):
         }
     ]
 
-    assert json['data'] == expected_json
+    assert json['data'] == expected_data
+    assert json['meta']['total-time'] == '07:00:00'

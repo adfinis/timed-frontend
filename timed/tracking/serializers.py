@@ -117,8 +117,21 @@ class AttendanceSerializer(ModelSerializer):
         ]
 
 
-class ReportByYearSerializer(DictObjectSerializer):
-    # TODO add total
+class TotalTimeRootMetaMixin(object):
+    def get_root_meta(self, resource, many):
+        """Add total hours over whole result (not just page) to meta."""
+        if many:
+            view = self.context['view']
+            queryset = view.filter_queryset(view.get_queryset())
+            data = queryset.aggregate(total_time=Sum('duration'))
+            data['total_time'] = duration_string(
+                data['total_time'] or timedelta(0)
+            )
+            return data
+        return {}
+
+
+class ReportByYearSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
     year = IntegerField(read_only=True)
 
@@ -126,7 +139,7 @@ class ReportByYearSerializer(DictObjectSerializer):
         resource_name = 'report-year'
 
 
-class ReportByMonthSerializer(DictObjectSerializer):
+class ReportByMonthSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
     year = IntegerField(read_only=True)
     month = IntegerField(read_only=True)
@@ -135,7 +148,7 @@ class ReportByMonthSerializer(DictObjectSerializer):
         resource_name = 'report-month'
 
 
-class ReportByUserSerializer(DictObjectSerializer):
+class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
     user = IdResourceRelatedField(model=get_user_model(), read_only=True)
 
@@ -143,7 +156,7 @@ class ReportByUserSerializer(DictObjectSerializer):
         resource_name = 'report-user'
 
 
-class ReportByTaskSerializer(DictObjectSerializer):
+class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
     task = IdResourceRelatedField(model=Task, read_only=True)
 
@@ -151,7 +164,7 @@ class ReportByTaskSerializer(DictObjectSerializer):
         resource_name = 'report-task'
 
 
-class ReportByProjectSerializer(DictObjectSerializer):
+class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
     project = IdResourceRelatedField(source='task__project', model=Project,
                                      read_only=True)
@@ -160,7 +173,7 @@ class ReportByProjectSerializer(DictObjectSerializer):
         resource_name = 'report-project'
 
 
-class ReportByCustomerSerializer(DictObjectSerializer):
+class ReportByCustomerSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
     customer = IdResourceRelatedField(source='task__project__customer',
                                       model=Customer, read_only=True)
@@ -169,7 +182,7 @@ class ReportByCustomerSerializer(DictObjectSerializer):
         resource_name = 'report-customer'
 
 
-class ReportSerializer(ModelSerializer):
+class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
     """Report serializer."""
 
     task         = ResourceRelatedField(queryset=Task.objects.all())
@@ -224,18 +237,6 @@ class ReportSerializer(ModelSerializer):
                 raise ValidationError(_('Only owner may change duration'))
 
         return value
-
-    def get_root_meta(self, resource, many):
-        """Add total hours over whole result (not just page) to meta."""
-        if many:
-            view = self.context['view']
-            queryset = view.filter_queryset(view.get_queryset())
-            data = queryset.aggregate(total_time=Sum('duration'))
-            data['total_time'] = duration_string(
-                data['total_time'] or timedelta(0)
-            )
-            return data
-        return {}
 
     class Meta:
         """Meta information for the report serializer."""
