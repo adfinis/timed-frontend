@@ -15,12 +15,11 @@ from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
                                    HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
                                    HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN)
 
-from timed.employment.factories import (AbsenceTypeFactory, EmploymentFactory,
-                                        UserFactory)
+from timed.employment.factories import UserFactory
 from timed.jsonapi_test_case import JSONAPIClient, JSONAPITestCase
 from timed.projects.factories import TaskFactory
-from timed.tracking.factories import AbsenceFactory, ReportFactory
-from timed.tracking.models import Absence, Report
+from timed.tracking.factories import ReportFactory
+from timed.tracking.models import Report
 
 
 class ReportTests(JSONAPITestCase):
@@ -450,28 +449,6 @@ class ReportTests(JSONAPITestCase):
         report.save()
 
         assert duration_string(report.duration) == '02:00:00'
-
-    def test_absence_update_on_create_report(self):
-        """Should update the absence after creating a new report."""
-        task = TaskFactory.create()
-        type = AbsenceTypeFactory.create(fill_worktime=True)
-        day  = date(2017, 5, 3)
-
-        employment = EmploymentFactory.create(user=self.user, start_date=day)
-
-        absence = AbsenceFactory.create(user=self.user, date=day, type=type)
-
-        Report.objects.create(
-            user=self.user,
-            date=day,
-            task=task,
-            duration=timedelta(hours=1)
-        )
-
-        assert (
-            Absence.objects.get(pk=absence.pk).duration ==
-            employment.worktime_per_day - timedelta(hours=1)
-        )
 
 
 class TestReportHypo(TestCase):

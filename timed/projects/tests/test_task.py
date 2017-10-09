@@ -59,6 +59,18 @@ class TaskTests(JSONAPITestCase):
         ReportFactory.create_batch(
             4, date=old_report_date, user=self.user, task=self.tasks[2]
         )
+        # tasks[3] should not appear in result, as project is archived
+        self.tasks[3].project.archived = True
+        self.tasks[3].project.save()
+        ReportFactory.create_batch(
+            4, date=report_date, user=self.user, task=self.tasks[3]
+        )
+        # tasks[4] should not appear in result, as task is archived
+        self.tasks[4].archived = True
+        self.tasks[4].save()
+        ReportFactory.create_batch(
+            4, date=report_date, user=self.user, task=self.tasks[4]
+        )
 
         url = reverse('task-list')
 
