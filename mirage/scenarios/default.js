@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 export default function(server) {
-  server.logging = false
+  // server.logging = false
 
   server.loadFixtures('absence-types')
 
@@ -12,6 +12,9 @@ export default function(server) {
     lastName: 'Doe',
     password: '123qwe'
   })
+
+  server.createList('user', 5, { supervisorIds: [user.id] })
+  server.createList('user', 5)
 
   server.createList('report', 5, { userId: user.id })
 

@@ -8,9 +8,12 @@
       {{/if}}
     {{/sy-sidenav-list}}
 
-    {{#if (and model.isStaff (or media.isMd media.isLg media.isXl))}}
+    {{#if model.isStaff}}
       {{#sy-sidenav-list 'Staff Menu'}}
-        {{sy-sidenav-item 'reschedule' 'refresh' 'Reschedule'}}
+        {{#if (or media.isMd media.isLg media.isXl)}}
+          {{sy-sidenav-item 'reschedule' 'refresh' 'Reschedule'}}
+        {{/if}}
+        {{sy-sidenav-item 'users' 'users' 'Users'}}
       {{/sy-sidenav-list}}
     {{/if}}
     {{#sy-sidenav-list class='sy-sidenav-list--logout'}}

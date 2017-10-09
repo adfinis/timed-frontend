@@ -136,7 +136,15 @@ export default function() {
     }
   })
 
-  this.get('/users')
+  this.get('/users', function({ users }, { queryParams: { supervisor } }) {
+    if (supervisor) {
+      return users.where(user => {
+        return user.supervisorIds && user.supervisorIds.includes(supervisor)
+      })
+    }
+
+    return users.all()
+  })
   this.get('/users/:id')
   this.patch('/users/:id')
 
