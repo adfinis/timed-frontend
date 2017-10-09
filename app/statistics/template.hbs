@@ -1,0 +1,30 @@
+<h1>Statistics</h1>
+
+{{report-filter
+  billingTypes  = billingTypes
+  initial       = (hash
+    customer    = _customer
+    project     = _project
+    task        = _task
+    user        = _user
+    reviewer    = _reviewer
+    billingType = billing_type
+    fromDate    = _from
+    toDate      = _to
+    review      = review
+    notBillable = not_billable
+    notVerified = not_verified
+  )
+  on-apply      = (action 'applyFilter')
+}}
+
+<ul class="nav-tabs">
+  <li>{{#link-to 'statistics.customer'}}By customer{{/link-to}}</li>
+  <li>{{#link-to 'statistics.project'}}By project{{/link-to}}</li>
+  <li>{{#link-to 'statistics.task'}}By task{{/link-to}}</li>
+  <li>{{#link-to 'statistics.user'}}By user{{/link-to}}</li>
+  <li>{{#link-to 'statistics.year'}}By year{{/link-to}}</li>
+  <li>{{#link-to 'statistics.month'}}By month{{/link-to}}</li>
+</ul>
+
+{{outlet}}

@@ -19,6 +19,14 @@ ApplicationRouter.map(function() {
       this.route('attendances')
       this.route('reports')
     })
+    this.route('statistics', { resetNamespace }, function() {
+      this.route('customer')
+      this.route('project')
+      this.route('user')
+      this.route('task')
+      this.route('year')
+      this.route('month')
+    })
     this.route('me', { resetNamespace })
     this.route('analysis', { resetNamespace })
     this.route('reschedule', { resetNamespace })
@@ -27,6 +35,7 @@ ApplicationRouter.map(function() {
     })
     this.route('notfound', { resetNamespace, path: '/*path' })
   })
+  this.route('statistics', function() {});
 })
 
 export default ApplicationRouter
