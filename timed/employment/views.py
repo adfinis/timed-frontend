@@ -20,6 +20,7 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
     serializer_class = serializers.UserSerializer
     filter_class = filters.UserFilterSet
+    search_fields = ('username', 'first_name', 'last_name')
 
     def get_queryset(self):
         return get_user_model().objects.prefetch_related('employments')
