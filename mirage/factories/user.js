@@ -9,6 +9,7 @@ export default Factory.extend({
 
   isStaff: true,
   isActive: true,
+  isSuperuser: false,
   tourDone: true,
 
   username() {

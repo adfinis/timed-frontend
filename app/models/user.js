@@ -66,6 +66,14 @@ export default Model.extend({
   isStaff: attr('boolean'),
 
   /**
+   * Defines if the user is a superuser
+   *
+   * @property {Boolean} isSuperuser
+   * @public
+   */
+  isSuperuser: attr('boolean'),
+
+  /**
    * Whether a user is active
    *
    * @property {Boolean} isActive
@@ -80,6 +88,22 @@ export default Model.extend({
    * @public
    */
   tourDone: attr('boolean'),
+
+  /**
+   * The users supervisors
+   *
+   * @property {User[]} supervisors
+   * @public
+   */
+  supervisors: hasMany('user', { inverse: 'supervisees' }),
+
+  /**
+   * The users supervisees
+   *
+   * @property {User[]} supervisees
+   * @public
+   */
+  supervisees: hasMany('user', { inverse: 'supervisors' }),
 
   /**
    * The users employments
@@ -107,7 +131,7 @@ export default Model.extend({
    */
   @computed('firstName', 'lastName')
   fullName(firstName, lastName) {
-    if (!firstName || !lastName) {
+    if (!firstName && !lastName) {
       return ''
     }
 

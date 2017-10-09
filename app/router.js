@@ -22,6 +22,9 @@ ApplicationRouter.map(function() {
     this.route('me', { resetNamespace })
     this.route('analysis', { resetNamespace })
     this.route('reschedule', { resetNamespace })
+    this.route('users', { resetNamespace }, function() {
+      this.route('edit', { path: '/:id' })
+    })
     this.route('notfound', { resetNamespace, path: '/*path' })
   })
 })
