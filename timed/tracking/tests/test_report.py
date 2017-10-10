@@ -481,7 +481,7 @@ class TestReportHypo(TestCase):
         client.login('test', '1234qwer')
         url = reverse('report-export')
 
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(2):
             user_res = client.get(url, data={
                 'file_type': file_type
             })
