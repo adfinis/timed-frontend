@@ -79,8 +79,9 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     async startActivity(activity) {
-      if (!activity.get('start').isSame(moment(), 'day')) {
+      if (!activity.get('date').isSame(moment(), 'day')) {
         activity = this.store.createRecord('activity', {
+          date: moment(),
           ...activity.getProperties('task', 'comment')
         })
       }
@@ -120,9 +121,11 @@ export default Route.extend(RouteAutostartTourMixin, {
         'task.id',
         undefined
       )
-      let hasOverlapping = !!this.get('controller.activities').findBy(
-        'overlaps'
-      )
+      let hasOverlapping = !!this.get('controller.activities').find(a => {
+        return (
+          a.get('active') && !a.get('activeBlock.from').isSame(moment(), 'day')
+        )
+      })
 
       this.set('controller.showUnknownWarning', hasUnknown)
       this.set('controller.showOverlappingWarning', hasOverlapping)
@@ -145,7 +148,14 @@ export default Route.extend(RouteAutostartTourMixin, {
       try {
         await RSVP.all(
           this.get('controller.activities')
-            .filter(a => a.get('task.id') && !a.get('overlaps'))
+            .filter(
+              a =>
+                a.get('task.id') &&
+                !(
+                  a.get('active') &&
+                  !a.get('activeBlock.from').isSame(moment(), 'day')
+                )
+            )
             .map(async activity => {
               let duration = moment.duration(activity.get('duration'))
 
@@ -156,7 +166,7 @@ export default Route.extend(RouteAutostartTourMixin, {
               let data = {
                 activity,
                 duration,
-                date: activity.get('start'),
+                date: activity.get('date'),
                 task: activity.get('task'),
                 comment: activity.get('comment')
               }

@@ -19,22 +19,20 @@ import { belongsTo } from 'ember-data/relationships'
  */
 export default Model.extend({
   /**
-   * The start date and time
+   * The start time
    *
-   * @property from
-   * @type {moment}
+   * @property {moment} fromTime
    * @public
    */
-  from: attr('django-datetime'),
+  fromTime: attr('django-time'),
 
   /**
-   * The end date and time
+   * The end time
    *
-   * @property to
-   * @type {moment}
+   * @property {moment} toTime
    * @public
    */
-  to: attr('django-datetime'),
+  toTime: attr('django-time'),
 
   /**
    * The activity
@@ -46,13 +44,40 @@ export default Model.extend({
   activity: belongsTo('activity'),
 
   /**
-   * Whether the blocks overlaps a day
-   *
-   * @property {Boolean} overlaps
+   * The start time, with the date of the related activity
+   * 
+   * @property {moment} from
    * @public
    */
-  @computed('activity.start', 'to')
-  overlaps(start, to) {
-    return !(to || moment()).isSame(start, 'day')
+  @computed('activity.date', 'fromTime')
+  from(date, time) {
+    return (
+      time &&
+      moment(date).set({
+        h: time.hours(),
+        m: time.minutes(),
+        s: time.seconds(),
+        ms: time.milliseconds()
+      })
+    )
+  },
+
+  /**
+   * The end time, with the date of the related activity
+   * 
+   * @property {moment} to
+   * @public
+   */
+  @computed('activity.date', 'toTime')
+  to(date, time) {
+    return (
+      time &&
+      moment(date).set({
+        h: time.hours(),
+        m: time.minutes(),
+        s: time.seconds(),
+        ms: time.milliseconds()
+      })
+    )
   }
 })

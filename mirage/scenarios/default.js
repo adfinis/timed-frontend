@@ -1,5 +1,7 @@
+import moment from 'moment'
+
 export default function(server) {
-  // server.logging = false
+  server.logging = false
 
   server.loadFixtures('absence-types')
 
@@ -15,6 +17,11 @@ export default function(server) {
   server.createList('user', 5)
 
   server.createList('report', 5, { userId: user.id })
+
+  server.createList('activity', 2, {
+    date: moment().subtract(1, 'days'),
+    userId: user.id
+  })
 
   server.createList('activity', 3, { userId: user.id })
   server.create('activity', 'active', { userId: user.id })

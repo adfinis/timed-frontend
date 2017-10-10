@@ -1,21 +1,19 @@
 import { Factory, faker, trait } from 'ember-cli-mirage'
+import moment from 'moment'
 
 export default Factory.extend({
-  fromDatetime() {
-    let start = this.activity.date.clone()
+  fromTime: () => this.activity.date.clone().format('HH:mm:ss'),
 
-    return start
-  },
-
-  toDatetime() {
-    let start = this.fromDatetime.clone()
+  toTime() {
+    let start = moment(this.fromDatetime, 'HH:mm:ss')
 
     return start
       .add(faker.random.number({ min: 15, max: 60 }), 'minutes')
       .add(faker.random.number({ min: 0, max: 59 }), 'seconds')
+      .format('HH:mm:ss')
   },
 
   active: trait({
-    toDatetime: null
+    toTime: null
   })
 })

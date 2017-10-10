@@ -23,7 +23,6 @@
         <tbody>
           {{#each (reject-by 'isDeleted' true blocks) as |block|}}
             <tr
-              class="{{if block.model.overlaps 'danger'}}"
               data-test-activity-block-row
               data-test-activity-block-row-id={{block.model.id}}
             >
@@ -57,11 +56,6 @@
                 }}
               </td>
               <td>
-                {{#if block.model.overlaps}}
-                  <span title="This block overlaps the day of the activity" class="error-text">
-                    {{fa-icon 'warning'}}
-                  </span>
-                {{/if}}
                 {{#if (and block.changeset.from block.changeset.to)}}
                   {{format-duration (moment-diff block.changeset.from block.changeset.to) false}}
                 {{/if}}
