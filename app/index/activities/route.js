@@ -121,12 +121,16 @@ export default Route.extend(RouteAutostartTourMixin, {
         'task.id',
         undefined
       )
-      let hasActive = !!this.get('controller.activities').findBy('active')
+      let hasOverlapping = !!this.get('controller.activities').find(a => {
+        return (
+          a.get('active') && !a.get('activeBlock.from').isSame(moment(), 'day')
+        )
+      })
 
       this.set('controller.showUnknownWarning', hasUnknown)
-      this.set('controller.showActiveWarning', hasActive)
+      this.set('controller.showOverlappingWarning', hasOverlapping)
 
-      if (!hasUnknown && !hasActive) {
+      if (!hasUnknown && !hasOverlapping) {
         this.send('generateReports')
       }
     },
@@ -139,14 +143,25 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async generateReports() {
       this.set('controller.showUnknownWarning', false)
-      this.set('controller.showActiveWarning', false)
+      this.set('controller.showOverlappingWarning', false)
 
       try {
         await RSVP.all(
           this.get('controller.activities')
-            .filter(a => a.get('task.id') && !a.get('active'))
+            .filter(
+              a =>
+                a.get('task.id') &&
+                !(
+                  a.get('active') &&
+                  !a.get('activeBlock.from').isSame(moment(), 'day')
+                )
+            )
             .map(async activity => {
               let duration = moment.duration(activity.get('duration'))
+
+              if (activity.get('active')) {
+                duration.add(moment().diff(activity.get('activeBlock.from')))
+              }
 
               let data = {
                 activity,

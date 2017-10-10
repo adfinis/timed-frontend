@@ -8,6 +8,7 @@ import attr from 'ember-data/attr'
 import moment from 'moment'
 import computed from 'ember-computed-decorators'
 import RSVP from 'rsvp'
+import { inject as service } from '@ember/service'
 
 import { belongsTo, hasMany } from 'ember-data/relationships'
 
@@ -75,6 +76,14 @@ export default Model.extend({
   blocks: hasMany('activity-block'),
 
   /**
+   * The notify service
+   *
+   * @property {EmberNotify.NotifyService} notify
+   * @public
+   */
+  notify: service('notify'),
+
+  /**
    * The currently active block
    *
    * @property activeBlock
@@ -132,7 +141,11 @@ export default Model.extend({
   /**
    * Stop the activity
    *
-   * When stopping an activity of a past day, we need to split it
+   * If the activity was started yesterday, we create a new identical
+   * activity today so we handle working over midnight
+   *
+   * If the activity was started even before, we ignore it since it must be
+   * a mistake, so we end the activity a second before midnight that day
    *
    * @method stop
    * @public
@@ -143,22 +156,21 @@ export default Model.extend({
       return
     }
 
-    let daysBetween = moment().diff(this.get('date'), 'days')
+    let activities = [this]
+
+    if (moment().diff(this.get('date'), 'days') === 1) {
+      activities.push(
+        this.get('store').createRecord('activity', {
+          task: this.get('task'),
+          comment: this.get('comment'),
+          user: this.get('user'),
+          date: moment(this.get('date')).add(1, 'days')
+        })
+      )
+    }
 
     await RSVP.all(
-      [
-        this,
-        ...Object.keys(Array(daysBetween).fill())
-          .map(Number)
-          .map(n => {
-            return this.get('store').createRecord('activity', {
-              task: this.get('task'),
-              comment: this.get('comment'),
-              user: this.get('user'),
-              date: moment(this.get('date')).add(n + 1, 'days')
-            })
-          })
-      ].map(async activity => {
+      activities.map(async activity => {
         if (activity.get('isNew')) {
           await activity.save()
         }
@@ -187,5 +199,11 @@ export default Model.extend({
         await block.save({ adapterOptions: { include: 'activity' } })
       })
     )
+
+    if (moment().diff(this.get('date'), 'days') > 1) {
+      this.get('notify').info(
+        'The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.'
+      )
+    }
   }
 })

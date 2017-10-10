@@ -4,7 +4,12 @@ import { expect } from 'chai'
 
 describe('Unit | Model | activity', function() {
   setupModelTest('activity', {
-    needs: ['model:activity-block', 'model:task', 'model:user']
+    needs: [
+      'model:activity-block',
+      'model:task',
+      'model:user',
+      'service:notify'
+    ]
   })
 
   it('exists', function() {

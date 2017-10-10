@@ -7,6 +7,7 @@ import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
 import moment from 'moment'
+import formatDuration from 'timed/utils/format-duration'
 
 describe('Acceptance | index activities', function() {
   let application
@@ -204,39 +205,43 @@ describe('Acceptance | index activities', function() {
     expect(currentURL()).to.equal('/reports')
   })
 
-  it('shows a warning when generating reports from active activities', async function() {
-    server.create('activity', 'active', { userId: this.user.id })
+  it('shows a warning when generating reports from overlapping activities', async function() {
+    let date = moment().subtract(1, 'days')
 
-    await visit('/')
+    server.create('activity', 'active', { userId: this.user.id, date })
 
-    await click('button:contains(Generate timesheet)')
-    await click('[data-test-active-warning] button:contains(Cancel)')
-
-    expect(currentURL()).to.equal('/')
+    await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
     await click('button:contains(Generate timesheet)')
-    await click('[data-test-active-warning] button:contains(fine)')
+    await click('[data-test-overlapping-warning] button:contains(Cancel)')
 
-    expect(currentURL()).to.equal('/reports')
+    expect(currentURL()).to.not.contain('reports')
+
+    await click('button:contains(Generate timesheet)')
+    await click('[data-test-overlapping-warning] button:contains(fine)')
+
+    expect(currentURL()).to.contain('reports')
   })
 
   it('can handle both warnings', async function() {
-    server.create('activity', 'unknown', { userId: this.user.id })
-    server.create('activity', 'active', { userId: this.user.id })
+    let date = moment().subtract(1, 'days')
 
-    await visit('/')
+    server.create('activity', 'unknown', { userId: this.user.id, date })
+    server.create('activity', 'active', { userId: this.user.id, date })
+
+    await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
     // both close if one clicks cancel
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-active-warning] button:contains(Cancel)')
+    await click('[data-test-overlapping-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
-    expect(currentURL()).to.equal('/')
+    expect(currentURL()).to.not.contain('reports')
 
     // both must be fine if it should continue
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-active-warning] button:contains(fine)')
+    await click('[data-test-overlapping-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
     await click('[data-test-unknown-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
@@ -245,21 +250,57 @@ describe('Acceptance | index activities', function() {
     expect(find('.modal--visible')).to.have.length(2)
     await click('[data-test-unknown-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
-    await click('[data-test-active-warning] button:contains(Cancel)')
+    await click('[data-test-overlapping-warning] button:contains(Cancel)')
     expect(find('.modal--visible')).to.have.length(0)
-    expect(currentURL()).to.equal('/')
+    expect(currentURL()).to.not.contain('reports')
 
     // if both are fine continue
     await click('button:contains(Generate timesheet)')
     expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-active-warning] button:contains(fine)')
+    await click('[data-test-overlapping-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(1)
     await click('[data-test-unknown-warning] button:contains(fine)')
     expect(find('.modal--visible')).to.have.length(0)
-    expect(currentURL()).to.equal('/reports')
+    expect(currentURL()).to.contain('reports')
   })
 
-  it('splits overlapping activities when stopping', async function() {
+  it('splits 1 day overlapping activities when stopping', async function() {
+    let activity = server.create('activity', 'active', {
+      userId: this.user.id,
+      date: moment().subtract(1, 'days')
+    })
+
+    await visit('/')
+
+    await click('[data-test-record-stop]')
+
+    // today block should be from 00:00 to now
+    expect(
+      find(`[data-test-activity-row] td:contains(${activity.comment})`)
+    ).to.have.length(1)
+
+    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+
+    expect(
+      find('[data-test-activity-block-row] td:eq(1) input').val()
+    ).to.equal('00:00')
+
+    // yesterday block should be from old start time to 23:59
+    await visit('/')
+    await click('[data-test-previous]')
+
+    expect(
+      find(`[data-test-activity-row] td:contains(${activity.comment})`)
+    ).to.have.length(1)
+
+    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+
+    expect(
+      find('[data-test-activity-block-row]:last td:eq(3) input').val()
+    ).to.equal('23:59')
+  })
+
+  it("doesn't split >1 days overlapping activities when stopping", async function() {
     let activity = server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(2, 'days')
@@ -269,45 +310,60 @@ describe('Acceptance | index activities', function() {
 
     await click('[data-test-record-stop]')
 
-    // todayday block should be from 00:00 to now
-    expect(find(`[data-test-activity-row] td:contains(${activity.comment})`)).to
-      .be.ok
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
-
+    // today block should not exist
     expect(
-      find('[data-test-activity-block-row] td:eq(1) input').val()
-    ).to.equal('00:00')
+      find(`[data-test-activity-row] td:contains(${activity.comment})`)
+    ).to.have.length(0)
 
-    // yesterday block should be from 00:00 to now
+    // yesterday block should not exist
     await visit('/')
     await click('[data-test-previous]')
 
-    expect(find(`[data-test-activity-row] td:contains(${activity.comment})`)).to
-      .be.ok
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
-
     expect(
-      find('[data-test-activity-block-row] td:eq(1) input').val()
-    ).to.equal('00:00')
-
-    expect(
-      find('[data-test-activity-block-row] td:eq(3) input').val()
-    ).to.equal('23:59')
+      find(`[data-test-activity-row] td:contains(${activity.comment})`)
+    ).to.have.length(0)
 
     // day before yesterday block should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')
     await click('[data-test-previous]')
 
-    expect(find(`[data-test-activity-row] td:contains(${activity.comment})`)).to
-      .be.ok
+    expect(
+      find(`[data-test-activity-row] td:contains(${activity.comment})`)
+    ).to.have.length(1)
 
     await click(`[data-test-activity-row] td:contains(${activity.comment})`)
 
     expect(
       find('[data-test-activity-block-row]:last td:eq(3) input').val()
     ).to.equal('23:59')
+  })
+
+  it('can generate active reports which do not overlap', async function() {
+    let activity = server.create('activity', 'active', { userId: this.user.id })
+    let { id, duration } = activity
+
+    duration = moment.duration(duration, 'HH:mm:ss').add(
+      moment().diff(
+        moment(
+          activity.blocks.models.find(b => {
+            return !b.toTime
+          }).fromTime,
+          'HH:mm:ss'
+        )
+      )
+    )
+
+    await visit('/')
+
+    await click(find('button:contains(Generate timesheet)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find('[data-test-report-row]')).to.have.length(7)
+
+    expect(
+      find(`${`[data-test-report-row-id="${id}"]`} [name=duration]`).val()
+    ).to.equal(formatDuration(duration, false))
   })
 })
