@@ -188,7 +188,7 @@ AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
 
-AUTH_LDAP_ENABLED = env.dict('DJANGO_AUTH_LDAP_ENABLED', default=False)
+AUTH_LDAP_ENABLED = env.bool('DJANGO_AUTH_LDAP_ENABLED', default=False)
 if AUTH_LDAP_ENABLED:  # pragma: todo cover
     AUTH_LDAP_USER_ATTR_MAP = env.dict(
         'DJANGO_AUTH_LDAP_USER_ATTR_MAP',
