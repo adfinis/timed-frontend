@@ -1,7 +1,7 @@
 """Filters for filtering the data of the employment app endpoints."""
 
 
-from django_filters import DateFilter, Filter, FilterSet
+from django_filters import DateFilter, Filter, FilterSet, NumberFilter
 
 from timed.employment import models
 
@@ -37,6 +37,9 @@ class PublicHolidayFilterSet(FilterSet):
 
 
 class UserFilterSet(FilterSet):
+    active = NumberFilter(name='is_active')
+    supervisor = Filter(name='supervisors__id', lookup_expr='contains')
+
     class Meta:
         model  = models.User
-        fields = ['is_active']
+        fields = ['active', 'supervisor']

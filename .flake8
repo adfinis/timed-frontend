@@ -17,7 +17,9 @@ ignore =
     # Missing docstring in magic method
     D105,
     # Missing docstring in public package
-    D106
+    D106,
+    # Missing docstring in __init__
+    D107
 
 exclude =
     manage.py,
