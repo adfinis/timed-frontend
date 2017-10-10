@@ -36,6 +36,15 @@ class BillingTypeSerializer(ModelSerializer):
         ]
 
 
+class CostCenterSerializer(ModelSerializer):
+    class Meta:
+        model  = models.CostCenter
+        fields = [
+            'name',
+            'reference'
+        ]
+
+
 class ProjectSerializer(ModelSerializer):
     """Project serializer."""
 
@@ -45,8 +54,9 @@ class ProjectSerializer(ModelSerializer):
     )
 
     included_serializers = {
-        'customer': 'timed.projects.serializers.CustomerSerializer',
-        'billing_type': 'timed.projects.serializers.BillingTypeSerializer'
+        'customer':     'timed.projects.serializers.CustomerSerializer',
+        'billing_type': 'timed.projects.serializers.BillingTypeSerializer',
+        'cost_center':  'timed.projects.serializers.CostCenterSerializer'
     }
 
     def get_root_meta(self, resource, many):
@@ -71,7 +81,8 @@ class ProjectSerializer(ModelSerializer):
             'estimated_time',
             'archived',
             'customer',
-            'billing_type'
+            'billing_type',
+            'cost_center'
         ]
 
 
@@ -81,8 +92,9 @@ class TaskSerializer(ModelSerializer):
     project = ResourceRelatedField(queryset=models.Project.objects.all())
 
     included_serializers = {
-        'activities': 'timed.tracking.serializers.ActivitySerializer',
-        'project':    'timed.projects.serializers.ProjectSerializer'
+        'activities':  'timed.tracking.serializers.ActivitySerializer',
+        'project':     'timed.projects.serializers.ProjectSerializer',
+        'cost_center': 'timed.projects.serializers.CostCenterSerializer'
     }
 
     def get_root_meta(self, resource, many):
@@ -106,4 +118,5 @@ class TaskSerializer(ModelSerializer):
             'estimated_time',
             'archived',
             'project',
+            'cost_center'
         ]
