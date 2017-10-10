@@ -146,7 +146,7 @@ export default Controller.extend({
      * @public
      */
     applyFilters() {
-      this.setProperties(this.get('filters'))
+      this.setProperties({ page: 1, ...this.get('filters') })
     },
 
     /**
