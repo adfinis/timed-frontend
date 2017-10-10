@@ -82,11 +82,12 @@ export default Controller.extend({
    * @property {Activity[]} _activities
    * @private
    */
-  @computed('date', '_allActivities.@each.{start,user,isDeleted}', 'user')
+  @computed('date', '_allActivities.@each.{date,user,isDeleted}', 'user')
   _activities(day, activities, user) {
     let activitiesThen = activities.filter(a => {
       return (
-        a.get('start').isSame(day, 'day') &&
+        a.get('date') &&
+        a.get('date').isSame(day, 'day') &&
         a.get('user.id') === user.get('id') &&
         !a.get('isDeleted')
       )
@@ -107,7 +108,7 @@ export default Controller.extend({
    * @property {moment.duration} activitySum
    * @public
    */
-  @computed('_activities.@each.{from,to}', '_activeActivityBlockDuration')
+  @computed('_activities.@each.duration', '_activeActivityBlockDuration')
   activitySum(activities, additional) {
     return activities.reduce((dur, cur) => {
       return dur.add(cur.get('duration'))
@@ -166,6 +167,7 @@ export default Controller.extend({
   _attendances(date, attendances, user) {
     return attendances.filter(a => {
       return (
+        a.get('date') &&
         a.get('date').isSame(date, 'day') &&
         a.get('user.id') === user.get('id') &&
         !a.get('isDeleted')
