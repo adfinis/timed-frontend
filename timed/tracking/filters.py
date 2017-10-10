@@ -34,7 +34,7 @@ class ActivityActiveFilter(Filter):
     """Filter to filter activities by being currently active or not.
 
     An activity is active, as soon as they have at least on activity
-    block which does not have to_datetime.
+    block which does not have to_time.
     """
 
     @boolean_filter
@@ -48,7 +48,7 @@ class ActivityActiveFilter(Filter):
         """
         return qs.filter(
             blocks__isnull=False,
-            blocks__to_datetime__exact=None
+            blocks__to_time__exact=None
         ).distinct()
 
 

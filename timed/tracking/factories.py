@@ -5,14 +5,8 @@ from random import randint
 
 from factory import Faker, SubFactory, lazy_attribute
 from factory.django import DjangoModelFactory
-from faker import Factory as FakerFactory
-from pytz import timezone
 
 from timed.tracking import models
-
-tzinfo = timezone('Europe/Zurich')
-
-faker = FakerFactory.create()
 
 
 class AttendanceFactory(DjangoModelFactory):
@@ -62,6 +56,7 @@ class ActivityFactory(DjangoModelFactory):
 
     comment = Faker('sentence')
     task    = SubFactory('timed.projects.factories.TaskFactory')
+    date    = Faker('date')
     user    = SubFactory('timed.employment.factories.UserFactory')
 
     class Meta:
@@ -73,19 +68,19 @@ class ActivityFactory(DjangoModelFactory):
 class ActivityBlockFactory(DjangoModelFactory):
     """Activity block factory."""
 
-    activity      = SubFactory(ActivityFactory)
-    from_datetime = Faker('date_time', tzinfo=tzinfo)
+    activity  = SubFactory(ActivityFactory)
+    from_time = Faker('time_object')
 
     @lazy_attribute
-    def to_datetime(self):
-        """Generate a datetime based on the from_datetime.
+    def from_time(self):
+        return datetime.time(
+            hour=randint(0, 22),
+            minute=randint(0, 59)
+        )
 
-        :return: The generated datetime
-        :rtype:  datetime.datetime
-        """
-        hours = randint(1, 5)
-
-        return self.from_datetime + datetime.timedelta(hours=hours)
+    @lazy_attribute
+    def to_time(self):
+        return self.from_time.replace(hour=self.from_time.hour + 1)
 
     class Meta:
         """Meta informations for the activity block factory."""

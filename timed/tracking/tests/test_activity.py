@@ -74,6 +74,7 @@ class ActivityTests(JSONAPITestCase):
                 'type': 'activities',
                 'id': None,
                 'attributes': {
+                    'date': '2017-01-01',
                     'comment': 'Test activity'
                 },
                 'relationships': {
@@ -152,7 +153,7 @@ class ActivityTests(JSONAPITestCase):
         activity = self.activities[0]
         block    = ActivityBlockFactory.create(activity=activity)
 
-        block.to_datetime = None
+        block.to_time = None
         block.save()
 
         url = reverse('activity-list')
@@ -197,6 +198,7 @@ class ActivityTests(JSONAPITestCase):
                 'type': 'activities',
                 'id': None,
                 'attributes': {
+                    'date': '2017-01-01',
                     'comment': 'Test activity'
                 },
                 'relationships': {
