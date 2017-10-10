@@ -158,7 +158,8 @@ class ReportViewSet(ModelViewSet):
         methods=['get'],
         url_path='by-year',
         serializer_class=serializers.ReportByYearSerializer,
-        ordering_fields=('year', 'duration')
+        ordering_fields=('year', 'duration'),
+        ordering=('year', )
     )
     def by_year(self, request):
         """Group report durations by year."""
@@ -176,7 +177,8 @@ class ReportViewSet(ModelViewSet):
         methods=['get'],
         url_path='by-month',
         serializer_class=serializers.ReportByMonthSerializer,
-        ordering_fields=('year', 'month', 'duration')
+        ordering_fields=('year', 'month', 'duration'),
+        ordering=('year', 'month')
     )
     def by_month(self, request):
         """Group report durations by month."""
@@ -196,7 +198,8 @@ class ReportViewSet(ModelViewSet):
         methods=['get'],
         url_path='by-user',
         serializer_class=serializers.ReportByUserSerializer,
-        ordering_fields=('user__username', 'duration')
+        ordering_fields=('user__username', 'duration'),
+        ordering=('user__username', )
     )
     def by_user(self, request):
         """Group report durations by user."""
@@ -213,7 +216,8 @@ class ReportViewSet(ModelViewSet):
         methods=['get'],
         url_path='by-task',
         serializer_class=serializers.ReportByTaskSerializer,
-        ordering_fields=('task__name', 'duration')
+        ordering_fields=('task__name', 'duration'),
+        ordering=('task__name', )
     )
     def by_task(self, request):
         """Group report durations by task."""
@@ -230,7 +234,8 @@ class ReportViewSet(ModelViewSet):
         methods=['get'],
         url_path='by-project',
         serializer_class=serializers.ReportByProjectSerializer,
-        ordering_fields=('task__project__name', 'duration')
+        ordering_fields=('task__project__name', 'duration'),
+        ordering=('task__project__name', )
     )
     def by_project(self, request):
         """Group report durations by project."""
@@ -247,7 +252,8 @@ class ReportViewSet(ModelViewSet):
         methods=['get'],
         url_path='by-customer',
         serializer_class=serializers.ReportByCustomerSerializer,
-        ordering_fields=('task__project__customer__name', 'duration')
+        ordering_fields=('task__project__customer__name', 'duration'),
+        ordering=('task__project__customer__name', )
     )
     def by_customer(self, request):
         """Group report durations by customer."""
