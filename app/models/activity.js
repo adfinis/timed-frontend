@@ -201,8 +201,11 @@ export default Model.extend({
     )
 
     if (moment().diff(this.get('date'), 'days') > 1) {
-      this.get('notify').info(
-        'The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.'
+      this.get(
+        'notify'
+      ).info(
+        'The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.',
+        { closeAfter: 5000 }
       )
     }
   }
