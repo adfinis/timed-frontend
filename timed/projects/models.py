@@ -33,6 +33,19 @@ class Customer(models.Model):
         ordering = ['name']
 
 
+class CostCenter(models.Model):
+    """Cost center defining how cost of projects and tasks are allocated."""
+
+    name      = models.CharField(max_length=255, unique=True)
+    reference = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        ordering = ['name']
+
+
 class BillingType(models.Model):
     """Billing type defining how a project, resp. reports are being billed."""
 
@@ -64,6 +77,9 @@ class Project(models.Model):
     billing_type    = models.ForeignKey(BillingType, on_delete=models.SET_NULL,
                                         blank=True, null=True,
                                         related_name='projects')
+    cost_center     = models.ForeignKey(CostCenter, on_delete=models.SET_NULL,
+                                        blank=True, null=True,
+                                        related_name='projects')
     reviewers       = models.ManyToManyField(settings.AUTH_USER_MODEL,
                                              related_name='reviews')
 
@@ -92,6 +108,9 @@ class Task(models.Model):
     estimated_time  = models.DurationField(blank=True, null=True)
     archived        = models.BooleanField(default=False)
     project         = models.ForeignKey('projects.Project',
+                                        related_name='tasks')
+    cost_center     = models.ForeignKey(CostCenter, on_delete=models.SET_NULL,
+                                        blank=True, null=True,
                                         related_name='tasks')
 
     def __str__(self):
