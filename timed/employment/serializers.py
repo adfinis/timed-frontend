@@ -76,6 +76,10 @@ class UserSerializer(ModelSerializer):
         return data
 
     included_serializers = {
+        'supervisors':
+            'timed.employment.serializers.UserSerializer',
+        'supervisees':
+            'timed.employment.serializers.UserSerializer',
         'employments':
             'timed.employment.serializers.EmploymentSerializer',
         'user_absence_types':
@@ -94,9 +98,12 @@ class UserSerializer(ModelSerializer):
             'employments',
             'worktime_balance',
             'is_staff',
+            'is_superuser',
             'is_active',
             'user_absence_types',
-            'tour_done'
+            'tour_done',
+            'supervisors',
+            'supervisees'
         ]
         read_only_fields = [
             'username',
@@ -104,6 +111,8 @@ class UserSerializer(ModelSerializer):
             'last_name',
             'is_staff',
             'is_active',
+            'supervisors',
+            'supervisees'
         ]
 
 

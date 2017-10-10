@@ -351,3 +351,19 @@ def test_user_worktime_balance(auth_client):
         result2['data']['attributes']['worktime-balance'] ==
         duration_string(timedelta(hours=28) - expected_worktime)
     )
+
+
+def test_user_supervisor_filter(auth_client):
+    """Should filter users by supervisor."""
+    supervisees = UserFactory.create_batch(5)
+
+    UserFactory.create_batch(5)
+
+    auth_client.user.supervisees.add(*supervisees)
+    auth_client.user.save()
+
+    res = auth_client.get(reverse('user-list'), {
+        'supervisor': auth_client.user.id
+    })
+
+    assert len(res.json()['data']) == 5
