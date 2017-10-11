@@ -5,6 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
+from rest_framework_json_api import relations
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  DurationField, IntegerField,
@@ -14,7 +15,6 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
 from timed.projects.models import Customer, Project, Task
-from timed.relations import IdResourceRelatedField
 from timed.serializers import DictObjectSerializer
 from timed.tracking import models
 
@@ -150,7 +150,17 @@ class ReportByMonthSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    user = IdResourceRelatedField(model=get_user_model(), read_only=True)
+    user = relations.SerializerMethodResourceRelatedField(
+        source='get_user', model=get_user_model(), read_only=True
+    )
+
+    def get_user(self, instance):
+        User = get_user_model()
+        return User.objects.get(id=instance.user_id)
+
+    included_serializers = {
+        'user': 'timed.employment.serializers.UserSerializer',
+    }
 
     class Meta:
         resource_name = 'report-users'
@@ -158,7 +168,16 @@ class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    task = IdResourceRelatedField(model=Task, read_only=True)
+    task = relations.SerializerMethodResourceRelatedField(
+        source='get_task', model=Task, read_only=True
+    )
+
+    def get_task(self, instance):
+        return Task.objects.get(id=instance.task_id)
+
+    included_serializers = {
+        'task': 'timed.projects.serializers.TaskSerializer',
+    }
 
     class Meta:
         resource_name = 'report-tasks'
@@ -166,8 +185,16 @@ class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    project = IdResourceRelatedField(source='task__project', model=Project,
-                                     read_only=True)
+    project = relations.SerializerMethodResourceRelatedField(
+        source='get_project', model=Project, read_only=True
+    )
+
+    def get_project(self, instance):
+        return Project.objects.get(id=instance.task__project_id)
+
+    included_serializers = {
+        'project': 'timed.projects.serializers.ProjectSerializer',
+    }
 
     class Meta:
         resource_name = 'report-projects'
@@ -175,8 +202,16 @@ class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByCustomerSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    customer = IdResourceRelatedField(source='task__project__customer',
-                                      model=Customer, read_only=True)
+    customer = relations.SerializerMethodResourceRelatedField(
+        source='get_customer', model=Customer, read_only=True
+    )
+
+    def get_customer(self, instance):
+        return Customer.objects.get(id=instance.task__project__customer_id)
+
+    included_serializers = {
+        'customer': 'timed.projects.serializers.CustomerSerializer',
+    }
 
     class Meta:
         resource_name = 'report-customers'

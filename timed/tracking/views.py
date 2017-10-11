@@ -204,9 +204,9 @@ class ReportViewSet(ModelViewSet):
     def by_user(self, request):
         """Group report durations by user."""
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.values('user')
+        queryset = queryset.values('user_id')
         queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('user'))
+        queryset = queryset.annotate(pk=F('user_id'))
         serializer = serializers.ReportByUserSerializer(
             queryset, many=True, context={'view': self}
         )
@@ -222,9 +222,9 @@ class ReportViewSet(ModelViewSet):
     def by_task(self, request):
         """Group report durations by task."""
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.values('task')
+        queryset = queryset.values('task_id')
         queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('task'))
+        queryset = queryset.annotate(pk=F('task_id'))
         serializer = serializers.ReportByTaskSerializer(
             queryset, many=True, context={'view': self}
         )
@@ -240,9 +240,9 @@ class ReportViewSet(ModelViewSet):
     def by_project(self, request):
         """Group report durations by project."""
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.values('task__project')
+        queryset = queryset.values('task__project_id')
         queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('task__project'))
+        queryset = queryset.annotate(pk=F('task__project_id'))
         serializer = serializers.ReportByProjectSerializer(
             queryset, many=True, context={'view': self}
         )
@@ -258,9 +258,9 @@ class ReportViewSet(ModelViewSet):
     def by_customer(self, request):
         """Group report durations by customer."""
         queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.values('task__project__customer')
+        queryset = queryset.values('task__project__customer_id')
         queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('task__project__customer'))
+        queryset = queryset.annotate(pk=F('task__project__customer_id'))
         serializer = serializers.ReportByCustomerSerializer(
             queryset, many=True, context={'view': self}
         )

@@ -32,12 +32,10 @@ class UserSerializer(ModelSerializer):
         :returns: All absence types for this user
         """
         request = self.context.get('request')
+        until = request and request.query_params.get('until')
 
         end = datetime.strptime(
-            request.query_params.get(
-                'until',
-                date.today().strftime('%Y-%m-%d')
-            ),
+            until or date.today().strftime('%Y-%m-%d'),
             '%Y-%m-%d'
         ).date()
         start = date(end.year, 1, 1)
@@ -60,7 +58,7 @@ class UserSerializer(ModelSerializer):
         :rtype:  str
         """
         request = self.context.get('request')
-        until = request.query_params.get('until')
+        until = request and request.query_params.get('until')
         end_date = until and datetime.strptime(until, '%Y-%m-%d').date()
 
         _, _, balance = self.get_worktime(instance, None, end_date)

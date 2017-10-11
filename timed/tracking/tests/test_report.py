@@ -579,7 +579,10 @@ def test_report_by_user(auth_client):
     report = ReportFactory.create(duration=timedelta(hours=2))
 
     url = reverse('report-by-user')
-    result = auth_client.get(url, data={'ordering': 'duration'})
+    result = auth_client.get(url, data={
+        'ordering': 'duration',
+        'include': 'user'
+    })
     assert result.status_code == 200
 
     json = result.json()
@@ -617,6 +620,7 @@ def test_report_by_user(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert len(json['included']) == 2
     assert json['meta']['total-time'] == '05:00:00'
 
 
@@ -628,7 +632,10 @@ def test_report_by_task(auth_client):
     ReportFactory.create(duration=timedelta(hours=2), task=task_z)
 
     url = reverse('report-by-task')
-    result = auth_client.get(url, data={'ordering': 'task__name'})
+    result = auth_client.get(url, data={
+        'ordering': 'task__name',
+        'include': 'task'
+    })
     assert result.status_code == 200
 
     json = result.json()
@@ -666,6 +673,7 @@ def test_report_by_task(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert len(json['included']) == 2
     assert json['meta']['total-time'] == '05:00:00'
 
 
@@ -675,7 +683,10 @@ def test_report_by_project(auth_client):
     report2 = ReportFactory.create(duration=timedelta(hours=4))
 
     url = reverse('report-by-project')
-    result = auth_client.get(url, data={'ordering': 'duration'})
+    result = auth_client.get(url, data={
+        'ordering': 'duration',
+        'include': 'project'
+    })
     assert result.status_code == 200
 
     json = result.json()
@@ -713,6 +724,7 @@ def test_report_by_project(auth_client):
     ]
 
     assert json['data'] == expected_json
+    assert len(json['included']) == 2
     assert json['meta']['total-time'] == '07:00:00'
 
 
@@ -722,7 +734,10 @@ def test_report_by_customer(auth_client):
     report2 = ReportFactory.create(duration=timedelta(hours=4))
 
     url = reverse('report-by-customer')
-    result = auth_client.get(url, data={'ordering': 'duration'})
+    result = auth_client.get(url, data={
+        'ordering': 'duration',
+        'include': 'customer'
+    })
     assert result.status_code == 200
 
     json = result.json()
@@ -760,4 +775,5 @@ def test_report_by_customer(auth_client):
     ]
 
     assert json['data'] == expected_data
+    assert len(json['included']) == 2
     assert json['meta']['total-time'] == '07:00:00'
