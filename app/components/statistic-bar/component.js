@@ -1,13 +1,23 @@
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
-import { htmlSafe } from '@ember/string'
+import { scheduleOnce, later } from '@ember/runloop'
 
 const StatisticsBarComponent = Component.extend({
   tagName: 'statistics-bar',
 
-  @computed('value')
-  barStyle(value) {
-    return htmlSafe(`width: ${value * 100}%;`)
+  didReceiveAttrs() {
+    this._super(...arguments)
+
+    scheduleOnce('afterRender', this, () => {
+      let [element] = this.get('element').getElementsByTagName('bar')
+      let width = `${this.get('value') * 100}%`
+
+      element.animate([{ width: 0 }, { width }], {
+        duration: 1000,
+        easing: 'cubic-bezier(0.645, 0.045, 0.355, 1)'
+      })
+
+      element.style.width = width
+    })
   }
 })
 

@@ -7,15 +7,10 @@
 bar {
   display: block;
   height: 100%;
-  background-color: var(--color-primary);
-  animation: grow 1s ease-in;
-}
-
-@keyframes grow {
-  from {
-    max-width: 0;
-  }
-  to {
-    max-width: 100%;
-  }
+  width: 0;
+  background: linear-gradient(to left, var(--color-primary), color(var(--color-primary) a(75%)));
+  border-right: 1px solid color(var(--color-primary) shade(20%));
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.25);
 }
