@@ -45,39 +45,53 @@ export default Model.extend({
 
   /**
    * The start time, with the date of the related activity
-   * 
+   *
    * @property {moment} from
    * @public
    */
   @computed('activity.date', 'fromTime')
-  from(date, time) {
-    return (
-      time &&
-      moment(date).set({
-        h: time.hours(),
-        m: time.minutes(),
-        s: time.seconds(),
-        ms: time.milliseconds()
-      })
-    )
+  from: {
+    get(date, time) {
+      return (
+        time &&
+        moment(date).set({
+          h: time.hours(),
+          m: time.minutes(),
+          s: time.seconds(),
+          ms: time.milliseconds()
+        })
+      )
+    },
+    set(value) {
+      this.set('toTime', value)
+
+      return value
+    }
   },
 
   /**
    * The end time, with the date of the related activity
-   * 
+   *
    * @property {moment} to
    * @public
    */
   @computed('activity.date', 'toTime')
-  to(date, time) {
-    return (
-      time &&
-      moment(date).set({
-        h: time.hours(),
-        m: time.minutes(),
-        s: time.seconds(),
-        ms: time.milliseconds()
-      })
-    )
+  to: {
+    get(date, time) {
+      return (
+        time &&
+        moment(date).set({
+          h: time.hours(),
+          m: time.minutes(),
+          s: time.seconds(),
+          ms: time.milliseconds()
+        })
+      )
+    },
+    set(value) {
+      this.set('toTime', value)
+
+      return value
+    }
   }
 })
