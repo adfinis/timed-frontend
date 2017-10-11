@@ -63,7 +63,7 @@ export default Model.extend({
       )
     },
     set(value) {
-      this.set('toTime', value)
+      this.set('fromTime', value)
 
       return value
     }
