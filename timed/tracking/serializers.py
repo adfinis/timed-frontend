@@ -136,7 +136,7 @@ class ReportByYearSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     year = IntegerField(read_only=True)
 
     class Meta:
-        resource_name = 'report-year'
+        resource_name = 'report-years'
 
 
 class ReportByMonthSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
@@ -145,7 +145,7 @@ class ReportByMonthSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     month = IntegerField(read_only=True)
 
     class Meta:
-        resource_name = 'report-month'
+        resource_name = 'report-months'
 
 
 class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
@@ -153,7 +153,7 @@ class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     user = IdResourceRelatedField(model=get_user_model(), read_only=True)
 
     class Meta:
-        resource_name = 'report-user'
+        resource_name = 'report-users'
 
 
 class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
@@ -161,7 +161,7 @@ class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     task = IdResourceRelatedField(model=Task, read_only=True)
 
     class Meta:
-        resource_name = 'report-task'
+        resource_name = 'report-tasks'
 
 
 class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
@@ -170,7 +170,7 @@ class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
                                      read_only=True)
 
     class Meta:
-        resource_name = 'report-project'
+        resource_name = 'report-projects'
 
 
 class ReportByCustomerSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
@@ -179,7 +179,7 @@ class ReportByCustomerSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
                                       model=Customer, read_only=True)
 
     class Meta:
-        resource_name = 'report-customer'
+        resource_name = 'report-customers'
 
 
 class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):

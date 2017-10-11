@@ -516,7 +516,7 @@ def test_report_by_year(auth_client):
     json = result.json()
     expected_json = [
         {
-            'type': 'report-year',
+            'type': 'report-years',
             'id': '2015',
             'attributes': {
                 'year': 2015,
@@ -524,7 +524,7 @@ def test_report_by_year(auth_client):
             }
         },
         {
-            'type': 'report-year',
+            'type': 'report-years',
             'id': '2017',
             'attributes': {
                 'year': 2017,
@@ -549,7 +549,7 @@ def test_report_by_month(auth_client):
     json = result.json()
     expected_json = [
         {
-            'type': 'report-month',
+            'type': 'report-months',
             'id': '2015-12',
             'attributes': {
                 'year': 2015,
@@ -558,7 +558,7 @@ def test_report_by_month(auth_client):
             }
         },
         {
-            'type': 'report-month',
+            'type': 'report-months',
             'id': '2016-1',
             'attributes': {
                 'year': 2016,
@@ -585,7 +585,7 @@ def test_report_by_user(auth_client):
     json = result.json()
     expected_json = [
         {
-            'type': 'report-user',
+            'type': 'report-users',
             'id': str(report.user.id),
             'attributes': {
                 'duration': '02:00:00'
@@ -600,7 +600,7 @@ def test_report_by_user(auth_client):
             }
         },
         {
-            'type': 'report-user',
+            'type': 'report-users',
             'id': str(user.id),
             'attributes': {
                 'duration': '03:00:00'
@@ -634,7 +634,7 @@ def test_report_by_task(auth_client):
     json = result.json()
     expected_json = [
         {
-            'type': 'report-task',
+            'type': 'report-tasks',
             'id': str(task_test.id),
             'attributes': {
                 'duration': '03:00:00'
@@ -649,7 +649,7 @@ def test_report_by_task(auth_client):
             }
         },
         {
-            'type': 'report-task',
+            'type': 'report-tasks',
             'id': str(task_z.id),
             'attributes': {
                 'duration': '02:00:00'
@@ -681,7 +681,7 @@ def test_report_by_project(auth_client):
     json = result.json()
     expected_json = [
         {
-            'type': 'report-project',
+            'type': 'report-projects',
             'id': str(report.task.project.id),
             'attributes': {
                 'duration': '03:00:00'
@@ -696,7 +696,7 @@ def test_report_by_project(auth_client):
             }
         },
         {
-            'type': 'report-project',
+            'type': 'report-projects',
             'id': str(report2.task.project.id),
             'attributes': {
                 'duration': '04:00:00'
@@ -728,7 +728,7 @@ def test_report_by_customer(auth_client):
     json = result.json()
     expected_data = [
         {
-            'type': 'report-customer',
+            'type': 'report-customers',
             'id': str(report.task.project.customer.id),
             'attributes': {
                 'duration': '03:00:00'
@@ -743,7 +743,7 @@ def test_report_by_customer(auth_client):
             }
         },
         {
-            'type': 'report-customer',
+            'type': 'report-customers',
             'id': str(report2.task.project.customer.id),
             'attributes': {
                 'duration': '04:00:00'
