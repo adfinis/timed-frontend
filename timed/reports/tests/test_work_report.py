@@ -22,7 +22,7 @@ def test_work_report_single_project(auth_client):
     project = ProjectFactory.create(customer=customer, name='Project/')
     task = TaskFactory.create(project=project)
     ReportFactory.create_batch(
-        10, user=user, task=task, date=date(2017, 8, 17)
+        10, user=user, verified_by=user, task=task, date=date(2017, 8, 17)
     )
 
     url = reverse('work-reports-list')
@@ -42,6 +42,7 @@ def test_work_report_single_project(auth_client):
     assert table['C5'].value == '2017-08-01'
     assert table['C6'].value == '2017-08-31'
     assert table['C9'].value == 'Test User'
+    assert table['C10'].value == 'Test User'
 
 
 @pytest.mark.freeze_time('2017-09-01')

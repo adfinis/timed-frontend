@@ -31,7 +31,7 @@ class WorkReportViewSet(GenericViewSet):
 
     def get_queryset(self):
         return Report.objects.select_related(
-            'user',
+            'user', 'verified_by'
         )
 
     def _parse_query_params(self, queryset, request):
@@ -78,6 +78,10 @@ class WorkReportViewSet(GenericViewSet):
         :return: tuple where as first value is name and second ezodf document
         """
         customer = project.customer
+        verifiers = sorted({
+            report.verified_by.get_full_name()
+            for report in reports if report.verified_by_id is not None
+        })
 
         tmpl = resource_string('timed_adfinis.reporting', 'workreport.ots')
         doc = opendoc(BytesIO(tmpl))
@@ -115,6 +119,7 @@ class WorkReportViewSet(GenericViewSet):
         table['C6'] = Cell(to_date, style_name=date_style, value_type='date')
         table['C8'] = Cell(today, style_name=date_style, value_type='date')
         table['C9'] = Cell(user.get_full_name())
+        table['C10'] = Cell(', '.join(verifiers))
 
         # reset temporary styles (mainly because of borders)
         table['D3'].style_name = ''
