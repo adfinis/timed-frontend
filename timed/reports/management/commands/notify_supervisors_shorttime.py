@@ -73,25 +73,31 @@ class Command(BaseCommand):
         """
         Get supervisees which reported less hours than they should have.
 
-        :return: dict mapping all supervisees with shorttime with tuple of
-                 reported, expected, balance and actual ratio.
+        :return: dict mapping all supervisees with shorttime with dict of
+                 reported, expected, delta, actual ratio and balance.
         """
         supervisees_shorttime = {}
         supervisees = get_user_model().objects.all_supervisees()
+
+        start_year = date(end.year, 1, 1)
+
         for supervisee in supervisees:
             worktime = supervisee.calculate_worktime(start, end)
-            reported, expected, balance = worktime
+            reported, expected, delta = worktime
             if expected == timedelta(0):
                 continue
 
             supervisee_ratio = reported / expected
             if supervisee_ratio < ratio:
-                supervisees_shorttime[supervisee.id] = (
-                    self._decimal_hours(reported),
-                    self._decimal_hours(expected),
-                    self._decimal_hours(balance),
-                    supervisee_ratio
-                )
+                supervisees_shorttime[supervisee.id] = {
+                    'reported': self._decimal_hours(reported),
+                    'expected': self._decimal_hours(expected),
+                    'delta': self._decimal_hours(delta),
+                    'ratio': supervisee_ratio,
+                    'balance': self._decimal_hours(
+                        supervisee.calculate_worktime(start_year, end)[2]
+                    ),
+                }
 
         return supervisees_shorttime
 
@@ -100,8 +106,8 @@ class Command(BaseCommand):
         Notify supervisors about their supervisees.
 
         :param supervisees: dict whereas key is id of supervisee and
-                            value as a worktime tuple of
-                            reported, expected, balance and ratio
+                            value as a worktime dict of
+                            reported, expected, delta, ratio and balance
         """
         supervisors = get_user_model().objects.all_supervisors()
         subject = '[Timed] Report supervisees with shorttime'
@@ -120,8 +126,6 @@ class Command(BaseCommand):
                         'start': start,
                         'end': end,
                         'ratio': ratio,
-                        # format:
-                        # [(user, (reported, expected, balance, ratio)), ...]
                         'suspects': suspects_shorttime
                     }, using='text'
                 )
