@@ -3,6 +3,7 @@ import os
 import re
 
 import environ
+from pkg_resources import resource_filename
 
 env = environ.Env()
 
@@ -280,3 +281,11 @@ REDMINE_HTACCESS_PASSWORD = env.str(
     'DJANGO_REDMINE_HTACCESS_PASSWORD', default='')
 REDMINE_SPENTHOURS_FIELD = env.int(
     'DJANGO_REDMINE_SPENTHOURS_FIELD', default=0)
+
+
+# Work report definition
+
+WORK_REPORT_PATH = env.str(
+    'DJANGO_WORK_REPORT_PATH',
+    default=resource_filename('timed.reports', 'workreport.ots')
+)

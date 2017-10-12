@@ -4,9 +4,9 @@ from datetime import date
 from io import BytesIO
 from zipfile import ZipFile
 
+from django.conf import settings
 from django.http import HttpResponse, HttpResponseBadRequest
 from ezodf import Cell, opendoc
-from pkg_resources import resource_string
 from rest_framework.viewsets import GenericViewSet
 
 from timed.tracking.filters import ReportFilterSet
@@ -80,8 +80,8 @@ class WorkReportViewSet(GenericViewSet):
             for report in reports if report.verified_by_id is not None
         })
 
-        tmpl = resource_string('timed.reports', 'workreport.ots')
-        doc = opendoc(BytesIO(tmpl))
+        tmpl = settings.WORK_REPORT_PATH
+        doc = opendoc(tmpl)
         table = doc.sheets[0]
         date_style = table['C5'].style_name
         # in template cell D3 is empty but styled for float and borders
