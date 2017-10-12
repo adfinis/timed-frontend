@@ -66,6 +66,8 @@ INSTALLED_APPS = [
     'timed.projects',
     'timed.tracking',
     'timed.reports',
+    'timed.redmine',
+    'timed.subscription',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -262,3 +264,14 @@ def parse_admins(admins):
 
 
 ADMINS = parse_admins(env.list('DJANGO_ADMINS', default=[]))
+
+
+# Redmine definition (optional)
+
+REDMINE_URL = env.str('DJANGO_REDMINE_URL', default='')
+REDMINE_APIKEY = env.str('DJANGO_REDMINE_APIKEY', default='')
+REDMINE_HTACCESS_USER = env.str('DJANGO_REDMINE_HTACCESS_USER', default='')
+REDMINE_HTACCESS_PASSWORD = env.str(
+    'DJANGO_REDMINE_HTACCESS_PASSWORD', default='')
+REDMINE_SPENTHOURS_FIELD = env.int(
+    'DJANGO_REDMINE_SPENTHOURS_FIELD', default=0)

@@ -2,8 +2,8 @@ import pytest
 from django.core.management import call_command
 from redminelib.exceptions import ResourceNotFoundError
 
+from timed.redmine.models import RedmineProject
 from timed.tracking.factories import ReportFactory
-from timed_adfinis.redmine.models import RedmineProject
 
 
 @pytest.mark.freeze_time
@@ -33,7 +33,7 @@ def test_redmine_report(db, freezer, mocker):
 
     redmine_instance.issue.get.assert_called_once_with(1000)
     assert issue.custom_fields == [{
-        'id': 6,
+        'id': 0,
         'value': report_hours
     }]
     assert 'Total hours: {0}'.format(report_hours) in issue.notes

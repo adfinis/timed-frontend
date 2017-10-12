@@ -3,12 +3,7 @@ import hashlib
 from django import forms
 from django.contrib import admin
 
-from timed.projects.admin import CustomerAdmin
-from timed.projects.models import Customer
-
 from . import models
-
-admin.site.unregister(Customer)
 
 
 @admin.register(models.Subscription)
@@ -41,10 +36,3 @@ class CustomerPasswordForm(forms.ModelForm):
 class CustomerPasswordInline(admin.StackedInline):
     form = CustomerPasswordForm
     model = models.CustomerPassword
-
-
-@admin.register(Customer)
-class CustomerAdmin(CustomerAdmin):
-    inlines = CustomerAdmin.inlines + [
-        CustomerPasswordInline
-    ]
