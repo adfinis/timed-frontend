@@ -302,7 +302,7 @@ class Employment(models.Model):
 
         :param start: calculate worktime starting on given day.
         :param end:   calculate worktime till given day
-        :returns:     tuple of 3 values reported, expected and balance in given
+        :returns:     tuple of 3 values reported, expected and delta in given
                       time frame
         """
         from timed.tracking.models import Absence, Report
@@ -408,7 +408,7 @@ class User(AbstractUser):
 
         :param start: calculate worktime starting on given day.
         :param end:   calculate worktime till given day
-        :returns:     tuple of 3 values reported, expected and balance in given
+        :returns:     tuple of 3 values reported, expected and delta in given
                       time frame
         """
         employments = Employment.objects.for_user(self, start, end)
