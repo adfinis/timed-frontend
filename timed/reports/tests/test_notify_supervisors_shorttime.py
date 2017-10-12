@@ -36,7 +36,7 @@ def test_notify_supervisors(db, mailoutbox):
     body = mail.body
     assert 'Time range: 17.07.2017 - 23.07.2017\nRatio: 0.9' in body
     expected = (
-        '{0} 35.0/42.5 (Ratio 0.82 Range Balance -7.5 Balance -15.0)'
+        '{0} 35.0/42.5 (Ratio 0.82 Range Balance -7.5 Balance -9.0)'
     ).format(
         supervisee.get_full_name()
     )

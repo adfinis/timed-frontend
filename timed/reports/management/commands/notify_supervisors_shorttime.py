@@ -79,8 +79,7 @@ class Command(BaseCommand):
         supervisees_shorttime = {}
         supervisees = get_user_model().objects.all_supervisees()
 
-        today = date.today()
-        start_year = date(today.year, 1, 1)
+        start_year = date(end.year, 1, 1)
 
         for supervisee in supervisees:
             worktime = supervisee.calculate_worktime(start, end)
@@ -96,7 +95,7 @@ class Command(BaseCommand):
                     self._decimal_hours(balance),
                     supervisee_ratio,
                     self._decimal_hours(
-                        supervisee.calculate_worktime(start_year, today)[2]
+                        supervisee.calculate_worktime(start_year, end)[2]
                     ),
                 )
 
