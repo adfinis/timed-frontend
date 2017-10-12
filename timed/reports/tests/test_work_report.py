@@ -9,8 +9,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from timed.projects.factories import (CustomerFactory, ProjectFactory,
                                       TaskFactory)
+from timed.reports.views import WorkReportViewSet
 from timed.tracking.factories import ReportFactory
-from timed_adfinis.reporting.views import WorkReportViewSet
 
 
 @pytest.mark.freeze_time('2017-09-01')

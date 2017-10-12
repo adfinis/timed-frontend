@@ -61,6 +61,7 @@ setup(
         'rest_condition==1.0.3',
         'django-money==0.11.4',
         'python-redmine==2.0.2',
+        'ezodf==0.3.2'
     ),
     keywords='timetracking',
     url='https://adfinis-sygroup.ch/',

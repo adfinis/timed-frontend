@@ -20,9 +20,6 @@ class WorkReportViewSet(GenericViewSet):
 
     It creates one work report per project. If given filters results
     in several projects work reports will be returned as zip.
-
-    Work report is Adfinis specific and is used for Administration
-    to send invoice to customer.
     """
 
     filter_class = ReportFilterSet
@@ -83,7 +80,7 @@ class WorkReportViewSet(GenericViewSet):
             for report in reports if report.verified_by_id is not None
         })
 
-        tmpl = resource_string('timed_adfinis.reporting', 'workreport.ots')
+        tmpl = resource_string('timed.reports', 'workreport.ots')
         doc = opendoc(BytesIO(tmpl))
         table = doc.sheets[0]
         date_style = table['C5'].style_name

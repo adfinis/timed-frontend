@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework.routers import DefaultRouter
 
-from timed_adfinis.reporting import views
+from . import views
 
 r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
 
