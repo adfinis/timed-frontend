@@ -3,5 +3,5 @@ Time range: {{start}} - {{end}}
 Ratio: {{ratio}}
 
 {% for suspect, worktime in suspects %}
-{{suspect.get_full_name}} {{worktime.0}}/{{worktime.1}} (Ratio {{worktime.3|floatformat:2}} Balance {{worktime.2}})
+{{suspect.get_full_name}} {{worktime.reported}}/{{worktime.expected}} (Ratio {{worktime.ratio|floatformat:2}} Delta {{worktime.delta}} Balance {{worktime.balance}})
 {% endfor %}
