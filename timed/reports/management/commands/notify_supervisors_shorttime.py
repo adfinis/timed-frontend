@@ -74,10 +74,14 @@ class Command(BaseCommand):
         Get supervisees which reported less hours than they should have.
 
         :return: dict mapping all supervisees with shorttime with tuple of
-                 reported, expected, balance and actual ratio.
+                 reported, expected, balance, actual ratio and current balance.
         """
         supervisees_shorttime = {}
         supervisees = get_user_model().objects.all_supervisees()
+
+        today = date.today()
+        start_year = date(today.year, 1, 1)
+
         for supervisee in supervisees:
             worktime = supervisee.calculate_worktime(start, end)
             reported, expected, balance = worktime
@@ -90,7 +94,10 @@ class Command(BaseCommand):
                     self._decimal_hours(reported),
                     self._decimal_hours(expected),
                     self._decimal_hours(balance),
-                    supervisee_ratio
+                    supervisee_ratio,
+                    self._decimal_hours(
+                        supervisee.calculate_worktime(start_year, today)[2]
+                    ),
                 )
 
         return supervisees_shorttime
@@ -121,7 +128,15 @@ class Command(BaseCommand):
                         'end': end,
                         'ratio': ratio,
                         # format:
-                        # [(user, (reported, expected, balance, ratio)), ...]
+                        # [(
+                        #   user, (
+                        #     reported,
+                        #     expected,
+                        #     balance,
+                        #     ratio,
+                        #     current_balance
+                        #   )
+                        # ), ...]
                         'suspects': suspects_shorttime
                     }, using='text'
                 )
