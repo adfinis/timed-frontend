@@ -244,6 +244,11 @@ DEFAULT_FROM_EMAIL = env.str(
     default('webmaster@localhost')
 )
 
+SERVER_EMAIL = env.str(
+    'DJANGO_SERVER_EMAIL',
+    default('root@localhost')
+)
+
 
 def parse_admins(admins):
     """
