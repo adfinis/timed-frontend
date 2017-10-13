@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^api/v1/auth/refresh', refresh_jwt_token, name='refresh'),
     url(r'^api/v1/',             include('timed.employment.urls')),
     url(r'^api/v1/',             include('timed.projects.urls')),
-    url(r'^api/v1/',             include('timed.tracking.urls'))
+    url(r'^api/v1/',             include('timed.tracking.urls')),
+    url(r'^api/v1/',             include('timed.reports.urls'))
 ]
