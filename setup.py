@@ -59,6 +59,8 @@ setup(
         'pyexcel-xlsx==0.4.1',
         'django-environ==0.4.3',
         'rest_condition==1.0.3',
+        'django-money==0.11.4',
+        'python-redmine==2.0.2',
     ),
     keywords='timetracking',
     url='https://adfinis-sygroup.ch/',
