@@ -7,9 +7,9 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from timed.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
+                               IsReadOnly, IsUnverified)
 from timed.tracking import filters, models, serializers
-from timed.tracking.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
-                                        IsReadOnly, IsUnverified)
 
 
 class ActivityViewSet(ModelViewSet):
