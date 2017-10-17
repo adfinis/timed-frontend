@@ -1,19 +1,19 @@
 <h1>Statistics</h1>
 
 {{report-filter
-  billingTypes  = billingTypes
+  billingTypes  = prefetchData.lastSuccessful.value.billingTypes
   initial       = (hash
-    customer    = _customer
-    project     = _project
-    task        = _task
-    user        = _user
-    reviewer    = _reviewer
-    billingType = billing_type
-    fromDate    = _from
-    toDate      = _to
+    customer    = prefetchData.lastSuccessful.value.customer
+    project     = prefetchData.lastSuccessful.value.project
+    task        = prefetchData.lastSuccessful.value.task
+    user        = prefetchData.lastSuccessful.value.user
+    reviewer    = prefetchData.lastSuccessful.value.reviewer
+    fromDate    = fromDate
+    toDate      = toDate
     review      = review
-    notBillable = not_billable
-    notVerified = not_verified
+    billingType = billingType
+    notBillable = notBillable
+    notVerified = notVerified
   )
   on-apply      = (action 'applyFilter')
 }}
@@ -22,17 +22,63 @@
   <div class="grid grid--12of12">
     <div class="grid-cell">
       <ul class="nav-tabs">
-        <li>{{#link-to 'statistics.customer'}}By customer{{/link-to}}</li>
-        <li>{{#link-to 'statistics.project'}}By project{{/link-to}}</li>
-        <li>{{#link-to 'statistics.task'}}By task{{/link-to}}</li>
-        <li>{{#link-to 'statistics.user'}}By user{{/link-to}}</li>
-        <li>{{#link-to 'statistics.year'}}By year{{/link-to}}</li>
-        <li>{{#link-to 'statistics.month'}}By month{{/link-to}}</li>
+        {{#each types as |t|}}
+          <li>
+            <a href="#" class={{if (eq t type) 'active'}} {{action (mut type) t}}>
+              By {{t}}
+            </a>
+          </li>
+        {{/each}}
       </ul>
     </div>
 
     <div class="grid-cell">
-      <div class="tab-content">{{outlet}}</div>
+      <div class="tab-content">
+        {{#if data.isRunning}}
+          {{loading-spinner}}
+        {{else}}
+          <table class="table table-striped table--statistics">
+            <thead>
+              <tr>
+                {{#each rows as |r|}}
+                  {{#if r.ordering}}
+                    {{#sort-header current=ordering update=(action (mut ordering)) by=r.ordering}}{{r.title}}{{/sort-header}}
+                  {{else}}
+                    <th>{{r.title}}</th>
+                  {{/if}}
+                {{/each}}
+              </tr>
+            </thead>
+            {{#vertical-collection
+              data.lastSuccessful.value
+              tagName           = 'tbody'
+              estimateHeight    = 40
+              bufferSize        = 5
+              containerSelector = '.page-content--scroll'
+            as |row|}}
+              <tr>
+                {{#each rows as |r|}}
+                  <td>
+                    {{#if (eq r.type 'plain')}}
+                      {{get row r.key}}
+                    {{else if (eq r.type 'month')}}
+                      {{moment-format (moment (get row r.key) 'M') 'MMMM'}}
+                    {{else if (eq r.type 'duration')}}
+                      {{#with (get row r.key) as |value|}}
+                        {{#if value}}
+                          {{humanize-duration value false}}
+                        {{/if}}
+                      {{/with}}
+                    {{else if (eq r.type 'bar')}}
+                      {{statistic-bar (div (get row r.key) maxDuration)}}
+                    {{/if}}
+                  </td>
+                {{/each}}
+              </tr>
+            {{/vertical-collection}}
+          </table>
+        {{/if}}
+      </div>
     </div>
   </div>
 </div>

@@ -1,28 +1,18 @@
 import Component from '@ember/component'
-import { scheduleOnce, later } from '@ember/runloop'
+import { htmlSafe } from '@ember/string'
+import computed from 'ember-computed-decorators'
 
-const StatisticsBarComponent = Component.extend({
-  tagName: 'statistics-bar',
+const StatisticBarComponent = Component.extend({
+  attributeBindings: ['style'],
 
-  didReceiveAttrs() {
-    this._super(...arguments)
-
-    scheduleOnce('afterRender', this, () => {
-      let [element] = this.get('element').getElementsByTagName('bar')
-      let width = `${this.get('value') * 100}%`
-
-      element.animate([{ width: 0 }, { width }], {
-        duration: 1000,
-        easing: 'cubic-bezier(0.645, 0.045, 0.355, 1)'
-      })
-
-      element.style.width = width
-    })
+  @computed('value')
+  style(value) {
+    return htmlSafe(`--value: ${value}`)
   }
 })
 
-StatisticsBarComponent.reopenClass({
+StatisticBarComponent.reopenClass({
   positionalParams: ['value']
 })
 
-export default StatisticsBarComponent
+export default StatisticBarComponent

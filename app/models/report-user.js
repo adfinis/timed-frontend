@@ -1,5 +1,8 @@
-import DS from 'ember-data';
+import Model from 'ember-data/model'
+import attr from 'ember-data/attr'
+import { belongsTo } from 'ember-data/relationships'
 
-export default DS.Model.extend({
-
-});
+export default Model.extend({
+  duration: attr('django-duration'),
+  user: belongsTo('user')
+})
