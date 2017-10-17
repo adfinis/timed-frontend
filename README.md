@@ -16,9 +16,7 @@ commands to complete the installation:
 ```bash
 $ echo "ENV=dev" >> .env                       # Django settings will be configured for development
 $ make install                                 # Install Python requirements
-$ docker-compose up -d                         # Start the containers
-$ make setup-ldap                              # Configure UCS LDAP container
-$ make create-ldap-user                        # Create a new standard user
+$ docker-compose up -d db                      # Start the containers
 $ ./manage.py migrate                          # Run Django migrations
 $ ./manage.py createsuperuser                  # Create a new Django superuser
 ```
