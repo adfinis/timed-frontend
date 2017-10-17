@@ -35,6 +35,7 @@ class ProjectFilterSet(FilterSet):
             'archived',
             'customer',
             'billing_type',
+            'cost_center',
             'reference'
         ]
 
@@ -90,5 +91,6 @@ class TaskFilterSet(FilterSet):
             'archived',
             'project',
             'my_most_frequent',
-            'reference'
+            'reference',
+            'cost_center'
         ]

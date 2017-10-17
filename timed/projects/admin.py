@@ -32,6 +32,12 @@ class BillingType(admin.ModelAdmin):
     search_fields = ['name']
 
 
+@admin.register(models.CostCenter)
+class CostCenter(admin.ModelAdmin):
+    list_display = ['name', 'reference']
+    search_fields = ['name']
+
+
 class TaskForm(forms.ModelForm):
     """
     Task form making sure that initial forms are marked as changed.

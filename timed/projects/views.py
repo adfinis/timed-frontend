@@ -31,6 +31,14 @@ class BillingTypeViewSet(ReadOnlyModelViewSet):
         return models.BillingType.objects.all()
 
 
+class CostCenterViewSet(ReadOnlyModelViewSet):
+    serializer_class = serializers.CostCenterSerializer
+    ordering         = 'name'
+
+    def get_queryset(self):
+        return models.CostCenter.objects.all()
+
+
 class ProjectViewSet(ReadOnlyModelViewSet):
     """Project view set."""
 
@@ -45,7 +53,7 @@ class ProjectViewSet(ReadOnlyModelViewSet):
         :rtype:  QuerySet
         """
         return models.Project.objects.select_related(
-            'customer'
+            'customer', 'billing_type', 'cost_center'
         )
 
 
@@ -63,7 +71,7 @@ class TaskViewSet(ReadOnlyModelViewSet):
         :rtype:  QuerySet
         """
         return models.Task.objects.select_related(
-            'project'
+            'project', 'cost_center'
         )
 
     def filter_queryset(self, queryset):

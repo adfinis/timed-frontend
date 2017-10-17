@@ -101,13 +101,44 @@ class ReportViewSet(ModelViewSet):
         'not_billable'
     )
 
+    def _extract_cost_center(self, report):
+        """
+        Extract cost center from given report.
+
+        Cost center of task is prioritized higher than of
+        project.
+        """
+        name = ''
+
+        if report.task.project.cost_center:
+            name = report.task.project.cost_center.name
+
+        if report.task.cost_center:
+            name = report.task.project.name
+
+        return name
+
+    def _extract_billing_type(self, report):
+        """Extract billing type from given report."""
+        name = ''
+
+        if report.task.project.billing_type:
+            name = report.task.project.billing_type.name
+
+        return name
+
     @list_route()
     def export(self, request):
         """Export filtered reports to given file format."""
-        queryset = self.filter_queryset(self.get_queryset())
+        queryset = self.get_queryset().select_related(
+            'task__project__billing_type',
+            'task__cost_center', 'task__project__cost_center'
+        )
+        queryset = self.filter_queryset(queryset)
         colnames = [
             'Date', 'Duration', 'Customer',
-            'Project', 'Task', 'User', 'Comment'
+            'Project', 'Task', 'User', 'Comment',
+            'Billing Type', 'Cost Center'
         ]
         content = [
             [
@@ -118,6 +149,8 @@ class ReportViewSet(ModelViewSet):
                 report.task.name,
                 report.user.username,
                 report.comment,
+                self._extract_billing_type(report),
+                self._extract_cost_center(report),
             ]
             for report in queryset
         ]
@@ -162,7 +195,7 @@ class ReportViewSet(ModelViewSet):
             'task',
             'user',
             'activity'
-        ).prefetch_related('task__project', 'task__project__customer')
+        ).select_related('task__project', 'task__project__customer')
 
 
 class AbsenceViewSet(ModelViewSet):
