@@ -16,9 +16,6 @@ start: ## Start the development server
 	@docker-compose start db
 	@python manage.py runserver
 
-docs:
-	@make -C docs/ html
-
 test: ## Test the project
 	./manage.py migrate --noinput
 	./manage.py makemigrations --check --dry-run --noinput
