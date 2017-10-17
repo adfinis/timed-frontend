@@ -284,13 +284,7 @@ class AbsenceCreditSerializer(ModelSerializer):
 
 
 class OvertimeCreditSerializer(ModelSerializer):
-    """Overtime credit serializer."""
-
-    user = relations.ResourceRelatedField(read_only=True)
-
     class Meta:
-        """Meta information for the overtime credit serializer."""
-
         model  = models.OvertimeCredit
         fields = [
             'user',

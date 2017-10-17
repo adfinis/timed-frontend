@@ -1,92 +1,77 @@
 """Tests for the overtime credits endpoint."""
 
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
+from rest_framework import status
 
-from timed.employment.factories import OvertimeCreditFactory
-from timed.jsonapi_test_case import JSONAPITestCase
+from timed.employment.factories import OvertimeCreditFactory, UserFactory
 
 
-class OvertimeCreditTests(JSONAPITestCase):
-    """Tests for the overtime credits endpoint.
+def test_overtime_credit_create_authenticated(auth_client):
+    url = reverse('overtime-credit-list')
 
-    This endpoint should be read only for normal users.
-    """
+    result = auth_client.post(url)
+    assert result.status_code == status.HTTP_403_FORBIDDEN
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
 
-        self.overtime_credits = OvertimeCreditFactory.create_batch(
-            5,
-            user=self.user
-        )
+def test_overtime_credit_create_superuser(superadmin_client):
+    url = reverse('overtime-credit-list')
 
-        OvertimeCreditFactory.create_batch(5)
+    data = {
+        'data': {
+            'type': 'overtime-credits',
+            'id': None,
+            'attributes': {
+                'date': '2017-01-01',
+                'duration': '01:00:00',
+            },
+            'relationships': {
+                'user': {
+                    'data': {
+                        'type': 'users',
+                        'id': superadmin_client.user.id
+                    }
+                }
+            }
+        }
+    }
 
-    def test_overtime_credit_list(self):
-        """Should respond with a list of overtime credits."""
-        url = reverse('overtime-credit-list')
+    result = superadmin_client.post(url, data)
+    assert result.status_code == status.HTTP_201_CREATED
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+def test_overtime_credit_get_authenticated(auth_client):
+    OvertimeCreditFactory.create_batch(2)
+    overtime_credit = OvertimeCreditFactory.create(user=auth_client.user)
+    url = reverse('overtime-credit-list')
 
-        result = self.result(res)
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(overtime_credit.id)
 
-        assert len(result['data']) == len(self.overtime_credits)
 
-    def test_overtime_credit_detail(self):
-        """Should respond with a single overtime credit."""
-        overtime_credit = self.overtime_credits[0]
+def test_overtime_credit_get_superuser(superadmin_client):
+    OvertimeCreditFactory.create_batch(2)
+    OvertimeCreditFactory.create(user=superadmin_client.user)
+    url = reverse('overtime-credit-list')
 
-        url = reverse('overtime-credit-detail', args=[
-            overtime_credit.id
-        ])
+    result = superadmin_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 3
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+def test_overtime_credit_get_supervisor(auth_client):
+    user = UserFactory.create()
+    auth_client.user.supervisees.add(user)
 
-    def test_overtime_credit_create(self):
-        """Should not be able to create a new overtime credit."""
-        url = reverse('overtime-credit-list')
+    OvertimeCreditFactory.create_batch(1)
+    OvertimeCreditFactory.create(user=auth_client.user)
+    OvertimeCreditFactory.create(user=user)
+    url = reverse('overtime-credit-list')
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_overtime_credit_update(self):
-        """Should not be able to update an existing overtime credit."""
-        overtime_credit = self.overtime_credits[0]
-
-        url = reverse('overtime-credit-detail', args=[
-            overtime_credit.id
-        ])
-
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_overtime_credit_delete(self):
-        """Should not be able delete an overtime credit."""
-        overtime_credit = self.overtime_credits[0]
-
-        url = reverse('overtime-credit-detail', args=[
-            overtime_credit.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 2

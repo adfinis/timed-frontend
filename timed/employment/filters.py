@@ -43,3 +43,13 @@ class UserFilterSet(FilterSet):
     class Meta:
         model  = models.User
         fields = ['active', 'supervisor']
+
+
+class OvertimeCreditFilterSet(FilterSet):
+    year      = YearFilter(name='date')
+    from_date = DateFilter(name='date', lookup_expr='gte')
+    to_date   = DateFilter(name='date', lookup_expr='lte')
+
+    class Meta:
+        model  = models.OvertimeCredit
+        fields = ['year', 'user', 'date', 'from_date', 'to_date']
