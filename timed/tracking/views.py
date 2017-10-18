@@ -1,6 +1,7 @@
 """Viewsets for the tracking app."""
 
 import django_excel
+from django.contrib.auth import get_user_model
 from django.db.models import F, Sum, Value
 from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 from django.http import HttpResponseBadRequest
@@ -9,6 +10,7 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from timed.projects.models import Project, Task
 from timed.tracking import filters, models, serializers
 from timed.tracking.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
                                         IsReadOnly, IsUnverified)
@@ -204,11 +206,29 @@ class ReportViewSet(ModelViewSet):
     def by_user(self, request):
         """Group report durations by user."""
         queryset = self.filter_queryset(self.get_queryset())
+
+        # for performance reasons get all users needed in one go
+        user_ids = queryset.values_list('user_id', flat=True)
+        users = {
+            user.id: user
+            for user in get_user_model().objects.filter(
+                id__in=user_ids
+            )
+        }
+
+        # actual calculation of user durations
         queryset = queryset.values('user_id')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('user_id'))
+
+        # enhance entry dicts with user model instance
+        data = [
+            {**entry, **{'user': users[entry['user_id']]}}
+            for entry in queryset
+        ]
+
         serializer = serializers.ReportByUserSerializer(
-            queryset, many=True, context={'view': self}
+            data, many=True, context={'view': self}
         )
         return Response(data=serializer.data)
 
@@ -222,11 +242,29 @@ class ReportViewSet(ModelViewSet):
     def by_task(self, request):
         """Group report durations by task."""
         queryset = self.filter_queryset(self.get_queryset())
+
+        # for performance reasons get all tasks needed in one go
+        task_ids = queryset.values_list('task_id', flat=True)
+        tasks = {
+            task.id: task
+            for task in Task.objects.filter(
+                id__in=task_ids
+            ).select_related('project', 'project__customer')
+        }
+
+        # actual calculation of task durations
         queryset = queryset.values('task_id')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('task_id'))
+
+        # enhance entry dicts with task model instance
+        data = [
+            {**entry, **{'task': tasks[entry['task_id']]}}
+            for entry in queryset
+        ]
+
         serializer = serializers.ReportByTaskSerializer(
-            queryset, many=True, context={'view': self}
+            data, many=True, context={'view': self}
         )
         return Response(data=serializer.data)
 
@@ -240,11 +278,29 @@ class ReportViewSet(ModelViewSet):
     def by_project(self, request):
         """Group report durations by project."""
         queryset = self.filter_queryset(self.get_queryset())
+
+        # for performance reasons get all projects needed in one go
+        project_ids = queryset.values_list('task__project_id', flat=True)
+        projects = {
+            project.id: project
+            for project in Project.objects.filter(
+                id__in=project_ids
+            ).select_related('customer')
+        }
+
+        # actual calculation of project durations
         queryset = queryset.values('task__project_id')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('task__project_id'))
+
+        # enhance entry dicts with project model instance
+        data = [
+            {**entry, **{'project': projects[entry['task__project_id']]}}
+            for entry in queryset
+        ]
+
         serializer = serializers.ReportByProjectSerializer(
-            queryset, many=True, context={'view': self}
+            data, many=True, context={'view': self}
         )
         return Response(data=serializer.data)
 
@@ -257,12 +313,31 @@ class ReportViewSet(ModelViewSet):
     )
     def by_customer(self, request):
         """Group report durations by customer."""
+        customer_id = 'task__project__customer_id'
         queryset = self.filter_queryset(self.get_queryset())
+
+        # for performance reasons get all customers needed in one go
+        customer_ids = queryset.values_list(customer_id, flat=True)
+        customers = {
+            project.id: project
+            for project in Project.objects.filter(
+                id__in=customer_ids
+            ).select_related('customer')
+        }
+
+        # actual calculation of customer durations
         queryset = queryset.values('task__project__customer_id')
         queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('task__project__customer_id'))
+        queryset = queryset.annotate(pk=F(customer_id))
+
+        # enhance entry dicts with customer model instance
+        data = [
+            {**entry, **{'customer': customers[entry[customer_id]]}}
+            for entry in queryset
+        ]
+
         serializer = serializers.ReportByCustomerSerializer(
-            queryset, many=True, context={'view': self}
+            data, many=True, context={'view': self}
         )
         return Response(data=serializer.data)
 

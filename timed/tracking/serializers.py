@@ -150,13 +150,8 @@ class ReportByMonthSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    user = relations.SerializerMethodResourceRelatedField(
-        source='get_user', model=get_user_model(), read_only=True
-    )
-
-    def get_user(self, instance):
-        User = get_user_model()
-        return User.objects.get(id=instance.user_id)
+    user = relations.ResourceRelatedField(model=get_user_model(),
+                                          read_only=True)
 
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
@@ -168,12 +163,7 @@ class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    task = relations.SerializerMethodResourceRelatedField(
-        source='get_task', model=Task, read_only=True
-    )
-
-    def get_task(self, instance):
-        return Task.objects.get(id=instance.task_id)
+    task = relations.ResourceRelatedField(model=Task, read_only=True)
 
     included_serializers = {
         'task': 'timed.projects.serializers.TaskSerializer',
@@ -185,12 +175,7 @@ class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    project = relations.SerializerMethodResourceRelatedField(
-        source='get_project', model=Project, read_only=True
-    )
-
-    def get_project(self, instance):
-        return Project.objects.get(id=instance.task__project_id)
+    project = relations.ResourceRelatedField(model=Project, read_only=True)
 
     included_serializers = {
         'project': 'timed.projects.serializers.ProjectSerializer',
@@ -202,12 +187,7 @@ class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
 class ReportByCustomerSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
     duration = DurationField(read_only=True)
-    customer = relations.SerializerMethodResourceRelatedField(
-        source='get_customer', model=Customer, read_only=True
-    )
-
-    def get_customer(self, instance):
-        return Customer.objects.get(id=instance.task__project__customer_id)
+    customer = relations.ResourceRelatedField(model=Customer, read_only=True)
 
     included_serializers = {
         'customer': 'timed.projects.serializers.CustomerSerializer',
