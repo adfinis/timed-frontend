@@ -10,7 +10,7 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from timed.projects.models import Project, Task
+from timed.projects.models import Customer, Project, Task
 from timed.tracking import filters, models, serializers
 from timed.tracking.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
                                         IsReadOnly, IsUnverified)
@@ -282,7 +282,13 @@ class ReportViewSet(ModelViewSet):
             task.id: task
             for task in Task.objects.filter(
                 id__in=task_ids
-            ).select_related('project', 'project__customer')
+            ).select_related(
+                'cost_center',
+                'project',
+                'project__billing_type',
+                'project__cost_center',
+                'project__customer'
+            )
         }
 
         # actual calculation of task durations
@@ -318,7 +324,7 @@ class ReportViewSet(ModelViewSet):
             project.id: project
             for project in Project.objects.filter(
                 id__in=project_ids
-            ).select_related('customer')
+            ).select_related('cost_center', 'billing_type', 'customer')
         }
 
         # actual calculation of project durations
@@ -352,14 +358,14 @@ class ReportViewSet(ModelViewSet):
         # for performance reasons get all customers needed in one go
         customer_ids = queryset.values_list(customer_id, flat=True)
         customers = {
-            project.id: project
-            for project in Project.objects.filter(
+            customer.id: customer
+            for customer in Customer.objects.filter(
                 id__in=customer_ids
-            ).select_related('customer')
+            )
         }
 
         # actual calculation of customer durations
-        queryset = queryset.values('task__project__customer_id')
+        queryset = queryset.values(customer_id)
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F(customer_id))
 
