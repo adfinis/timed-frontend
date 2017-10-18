@@ -263,9 +263,6 @@ class AbsenceTypeSerializer(ModelSerializer):
 class AbsenceCreditSerializer(ModelSerializer):
     """Absence credit serializer."""
 
-    absence_type = relations.ResourceRelatedField(read_only=True)
-    user         = relations.ResourceRelatedField(read_only=True)
-
     included_serializers = {
         'absence_type': 'timed.employment.serializers.AbsenceTypeSerializer'
     }

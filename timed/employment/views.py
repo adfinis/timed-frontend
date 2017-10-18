@@ -83,6 +83,39 @@ class AbsenceTypeViewSet(ReadOnlyModelViewSet):
     ordering         = ('name',)
 
 
+class AbsenceCreditViewSet(ModelViewSet):
+    """Absence type view set."""
+
+    filter_class = filters.AbsenceCreditFilterSet
+    serializer_class = serializers.AbsenceCreditSerializer
+    permission_classes = [
+        # super user can add/read absence credits
+        C(IsAuthenticated) & C(IsSuperUser) |
+        # user may only read filtered results
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
+
+    def get_queryset(self):
+        """
+        Get queryset of absence credits.
+
+        Following rules apply:
+        1. super user may see all
+        2. user may see credits of all its supervisors and self
+        3. user may only see its own credit
+        """
+        user = self.request.user
+
+        queryset = models.AbsenceCredit.objects.select_related('user')
+
+        if not user.is_superuser:
+            queryset = queryset.filter(
+                Q(user=user) | Q(user__supervisors=user)
+            )
+
+        return queryset
+
+
 class OvertimeCreditViewSet(ModelViewSet):
     """Absence type view set."""
 

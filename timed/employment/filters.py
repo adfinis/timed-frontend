@@ -53,3 +53,15 @@ class OvertimeCreditFilterSet(FilterSet):
     class Meta:
         model  = models.OvertimeCredit
         fields = ['year', 'user', 'date', 'from_date', 'to_date']
+
+
+class AbsenceCreditFilterSet(FilterSet):
+    year      = YearFilter(name='date')
+    from_date = DateFilter(name='date', lookup_expr='gte')
+    to_date   = DateFilter(name='date', lookup_expr='lte')
+
+    class Meta:
+        model  = models.AbsenceCredit
+        fields = [
+            'year', 'user', 'date', 'from_date', 'to_date', 'absence_type'
+        ]

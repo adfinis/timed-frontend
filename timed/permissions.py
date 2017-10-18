@@ -56,5 +56,5 @@ class IsSuperUser(BasePermission):
     def has_permission(self, request, view):
         return request.user and request.user.is_superuser
 
-    def has_object_permission(self, request, view, obj):
+    def has_object_permission(self, request, view, obj):  # pragma: todo cover
         return self.has_permission(request, view)

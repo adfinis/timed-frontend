@@ -13,5 +13,6 @@ r.register(r'locations',        views.LocationViewSet,       'location')
 r.register(r'public-holidays',  views.PublicHolidayViewSet,  'public-holiday')
 r.register(r'absence-types',    views.AbsenceTypeViewSet,    'absence-type')
 r.register(r'overtime-credits', views.OvertimeCreditViewSet, 'overtime-credit')
+r.register(r'absence-credits',  views.AbsenceCreditViewSet,  'absence-credit')
 
 urlpatterns = r.urls
