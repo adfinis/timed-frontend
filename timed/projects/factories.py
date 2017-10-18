@@ -28,6 +28,14 @@ class BillingTypeFactory(DjangoModelFactory):
         model = models.BillingType
 
 
+class CostCenterFactory(DjangoModelFactory):
+    name = Faker('uuid4')
+    reference = Faker('uuid4')
+
+    class Meta:
+        model = models.CostCenter
+
+
 class ProjectFactory(DjangoModelFactory):
     """Project factory."""
 
@@ -36,6 +44,8 @@ class ProjectFactory(DjangoModelFactory):
     archived        = False
     comment         = Faker('sentence')
     customer        = SubFactory('timed.projects.factories.CustomerFactory')
+    cost_center     = SubFactory('timed.projects.factories.CostCenterFactory')
+    billing_type    = SubFactory('timed.projects.factories.BillingTypeFactory')
 
     class Meta:
         """Meta informations for the project factory."""
@@ -50,6 +60,7 @@ class TaskFactory(DjangoModelFactory):
     estimated_time  = Faker('time_delta')
     archived        = False
     project         = SubFactory('timed.projects.factories.ProjectFactory')
+    cost_center     = SubFactory('timed.projects.factories.CostCenterFactory')
 
     class Meta:
         """Meta informations for the task factory."""

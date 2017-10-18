@@ -2,6 +2,7 @@
 
 from functools import wraps
 
+from django.db.models import Q
 from django_filters import DateFilter, Filter, FilterSet, NumberFilter
 
 from timed.tracking import models
@@ -97,6 +98,20 @@ class ReportFilterSet(FilterSet):
     not_verified = NumberFilter(name='verified_by', lookup_expr='isnull')
     reviewer     = NumberFilter(name='task__project__reviewers')
     billing_type = NumberFilter(name='task__project__billing_type')
+    cost_center = NumberFilter(name='cost_center', method='filter_cost_center')
+
+    def filter_cost_center(self, queryset, name, value):
+        """
+        Filter report by cost center.
+
+        Cost center on task has higher priority over project cost
+        center.
+        """
+        return queryset.filter(
+            Q(task__cost_center=value) |
+            Q(task__project__cost_center=value) &
+            Q(task__cost_center__isnull=True)
+        )
 
     class Meta:
         """Meta information for the report filter set."""

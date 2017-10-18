@@ -17,7 +17,8 @@ from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
 
 from timed.employment.factories import UserFactory
 from timed.jsonapi_test_case import JSONAPIClient, JSONAPITestCase
-from timed.projects.factories import TaskFactory
+from timed.projects.factories import (CostCenterFactory, ProjectFactory,
+                                      TaskFactory)
 from timed.tracking.factories import ReportFactory
 from timed.tracking.models import Report
 
@@ -116,7 +117,6 @@ class ReportTests(JSONAPITestCase):
         assert len(result['data']) == 5
 
     def test_report_export_missing_type(self):
-        """Should respond with a list of filtered reports."""
         url = reverse('report-export')
 
         user_res   = self.client.get(url, data={
@@ -481,7 +481,7 @@ class TestReportHypo(TestCase):
         client.login('test', '1234qwer')
         url = reverse('report-export')
 
-        with self.assertNumQueries(4):
+        with self.assertNumQueries(2):
             user_res = client.get(url, data={
                 'file_type': file_type
             })
@@ -780,3 +780,28 @@ def test_report_by_customer(auth_client, django_assert_num_queries):
     assert json['data'] == expected_data
     assert len(json['included']) == 2
     assert json['meta']['total-time'] == '07:00:00'
+
+
+def test_report_list_filter_cost_center(auth_client):
+    cost_center = CostCenterFactory.create()
+    # 1st valid case: report with task of given cost center
+    # but different project cost center
+    task = TaskFactory.create(cost_center=cost_center)
+    report_task = ReportFactory.create(task=task)
+    # 2nd valid case: report with project of given cost center
+    project = ProjectFactory.create(cost_center=cost_center)
+    task = TaskFactory.create(cost_center=None, project=project)
+    report_project = ReportFactory.create(task=task)
+    # Invalid case: report without cost center
+    project = ProjectFactory.create(cost_center=None)
+    task = TaskFactory.create(cost_center=None, project=project)
+    ReportFactory.create(task=task)
+
+    url = reverse('report-list')
+
+    res = auth_client.get(url, data={'cost_center': cost_center.id})
+    assert res.status_code == HTTP_200_OK
+    json = res.json()
+    assert len(json['data']) == 2
+    ids = {int(entry['id']) for entry in json['data']}
+    assert {report_task.id, report_project.id} == ids
