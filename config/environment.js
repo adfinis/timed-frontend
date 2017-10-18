@@ -49,10 +49,6 @@ module.exports = function(environment) {
         button: 'btn btn-default',
         submit: 'btn btn-primary'
       }
-    },
-
-    'ember-gsap': {
-      plugins: ['draggable']
     }
   }
 

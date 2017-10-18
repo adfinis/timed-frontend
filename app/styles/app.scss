@@ -219,4 +219,26 @@ body {
     }
   }
 }
-@import "ember-content-placeholders";
+
+.empty {
+  color: color(var(--color-border) shade(25%));
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  .fa {
+    margin-bottom: 1rem;
+    font-size: 10rem;
+    color: var(--color-border);
+  }
+
+  .loading-spinner {
+    --color: color(var(--color-border) shade(25%));
+  }
+
+  h3 {
+    color: inherit;
+  }
+}

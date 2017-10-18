@@ -2,7 +2,7 @@ import Component from '@ember/component'
 import { htmlSafe } from '@ember/string'
 import computed from 'ember-computed-decorators'
 
-const StatisticBarComponent = Component.extend({
+const StatisticListBarComponent = Component.extend({
   attributeBindings: ['style'],
 
   @computed('value')
@@ -11,8 +11,8 @@ const StatisticBarComponent = Component.extend({
   }
 })
 
-StatisticBarComponent.reopenClass({
+StatisticListBarComponent.reopenClass({
   positionalParams: ['value']
 })
 
-export default StatisticBarComponent
+export default StatisticListBarComponent

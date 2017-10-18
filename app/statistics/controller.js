@@ -1,100 +1,33 @@
 import Controller from '@ember/controller'
+import { get, computed as computedFn } from '@ember/object'
+import { underscore } from '@ember/string'
 import QueryParams from 'ember-parachute'
-import { task } from 'ember-concurrency'
+import { task, hash } from 'ember-concurrency'
+import { isEmpty } from '@ember/utils'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
-import { get } from '@ember/object'
-import { hash } from 'ember-concurrency'
 
-const querify = key => key.replace(/\./g, '__')
+const DATE_FORMAT = 'YYYY-MM-DD'
 
-const buildRow = (title, type, disableOrdering = false) => {
-  return (key, orderKey) => ({
-    key,
-    title,
-    type,
-    ordering: !disableOrdering && querify(orderKey || key)
-  })
-}
+const serializeMoment = momentObject =>
+  (momentObject && momentObject.format(DATE_FORMAT)) || null
 
-const ROWS = {
-  year: buildRow('Year', 'plain'),
-  month: buildRow('Month', 'month'),
-  customer: buildRow('Customer', 'plain'),
-  project: buildRow('Project', 'plain'),
-  task: buildRow('Task', 'plain'),
-  user: buildRow('User', 'plain'),
-  estimated: buildRow('Estimated', 'duration'),
-  duration: buildRow('Duration', 'duration'),
-  bar: buildRow('', 'bar', true)
-}
+const deserializeMoment = momentString =>
+  (momentString && moment(momentString, DATE_FORMAT)) || null
 
 const TYPES = {
-  YEAR: {
-    ROWS: [ROWS.year('year'), ROWS.duration('duration'), ROWS.bar('duration')]
+  year: { include: '', requiredParams: [] },
+  month: { include: '', requiredParams: [] },
+  customer: { include: 'customer', requiredParams: [] },
+  project: {
+    include: 'project,project.customer',
+    requiredParams: ['customer']
   },
-  MONTH: {
-    ROWS: [
-      ROWS.year('year'),
-      ROWS.month('month'),
-      ROWS.duration('duration'),
-      ROWS.bar('duration')
-    ]
+  task: {
+    include: 'task,task.project,task.project.customer',
+    requiredParams: ['customer', 'project']
   },
-  CUSTOMER: {
-    ROWS: [
-      ROWS.customer('customer.name'),
-      ROWS.duration('duration'),
-      ROWS.bar('duration')
-    ],
-    INCLUDE: 'customer'
-  },
-  PROJECT: {
-    ROWS: [
-      ROWS.customer('project.customer.name'),
-      ROWS.project('project.name'),
-      ROWS.estimated('estimated'),
-      ROWS.duration('duration'),
-      ROWS.bar('duration')
-    ],
-    INCLUDE: 'project,project.customer'
-  },
-  TASK: {
-    ROWS: [
-      ROWS.customer('task.project.customer.name'),
-      ROWS.project('task.project.name'),
-      ROWS.task('task.name'),
-      ROWS.estimated('estimated'),
-      ROWS.duration('duration'),
-      ROWS.bar('duration')
-    ],
-    INCLUDE: 'task,task.project,task.project.customer'
-  },
-  USER: {
-    ROWS: [
-      ROWS.user('user.fullName', 'user.username'),
-      ROWS.duration('duration'),
-      ROWS.bar('duration')
-    ],
-    INCLUDE: 'user'
-  }
-}
-
-const DateParam = {
-  serialize(momentValue) {
-    return (
-      (momentValue &&
-        momentValue.isValid() &&
-        momentValue.format('YYYY-MM-DD')) ||
-      null
-    )
-  },
-
-  deserialize(str) {
-    let deserialized = moment(str, 'YYYY-MM-DD')
-
-    return deserialized.isValid() ? deserialized : null
-  }
+  user: { include: 'user', requiredParams: [] }
 }
 
 export const StatisticsQueryParams = new QueryParams({
@@ -124,44 +57,41 @@ export const StatisticsQueryParams = new QueryParams({
     refresh: true
   },
   billingType: {
-    as: 'billing_type',
     defaultValue: null,
     replace: true,
     refresh: true
   },
   fromDate: {
-    as: 'from',
     defaultValue: null,
     replace: true,
     refresh: true,
-    ...DateParam
+    serialize: serializeMoment,
+    deserialize: deserializeMoment
   },
   toDate: {
-    as: 'to',
     defaultValue: null,
     replace: true,
     refresh: true,
-    ...DateParam
+    serialize: serializeMoment,
+    deserialize: deserializeMoment
   },
   review: {
-    defaultValue: null,
+    defaultValue: '',
     replace: true,
     refresh: true
   },
   notBillable: {
-    as: 'not_billable',
-    defaultValue: null,
+    defaultValue: '',
     replace: true,
     refresh: true
   },
   notVerified: {
-    as: 'not_verified',
-    defaultValue: null,
+    defaultValue: '',
     replace: true,
     refresh: true
   },
   type: {
-    defaultValue: Object.keys(TYPES)[0].toLowerCase(),
+    defaultValue: Object.keys(TYPES)[0],
     replace: true,
     refresh: true
   },
@@ -173,26 +103,75 @@ export const StatisticsQueryParams = new QueryParams({
 })
 
 export default Controller.extend(StatisticsQueryParams.Mixin, {
-  types: Object.keys(TYPES).map(t => t.toLowerCase()),
+  types: Object.keys(TYPES),
 
-  @computed('type')
-  rows(type) {
-    return get(TYPES[type.toUpperCase()], 'ROWS')
+  @computed('fromDate') from: d => d && moment(d),
+  @computed('toDate') to: d => d && moment(d),
+
+  @computed('prefetchData.lastSuccessful.value.billingTypes')
+  billingTypes() {
+    return this.store.findAll('billingType')
   },
 
-  @computed('type')
-  modelName(type) {
-    return `report-${type}`
+  @computed('billingType', 'prefetchData.lastSuccessful.value.billingTypes')
+  selectedBillingType(id) {
+    return id && this.store.peekRecord('billing-type', id)
   },
 
-  @computed('data.lastSuccessful.value')
-  maxDuration(data) {
-    return data && moment.duration(Math.max(...data.mapBy('duration')))
+  @computed('customer', 'prefetchData.lastSuccessful.value.customer')
+  selectedCustomer(id) {
+    return id && this.store.peekRecord('customer', id)
+  },
+
+  @computed('project', 'prefetchData.lastSuccessful.value.project')
+  selectedProject(id) {
+    return id && this.store.peekRecord('project', id)
+  },
+
+  @computed('task', 'prefetchData.lastSuccessful.value.task')
+  selectedTask(id) {
+    return id && this.store.peekRecord('task', id)
+  },
+
+  @computed('user', 'prefetchData.lastSuccessful.value.user')
+  selectedUser(id) {
+    return id && this.store.peekRecord('user', id)
+  },
+
+  @computed('reviewer', 'prefetchData.lastSuccessful.value.reviewer')
+  selectedReviewer(id) {
+    return id && this.store.peekRecord('user', id)
   },
 
   setup() {
-    this.get('data').perform()
+    let observed = Object.keys(TYPES).reduce((set, key) => {
+      return [
+        ...set,
+        ...get(TYPES, `${key}.requiredParams`).filter(p => !set.includes(p))
+      ]
+    }, [])
+
+    this.set(
+      'missingParams',
+      computedFn(
+        'requiredParams.[]',
+        `queryParamsState.{${observed.join(',')}}.changed`,
+        () => {
+          return this.get('requiredParams').filter(
+            param => !this.get(`queryParamsState.${param}.changed`)
+          )
+        }
+      )
+    )
+
     this.get('prefetchData').perform()
+    this.get('data').perform()
+  },
+
+  reset(_, isExiting) {
+    if (isExiting) {
+      this.resetQueryParams()
+    }
   },
 
   queryParamsDidChange({ shouldRefresh, changed }) {
@@ -200,16 +179,14 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
       this.get('data').perform()
     }
 
-    let ordering = this.get('ordering').replace(/^-/, '')
-
-    if (
-      Object.keys(changed).includes('type') &&
-      Object.keys(TYPES).filter(k => {
-        return TYPES[k].ROWS.find(r => r.ordering === ordering)
-      }).length !== Object.keys(TYPES).length
-    ) {
+    if (Object.keys(changed).includes('type')) {
       this.resetQueryParams('ordering')
     }
+  },
+
+  @computed('type')
+  requiredParams(type) {
+    return TYPES[type].requiredParams
   },
 
   prefetchData: task(function*() {
@@ -232,21 +209,36 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   }).restartable(),
 
   data: task(function*() {
-    let include = get(TYPES[this.get('type').toUpperCase()], 'INCLUDE') || ''
+    if (this.get('missingParams.length')) {
+      return null
+    }
 
-    let qp = this.get('allQueryParams')
+    let type = this.get('type')
+    let all = this.get('allQueryParams')
+    let params = Object.keys(all).reduce((parsed, key) => {
+      let serialize = get(StatisticsQueryParams, `queryParams.${key}.serialize`)
+      let value = get(all, key)
 
-    return yield this.store.query(this.get('modelName'), {
-      include,
-      ...Object.keys(qp).reduce((params, key) => {
-        return key === 'type' ? params : { ...params, [key]: get(qp, key) }
-      }, {})
+      return key === 'type'
+        ? parsed
+        : { ...parsed, [underscore(key)]: serialize ? serialize(value) : value }
+    }, {})
+
+    return yield this.store.query(`report-${type}`, {
+      include: TYPES[type].include,
+      ...params
     })
   }).restartable(),
 
   actions: {
-    applyFilter(filters) {
-      this.setProperties(filters)
+    setModelFilter(key, value) {
+      this.set(key, value && value.id)
+    },
+
+    reset() {
+      this.resetQueryParams(
+        Object.keys(this.get('allQueryParams')).filter(qp => qp !== 'type')
+      )
     }
   }
 })
