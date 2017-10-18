@@ -3,7 +3,6 @@ import { get, computed as computedFn } from '@ember/object'
 import { underscore } from '@ember/string'
 import QueryParams from 'ember-parachute'
 import { task, hash } from 'ember-concurrency'
-import { isEmpty } from '@ember/utils'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
 
