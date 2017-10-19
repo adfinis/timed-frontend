@@ -10,11 +10,64 @@ from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 from django.http import HttpResponse, HttpResponseBadRequest
 from ezodf import Cell, opendoc
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
+from rest_framework_json_api.relations import ResourceRelatedField
 
 from timed.reports import serializers
 from timed.tracking.filters import ReportFilterSet
 from timed.tracking.models import Report
 from timed.tracking.views import ReportViewSet
+
+
+class PrefetchDictRelatedInstanceMixin(object):
+    """
+    Prefetch related instances represented as id in dict.
+
+    In dict serializers or especially aggregates only an id
+    of a related field is part of the object. Instead of
+    loading each single object row by row this mixin
+    prefetches all resources related field in injects
+    it before serialization starts.
+
+    Mixin expects the id to be the same key as the resource related
+    field defined in the serializer.
+    """
+
+    def get_serializer(self, data, *args, **kwargs):
+        many = kwargs.get('many')
+        if not many:
+            data = [data]
+
+        # prefetch data for all related fields
+        prefetch_per_field = {}
+        serializer_class = self.get_serializer_class()
+        for key, value in serializer_class._declared_fields.items():
+            if isinstance(value, ResourceRelatedField):
+                source = value.source or key
+                obj_ids = data.values_list(source, flat=True)
+                objects = {
+                    obj.id: obj
+                    for obj in value.model.objects.filter(
+                        id__in=obj_ids
+                    )
+                }
+                prefetch_per_field[source] = objects
+
+        # enhance entry dicts with model instances
+        data = [
+            {
+                **entry,
+                **{
+                    field: objects[entry[field]]
+                    for field, objects in prefetch_per_field.items()
+                }
+            }
+            for entry in data
+        ]
+
+        if not many:
+            data = data[0]
+
+        return super().get_serializer(data, *args, **kwargs)
 
 
 class YearStatisticViewSet(ReadOnlyModelViewSet):
@@ -34,6 +87,8 @@ class YearStatisticViewSet(ReadOnlyModelViewSet):
 
 
 class MonthStatisticViewSet(ReadOnlyModelViewSet):
+    """Month statistics calculates total reported time per month."""
+
     serializer_class = serializers.MonthStatisticSerializer
     filter_class = ReportFilterSet
     ordering_fields = ('year', 'month', 'duration')
@@ -47,6 +102,25 @@ class MonthStatisticViewSet(ReadOnlyModelViewSet):
         queryset = queryset.values('year', 'month')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=Concat('year', Value('-'), 'month'))
+        return queryset
+
+
+class CustomerStatisticViewSet(PrefetchDictRelatedInstanceMixin,
+                               ReadOnlyModelViewSet):
+    """Customer statistics calculates total reported time per customer."""
+
+    serializer_class = serializers.CustomerStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('task__project__customer__name', 'duration')
+    ordering = ('task__project__customer__name', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('task__project__customer')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('task__project__customer'))
+
         return queryset
 
 

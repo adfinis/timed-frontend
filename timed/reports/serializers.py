@@ -2,8 +2,10 @@ from datetime import timedelta
 
 from django.db.models import Sum
 from django.utils.duration import duration_string
+from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import DurationField, IntegerField
 
+from timed.projects.models import Customer
 from timed.serializers import DictObjectSerializer
 
 
@@ -36,3 +38,18 @@ class MonthStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
     class Meta:
         resource_name = 'month-statistics'
+
+
+class CustomerStatisticSerializer(TotalTimeRootMetaMixin,
+                                  DictObjectSerializer):
+    duration = DurationField()
+    customer = relations.ResourceRelatedField(
+        source='task__project__customer', model=Customer, read_only=True
+    )
+
+    included_serializers = {
+        'customer': 'timed.projects.serializers.CustomerSerializer',
+    }
+
+    class Meta:
+        resource_name = 'customer-statistics'

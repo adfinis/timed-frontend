@@ -302,43 +302,6 @@ class ReportViewSet(ModelViewSet):
         )
         return Response(data=serializer.data)
 
-    @list_route(
-        methods=['get'],
-        url_path='by-customer',
-        serializer_class=serializers.ReportByCustomerSerializer,
-        ordering_fields=('task__project__customer__name', 'duration'),
-        ordering=('task__project__customer__name', )
-    )
-    def by_customer(self, request):
-        """Group report durations by customer."""
-        customer_id = 'task__project__customer_id'
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # for performance reasons get all customers needed in one go
-        customer_ids = queryset.values_list(customer_id, flat=True)
-        customers = {
-            customer.id: customer
-            for customer in Customer.objects.filter(
-                id__in=customer_ids
-            )
-        }
-
-        # actual calculation of customer durations
-        queryset = queryset.values(customer_id)
-        queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F(customer_id))
-
-        # enhance entry dicts with customer model instance
-        data = [
-            {**entry, **{'customer': customers[entry[customer_id]]}}
-            for entry in queryset
-        ]
-
-        serializer = serializers.ReportByCustomerSerializer(
-            data, many=True, context={'view': self}
-        )
-        return Response(data=serializer.data)
-
     def get_queryset(self):
         """Select related to reduce queries.
 

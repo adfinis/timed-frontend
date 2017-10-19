@@ -8,5 +8,10 @@ r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
 r.register(r'work-reports',     views.WorkReportViewSet,    'work-report')
 r.register(r'year-statistics',  views.YearStatisticViewSet, 'year-statistic')
 r.register(r'month-statistics', views.MonthStatisticViewSet, 'month-statistic')
+r.register(
+    r'customer-statistics',
+    views.CustomerStatisticViewSet,
+    'customer-statistic'
+)
 
 urlpatterns = r.urls
