@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api import relations
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
-                                                 DurationField, IntegerField,
+                                                 DurationField,
                                                  ModelSerializer,
                                                  SerializerMethodField,
                                                  ValidationError)
@@ -129,23 +129,6 @@ class TotalTimeRootMetaMixin(object):
             )
             return data
         return {}
-
-
-class ReportByYearSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
-    duration = DurationField(read_only=True)
-    year = IntegerField(read_only=True)
-
-    class Meta:
-        resource_name = 'report-years'
-
-
-class ReportByMonthSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
-    duration = DurationField(read_only=True)
-    year = IntegerField(read_only=True)
-    month = IntegerField(read_only=True)
-
-    class Meta:
-        resource_name = 'report-months'
 
 
 class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):

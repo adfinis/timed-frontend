@@ -5,13 +5,49 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from django.conf import settings
+from django.db.models import F, Sum, Value
+from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 from django.http import HttpResponse, HttpResponseBadRequest
 from ezodf import Cell, opendoc
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
+from timed.reports import serializers
 from timed.tracking.filters import ReportFilterSet
 from timed.tracking.models import Report
 from timed.tracking.views import ReportViewSet
+
+
+class YearStatisticViewSet(ReadOnlyModelViewSet):
+    """Year statistics calculates total reported time per year."""
+
+    serializer_class = serializers.YearStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('year', 'duration')
+    ordering = ('year', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+        queryset = queryset.annotate(year=ExtractYear('date')).values('year')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('year'))
+        return queryset
+
+
+class MonthStatisticViewSet(ReadOnlyModelViewSet):
+    serializer_class = serializers.MonthStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('year', 'month', 'duration')
+    ordering = ('year', 'month')
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+        queryset = queryset.annotate(
+            year=ExtractYear('date'), month=ExtractMonth('date')
+        )
+        queryset = queryset.values('year', 'month')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=Concat('year', Value('-'), 'month'))
+        return queryset
 
 
 class WorkReportViewSet(GenericViewSet):

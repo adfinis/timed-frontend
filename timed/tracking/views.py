@@ -2,8 +2,7 @@
 
 import django_excel
 from django.contrib.auth import get_user_model
-from django.db.models import F, Sum, Value
-from django.db.models.functions import Concat, ExtractMonth, ExtractYear
+from django.db.models import F, Sum
 from django.http import HttpResponseBadRequest
 from rest_condition import C
 from rest_framework.decorators import list_route
@@ -188,46 +187,6 @@ class ReportViewSet(ModelViewSet):
         queryset.update(verified_by=request.user)
 
         return Response(data={})
-
-    @list_route(
-        methods=['get'],
-        url_path='by-year',
-        serializer_class=serializers.ReportByYearSerializer,
-        ordering_fields=('year', 'duration'),
-        ordering=('year', )
-    )
-    def by_year(self, request):
-        """Group report durations by year."""
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.annotate(year=ExtractYear('date')).values('year')
-        queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('year'))
-
-        serializer = serializers.ReportByYearSerializer(
-            queryset, many=True, context={'view': self}
-        )
-        return Response(data=serializer.data)
-
-    @list_route(
-        methods=['get'],
-        url_path='by-month',
-        serializer_class=serializers.ReportByMonthSerializer,
-        ordering_fields=('year', 'month', 'duration'),
-        ordering=('year', 'month')
-    )
-    def by_month(self, request):
-        """Group report durations by month."""
-        queryset = self.filter_queryset(self.get_queryset())
-        queryset = queryset.annotate(
-            year=ExtractYear('date'), month=ExtractMonth('date')
-        )
-        queryset = queryset.values('year', 'month')
-        queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=Concat('year', Value('-'), 'month'))
-        serializer = serializers.ReportByMonthSerializer(
-            queryset, many=True, context={'view': self}
-        )
-        return Response(data=serializer.data)
 
     @list_route(
         methods=['get'],
