@@ -5,7 +5,7 @@ from . import views
 
 r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
 
-r.register(r'work-report', views.WorkReportViewSet, 'work-reports')
+r.register(r'work-reports',     views.WorkReportViewSet,    'work-report')
 r.register(r'year-statistics',  views.YearStatisticViewSet, 'year-statistic')
 r.register(r'month-statistics', views.MonthStatisticViewSet, 'month-statistic')
 

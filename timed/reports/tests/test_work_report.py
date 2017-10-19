@@ -25,7 +25,7 @@ def test_work_report_single_project(auth_client):
         10, user=user, verified_by=user, task=task, date=date(2017, 8, 17)
     )
 
-    url = reverse('work-reports-list')
+    url = reverse('work-report-list')
     res = auth_client.get(url, data={
         'user': auth_client.user.id,
         'from_date': '2017-08-01',
@@ -59,7 +59,7 @@ def test_work_report_multiple_projects(auth_client):
         task = TaskFactory.create(project=project)
         ReportFactory.create_batch(10, user=user, task=task, date=report_date)
 
-    url = reverse('work-reports-list')
+    url = reverse('work-report-list')
     res = auth_client.get(url, data={
         'user': auth_client.user.id
     })
@@ -81,7 +81,7 @@ def test_work_report_multiple_projects(auth_client):
 
 
 def test_work_report_empty(auth_client):
-    url = reverse('work-reports-list')
+    url = reverse('work-report-list')
     res = auth_client.get(url, data={
         'user': auth_client.user.id
     })
