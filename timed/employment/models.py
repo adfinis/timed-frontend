@@ -337,14 +337,14 @@ class Employment(models.Model):
         expected_worktime = self.worktime_per_day * (workdays - holidays)
 
         overtime_credit_data = OvertimeCredit.objects.filter(
-            user=self.user,
+            user=self.user_id,
             date__gte=start,
             date__lte=end
         ).aggregate(total_duration=Sum('duration'))
         overtime_credit = overtime_credit_data['total_duration'] or timedelta()
 
         reported_worktime_data = Report.objects.filter(
-            user=self.user,
+            user=self.user_id,
             date__gte=start,
             date__lte=end
         ).aggregate(duration_total=Sum('duration'))
@@ -355,7 +355,7 @@ class Employment(models.Model):
         absences = sum([
             absence.calculate_duration(self)
             for absence in Absence.objects.filter(
-                user=self.user,
+                user=self.user_id,
                 date__gte=start,
                 date__lte=end,
             )
@@ -418,7 +418,8 @@ class User(AbstractUser):
         :returns:     tuple of 3 values reported, expected and delta in given
                       time frame
         """
-        employments = Employment.objects.for_user(self, start, end)
+        employments = Employment.objects.for_user(
+            self, start, end).select_related('location')
 
         balances = [
             employment.calculate_worktime(start, end)
