@@ -11,7 +11,6 @@ class MyPkDictSerializer(DictObjectSerializer):
     test_nr = IntegerField()
 
     class Meta:
-        pk_key = 'test_nr'
         resource_name = 'my-resource'
 
 
