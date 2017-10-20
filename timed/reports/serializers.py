@@ -1,27 +1,9 @@
-from datetime import timedelta
-
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
-from django.utils.duration import duration_string
 from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import DurationField, IntegerField
 
 from timed.projects.models import Customer, Project, Task
-from timed.serializers import DictObjectSerializer
-
-
-class TotalTimeRootMetaMixin(object):
-    def get_root_meta(self, resource, many):
-        """Add total hours over whole result (not just page) to meta."""
-        if many:
-            view = self.context['view']
-            queryset = view.filter_queryset(view.get_queryset())
-            data = queryset.aggregate(total_time=Sum('duration'))
-            data['total_time'] = duration_string(
-                data['total_time'] or timedelta(0)
-            )
-            return data
-        return {}
+from timed.serializers import DictObjectSerializer, TotalTimeRootMetaMixin
 
 
 class YearStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
