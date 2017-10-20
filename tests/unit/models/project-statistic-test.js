@@ -2,10 +2,10 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
 
-describe('Unit | Model | report user', function() {
-  setupModelTest('report-user', {
+describe('Unit | Model | project statistic', function() {
+  setupModelTest('project-statistic', {
     // Specify the other units that are required for this test.
-    needs: ['model:user']
+    needs: []
   })
 
   // Replace this with your real tests.

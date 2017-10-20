@@ -104,9 +104,6 @@ export const StatisticsQueryParams = new QueryParams({
 export default Controller.extend(StatisticsQueryParams.Mixin, {
   types: Object.keys(TYPES),
 
-  @computed('fromDate') from: d => d && moment(d),
-  @computed('toDate') to: d => d && moment(d),
-
   @computed('prefetchData.lastSuccessful.value.billingTypes')
   billingTypes() {
     return this.store.findAll('billingType')
@@ -223,7 +220,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
         : { ...parsed, [underscore(key)]: serialize ? serialize(value) : value }
     }, {})
 
-    return yield this.store.query(`report-${type}`, {
+    return yield this.store.query(`${type}-statistic`, {
       include: TYPES[type].include,
       ...params
     })

@@ -65,5 +65,21 @@
         </td>
       </tr>
     {{/vertical-collection}}
+    <tfoot>
+      <tr>
+        {{#each columns as |column index|}}
+          <td>
+            <strong>
+              {{#if (not index)}}
+                Total:
+              {{else if (eq column.title 'Duration')}}
+                <span class="total">{{humanize-duration total false}}</span>
+              {{/if}}
+            </strong>
+          </td>
+        {{/each}}
+        <td></td>
+      </tr>
+    </tfoot>
   </table>
 {{/if}}

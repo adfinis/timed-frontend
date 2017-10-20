@@ -4,6 +4,7 @@ import computed from 'ember-computed-decorators'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import { capitalize } from '@ember/string'
+import parseDjangoDuration from 'timed/utils/parse-django-duration'
 
 const PLAIN_LAYOUT = hbs`{{value}}`
 const DURATION_LAYOUT = hbs`{{humanize-duration value false}}`
@@ -56,9 +57,14 @@ const COLUMN_MAP = {
 }
 
 export default Component.extend({
-  @computed('data.lastSuccessful.value.@each.duration')
+  @computed('data.last.value.@each.duration')
   maxDuration(data) {
     return data && moment.duration(Math.max(...data.mapBy('duration')))
+  },
+
+  @computed('data.last.value')
+  total(data) {
+    return parseDjangoDuration(data.getWithDefault('meta.total-time', null))
   },
 
   @computed('type')
@@ -71,6 +77,10 @@ export default Component.extend({
 
   @computed('missingParams.[]')
   missingParamsMessage(params) {
+    if (!params.length) {
+      return ''
+    }
+
     let text = params
       .map((param, index) => {
         if (index === 0) {

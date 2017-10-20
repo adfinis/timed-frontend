@@ -1,6 +1,5 @@
 & {
-  --size: 120px;
-  --color: lightgrey;
+  --size: 140px;
 
   display: inline-flex;
   flex-wrap: wrap;
@@ -9,39 +8,53 @@
 
   animation: loading-pop-up 1s ease forwards;
 
-  > div {
+  .loading-dot {
     height: calc(1 / 3 * var(--size));
     width: calc(1 / 3 * var(--size));
     position: relative;
+    opacity: 0.75;
+
+    &:nth-child(5)::before {
+      animation-delay: 0ms;
+      background-color: color(var(--color-primary) shade(40%));
+      height: 80%;
+      width:  80%;
+    }
 
     &:nth-child(1)::before,
     &:nth-child(3)::before,
     &:nth-child(7)::before,
     &:nth-child(9)::before {
-      animation-delay: 500ms;
+      animation-delay: -500ms;
+      background-color: color(var(--color-primary) shade(0%));
+      height: 60%;
+      width:  60%;
     }
 
     &:nth-child(2)::before,
     &:nth-child(4)::before,
     &:nth-child(6)::before,
     &:nth-child(8)::before {
-      animation-delay: 1000ms;
+      animation-delay: -1000ms;
+      background-color: color(var(--color-primary) shade(20%));
+      height: 70%;
+      width:  70%;
     }
 
     &::before {
       content: '';
       display: block;
-      height: 80%;
-      width: 80%;
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
       border-radius: 50%;
-      background-color: var(--color);
-      will-change: opacity;
+      transform-origin: center center;
 
-      animation: loading-flash 2s linear infinite;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+
+      will-change: opacity, transform;
+      animation: loading-flash 3000ms ease-in-out infinite;
     }
   }
 }
@@ -58,11 +71,14 @@
 @keyframes loading-flash {
   0% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
   50% {
-    opacity: 0.2;
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.9);
   }
-  to {
+  100% {
     opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
 }

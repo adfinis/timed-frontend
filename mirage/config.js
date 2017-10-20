@@ -1,8 +1,27 @@
 import { Response } from 'ember-cli-mirage'
 import moment from 'moment'
 import { randomDuration } from './helpers/duration'
+import parseDjangoDuration from 'timed/utils/parse-django-duration'
+import formatDuration from 'timed/utils/format-duration'
 
 const { parse } = JSON
+
+const statisticEndpoint = type => {
+  return function(db) {
+    let stats = db[`${type}Statistics`].all()
+
+    return {
+      ...this.serialize(stats),
+      meta: {
+        'total-time': formatDuration(
+          stats.models.reduce((total, { duration }) => {
+            return total.add(parseDjangoDuration(duration))
+          }, moment.duration())
+        )
+      }
+    }
+  }
+}
 
 export default function() {
   this.passthrough('/write-coverage')
@@ -196,4 +215,11 @@ export default function() {
 
     return new Response(200, {}, {})
   })
+
+  this.get('/year-statistics', statisticEndpoint('year'))
+  this.get('/month-statistics', statisticEndpoint('month'))
+  this.get('/customer-statistics', statisticEndpoint('customer'))
+  this.get('/project-statistics', statisticEndpoint('project'))
+  this.get('/task-statistics', statisticEndpoint('task'))
+  this.get('/user-statistics', statisticEndpoint('user'))
 }

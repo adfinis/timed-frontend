@@ -3,11 +3,9 @@
  * @submodule timed-transforms
  * @public
  */
-import DS from 'ember-data'
+import Transform from 'ember-data/transform'
 import moment from 'moment'
-
-const { Transform } = DS
-
+import parseDjangoDuration from 'timed/utils/parse-django-duration'
 import { padTpl, padStart } from 'ember-pad/utils/pad'
 
 const padTpl2 = padTpl(2)
@@ -38,23 +36,7 @@ export default Transform.extend({
    * @public
    */
   deserialize(serialized) {
-    if (!serialized) {
-      return null
-    }
-
-    let re = new RegExp(/^(-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
-
-    let [, days, hours, minutes, seconds, microseconds] = serialized
-      .match(re)
-      .map(m => Number(m) || 0)
-
-    return moment.duration({
-      days,
-      hours,
-      minutes,
-      seconds,
-      milliseconds: microseconds * 1000
-    })
+    return parseDjangoDuration(serialized)
   },
 
   /**
