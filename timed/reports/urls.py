@@ -13,5 +13,10 @@ r.register(
     views.CustomerStatisticViewSet,
     'customer-statistic'
 )
+r.register(
+    r'project-statistics',
+    views.ProjectStatisticViewSet,
+    'project-statistic'
+)
 
 urlpatterns = r.urls

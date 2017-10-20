@@ -48,7 +48,7 @@ class PrefetchDictRelatedInstanceMixin(object):
                     obj.id: obj
                     for obj in value.model.objects.filter(
                         id__in=obj_ids
-                    )
+                    ).select_related()
                 }
                 prefetch_per_field[source] = objects
 
@@ -120,6 +120,25 @@ class CustomerStatisticViewSet(PrefetchDictRelatedInstanceMixin,
         queryset = queryset.values('task__project__customer')
         queryset = queryset.annotate(duration=Sum('duration'))
         queryset = queryset.annotate(pk=F('task__project__customer'))
+
+        return queryset
+
+
+class ProjectStatisticViewSet(PrefetchDictRelatedInstanceMixin,
+                              ReadOnlyModelViewSet):
+    """Project statistics calculates total reported time per project."""
+
+    serializer_class = serializers.ProjectStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('task__project__name', 'duration')
+    ordering = ('task__project__name', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('task__project')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('task__project'))
 
         return queryset
 

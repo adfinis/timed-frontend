@@ -156,18 +156,6 @@ class ReportByTaskSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
         resource_name = 'report-tasks'
 
 
-class ReportByProjectSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
-    duration = DurationField(read_only=True)
-    project = relations.ResourceRelatedField(model=Project, read_only=True)
-
-    included_serializers = {
-        'project': 'timed.projects.serializers.ProjectSerializer',
-    }
-
-    class Meta:
-        resource_name = 'report-projects'
-
-
 class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
     """Report serializer."""
 
