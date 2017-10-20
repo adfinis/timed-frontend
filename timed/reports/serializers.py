@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.utils.duration import duration_string
 from rest_framework_json_api import relations
@@ -79,3 +80,16 @@ class TaskStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
     class Meta:
         resource_name = 'task-statistics'
+
+
+class UserStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+    duration = DurationField(read_only=True)
+    user = relations.ResourceRelatedField(model=get_user_model(),
+                                          read_only=True)
+
+    included_serializers = {
+        'user': 'timed.employment.serializers.UserSerializer',
+    }
+
+    class Meta:
+        resource_name = 'user-statistics'

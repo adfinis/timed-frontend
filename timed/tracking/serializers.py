@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
-from rest_framework_json_api import relations
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  DurationField,
@@ -14,8 +13,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  ValidationError)
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
-from timed.projects.models import Customer, Project, Task
-from timed.serializers import DictObjectSerializer
+from timed.projects.models import Task
 from timed.tracking import models
 
 
@@ -129,19 +127,6 @@ class TotalTimeRootMetaMixin(object):
             )
             return data
         return {}
-
-
-class ReportByUserSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
-    duration = DurationField(read_only=True)
-    user = relations.ResourceRelatedField(model=get_user_model(),
-                                          read_only=True)
-
-    included_serializers = {
-        'user': 'timed.employment.serializers.UserSerializer',
-    }
-
-    class Meta:
-        resource_name = 'report-users'
 
 
 class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):

@@ -1,8 +1,6 @@
 """Viewsets for the tracking app."""
 
 import django_excel
-from django.contrib.auth import get_user_model
-from django.db.models import F, Sum
 from django.http import HttpResponseBadRequest
 from rest_condition import C
 from rest_framework.decorators import list_route
@@ -186,42 +184,6 @@ class ReportViewSet(ModelViewSet):
         queryset.update(verified_by=request.user)
 
         return Response(data={})
-
-    @list_route(
-        methods=['get'],
-        url_path='by-user',
-        serializer_class=serializers.ReportByUserSerializer,
-        ordering_fields=('user__username', 'duration'),
-        ordering=('user__username', )
-    )
-    def by_user(self, request):
-        """Group report durations by user."""
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # for performance reasons get all users needed in one go
-        user_ids = queryset.values_list('user_id', flat=True)
-        users = {
-            user.id: user
-            for user in get_user_model().objects.filter(
-                id__in=user_ids
-            )
-        }
-
-        # actual calculation of user durations
-        queryset = queryset.values('user_id')
-        queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('user_id'))
-
-        # enhance entry dicts with user model instance
-        data = [
-            {**entry, **{'user': users[entry['user_id']]}}
-            for entry in queryset
-        ]
-
-        serializer = serializers.ReportByUserSerializer(
-            data, many=True, context={'view': self}
-        )
-        return Response(data=serializer.data)
 
     def get_queryset(self):
         """Select related to reduce queries.

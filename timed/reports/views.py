@@ -162,6 +162,25 @@ class TaskStatisticViewSet(PrefetchDictRelatedInstanceMixin,
         return queryset
 
 
+class UserStatisticViewSet(PrefetchDictRelatedInstanceMixin,
+                           ReadOnlyModelViewSet):
+    """User calculates total reported time per user."""
+
+    serializer_class = serializers.UserStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('user__username', 'duration')
+    ordering = ('user__username', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('user')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('user'))
+
+        return queryset
+
+
 class WorkReportViewSet(GenericViewSet):
     """
     Build a ods work report of reports with given filters.
