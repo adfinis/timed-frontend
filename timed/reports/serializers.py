@@ -1,12 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework_json_api import relations
-from rest_framework_json_api.serializers import DurationField, IntegerField
+from rest_framework_json_api.serializers import (DurationField, IntegerField,
+                                                 Serializer)
 
 from timed.projects.models import Customer, Project, Task
-from timed.serializers import DictObjectSerializer, TotalTimeRootMetaMixin
+from timed.serializers import TotalTimeRootMetaMixin
 
 
-class YearStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+class YearStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
     year = IntegerField()
 
@@ -14,7 +15,7 @@ class YearStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
         resource_name = 'year-statistics'
 
 
-class MonthStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+class MonthStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
     year = IntegerField()
     month = IntegerField()
@@ -23,8 +24,7 @@ class MonthStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
         resource_name = 'month-statistics'
 
 
-class CustomerStatisticSerializer(TotalTimeRootMetaMixin,
-                                  DictObjectSerializer):
+class CustomerStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
     customer = relations.ResourceRelatedField(
         source='task__project__customer', model=Customer, read_only=True
@@ -38,7 +38,7 @@ class CustomerStatisticSerializer(TotalTimeRootMetaMixin,
         resource_name = 'customer-statistics'
 
 
-class ProjectStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+class ProjectStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
     project = relations.ResourceRelatedField(
         source='task__project', model=Project, read_only=True
@@ -52,7 +52,7 @@ class ProjectStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
         resource_name = 'project-statistics'
 
 
-class TaskStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+class TaskStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField(read_only=True)
     task = relations.ResourceRelatedField(model=Task, read_only=True)
 
@@ -64,7 +64,7 @@ class TaskStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
         resource_name = 'task-statistics'
 
 
-class UserStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+class UserStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField(read_only=True)
     user = relations.ResourceRelatedField(model=get_user_model(),
                                           read_only=True)

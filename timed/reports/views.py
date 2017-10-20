@@ -18,19 +18,35 @@ from timed.tracking.models import Report
 from timed.tracking.views import ReportViewSet
 
 
-class PrefetchDictRelatedInstanceMixin(object):
+class AggregateQuerysetMixin(object):
     """
-    Prefetch related instances represented as id in dict.
+    Add support for aggregate queryset in view.
 
-    In dict serializers or especially aggregates only an id
-    of a related field is part of the object. Instead of
-    loading each single object row by row this mixin
+    Wrap queryst dicts into aggregate object to support renderer
+    which expect attributes.
+    It additional prefetches related instances represented as id in
+    aggregate.
+
+    In aggregates only an id of a related field is part of the object.
+    Instead of loading each single object row by row this mixin
     prefetches all resources related field in injects
     it before serialization starts.
 
     Mixin expects the id to be the same key as the resource related
     field defined in the serializer.
     """
+
+    class AggregateObject(dict):
+        """
+        Wrap dict into an object.
+
+        All values will be accesible through attributes. Note that
+        keys must be valid python names for this to work.
+        """
+
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+            super().__init__(**kwargs)
 
     def get_serializer(self, data, *args, **kwargs):
         many = kwargs.get('many')
@@ -43,7 +59,10 @@ class PrefetchDictRelatedInstanceMixin(object):
         for key, value in serializer_class._declared_fields.items():
             if isinstance(value, ResourceRelatedField):
                 source = value.source or key
-                obj_ids = data.values_list(source, flat=True)
+                if many:
+                    obj_ids = data.values_list(source, flat=True)
+                else:
+                    obj_ids = [data[0][source]]
                 objects = {
                     obj.id: obj
                     for obj in value.model.objects.filter(
@@ -54,13 +73,13 @@ class PrefetchDictRelatedInstanceMixin(object):
 
         # enhance entry dicts with model instances
         data = [
-            {
+            self.AggregateObject(**{
                 **entry,
                 **{
                     field: objects[entry[field]]
                     for field, objects in prefetch_per_field.items()
                 }
-            }
+            })
             for entry in data
         ]
 
@@ -70,7 +89,7 @@ class PrefetchDictRelatedInstanceMixin(object):
         return super().get_serializer(data, *args, **kwargs)
 
 
-class YearStatisticViewSet(ReadOnlyModelViewSet):
+class YearStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Year statistics calculates total reported time per year."""
 
     serializer_class = serializers.YearStatisticSerializer
@@ -86,7 +105,7 @@ class YearStatisticViewSet(ReadOnlyModelViewSet):
         return queryset
 
 
-class MonthStatisticViewSet(ReadOnlyModelViewSet):
+class MonthStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Month statistics calculates total reported time per month."""
 
     serializer_class = serializers.MonthStatisticSerializer
@@ -105,8 +124,7 @@ class MonthStatisticViewSet(ReadOnlyModelViewSet):
         return queryset
 
 
-class CustomerStatisticViewSet(PrefetchDictRelatedInstanceMixin,
-                               ReadOnlyModelViewSet):
+class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Customer statistics calculates total reported time per customer."""
 
     serializer_class = serializers.CustomerStatisticSerializer
@@ -124,8 +142,7 @@ class CustomerStatisticViewSet(PrefetchDictRelatedInstanceMixin,
         return queryset
 
 
-class ProjectStatisticViewSet(PrefetchDictRelatedInstanceMixin,
-                              ReadOnlyModelViewSet):
+class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Project statistics calculates total reported time per project."""
 
     serializer_class = serializers.ProjectStatisticSerializer
@@ -143,8 +160,7 @@ class ProjectStatisticViewSet(PrefetchDictRelatedInstanceMixin,
         return queryset
 
 
-class TaskStatisticViewSet(PrefetchDictRelatedInstanceMixin,
-                           ReadOnlyModelViewSet):
+class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Task statistics calculates total reported time per task."""
 
     serializer_class = serializers.TaskStatisticSerializer
@@ -162,8 +178,7 @@ class TaskStatisticViewSet(PrefetchDictRelatedInstanceMixin,
         return queryset
 
 
-class UserStatisticViewSet(PrefetchDictRelatedInstanceMixin,
-                           ReadOnlyModelViewSet):
+class UserStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """User calculates total reported time per user."""
 
     serializer_class = serializers.UserStatisticSerializer
