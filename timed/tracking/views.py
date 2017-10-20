@@ -9,7 +9,6 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from timed.projects.models import Customer, Project, Task
 from timed.tracking import filters, models, serializers
 from timed.tracking.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
                                         IsReadOnly, IsUnverified)
@@ -220,48 +219,6 @@ class ReportViewSet(ModelViewSet):
         ]
 
         serializer = serializers.ReportByUserSerializer(
-            data, many=True, context={'view': self}
-        )
-        return Response(data=serializer.data)
-
-    @list_route(
-        methods=['get'],
-        url_path='by-task',
-        serializer_class=serializers.ReportByTaskSerializer,
-        ordering_fields=('task__name', 'duration'),
-        ordering=('task__name', )
-    )
-    def by_task(self, request):
-        """Group report durations by task."""
-        queryset = self.filter_queryset(self.get_queryset())
-
-        # for performance reasons get all tasks needed in one go
-        task_ids = queryset.values_list('task_id', flat=True)
-        tasks = {
-            task.id: task
-            for task in Task.objects.filter(
-                id__in=task_ids
-            ).select_related(
-                'cost_center',
-                'project',
-                'project__billing_type',
-                'project__cost_center',
-                'project__customer'
-            )
-        }
-
-        # actual calculation of task durations
-        queryset = queryset.values('task_id')
-        queryset = queryset.annotate(duration=Sum('duration'))
-        queryset = queryset.annotate(pk=F('task_id'))
-
-        # enhance entry dicts with task model instance
-        data = [
-            {**entry, **{'task': tasks[entry['task_id']]}}
-            for entry in queryset
-        ]
-
-        serializer = serializers.ReportByTaskSerializer(
             data, many=True, context={'view': self}
         )
         return Response(data=serializer.data)

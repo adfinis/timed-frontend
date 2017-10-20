@@ -5,7 +5,7 @@ from django.utils.duration import duration_string
 from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import DurationField, IntegerField
 
-from timed.projects.models import Customer, Project
+from timed.projects.models import Customer, Project, Task
 from timed.serializers import DictObjectSerializer
 
 
@@ -67,3 +67,15 @@ class ProjectStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
 
     class Meta:
         resource_name = 'project-statistics'
+
+
+class TaskStatisticSerializer(TotalTimeRootMetaMixin, DictObjectSerializer):
+    duration = DurationField(read_only=True)
+    task = relations.ResourceRelatedField(model=Task, read_only=True)
+
+    included_serializers = {
+        'task': 'timed.projects.serializers.TaskSerializer',
+    }
+
+    class Meta:
+        resource_name = 'task-statistics'

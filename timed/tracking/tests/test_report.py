@@ -556,60 +556,6 @@ def test_report_by_user(auth_client):
     assert json['meta']['total-time'] == '05:00:00'
 
 
-def test_report_by_task(auth_client, django_assert_num_queries):
-    task_z = TaskFactory.create(name='Z')
-    task_test = TaskFactory.create(name='Test')
-    ReportFactory.create(duration=timedelta(hours=1), task=task_test)
-    ReportFactory.create(duration=timedelta(hours=2), task=task_test)
-    ReportFactory.create(duration=timedelta(hours=2), task=task_z)
-
-    url = reverse('report-by-task')
-    with django_assert_num_queries(4):
-        result = auth_client.get(url, data={
-            'ordering': 'task__name',
-            'include': 'task,task.project,task.project.customer'
-        })
-    assert result.status_code == 200
-
-    json = result.json()
-    expected_json = [
-        {
-            'type': 'report-tasks',
-            'id': str(task_test.id),
-            'attributes': {
-                'duration': '03:00:00'
-            },
-            'relationships': {
-                'task': {
-                    'data': {
-                        'id': str(task_test.id),
-                        'type': 'tasks'
-                    }
-                }
-            }
-        },
-        {
-            'type': 'report-tasks',
-            'id': str(task_z.id),
-            'attributes': {
-                'duration': '02:00:00'
-            },
-            'relationships': {
-                'task': {
-                    'data': {
-                        'id': str(task_z.id),
-                        'type': 'tasks'
-                    }
-                }
-            }
-        }
-    ]
-
-    assert json['data'] == expected_json
-    assert len(json['included']) == 6
-    assert json['meta']['total-time'] == '05:00:00'
-
-
 def test_report_list_filter_cost_center(auth_client):
     cost_center = CostCenterFactory.create()
     # 1st valid case: report with task of given cost center
