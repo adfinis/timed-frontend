@@ -48,7 +48,7 @@ setup(
         'django-filter==1.0.2',
         'django-multiselectfield==0.1.6',
         'djangorestframework>=3.6,<3.7',
-        'djangorestframework-jsonapi==2.2.0',
+        'djangorestframework-jsonapi==2.2.0adsy1',
         'djangorestframework-jwt==1.10.0',
         'psycopg2>=2.7,<2.8',
         'pytz==2017.2',
@@ -62,6 +62,12 @@ setup(
         'rest_condition==1.0.3',
         'django-money==0.11.4',
         'python-redmine==2.0.2',
+    ),
+    dependency_links=(
+        # TODO: when following PR are released, change back to official release
+        # https://github.com/django-json-api/django-rest-framework-json-api/pull/376
+        # https://github.com/django-json-api/django-rest-framework-json-api/pull/374
+        'https://github.com/adfinis-forks/django-rest-framework-json-api/tarball/timed_master#egg=djangorestframework-jsonapi-2.2.0adsy1',  # noqa: E501
     ),
     keywords='timetracking',
     url='https://adfinis-sygroup.ch/',

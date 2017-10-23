@@ -5,13 +5,195 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from django.conf import settings
+from django.db.models import F, Sum, Value
+from django.db.models.functions import Concat, ExtractMonth, ExtractYear
 from django.http import HttpResponse, HttpResponseBadRequest
 from ezodf import Cell, opendoc
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
+from rest_framework_json_api.relations import ResourceRelatedField
 
+from timed.reports import serializers
 from timed.tracking.filters import ReportFilterSet
 from timed.tracking.models import Report
 from timed.tracking.views import ReportViewSet
+
+
+class AggregateQuerysetMixin(object):
+    """
+    Add support for aggregate queryset in view.
+
+    Wrap queryst dicts into aggregate object to support renderer
+    which expect attributes.
+    It additional prefetches related instances represented as id in
+    aggregate.
+
+    In aggregates only an id of a related field is part of the object.
+    Instead of loading each single object row by row this mixin
+    prefetches all resources related field in injects
+    it before serialization starts.
+
+    Mixin expects the id to be the same key as the resource related
+    field defined in the serializer.
+    """
+
+    class AggregateObject(dict):
+        """
+        Wrap dict into an object.
+
+        All values will be accesible through attributes. Note that
+        keys must be valid python names for this to work.
+        """
+
+        def __init__(self, **kwargs):
+            self.__dict__.update(kwargs)
+            super().__init__(**kwargs)
+
+    def get_serializer(self, data, *args, **kwargs):
+        many = kwargs.get('many')
+        if not many:
+            data = [data]
+
+        # prefetch data for all related fields
+        prefetch_per_field = {}
+        serializer_class = self.get_serializer_class()
+        for key, value in serializer_class._declared_fields.items():
+            if isinstance(value, ResourceRelatedField):
+                source = value.source or key
+                if many:
+                    obj_ids = data.values_list(source, flat=True)
+                else:
+                    obj_ids = [data[0][source]]
+                objects = {
+                    obj.id: obj
+                    for obj in value.model.objects.filter(
+                        id__in=obj_ids
+                    ).select_related()
+                }
+                prefetch_per_field[source] = objects
+
+        # enhance entry dicts with model instances
+        data = [
+            self.AggregateObject(**{
+                **entry,
+                **{
+                    field: objects[entry[field]]
+                    for field, objects in prefetch_per_field.items()
+                }
+            })
+            for entry in data
+        ]
+
+        if not many:
+            data = data[0]
+
+        return super().get_serializer(data, *args, **kwargs)
+
+
+class YearStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Year statistics calculates total reported time per year."""
+
+    serializer_class = serializers.YearStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('year', 'duration')
+    ordering = ('year', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+        queryset = queryset.annotate(year=ExtractYear('date')).values('year')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('year'))
+        return queryset
+
+
+class MonthStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Month statistics calculates total reported time per month."""
+
+    serializer_class = serializers.MonthStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('year', 'month', 'duration')
+    ordering = ('year', 'month')
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+        queryset = queryset.annotate(
+            year=ExtractYear('date'), month=ExtractMonth('date')
+        )
+        queryset = queryset.values('year', 'month')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=Concat('year', Value('-'), 'month'))
+        return queryset
+
+
+class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Customer statistics calculates total reported time per customer."""
+
+    serializer_class = serializers.CustomerStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('task__project__customer__name', 'duration')
+    ordering = ('task__project__customer__name', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('task__project__customer')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('task__project__customer'))
+
+        return queryset
+
+
+class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Project statistics calculates total reported time per project."""
+
+    serializer_class = serializers.ProjectStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('task__project__name', 'duration')
+    ordering = ('task__project__name', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('task__project')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('task__project'))
+
+        return queryset
+
+
+class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Task statistics calculates total reported time per task."""
+
+    serializer_class = serializers.TaskStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('task__name', 'duration')
+    ordering = ('task__name', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('task')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('task'))
+
+        return queryset
+
+
+class UserStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """User calculates total reported time per user."""
+
+    serializer_class = serializers.UserStatisticSerializer
+    filter_class = ReportFilterSet
+    ordering_fields = ('user__username', 'duration')
+    ordering = ('user__username', )
+
+    def get_queryset(self):
+        queryset = Report.objects.all()
+
+        queryset = queryset.values('user')
+        queryset = queryset.annotate(duration=Sum('duration'))
+        queryset = queryset.annotate(pk=F('user'))
+
+        return queryset
 
 
 class WorkReportViewSet(GenericViewSet):

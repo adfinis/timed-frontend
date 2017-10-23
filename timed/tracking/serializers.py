@@ -2,7 +2,6 @@
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api.relations import ResourceRelatedField
@@ -14,6 +13,7 @@ from rest_framework_json_api.serializers import (CurrentUserDefault,
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
 from timed.projects.models import Task
+from timed.serializers import TotalTimeRootMetaMixin
 from timed.tracking import models
 
 
@@ -115,7 +115,7 @@ class AttendanceSerializer(ModelSerializer):
         ]
 
 
-class ReportSerializer(ModelSerializer):
+class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
     """Report serializer."""
 
     task         = ResourceRelatedField(queryset=Task.objects.all())
@@ -170,18 +170,6 @@ class ReportSerializer(ModelSerializer):
                 raise ValidationError(_('Only owner may change duration'))
 
         return value
-
-    def get_root_meta(self, resource, many):
-        """Add total hours over whole result (not just page) to meta."""
-        if many:
-            view = self.context['view']
-            queryset = view.filter_queryset(view.get_queryset())
-            data = queryset.aggregate(total_time=Sum('duration'))
-            data['total_time'] = duration_string(
-                data['total_time'] or timedelta(0)
-            )
-            return data
-        return {}
 
     class Meta:
         """Meta information for the report serializer."""

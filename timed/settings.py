@@ -153,7 +153,7 @@ STATIC_ROOT = env.str('STATIC_ROOT', None)
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
-        'rest_framework.filters.DjangoFilterBackend',
+        'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ),
