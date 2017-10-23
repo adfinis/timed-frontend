@@ -29,6 +29,10 @@ module.exports = function(environment) {
         {
           label: 'XLSX',
           url: '/api/v1/reports/export?file_type=xlsx'
+        },
+        {
+          label: 'Work report',
+          url: '/api/v1/work-reports'
         }
       ]
     },
@@ -78,24 +82,5 @@ module.exports = function(environment) {
   if (environment === 'production') {
   }
 
-  /* global process*/
-  try {
-    let envReportExports = process.env.TIMED_REPORT_EXPORT
-    if (envReportExports) {
-      let additionalReportExports = JSON.parse(envReportExports)
-      if (additionalReportExports && Array.isArray(additionalReportExports)) {
-        ENV.APP.REPORTEXPORTS = [
-          ...ENV.APP.REPORTEXPORTS,
-          ...additionalReportExports
-        ]
-      }
-    }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(
-      `${process.env.TIMED_REPORT_EXPORT} is not a valid JSON format`
-    )
-    process.exit()
-  }
   return ENV
 }
