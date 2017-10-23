@@ -1,0 +1,136 @@
+<h1>Statistics</h1>
+
+<div>
+  {{#task-selection
+    history         = false
+    archived        = true
+    on-set-customer = (action 'setModelFilter' 'customer')
+    on-set-project  = (action 'setModelFilter' 'project')
+    on-set-task     = (action 'setModelFilter' 'task')
+    initial         = (hash
+      customer      = selectedCustomer
+      project       = selectedProject
+      task          = selectedTask
+    )
+  as |t|}}
+    <div class="grid grid-xl--2of12 grid-lg--4of12 grid-sm--6of12 grid--12of12">
+      <div class="grid-cell form-group" data-test-filter-customer>
+        {{t.customer}}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-project>
+        {{t.project}}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-task>
+        {{t.task}}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-user>
+        {{#user-selection
+          inactive  = true
+          user      = selectedUser
+          on-change = (action 'setModelFilter' 'user')
+        as |u|}}
+          {{u.user}}
+        {{/user-selection}}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-reviewer>
+        {{#user-selection
+          inactive  = true
+          user      = selectedReviewer
+          on-change = (action 'setModelFilter' 'reviewer')
+        as |u|}}
+          {{u.user placeholder='Select reviewer...'}}
+        {{/user-selection}}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-billing-type>
+        {{one-way-select selectedBillingType
+          class           = 'form-control'
+          update          = (action 'setModelFilter' 'billingType')
+          options         = billingTypes
+          prompt          = 'All billing types'
+          optionValuePath = 'id'
+          optionLabelPath = 'name'
+        }}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-from-date>
+        {{sy-datepicker
+          value       = fromDate
+          on-change   = (action (mut fromDate))
+          placeholder = 'From date'
+        }}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-to-date>
+        {{sy-datepicker
+          value       = toDate
+          on-change   = (action (mut toDate))
+          placeholder = 'To date'
+        }}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-review>
+        {{one-way-select (hash value=review)
+          class   = 'form-control'
+          update  = (action (mut review) value='value')
+          options = (array
+            (hash value='' label='Not filtered by review needed')
+            (hash value='1' label='Only review needed')
+            (hash value='0' label='Only review not needed')
+          )
+          optionValuePath = 'value'
+          optionLabelPath = 'label'
+        }}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-not-billable>
+        {{one-way-select (hash value=notBillable)
+          class   = 'form-control'
+          update  = (action (mut notBillable) value='value')
+          options = (array
+            (hash value='' label='Not filtered by billability')
+            (hash value='0' label='Only billable')
+            (hash value='1' label='Only not billable')
+          )
+          optionValuePath = 'value'
+          optionLabelPath = 'label'
+        }}
+      </div>
+      <div class="grid-cell form-group" data-test-filter-not-verified>
+        {{one-way-select (hash value=notVerified)
+          class   = 'form-control'
+          update  = (action (mut notVerified) value='value')
+          options = (array
+            (hash value='' label='Not filtered by verification')
+            (hash value='0' label='Only verified')
+            (hash value='1' label='Only unverified')
+          )
+          optionValuePath = 'value'
+          optionLabelPath = 'label'
+        }}
+      </div>
+      <div class="grid-cell"></div>
+      <div class="grid-cell" data-test-filter-reset>
+        <button class="btn" type="button" {{action (queue (action 'reset') t.clear)}}>Reset filter</button>
+      </div>
+    </div>
+  {{/task-selection}}
+</div>
+
+<div>
+  <ul class="nav-tabs">
+    {{#each types as |t|}}
+      <li>
+        <a href="#" class={{if (eq t type) 'active'}} {{action (mut type) t}}>
+          By {{t}}
+        </a>
+      </li>
+    {{/each}}
+  </ul>
+</div>
+
+<div class="tab-content grid grid--12of12">
+  {{statistic-list
+    data               = data
+    type               = type
+    missingParams      = missingParams
+    ordering           = ordering
+    on-ordering-change = (action (mut ordering))
+    class              = 'grid-cell'
+  }}
+</div>

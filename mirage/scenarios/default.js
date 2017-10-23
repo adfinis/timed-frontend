@@ -28,4 +28,11 @@ export default function(server) {
 
   server.create('attendance', 'morning', { userId: user.id })
   server.create('attendance', 'afternoon', { userId: user.id })
+
+  server.createList('year-statistic', 2)
+  server.createList('month-statistic', 24)
+  server.createList('customer-statistic', 10)
+  server.createList('project-statistic', 20)
+  server.createList('task-statistic', 40)
+  server.createList('user-statistic', 5)
 }

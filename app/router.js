@@ -19,6 +19,7 @@ ApplicationRouter.map(function() {
       this.route('attendances')
       this.route('reports')
     })
+    this.route('statistics', { resetNamespace })
     this.route('me', { resetNamespace })
     this.route('analysis', { resetNamespace })
     this.route('reschedule', { resetNamespace })
