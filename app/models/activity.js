@@ -122,6 +122,8 @@ export default Model.extend({
     }
 
     if (this.get('isNew')) {
+      this.set('date', moment())
+
       await this.save()
     }
 

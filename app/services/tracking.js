@@ -177,8 +177,7 @@ export default Service.extend({
       return this.get('_activity')
     },
     set(value) {
-      let newActivity =
-        value || this.get('store').createRecord('activity', { date: moment() })
+      let newActivity = value || this.get('store').createRecord('activity')
 
       this.set('_activity', newActivity)
 
