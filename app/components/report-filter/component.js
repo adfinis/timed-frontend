@@ -22,6 +22,7 @@ const FILTERS = {
   user: { default: null, cast: id },
   reviewer: { default: null, cast: id },
   billingType: { default: null, cast: intOrNull },
+  costCenter: { default: null, cast: intOrNull },
   fromDate: { default: null, cast: date },
   toDate: { default: null, cast: date },
   review: { default: null, cast: option },

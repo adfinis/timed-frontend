@@ -58,6 +58,16 @@ as |t|}}
         </select>
       </div>
     {{/if}}
+    {{#if (contains 'costCenter' _enabledFilters)}}
+      <div class="grid-cell form-group" data-test-filter-cost-center>
+        <select class="form-control" onchange={{action (mut filters.costCenter) value='target.value'}}>
+          <option value="">All cost centers</option>
+          {{#each costCenters as |cc|}}
+            <option selected={{if (eq cc.id filters.costCenter) 'selected'}} value={{cc.id}}>{{cc.name}}</option>
+          {{/each}}
+        </select>
+      </div>
+    {{/if}}
     {{#if (contains 'fromDate' _enabledFilters)}}
       <div class="grid-cell form-group" data-test-filter-from-date>
         {{sy-datepicker

@@ -60,6 +60,11 @@ export const StatisticsQueryParams = new QueryParams({
     replace: true,
     refresh: true
   },
+  costCenter: {
+    defaultValue: null,
+    replace: true,
+    refresh: true
+  },
   fromDate: {
     defaultValue: null,
     replace: true,
@@ -106,12 +111,22 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
   @computed('prefetchData.lastSuccessful.value.billingTypes')
   billingTypes() {
-    return this.store.findAll('billingType')
+    return this.store.findAll('billing-type')
+  },
+
+  @computed('prefetchData.lastSuccessful.value.costCenters')
+  costCenters() {
+    return this.store.findAll('cost-center')
   },
 
   @computed('billingType', 'prefetchData.lastSuccessful.value.billingTypes')
   selectedBillingType(id) {
     return id && this.store.peekRecord('billing-type', id)
+  },
+
+  @computed('costCenter', 'prefetchData.lastSuccessful.value.costCenters')
+  selectedCostCenter(id) {
+    return id && this.store.peekRecord('cost-center', id)
   },
 
   @computed('customer', 'prefetchData.lastSuccessful.value.customer')
@@ -200,7 +215,8 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
       task: taskId && this.store.findRecord('task', taskId),
       user: userId && this.store.findRecord('user', userId),
       reviewer: reviewerId && this.store.findRecord('user', reviewerId),
-      billingTypes: this.store.findAll('billing-type')
+      billingTypes: this.store.findAll('billing-type'),
+      costCenters: this.store.findAll('cost-center')
     })
   }).restartable(),
 

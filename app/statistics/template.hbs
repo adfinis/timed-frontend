@@ -51,6 +51,16 @@
           optionLabelPath = 'name'
         }}
       </div>
+      <div class="grid-cell form-group" data-test-filter-cost-center>
+        {{one-way-select selectedCostCenter
+          class           = 'form-control'
+          update          = (action 'setModelFilter' 'costCenter')
+          options         = costCenters
+          prompt          = 'All cost centers'
+          optionValuePath = 'id'
+          optionLabelPath = 'name'
+        }}
+      </div>
       <div class="grid-cell form-group" data-test-filter-from-date>
         {{sy-datepicker
           value       = fromDate
@@ -104,7 +114,6 @@
           optionLabelPath = 'label'
         }}
       </div>
-      <div class="grid-cell"></div>
       <div class="grid-cell" data-test-filter-reset>
         <button class="btn" type="button" {{action (queue (action 'reset') t.clear)}}>Reset filter</button>
       </div>

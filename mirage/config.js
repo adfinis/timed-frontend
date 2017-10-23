@@ -193,6 +193,9 @@ export default function() {
   this.get('/billing-types')
   this.get('/billing-types/:id')
 
+  this.get('/cost-centers')
+  this.get('/cost-centers/:id')
+
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
 
