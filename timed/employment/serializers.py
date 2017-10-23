@@ -5,8 +5,9 @@ from datetime import date, datetime, timedelta
 from django.contrib.auth import get_user_model
 from django.utils.duration import duration_string
 from rest_framework.exceptions import PermissionDenied
-from rest_framework_json_api import relations
+from rest_framework_json_api import relations, serializers
 from rest_framework_json_api.serializers import (IntegerField, ModelSerializer,
+                                                 Serializer,
                                                  SerializerMethodField)
 
 from timed.employment import models
@@ -18,7 +19,6 @@ class UserSerializer(ModelSerializer):
 
     employments        = relations.ResourceRelatedField(many=True,
                                                         read_only=True)
-    worktime_balance   = SerializerMethodField()
     user_absence_types = relations.SerializerMethodResourceRelatedField(
         source='get_user_absence_types',
         model=models.UserAbsenceType,
@@ -43,26 +43,6 @@ class UserSerializer(ModelSerializer):
         return models.UserAbsenceType.objects.with_user(instance,
                                                         start,
                                                         end)
-
-    def get_worktime(self, user, start=None, end=None):
-        end = end or date.today()
-        start = date(end.year, 1, 1)
-
-        balance_tuple = user.calculate_worktime(start, end)
-        return balance_tuple
-
-    def get_worktime_balance(self, instance):
-        """Format the worktime balance.
-
-        :return: The formatted worktime balance.
-        :rtype:  str
-        """
-        request = self.context.get('request')
-        until = request and request.query_params.get('until')
-        end_date = until and datetime.strptime(until, '%Y-%m-%d').date()
-
-        _, _, balance = self.get_worktime(instance, None, end_date)
-        return duration_string(balance)
 
     def validate(self, data):
         user = self.context['request'].user
@@ -94,7 +74,6 @@ class UserSerializer(ModelSerializer):
             'last_name',
             'email',
             'employments',
-            'worktime_balance',
             'is_staff',
             'is_superuser',
             'is_active',
@@ -112,6 +91,24 @@ class UserSerializer(ModelSerializer):
             'supervisors',
             'supervisees'
         ]
+
+
+class WorktimeBalanceSerializer(Serializer):
+    date    = serializers.DateField()
+    balance = SerializerMethodField()
+    user    = relations.ResourceRelatedField(
+        model=get_user_model(), read_only=True, source='id'
+    )
+
+    def get_balance(self, instance):
+        start = date(instance.date.year, 1, 1)
+
+        # id is mapped to user instance
+        _, _, balance = instance.id.calculate_worktime(start, instance.date)
+        return duration_string(balance)
+
+    class Meta:
+        resource_name = 'worktime-balances'
 
 
 class EmploymentSerializer(ModelSerializer):

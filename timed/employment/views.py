@@ -1,12 +1,16 @@
 """Viewsets for the employment app."""
+import datetime
 
 from django.contrib.auth import get_user_model
-from django.db.models import Q
+from django.db.models import CharField, DateField, Q, Value
+from django.db.models.functions import Concat
+from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
-from rest_framework import mixins, viewsets
+from rest_framework import exceptions, mixins, viewsets
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from timed.employment import filters, models, serializers
+from timed.mixins import AggregateQuerysetMixin
 from timed.permissions import IsAuthenticated, IsReadOnly, IsSuperUser
 
 
@@ -27,6 +31,66 @@ class UserViewSet(mixins.RetrieveModelMixin,
 
     def get_queryset(self):
         return get_user_model().objects.prefetch_related('employments')
+
+
+class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Calculate worktime for different user on different dates."""
+
+    serializer_class = serializers.WorktimeBalanceSerializer
+    filter_class = filters.WorktimeBalanceFilterSet
+
+    def _extract_date(self):
+        """
+        Extract date from request.
+
+        In detail route extract it from pk and it list
+        from query params.
+        """
+        pk = self.request.parser_context['kwargs'].get('pk')
+
+        # detail case
+        if pk is not None:
+            try:
+                return datetime.datetime.strptime(
+                    pk.split('_')[1], '%Y-%m-%d'
+                )
+
+            except (ValueError, TypeError, IndexError):
+                raise exceptions.NotFound()
+
+        # list case
+        try:
+            return datetime.datetime.strptime(
+                self.request.query_params.get('date'),
+                '%Y-%m-%d'
+            ).date()
+        except ValueError:
+            raise exceptions.ParseError(_('Date is invalid'))
+        except TypeError:
+            raise exceptions.ParseError(_('Date filter needs to be set'))
+
+    def get_queryset(self):
+        date = self._extract_date()
+        user = self.request.user
+        queryset = get_user_model().objects.values('id')
+        queryset = queryset.annotate(
+            date=Value(date, DateField()),
+        )
+        queryset = queryset.annotate(
+            pk=Concat(
+                'id',
+                Value('_'),
+                'date',
+                output_field=CharField()
+            )
+        )
+
+        if not user.is_superuser:
+            queryset = queryset.filter(
+                Q(id=user.id) | Q(supervisors=user)
+            )
+
+        return queryset
 
 
 class EmploymentViewSet(ReadOnlyModelViewSet):

@@ -174,7 +174,7 @@ class Absence(models.Model):
         if not self.type.fill_worktime:
             return employment.worktime_per_day
 
-        reports = Report.objects.filter(date=self.date, user=self.user)
+        reports = Report.objects.filter(date=self.date, user=self.user_id)
         data = reports.aggregate(reported_time=models.Sum('duration'))
         reported_time = data['reported_time'] or timedelta()
         if reported_time >= employment.worktime_per_day:

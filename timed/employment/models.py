@@ -358,7 +358,7 @@ class Employment(models.Model):
                 user=self.user_id,
                 date__gte=start,
                 date__lte=end,
-            )
+            ).select_related('type')
         ], timedelta())
 
         reported = reported_worktime + absences + overtime_credit
