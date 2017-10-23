@@ -1,12 +1,10 @@
 from datetime import date
 
-import pytest
 from django.core.management import call_command
 
 from timed.employment.factories import EmploymentFactory
 
 
-@pytest.mark.freeze_time
 def test_notify_changed_employments(db, mailoutbox, freezer):
     email = 'test@example.net'
 
