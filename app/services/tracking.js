@@ -211,11 +211,13 @@ export default Service.extend({
    */
   stopActivity: task(function*() {
     try {
-      yield this.get('activity').stop()
+      if (!this.get('activity.isNew')) {
+        yield this.get('activity').stop()
+
+        this.get('notify').success('Activity was stopped')
+      }
 
       this.set('activity', null)
-
-      this.get('notify').success('Activity was stopped')
     } catch (e) {
       /* istanbul ignore next */
       this.get('notify').error('Error while stopping the activity')
