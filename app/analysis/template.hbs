@@ -66,7 +66,7 @@
 
   <p>
     {{#each exportLinks as |link index|}}
-      <button {{action 'download' link.url}}
+      <button {{action 'download' link.url link.params}}
         type="button"
         disabled={{gt model.length 4000}}
         class="btn btn-default"

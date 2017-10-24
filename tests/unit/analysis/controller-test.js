@@ -16,8 +16,9 @@ describe('Unit | Controller | analysis', function() {
     controller.set('page_size', 100)
     controller.set('customer', 1)
 
-    let target = controller.getTarget('test')
+    let target = controller.getTarget('test', { foo: 'bar' })
 
+    expect(target).to.contain('foo=bar')
     expect(target).to.contain('jwt=foobar')
     expect(target).to.contain('user=1')
     expect(target).to.contain('customer=1')
