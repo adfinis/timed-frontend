@@ -7,13 +7,12 @@ class AggregateQuerysetMixin(object):
 
     Wrap queryst dicts into aggregate object to support renderer
     which expect attributes.
-    It additional prefetches related instances represented as id in
+    It additionaly prefetches related instances represented as id in
     aggregate.
 
     In aggregates only an id of a related field is part of the object.
-    Instead of loading each single object row by row this mixin
-    prefetches all resources related field in injects
-    it before serialization starts.
+    Instead of loading each single object row by row this mixin prefetches
+    all resource related fields and injects it before serialization starts.
 
     Mixin expects the id to be the same key as the resource related
     field defined in the serializer.
