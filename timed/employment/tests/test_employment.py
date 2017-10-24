@@ -4,147 +4,183 @@ from datetime import date, timedelta
 
 import pytest
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
+from rest_framework import status
 
 from timed.employment import factories
 from timed.employment.admin import EmploymentForm
+from timed.employment.factories import (EmploymentFactory, LocationFactory,
+                                        UserFactory)
 from timed.employment.models import Employment
-from timed.jsonapi_test_case import JSONAPITestCase
 from timed.tracking.factories import ReportFactory
 
 
-class EmploymentTests(JSONAPITestCase):
-    """Tests for the employment endpoint.
+def test_employment_create_authenticated(auth_client):
+    url = reverse('employment-list')
 
-    This endpoint should be read only for normal users.
-    """
+    result = auth_client.post(url)
+    assert result.status_code == status.HTTP_403_FORBIDDEN
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
 
-        self.employments = [
-            factories.EmploymentFactory.create(
-                user=self.user,
-                start_date=date(2010, 1, 1),
-                end_date=date(2015, 1, 1)
-            ),
-            factories.EmploymentFactory.create(
-                user=self.user,
-                start_date=date(2015, 1, 2)
-            )
-        ]
+def test_employment_create_superuser(superadmin_client):
+    url = reverse('employment-list')
+    location = LocationFactory.create()
 
-        factories.EmploymentFactory.create_batch(10)
+    data = {
+        'data': {
+            'type': 'employments',
+            'id': None,
+            'attributes': {
+                'percentage': '100',
+                'worktime_per_day': '08:00:00',
+                'start-date': '2017-04-01',
+            },
+            'relationships': {
+                'user': {
+                    'data': {
+                        'type': 'users',
+                        'id': superadmin_client.user.id
+                    }
+                },
+                'location': {
+                    'data': {
+                        'type': 'locations',
+                        'id': location.id
+                    }
+                }
+            }
+        }
+    }
 
-    def test_employment_list(self):
-        """Should respond with a list of employments."""
-        url = reverse('employment-list')
+    result = superadmin_client.post(url, data)
+    assert result.status_code == status.HTTP_201_CREATED
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+def test_employment_update_end_before_start(superadmin_client):
+    employment = EmploymentFactory.create(user=superadmin_client.user)
 
-        result = self.result(res)
+    data = {
+        'data': {
+            'type': 'employments',
+            'id': employment.id,
+            'attributes': {
+                'start_date': '2017-03-01',
+                'end_date': '2017-01-01',
+            }
+        }
+    }
 
-        assert len(result['data']) == len(self.employments)
+    url = reverse('employment-detail', args=[employment.id])
+    result = superadmin_client.patch(url, data)
+    assert result.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_employment_detail(self):
-        """Should respond with a single employment."""
-        employment = self.employments[0]
 
-        url = reverse('employment-detail', args=[
-            employment.id
-        ])
+def test_employment_update_overlapping(superadmin_client):
+    user = superadmin_client.user
+    EmploymentFactory.create(user=user, end_date=None)
+    employment = EmploymentFactory.create(user=user)
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    data = {
+        'data': {
+            'type': 'employments',
+            'id': employment.id,
+            'attributes': {
+                'end_date': None,
+            }
+        }
+    }
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    url = reverse('employment-detail', args=[employment.id])
+    result = superadmin_client.patch(url, data)
+    assert result.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_employment_create(self):
-        """Should not be able to create a new employment."""
-        url = reverse('employment-list')
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
+def test_employment_list_authenticated(auth_client):
+    EmploymentFactory.create_batch(2)
+    employment = EmploymentFactory.create(user=auth_client.user)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    url = reverse('employment-list')
 
-    def test_employment_update(self):
-        """Should not be able to update an existing employment."""
-        employment = self.employments[0]
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(employment.id)
 
-        url = reverse('employment-detail', args=[
-            employment.id
-        ])
 
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
+def test_employment_list_superuser(superadmin_client):
+    EmploymentFactory.create_batch(2)
+    EmploymentFactory.create(user=superadmin_client.user)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    url = reverse('employment-list')
 
-    def test_employment_delete(self):
-        """Should not be able delete a employment."""
-        employment = self.employments[0]
+    result = superadmin_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 3
 
-        url = reverse('employment-detail', args=[
-            employment.id
-        ])
 
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
+def test_employment_list_supervisor(auth_client):
+    user = UserFactory.create()
+    auth_client.user.supervisees.add(user)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    EmploymentFactory.create_batch(1)
+    EmploymentFactory.create(user=auth_client.user)
+    EmploymentFactory.create(user=user)
 
-    def test_employment_unique_active(self):
-        """Should only be able to have one active employment per user."""
-        form = EmploymentForm({
-            'end_date': None
-        }, instance=self.employments[1])
+    url = reverse('employment-list')
 
-        with pytest.raises(ValueError):
-            form.save()
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 2
 
-    def test_employment_unique_range(self):
-        """Should only be able to have one employment at a time per user."""
-        form = EmploymentForm({
-            'start_date': date(2009, 1, 1),
-            'end_date':   date(2016, 1, 1)
-        }, instance=self.employments[0])
 
-        with pytest.raises(ValueError):
-            form.save()
+def test_employment_unique_active(db):
+    """Should only be able to have one active employment per user."""
+    user = UserFactory.create()
+    EmploymentFactory.create(user=user, end_date=None)
+    employment = EmploymentFactory.create(user=user)
+    form = EmploymentForm({
+        'end_date': None
+    }, instance=employment)
 
-    def test_employment_get_at(self):
-        """Should return the right employment on a date."""
-        employment = Employment.objects.get(user=self.user,
-                                            end_date__isnull=True)
+    with pytest.raises(ValueError):
+        form.save()
 
-        assert (
-            Employment.objects.get_at(self.user, employment.start_date) ==
-            employment
+
+def test_employment_start_before_end(db):
+    employment = EmploymentFactory.create()
+    form = EmploymentForm({
+        'start_date': date(2009, 1, 1),
+        'end_date':   date(2016, 1, 1)
+    }, instance=employment)
+
+    with pytest.raises(ValueError):
+        form.save()
+
+
+def test_employment_get_at(db):
+    """Should return the right employment on a date."""
+    user = UserFactory.create()
+    employment = EmploymentFactory.create(user=user)
+
+    assert (
+        Employment.objects.get_at(user, employment.start_date) ==
+        employment
+    )
+
+    employment.end_date = (
+        employment.start_date +
+        timedelta(days=20)
+    )
+
+    employment.save()
+
+    with pytest.raises(Employment.DoesNotExist):
+        Employment.objects.get_at(
+            user,
+            employment.start_date + timedelta(days=21)
         )
-
-        employment.end_date = (
-            employment.start_date +
-            timedelta(days=20)
-        )
-
-        employment.save()
-
-        with pytest.raises(Employment.DoesNotExist):
-            Employment.objects.get_at(
-                self.user,
-                employment.start_date + timedelta(days=21)
-            )
 
 
 def test_worktime_balance_partial(db):

@@ -93,24 +93,36 @@ class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         return queryset
 
 
-class EmploymentViewSet(ReadOnlyModelViewSet):
-    """Employment view set."""
-
+class EmploymentViewSet(ModelViewSet):
     serializer_class = serializers.EmploymentSerializer
-    ordering         = ('-end_date',)
+    ordering = ('-end_date',)
+    filter_class = filters.EmploymentFilterSet
+    permission_classes = [
+        # super user can add/read overtime credits
+        C(IsAuthenticated) & C(IsSuperUser) |
+        # user may only read filtered results
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
 
     def get_queryset(self):
-        """Filter the queryset by the user of the request.
-
-        :return: The filtered employments
-        :rtype:  QuerySet
         """
-        return models.Employment.objects.select_related(
-            'user',
-            'location'
-        ).filter(
-            user=self.request.user
-        )
+        Get queryset of employments.
+
+        Following rules apply:
+        1. super user may see all
+        2. user may see credits of all its supervisors and self
+        3. user may only see its own credit
+        """
+        user = self.request.user
+
+        queryset = models.Employment.objects.select_related('user', 'location')
+
+        if not user.is_superuser:
+            queryset = queryset.filter(
+                Q(user=user) | Q(user__supervisors=user)
+            )
+
+        return queryset
 
 
 class LocationViewSet(ReadOnlyModelViewSet):

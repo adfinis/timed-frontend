@@ -3,12 +3,16 @@
 from datetime import date, datetime, timedelta
 
 from django.contrib.auth import get_user_model
+from django.db.models import Value
+from django.db.models.functions import Coalesce
 from django.utils.duration import duration_string
+from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_json_api import relations, serializers
 from rest_framework_json_api.serializers import (IntegerField, ModelSerializer,
                                                  Serializer,
-                                                 SerializerMethodField)
+                                                 SerializerMethodField,
+                                                 ValidationError)
 
 from timed.employment import models
 from timed.tracking.models import Absence
@@ -58,8 +62,6 @@ class UserSerializer(ModelSerializer):
             'timed.employment.serializers.UserSerializer',
         'supervisees':
             'timed.employment.serializers.UserSerializer',
-        'employments':
-            'timed.employment.serializers.EmploymentSerializer',
         'user_absence_types':
             'timed.employment.serializers.UserAbsenceTypeSerializer'
     }
@@ -112,19 +114,50 @@ class WorktimeBalanceSerializer(Serializer):
 
 
 class EmploymentSerializer(ModelSerializer):
-    """Employment serializer."""
-
-    user     = relations.ResourceRelatedField(read_only=True)
-    location = relations.ResourceRelatedField(read_only=True)
-
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
         'location': 'timed.employment.serializers.LocationSerializer'
     }
 
-    class Meta:
-        """Meta information for the employment serializer."""
+    def validate(self, data):
+        """Validate the employment as a whole.
 
+        Ensure the end date is after the start date and there is only one
+        active employment per user and there are no overlapping employments.
+
+        :throws: django.core.exceptions.ValidationError
+        :return: validated data
+        :rtype:  dict
+        """
+        instance = self.instance
+        start_date = data.get('start_date', instance and instance.start_date)
+        end_date = data.get('end_date', instance and instance.end_date)
+        if end_date and start_date >= end_date:
+            raise ValidationError(_(
+                'The end date must be after the start date'
+            ))
+
+        user = data.get('user', instance and instance.user)
+        employments = models.Employment.objects.filter(user=user)
+        # end date not set means employment is ending today
+        end_date = end_date or date.today()
+        employments = employments.annotate(
+            end=Coalesce('end_date', Value(date.today()))
+        )
+        if instance:
+            employments = employments.exclude(id=instance.id)
+
+        if any([
+            e.start_date <= end_date and start_date <= e.end
+            for e in employments
+        ]):
+            raise ValidationError(_(
+                'A user can\'t have multiple employments at the same time'
+            ))
+
+        return data
+
+    class Meta:
         model = models.Employment
         fields = [
             'user',

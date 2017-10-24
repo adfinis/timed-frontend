@@ -64,14 +64,6 @@ class EmploymentForm(forms.ModelForm):
                 'The end date must be after the start date'
             ))
 
-        if (
-            employments.filter(end_date__isnull=True) and
-            data.get('end_date') is None
-        ):
-            raise ValidationError(_(
-                'A user can only have one active employment'
-            ))
-
         if any([
             e.start_date <= (
                 data.get('end_date') or
@@ -80,8 +72,7 @@ class EmploymentForm(forms.ModelForm):
                 e.end_date or
                 datetime.date.today()
             )
-            for e
-            in employments
+            for e in employments
         ]):
             raise ValidationError(_(
                 'A user can\'t have multiple employments at the same time'
