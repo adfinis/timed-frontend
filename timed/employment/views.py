@@ -1,10 +1,13 @@
 """Viewsets for the employment app."""
 
 from django.contrib.auth import get_user_model
+from django.db.models import Q
+from rest_condition import C
 from rest_framework import mixins, viewsets
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from timed.employment import filters, models, serializers
+from timed.permissions import IsAuthenticated, IsReadOnly, IsSuperUser
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
@@ -80,19 +83,67 @@ class AbsenceTypeViewSet(ReadOnlyModelViewSet):
     ordering         = ('name',)
 
 
-class OvertimeCreditViewSet(ReadOnlyModelViewSet):
+class AbsenceCreditViewSet(ModelViewSet):
     """Absence type view set."""
 
-    serializer_class = serializers.OvertimeCreditSerializer
+    filter_class = filters.AbsenceCreditFilterSet
+    serializer_class = serializers.AbsenceCreditSerializer
+    permission_classes = [
+        # super user can add/read absence credits
+        C(IsAuthenticated) & C(IsSuperUser) |
+        # user may only read filtered results
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
 
     def get_queryset(self):
-        """Filter the queryset by the user of the request.
-
-        :return: The filtered overtime credits
-        :rtype:  QuerySet
         """
-        return models.OvertimeCredit.objects.select_related(
-            'user'
-        ).filter(
-            user=self.request.user
-        )
+        Get queryset of absence credits.
+
+        Following rules apply:
+        1. super user may see all
+        2. user may see credits of all its supervisors and self
+        3. user may only see its own credit
+        """
+        user = self.request.user
+
+        queryset = models.AbsenceCredit.objects.select_related('user')
+
+        if not user.is_superuser:
+            queryset = queryset.filter(
+                Q(user=user) | Q(user__supervisors=user)
+            )
+
+        return queryset
+
+
+class OvertimeCreditViewSet(ModelViewSet):
+    """Absence type view set."""
+
+    filter_class = filters.OvertimeCreditFilterSet
+    serializer_class = serializers.OvertimeCreditSerializer
+    permission_classes = [
+        # super user can add/read overtime credits
+        C(IsAuthenticated) & C(IsSuperUser) |
+        # user may only read filtered results
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
+
+    def get_queryset(self):
+        """
+        Get queryset of overtime credits.
+
+        Following rules apply:
+        1. super user may see all
+        2. user may see credits of all its supervisors and self
+        3. user may only see its own credit
+        """
+        user = self.request.user
+
+        queryset = models.OvertimeCredit.objects.select_related('user')
+
+        if not user.is_superuser:
+            queryset = queryset.filter(
+                Q(user=user) | Q(user__supervisors=user)
+            )
+
+        return queryset
