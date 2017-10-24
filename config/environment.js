@@ -20,19 +20,29 @@ module.exports = function(environment) {
       REPORTEXPORTS: [
         {
           label: 'CSV',
-          url: '/api/v1/reports/export?file_type=csv'
+          url: '/api/v1/reports/export',
+          params: {
+            file_type: 'csv'
+          }
         },
         {
           label: 'ODS',
-          url: '/api/v1/reports/export?file_type=ods'
+          url: '/api/v1/reports/export',
+          params: {
+            file_type: 'ods'
+          }
         },
         {
           label: 'XLSX',
-          url: '/api/v1/reports/export?file_type=xlsx'
+          url: '/api/v1/reports/export',
+          params: {
+            file_type: 'xlsx'
+          }
         },
         {
           label: 'Work report',
-          url: '/api/v1/work-reports'
+          url: '/api/v1/work-reports',
+          params: {}
         }
       ]
     },

@@ -21,30 +21,31 @@ const AnalysisController = Controller.extend(ReportFilterControllerMixin, {
 
   exportLinks: config.APP.REPORTEXPORTS,
 
-  getTarget(url) {
+  getTarget(url, params) {
     let queryString = toQueryString(
-      cleanParams(
-        this.getProperties(
+      cleanParams({
+        ...params,
+        ...this.getProperties(
           ...this.get('queryParams').filter(
             key => !['page', 'page_size'].includes(key)
           ),
           'jwt'
         )
-      )
+      })
     )
 
-    return `${url}&${queryString}`
+    return `${url}?${queryString}`
   },
 
   actions: {
-    download(url) {
+    download(url, params) {
       /* istanbul ignore else */
       if (testing) {
         return
       }
 
       /* istanbul ignore next */
-      window.location.href = this.getTarget(url)
+      window.location.href = this.getTarget(url, params)
     }
   }
 })
