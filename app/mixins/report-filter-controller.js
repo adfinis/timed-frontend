@@ -18,6 +18,7 @@ const INITIAL_FILTERS = {
   to_date: null, // eslint-disable-line camelcase
   reviewer: null,
   billing_type: null, // eslint-disable-line camelcase
+  cost_center: null, // eslint-disable-line camelcase
   review: null,
   not_billable: null, // eslint-disable-line camelcase
   not_verified: null, // eslint-disable-line camelcase
@@ -51,6 +52,7 @@ export default Mixin.create({
     'to_date',
     'reviewer',
     'billing_type',
+    'cost_center',
     'review',
     'not_billable',
     'not_verified',
@@ -122,6 +124,14 @@ export default Mixin.create({
    * @public
    */
   billing_type: INITIAL_FILTERS.billing_type, // eslint-disable-line camelcase
+
+  /**
+   * The cost center to filter by
+   *
+   * @property {Number} costCenter
+   * @public
+   */
+  cost_center: INITIAL_FILTERS.cost_center, // eslint-disable-line camelcase
 
   /**
    * Whether the reports need a review

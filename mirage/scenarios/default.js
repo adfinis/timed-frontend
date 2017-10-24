@@ -6,6 +6,7 @@ export default function(server) {
   server.loadFixtures('absence-types')
 
   server.createList('billing-type', 3)
+  server.createList('cost-center', 3)
 
   let user = server.create('user', {
     firstName: 'John',

@@ -33,6 +33,7 @@ export default Mixin.create({
     to_date: { refreshModel: true }, // eslint-disable-line camelcase
     reviewer: { refreshModel: true },
     billing_type: { refreshModel: true }, // eslint-disable-line camelcase
+    cost_center: { refreshModel: true }, // eslint-disable-line camelcase
     review: { refreshModel: true },
     not_billable: { refreshModel: true }, // eslint-disable-line camelcase
     not_verified: { refreshModel: true }, // eslint-disable-line camelcase
@@ -129,7 +130,8 @@ export default Mixin.create({
       _customer: customerId && this.store.peekRecord('customer', customerId),
       _user: userId && this.store.peekRecord('user', userId),
       _reviewer: reviewerId && this.store.peekRecord('user', reviewerId),
-      billingTypes: await this.store.findAll('billingType'),
+      billingTypes: await this.store.findAll('billing-type'),
+      costCenters: await this.store.findAll('cost-center'),
       currentUser: this.modelFor('protected')
     })
   },
