@@ -2,17 +2,14 @@
 
 from datetime import date, timedelta
 
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from django.utils.duration import duration_string
 from rest_framework import status
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
 from timed.employment.factories import (AbsenceCreditFactory,
                                         AbsenceTypeFactory, EmploymentFactory,
-                                        OvertimeCreditFactory,
-                                        PublicHolidayFactory, UserFactory)
+                                        UserFactory)
 from timed.jsonapi_test_case import JSONAPITestCase
 from timed.tracking.factories import AbsenceFactory, ReportFactory
 
@@ -138,26 +135,6 @@ class UserTests(JSONAPITestCase):
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
 
-    def test_user_without_employment(self):
-        user = get_user_model().objects.create_user(username='test',
-                                                    password='1234qwer')
-        self.client.login('test', '1234qwer')
-
-        url = reverse('user-detail', args=[
-            user.id
-        ])
-
-        res = self.client.get(url)
-
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        assert int(result['data']['id']) == user.id
-        assert result['data']['attributes']['worktime-balance'] == (
-            '00:00:00'
-        )
-
     def test_user_absence_types(self):
         absence_type = AbsenceTypeFactory.create()
 
@@ -257,100 +234,6 @@ class UserTests(JSONAPITestCase):
         assert inc[0]['attributes']['balance'] is None
         assert inc[0]['attributes']['used-days'] is None
         assert inc[0]['attributes']['used-duration'] == '06:00:00'
-
-
-def test_user_worktime_balance(auth_client):
-    """Should calculate correct worktime balances."""
-    # Calculate over one week
-    start_date = date(2017, 3, 19)
-    end_date   = date(2017, 3, 26)
-
-    user       = auth_client.user
-    employment = EmploymentFactory.create(
-        user=user,
-        start_date=start_date,
-        worktime_per_day=timedelta(hours=8, minutes=30),
-        end_date=date(2017, 3, 23)
-    )
-    employment_short = EmploymentFactory.create(
-        user=user,
-        start_date=date(2017, 3, 24),
-        worktime_per_day=timedelta(hours=8),
-        end_date=None
-    )
-
-    # Overtime credit of 10 hours
-    OvertimeCreditFactory.create(
-        user=user,
-        date=start_date,
-        duration=timedelta(hours=10, minutes=30)
-    )
-
-    # One public holiday during workdays
-    PublicHolidayFactory.create(
-        date=start_date,
-        location=employment.location
-    )
-    # One public holiday on weekend
-    PublicHolidayFactory.create(
-        date=start_date + timedelta(days=1),
-        location=employment.location
-    )
-
-    url = reverse('user-detail', args=[
-        user.id
-    ])
-
-    res = auth_client.get('{0}?until={1}'.format(
-        url,
-        end_date.strftime('%Y-%m-%d')
-    ))
-
-    result = res.json()
-
-    # Calculated result:
-    # 4 workdays 8.5 hours, 1 workday 8 hours, minus one holiday 8.5
-    # minutes 10.5 hours overtime credit
-    expected_worktime = (
-        1 * employment_short.worktime_per_day +
-        3 * employment.worktime_per_day -
-        timedelta(hours=10, minutes=30)
-    )
-
-    assert (
-        result['data']['attributes']['worktime-balance'] ==
-        duration_string(timedelta() - expected_worktime)
-    )
-
-    # 2x 10 hour reported worktime
-    ReportFactory.create(
-        user=user,
-        date=start_date + timedelta(days=3),
-        duration=timedelta(hours=10)
-    )
-
-    ReportFactory.create(
-        user=user,
-        date=start_date + timedelta(days=4),
-        duration=timedelta(hours=10)
-    )
-
-    AbsenceFactory.create(
-        user=user,
-        date=start_date + timedelta(days=5)
-    )
-
-    res2 = auth_client.get('{0}?until={1}'.format(
-        url,
-        end_date.strftime('%Y-%m-%d')
-    ))
-
-    result2 = res2.json()
-
-    assert (
-        result2['data']['attributes']['worktime-balance'] ==
-        duration_string(timedelta(hours=28) - expected_worktime)
-    )
 
 
 def test_user_supervisor_filter(auth_client):

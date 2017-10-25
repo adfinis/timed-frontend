@@ -1,4 +1,3 @@
-import pytest
 from django.core.management import call_command
 from redminelib.exceptions import ResourceNotFoundError
 
@@ -7,7 +6,6 @@ from timed.redmine.models import RedmineProject
 from timed.tracking.factories import ReportFactory
 
 
-@pytest.mark.freeze_time
 def test_redmine_report(db, freezer, mocker):
     """
     Test redmine report.
@@ -47,7 +45,6 @@ def test_redmine_report(db, freezer, mocker):
     issue.save.assert_called_once_with()
 
 
-@pytest.mark.freeze_time
 def test_redmine_report_no_estimated_time(db, freezer, mocker):
     redmine_instance = mocker.MagicMock()
     issue = mocker.MagicMock()
@@ -68,7 +65,6 @@ def test_redmine_report_no_estimated_time(db, freezer, mocker):
     issue.save.assert_called_once_with()
 
 
-@pytest.mark.freeze_time
 def test_redmine_report_invalid_issue(db, freezer, mocker, capsys):
     """Test case when issue is not available."""
     redmine_instance = mocker.MagicMock()

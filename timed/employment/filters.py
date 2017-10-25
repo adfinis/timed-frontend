@@ -65,3 +65,11 @@ class AbsenceCreditFilterSet(FilterSet):
         fields = [
             'year', 'user', 'date', 'from_date', 'to_date', 'absence_type'
         ]
+
+
+class WorktimeBalanceFilterSet(FilterSet):
+    user = NumberFilter(name='id')
+
+    class Meta:
+        model  = models.User
+        fields = ['user']
