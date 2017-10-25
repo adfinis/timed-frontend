@@ -114,6 +114,9 @@ class AbsenceBalanceSerializer(Serializer):
 
         For absence types which fill worktime this will be None.
         """
+        if 'credit' in instance:
+            return instance['credit']
+
         # id is mapped to absence type
         absence_type = instance.id
         if absence_type.fill_worktime:
@@ -128,7 +131,7 @@ class AbsenceBalanceSerializer(Serializer):
         data = credits.aggregate(credit=Sum('days'))
         credit = data['credit'] or 0
 
-        # balance will need this value
+        # avoid multiple calculations as get_balance needs it as well
         instance['credit'] = credit
         return credit
 
@@ -138,6 +141,9 @@ class AbsenceBalanceSerializer(Serializer):
 
         For absence types which fill worktime this will be None.
         """
+        if 'used_days' in instance:
+            return instance['used_days']
+
         # id is mapped to absence type
         absence_type = instance.id
         if absence_type.fill_worktime:
@@ -149,9 +155,9 @@ class AbsenceBalanceSerializer(Serializer):
             type=absence_type,
             date__range=[start, instance.date]
         )
-
-        # balance will need this value
         used_days = absences.count()
+
+        # avoid multiple calculations as get_balance needs it as well
         instance['used_days'] = used_days
         return used_days
 
@@ -183,15 +189,23 @@ class AbsenceBalanceSerializer(Serializer):
 
     def get_absence_credits(self, instance):
         """Get the absence credits for the user and type."""
+        if 'absence_credits' in instance:
+            return instance['absence_credits']
+
         # id is mapped to absence type
         absence_type = instance.id
 
         start = self._get_start(instance)
-        return models.AbsenceCredit.objects.filter(
+        absence_credits = models.AbsenceCredit.objects.filter(
             absence_type=absence_type,
             user=instance.user,
             date__range=[start, instance.date],
-        )
+        ).select_related('user')
+
+        # avoid multiple calculations when absence credits need to be included
+        instance['absence_credits'] = absence_credits
+
+        return absence_credits
 
     def get_balance(self, instance):
         # id is mapped to absence type
@@ -199,7 +213,7 @@ class AbsenceBalanceSerializer(Serializer):
         if absence_type.fill_worktime:
             return None
 
-        return instance['credit'] - instance['used_days']
+        return self.get_credit(instance) - self.get_used_days(instance)
 
     included_serializers = {
         'absence_type':

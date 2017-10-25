@@ -94,7 +94,8 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
     with django_assert_num_queries(10):
         result = auth_client.get(url, data={
             'date': '2017-03-01',
-            'user': user.id
+            'user': user.id,
+            'include': 'absence_credits,absence_type'
         })
     assert result.status_code == status.HTTP_200_OK
 
