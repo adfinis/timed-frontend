@@ -4,7 +4,8 @@ from django.core.urlresolvers import reverse
 from rest_framework import status
 
 from timed.employment.factories import (AbsenceCreditFactory,
-                                        AbsenceTypeFactory, EmploymentFactory)
+                                        AbsenceTypeFactory, EmploymentFactory,
+                                        UserFactory)
 from timed.tracking.factories import AbsenceFactory, ReportFactory
 
 
@@ -69,7 +70,7 @@ def test_absence_balance_full_day(auth_client, django_assert_num_queries):
 def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
     day = date(2017, 2, 28)
 
-    user = auth_client.user
+    user = UserFactory.create()
     EmploymentFactory.create(
         user=user, start_date=day,
         worktime_per_day=timedelta(hours=5)
@@ -91,7 +92,7 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
                           type=absence_type)
 
     url = reverse('absence-balance-list')
-    with django_assert_num_queries(10):
+    with django_assert_num_queries(11):
         result = auth_client.get(url, data={
             'date': '2017-03-01',
             'user': user.id,
@@ -112,3 +113,74 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
     assert entry['attributes']['balance'] is None
     assert entry['attributes']['used-days'] is None
     assert entry['attributes']['used-duration'] == '06:00:00'
+
+
+def test_absence_balance_detail(auth_client):
+    user = auth_client.user
+    absence_type = AbsenceTypeFactory.create()
+    url = reverse('absence-balance-detail', args=[
+        '{0}_{1}_2017-03-01'.format(user.id, absence_type.id)
+    ])
+
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_200_OK
+
+    json = result.json()
+    entry = json['data']
+
+    assert entry['attributes']['credit'] == 0
+    assert entry['attributes']['balance'] == 0
+    assert entry['attributes']['used-days'] == 0
+    assert entry['attributes']['used-duration'] is None
+
+
+def test_absence_balance_invalid_date_in_pk(auth_client):
+    url = reverse('absence-balance-detail', args=['1_2_invalid'])
+
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_absence_balance_invalid_user_in_pk(auth_client):
+    url = reverse('absence-balance-detail', args=['999999_2_2017-03-01'])
+
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_404_NOT_FOUND
+
+
+def test_absence_balance_no_date(auth_client):
+    url = reverse('absence-balance-list')
+
+    result = auth_client.get(url, data={
+        'user': auth_client.user.id
+    })
+    assert result.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_balance_invalid_date(auth_client):
+    url = reverse('absence-balance-list')
+
+    result = auth_client.get(url, data={
+        'user': auth_client.user.id,
+        'date': 'invalid'
+    })
+    assert result.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_balance_no_user(auth_client):
+    url = reverse('absence-balance-list')
+
+    result = auth_client.get(url, data={
+        'date': '2017-03-01'
+    })
+    assert result.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_balance_invalid_user(auth_client):
+    url = reverse('absence-balance-list')
+
+    result = auth_client.get(url, data={
+        'date': '2017-03-01',
+        'user': 'invalid'
+    })
+    assert result.status_code == status.HTTP_400_BAD_REQUEST

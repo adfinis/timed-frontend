@@ -143,7 +143,7 @@ class AbsenceBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
             try:
                 user_id = int(pk.split('_')[0])
                 # avoid query if user is self
-                if self.request.user.pk == user_id:
+                if self.request.user.id == user_id:
                     return self.request.user
                 return get_user_model().objects.get(pk=pk.split('_')[0])
             except (ValueError, get_user_model().DoesNotExist):
@@ -156,7 +156,7 @@ class AbsenceBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
                 raise exceptions.ParseError(_('User filter needs to be set'))
 
             # avoid query if user is self
-            if self.request.user.pk == int(user_id):
+            if self.request.user.id == int(user_id):
                 return self.request.user
 
             return get_user_model().objects.get(pk=user_id)
