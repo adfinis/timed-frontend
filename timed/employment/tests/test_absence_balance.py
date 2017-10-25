@@ -71,6 +71,7 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
     day = date(2017, 2, 28)
 
     user = UserFactory.create()
+    user.supervisors.add(auth_client.user)
     EmploymentFactory.create(
         user=user, start_date=day,
         worktime_per_day=timedelta(hours=5)
@@ -92,7 +93,7 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
                           type=absence_type)
 
     url = reverse('absence-balance-list')
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(12):
         result = auth_client.get(url, data={
             'date': '2017-03-01',
             'user': user.id,
@@ -132,6 +133,32 @@ def test_absence_balance_detail(auth_client):
     assert entry['attributes']['balance'] == 0
     assert entry['attributes']['used-days'] == 0
     assert entry['attributes']['used-duration'] is None
+
+
+def test_absence_balance_list_none_supervisee(auth_client):
+    url = reverse('absence-balance-list')
+    AbsenceTypeFactory.create()
+    unrelated_user = UserFactory.create()
+
+    result = auth_client.get(url, data={
+        'user': unrelated_user.id,
+        'date': '2017-01-03'
+    })
+    assert result.status_code == status.HTTP_200_OK
+    assert len(result.json()['data']) == 0
+
+
+def test_absence_balance_detail_none_supervisee(auth_client):
+    url = reverse('absence-balance-list')
+    absence_type = AbsenceTypeFactory.create()
+    unrelated_user = UserFactory.create()
+
+    url = reverse('absence-balance-detail', args=[
+        '{0}_{1}_2017-03-01'.format(unrelated_user.id, absence_type.id)
+    ])
+
+    result = auth_client.get(url)
+    assert result.status_code == status.HTTP_404_NOT_FOUND
 
 
 def test_absence_balance_invalid_date_in_pk(auth_client):

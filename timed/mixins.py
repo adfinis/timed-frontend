@@ -42,6 +42,10 @@ class AggregateQuerysetMixin(object):
         )
 
     def get_serializer(self, data, *args, **kwargs):
+        # no data no wrapping needed
+        if not data:
+            return super().get_serializer(data, *args, **kwargs)
+
         many = kwargs.get('many')
         if not many:
             data = [data]
