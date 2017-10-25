@@ -1,16 +1,15 @@
 """Serializers for the employment app."""
 
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
-from django.db.models import Value
+from django.db.models import Sum, Value
 from django.db.models.functions import Coalesce
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_json_api import relations, serializers
-from rest_framework_json_api.serializers import (IntegerField, ModelSerializer,
-                                                 Serializer,
+from rest_framework_json_api.serializers import (ModelSerializer, Serializer,
                                                  SerializerMethodField,
                                                  ValidationError)
 
@@ -21,32 +20,7 @@ from timed.tracking.models import Absence
 class UserSerializer(ModelSerializer):
     """User serializer."""
 
-    employments        = relations.ResourceRelatedField(many=True,
-                                                        read_only=True)
-    user_absence_types = relations.SerializerMethodResourceRelatedField(
-        source='get_user_absence_types',
-        model=models.UserAbsenceType,
-        many=True,
-        read_only=True
-    )
-
-    def get_user_absence_types(self, instance):
-        """Get the user absence types for this user.
-
-        :returns: All absence types for this user
-        """
-        request = self.context.get('request')
-        until = request and request.query_params.get('until')
-
-        end = datetime.strptime(
-            until or date.today().strftime('%Y-%m-%d'),
-            '%Y-%m-%d'
-        ).date()
-        start = date(end.year, 1, 1)
-
-        return models.UserAbsenceType.objects.with_user(instance,
-                                                        start,
-                                                        end)
+    employments = relations.ResourceRelatedField(many=True, read_only=True)
 
     def validate(self, data):
         user = self.context['request'].user
@@ -62,8 +36,6 @@ class UserSerializer(ModelSerializer):
             'timed.employment.serializers.UserSerializer',
         'supervisees':
             'timed.employment.serializers.UserSerializer',
-        'user_absence_types':
-            'timed.employment.serializers.UserAbsenceTypeSerializer'
     }
 
     class Meta:
@@ -79,7 +51,6 @@ class UserSerializer(ModelSerializer):
             'is_staff',
             'is_superuser',
             'is_active',
-            'user_absence_types',
             'tour_done',
             'supervisors',
             'supervisees'
@@ -111,6 +82,134 @@ class WorktimeBalanceSerializer(Serializer):
 
     class Meta:
         resource_name = 'worktime-balances'
+
+
+class AbsenceBalanceSerializer(Serializer):
+    credit          = SerializerMethodField()
+    used_days       = SerializerMethodField()
+    used_duration   = SerializerMethodField()
+    balance         = SerializerMethodField()
+
+    user = relations.ResourceRelatedField(
+        model=get_user_model(), read_only=True
+    )
+
+    absence_type = relations.ResourceRelatedField(
+        model=models.AbsenceType, read_only=True, source='id'
+    )
+
+    absence_credits = relations.SerializerMethodResourceRelatedField(
+        source='get_absence_credits',
+        model=models.AbsenceCredit,
+        many=True,
+        read_only=True
+    )
+
+    def _get_start(self, instance):
+        return date(instance.date.year, 1, 1)
+
+    def get_credit(self, instance):
+        """
+        Calculate how many days are approved for given absence type.
+
+        For absence types which fill worktime this will be None.
+        """
+        # id is mapped to absence type
+        absence_type = instance.id
+        if absence_type.fill_worktime:
+            return None
+
+        start = self._get_start(instance)
+        credits = models.AbsenceCredit.objects.filter(
+            user=instance.user,
+            absence_type=absence_type,
+            date__range=[start, instance.date]
+        )
+        data = credits.aggregate(credit=Sum('days'))
+        credit = data['credit'] or 0
+
+        # balance will need this value
+        instance['credit'] = credit
+        return credit
+
+    def get_used_days(self, instance):
+        """
+        Calculate how many days are used of given absence type.
+
+        For absence types which fill worktime this will be None.
+        """
+        # id is mapped to absence type
+        absence_type = instance.id
+        if absence_type.fill_worktime:
+            return None
+
+        start = self._get_start(instance)
+        absences = Absence.objects.filter(
+            user=instance.user,
+            type=absence_type,
+            date__range=[start, instance.date]
+        )
+
+        # balance will need this value
+        used_days = absences.count()
+        instance['used_days'] = used_days
+        return used_days
+
+    def get_used_duration(self, instance):
+        """
+        Calculate duration of absence type.
+
+        For absence types which fill worktime this will be None.
+        """
+        # id is mapped to absence type
+        absence_type = instance.id
+        if not absence_type.fill_worktime:
+            return None
+
+        start = self._get_start(instance)
+        absences = sum([
+            absence.calculate_duration(
+                models.Employment.objects.get_at(
+                    instance.user, absence.date
+                )
+            )
+            for absence in Absence.objects.filter(
+                user=instance.user,
+                date__range=[start, instance.date],
+                type_id=instance.id
+            ).select_related('type')
+        ], timedelta())
+        return duration_string(absences)
+
+    def get_absence_credits(self, instance):
+        """Get the absence credits for the user and type."""
+        # id is mapped to absence type
+        absence_type = instance.id
+
+        start = self._get_start(instance)
+        return models.AbsenceCredit.objects.filter(
+            absence_type=absence_type,
+            user=instance.user,
+            date__range=[start, instance.date],
+        )
+
+    def get_balance(self, instance):
+        # id is mapped to absence type
+        absence_type = instance.id
+        if absence_type.fill_worktime:
+            return None
+
+        return instance['credit'] - instance['used_days']
+
+    included_serializers = {
+        'absence_type':
+            'timed.employment.serializers.AbsenceTypeSerializer',
+        'absence_credits':
+            'timed.employment.serializers.AbsenceCreditSerializer',
+    }
+
+    class Meta:
+        resource_name = 'absence-balances'
 
 
 class EmploymentSerializer(ModelSerializer):
@@ -196,84 +295,6 @@ class PublicHolidaySerializer(ModelSerializer):
             'name',
             'date',
             'location',
-        ]
-
-
-class UserAbsenceTypeSerializer(ModelSerializer):
-    """Absence type serializer for a user.
-
-    This is only a simulated relation to the user to show the absence credits
-    and balances.
-    """
-
-    credit          = IntegerField()
-    used_days       = IntegerField()
-    used_duration   = SerializerMethodField(source='get_used_duration')
-    balance         = IntegerField()
-
-    user            = relations.SerializerMethodResourceRelatedField(
-        source='get_user',
-        model=get_user_model(),
-        read_only=True
-    )
-
-    absence_credits = relations.SerializerMethodResourceRelatedField(
-        source='get_absence_credits',
-        model=models.AbsenceCredit,
-        many=True,
-        read_only=True
-    )
-
-    def get_user(self, instance):
-        return get_user_model().objects.get(pk=instance.user_id)
-
-    def get_used_duration(self, instance):
-        # only calculate worktime if it fills up day
-        if not instance.fill_worktime:
-            return None
-
-        absences = sum([
-            absence.calculate_duration(
-                models.Employment.objects.get_at(
-                    instance.user_id, absence.date
-                )
-            )
-            for absence in Absence.objects.filter(
-                user=instance.user_id,
-                date__gte=instance.start_date,
-                date__lte=instance.end_date,
-                type_id=instance.id
-            )
-        ], timedelta())
-        return duration_string(absences)
-
-    def get_absence_credits(self, instance):
-        """Get the absence credits for the user and type."""
-        return models.AbsenceCredit.objects.filter(
-            absence_type=instance,
-            user__id=instance.user_id,
-            date__gte=instance.start_date,
-            date__lte=instance.end_date
-        )
-
-    included_serializers = {
-        'absence_credits':
-            'timed.employment.serializers.AbsenceCreditSerializer',
-    }
-
-    class Meta:
-        """Meta information for the absence type serializer."""
-
-        model  = models.UserAbsenceType
-        fields = [
-            'name',
-            'fill_worktime',
-            'credit',
-            'used_duration',
-            'used_days',
-            'balance',
-            'absence_credits',
-            'user',
         ]
 
 
