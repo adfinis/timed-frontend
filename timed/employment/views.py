@@ -186,8 +186,9 @@ class AbsenceBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         )
 
         # only myself, superuser and supervisors may see by absence balances
-        if not user.is_superuser:
-            current_user = self.request.user
+        current_user = self.request.user
+
+        if not current_user.is_superuser:
             if current_user.id != user.id:
                 if not current_user.supervisees.filter(id=user.id).exists():
                     return models.AbsenceType.objects.none()
