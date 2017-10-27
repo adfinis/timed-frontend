@@ -18,7 +18,7 @@
       r={{radius}}
       fill="transparent"
       stroke-width="2"
-      stroke-dasharray="{{max (min (mult value 100) 100) 0}} {{max (min (mult (sub 1 value) 100) 100) 0}}"
+      stroke-dasharray="{{mult (min value 1) 100}} {{mult (sub 1 (min value 1)) 100}}"
       stroke-dashoffset="25"
     ></circle>
   </svg>
