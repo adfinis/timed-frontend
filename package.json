@@ -69,7 +69,7 @@
     "ember-notify": "^5.2.1",
     "ember-one-way-controls": "^3.0.1",
     "ember-pad": "^1.2.2",
-    "ember-parachute": "^0.3.3",
+    "ember-parachute": "github:anehx/ember-parachute#initialize-once-fix",
     "ember-power-calendar": "^0.5.0",
     "ember-power-select": "^1.9.11",
     "ember-resolver": "^4.1.0",

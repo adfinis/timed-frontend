@@ -28,17 +28,11 @@ describe('Acceptance | users', function() {
     destroyApp(application)
   })
 
-  it('can visit /users', async function() {
-    await visit('/users')
-
-    expect(currentURL()).to.equal('/users')
-  })
-
   it('shows only supervisees to staff', async function() {
     await visit('/users')
 
     // 5 supervisees and the user himself
-    expect(findAll('table tr')).to.have.length(6)
+    expect(await findAll('table tr')).to.have.length(6)
   })
 
   it('shows all to superuser', async function() {

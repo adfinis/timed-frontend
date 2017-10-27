@@ -38,7 +38,7 @@
   </div>
 </div>
 
-<div class="grid grid--12of12">
+<div class="grid grid--12of12" data-test-users-list>
   <div class="grid-cell">
     {{#async-list data as |section data|}}
       {{#if (eq section 'empty')}}
@@ -65,6 +65,10 @@
             bufferSize        = 10
             containerSelector = '.page-content--scroll'
           as |user|}}
+          {{!--
+          <tbody>
+          {{#each data as |user|}}
+          --}}
             {{#link-to 'users.edit' user.id tagName='tr' class='pointer'}}
               <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
               {{#if user.activeEmployment}}
@@ -79,6 +83,10 @@
                 </span>
               </td>
             {{/link-to}}
+          {{!--
+          {{/each}}
+          </tbody>
+          --}}
           {{/vertical-collection}}
         </table>
       {{/if}}
