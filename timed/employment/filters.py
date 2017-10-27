@@ -80,3 +80,11 @@ class WorktimeBalanceFilterSet(FilterSet):
     class Meta:
         model  = models.User
         fields = ['user']
+
+
+class AbsenceBalanceFilterSet(FilterSet):
+    absence_type = NumberFilter(name='id')
+
+    class Meta:
+        model  = models.AbsenceType
+        fields = ['absence_type']

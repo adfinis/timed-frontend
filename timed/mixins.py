@@ -1,4 +1,4 @@
-from rest_framework_json_api.relations import ResourceRelatedField
+from rest_framework_json_api import relations
 
 
 class AggregateQuerysetMixin(object):
@@ -7,7 +7,7 @@ class AggregateQuerysetMixin(object):
 
     Wrap queryst dicts into aggregate object to support renderer
     which expect attributes.
-    It additionaly prefetches related instances represented as id in
+    It additionally prefetches related instances represented as id in
     aggregate.
 
     In aggregates only an id of a related field is part of the object.
@@ -22,7 +22,7 @@ class AggregateQuerysetMixin(object):
         """
         Wrap dict into an object.
 
-        All values will be accesible through attributes. Note that
+        All values will be accessible through attributes. Note that
         keys must be valid python names for this to work.
         """
 
@@ -30,7 +30,22 @@ class AggregateQuerysetMixin(object):
             self.__dict__.update(kwargs)
             super().__init__(**kwargs)
 
+    def _is_related_field(self, val):
+        """
+        Check whether value is a related field.
+
+        Ignores serializer method fields which define logic separately.
+        """
+        return (
+            isinstance(val, relations.ResourceRelatedField) and
+            not isinstance(val, relations.SerializerMethodResourceRelatedField)
+        )
+
     def get_serializer(self, data, *args, **kwargs):
+        # no data no wrapping needed
+        if not data:
+            return super().get_serializer(data, *args, **kwargs)
+
         many = kwargs.get('many')
         if not many:
             data = [data]
@@ -39,7 +54,7 @@ class AggregateQuerysetMixin(object):
         prefetch_per_field = {}
         serializer_class = self.get_serializer_class()
         for key, value in serializer_class._declared_fields.items():
-            if isinstance(value, ResourceRelatedField):
+            if self._is_related_field(value):
                 source = value.source or key
                 if many:
                     obj_ids = data.values_list(source, flat=True)

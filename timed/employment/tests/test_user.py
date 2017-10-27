@@ -1,17 +1,12 @@
 """Tests for the locations endpoint."""
 
-from datetime import date, timedelta
-
 from django.core.urlresolvers import reverse
 from rest_framework import status
 from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
                                    HTTP_405_METHOD_NOT_ALLOWED)
 
-from timed.employment.factories import (AbsenceCreditFactory,
-                                        AbsenceTypeFactory, EmploymentFactory,
-                                        UserFactory)
+from timed.employment.factories import EmploymentFactory, UserFactory
 from timed.jsonapi_test_case import JSONAPITestCase
-from timed.tracking.factories import AbsenceFactory, ReportFactory
 
 
 class UserTests(JSONAPITestCase):
@@ -134,106 +129,6 @@ class UserTests(JSONAPITestCase):
 
         assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
         assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_user_absence_types(self):
-        absence_type = AbsenceTypeFactory.create()
-
-        absence_credit = AbsenceCreditFactory.create(date=date.today(),
-                                                     user=self.user, days=5,
-                                                     absence_type=absence_type)
-
-        # credit on different user, may not show up on included
-        AbsenceCreditFactory.create(date=date.today(),
-                                    absence_type=absence_type)
-
-        AbsenceFactory.create(date=date.today(),
-                              user=self.user,
-                              type=absence_type)
-
-        AbsenceFactory.create(date=date.today() - timedelta(days=1),
-                              user=self.user,
-                              type=absence_type)
-
-        url = reverse('user-detail', args=[
-            self.user.id
-        ])
-
-        res = self.client.get(url, {
-            'include': 'user_absence_types,user_absence_types.absence_credits'
-        })
-
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        rel = result['data']['relationships']
-        inc = result['included']
-
-        assert len(rel['user-absence-types']['data']) == 1
-        assert len(inc) == 2
-
-        absence_type_inc = inc[0]
-        assert absence_type_inc['id'] == str(absence_credit.id)
-
-        absence_credit_inc = inc[1]
-        assert (
-            absence_credit_inc['id'] ==
-            '{0}-{1}'.format(self.user.id, absence_credit.absence_type.id)
-        )
-        assert absence_credit_inc['attributes']['credit'] == 5
-        assert absence_credit_inc['attributes']['balance'] == 3
-        assert absence_credit_inc['attributes']['used-days'] == 2
-        assert absence_credit_inc['attributes']['used-duration'] is None
-
-    def test_user_absence_types_fill_worktime(self):
-        absence_type = AbsenceTypeFactory.create(fill_worktime=True)
-
-        employment = self.user.employments.get(end_date__isnull=True)
-
-        employment.worktime_per_day = timedelta(hours=5)
-        employment.start_date       = date.today() - timedelta(days=1)
-
-        employment.save()
-
-        ReportFactory.create(
-            user=self.user,
-            date=date.today(),
-            duration=timedelta(hours=4)
-        )
-
-        AbsenceFactory.create(date=date.today(),
-                              user=self.user,
-                              type=absence_type)
-
-        AbsenceFactory.create(date=date.today() - timedelta(days=1),
-                              user=self.user,
-                              type=absence_type)
-
-        url = reverse('user-detail', args=[
-            self.user.id
-        ])
-
-        res = self.client.get(url, {'include': 'user_absence_types'})
-
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        rel = result['data']['relationships']
-        inc = result['included']
-
-        assert len(rel['user-absence-types']['data']) == 1
-        assert len(inc) == 1
-
-        assert (
-            inc[0]['id'] ==
-            '{0}-{1}'.format(self.user.id, absence_type.id)
-        )
-
-        assert inc[0]['attributes']['credit'] is None
-        assert inc[0]['attributes']['balance'] is None
-        assert inc[0]['attributes']['used-days'] is None
-        assert inc[0]['attributes']['used-duration'] == '06:00:00'
 
 
 def test_user_supervisor_filter(auth_client):

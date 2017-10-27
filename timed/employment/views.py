@@ -2,7 +2,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.db.models import CharField, DateField, Q, Value
+from django.db.models import CharField, DateField, IntegerField, Q, Value
 from django.db.models.functions import Concat
 from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
@@ -89,6 +89,109 @@ class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
             queryset = queryset.filter(
                 Q(id=user.id) | Q(supervisors=user)
             )
+
+        return queryset
+
+
+class AbsenceBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
+    """Calculate absence balance for different user on different dates."""
+
+    serializer_class = serializers.AbsenceBalanceSerializer
+    filter_class = filters.AbsenceBalanceFilterSet
+
+    def _extract_date(self):
+        """
+        Extract date from request.
+
+        In detail route extract it from pk and it list
+        from query params.
+        """
+        pk = self.request.parser_context['kwargs'].get('pk')
+
+        # detail case
+        if pk is not None:
+            try:
+                return datetime.datetime.strptime(
+                    pk.split('_')[2], '%Y-%m-%d'
+                )
+
+            except (ValueError, TypeError, IndexError):
+                raise exceptions.NotFound()
+
+        # list case
+        try:
+            return datetime.datetime.strptime(
+                self.request.query_params.get('date'),
+                '%Y-%m-%d'
+            ).date()
+        except ValueError:
+            raise exceptions.ParseError(_('Date is invalid'))
+        except TypeError:
+            raise exceptions.ParseError(_('Date filter needs to be set'))
+
+    def _extract_user(self):
+        """
+        Extract user from request.
+
+        In detail route extract it from pk and it list
+        from query params.
+        """
+        pk = self.request.parser_context['kwargs'].get('pk')
+
+        # detail case
+        if pk is not None:
+            try:
+                user_id = int(pk.split('_')[0])
+                # avoid query if user is self
+                if self.request.user.id == user_id:
+                    return self.request.user
+                return get_user_model().objects.get(pk=pk.split('_')[0])
+            except (ValueError, get_user_model().DoesNotExist):
+                raise exceptions.NotFound()
+
+        # list case
+        try:
+            user_id = self.request.query_params.get('user')
+            if user_id is None:
+                raise exceptions.ParseError(_('User filter needs to be set'))
+
+            # avoid query if user is self
+            if self.request.user.id == int(user_id):
+                return self.request.user
+
+            return get_user_model().objects.get(pk=user_id)
+        except (ValueError, get_user_model().DoesNotExist):
+            raise exceptions.ParseError(_('User is invalid'))
+
+    def get_queryset(self):
+        date = self._extract_date()
+        user = self._extract_user()
+
+        queryset = models.AbsenceType.objects.values('id')
+        queryset = queryset.annotate(
+            date=Value(date, DateField()),
+        )
+        queryset = queryset.annotate(
+            user=Value(user.id, IntegerField()),
+        )
+        queryset = queryset.annotate(
+            pk=Concat(
+                'user',
+                Value('_'),
+                'id',
+                Value('_'),
+                'date',
+                output_field=CharField()
+            )
+        )
+
+        # only myself, superuser and supervisors may see by absence balances
+        current_user = self.request.user
+
+        if not current_user.is_superuser:
+            if current_user.id != user.id:
+                if not current_user.supervisees.filter(id=user.id).exists():
+                    return models.AbsenceType.objects.none()
 
         return queryset
 

@@ -19,5 +19,10 @@ r.register(
     views.WorktimeBalanceViewSet,
     'worktime-balance'
 )
+r.register(
+    r'absence-balances',
+    views.AbsenceBalanceViewSet,
+    'absence-balance'
+)
 
 urlpatterns = r.urls
