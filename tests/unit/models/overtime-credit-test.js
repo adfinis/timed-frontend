@@ -2,8 +2,8 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupModelTest } from 'ember-mocha'
 
-describe('Unit | Model | user absence type', function() {
-  setupModelTest('user-absence-type', {
+describe('Unit | Model | overtime credit', function() {
+  setupModelTest('overtime-credit', {
     // Specify the other units that are required for this test.
     needs: []
   })

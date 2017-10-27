@@ -260,7 +260,7 @@ describe('Acceptance | reschedule', function() {
 
     await click('a[href="/me"]')
 
-    expect(currentURL()).to.equal('/me')
+    expect(currentURL()).to.not.contain('reschedule')
 
     await click('a[href="/reschedule"]')
 
@@ -272,7 +272,7 @@ describe('Acceptance | reschedule', function() {
 
     await click('a[href="/me"]')
 
-    expect(currentURL()).to.equal('/me')
+    expect(currentURL()).to.not.contain('reschedule')
 
     await click('a[href^="/reschedule"]')
 

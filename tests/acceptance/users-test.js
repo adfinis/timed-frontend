@@ -5,6 +5,7 @@ import {
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
+import { findAll } from 'ember-native-dom-helpers'
 import startApp from '../helpers/start-app'
 
 describe('Acceptance | users', function() {
@@ -36,7 +37,8 @@ describe('Acceptance | users', function() {
   it('shows only supervisees to staff', async function() {
     await visit('/users')
 
-    expect(find('[data-test-user-row]')).to.have.length(5)
+    // 5 supervisees and the user himself
+    expect(findAll('table tr')).to.have.length(6)
   })
 
   it('shows all to superuser', async function() {
@@ -47,7 +49,8 @@ describe('Acceptance | users', function() {
 
     await visit('/users')
 
-    expect(find('[data-test-user-row]')).to.have.length(12)
+    // 12 users and the user himself
+    expect(findAll('table tr')).to.have.length(13)
   })
 
   it('can filter and reset', async function() {
@@ -63,15 +66,11 @@ describe('Acceptance | users', function() {
     await selectSearch('.user-select', user.username)
     await userSelect()
 
-    expect(currentURL()).to.equal('/users')
-
-    await click('button:contains(Apply)')
-
     expect(currentURL()).to.contain('search=foobar')
     expect(currentURL()).to.contain('active=')
     expect(currentURL()).to.contain('supervisor=12')
 
-    await click('button:contains(Reset)')
+    await click('button:contains(Reset filter)')
 
     expect(currentURL()).to.equal('/users')
   })

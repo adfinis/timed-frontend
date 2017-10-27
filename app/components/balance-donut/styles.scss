@@ -1,0 +1,99 @@
+& {
+  --max-offset: 0;
+  --offset: 0;
+  --title-size: 18px;
+  transition: transform 1s ease;
+  transform: translateY(calc(var(--max-offset) * var(--offset-multiplicator)));
+}
+
+.donut-title {
+  color: var(--body-color);
+  font-size: var(--title-size);
+  word-break: break-all;
+  hyphens: auto;
+}
+
+.donut {
+  position: relative;
+}
+
+.donut-ring {
+  stroke: rgb(200, 200, 200);
+}
+
+.donut-content {
+  animation: donut-content 1s ease-in-out;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-size: calc(var(--title-size) * 0.9);
+
+  small {
+    font-size: 50%;
+    color: color(var(--body-color) tint(30%));
+  }
+}
+
+@keyframes donut-content {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  80% {
+    transform: scale(1.06);
+  }
+  90% {
+    transform: scale(0.94);
+  }
+  95% {
+    transform: scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@mixin donut-segment($color) {
+  stroke: var(--color-#{$color});
+  animation-name: donut-segment-#{$color};
+
+  @keyframes donut-segment-#{$color} {
+    from {
+      stroke: color(var(--color-#{$color}) shade(50%));
+      stroke-dasharray: 0 100;
+    }
+  }
+}
+
+.donut-segment {
+  @include donut-segment('primary');
+
+  animation-duration: 1s;
+  animation-timing-function: ease-in-out;
+}
+
+&.success .donut-segment { @include donut-segment('success'); }
+&.info .donut-segment { @include donut-segment('info'); }
+&.warning .donut-segment { @include donut-segment('warning'); }
+&.danger .donut-segment { @include donut-segment('danger'); }
+
+@media (--sm-viewport) {
+  & {
+    --title-size: 22px;
+  }
+}
+
+@media (--lg-viewport) {
+  & {
+    --max-offset: -90px;
+    --title-size: 24px;
+  }
+}

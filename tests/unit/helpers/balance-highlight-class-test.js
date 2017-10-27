@@ -10,6 +10,12 @@ describe('Unit | Helper | balance highlight class', function() {
     expect(result).to.equal('')
   })
 
+  it('returns an empty string on anything other than a duration', function() {
+    let result = balanceHighlightClass([1337])
+
+    expect(result).to.equal('')
+  })
+
   it('returns `color-success` on positive durations', function() {
     let result = balanceHighlightClass([moment.duration({ h: 1, m: 30 })])
 

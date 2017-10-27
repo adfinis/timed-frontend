@@ -4,6 +4,7 @@
  * @public
  */
 import { helper } from '@ember/component/helper'
+import moment from 'moment'
 
 /**
  * Helper to determine the color of a balance
@@ -17,9 +18,11 @@ import { helper } from '@ember/component/helper'
  * @public
  */
 export function balanceHighlightClass([balance]) {
-  if (balance.asMinutes() > 0) {
+  let minutes = moment.isDuration(balance) ? balance.asMinutes() : 0
+
+  if (minutes > 0) {
     return 'color-success'
-  } else if (balance.asMinutes() < 0) {
+  } else if (minutes < 0) {
     return 'color-danger'
   }
 

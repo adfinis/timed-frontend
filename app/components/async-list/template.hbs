@@ -1,0 +1,19 @@
+{{#if data.isRunning}}
+  <div class="empty">
+    {{loading-icon}}
+  </div>
+{{else if data.last.isError}}
+  <div class="empty">
+    <div>
+      {{fa-icon 'bolt'}}
+      <h3>Oops something went wrong</h3>
+      <p>Have you tried turning it off and on again?</p>
+    </div>
+  </div>
+{{else if (not data.last.value.length)}}
+  <div class="empty">
+    {{yield 'empty' data.last.value}}
+  </div>
+{{else}}
+  {{yield 'body' data.last.value}}
+{{/if}}
