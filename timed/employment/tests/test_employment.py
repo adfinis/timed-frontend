@@ -119,6 +119,29 @@ def test_employment_list_superuser(superadmin_client):
     assert len(json['data']) == 3
 
 
+def test_employment_list_filter_date(auth_client):
+    EmploymentFactory.create(
+        user=auth_client.user,
+        start_date=date(2017, 1, 1,),
+        end_date=date(2017, 4, 1,)
+    )
+    employment = EmploymentFactory.create(
+        user=auth_client.user,
+        start_date=date(2017, 4, 2,),
+        end_date=None
+    )
+
+    url = reverse('employment-list')
+
+    result = auth_client.get(url, data={
+        'date': '2017-04-05'
+    })
+    assert result.status_code == status.HTTP_200_OK
+    json = result.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(employment.id)
+
+
 def test_employment_list_supervisor(auth_client):
     user = UserFactory.create()
     auth_client.user.supervisees.add(user)
