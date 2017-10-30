@@ -1,6 +1,7 @@
-"""Filters for filtering the data of the employment app endpoints."""
+from datetime import date
 
-
+from django.db.models import Value
+from django.db.models.functions import Coalesce
 from django_filters import DateFilter, Filter, FilterSet, NumberFilter
 
 from timed.employment import models
@@ -46,6 +47,19 @@ class UserFilterSet(FilterSet):
 
 
 class EmploymentFilterSet(FilterSet):
+    date = DateFilter(method='filter_date')
+
+    def filter_date(self, queryset, name, value):
+        queryset = queryset.annotate(
+            end=Coalesce('end_date', Value(date.today()))
+        )
+
+        queryset = queryset.filter(
+            start_date__lte=value,
+            end__gte=value
+        )
+
+        return queryset
 
     class Meta:
         model  = models.Employment
