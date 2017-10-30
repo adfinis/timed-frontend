@@ -24,6 +24,14 @@ export default Model.extend({
   days: attr('number'),
 
   /**
+   * The date
+   *
+   * @property {moment} date
+   * @public
+   */
+  date: attr('django-date'),
+
+  /**
    * The comment
    *
    * @property {String} comment

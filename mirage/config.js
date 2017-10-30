@@ -23,12 +23,33 @@ const statisticEndpoint = type => {
   }
 }
 
+const byUserAndDate = modelName => {
+  return function(db, { queryParams: { user, date } }) {
+    let models = db[modelName].all()
+
+    if (date) {
+      models = models.filter(model => {
+        return model.date.isSame(date, 'day')
+      })
+    }
+
+    if (user) {
+      models = models.filter(model => {
+        return parseInt(model.userId) === parseInt(user)
+      })
+    }
+
+    return models
+  }
+}
+
 export default function() {
   this.passthrough('/write-coverage')
 
   this.urlPrefix = ''
   this.namespace = '/api/v1'
   this.timing = 400
+  this.logging = false
 
   this.post('/auth/login', ({ users }, req) => {
     let { data: { attributes: { username, password } } } = parse(
@@ -184,7 +205,18 @@ export default function() {
   this.get('/locations')
   this.get('/locations/:id')
 
-  this.get('/employments')
+  this.get('/employments', function(
+    { employments },
+    { queryParams: { user } }
+  ) {
+    let all = employments.all()
+
+    if (user) {
+      all = all.filter(e => e.userId === user)
+    }
+
+    return all
+  })
   this.get('/employments/:id')
 
   this.get('/absence-types')
@@ -198,6 +230,15 @@ export default function() {
 
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
+
+  this.get('/absence-credits')
+  this.get('/absence-credits/:id')
+
+  this.get('/absence-balances', byUserAndDate('absenceBalances'))
+  this.get('/absence-balances/:id')
+
+  this.get('/worktime-balances', byUserAndDate('worktimeBalances'))
+  this.get('/worktime-balances/:id')
 
   this.get('/absences')
   this.post('/absences', function({ absences, users }) {

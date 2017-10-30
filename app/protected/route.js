@@ -6,6 +6,7 @@
 import Route from '@ember/routing/route'
 import { inject as service } from '@ember/service'
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin'
+import moment from 'moment'
 
 /**
  * The protected route
@@ -26,12 +27,23 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   routing: service('-routing'),
 
-  model() {
+  async model() {
     let id = this.get('session.data.authenticated.user_id')
 
-    return this.store.findRecord('user', id, {
-      include: 'employments,employments.location'
+    let user = await this.store.findRecord('user', id, {
+      include: 'supervisors,supervisees'
     })
+
+    // Fetch current employment
+    await this.store.query('employment', {
+      user: id,
+      date: moment().format('YYYY-MM-DD'),
+      include: 'location'
+    })
+
+    this.set('session.data.user', user)
+
+    return user
   },
 
   /**

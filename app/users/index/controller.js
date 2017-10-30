@@ -1,168 +1,99 @@
 import Controller from '@ember/controller'
-import computed from 'ember-computed-decorators'
+import QueryParams from 'ember-parachute'
+import { task, timeout, hash } from 'ember-concurrency'
+import { inject as service } from '@ember/service'
+import moment from 'moment'
+import computed, { oneWay } from 'ember-computed-decorators'
 
-/**
- * Controller for the user list
- *
- * @class UserIndexController
- * @extends Ember.Controller
- * @public
- */
-export default Controller.extend({
-  /**
-   * The query parameters
-   *
-   * @property {String[]} queryParams
-   * @public
-   */
-  queryParams: [
-    'supervisor',
-    'active',
-    'search',
-    'ordering',
-    'page',
-    'page_size'
-  ],
-
-  /**
-   * The supervisor id
-   *
-   * @property {Number} supervisor
-   * @public
-   */
-  supervisor: null,
-
-  /**
-   * Whether to filter active users
-   *
-   * This can have three values:
-   *   - '1': only active (default)
-   *   - '0': only inactive
-   *   - empty string: either
-   *
-   * @property {String} active
-   * @public
-   */
-  active: '1',
-
-  /**
-   * The search term
-   *
-   * @property {String} search
-   * @public
-   */
-  search: '',
-
-  /**
-   * The default ordering
-   *
-   * @property {String} ordering
-   * @public
-   */
-  ordering: 'username',
-
-  /**
-   * The current page
-   *
-   * @property {Number} page
-   * @public
-   */
-  page: 1,
-
-  /**
-   * The page size
-   *
-   * @property {Number} page_size
-   * @public
-   */
-  page_size: 20, // eslint-disable-line camelcase
-
-  /**
-   * The filters which can be applied
-   *
-   * This is an temporary store for selected filter values which are not
-   * applied yet
-   *
-   * @property {Object} filters
-   * @public
-   */
-  filters: {},
-
-  /**
-   * The used search
-   *
-   * @property {String} _search
-   * @private
-   */
-  @computed('search')
-  _search: {
-    get: search => search,
-    set(value) {
-      this.set('filters.search', value)
-
-      return value
-    }
+const UsersQueryParams = new QueryParams({
+  search: {
+    defaultValue: '',
+    replace: true,
+    refresh: true
   },
-
-  /**
-   * The selected supervisor object
-   *
-   * @property {User} _supervisor
-   * @private
-   */
-  @computed('supervisor')
-  _supervisor: {
-    get(id) {
-      return this.store.peekRecord('user', id)
-    },
-    set(value) {
-      this.set('filters.supervisor', value && value.id)
-
-      return value
-    }
+  supervisor: {
+    defaultValue: null,
+    replace: true,
+    refresh: true
   },
-
-  /**
-   * Whether to show inactive users
-   *
-   * @property {Boolean} _inactive
-   * @private
-   */
-  @computed('active')
-  _inactive: {
-    get: active => !active,
-    set(value) {
-      this.set('filters.active', value ? '' : '1')
-
-      return value
-    }
+  active: {
+    defaultValue: '1',
+    replace: true,
+    refresh: true
   },
-
-  actions: {
-    /**
-     * Apply the temporary filters to the query params
-     *
-     * @method applyFilters
-     * @public
-     */
-    applyFilters() {
-      this.setProperties({ page: 1, ...this.get('filters') })
-    },
-
-    /**
-     * Reset all filters
-     *
-     * @method resetFilters
-     * @public
-     */
-    resetFilters() {
-      this.setProperties({
-        _supervisor: null,
-        _inactive: false,
-        _search: ''
-      })
-
-      this.send('applyFilters')
-    }
+  ordering: {
+    defaultValue: 'username',
+    replace: true,
+    refresh: true
   }
 })
+
+const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
+  session: service('session'),
+
+  @oneWay('session.data.user') currentUser: null,
+
+  @computed('supervisor', 'prefetchData.lastSuccessful.value.supervisor')
+  _supervisor(supervisorId) {
+    return this.store.peekRecord('user', supervisorId)
+  },
+
+  setup() {
+    this.get('prefetchData').perform()
+    this.get('data').perform()
+  },
+
+  reset() {
+    this.resetQueryParams()
+  },
+
+  queryParamsDidChange({ shouldRefresh }) {
+    if (shouldRefresh) {
+      this.get('data').perform()
+    }
+  },
+
+  prefetchData: task(function*() {
+    let supervisorId = this.get('supervisor')
+
+    return yield hash({
+      supervisor: supervisorId && this.store.findRecord('user', supervisorId)
+    })
+  }).restartable(),
+
+  data: task(function*() {
+    let date = moment().format('YYYY-MM-DD')
+
+    yield this.store.query('employment', { date })
+    yield this.store.query('worktime-balance', { date })
+
+    return yield this.store.query('user', {
+      ...this.get('allQueryParams'),
+      ...(this.get('currentUser.isSuperuser')
+        ? {}
+        : {
+            supervisor: this.get('currentUser.id')
+          })
+    })
+  }).restartable(),
+
+  setFilter: task(function*(key, value) {
+    yield timeout(500)
+
+    this.set(key, value)
+  }).restartable(),
+
+  setModelFilter: task(function*(key, value) {
+    yield this.get('setFilter').perform(key, value && value.id)
+  }),
+
+  setBooleanFilter: task(function*(key, value) {
+    yield this.get('setFilter').perform(key, value ? '1' : '')
+  }),
+
+  resetFilter: task(function*() {
+    yield this.resetQueryParams()
+  })
+})
+
+export default UsersIndexController

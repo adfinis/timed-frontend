@@ -50,14 +50,6 @@ export default Model.extend({
   email: attr('string'),
 
   /**
-   * The worktime balance of this user
-   *
-   * @property {moment.duration} worktimeBalance
-   * @public
-   */
-  worktimeBalance: attr('django-duration'),
-
-  /**
    * Defines if the user is a staff member or not.
    *
    * @property {Boolean} isStaff
@@ -114,12 +106,20 @@ export default Model.extend({
   employments: hasMany('employment'),
 
   /**
-   * The users absence types
+   * The users worktime balances
    *
-   * @property {UserAbsenceType[]} userAbsenceTypes
+   * @property {WorktimeBalance[]} worktimeBalances
    * @public
    */
-  userAbsenceTypes: hasMany('user-absence-type'),
+  worktimeBalances: hasMany('worktime-balances'),
+
+  /**
+   * The users absence balances
+   *
+   * @property {AbsenceBalance[]} absenceBalances
+   * @public
+   */
+  absenceBalances: hasMany('absence-balance'),
 
   /**
    * The full name
@@ -161,11 +161,32 @@ export default Model.extend({
    * @public
    */
   @computed('employments.[]')
-  activeEmployment(employments) {
+  activeEmployment() {
     return (
-      employments.find(
-        e => !e.get('end') || e.get('end').isSameOrAfter(moment.now(), 'day')
-      ) || null
+      this.store.peekAll('employment').find(e => {
+        return (
+          e.get('user.id') === this.get('id') &&
+          (!e.get('end') || e.get('end').isSameOrAfter(moment.now(), 'day'))
+        )
+      }) || null
+    )
+  },
+
+  /**
+   * The current worktime balance
+   *
+   * @property {WorktimeBalance} currentWorktimeBalance
+   * @public
+   */
+  @computed('worktimeBalances.[]')
+  currentWorktimeBalance() {
+    return (
+      this.store.peekAll('worktime-balance').find(balance => {
+        return (
+          balance.get('user.id') === this.get('id') &&
+          balance.get('date').isSame(moment(), 'day')
+        )
+      }) || null
     )
   }
 })
