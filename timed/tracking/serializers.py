@@ -198,6 +198,7 @@ class AbsenceSerializer(ModelSerializer):
 
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
+        'type': 'timed.employment.serializers.AbsenceTypeSerializer',
     }
 
     def get_duration(self, instance):
