@@ -186,3 +186,51 @@ def test_worktime_balance_list_filter_user(auth_client):
 
     json = result.json()
     assert len(json['data']) == 1
+
+
+def test_worktime_balance_list_last_reported_date_no_reports(
+        auth_client, django_assert_num_queries):
+
+    url = reverse('worktime-balance-list')
+
+    with django_assert_num_queries(2):
+        result = auth_client.get(url, data={
+            'last_reported_date': 1
+        })
+
+    assert result.status_code == status.HTTP_200_OK
+
+    json = result.json()
+    assert len(json['data']) == 0
+
+
+def test_worktime_balance_list_last_reported_date(
+        auth_client, django_assert_num_queries):
+
+    EmploymentFactory.create(
+        user=auth_client.user,
+        start_date=date(2017, 2, 1),
+        end_date=date(2017, 2, 2),
+        worktime_per_day=timedelta(hours=8),
+    )
+
+    ReportFactory.create(
+        user=auth_client.user,
+        date=date(2017, 2, 1),
+        duration=timedelta(hours=10)
+    )
+
+    url = reverse('worktime-balance-list')
+
+    with django_assert_num_queries(10):
+        result = auth_client.get(url, data={
+            'last_reported_date': 1
+        })
+
+    assert result.status_code == status.HTTP_200_OK
+
+    json = result.json()
+    assert len(json['data']) == 1
+    entry = json['data'][0]
+    assert entry['attributes']['date'] == '2017-02-01'
+    assert entry['attributes']['balance'] == '02:00:00'

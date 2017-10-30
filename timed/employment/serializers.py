@@ -3,18 +3,18 @@
 from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
-from django.db.models import Sum, Value
+from django.db.models import Max, Sum, Value
 from django.db.models.functions import Coalesce
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.exceptions import PermissionDenied
-from rest_framework_json_api import relations, serializers
+from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import (ModelSerializer, Serializer,
                                                  SerializerMethodField,
                                                  ValidationError)
 
 from timed.employment import models
-from timed.tracking.models import Absence
+from timed.tracking.models import Absence, Report
 
 
 class UserSerializer(ModelSerializer):
@@ -67,17 +67,39 @@ class UserSerializer(ModelSerializer):
 
 
 class WorktimeBalanceSerializer(Serializer):
-    date    = serializers.DateField()
+    date = SerializerMethodField()
     balance = SerializerMethodField()
     user    = relations.ResourceRelatedField(
         model=get_user_model(), read_only=True, source='id'
     )
 
+    def get_date(self, instance):
+        user = instance.id
+        today = date.today()
+
+        if instance.date is not None:
+            return instance.date
+
+        # calculate last reported day if no specific date is set
+        max_absence_date = Absence.objects.filter(user=user).exclude(
+            date=today).aggregate(date=Max('date'))
+        max_report_date = Report.objects.filter(user=user).exclude(
+            date=today).aggregate(date=Max('date'))
+
+        last_reported_date = max(
+            max_absence_date['date'] or date.min,
+            max_report_date['date'] or date.min
+        )
+
+        instance.date = last_reported_date
+        return instance.date
+
     def get_balance(self, instance):
-        start = date(instance.date.year, 1, 1)
+        balance_date = self.get_date(instance)
+        start = date(balance_date.year, 1, 1)
 
         # id is mapped to user instance
-        _, _, balance = instance.id.calculate_worktime(start, instance.date)
+        _, _, balance = instance.id.calculate_worktime(start, balance_date)
         return duration_string(balance)
 
     class Meta:
