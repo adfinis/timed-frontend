@@ -95,7 +95,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       }),
       /* eslint-disable camelcase */
       this.store.query('report', { from_date: from, to_date: to, user }),
-      this.store.query('absence', { from_date: from, to_date: to }),
+      this.store.query('absence', { from_date: from, to_date: to, user }),
       this.store.query('public-holiday', {
         from_date: from,
         to_date: to,

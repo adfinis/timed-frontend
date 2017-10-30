@@ -1,14 +1,13 @@
 & {
   --max-offset: 0;
   --offset: 0;
-  --title-size: 18px;
   transition: transform 1s ease;
   transform: translateY(calc(var(--max-offset) * var(--offset-multiplicator)));
 }
 
 .donut-title {
   color: var(--body-color);
-  font-size: var(--title-size);
+  font-size: 1.5rem;
   word-break: break-all;
   hyphens: auto;
 }
@@ -33,7 +32,7 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: calc(var(--title-size) * 0.9);
+  font-size: 1.4rem;
 
   small {
     font-size: 50%;
@@ -85,15 +84,8 @@
 &.warning .donut-segment { @include donut-segment('warning'); }
 &.danger .donut-segment { @include donut-segment('danger'); }
 
-@media (--sm-viewport) {
-  & {
-    --title-size: 22px;
-  }
-}
-
 @media (--lg-viewport) {
   & {
     --max-offset: -90px;
-    --title-size: 24px;
   }
 }

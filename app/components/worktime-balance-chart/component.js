@@ -31,7 +31,8 @@ export default EmberChartComponent.extend({
     elements: {
       line: {
         borderColor: 'rgb(91, 142, 219)',
-        backgroundColor: 'transparent'
+        backgroundColor: 'transparent',
+        borderWidth: 2
       },
       point: {
         borderColor: 'rgb(91, 142, 219)',
