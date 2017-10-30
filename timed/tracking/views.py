@@ -1,14 +1,15 @@
 """Viewsets for the tracking app."""
 
 import django_excel
+from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from rest_condition import C
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from timed.permissions import (IsAdminUser, IsAuthenticated, IsOwner,
-                               IsReadOnly, IsUnverified)
+from timed.permissions import (IsAdminUser, IsAuthenticated, IsDeleteOnly,
+                               IsOwner, IsReadOnly, IsSuperUser, IsUnverified)
 from timed.tracking import filters, models, serializers
 
 
@@ -204,15 +205,26 @@ class AbsenceViewSet(ModelViewSet):
     serializer_class = serializers.AbsenceSerializer
     filter_class     = filters.AbsenceFilterSet
 
-    def get_queryset(self):
-        """Filter the queryset by the user of the request.
+    permission_classes = [
+        # superuser can change all but not delete
+        C(IsAuthenticated) & C(IsSuperUser) & ~C(IsDeleteOnly) |
+        # owner may change all its absences
+        C(IsAuthenticated) & C(IsOwner)  |
+        # all authenticated users may read filtered result
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
 
-        :return: The filtered absences
-        :rtype:  QuerySet
-        """
-        return models.Absence.objects.select_related(
+    def get_queryset(self):
+        user = self.request.user
+
+        queryset = models.Absence.objects.select_related(
             'type',
             'user'
-        ).filter(
-            user=self.request.user
         )
+
+        if not user.is_superuser:
+            queryset = queryset.filter(
+                Q(user=user) | Q(user__supervisors=user)
+            )
+
+        return queryset

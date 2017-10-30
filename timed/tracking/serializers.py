@@ -212,6 +212,26 @@ class AbsenceSerializer(ModelSerializer):
 
         return duration_string(instance.calculate_duration(employment))
 
+    def validate_date(self, value):
+        """Only owner is allowed to change date."""
+        if self.instance is not None:
+            user = self.context['request'].user
+            owner = self.instance.user
+            if self.instance.date != value and user != owner:
+                raise ValidationError(_('Only owner may change date'))
+
+        return value
+
+    def validate_type(self, value):
+        """Only owner is allowed to change type."""
+        if self.instance is not None:
+            user = self.context['request'].user
+            owner = self.instance.user
+            if self.instance.date != value and user != owner:
+                raise ValidationError(_('Only owner may change absence type'))
+
+        return value
+
     def validate(self, data):
         """Validate the absence data.
 
