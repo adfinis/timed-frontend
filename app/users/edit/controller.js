@@ -29,9 +29,7 @@ export default Controller.extend({
   _fetchWorktimeBalanceLastValidTimesheet: task(function*(user) {
     let worktimeBalance = yield this.store.query('worktime-balance', {
       user,
-      date: moment()
-        .subtract(1, 'days')
-        .format('YYYY-MM-DD')
+      last_reported_date: 1 // eslint-disable-line camelcase
     })
 
     return worktimeBalance.get('firstObject')
