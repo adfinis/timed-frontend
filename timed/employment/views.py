@@ -12,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from timed.employment import filters, models, serializers
 from timed.mixins import AggregateQuerysetMixin
 from timed.permissions import IsAuthenticated, IsReadOnly, IsSuperUser
+from timed.tracking.models import Absence, Report
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
@@ -59,15 +60,18 @@ class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
                 raise exceptions.NotFound()
 
         # list case
+        query_params = self.request.query_params
         try:
             return datetime.datetime.strptime(
-                self.request.query_params.get('date'),
-                '%Y-%m-%d'
+                query_params.get('date'), '%Y-%m-%d'
             ).date()
         except ValueError:
             raise exceptions.ParseError(_('Date is invalid'))
         except TypeError:
-            raise exceptions.ParseError(_('Date filter needs to be set'))
+            if query_params.get('last_reported_date', '0') == '0':
+                raise exceptions.ParseError(_('Date filter needs to be set'))
+
+            return None
 
     def get_queryset(self):
         date = self._extract_date()
@@ -76,6 +80,14 @@ class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         queryset = queryset.annotate(
             date=Value(date, DateField()),
         )
+        # last_reported_date filter is set, a date can only be calucated
+        # for users with either at least one absence or report
+        if date is None:
+            users_with_reports = Report.objects.values('user').distinct()
+            users_with_absences = Absence.objects.values('user').distinct()
+            active_users = users_with_reports.union(users_with_absences)
+            queryset = queryset.filter(id__in=active_users)
+
         queryset = queryset.annotate(
             pk=Concat(
                 'id',

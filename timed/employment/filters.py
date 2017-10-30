@@ -90,6 +90,9 @@ class AbsenceCreditFilterSet(FilterSet):
 
 class WorktimeBalanceFilterSet(FilterSet):
     user = NumberFilter(name='id')
+    # additional filters analyzed in WorktimeBalanceView
+    # date = DateFilter()
+    # last_reported_date = NumberFilter()
 
     class Meta:
         model  = models.User
