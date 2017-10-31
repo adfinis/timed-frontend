@@ -35,78 +35,66 @@
 
   <div class="grid-cell">
     <h4>Employments</h4>
-    {{#if employments.isRunning}}
-      <div class="empty">
-        {{loading-icon}}
-      </div>
-    {{else}}
-      <div class="card">
-        <div class="card-block">
-          {{#with employments.lastSuccessful.value as |employments|}}
-            <table class="table table--striped">
-              <thead>
+    <div class="card">
+      <div class="card-block">
+        {{#with employments.lastSuccessful.value as |employments|}}
+          <table class="table table--striped">
+            <thead>
+              <tr>
+                <th>Location</th>
+                <th>Percentage</th>
+                <th>Start</th>
+                <th>End</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each employments as |employment|}}
                 <tr>
-                  <th>Location</th>
-                  <th>Percentage</th>
-                  <th>Start</th>
-                  <th>End</th>
+                  <td>{{employment.location.name}}</td>
+                  <td>{{employment.percentage}}%</td>
+                  <td>{{moment-format employment.start 'DD.MM.YYYY'}}</td>
+                  <td>{{if employment.end (moment-format employment.end 'DD.MM.YYYY') '-'}}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {{#each employments as |employment|}}
-                  <tr>
-                    <td>{{employment.location.name}}</td>
-                    <td>{{employment.percentage}}%</td>
-                    <td>{{moment-format employment.start 'DD.MM.YYYY'}}</td>
-                    <td>{{if employment.end (moment-format employment.end 'DD.MM.YYYY') '-'}}</td>
-                  </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          {{^}}
-            <div class="text-center"><em>No employments to show</em></div>
-          {{/with}}
-        </div>
+              {{/each}}
+            </tbody>
+          </table>
+        {{^}}
+          <div class="text-center"><em>No employments to show</em></div>
+        {{/with}}
       </div>
-    {{/if}}
+    </div>
   </div>
 
   <div class="grid-cell">
     <h4>Absences</h4>
-    {{#if absences.isRunning}}
-      <div class="empty">
-        {{loading-icon}}
-      </div>
-    {{else}}
-      <div class="card">
-        <div class="card-block">
-          {{#with absences.lastSuccessful.value as |absences|}}
-            <table class="table table--striped">
-              <thead>
+    <div class="card">
+      <div class="card-block">
+        {{#with absences.lastSuccessful.value as |absences|}}
+          <table class="table table--striped">
+            <thead>
+              <tr>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each absences as |absence index|}}
                 <tr>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Comment</th>
+                  <td>{{absence.type.name}}</td>
+                  <td>{{moment-format absence.date 'DD.MM.YYYY'}}</td>
+                  <td>{{absence.comment}}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {{#each absences as |absence index|}}
-                  <tr>
-                    <td>{{absence.type.name}}</td>
-                    <td>{{moment-format absence.date 'DD.MM.YYYY'}}</td>
-                    <td>{{absence.comment}}</td>
-                  </tr>
-                {{/each}}
-              </tbody>
-            </table>
-            <div class="text-center">
-              <span class="show-more-or-less" {{action 'toggleAbsenceLimit'}}>Show {{if absenceLimit 'more' 'less'}}</span>
-            </div>
-          {{^}}
-            <div class="text-center"><em>No absences to show</em></div>
-          {{/with}}
-        </div>
+              {{/each}}
+            </tbody>
+          </table>
+          <div class="text-center">
+            <span class="show-more-or-less" {{action 'toggleAbsenceLimit'}}>Show {{if absenceLimit 'more' 'less'}}</span>
+          </div>
+        {{^}}
+          <div class="text-center"><em>No absences to show</em></div>
+        {{/with}}
       </div>
-    {{/if}}
+    </div>
   </div>
 </div>

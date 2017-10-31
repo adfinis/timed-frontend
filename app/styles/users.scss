@@ -27,6 +27,10 @@
     color: var(--body-color);
     font-weight: 300;
   }
+
+  .card {
+    animation: card-slide-up 500ms ease;
+  }
 }
 
 .user-general-info {
@@ -170,7 +174,13 @@
       font-size: 1.1rem;
     }
   }
+}
 
+@keyframes card-slide-up {
+  from {
+    opacity: 0.5;
+    transform: translateY(50px);
+  }
 }
 
 @media (--md-viewport) {
