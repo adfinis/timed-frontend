@@ -13,7 +13,7 @@
 
       <div class="user-header-worktime-balance-last-valid-timesheet">
         {{#with data.lastSuccessful.value.worktimeBalanceLastValidTimesheet as |balance|}}
-          <h2 title="Last day with a valid timesheet">
+          <h2 title="Last day with timesheet entries or absences">
             {{moment-format balance.date 'DD.MM.YYYY'}}
           </h2>
           <div class="{{balance-highlight-class balance.balance}}">
