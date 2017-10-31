@@ -1,41 +1,39 @@
 import Controller from '@ember/controller'
 import { task } from 'ember-concurrency'
-import computed from 'ember-computed-decorators'
+import QueryParams from 'ember-parachute'
 import moment from 'moment'
 
-const DEFAULT_ABSENCE_LIMIT = 5
+const UsersEditIndexQueryParams = new QueryParams({
+  absenceLimit: {
+    defaultValue: 5,
+    refresh: true,
+    replace: true
+  }
+})
 
-export default Controller.extend({
-  absenceLimit: DEFAULT_ABSENCE_LIMIT,
-
-  @computed('model.id', 'absenceLimit')
-  absences(userId, absenceLimit) {
-    let task = this.get('_fetchAbsences')
-
-    task.perform(userId, absenceLimit)
-
-    return task
+export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
+  setup() {
+    this.get('absences').perform()
+    this.get('employments').perform()
   },
 
-  @computed('model.id')
-  employments(userId) {
-    let task = this.get('_fetchEmployments')
-
-    task.perform(userId)
-
-    return task
+  queryParamsDidChange({ shouldRefresh }) {
+    if (shouldRefresh) {
+      this.get('absences').perform()
+      this.get('employments').perform()
+    }
   },
 
-  _fetchAbsences: task(function*(user, absenceLimit) {
-    let pageParams = absenceLimit
+  absences: task(function*() {
+    let pageParams = this.get('absenceLimit')
       ? {
           page: 1,
-          page_size: absenceLimit // eslint-disable-line camelcase
+          page_size: this.get('absenceLimit') // eslint-disable-line camelcase
         }
       : {}
 
     return yield this.store.query('absence', {
-      user,
+      user: this.get('model.id'),
       ordering: '-date',
       // eslint-disable-next-line camelcase
       from_date: moment({
@@ -48,20 +46,21 @@ export default Controller.extend({
     })
   }),
 
-  _fetchEmployments: task(function*(user) {
+  employments: task(function*() {
     return yield this.store.query('employment', {
-      user,
-      ordering: '-from',
+      user: this.get('model.id'),
+      ordering: '-start_date',
       include: 'location'
     })
   }),
 
   actions: {
     toggleAbsenceLimit() {
-      this.set(
-        'absenceLimit',
-        this.get('absenceLimit') ? null : DEFAULT_ABSENCE_LIMIT
-      )
+      if (this.get('absenceLimit')) {
+        return this.set('absenceLimit', null)
+      }
+
+      return this.resetQueryParams('absenceLimit')
     }
   }
 })
