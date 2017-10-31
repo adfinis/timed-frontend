@@ -2,133 +2,138 @@
 
 from django.core.urlresolvers import reverse
 from rest_framework import status
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
 
-from timed.employment.factories import EmploymentFactory, UserFactory
-from timed.jsonapi_test_case import JSONAPITestCase
+from timed.employment.factories import UserFactory
+from timed.tracking.factories import ReportFactory
 
 
-class UserTests(JSONAPITestCase):
-    """Tests for the user endpoint.
+def test_user_list_unauthenticated(client):
+    url = reverse('user-list')
+    response = client.get(url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    This endpoint should be read only for normal users.
-    """
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+def test_user_update_unauthenticated(client):
+    user = UserFactory.create()
+    url = reverse('user-detail', args=[user.id])
+    response = client.patch(url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-        self.users = UserFactory.create_batch(3)
 
-        for user in self.users + [self.user]:
-            EmploymentFactory.create(user=user)
+def test_user_list(auth_client, django_assert_num_queries):
+    UserFactory.create_batch(2)
 
-    def test_user_list(self):
-        """Should respond with a list of all users."""
-        url = reverse('user-list')
+    url = reverse('user-list')
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    with django_assert_num_queries(5):
+        response = auth_client.get(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    assert response.status_code == status.HTTP_200_OK
 
-        result = self.result(res)
+    json = response.json()
+    assert len(json['data']) == 3
 
-        assert len(result['data']) == 4
-        assert int(result['data'][0]['id']) == self.user.id
 
-    def test_logged_in_user_detail(self):
-        """Should respond with a single user.
+def test_user_detail(auth_client):
+    user = auth_client.user
 
-        This should only work if it is the currently logged in user.
-        """
-        url = reverse('user-detail', args=[
-            self.user.id
-        ])
+    url = reverse('user-detail', args=[user.id])
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
 
-    def test_not_logged_in_user_detail(self):
-        """Should return other users too."""
-        url = reverse('user-detail', args=[
-            self.users[0].id
-        ])
+def test_user_create_authenticated(auth_client):
+    url = reverse('user-list')
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    response = auth_client.post(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
 
-    def test_user_create(self):
-        """Should not be able to create a new user."""
-        url = reverse('user-list')
+def test_user_create_superuser(superadmin_client):
+    url = reverse('user-list')
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_user_update_self(self):
-        """User may only change self."""
-        user = self.user
-        user.is_staff = False
-        user.save()
-
-        data = {
-            'data': {
-                'type': 'users',
-                'id': user.id,
-                'attributes': {
-                    'is_staff': True,
-                    'tour_done': True
-                },
-            }
+    data = {
+        'data': {
+            'type': 'users',
+            'id': None,
+            'attributes': {
+                'is_staff': True,
+                'tour_done': True,
+                'email': 'test@example.net',
+                'first_name': 'First name',
+                'last_name': 'Last name',
+            },
         }
+    }
 
-        url = reverse('user-detail', args=[
-            user.id
-        ])
+    response = superadmin_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
 
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url, data=data)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == status.HTTP_200_OK
+def test_user_update_owner(auth_client):
+    user = auth_client.user
+    data = {
+        'data': {
+            'type': 'users',
+            'id': user.id,
+            'attributes': {
+                'is_staff': True,
+                'tour_done': True
+            },
+        }
+    }
 
-        user.refresh_from_db()
-        assert self.user.tour_done
-        assert not self.user.is_staff
+    url = reverse('user-detail', args=[
+        user.id
+    ])
 
-    def test_user_update_other(self):
-        """User may not change other user."""
-        url = reverse('user-detail', args=[
-            self.users[0].id
-        ])
-        res = self.client.patch(url)
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
 
-        assert res.status_code == status.HTTP_403_FORBIDDEN
+    user.refresh_from_db()
+    assert user.tour_done
+    assert not user.is_staff
 
-    def test_user_delete(self):
-        """Should not be able delete a user."""
-        user = self.user
 
-        url = reverse('user-detail', args=[
-            user.id
-        ])
+def test_user_update_other(auth_client):
+    """User may not change other user."""
+    user = UserFactory.create()
+    url = reverse('user-detail', args=[user.id])
+    res = auth_client.patch(url)
 
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.delete(url)
+    assert res.status_code == status.HTTP_403_FORBIDDEN
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+
+def test_user_delete_authenticated(auth_client):
+    """Should not be able delete a user."""
+    user = auth_client.user
+
+    url = reverse('user-detail', args=[user.id])
+
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_user_delete_superuser(superadmin_client):
+    """Should not be able delete a user."""
+    user = UserFactory.create()
+
+    url = reverse('user-detail', args=[user.id])
+
+    response = superadmin_client.delete(url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+def test_user_delete_with_reports_superuser(superadmin_client):
+    """Test that user with reports may not be deleted."""
+    user = UserFactory.create()
+    ReportFactory.create(user=user)
+
+    url = reverse('user-detail', args=[user.id])
+
+    response = superadmin_client.delete(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_user_supervisor_filter(auth_client):
