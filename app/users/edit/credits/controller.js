@@ -53,7 +53,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
       user: this.get('model.id'),
       include: 'absence_type',
       ordering: '-date',
-      ...(year ? { year } : [])
+      ...(year ? { year } : {})
     })
   }),
 
@@ -63,7 +63,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     return yield this.store.query('overtime-credit', {
       user: this.get('model.id'),
       ordering: '-date',
-      ...(year ? { year } : [])
+      ...(year ? { year } : {})
     })
   })
 })
