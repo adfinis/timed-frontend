@@ -504,6 +504,15 @@ def test_report_list_no_result(admin_client):
     assert json['meta']['total-time'] == '00:00:00'
 
 
+def test_report_delete_superuser(superadmin_client):
+    """Test that superuser may not delete reports of other users."""
+    report = ReportFactory.create()
+    url = reverse('report-detail', args=[report.id])
+
+    response = superadmin_client.delete(url)
+    assert response.status_code == HTTP_403_FORBIDDEN
+
+
 def test_report_list_filter_cost_center(auth_client):
     cost_center = CostCenterFactory.create()
     # 1st valid case: report with task of given cost center
