@@ -81,8 +81,8 @@ class ReportViewSet(ModelViewSet):
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
     permission_classes = [
-        # admin user can change all
-        C(IsAuthenticated) & C(IsAdminUser) |
+        # admin user can change all but not delete
+        C(IsAuthenticated) & C(IsAdminUser) & ~C(IsDeleteOnly) |
         # owner may only change its own unverified reports
         C(IsAuthenticated) & C(IsOwner) & C(IsUnverified) |
         # all authenticated users may read all reports
@@ -209,7 +209,7 @@ class AbsenceViewSet(ModelViewSet):
         # superuser can change all but not delete
         C(IsAuthenticated) & C(IsSuperUser) & ~C(IsDeleteOnly) |
         # owner may change all its absences
-        C(IsAuthenticated) & C(IsOwner)  |
+        C(IsAuthenticated) & C(IsOwner) |
         # all authenticated users may read filtered result
         C(IsAuthenticated) & C(IsReadOnly)
     ]
