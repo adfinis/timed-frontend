@@ -373,5 +373,6 @@ class OvertimeCreditSerializer(ModelSerializer):
         fields = [
             'user',
             'date',
-            'duration'
+            'duration',
+            'comment',
         ]
