@@ -1,328 +1,73 @@
-"""Tests for the attendances endpoint."""
-
 import datetime
 
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_400_BAD_REQUEST,
-                                   HTTP_401_UNAUTHORIZED)
+from rest_framework import status
 
 from timed.employment.factories import (AbsenceTypeFactory, EmploymentFactory,
-                                        PublicHolidayFactory)
-from timed.employment.models import Employment
-from timed.jsonapi_test_case import JSONAPITestCase
+                                        PublicHolidayFactory, UserFactory)
 from timed.tracking.factories import AbsenceFactory, ReportFactory
 
 
-class AbsenceTests(JSONAPITestCase):
-    """Tests for the absences endpoint."""
-
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
-
-        user = self.user
-
-        other_user = get_user_model().objects.create_user(
-            username='test',
-            password='123qweasd'
-        )
-
-        EmploymentFactory.create(
-            user=user,
-            start_date=datetime.date(2017, 5, 1),
-            end_date=None
-        )
-
-        EmploymentFactory.create(
-            user=other_user,
-            start_date=datetime.date(2017, 5, 1),
-            end_date=None
-        )
-
-        self.absences = [
-            AbsenceFactory.create(user=user, date=datetime.date(2017, 5, 1)),
-            AbsenceFactory.create(user=user, date=datetime.date(2017, 5, 2)),
-            AbsenceFactory.create(user=user, date=datetime.date(2017, 5, 3))
-        ]
-
-        AbsenceFactory.create(user=other_user, date=datetime.date(2017, 5, 1))
-        AbsenceFactory.create(user=other_user, date=datetime.date(2017, 5, 2))
-        AbsenceFactory.create(user=other_user, date=datetime.date(2017, 5, 3))
-
-    def test_absence_list(self):
-        """Should respond with a list of absences filtered by user."""
-        url = reverse('absence-list')
-
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        assert len(result['data']) == len(self.absences)
-
-    def test_absence_detail(self):
-        """Should respond with a single absence."""
-        absence = self.absences[0]
-
-        url = reverse('absence-detail', args=[
-            absence.id
-        ])
-
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-    def test_absence_create(self):
-        """Should create a new absence."""
-        type = AbsenceTypeFactory.create()
-
-        data = {
-            'data': {
-                'type': 'absences',
-                'id': None,
-                'attributes': {
-                    'date': datetime.date(2017, 5, 4).strftime('%Y-%m-%d')
-                },
-                'relationships': {
-                    'type': {
-                        'data': {
-                            'type': 'absence-types',
-                            'id': type.id
-                        }
-                    }
-                }
-            }
-        }
-
-        url = reverse('absence-list')
-
-        noauth_res = self.noauth_client.post(url, data)
-        res        = self.client.post(url, data)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_201_CREATED
-
-        result = self.result(res)
-
-        assert not result['data']['id'] is None
-
-        assert (
-            int(result['data']['relationships']['user']['data']['id']) ==
-            int(self.user.id)
-        )
-
-    def test_absence_update(self):
-        """Should update and existing absence."""
-        absence = self.absences[0]
-
-        absence.date = datetime.date(2017, 5, 5)
-        absence.save()
-
-        data = {
-            'data': {
-                'type': 'absences',
-                'id': absence.id,
-                'attributes': {
-                    'date': datetime.date(2017, 5, 8).strftime('%Y-%m-%d')
-                }
-            }
-        }
-
-        url = reverse('absence-detail', args=[
-            absence.id
-        ])
-
-        noauth_res = self.noauth_client.patch(url, data)
-        res        = self.client.patch(url, data)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        assert (
-            result['data']['attributes']['date'] ==
-            data['data']['attributes']['date']
-        )
-
-    def test_absence_delete(self):
-        """Should delete an absence."""
-        absence = self.absences[0]
-
-        url = reverse('absence-detail', args=[
-            absence.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.delete(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_204_NO_CONTENT
-
-    def test_absence_fill_worktime(self):
-        """Should create an absence which fills the worktime."""
-        date       = datetime.date(2017, 5, 10)
-        type       = AbsenceTypeFactory.create(fill_worktime=True)
-        employment = Employment.objects.get_at(self.user, date)
-
-        employment.worktime_per_day = datetime.timedelta(hours=8)
-        employment.save()
-
-        ReportFactory.create(
-            user=self.user,
-            date=date,
-            duration=datetime.timedelta(hours=5)
-        )
-
-        data = {
-            'data': {
-                'type': 'absences',
-                'id': None,
-                'attributes': {
-                    'date': date.strftime('%Y-%m-%d')
-                },
-                'relationships': {
-                    'type': {
-                        'data': {
-                            'type': 'absence-types',
-                            'id': type.id
-                        }
-                    }
-                }
-            }
-        }
-
-        url = reverse('absence-list')
-
-        res = self.client.post(url, data)
-
-        assert res.status_code == HTTP_201_CREATED
-
-        result = self.result(res)
-
-        assert result['data']['attributes']['duration'] == '03:00:00'
-
-    def test_absence_fill_worktime_reported_time_to_long(self):
-        """
-        Verify absence fill worktime is zero when reported time is too long.
-
-        Too long is defined when reported time is longer than worktime per day.
-        """
-        date       = datetime.date(2017, 5, 10)
-        type       = AbsenceTypeFactory.create(fill_worktime=True)
-        employment = Employment.objects.get_at(self.user, date)
-
-        employment.worktime_per_day = datetime.timedelta(hours=8)
-        employment.save()
-
-        ReportFactory.create(
-            user=self.user,
-            date=date,
-            duration=datetime.timedelta(hours=8, minutes=30)
-        )
-
-        data = {
-            'data': {
-                'type': 'absences',
-                'id': None,
-                'attributes': {
-                    'date': date.strftime('%Y-%m-%d')
-                },
-                'relationships': {
-                    'type': {
-                        'data': {
-                            'type': 'absence-types',
-                            'id': type.id
-                        }
-                    }
-                }
-            }
-        }
-
-        url = reverse('absence-list')
-
-        res = self.client.post(url, data)
-
-        assert res.status_code == HTTP_201_CREATED
-
-        result = self.result(res)
-
-        assert result['data']['attributes']['duration'] == '00:00:00'
-
-    def test_absence_weekend(self):
-        """Should not be able to create an absence on a weekend."""
-        type = AbsenceTypeFactory.create()
-
-        data = {
-            'data': {
-                'type': 'absences',
-                'id': None,
-                'attributes': {
-                    'date': datetime.date(2017, 5, 14).strftime('%Y-%m-%d')
-                },
-                'relationships': {
-                    'type': {
-                        'data': {
-                            'type': 'absence-types',
-                            'id': type.id
-                        }
-                    }
-                }
-            }
-        }
-
-        url = reverse('absence-list')
-
-        res = self.client.post(url, data)
-
-        assert res.status_code == HTTP_400_BAD_REQUEST
-
-    def test_absence_public_holiday(self):
-        """Should not be able to create an absence on a public holiday."""
-        date = datetime.date(2017, 5, 16)
-
-        type = AbsenceTypeFactory.create()
-
-        PublicHolidayFactory.create(
-            location=Employment.objects.get_at(self.user, date).location,
-            date=date
-        )
-
-        data = {
-            'data': {
-                'type': 'absences',
-                'id': None,
-                'attributes': {
-                    'date': date.strftime('%Y-%m-%d')
-                },
-                'relationships': {
-                    'type': {
-                        'data': {
-                            'type': 'absence-types',
-                            'id': type.id
-                        }
-                    }
-                }
-            }
-        }
-
-        url = reverse('absence-list')
-
-        res = self.client.post(url, data)
-
-        assert res.status_code == HTTP_400_BAD_REQUEST
-
-
-def test_absence_create_unemployed(auth_client):
-    """Test creation of absence fails on unemployed day."""
-    date = datetime.date(2017, 5, 16)
+def test_absence_list_authenticated(auth_client):
+    absence = AbsenceFactory.create(user=auth_client.user)
+    url = reverse('absence-list')
+
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(absence.id)
+
+
+def test_absence_list_superuser(superadmin_client):
+    AbsenceFactory.create_batch(2)
+
+    url = reverse('absence-list')
+    response = superadmin_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json['data']) == 2
+
+
+def test_absence_list_supervisor(auth_client):
+    user = UserFactory.create()
+    auth_client.user.supervisees.add(user)
+
+    AbsenceFactory.create(user=auth_client.user)
+    AbsenceFactory.create(user=user)
+
+    url = reverse('absence-list')
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 2
+
+
+def test_absence_detail(auth_client):
+    absence = AbsenceFactory.create(user=auth_client.user)
+
+    url = reverse('absence-detail', args=[
+        absence.id
+    ])
+
+    response = auth_client.get(url)
+
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert json['data']['id'] == str(absence.id)
+
+
+def test_absence_create(auth_client):
+    user = auth_client.user
+    date = datetime.date(2017, 5, 4)
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
     type = AbsenceTypeFactory.create()
 
     data = {
@@ -345,8 +90,329 @@ def test_absence_create_unemployed(auth_client):
 
     url = reverse('absence-list')
 
-    res = auth_client.post(url, data)
-    assert res.status_code == HTTP_400_BAD_REQUEST
+    response = auth_client.post(url, data)
+
+    assert response.status_code == status.HTTP_201_CREATED
+
+    json = response.json()
+    assert json['data']['relationships']['user']['data']['id'] == (
+        str(auth_client.user.id)
+    )
+
+
+def test_absence_update_owner(auth_client):
+    user = auth_client.user
+    date = datetime.date(2017, 5, 3)
+    absence = AbsenceFactory.create(
+        user=auth_client.user,
+        date=datetime.date(2016, 5, 3)
+    )
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': absence.id,
+            'attributes': {
+                'date': date.strftime('%Y-%m-%d')
+            }
+        }
+    }
+
+    url = reverse('absence-detail', args=[
+        absence.id
+    ])
+
+    response = auth_client.patch(url, data)
+
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert json['data']['attributes']['date'] == '2017-05-03'
+
+
+def test_absence_update_superadmin_date(superadmin_client):
+    """Test that superadmin may not change date of absence."""
+    user = UserFactory.create()
+    date = datetime.date(2017, 5, 3)
+    absence = AbsenceFactory.create(
+        user=user,
+        date=datetime.date(2016, 5, 3)
+    )
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': absence.id,
+            'attributes': {
+                'date': date.strftime('%Y-%m-%d')
+            }
+        }
+    }
+
+    url = reverse('absence-detail', args=[
+        absence.id
+    ])
+
+    response = superadmin_client.patch(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_update_superadmin_type(superadmin_client):
+    """Test that superadmin may not change type of absence."""
+    user = UserFactory.create()
+    date = datetime.date(2017, 5, 3)
+    type = AbsenceTypeFactory.create()
+    absence = AbsenceFactory.create(
+        user=user,
+        date=datetime.date(2016, 5, 3)
+    )
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': absence.id,
+            'relationships': {
+                'type': {
+                    'data': {
+                        'type': 'absence-types',
+                        'id': type.id
+                    }
+                }
+            }
+        }
+    }
+
+    url = reverse('absence-detail', args=[
+        absence.id
+    ])
+
+    response = superadmin_client.patch(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_delete_owner(auth_client):
+    absence = AbsenceFactory.create(user=auth_client.user)
+
+    url = reverse('absence-detail', args=[absence.id])
+
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+def test_absence_delete_superuser(superadmin_client):
+    """Test that superuser may not delete absences of other users."""
+    user = UserFactory.create()
+    absence = AbsenceFactory.create(user=user)
+
+    url = reverse('absence-detail', args=[absence.id])
+
+    response = superadmin_client.delete(url)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_absence_fill_worktime(auth_client):
+    """Should create an absence which fills the worktime."""
+    date = datetime.date(2017, 5, 10)
+    user = auth_client.user
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+    type = AbsenceTypeFactory.create(fill_worktime=True)
+
+    ReportFactory.create(
+        user=user,
+        date=date,
+        duration=datetime.timedelta(hours=5)
+    )
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': None,
+            'attributes': {
+                'date': date.strftime('%Y-%m-%d')
+            },
+            'relationships': {
+                'type': {
+                    'data': {
+                        'type': 'absence-types',
+                        'id': type.id
+                    }
+                }
+            }
+        }
+    }
+
+    url = reverse('absence-list')
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
+
+    json = response.json()
+    assert json['data']['attributes']['duration'] == '03:00:00'
+
+
+def test_absence_fill_worktime_reported_time_to_long(auth_client):
+    """
+    Verify absence fill worktime is zero when reported time is too long.
+
+    Too long is defined when reported time is longer than worktime per day.
+    """
+    date = datetime.date(2017, 5, 10)
+    user = auth_client.user
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+    type = AbsenceTypeFactory.create(fill_worktime=True)
+
+    ReportFactory.create(
+        user=user,
+        date=date,
+        duration=datetime.timedelta(hours=8, minutes=30)
+    )
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': None,
+            'attributes': {
+                'date': date.strftime('%Y-%m-%d')
+            },
+            'relationships': {
+                'type': {
+                    'data': {
+                        'type': 'absence-types',
+                        'id': type.id
+                    }
+                }
+            }
+        }
+    }
+
+    url = reverse('absence-list')
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
+
+    json = response.json()
+    assert json['data']['attributes']['duration'] == '00:00:00'
+
+
+def test_absence_weekend(auth_client):
+    """Should not be able to create an absence on a weekend."""
+    date = datetime.date(2017, 5, 14)
+    user = auth_client.user
+    type = AbsenceTypeFactory.create()
+    EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': None,
+            'attributes': {
+                'date': date.strftime('%Y-%m-%d')
+            },
+            'relationships': {
+                'type': {
+                    'data': {
+                        'type': 'absence-types',
+                        'id': type.id
+                    }
+                }
+            }
+        }
+    }
+
+    url = reverse('absence-list')
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_public_holiday(auth_client):
+    """Should not be able to create an absence on a public holiday."""
+    date = datetime.date(2017, 5, 16)
+    user = auth_client.user
+    type = AbsenceTypeFactory.create()
+    employment = EmploymentFactory.create(
+        user=user,
+        start_date=date,
+        worktime_per_day=datetime.timedelta(hours=8)
+    )
+    PublicHolidayFactory.create(location=employment.location, date=date)
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': None,
+            'attributes': {
+                'date': date.strftime('%Y-%m-%d')
+            },
+            'relationships': {
+                'type': {
+                    'data': {
+                        'type': 'absence-types',
+                        'id': type.id
+                    }
+                }
+            }
+        }
+    }
+
+    url = reverse('absence-list')
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_absence_create_unemployed(auth_client):
+    """Test creation of absence fails on unemployed day."""
+    type = AbsenceTypeFactory.create()
+
+    data = {
+        'data': {
+            'type': 'absences',
+            'id': None,
+            'attributes': {
+                'date': '2017-05-16'
+            },
+            'relationships': {
+                'type': {
+                    'data': {
+                        'type': 'absence-types',
+                        'id': type.id
+                    }
+                }
+            }
+        }
+    }
+
+    url = reverse('absence-list')
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_absence_detail_unemployed(auth_client):
@@ -356,7 +422,7 @@ def test_absence_detail_unemployed(auth_client):
     url = reverse('absence-detail', args=[absence.id])
 
     res = auth_client.get(url)
-    assert res.status_code == HTTP_200_OK
+    assert res.status_code == status.HTTP_200_OK
 
     json = res.json()
     assert json['data']['attributes']['duration'] == '00:00:00'

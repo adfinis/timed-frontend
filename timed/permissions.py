@@ -26,6 +26,16 @@ class IsReadOnly(BasePermission):
         return self.has_permission(request, view)
 
 
+class IsDeleteOnly(BasePermission):
+    """Allows only delete method."""
+
+    def has_permission(self, request, view):
+        return request.method == 'DELETE'
+
+    def has_object_permission(self, request, view, obj):
+        return self.has_permission(request, view)
+
+
 class IsAuthenticated(IsAuthenticated):
     """
     Support mixing permission IsAuthenticated with object permission.
