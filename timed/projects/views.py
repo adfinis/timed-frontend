@@ -44,6 +44,7 @@ class ProjectViewSet(ReadOnlyModelViewSet):
 
     serializer_class = serializers.ProjectSerializer
     filter_class     = filters.ProjectFilterSet
+    ordering_fields  = ('customer__name', 'name',)
     ordering         = 'name'
 
     def get_queryset(self):

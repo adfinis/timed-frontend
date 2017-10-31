@@ -39,7 +39,7 @@ class PublicHolidayFilterSet(FilterSet):
 
 class UserFilterSet(FilterSet):
     active = NumberFilter(name='is_active')
-    supervisor = Filter(name='supervisors__id', lookup_expr='contains')
+    supervisor = NumberFilter(name='supervisors')
 
     class Meta:
         model  = models.User
@@ -90,6 +90,7 @@ class AbsenceCreditFilterSet(FilterSet):
 
 class WorktimeBalanceFilterSet(FilterSet):
     user = NumberFilter(name='id')
+    supervisor = NumberFilter(name='supervisors')
     # additional filters analyzed in WorktimeBalanceView
     # date = DateFilter()
     # last_reported_date = NumberFilter()
