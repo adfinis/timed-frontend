@@ -2,10 +2,10 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
-describe('Unit | Controller | users/edit/index', function() {
-  setupTest('controller:users/edit/index', {
+describe('Unit | Controller | users/edit/credits', function() {
+  setupTest('controller:users/edit/credits', {
     // Specify the other units that are required for this test.
-    needs: ['model:absence']
+    // needs: ['controller:foo']
   })
 
   // Replace this with your real tests.

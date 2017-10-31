@@ -17,7 +17,6 @@
 }
 
 .user-content {
-  padding-top: var(--page-padding-v);
   display: flex;
   flex-grow: 1;
   flex-shrink: 0;
@@ -26,10 +25,24 @@
   h4 {
     color: var(--body-color);
     font-weight: 300;
+    line-height: 2rem;
+    margin-top: 1.5rem;
   }
 
   .card {
-    animation: card-slide-up 500ms ease;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: card-slide-up 250ms ease-out forwards;
+  }
+
+  @for $i from 0 to 10 {
+    .card:nth-of-type(#{$i}) {
+      animation-delay: calc(50ms * #{$i});
+    }
+  }
+
+  .liquid-animating .card {
+    animation: none;
   }
 }
 
@@ -177,9 +190,9 @@
 }
 
 @keyframes card-slide-up {
-  from {
-    opacity: 0.5;
-    transform: translateY(50px);
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
@@ -197,20 +210,12 @@
     margin: calc(var(--page-padding-v) * 1.25 * -1) calc(var(--page-padding-h) * 1.25 * -1) 0;
     padding: calc(var(--user-header-padding-v) * 1.25) calc(var(--user-header-padding-h) * 1.25);
   }
-
-  .user-content {
-    padding-top: calc(var(--page-padding-v) * 1.25);
-  }
 }
 
 @media (--xl-viewport) {
   .user-header {
     margin: calc(var(--page-padding-v) * 1.5 * -1) calc(var(--page-padding-h) * 1.5 * -1) 0;
     padding: calc(var(--user-header-padding-v) * 1.5) calc(var(--user-header-padding-h) * 1.5);
-  }
-
-  .user-content {
-    padding-top: calc(var(--page-padding-v) * 1.5);
   }
 
   .user-header-absence-balance {

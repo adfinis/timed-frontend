@@ -49,4 +49,19 @@ describe('Acceptance | users edit', function() {
 
     expect(currentURL()).to.contain(this.notAllowed.id)
   })
+
+  it('can show more or less absences', async function() {
+    server.loadFixtures('absence-types')
+    server.createList('absence', 5, { userId: this.allowed.id })
+
+    await visit(`/users/${this.allowed.id}`)
+
+    await click('.show-more-or-less')
+
+    expect(currentURL()).to.equal(`/users/${this.allowed.id}?absenceLimit=null`)
+
+    await click('.show-more-or-less')
+
+    expect(currentURL()).to.equal(`/users/${this.allowed.id}`)
+  })
 })
