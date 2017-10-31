@@ -455,7 +455,8 @@ export default Controller.extend({
     /* eslint-disable camelcase */
     let params = {
       from_date: from.format('YYYY-MM-DD'),
-      to_date: to.format('YYYY-MM-DD')
+      to_date: to.format('YYYY-MM-DD'),
+      user: this.get('user.id')
     }
     /* eslint-enable camelcase */
 

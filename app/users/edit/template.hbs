@@ -1,11 +1,5 @@
 <header class="user-header">
   <div class="user-header-info">
-    <small>
-      {{fa-icon 'map-marker'}} {{model.activeEmployment.location.name}},
-      {{humanize-duration model.activeEmployment.worktimePerDay}} a day
-      ({{model.activeEmployment.percentage}}%)
-    </small>
-
     <h1>{{model.fullName}}</h1>
   </div>
 
@@ -57,6 +51,12 @@
   {{/if}}
 </header>
 
+<nav class="user-navigation">
+  <ul>
+    <li>{{#link-to 'users.edit.index' model.id}}General{{/link-to}}</li>
+  </ul>
+</nav>
+
 <section class="user-content">
-  {{!TODO}}
+  {{outlet}}
 </section>
