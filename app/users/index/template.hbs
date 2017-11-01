@@ -1,0 +1,95 @@
+<h1>Users</h1>
+
+<div>
+  <div class="grid grid--12of12 grid-sm--2of12">
+    <div class="grid-cell form-group">
+      <input
+        type="search"
+        class="form-control"
+        placeholder="Search..."
+        value={{search}}
+        oninput={{action (perform setFilter 'search') value='target.value'}}
+      >
+    </div>
+    {{#if currentUser.isSuperuser}}
+      <div class="grid-cell form-group">
+        {{#user-selection
+          user      = _supervisor
+          on-change = (perform setModelFilter 'supervisor')
+        as |u|}}
+          {{u.user placeholder='Select supervisor...'}}
+        {{/user-selection}}
+      </div>
+    {{/if}}
+    <div class="grid-cell form-group">
+      {{#sy-checkbox checked=active on-change=(perform setBooleanFilter 'active')}}
+        Only active users
+      {{/sy-checkbox}}
+    </div>
+    {{#unless currentUser.isSuperuser}}
+      <div class="grid-cell"></div>
+    {{/unless}}
+    <div class="grid-cell"></div>
+    <div class="grid-cell"></div>
+    <div class="grid-cell"></div>
+    <div class="grid-cell form-group">
+      <button type="button" class="btn" {{action (perform resetFilter)}}>Reset filter</button>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid--12of12" data-test-users-list>
+  <div class="grid-cell">
+    {{#async-list data as |section data|}}
+      {{#if (eq section 'empty')}}
+        <div class="empty">
+          <div>
+            {{fa-icon 'users'}}
+            <h3>No users to display</h3>
+            <p>Maybe try loosening your filters</p>
+          </div>
+        </div>
+      {{else if (eq section 'body')}}
+        <table class="table table--striped table--hover">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Percentage</th>
+              <th>Worktime per day</th>
+              <th>Current worktime balance</th>
+            </tr>
+          </thead>
+          {{#vertical-collection data
+            tagName           = 'tbody'
+            estimateHeight    = 40
+            bufferSize        = 10
+            containerSelector = '.page-content--scroll'
+          as |user|}}
+          {{!--
+          <tbody>
+          {{#each data as |user|}}
+          --}}
+            {{#link-to 'users.edit' user.id tagName='tr' class='pointer'}}
+              <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
+              {{#if user.activeEmployment}}
+                <td>{{user.activeEmployment.percentage}}%</td>
+                <td>{{format-duration user.activeEmployment.worktimePerDay false}}</td>
+              {{else}}
+                <td class={{unless user.isActive 'color-danger'}} colspan="2"><em>User has no active employment</em></td>
+              {{/if}}
+              <td>
+                <span class="worktime-balance {{balance-highlight-class user.currentWorktimeBalance.balance}}">
+                  {{format-duration user.currentWorktimeBalance.balance false}}
+                </span>
+              </td>
+            {{/link-to}}
+          {{!--
+          {{/each}}
+          </tbody>
+          --}}
+          {{/vertical-collection}}
+        </table>
+      {{/if}}
+    {{/async-list}}
+  </div>
+</div>

@@ -1,0 +1,224 @@
+:root {
+  --user-header-padding-v: 0.5rem;
+  --user-header-padding-h: var(--page-padding-h);
+}
+
+.user-header {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  position: relative;
+
+  margin: calc(var(--page-padding-v) * -1) calc(var(--page-padding-h) * -1) 0;
+  padding: var(--user-header-padding-v) var(--user-header-padding-h);
+
+  background-color: rgb(240, 240, 240);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.user-content {
+  padding-top: var(--page-padding-v);
+  display: flex;
+  flex-grow: 1;
+  flex-shrink: 0;
+  flex-direction: column;
+
+  h4 {
+    color: var(--body-color);
+    font-weight: 300;
+  }
+
+  .card {
+    animation: card-slide-up 500ms ease;
+  }
+}
+
+.user-general-info {
+  width: 100%;
+
+  tr > td {
+    vertical-align: top;
+    padding: 0.25rem 0;
+  }
+
+  tr > td:first-child {
+    font-weight: 500;
+  }
+
+  tr > td:last-child {
+    text-align: right;
+  }
+}
+
+/* General info */
+.user-header-info {
+  text-align: center;
+
+  h1 {
+    display: inline-flex;
+    color: var(--color-body);
+    font-size: 3.5rem;
+    line-height: 3.5rem;
+    margin: 0;
+    position: relative;
+    flex-direction: column;
+    margin-top: 1rem;
+  }
+}
+
+/* Loading */
+
+.user-header-loading {
+  display: flex;
+  min-height: 370px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Worktime balance */
+.user-header-worktime-balance-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.user-header-worktime-balance-title {
+  font-size: 2rem;
+  flex: 1 1 100%;
+  font-weight: 300;
+  margin: 1.5rem 0;
+  text-transform: uppercase;
+  text-align: center;
+  color: color(var(--color-border) shade(20%));
+}
+
+.user-header-worktime-balance {
+  width: 350px;
+  position: relative;
+  order: 2;
+}
+
+.user-header-worktime-balance-last-valid-timesheet{
+  order: 0;
+}
+
+.user-header-worktime-balance-today {
+  order: 1;
+}
+
+.user-header-worktime-balance-last-valid-timesheet,
+.user-header-worktime-balance-today {
+  text-align: center;
+  font-size: 2rem;
+  flex: 0 0 50%;
+  padding: 0 0 1rem;
+
+  h2 {
+    font-size: 1.1rem;
+    font-weight: 300;
+    margin: 0;
+    text-transform: uppercase;
+    color: color(var(--color-border) shade(20%));
+  }
+}
+
+/* Absence balance */
+.user-header-absence-balance-container {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.user-header-absence-balance {
+  display: flex;
+  flex: 0 1 50%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.show-more-or-less {
+  display: inline-block;
+  color: var(--color-primary);
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+@media (--sm-viewport) {
+  .user-header-absence-balance {
+    flex-basis: 100px;
+  }
+
+  .user-header-worktime-balance {
+    order: 1;
+  }
+
+  .user-header-worktime-balance-title {
+    font-size: 1.1rem;
+    margin: 0.5rem 0;
+  }
+
+  .user-header-worktime-balance-today {
+    order: 2;
+  }
+
+  .user-header-worktime-balance-last-valid-timesheet,
+  .user-header-worktime-balance-today {
+    flex-basis: 120px;
+    padding: 2.5rem 0 0;
+
+    h2 {
+      font-size: 1.1rem;
+    }
+  }
+}
+
+@keyframes card-slide-up {
+  from {
+    opacity: 0.5;
+    transform: translateY(50px);
+  }
+}
+
+@media (--md-viewport) {
+  .user-header-info {
+    h1 {
+      font-size: 3rem;
+      margin-top: 0;
+    }
+  }
+}
+
+@media (--lg-viewport) {
+  .user-header {
+    margin: calc(var(--page-padding-v) * 1.25 * -1) calc(var(--page-padding-h) * 1.25 * -1) 0;
+    padding: calc(var(--user-header-padding-v) * 1.25) calc(var(--user-header-padding-h) * 1.25);
+  }
+
+  .user-content {
+    padding-top: calc(var(--page-padding-v) * 1.25);
+  }
+}
+
+@media (--xl-viewport) {
+  .user-header {
+    margin: calc(var(--page-padding-v) * 1.5 * -1) calc(var(--page-padding-h) * 1.5 * -1) 0;
+    padding: calc(var(--user-header-padding-v) * 1.5) calc(var(--user-header-padding-h) * 1.5);
+  }
+
+  .user-content {
+    padding-top: calc(var(--page-padding-v) * 1.5);
+  }
+
+  .user-header-absence-balance {
+    flex-basis: 120px;
+  }
+
+  .user-header-worktime-balance-last-valid-timesheet,
+  .user-header-worktime-balance-today {
+    flex-basis: 200px;
+  }
+}

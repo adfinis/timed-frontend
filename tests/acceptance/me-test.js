@@ -13,10 +13,10 @@ describe('Acceptance | me', function() {
   beforeEach(async function() {
     application = startApp()
 
-    let user = server.create('user')
+    this.user = server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession(application, { user_id: this.user.id })
   })
 
   afterEach(async function() {
@@ -24,9 +24,9 @@ describe('Acceptance | me', function() {
     destroyApp(application)
   })
 
-  it('can visit /me', async function() {
+  it('redirects to user profile', async function() {
     await visit('/me')
 
-    expect(currentURL()).to.equal('/me')
+    expect(currentURL()).to.equal(`/users/${this.user.id}`)
   })
 })

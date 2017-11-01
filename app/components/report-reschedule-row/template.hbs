@@ -1,6 +1,6 @@
-<div class="form-group">{{changeset.user.username}}</div>
-<div class="form-group">{{moment-format changeset.date 'DD.MM.YYYY'}}</div>
-<div class="form-group">{{format-duration changeset.duration false}}</div>
+<div class="form-list-cell form-group">{{changeset.user.username}}</div>
+<div class="form-list-cell form-group">{{moment-format changeset.date 'DD.MM.YYYY'}}</div>
+<div class="form-list-cell form-group">{{format-duration changeset.duration false}}</div>
 {{#task-selection
   history     = false
   on-set-task = (action (mut changeset.task))
@@ -8,23 +8,30 @@
     task      = changeset.task
   )
 as |t|}}
-  <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</div>
-  <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</div>
-  <div class="form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
+  <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</div>
+  <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</div>
+  <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
 {{/task-selection}}
-<div class="form-group">
-  {{input placeholder='Comment' class='form-control' value=changeset.comment}}
+<div class="form-list-cell form-group">
+  <input
+    type="text"
+    class="form-control"
+    placeholder="Comment"
+    name="comment"
+    value={{changeset.comment}}
+    onchange={{action (mut changeset.comment) value='target.value'}}
+  >
 </div>
-<div class="form-group">
+<div class="form-list-cell form-group">
   {{sy-checkbox checked=changeset.review on-change=(action (mut changeset.review))}}
 </div>
-<div class="form-group">
+<div class="form-list-cell form-group">
   {{sy-checkbox checked=changeset.notBillable on-change=(action (mut changeset.notBillable))}}
 </div>
-<div class="form-group">
+<div class="form-list-cell form-group">
   {{sy-checkbox title=(if changeset.verifiedBy.id (concat 'Verified by ' changeset.verifiedBy.username)) checked=changeset.verifiedBy.id on-change=(action 'setVerified')}}
 </div>
-<div class="form-group">
+<div class="form-list-cell form-group">
   <button
     type="submit"
     class="btn btn-primary"

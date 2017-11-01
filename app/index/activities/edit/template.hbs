@@ -10,13 +10,19 @@
         <div class="form-group">{{t.task}}</div>
       {{/task-selection}}
       <div class="form-group">
-        {{input class='form-control' name='comment' placeholder='Comment' value=activity.comment}}
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Comment"
+          name="comment"
+          value={{activity.comment}}
+          onchange={{action (mut activity.comment) value='target.value'}}
+        >
       </div>
       <table class="table table--striped table--activity-blocks">
         <tbody>
           {{#each (reject-by 'isDeleted' true blocks) as |block|}}
             <tr
-              class="{{if block.model.overlaps 'danger'}}"
               data-test-activity-block-row
               data-test-activity-block-row-id={{block.model.id}}
             >
@@ -50,11 +56,6 @@
                 }}
               </td>
               <td>
-                {{#if block.model.overlaps}}
-                  <span title="This block overlaps the day of the activity" class="error-text">
-                    {{fa-icon 'warning'}}
-                  </span>
-                {{/if}}
                 {{#if (and block.changeset.from block.changeset.to)}}
                   {{format-duration (moment-diff block.changeset.from block.changeset.to) false}}
                 {{/if}}

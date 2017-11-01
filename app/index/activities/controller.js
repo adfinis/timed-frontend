@@ -31,15 +31,12 @@ export default Controller.extend({
    * @property {Activity[]} activities
    * @public
    */
-  @computed(
-    '_allActivities.@each.{start,user,isNew,isDeleted}',
-    'model',
-    'user'
-  )
+  @computed('_allActivities.@each.{date,user,isNew,isDeleted}', 'model', 'user')
   activities(activities, day, user) {
     return activities.filter(a => {
       return (
-        a.get('start').isSame(day, 'day') &&
+        a.get('date') &&
+        a.get('date').isSame(day, 'day') &&
         a.get('user.id') === user.get('id') &&
         !a.get('isNew') &&
         !a.get('isDeleted')

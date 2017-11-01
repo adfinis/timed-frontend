@@ -19,9 +19,13 @@ ApplicationRouter.map(function() {
       this.route('attendances')
       this.route('reports')
     })
+    this.route('statistics', { resetNamespace })
     this.route('me', { resetNamespace })
     this.route('analysis', { resetNamespace })
     this.route('reschedule', { resetNamespace })
+    this.route('users', { resetNamespace }, function() {
+      this.route('edit', { path: '/:id' }, function() {})
+    })
     this.route('notfound', { resetNamespace, path: '/*path' })
   })
 })

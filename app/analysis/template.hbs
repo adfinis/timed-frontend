@@ -2,6 +2,7 @@
 
 {{report-filter
   billingTypes  = billingTypes
+  costCenters   = costCenters
   initial       = (hash
     customer    = _customer
     project     = _project
@@ -9,6 +10,7 @@
     user        = _user
     reviewer    = _reviewer
     billingType = billing_type
+    costCenter  = cost_center
     fromDate    = _from
     toDate      = _to
     review      = review
@@ -18,65 +20,53 @@
   on-apply      = (action 'applyFilter')
 }}
 
-{{#paginated-table data-test-filter-results class='table--analysis-reschedule' as |t|}}
-  {{#t.head}}
-    <tr>
-      {{#sort-header update=(action (mut ordering)) current=ordering by='user__username'}}User{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='date'}}Date{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='duration'}}Duration{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__customer__name'}}Customer{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__name'}}Project{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='task__name'}}Task{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='comment'}}Comment{{/sort-header}}
-      {{#sort-header update=(action (mut ordering)) current=ordering by='verified_by__username'}}Verified by{{/sort-header}}
-      <th>Needs review</th>
-      <th>Not billable</th>
-    </tr>
-  {{/t.head}}
-  {{#t.body}}
-    {{#each model as |report|}}
+{{#if model.length}}
+  {{#paginated-table data-test-filter-results class='table--analysis' as |t|}}
+    {{#t.head}}
       <tr>
-        <td>{{report.user.username}}</td>
-        <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
-        <td>{{format-duration report.duration false}}</td>
-        <td>{{report.task.project.customer.name}}</td>
-        <td>{{report.task.project.name}}</td>
-        <td>{{report.task.name}}</td>
-        <td>{{report.comment}}</td>
-        <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
-        <td>{{sy-checkmark checked=report.review}}</td>
-        <td>{{sy-checkmark checked=report.notBillable}}</td>
+        {{#sort-header update=(action (mut ordering)) current=ordering by='user__username'}}User{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='date'}}Date{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='duration'}}Duration{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__customer__name'}}Customer{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__name'}}Project{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='task__name'}}Task{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='comment'}}Comment{{/sort-header}}
+        {{#sort-header update=(action (mut ordering)) current=ordering by='verified_by__username'}}Verified by{{/sort-header}}
+        <th>Needs review</th>
+        <th>Not billable</th>
       </tr>
-    {{^}}
-      <tr>
-        <td colspan="11" class="text-center">
-          {{#if (is-array model)}}
-            I didn't find any results - try loosening your filters!
-          {{else}}
-            Please specify some filter parameters.
-          {{/if}}
-        </td>
-      </tr>
-    {{/each}}
-  {{/t.body}}
-  {{#t.foot
-    pages     = model.meta.pagination.pages
-    page      = page
-    page_size = page_size
-  }}
-    {{#if (is-array model)}}
+    {{/t.head}}
+    {{#t.body}}
+      {{#each model as |report|}}
+        <tr>
+          <td>{{report.user.username}}</td>
+          <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
+          <td>{{format-duration report.duration false}}</td>
+          <td>{{report.task.project.customer.name}}</td>
+          <td>{{report.task.project.name}}</td>
+          <td>{{report.task.name}}</td>
+          <td>{{report.comment}}</td>
+          <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
+          <td>{{sy-checkmark checked=report.review}}</td>
+          <td>{{sy-checkmark checked=report.notBillable}}</td>
+        </tr>
+      {{/each}}
+    {{/t.body}}
+    {{#t.foot
+      pages     = model.meta.pagination.pages
+      page      = page
+      page_size = page_size
+    }}
       <tr>
         <td colspan="2"><strong>Total:</strong></td>
         <td colspan="9"><strong class="total">{{format-duration model.meta.totalTime false}}</strong></td>
       </tr>
-    {{/if}}
-  {{/t.foot}}
-{{/paginated-table}}
+    {{/t.foot}}
+  {{/paginated-table}}
 
-{{#if model}}
   <p>
     {{#each exportLinks as |link index|}}
-      <button {{action 'download' link.url}}
+      <button {{action 'download' link.url link.params}}
         type="button"
         disabled={{gt model.length 4000}}
         class="btn btn-default"
@@ -86,4 +76,14 @@
       More than 4000 rows were found. Please narrow down your search export results.
     {{/if}}
   </p>
+{{else}}
+  <div class="text-center">
+    <em>
+      {{#if (is-array model)}}
+        I didn't find any results - try loosening your filters!
+      {{else}}
+        Please specify some filter parameters.
+      {{/if}}
+    </em>
+  </div>
 {{/if}}

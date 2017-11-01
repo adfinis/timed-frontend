@@ -9,7 +9,6 @@
         <tbody>
           {{#each activities as |activity|}}
           <tr
-            class="{{if activity.overlaps 'danger'}}"
             title="Click to edit"
             data-test-activity-row
             data-test-activity-row-id={{activity.id}}
@@ -29,12 +28,6 @@
               </td>
               <td>{{activity.comment}}</td>
               <td>
-                {{#if activity.overlaps}}
-                  <span title="This activity has an overlapping block" class="error-text">
-                    {{fa-icon 'warning'}}
-                    &nbsp;
-                  </span>
-                {{/if}}
                 {{#if activity.active}}
                   {{duration-since activity.activeBlock.from elapsed=activity.duration}}
                 {{else}}
@@ -79,7 +72,7 @@
   {{#modal.body}}
     Overlapping activities will not be taken into account for the timesheet.
   {{/modal.body}}
-  {{#modal.footer data-test-overlap-warning}}
+  {{#modal.footer data-test-overlapping-warning}}
    <button class="btn btn-primary" {{action (if showUnknownWarning (action (mut showOverlappingWarning) false) 'generateReports')}}>That's fine</button>
    <button class="btn btn-default" {{action (queue (action (mut showOverlappingWarning) false) (action (mut showUnknownWarning) false))}}>Cancel</button>
   {{/modal.footer}}

@@ -1,20 +1,21 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
   <button type="button" class="btn btn-success" title="Move all entries to another date" {{action (mut showReschedule) true}}>Reschedule</button>
 </div>
-<table class="table table--striped table--reports table--form table--form-inline-lg">
-  <tbody>
+
+<div class="form-list form-list--reports">
+  <div class="form-list-body">
     {{#each reports as |report|}}
       {{#if report.verifiedBy}}
-        <tr title="This entry is already verified and therefore not editable anymore">
-          <td>{{report.task.project.customer.name}}</td>
-          <td>{{report.task.project.name}}</td>
-          <td>{{report.task.name}}</td>
-          <td>{{report.comment}}</td>
-          <td>{{format-duration report.duration false}}</td>
-          <td>{{sy-checkbox disabled=true value=report.review label='Needs review'}}</td>
-          <td>{{sy-checkbox disabled=true value=report.notBillable label='Not billable'}}</td>
-          <td></td>
-        </tr>
+        <div class="form-list-row" title="This entry is already verified and therefore not editable anymore">
+          <div class="form-list-cell">{{report.task.project.customer.name}}</div>
+          <div class="form-list-cell">{{report.task.project.name}}</div>
+          <div class="form-list-cell">{{report.task.name}}</div>
+          <div class="form-list-cell">{{report.comment}}</div>
+          <div class="form-list-cell">{{format-duration report.duration false}}</div>
+          <div class="form-list-cell">{{sy-checkbox disabled=true value=report.review label='Needs review'}}</div>
+          <div class="form-list-cell">{{sy-checkbox disabled=true value=report.notBillable label='Not billable'}}</div>
+          <div class="form-list-cell"></div>
+        </div>
       {{else}}
         {{report-row
           report
@@ -24,15 +25,10 @@
           on-delete               = (route-action 'deleteReport')
         }}
       {{/if}}
-    {{^}}
-      <tr>
-        <td colspan="8" class="text-center">
-          <em>No entries yet</em>
-        </td>
-      </tr>
     {{/each}}
-  </tbody>
-</table>
+  </div>
+</div>
+
 {{#sy-modal visible=showReschedule size="small" as |modal|}}
   {{#modal.header}}
     Reschedule timesheet

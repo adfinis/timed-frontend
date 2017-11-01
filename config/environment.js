@@ -20,15 +20,29 @@ module.exports = function(environment) {
       REPORTEXPORTS: [
         {
           label: 'CSV',
-          url: '/api/v1/reports/export?file_type=csv'
+          url: '/api/v1/reports/export',
+          params: {
+            file_type: 'csv'
+          }
         },
         {
           label: 'ODS',
-          url: '/api/v1/reports/export?file_type=ods'
+          url: '/api/v1/reports/export',
+          params: {
+            file_type: 'ods'
+          }
         },
         {
           label: 'XLSX',
-          url: '/api/v1/reports/export?file_type=xlsx'
+          url: '/api/v1/reports/export',
+          params: {
+            file_type: 'xlsx'
+          }
+        },
+        {
+          label: 'Work report',
+          url: '/api/v1/work-reports',
+          params: {}
         }
       ]
     },
@@ -78,24 +92,5 @@ module.exports = function(environment) {
   if (environment === 'production') {
   }
 
-  /* global process*/
-  try {
-    let envReportExports = process.env.TIMED_REPORT_EXPORT
-    if (envReportExports) {
-      let additionalReportExports = JSON.parse(envReportExports)
-      if (additionalReportExports && Array.isArray(additionalReportExports)) {
-        ENV.APP.REPORTEXPORTS = [
-          ...ENV.APP.REPORTEXPORTS,
-          ...additionalReportExports
-        ]
-      }
-    }
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error(
-      `${process.env.TIMED_REPORT_EXPORT} is not a valid JSON format`
-    )
-    process.exit()
-  }
   return ENV
 }

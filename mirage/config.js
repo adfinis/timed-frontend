@@ -1,8 +1,47 @@
 import { Response } from 'ember-cli-mirage'
 import moment from 'moment'
 import { randomDuration } from './helpers/duration'
+import parseDjangoDuration from 'timed/utils/parse-django-duration'
+import formatDuration from 'timed/utils/format-duration'
 
 const { parse } = JSON
+
+const statisticEndpoint = type => {
+  return function(db) {
+    let stats = db[`${type}Statistics`].all()
+
+    return {
+      ...this.serialize(stats),
+      meta: {
+        'total-time': formatDuration(
+          stats.models.reduce((total, { duration }) => {
+            return total.add(parseDjangoDuration(duration))
+          }, moment.duration())
+        )
+      }
+    }
+  }
+}
+
+const byUserAndDate = modelName => {
+  return function(db, { queryParams: { user, date } }) {
+    let models = db[modelName].all()
+
+    if (date) {
+      models = models.filter(model => {
+        return model.date.isSame(date, 'day')
+      })
+    }
+
+    if (user) {
+      models = models.filter(model => {
+        return parseInt(model.userId) === parseInt(user)
+      })
+    }
+
+    return models
+  }
+}
 
 export default function() {
   this.passthrough('/write-coverage')
@@ -10,6 +49,7 @@ export default function() {
   this.urlPrefix = ''
   this.namespace = '/api/v1'
   this.timing = 400
+  this.logging = false
 
   this.post('/auth/login', ({ users }, req) => {
     let { data: { attributes: { username, password } } } = parse(
@@ -68,7 +108,7 @@ export default function() {
       return activities.where(a => {
         let blocks = activityBlocks.where(b => b.activityId === a.id).models
 
-        return blocks.any(b => !b.toDatetime)
+        return blocks.any(b => !b.toTime)
       })
     }
 
@@ -136,7 +176,15 @@ export default function() {
     }
   })
 
-  this.get('/users')
+  this.get('/users', function({ users }, { queryParams: { supervisor } }) {
+    if (supervisor) {
+      return users.where(user => {
+        return user.supervisorIds && user.supervisorIds.includes(supervisor)
+      })
+    }
+
+    return users.all()
+  })
   this.get('/users/:id')
   this.patch('/users/:id')
 
@@ -157,7 +205,18 @@ export default function() {
   this.get('/locations')
   this.get('/locations/:id')
 
-  this.get('/employments')
+  this.get('/employments', function(
+    { employments },
+    { queryParams: { user } }
+  ) {
+    let all = employments.all()
+
+    if (user) {
+      all = all.filter(e => e.userId === user)
+    }
+
+    return all
+  })
   this.get('/employments/:id')
 
   this.get('/absence-types')
@@ -166,10 +225,30 @@ export default function() {
   this.get('/billing-types')
   this.get('/billing-types/:id')
 
+  this.get('/cost-centers')
+  this.get('/cost-centers/:id')
+
   this.get('/overtime-credits')
   this.get('/overtime-credits/:id')
 
-  this.get('/absences')
+  this.get('/absence-credits')
+  this.get('/absence-credits/:id')
+
+  this.get('/absence-balances', byUserAndDate('absenceBalances'))
+  this.get('/absence-balances/:id')
+
+  this.get('/worktime-balances', byUserAndDate('worktimeBalances'))
+  this.get('/worktime-balances/:id')
+
+  this.get('/absences', function({ absences }, { queryParams: { user } }) {
+    let all = absences.all()
+
+    if (user) {
+      all = all.filter(a => a.userId === user)
+    }
+
+    return all
+  })
   this.post('/absences', function({ absences, users }) {
     return absences.create({
       ...this.normalizedRequestAttrs(),
@@ -188,4 +267,11 @@ export default function() {
 
     return new Response(200, {}, {})
   })
+
+  this.get('/year-statistics', statisticEndpoint('year'))
+  this.get('/month-statistics', statisticEndpoint('month'))
+  this.get('/customer-statistics', statisticEndpoint('customer'))
+  this.get('/project-statistics', statisticEndpoint('project'))
+  this.get('/task-statistics', statisticEndpoint('task'))
+  this.get('/user-statistics', statisticEndpoint('user'))
 }
