@@ -37,9 +37,11 @@ export default EmberChartComponent.extend({
       point: {
         borderColor: 'rgb(91, 142, 219)',
         backgroundColor: 'rgb(255, 255, 255)',
-        radius: 4,
-        hoverRadius: 5,
-        hitRadius: 5
+        hoverBackgroundColor: 'rgb(0,0,0)',
+        borderWidth: 2,
+        radius: 3.5,
+        hoverRadius: 3.5,
+        hitRadius: 10
       }
     },
     scales: {
