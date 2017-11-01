@@ -6,7 +6,9 @@ from django.db.models import CharField, DateField, IntegerField, Q, Value
 from django.db.models.functions import Concat
 from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
-from rest_framework import exceptions
+from rest_framework import exceptions, status
+from rest_framework.decorators import detail_route
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from timed.employment import filters, models, serializers
@@ -45,6 +47,57 @@ class UserViewSet(ModelViewSet):
         return get_user_model().objects.prefetch_related(
             'employments', 'supervisees', 'supervisors'
         )
+
+    @detail_route(methods=['post'])
+    def transfer(self, request, pk=None):
+        """
+        Transfer worktime and absence balance to new year.
+
+        It will skip any credits if a credit already exists on the first
+        of the new year.
+        """
+        user = self.get_object()
+
+        year = datetime.date.today().year
+        start_year = datetime.date(year, 1, 1)
+        start = datetime.date(year - 1, 1, 1)
+        end = datetime.date(year - 1, 12, 31)
+
+        # transfer absence types
+        transfered_absence_credits = user.absence_credits.filter(
+            date=start_year, transfer=True)
+        types = models.AbsenceType.objects.filter(
+            fill_worktime=False
+        ).exclude(id__in=transfered_absence_credits.values('absence_type'))
+        for absence_type in types:
+            credit = absence_type.calculate_credit(user, start, end)
+            used_days = absence_type.calculate_used_days(user, start, end)
+            balance = credit - used_days
+            if balance != 0:
+                models.AbsenceCredit.objects.create(
+                    absence_type=absence_type,
+                    user=user,
+                    comment=_('Transfer %(year)s') % {'year': year - 1},
+                    date=start_year,
+                    days=balance,
+                    transfer=True
+                )
+
+        # transfer overtime
+        overtime_credit = user.overtime_credits.filter(
+            date=start_year, transfer=True
+        )
+        if not overtime_credit.exists():
+            reported, expected, delta = user.calculate_worktime(start, end)
+            models.OvertimeCredit.objects.create(
+                user=user,
+                comment=_('Transfer %(year)s') % {'year': year - 1},
+                date=start_year,
+                duration=delta,
+                transfer=True
+            )
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):

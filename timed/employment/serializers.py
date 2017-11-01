@@ -3,7 +3,7 @@
 from datetime import date, timedelta
 
 from django.contrib.auth import get_user_model
-from django.db.models import Max, Sum, Value
+from django.db.models import Max, Value
 from django.db.models.functions import Coalesce
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
@@ -130,21 +130,14 @@ class AbsenceBalanceSerializer(Serializer):
 
         # id is mapped to absence type
         absence_type = instance.id
-        if absence_type.fill_worktime:
-            return None
 
         start = self._get_start(instance)
-        credits = models.AbsenceCredit.objects.filter(
-            user=instance.user,
-            absence_type=absence_type,
-            date__range=[start, instance.date]
-        )
-        data = credits.aggregate(credit=Sum('days'))
-        credit = data['credit'] or 0
 
         # avoid multiple calculations as get_balance needs it as well
-        instance['credit'] = credit
-        return credit
+        instance['credit'] = absence_type.calculate_credit(
+            instance.user, start, instance.date
+        )
+        return instance['credit']
 
     def get_used_days(self, instance):
         """
@@ -157,20 +150,14 @@ class AbsenceBalanceSerializer(Serializer):
 
         # id is mapped to absence type
         absence_type = instance.id
-        if absence_type.fill_worktime:
-            return None
 
         start = self._get_start(instance)
-        absences = Absence.objects.filter(
-            user=instance.user,
-            type=absence_type,
-            date__range=[start, instance.date]
-        )
-        used_days = absences.count()
 
         # avoid multiple calculations as get_balance needs it as well
-        instance['used_days'] = used_days
-        return used_days
+        instance['used_days'] = absence_type.calculate_used_days(
+            instance.user, start, instance.date
+        )
+        return instance['used_days']
 
     def get_used_duration(self, instance):
         """
@@ -353,6 +340,7 @@ class AbsenceCreditSerializer(ModelSerializer):
             'date',
             'days',
             'comment',
+            'transfer'
         ]
 
 
@@ -364,4 +352,5 @@ class OvertimeCreditSerializer(ModelSerializer):
             'date',
             'duration',
             'comment',
+            'transfer'
         ]
