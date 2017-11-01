@@ -26,6 +26,7 @@ class ProjectFilterSet(FilterSet):
     """Filter set for the projects endpoint."""
 
     archived = NumberFilter(name='archived')
+    reviewer = NumberFilter(name='reviewers')
 
     class Meta:
         """Meta information for the project filter set."""
