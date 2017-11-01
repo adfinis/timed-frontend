@@ -1,9 +1,6 @@
-FROM node:6
+FROM node:8
 
-RUN yarn global add \
-      npm@5 \
- && npm install -g \
-      bower \
+RUN npm install -g bower \
  && apt-get update \
  && apt-get install -y --no-install-recommends \
       nginx \
