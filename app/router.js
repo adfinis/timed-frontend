@@ -26,6 +26,7 @@ ApplicationRouter.map(function() {
     this.route('users', { resetNamespace }, function() {
       this.route('edit', { path: '/:id' }, function() {
         this.route('credits')
+        this.route('responsibilities')
       })
     })
     this.route('notfound', { resetNamespace, path: '/*path' })
