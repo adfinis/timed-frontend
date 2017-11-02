@@ -2,7 +2,7 @@ import Component from '@ember/component'
 import { inject as service } from '@ember/service'
 import { oneWay } from 'ember-computed-decorators'
 
-export default Component.extend({
+const SySidenavComponent = Component.extend({
   tagName: 'nav',
   classNames: ['nav-side'],
   classNameBindings: ['expand:nav-side--expand'],
@@ -12,3 +12,5 @@ export default Component.extend({
 
   expand: false
 })
+
+export default SySidenavComponent
