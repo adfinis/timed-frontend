@@ -1,31 +1,25 @@
 ---
 language: node_js
 node_js:
-  - "6"
+  - "8"
 
 addons:
   firefox: latest
   chrome: stable
 
 cache:
+  yarn: true
   directories:
-    - $HOME/.npm
     - node_modules
-    - bower_components
-
-before_install:
-  - npm install -g npm@5
-  - npm install -g bower
 
 install:
-  - npm install
-  - bower install
+  - yarn
 
 script:
-  - npm test
+  - yarn test
 
 after_success:
-  - npm run coveralls
+  - yarn run coveralls
 
 env:
   - COVERAGE=true JOBS=2
