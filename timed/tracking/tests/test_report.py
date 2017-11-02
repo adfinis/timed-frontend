@@ -1,24 +1,16 @@
 """Tests for the reports endpoint."""
 
-from datetime import date, timedelta
+from datetime import timedelta
 
 import pyexcel
-from django.contrib.auth import get_user_model
+import pytest
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
-from hypothesis import HealthCheck, given, settings
-from hypothesis.extra.django import TestCase
-from hypothesis.extra.django.models import models
-from hypothesis.strategies import (builds, characters, dates, lists,
-                                   sampled_from, timedeltas)
 from rest_framework import status
 
-from timed.employment.factories import UserFactory
 from timed.projects.factories import (CostCenterFactory, ProjectFactory,
                                       TaskFactory)
-from timed.tests.client import JSONAPIClient
 from timed.tracking.factories import ReportFactory
-from timed.tracking.models import Report
 
 
 def test_report_list(auth_client):
@@ -411,50 +403,6 @@ def test_report_round_duration(db):
     assert duration_string(report.duration) == '02:00:00'
 
 
-class TestReportHypo(TestCase):
-    @given(
-        sampled_from(['csv', 'xlsx', 'ods']),
-        lists(
-            models(
-                Report,
-                comment=characters(blacklist_categories=['Cc', 'Cs']),
-                task=builds(TaskFactory.create),
-                user=builds(UserFactory.create),
-                date=dates(
-                    min_date=date(2000, 1, 1),
-                    max_date=date(2100, 1, 1),
-                ),
-                duration=timedeltas(
-                    min_delta=timedelta(0),
-                    max_delta=timedelta(days=1)
-                )
-            ),
-            min_size=1,
-            max_size=5,
-        )
-    )
-    @settings(timeout=5, suppress_health_check=[HealthCheck.too_slow])
-    def test_report_export(self, file_type, reports):
-        get_user_model().objects.create_user(username='test',
-                                             password='1234qwer')
-        client = JSONAPIClient()
-        client.login('test', '1234qwer')
-        url = reverse('report-export')
-
-        with self.assertNumQueries(2):
-            user_res = client.get(url, data={
-                'file_type': file_type
-            })
-
-        assert user_res.status_code == status.HTTP_200_OK
-        book = pyexcel.get_book(
-            file_content=user_res.content, file_type=file_type
-        )
-        # bookdict is a dict of tuples(name, content)
-        sheet = book.bookdict.popitem()[1]
-        assert len(sheet) == len(reports) + 1
-
-
 def test_report_list_no_result(admin_client):
     url = reverse('report-list')
     res = admin_client.get(url)
@@ -496,3 +444,21 @@ def test_report_list_filter_cost_center(auth_client):
     assert len(json['data']) == 2
     ids = {int(entry['id']) for entry in json['data']}
     assert {report_task.id, report_project.id} == ids
+
+
+@pytest.mark.parametrize('file_type', ['csv', 'xlsx', 'ods'])
+def test_report_export(auth_client, file_type, django_assert_num_queries):
+    reports = ReportFactory.create_batch(2)
+
+    url = reverse('report-export')
+
+    with django_assert_num_queries(2):
+        response = auth_client.get(url, data={'file_type': file_type})
+
+    assert response.status_code == status.HTTP_200_OK
+    book = pyexcel.get_book(
+        file_content=response.content, file_type=file_type
+    )
+    # bookdict is a dict of tuples(name, content)
+    sheet = book.bookdict.popitem()[1]
+    assert len(sheet) == len(reports) + 1
