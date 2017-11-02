@@ -39,7 +39,7 @@ You will need the following things properly installed on your computer.
 
 If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend) you need to run
 
-* `ember serve --proxy=http://localhost:8000`
+* `ember server --proxy=http://localhost:8000`
 or
 * `yarn start`
 
