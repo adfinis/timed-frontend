@@ -12,7 +12,7 @@
   dependencies:
     "@glimmer/di" "^0.2.0"
 
-"@html-next/vertical-collection@github:html-next/vertical-collection#master":
+"@html-next/vertical-collection@github:html-next/vertical-collection#b218268807b620854105ba76496844eb703d1959":
   version "1.0.0-beta.8"
   resolved "https://codeload.github.com/html-next/vertical-collection/tar.gz/b218268807b620854105ba76496844eb703d1959"
   dependencies:
