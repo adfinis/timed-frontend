@@ -7,7 +7,6 @@ from django.db.models import Max, Sum, Value
 from django.db.models.functions import Coalesce
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
-from rest_framework.exceptions import PermissionDenied
 from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import (ModelSerializer, Serializer,
                                                  SerializerMethodField,
@@ -18,18 +17,6 @@ from timed.tracking.models import Absence, Report
 
 
 class UserSerializer(ModelSerializer):
-    """User serializer."""
-
-    employments = relations.ResourceRelatedField(many=True, read_only=True)
-
-    def validate(self, data):
-        user = self.context['request'].user
-
-        # users may only change their own profile
-        if self.instance.id != user.id:
-            raise PermissionDenied()
-
-        return data
 
     included_serializers = {
         'supervisors':
@@ -43,26 +30,28 @@ class UserSerializer(ModelSerializer):
 
         model  = get_user_model()
         fields = [
-            'username',
-            'first_name',
-            'last_name',
             'email',
             'employments',
+            'first_name',
+            'is_active',
             'is_staff',
             'is_superuser',
-            'is_active',
-            'tour_done',
+            'last_name',
+            'supervisees',
             'supervisors',
-            'supervisees'
+            'tour_done',
+            'username',
         ]
         read_only_fields = [
-            'username',
+            'employments',
             'first_name',
-            'last_name',
-            'is_staff',
             'is_active',
+            'is_staff',
+            'is_superuser',
+            'last_name',
+            'supervisees',
             'supervisors',
-            'supervisees'
+            'username',
         ]
 
 

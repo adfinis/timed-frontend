@@ -6,19 +6,19 @@ from django.db.models import CharField, DateField, IntegerField, Q, Value
 from django.db.models.functions import Concat
 from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
-from rest_framework import exceptions, mixins, viewsets
+from rest_framework import exceptions
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from timed.employment import filters, models, serializers
+from timed.employment.permissions import NoReports
 from timed.mixins import AggregateQuerysetMixin
-from timed.permissions import IsAuthenticated, IsReadOnly, IsSuperUser
+from timed.permissions import (IsAuthenticated, IsCreateOnly, IsDeleteOnly,
+                               IsOwner, IsReadOnly, IsSuperUser, IsSupervisor,
+                               IsUpdateOnly)
 from timed.tracking.models import Absence, Report
 
 
-class UserViewSet(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  mixins.ListModelMixin,
-                  viewsets.GenericViewSet):
+class UserViewSet(ModelViewSet):
     """
     Expose user actions.
 
@@ -26,12 +26,25 @@ class UserViewSet(mixins.RetrieveModelMixin,
     only allows retrieving and updating.
     """
 
+    permission_classes = [
+        # only owner, superuser and supervisor may update user
+        (C(IsOwner) | C(IsSuperUser) | C(IsSupervisor)) & C(IsUpdateOnly) |
+        # only superuser may delete users without reports
+        C(IsSuperUser) & C(IsDeleteOnly) & C(NoReports) |
+        # only superuser may create users
+        C(IsSuperUser) & C(IsCreateOnly) |
+        # all authenticated users may read
+        C(IsAuthenticated) & C(IsReadOnly)
+    ]
+
     serializer_class = serializers.UserSerializer
     filter_class = filters.UserFilterSet
     search_fields = ('username', 'first_name', 'last_name')
 
     def get_queryset(self):
-        return get_user_model().objects.prefetch_related('employments')
+        return get_user_model().objects.prefetch_related(
+            'employments', 'supervisees', 'supervisors'
+        )
 
 
 class WorktimeBalanceViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
