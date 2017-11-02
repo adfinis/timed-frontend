@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 
-from timed.jsonapi_test_case import JSONAPIClient
+from timed.tests.client import JSONAPIClient
 
 
 @pytest.fixture

@@ -14,9 +14,9 @@ from hypothesis.strategies import (builds, characters, dates, lists,
 from rest_framework import status
 
 from timed.employment.factories import UserFactory
-from timed.jsonapi_test_case import JSONAPIClient
 from timed.projects.factories import (CostCenterFactory, ProjectFactory,
                                       TaskFactory)
+from timed.tests.client import JSONAPIClient
 from timed.tracking.factories import ReportFactory
 from timed.tracking.models import Report
 

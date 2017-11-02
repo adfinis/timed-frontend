@@ -1,15 +1,11 @@
 """Helpers for testing with JSONAPI."""
 
 import json
-import logging
 
 from django.core.urlresolvers import reverse
-from rest_framework import status
+from rest_framework import exceptions, status
 from rest_framework.test import APIClient
 from rest_framework_jwt.settings import api_settings
-
-logging.getLogger('factory').setLevel(logging.WARN)
-logging.getLogger('django_auth_ldap').setLevel(logging.WARN)
 
 
 class JSONAPIClient(APIClient):
@@ -81,7 +77,7 @@ class JSONAPIClient(APIClient):
 
         :param str username: Username of the user
         :param str password: Password of the user
-        :raises:             Exception
+        :raises:             exceptions.AuthenticationFailed
         """
         data = {
             'data': {
@@ -96,7 +92,7 @@ class JSONAPIClient(APIClient):
         response = self.post(reverse('login'), data)
 
         if response.status_code != status.HTTP_200_OK:
-            raise Exception('Wrong credentials!')  # pragma: no cover
+            raise exceptions.AuthenticationFailed()
 
         self.credentials(
             HTTP_AUTHORIZATION='{0} {1}'.format(
