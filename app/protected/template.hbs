@@ -1,41 +1,13 @@
-{{#sy-sidenav title='Timed' showAutohideButton=false as |component section|}}
-  {{#if (eq section 'body')}}
-    {{#sy-sidenav-list}}
-      {{sy-sidenav-item 'index' 'clock-o' 'Tracking'}}
-      {{sy-sidenav-item 'me' 'user' 'Profile'}}
-      {{#if (or media.isMd media.isLg media.isXl)}}
-        {{sy-sidenav-item 'analysis' 'line-chart' 'Analysis'}}
-        {{sy-sidenav-item 'statistics' 'bar-chart' 'Statistics'}}
-      {{/if}}
-    {{/sy-sidenav-list}}
+{{sy-sidenav on-logout=(route-action 'invalidateSession')}}
 
-    {{#if model.isStaff}}
-      {{#sy-sidenav-list 'Staff Menu'}}
-        {{#if (or media.isMd media.isLg media.isXl)}}
-          {{sy-sidenav-item 'reschedule' 'refresh' 'Reschedule'}}
-        {{/if}}
-        {{sy-sidenav-item 'users' 'users' 'Users'}}
-      {{/sy-sidenav-list}}
-    {{/if}}
-    {{#sy-sidenav-list class='sy-sidenav-list--logout'}}
-      {{#sy-sidenav-item}}
-        <a data-test-logout href="#" {{action 'invalidateSession'}}>
-          <i class="fa fa-sign-out"></i>
-          Logout
-        </a>
-      {{/sy-sidenav-item}}
-    {{/sy-sidenav-list}}
-  {{else}}
-    <main class="page-main">
-      {{#if loading}}<span class="loader"></span>{{/if}}
-      <div class="page-wrapper">
-        <div class="page-content page-content--scroll">
-          {{outlet}}
-        </div>
-      </div>
-    </main>
-  {{/if}}
-{{/sy-sidenav}}
+<main class="page-main">
+  {{#if loading}}<span class="loader"></span>{{/if}}
+  <div class="page-wrapper">
+    <div class="page-content page-content--scroll">
+      {{outlet}}
+    </div>
+  </div>
+</main>
 
 {{welcome-modal
   visible  = visible

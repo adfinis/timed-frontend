@@ -56,8 +56,8 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
 
   actions: {
     toggleAbsenceLimit() {
-      if (this.get('absenceLimit')) {
-        return this.set('absenceLimit', null)
+      if (!this.get('queryParamsState.absenceLimit.changed')) {
+        return this.set('absenceLimit', '')
       }
 
       return this.resetQueryParams('absenceLimit')

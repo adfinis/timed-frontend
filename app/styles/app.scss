@@ -33,6 +33,11 @@ body {
   min-height: 100%;
 }
 
+.ember-application > .ember-view {
+  display: flex;
+  width: 100vw;
+}
+
 .page-wrapper {
   flex-grow: 1;
   height: 100vh;

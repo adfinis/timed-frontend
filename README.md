@@ -20,8 +20,8 @@
 You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/) (with NPM v5+)
-* [Bower](https://bower.io/)
+* [Node.js](https://nodejs.org/)
+* [Yarn](https://yarnpkg.com/)
 * [Ember CLI](https://ember-cli.com/)
 * [Chrome](https://www.google.com/chrome/)
 * [Firefox](https://www.mozilla.org/firefox/)
@@ -30,28 +30,18 @@ You will need the following things properly installed on your computer.
 
 * `git clone git@github.com/adfinis-sygroup/timed-frontend`
 * `cd timed-frontend`
-* `npm install`
-* `bower install`
-
-## Configurations
-
-If you wish to add custom exports to the analysis section, you can create an environment variable with the name `TIMED_REPORT_EXPORT` and add a JSON Array as value.
-```
-TIMED_REPORT_EXPORT=[{"label":"Special Export","url":"/api/v1/special/export"}]
-```
-In development you can create a `.env` file and add the environment variable.
-```
-echo 'TIMED_REPORT_EXPORT=[{"label":"Special Export","url":"/api/v1/special/export"}]' > .env
-```
+* `yarn`
 
 ## Running / Development
 
-* `ember serve`
+* `ember server`
 * Visit your app at [http://localhost:4200](http://localhost:4200).
 
 If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend) you need to run
 
-* `ember serve --proxy=http://localhost:8000`
+* `ember server --proxy=http://localhost:8000`
+or
+* `yarn start`
 
 ### Running Tests
 

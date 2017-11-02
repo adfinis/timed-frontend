@@ -1,19 +1,50 @@
-<nav class="nav-side {{if expand 'nav-side--expand'}} {{if autohide 'nav-side--autohide'}}">
-  <header class="nav-side-header">
-    <button class="nav-toggle nav-side-toggle" type="button" {{action 'toggle'}}>
-      <span class="nav-toggle-icon"></span>
-    </button>
-    {{#link-to headerLink}}
-      {{timed-clock}}
-      <div class="nav-side-header-title">
-        {{title}}
-      </div>
-    {{/link-to}}
-  </header>
-  <section class="nav-side-body">
-    {{yield this 'body'}}
-    <span class="app-version">v{{app-version}}</span>
-  </section>
-</nav>
-{{yield this 'page-content'}}
-<div role="button" class="page-main-overlay" {{action 'close' on='click'}}></div>
+<header class="nav-side-header">
+  <button class="nav-toggle nav-side-toggle" {{action (toggle 'expand' this)}}>
+    <span class="nav-toggle-icon"></span>
+  </button>
+  {{#link-to 'index'}}
+    {{timed-clock}}
+    <div class="nav-side-header-title">Timed</div>
+  {{/link-to}}
+</header>
+
+<section class="nav-side-body">
+  <ul class="nav-side-list">
+    <li class="nav-side-list-item">
+      {{#link-to 'index'}}
+        {{fa-icon 'clock-o'}} Tracking
+      {{/link-to}}
+    </li>
+    <li class="nav-side-list-item">
+      {{#link-to 'me'}}
+        {{fa-icon 'user'}} Profile
+      {{/link-to}}
+    </li>
+    <li class="nav-side-list-item">
+      {{#link-to 'analysis'}}
+        {{fa-icon 'line-chart'}} Analysis
+      {{/link-to}}
+    </li>
+    <li class="nav-side-list-item">
+      {{#link-to 'users'}}
+        {{fa-icon 'users'}} Users
+      {{/link-to}}
+    </li>
+    {{#if user.isStaff}}
+      <li class="nav-side-list-item">
+        {{#link-to 'reschedule'}}
+          {{fa-icon 'refresh'}} Reschedule
+        {{/link-to}}
+      </li>
+    {{/if}}
+  </ul>
+  <ul class="nav-side-list">
+    <li class="nav-side-list-header"></li>
+    <li class="nav-side-list-item">
+      <a href="#" data-test-logout {{action on-logout on='click'}}>
+        {{fa-icon 'sign-out'}} Logout
+      </a>
+    </li>
+  </ul>
+  <span class="app-version">v{{app-version}}</span>
+</section>

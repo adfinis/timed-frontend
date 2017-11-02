@@ -84,9 +84,7 @@ describe('Acceptance | statistics', function() {
   it('can filter and reset filter', async function() {
     await visit('/statistics')
 
-    let from = moment()
-      .subtract(10, 'days')
-      .format('YYYY-MM-DD')
+    let from = moment().format('YYYY-MM-DD')
     let to = moment().format('YYYY-MM-DD')
 
     await click('[data-test-filter-from-date] input')
