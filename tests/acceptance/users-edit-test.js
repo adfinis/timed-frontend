@@ -58,7 +58,7 @@ describe('Acceptance | users edit', function() {
 
     await click('.show-more-or-less')
 
-    expect(currentURL()).to.equal(`/users/${this.allowed.id}?absenceLimit=null`)
+    expect(currentURL()).to.equal(`/users/${this.allowed.id}?absenceLimit=`)
 
     await click('.show-more-or-less')
 

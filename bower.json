@@ -1,9 +1,0 @@
-{
-  "name": "timed",
-  "dependencies": {
-    "adcssy": "adfinis-sygroup/adcssy#0.10.0",
-    "font-awesome": "^4.7.0",
-    "nouislider": "^10.1.0",
-    "hopscotch": "^0.3.1"
-  }
-}
