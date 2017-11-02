@@ -3,10 +3,9 @@
 import json
 import logging
 
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
+from rest_framework.test import APIClient
 from rest_framework_jwt.settings import api_settings
 
 logging.getLogger('factory').setLevel(logging.WARN)
@@ -105,26 +104,3 @@ class JSONAPIClient(APIClient):
                 response.data['token']
             )
         )
-
-
-class JSONAPITestCase(APITestCase):
-    """Base test case for testing the timed API."""
-
-    def setUp(self):
-        """Set the clients for testing up."""
-        super().setUp()
-
-        self.user = get_user_model().objects.create_user(
-            username='user',
-            password='123qweasd',
-            is_staff=True,
-        )
-
-        self.client = JSONAPIClient()
-        self.client.login('user', '123qweasd')
-
-        self.noauth_client = JSONAPIClient()
-
-    def result(self, response):
-        """Convert the response data to JSON."""
-        return json.loads(response.content.decode('utf8'))

@@ -1,222 +1,160 @@
-"""Tests for the activities endpoint."""
+from datetime import date, timedelta
 
-from datetime import datetime
-
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from pytz import timezone
-from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+from rest_framework import status
 
-from timed.jsonapi_test_case import JSONAPITestCase
+from timed.projects.factories import TaskFactory
 from timed.tracking.factories import ActivityBlockFactory, ActivityFactory
 
 
-class ActivityTests(JSONAPITestCase):
-    """Tests for the activities endpoint."""
+def test_activity_list(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user)
+    url = reverse('activity-list')
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        other_user = get_user_model().objects.create_user(
-            username='test',
-            password='123qweasd'
-        )
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(activity.id)
 
-        self.activities = ActivityFactory.create_batch(
-            10,
-            user=self.user
-        )
 
-        for activity in self.activities:
-            ActivityBlockFactory.create_batch(5, activity=activity)
+def test_activity_detail(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user)
 
-        ActivityFactory.create_batch(
-            10,
-            user=other_user
-        )
+    url = reverse('activity-detail', args=[
+        activity.id
+    ])
 
-    def test_activity_list(self):
-        """Should respond with a list of activities filtered by user."""
-        url = reverse('activity-list')
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+def test_activity_create(auth_client):
+    """Should create a new activity and automatically set the user."""
+    user = auth_client.user
+    task = TaskFactory.create()
 
-        result = self.result(res)
-
-        assert len(result['data']) == len(self.activities)
-
-    def test_activity_detail(self):
-        """Should respond with a single activity."""
-        activity = self.activities[0]
-
-        url = reverse('activity-detail', args=[
-            activity.id
-        ])
-
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-    def test_activity_create(self):
-        """Should create a new activity and automatically set the user."""
-        task = self.activities[0].task
-
-        data = {
-            'data': {
-                'type': 'activities',
-                'id': None,
-                'attributes': {
-                    'date': '2017-01-01',
-                    'comment': 'Test activity'
-                },
-                'relationships': {
-                    'task': {
-                        'data': {
-                            'type': 'tasks',
-                            'id': task.id
-                        }
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': None,
+            'attributes': {
+                'date': '2017-01-01',
+                'comment': 'Test activity'
+            },
+            'relationships': {
+                'task': {
+                    'data': {
+                        'type': 'tasks',
+                        'id': task.id
                     }
                 }
             }
         }
+    }
 
-        url = reverse('activity-list')
+    url = reverse('activity-list')
 
-        noauth_res = self.noauth_client.post(url, data)
-        res        = self.client.post(url, data)
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_201_CREATED
+    json = response.json()
+    assert (
+        int(json['data']['relationships']['user']['data']['id']) ==
+        int(user.id)
+    )
 
-        result = self.result(res)
 
-        assert (
-            int(result['data']['relationships']['user']['data']['id']) ==
-            int(self.user.id)
-        )
+def test_activity_update(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user)
 
-    def test_activity_update(self):
-        """Should update an existing activity."""
-        activity = self.activities[0]
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': activity.id,
+            'attributes': {
+                'comment': 'Test activity 2'
+            }
+        }
+    }
 
-        data = {
-            'data': {
-                'type': 'activities',
-                'id': activity.id,
-                'attributes': {
-                    'comment': 'Test activity 2'
+    url = reverse('activity-detail', args=[
+        activity.id
+    ])
+
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert (
+        json['data']['attributes']['comment'] ==
+        data['data']['attributes']['comment']
+    )
+
+
+def test_activity_delete(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user)
+
+    url = reverse('activity-detail', args=[
+        activity.id
+    ])
+
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+
+def test_activity_list_filter_active(auth_client):
+    user = auth_client.user
+    ActivityFactory.create(user=user)
+    activity = ActivityFactory.create(user=user)
+    ActivityBlockFactory.create(activity=activity, to_time=None)
+
+    url = reverse('activity-list')
+
+    response = auth_client.get(url, data={'active': 'true'})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(activity.id)
+
+
+def test_activity_list_filter_day(auth_client):
+    user = auth_client.user
+    day = date(2016, 2, 2)
+    ActivityFactory.create(date=day - timedelta(days=1), user=user)
+    activity = ActivityFactory.create(date=day, user=user)
+
+    url = reverse('activity-list')
+    response = auth_client.get(url, data={'day': day.strftime('%Y-%m-%d')})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(activity.id)
+
+
+def test_activity_create_no_task(auth_client):
+    """Should create a new activity without a task."""
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': None,
+            'attributes': {
+                'date': '2017-01-01',
+                'comment': 'Test activity'
+            },
+            'relationships': {
+                'task': {
+                    'data': None
                 }
             }
         }
+    }
 
-        url = reverse('activity-detail', args=[
-            activity.id
-        ])
+    url = reverse('activity-list')
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
 
-        noauth_res = self.noauth_client.patch(url, data)
-        res        = self.client.patch(url, data)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        assert (
-            result['data']['attributes']['comment'] ==
-            data['data']['attributes']['comment']
-        )
-
-    def test_activity_delete(self):
-        """Should delete an activity."""
-        activity = self.activities[0]
-
-        url = reverse('activity-detail', args=[
-            activity.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.delete(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_204_NO_CONTENT
-
-    def test_activity_list_filter_active(self):
-        """Should respond with a list of active activities."""
-        activity = self.activities[0]
-        block    = ActivityBlockFactory.create(activity=activity)
-
-        block.to_time = None
-        block.save()
-
-        url = reverse('activity-list')
-
-        res = self.client.get('{0}?active=true'.format(url))
-
-        result = self.result(res)
-
-        assert len(result['data']) == 1
-
-        assert int(result['data'][0]['id']) == int(activity.id)
-
-    def test_activity_list_filter_day(self):
-        """Should respond with a list of activities starting today."""
-        now      = datetime.now(timezone('Europe/Zurich'))
-        activity = self.activities[0]
-
-        activity.date = now
-        activity.save()
-
-        url = reverse('activity-list')
-
-        res = self.client.get('{0}?day={1}'.format(
-            url,
-            now.strftime('%Y-%m-%d')
-        ))
-
-        result = self.result(res)
-
-        assert len(result['data']) >= 1
-
-        assert any([
-            int(data['id']) == activity.id
-            for data
-            in result['data']
-        ])
-
-    def test_activity_create_no_task(self):
-        """Should create a new activity without a task."""
-        data = {
-            'data': {
-                'type': 'activities',
-                'id': None,
-                'attributes': {
-                    'date': '2017-01-01',
-                    'comment': 'Test activity'
-                },
-                'relationships': {
-                    'task': {
-                        'data': None
-                    }
-                }
-            }
-        }
-
-        url = reverse('activity-list')
-
-        noauth_res = self.noauth_client.post(url, data)
-        res        = self.client.post(url, data)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_201_CREATED
-
-        result = self.result(res)
-
-        assert result['data']['relationships']['task']['data'] is None
+    json = response.json()
+    assert json['data']['relationships']['task']['data'] is None
