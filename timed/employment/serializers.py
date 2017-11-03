@@ -91,6 +91,10 @@ class WorktimeBalanceSerializer(Serializer):
         _, _, balance = instance.id.calculate_worktime(start, balance_date)
         return duration_string(balance)
 
+    included_serializers = {
+        'user': 'timed.employment.serializers.UserSerializer'
+    }
+
     class Meta:
         resource_name = 'worktime-balances'
 
