@@ -1,92 +1,60 @@
 """Tests for the customers endpoint."""
 
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
+from rest_framework import status
 
-from timed.jsonapi_test_case import JSONAPITestCase
 from timed.projects.factories import CustomerFactory
 
 
-class CustomerTests(JSONAPITestCase):
-    """Tests for the customer endpoint.
+def test_customer_list_not_archived(auth_client):
+    CustomerFactory.create(archived=True)
+    customer = CustomerFactory.create(archived=False)
 
-    This endpoint should be read only for normal users.
-    """
+    url = reverse('customer-list')
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+    response = auth_client.get(url, data={'archived': 0})
+    assert response.status_code == status.HTTP_200_OK
 
-        self.customers = CustomerFactory.create_batch(10)
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(customer.id)
 
-        CustomerFactory.create_batch(
-            10,
-            archived=True
-        )
 
-    def test_customer_list(self):
-        """Should respond with a list of customers."""
-        url = reverse('customer-list')
+def test_customer_detail(auth_client):
+    customer = CustomerFactory.create()
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url, data={'archived': 0})
+    url = reverse('customer-detail', args=[
+        customer.id
+    ])
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        result = self.result(res)
 
-        assert len(result['data']) == len(self.customers)
+def test_customer_create(auth_client):
+    url = reverse('customer-list')
 
-    def test_customer_detail(self):
-        """Should respond with a single customer."""
-        customer = self.customers[0]
+    response = auth_client.post(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        url = reverse('customer-detail', args=[
-            customer.id
-        ])
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+def test_customer_update(auth_client):
+    customer = CustomerFactory.create()
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    url = reverse('customer-detail', args=[
+        customer.id
+    ])
 
-    def test_customer_create(self):
-        """Should not be able to create a new customer."""
-        url = reverse('customer-list')
+    response = auth_client.patch(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+def test_customer_delete(auth_client):
+    customer = CustomerFactory.create()
 
-    def test_customer_update(self):
-        """Should not be able to update an existing customer."""
-        customer = self.customers[0]
+    url = reverse('customer-detail', args=[
+        customer.id
+    ])
 
-        url = reverse('customer-detail', args=[
-            customer.id
-        ])
-
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_customer_delete(self):
-        """Should not be able delete a customer."""
-        customer = self.customers[0]
-
-        url = reverse('customer-detail', args=[
-            customer.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED

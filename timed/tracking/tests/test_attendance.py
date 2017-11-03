@@ -1,136 +1,85 @@
-"""Tests for the attendances endpoint."""
-
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_201_CREATED,
-                                   HTTP_204_NO_CONTENT, HTTP_401_UNAUTHORIZED)
+from rest_framework import status
 
-from timed.jsonapi_test_case import JSONAPITestCase
 from timed.tracking.factories import AttendanceFactory
 
 
-class AttendanceTests(JSONAPITestCase):
-    """Tests for the attendances endpoint."""
+def test_attendance_list(auth_client):
+    AttendanceFactory.create()
+    attendance = AttendanceFactory.create(user=auth_client.user)
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+    url = reverse('attendance-list')
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        other_user = get_user_model().objects.create_user(
-            username='test',
-            password='123qweasd'
-        )
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(attendance.id)
 
-        self.attendances = AttendanceFactory.create_batch(
-            10,
-            user=self.user
-        )
 
-        AttendanceFactory.create_batch(
-            10,
-            user=other_user
-        )
+def test_attendance_detail(auth_client):
+    attendance = AttendanceFactory.create(user=auth_client.user)
 
-    def test_attendance_list(self):
-        """Should respond with a list of attendances filtered by user."""
-        url = reverse('attendance-list')
+    url = reverse('attendance-detail', args=[attendance.id])
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-        result = self.result(res)
-
-        assert len(result['data']) == len(self.attendances)
-
-    def test_attendance_detail(self):
-        """Should respond with a single attendance."""
-        attendance = self.attendances[0]
-
-        url = reverse('attendance-detail', args=[
-            attendance.id
-        ])
-
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-    def test_attendance_create(self):
-        """Should create a new attendance and automatically set the user."""
-        data = {
-            'data': {
-                'type': 'attendances',
-                'id': None,
-                'attributes': {
-                    'date': '2017-01-01',
-                    'from-time': '08:00',
-                    'to-time': '10:00'
-                }
+def test_attendance_create(auth_client):
+    """Should create a new attendance and automatically set the user."""
+    user = auth_client.user
+    data = {
+        'data': {
+            'type': 'attendances',
+            'id': None,
+            'attributes': {
+                'date': '2017-01-01',
+                'from-time': '08:00',
+                'to-time': '10:00'
             }
         }
+    }
 
-        url = reverse('attendance-list')
+    url = reverse('attendance-list')
 
-        noauth_res = self.noauth_client.post(url, data)
-        res        = self.client.post(url, data)
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_201_CREATED
+    json = response.json()
+    assert (
+        json['data']['relationships']['user']['data']['id'] == str(user.id)
+    )
 
-        result = self.result(res)
 
-        assert not result['data']['id'] is None
+def test_attendance_update(auth_client):
+    attendance = AttendanceFactory.create(user=auth_client.user)
 
-        assert (
-            int(result['data']['relationships']['user']['data']['id']) ==
-            int(self.user.id)
-        )
-
-    def test_attendance_update(self):
-        """Should update and existing attendance."""
-        attendance = self.attendances[0]
-
-        data = {
-            'data': {
-                'type': 'attendances',
-                'id': attendance.id,
-                'attributes': {
-                    'to-time': '15:00:00'
-                }
+    data = {
+        'data': {
+            'type': 'attendances',
+            'id': attendance.id,
+            'attributes': {
+                'to-time': '15:00:00'
             }
         }
+    }
 
-        url = reverse('attendance-detail', args=[
-            attendance.id
-        ])
+    url = reverse('attendance-detail', args=[attendance.id])
 
-        noauth_res = self.noauth_client.patch(url, data)
-        res        = self.client.patch(url, data)
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    json = response.json()
+    assert (
+        json['data']['attributes']['to-time'] ==
+        data['data']['attributes']['to-time']
+    )
 
-        result = self.result(res)
 
-        assert (
-            result['data']['attributes']['to-time'] ==
-            data['data']['attributes']['to-time']
-        )
+def test_attendance_delete(auth_client):
+    attendance = AttendanceFactory.create(user=auth_client.user)
 
-    def test_attendance_delete(self):
-        """Should delete an attendance."""
-        attendance = self.attendances[0]
+    url = reverse('attendance-detail', args=[attendance.id])
 
-        url = reverse('attendance-detail', args=[
-            attendance.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.delete(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_204_NO_CONTENT
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT

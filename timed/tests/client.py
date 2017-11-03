@@ -1,16 +1,11 @@
 """Helpers for testing with JSONAPI."""
 
 import json
-import logging
 
-from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
-from rest_framework import status
-from rest_framework.test import APIClient, APITestCase
+from rest_framework import exceptions, status
+from rest_framework.test import APIClient
 from rest_framework_jwt.settings import api_settings
-
-logging.getLogger('factory').setLevel(logging.WARN)
-logging.getLogger('django_auth_ldap').setLevel(logging.WARN)
 
 
 class JSONAPIClient(APIClient):
@@ -82,7 +77,7 @@ class JSONAPIClient(APIClient):
 
         :param str username: Username of the user
         :param str password: Password of the user
-        :raises:             Exception
+        :raises:             exceptions.AuthenticationFailed
         """
         data = {
             'data': {
@@ -97,7 +92,7 @@ class JSONAPIClient(APIClient):
         response = self.post(reverse('login'), data)
 
         if response.status_code != status.HTTP_200_OK:
-            raise Exception('Wrong credentials!')  # pragma: no cover
+            raise exceptions.AuthenticationFailed()
 
         self.credentials(
             HTTP_AUTHORIZATION='{0} {1}'.format(
@@ -105,26 +100,3 @@ class JSONAPIClient(APIClient):
                 response.data['token']
             )
         )
-
-
-class JSONAPITestCase(APITestCase):
-    """Base test case for testing the timed API."""
-
-    def setUp(self):
-        """Set the clients for testing up."""
-        super().setUp()
-
-        self.user = get_user_model().objects.create_user(
-            username='user',
-            password='123qweasd',
-            is_staff=True,
-        )
-
-        self.client = JSONAPIClient()
-        self.client.login('user', '123qweasd')
-
-        self.noauth_client = JSONAPIClient()
-
-    def result(self, response):
-        """Convert the response data to JSON."""
-        return json.loads(response.content.decode('utf8'))

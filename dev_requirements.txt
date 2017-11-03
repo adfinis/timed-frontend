@@ -8,7 +8,6 @@ flake8-docstrings
 flake8-isort
 flake8-quotes
 flake8-string-format
-hypothesis==3.13.1
 ipdb
 isort
 pytest

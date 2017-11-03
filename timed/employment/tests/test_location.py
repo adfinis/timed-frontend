@@ -1,91 +1,58 @@
-"""Tests for the locations endpoint."""
-
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
+from rest_framework import status
 
 from timed.employment.factories import LocationFactory
-from timed.jsonapi_test_case import JSONAPITestCase
 
 
-class LocationTests(JSONAPITestCase):
-    """Tests for the location endpoint.
+def test_location_list(auth_client):
+    LocationFactory.create()
+    url = reverse('location-list')
 
-    This endpoint should be read only for normal users.
-    """
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+    data = response.json()['data']
+    assert len(data) == 1
+    assert data[0]['attributes']['workdays'] == (
+        [str(day) for day in range(1, 6)]
+    )
 
-        self.locations = LocationFactory.create_batch(3)
 
-    def test_location_list(self):
-        """Should respond with a list of locations."""
-        url = reverse('location-list')
+def test_location_detail(auth_client):
+    location = LocationFactory.create()
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    url = reverse('location-detail', args=[
+        location.id
+    ])
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        result = self.result(res)
-        data = result['data']
 
-        assert len(data) == len(self.locations)
-        assert data[0]['attributes']['workdays'] == (
-            [str(day) for day in range(1, 6)]
-        )
+def test_location_create(auth_client):
+    url = reverse('location-list')
 
-    def test_location_detail(self):
-        """Should respond with a single location."""
-        location = self.locations[0]
+    response = auth_client.post(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        url = reverse('location-detail', args=[
-            location.id
-        ])
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+def test_location_update(auth_client):
+    location = LocationFactory.create()
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    url = reverse('location-detail', args=[
+        location.id
+    ])
 
-    def test_location_create(self):
-        """Should not be able to create a new location."""
-        url = reverse('location-list')
+    response = auth_client.patch(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+def test_location_delete(auth_client):
+    location = LocationFactory.create()
 
-    def test_location_update(self):
-        """Should not be able to update an existing location."""
-        location = self.locations[0]
+    url = reverse('location-detail', args=[
+        location.id
+    ])
 
-        url = reverse('location-detail', args=[
-            location.id
-        ])
-
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_location_delete(self):
-        """Should not be able delete a location."""
-        location = self.locations[0]
-
-        url = reverse('location-detail', args=[
-            location.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
