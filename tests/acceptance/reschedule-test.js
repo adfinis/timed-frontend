@@ -258,7 +258,7 @@ describe('Acceptance | reschedule', function() {
   it('resets filters when leaving the page', async function() {
     await visit('/reschedule?user=1&not_billable=1')
 
-    await click('a[href="/me"]')
+    await click('a[href="/"]')
 
     expect(currentURL()).to.not.contain('reschedule')
 
@@ -270,7 +270,7 @@ describe('Acceptance | reschedule', function() {
   it('does not reset page size when leaving the page', async function() {
     await visit('/reschedule?page_size=100')
 
-    await click('a[href="/me"]')
+    await click('a[href="/"]')
 
     expect(currentURL()).to.not.contain('reschedule')
 
