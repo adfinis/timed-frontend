@@ -22,11 +22,12 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
   supervisees: task(function*() {
     let supervisor = this.get('model.id')
 
-    yield this.store.query('worktime-balance', {
+    let balances = yield this.store.query('worktime-balance', {
       supervisor,
-      date: moment().format('YYYY-MM-DD')
+      date: moment().format('YYYY-MM-DD'),
+      include: 'user'
     })
 
-    return yield this.store.query('user', { supervisor, ordering: 'username' })
+    return balances.mapBy('user')
   })
 })
