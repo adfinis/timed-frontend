@@ -1,0 +1,73 @@
+<div class="grid grid--12of12 grid-md--6of12">
+  <div class="grid-cell">
+    <h4>Projects</h4>
+    <div class="card">
+      <div class="card-block">
+        {{#if projects.isRunning}}
+          <div class="empty">
+            {{loading-icon}}
+          </div>
+        {{else}}
+          {{#with projects.lastSuccessful.value as |projects|}}
+            <table class="table table--striped">
+              <thead>
+                <tr>
+                  <th>Customer</th>
+                  <th>Project</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each projects as |project|}}
+                  <tr>
+                    <td>{{project.customer.name}}</td>
+                    <td>{{project.name}}</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          {{^}}
+            <div class="text-center"><em>No projects to show</em></div>
+          {{/with}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-cell">
+    <h4>Supervisees</h4>
+    <div class="card">
+      <div class="card-block">
+        {{#if supervisees.isRunning}}
+          <div class="empty">
+            {{loading-icon}}
+          </div>
+        {{else}}
+          {{#with supervisees.lastSuccessful.value as |supervisees|}}
+            <table class="table table--striped">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Current worktime balance</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each supervisees as |supervisee|}}
+                  <tr>
+                    <td>{{supervisee.fullName}}</td>
+                    <td>
+                      <span class="worktime-balance {{balance-highlight-class supervisee.currentWorktimeBalance.balance}}">
+                        {{format-duration supervisee.currentWorktimeBalance.balance false}}
+                      </span>
+                    </td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          {{^}}
+            <div class="text-center"><em>No supervisees to show</em></div>
+          {{/with}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+</div>

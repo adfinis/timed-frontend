@@ -3,13 +3,7 @@ import { task } from 'ember-concurrency'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
 
-const UsersEditIndexQueryParams = new QueryParams({
-  absenceLimit: {
-    defaultValue: 5,
-    refresh: true,
-    replace: true
-  }
-})
+const UsersEditIndexQueryParams = new QueryParams({})
 
 export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
   setup() {
@@ -17,21 +11,7 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
     this.get('employments').perform()
   },
 
-  queryParamsDidChange({ shouldRefresh }) {
-    if (shouldRefresh) {
-      this.get('absences').perform()
-      this.get('employments').perform()
-    }
-  },
-
   absences: task(function*() {
-    let pageParams = this.get('absenceLimit')
-      ? {
-          page: 1,
-          page_size: this.get('absenceLimit') // eslint-disable-line camelcase
-        }
-      : {}
-
     return yield this.store.query('absence', {
       user: this.get('model.id'),
       ordering: '-date',
@@ -41,8 +21,7 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
         month: 0,
         year: this.get('year')
       }).format('YYYY-MM-DD'),
-      include: 'type',
-      ...pageParams
+      include: 'type'
     })
   }),
 
@@ -52,15 +31,5 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
       ordering: '-start_date',
       include: 'location'
     })
-  }),
-
-  actions: {
-    toggleAbsenceLimit() {
-      if (!this.get('queryParamsState.absenceLimit.changed')) {
-        return this.set('absenceLimit', '')
-      }
-
-      return this.resetQueryParams('absenceLimit')
-    }
-  }
+  })
 })
