@@ -23,7 +23,7 @@ export default function formatDuration(duration, seconds = true) {
     duration = moment.duration(duration)
   }
 
-  if (!duration || duration.milliseconds() < 0) {
+  if (!moment.isDuration(duration)) {
     return seconds ? '--:--:--' : '--:--'
   }
 
