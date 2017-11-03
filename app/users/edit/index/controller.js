@@ -11,13 +11,6 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
     this.get('employments').perform()
   },
 
-  queryParamsDidChange({ shouldRefresh }) {
-    if (shouldRefresh) {
-      this.get('absences').perform()
-      this.get('employments').perform()
-    }
-  },
-
   absences: task(function*() {
     return yield this.store.query('absence', {
       user: this.get('model.id'),
@@ -38,15 +31,5 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
       ordering: '-start_date',
       include: 'location'
     })
-  }),
-
-  actions: {
-    toggleAbsenceLimit() {
-      if (!this.get('queryParamsState.absenceLimit.changed')) {
-        return this.set('absenceLimit', '')
-      }
-
-      return this.resetQueryParams('absenceLimit')
-    }
-  }
+  })
 })
