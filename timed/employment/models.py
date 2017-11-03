@@ -11,6 +11,7 @@ from django.db.models import Sum, functions
 from django.utils.translation import ugettext_lazy as _
 
 from timed.models import WeekdaysField
+from timed.tracking.models import Absence
 
 
 class Location(models.Model):
@@ -82,6 +83,42 @@ class AbsenceType(models.Model):
         """
         return self.name
 
+    def calculate_credit(self, user, start, end):
+        """
+        Calculate approved days of type for user in given time frame.
+
+        For absence types which fill worktime this will be None.
+        """
+        if self.fill_worktime:
+            return None
+
+        credits = AbsenceCredit.objects.filter(
+            user=user,
+            absence_type=self,
+            date__range=[start, end]
+        )
+        data = credits.aggregate(credit=Sum('days'))
+        credit = data['credit'] or 0
+
+        return credit
+
+    def calculate_used_days(self, user, start, end):
+        """
+        Calculate used days of type for user in given time frame.
+
+        For absence types which fill worktime this will be None.
+        """
+        if self.fill_worktime:
+            return None
+
+        absences = Absence.objects.filter(
+            user=user,
+            type=self,
+            date__range=[start, end]
+        )
+        used_days = absences.count()
+        return used_days
+
     class Meta:
         ordering = ('name', )
 
@@ -100,6 +137,10 @@ class AbsenceCredit(models.Model):
     absence_type = models.ForeignKey(AbsenceType)
     date         = models.DateField()
     days         = models.IntegerField(default=0)
+    transfer     = models.BooleanField(default=False)
+    """
+    Mark whether this absence credit is a transfer from last year.
+    """
 
 
 class OvertimeCredit(models.Model):
@@ -114,6 +155,10 @@ class OvertimeCredit(models.Model):
     comment  = models.CharField(max_length=255, blank=True)
     date     = models.DateField()
     duration = models.DurationField(default=timedelta(0))
+    transfer = models.BooleanField(default=False)
+    """
+    Mark whether this absence credit is a transfer from last year.
+    """
 
 
 class EmploymentManager(models.Manager):

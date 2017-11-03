@@ -1,10 +1,12 @@
-"""Tests for the locations endpoint."""
+from datetime import date, timedelta
 
+import pytest
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
-from timed.employment.factories import UserFactory
-from timed.tracking.factories import ReportFactory
+from timed.employment.factories import (AbsenceTypeFactory, EmploymentFactory,
+                                        UserFactory)
+from timed.tracking.factories import AbsenceFactory, ReportFactory
 
 
 def test_user_list_unauthenticated(client):
@@ -150,3 +152,39 @@ def test_user_supervisor_filter(auth_client):
     })
 
     assert len(res.json()['data']) == 5
+
+
+@pytest.mark.freeze_time('2018-01-07')
+def test_user_transfer(superadmin_client):
+    user = UserFactory.create()
+    EmploymentFactory.create(
+        user=user, start_date=date(2017, 12, 28), percentage=100
+    )
+    AbsenceTypeFactory.create(fill_worktime=True)
+    AbsenceTypeFactory.create(fill_worktime=False)
+    absence_type = AbsenceTypeFactory.create(fill_worktime=False)
+    AbsenceFactory.create(
+        user=user, type=absence_type, date=date(2017, 12, 29)
+    )
+
+    url = reverse('user-transfer', args=[user.id])
+    response = superadmin_client.post(url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    # running transfer twice should lead to same result
+    response = superadmin_client.post(url)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    assert user.overtime_credits.count() == 1
+    overtime_credit = user.overtime_credits.first()
+    assert overtime_credit.transfer
+    assert overtime_credit.date == date(2018, 1, 1)
+    assert overtime_credit.duration == timedelta(hours=-8, minutes=-30)
+    assert overtime_credit.comment == 'Transfer 2017'
+
+    assert user.absence_credits.count() == 1
+    absence_credit = user.absence_credits.first()
+    assert absence_credit.transfer
+    assert absence_credit.date == date(2018, 1, 1)
+    assert absence_credit.days == -1
+    assert absence_credit.comment == 'Transfer 2017'
