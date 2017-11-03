@@ -1,105 +1,71 @@
-"""Tests for the public holidays endpoint."""
+from datetime import date
 
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
+from rest_framework import status
 
 from timed.employment.factories import PublicHolidayFactory
-from timed.employment.models import PublicHoliday
-from timed.jsonapi_test_case import JSONAPITestCase
 
 
-class PublicHolidayTests(JSONAPITestCase):
-    """Tests for the public holiday endpoint.
+def test_public_holiday_list(auth_client):
+    PublicHolidayFactory.create()
+    url = reverse('public-holiday-list')
 
-    This endpoint should be read only for normal users.
-    """
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+    json = response.json()
+    assert len(json['data']) == 1
 
-        self.public_holidays = PublicHolidayFactory.create_batch(10)
 
-    def test_public_holiday_list(self):
-        """Should respond with a list of public holidays."""
-        url = reverse('public-holiday-list')
+def test_public_holiday_detail(auth_client):
+    public_holiday = PublicHolidayFactory.create()
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    url = reverse('public-holiday-detail', args=[
+        public_holiday.id
+    ])
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        result = self.result(res)
 
-        assert len(result['data']) == len(self.public_holidays)
+def test_public_holiday_create(auth_client):
+    url = reverse('public-holiday-list')
 
-    def test_public_holiday_detail(self):
-        """Should respond with a single public holiday."""
-        public_holiday = self.public_holidays[0]
+    response = auth_client.post(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        url = reverse('public-holiday-detail', args=[
-            public_holiday.id
-        ])
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+def test_public_holiday_update(auth_client):
+    public_holiday = PublicHolidayFactory.create()
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    url = reverse('public-holiday-detail', args=[
+        public_holiday.id
+    ])
 
-    def test_public_holiday_create(self):
-        """Should not be able to create a new public holiday."""
-        url = reverse('public-holiday-list')
+    response = auth_client.patch(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+def test_public_holiday_delete(auth_client):
+    public_holiday = PublicHolidayFactory.create()
 
-    def test_public_holiday_update(self):
-        """Should not be able to update an existing public holiday."""
-        public_holiday = self.public_holidays[0]
+    url = reverse('public-holiday-detail', args=[
+        public_holiday.id
+    ])
 
-        url = reverse('public-holiday-detail', args=[
-            public_holiday.id
-        ])
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+def test_public_holiday_year_filter(auth_client):
+    PublicHolidayFactory.create(date=date(2017, 1, 1))
+    public_holiday = PublicHolidayFactory.create(date=date(2018, 1, 1))
 
-    def test_public_holiday_delete(self):
-        """Should not be able delete a public holiday."""
-        public_holiday = self.public_holidays[0]
+    url = reverse('public-holiday-list')
 
-        url = reverse('public-holiday-detail', args=[
-            public_holiday.id
-        ])
+    response = auth_client.get(url, data={'year': 2018})
+    assert response.status_code == status.HTTP_200_OK
 
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_public_holiday_year_filter(self):
-        """Should filter the public holidays by year."""
-        year = self.public_holidays[0].date.strftime('%Y')
-
-        url = '{0}?year={1}'.format(reverse('public-holiday-list'), year)
-
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
-
-        result   = self.result(res)
-        expected = PublicHoliday.objects.filter(date__year=year)
-
-        assert len(result['data']) == len(expected)
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(public_holiday.id)

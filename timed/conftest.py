@@ -1,7 +1,7 @@
 import pytest
 from django.contrib.auth import get_user_model
 
-from timed.jsonapi_test_case import JSONAPIClient
+from timed.tests.client import JSONAPIClient
 
 
 @pytest.fixture
@@ -19,6 +19,24 @@ def auth_client(db):
         last_name='User',
         is_superuser=False,
         is_staff=False
+    )
+
+    client = JSONAPIClient()
+    client.user = user
+    client.login('user', '123qweasd')
+    return client
+
+
+@pytest.fixture
+def admin_client(db):
+    """Return instance of a JSONAPIClient that is logged in as a staff user."""
+    user = get_user_model().objects.create_user(
+        username='user',
+        password='123qweasd',
+        first_name='Test',
+        last_name='User',
+        is_superuser=False,
+        is_staff=True
     )
 
     client = JSONAPIClient()

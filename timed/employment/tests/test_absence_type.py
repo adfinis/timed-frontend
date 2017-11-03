@@ -1,87 +1,57 @@
-"""Tests for the absence types endpoint."""
-
 from django.core.urlresolvers import reverse
-from rest_framework.status import (HTTP_200_OK, HTTP_401_UNAUTHORIZED,
-                                   HTTP_405_METHOD_NOT_ALLOWED)
+from rest_framework import status
 
 from timed.employment.factories import AbsenceTypeFactory
-from timed.jsonapi_test_case import JSONAPITestCase
 
 
-class AbsenceTypeTests(JSONAPITestCase):
-    """Tests for the absence types endpoint.
+def test_absence_type_list(auth_client):
+    AbsenceTypeFactory.create_batch(2)
 
-    This endpoint should be read only for normal users.
-    """
+    url = reverse('absence-type-list')
 
-    def setUp(self):
-        """Set the environment for the tests up."""
-        super().setUp()
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
 
-        self.absence_types = AbsenceTypeFactory.create_batch(5)
+    json = response.json()
+    assert len(json['data']) == 2
 
-    def test_absence_type_list(self):
-        """Should respond with a list of absence types."""
-        url = reverse('absence-type-list')
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+def test_absence_type_detail(auth_client):
+    absence_type = AbsenceTypeFactory.create()
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
+    url = reverse('absence-type-detail', args=[
+        absence_type.id
+    ])
 
-        result = self.result(res)
+    response = auth_client.get(url)
 
-        assert len(result['data']) == len(self.absence_types)
+    assert response.status_code == status.HTTP_200_OK
 
-    def test_absence_type_detail(self):
-        """Should respond with a single absence type."""
-        absence_type = self.absence_types[0]
 
-        url = reverse('absence-type-detail', args=[
-            absence_type.id
-        ])
+def test_absence_type_create(auth_client):
+    url = reverse('absence-type-list')
 
-        noauth_res = self.noauth_client.get(url)
-        res        = self.client.get(url)
+    response = auth_client.post(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_200_OK
 
-    def test_absence_type_create(self):
-        """Should not be able to create a new absence type."""
-        url = reverse('absence-type-list')
+def test_absence_type_update(auth_client):
+    absence_type = AbsenceTypeFactory.create()
 
-        noauth_res = self.noauth_client.post(url)
-        res        = self.client.post(url)
+    url = reverse('absence-type-detail', args=[
+        absence_type.id
+    ])
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    response = auth_client.patch(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
-    def test_absence_type_update(self):
-        """Should not be able to update an existing absence type."""
-        absence_type = self.absence_types[0]
 
-        url = reverse('absence-type-detail', args=[
-            absence_type.id
-        ])
+def test_absence_type_delete(auth_client):
+    absence_type = AbsenceTypeFactory.create()
 
-        noauth_res = self.noauth_client.patch(url)
-        res        = self.client.patch(url)
+    url = reverse('absence-type-detail', args=[
+        absence_type.id
+    ])
 
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
-
-    def test_absence_type_delete(self):
-        """Should not be able delete an absence type."""
-        absence_type = self.absence_types[0]
-
-        url = reverse('absence-type-detail', args=[
-            absence_type.id
-        ])
-
-        noauth_res = self.noauth_client.delete(url)
-        res        = self.client.patch(url)
-
-        assert noauth_res.status_code == HTTP_401_UNAUTHORIZED
-        assert res.status_code == HTTP_405_METHOD_NOT_ALLOWED
+    response = auth_client.delete(url)
+    assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
