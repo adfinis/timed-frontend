@@ -24,8 +24,13 @@ ApplicationRouter.map(function() {
     this.route('analysis', { resetNamespace })
     this.route('reschedule', { resetNamespace })
     this.route('users', { resetNamespace }, function() {
-      this.route('edit', { path: '/:id' }, function() {
-        this.route('credits')
+      this.route('edit', { path: '/:user_id' }, function() {
+        this.route('credits', function() {
+          this.route('overtime-credits', function() {
+            this.route('edit', { path: '/:overtime_credit_id' })
+            this.route('new')
+          })
+        })
         this.route('responsibilities')
       })
     })

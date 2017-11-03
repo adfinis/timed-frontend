@@ -1,0 +1,17 @@
+<div class="edit-area">
+  <div class="card">
+    <div class="card-block">
+      {{#with credit.lastSuccessful.value as |credit|}}
+        {{#validated-form
+          model     = (changeset credit OvertimeCreditValidations)
+          on-submit = (perform save)
+        as |f|}}
+          <h4>{{if credit.isNew 'New' 'Edit'}} overtime credit</h4>
+          {{f.input label='Date' name='date'}}
+          {{f.input label='Duration' name='duration'}}
+          {{f.input type='textarea' label='Comment' name='comment'}}
+        {{/validated-form}}
+      {{/with}}
+    </div>
+  </div>
+</div>

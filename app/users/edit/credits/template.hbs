@@ -6,7 +6,9 @@
   update          = (action (mut year) value='value')
 }}
 
-<div class="grid grid--12of12 grid-md--6of12">
+{{outlet}}
+
+<div class="grid grid--12of12 grid-md--6of12 list-area">
   <div class="grid-cell">
     <h4>Absence credits</h4>
     <div class="card">
@@ -67,11 +69,11 @@
               </thead>
               <tbody>
                 {{#each overtimeCredits as |overtimeCredit|}}
-                  <tr>
+                  {{#link-to 'users.edit.credits.overtime-credits.edit' model.id overtimeCredit.id tagName='tr' class='pointer'}}
                     <td>{{moment-format overtimeCredit.date 'DD.MM.YYYY'}}</td>
                     <td>{{humanize-duration overtimeCredit.duration false}}</td>
                     <td>{{overtimeCredit.comment}}</td>
-                  </tr>
+                  {{/link-to}}
                 {{/each}}
               </tbody>
             </table>

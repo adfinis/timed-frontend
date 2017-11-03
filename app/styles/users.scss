@@ -244,3 +244,32 @@
     flex-basis: 200px;
   }
 }
+
+
+.user-content .list-area {
+  height: 500px;
+  transform: translateX(0px);
+  transition: transform 500ms ease;
+}
+
+.user-content .edit-area ~ .list-area {
+  transform: translateX(-500px);
+}
+
+.user-content .edit-area {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 500px;
+  animation: edit-area-slide-in 500ms ease;
+  z-index: 1;
+}
+
+@keyframes edit-area-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}

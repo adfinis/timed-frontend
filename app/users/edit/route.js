@@ -2,7 +2,7 @@ import Route from '@ember/routing/route'
 import { CanMixin } from 'ember-can'
 
 export default Route.extend(CanMixin, {
-  model({ id }) {
+  model({ user_id: id }) {
     return this.store.findRecord('user', id, { include: 'supervisors' })
   },
 
