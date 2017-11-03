@@ -21,12 +21,20 @@
   flex-grow: 1;
   flex-shrink: 0;
   flex-direction: column;
+  padding-top: var(--page-padding-v);
+  position: relative;
+
+  .year-select {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 6rem;
+  }
 
   h4 {
     color: var(--body-color);
     font-weight: 300;
-    line-height: 2rem;
-    margin-top: 1.5rem;
+    line-height: 3rem;
   }
 
   .card {
@@ -153,13 +161,6 @@
   text-align: center;
 }
 
-.show-more-or-less {
-  display: inline-block;
-  color: var(--color-primary);
-  margin-top: 1rem;
-  cursor: pointer;
-}
-
 @media (--sm-viewport) {
   .user-header-absence-balance {
     flex-basis: 100px;
@@ -210,12 +211,28 @@
     margin: calc(var(--page-padding-v) * 1.25 * -1) calc(var(--page-padding-h) * 1.25 * -1) 0;
     padding: calc(var(--user-header-padding-v) * 1.25) calc(var(--user-header-padding-h) * 1.25);
   }
+
+  .user-content {
+    padding-top: calc(var(--page-padding-v) * 1.25);
+
+    .year-select {
+      width: 5rem;
+    }
+
+    h4 {
+      line-height: 2rem;
+    }
+  }
 }
 
 @media (--xl-viewport) {
   .user-header {
     margin: calc(var(--page-padding-v) * 1.5 * -1) calc(var(--page-padding-h) * 1.5 * -1) 0;
     padding: calc(var(--user-header-padding-v) * 1.5) calc(var(--user-header-padding-h) * 1.5);
+  }
+
+  .user-content {
+    padding-top: calc(var(--page-padding-v) * 1.5);
   }
 
   .user-header-absence-balance {

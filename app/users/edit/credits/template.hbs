@@ -1,3 +1,11 @@
+{{one-way-select (hash value=year)
+  options         = years.lastSuccessful.value
+  optionValuePath = 'value'
+  optionLabelPath = 'label'
+  class           = 'form-control year-select'
+  update          = (action (mut year) value='value')
+}}
+
 <div class="grid grid--12of12 grid-md--6of12">
   <div class="grid-cell">
     <h4>Absence credits</h4>
@@ -23,7 +31,7 @@
                   <tr>
                     <td>{{moment-format absenceCredit.date 'DD.MM.YYYY'}}</td>
                     <td>{{absenceCredit.days}}</td>
-                    <td>{{absenceCredit.type.name}}</td>
+                    <td>{{absenceCredit.absenceType.name}}</td>
                     <td>{{absenceCredit.comment}}</td>
                   </tr>
                 {{/each}}
@@ -40,13 +48,6 @@
   <div class="grid-cell">
     <h4 class="form-inline">
       Overtime credits
-      {{one-way-select (hash value=year)
-        options         = years.lastSuccessful.value
-        optionValuePath = 'value'
-        optionLabelPath = 'label'
-        class           = 'form-control pull-right'
-        update          = (action (mut year) value='value')
-      }}
     </h4>
     <div class="card">
       <div class="card-block">

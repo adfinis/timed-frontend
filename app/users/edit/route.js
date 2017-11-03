@@ -3,9 +3,7 @@ import { CanMixin } from 'ember-can'
 
 export default Route.extend(CanMixin, {
   model({ id }) {
-    return this.store.findRecord('user', id, {
-      include: 'supervisors,supervisees'
-    })
+    return this.store.findRecord('user', id, { include: 'supervisors' })
   },
 
   afterModel(model) {

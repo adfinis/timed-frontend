@@ -3,13 +3,7 @@ import { task } from 'ember-concurrency'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
 
-const UsersEditIndexQueryParams = new QueryParams({
-  absenceLimit: {
-    defaultValue: 5,
-    refresh: true,
-    replace: true
-  }
-})
+const UsersEditIndexQueryParams = new QueryParams({})
 
 export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
   setup() {
@@ -25,13 +19,6 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
   },
 
   absences: task(function*() {
-    let pageParams = this.get('absenceLimit')
-      ? {
-          page: 1,
-          page_size: this.get('absenceLimit') // eslint-disable-line camelcase
-        }
-      : {}
-
     return yield this.store.query('absence', {
       user: this.get('model.id'),
       ordering: '-date',
@@ -41,8 +28,7 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
         month: 0,
         year: this.get('year')
       }).format('YYYY-MM-DD'),
-      include: 'type',
-      ...pageParams
+      include: 'type'
     })
   }),
 
