@@ -229,10 +229,16 @@ export default function() {
   this.get('/cost-centers/:id')
 
   this.get('/overtime-credits')
+  this.post('/overtime-credits')
   this.get('/overtime-credits/:id')
+  this.patch('/overtime-credits/:id')
+  this.del('/overtime-credits/:id')
 
   this.get('/absence-credits')
+  this.post('/absence-credits')
   this.get('/absence-credits/:id')
+  this.patch('/absence-credits/:id')
+  this.del('/absence-credits/:id')
 
   this.get('/absence-balances', byUserAndDate('absenceBalances'))
   this.get('/absence-balances/:id')
