@@ -1,17 +1,43 @@
-<div class="edit-area">
-  <div class="card">
-    <div class="card-block">
-      {{#with credit.lastSuccessful.value as |credit|}}
+{{#with credit.lastSuccessful.value as |credit|}}
+  {{#if (or
+    (and credit.isNew (can 'create overtime-credit'))
+    (and (not credit.isNew) (can 'edit overtime-credit'))
+  )}}
+    <div class="grid grid--12of12 grid-md--4of12">
+      <div class="grid-cell"></div>
+      <div class="grid-cell">
         {{#validated-form
           model     = (changeset credit OvertimeCreditValidations)
           on-submit = (perform save)
         as |f|}}
-          <h4>{{if credit.isNew 'New' 'Edit'}} overtime credit</h4>
-          {{f.input label='Date' name='date'}}
-          {{f.input label='Duration' name='duration'}}
-          {{f.input type='textarea' label='Comment' name='comment'}}
+        <h4 class="text-center">{{if credit.isNew 'New' 'Edit'}} overtime credit</h4>
+          <div class="card">
+            <div class="card-block">
+              {{#f.input label='Date' name='date' as |fi|}}
+                {{sy-datepicker value=fi.value on-change=fi.update}}
+              {{/f.input}}
+              {{#f.input label='Duration' name='duration' as |fi|}}
+                {{sy-durationpicker value=fi.value on-change=fi.update}}
+              {{/f.input}}
+              {{f.input type='text' label='Comment' name='comment'}}
+              <div class="text-right">
+                <button type="button" class="btn" {{action (perform cancel) f.model}}>Cancel</button>
+                {{#unless credit.isNew}}
+                  <button type="button" class="btn btn-danger" {{action (perform delete) credit}}>Delete</button>
+                {{/unless}}
+                {{f.submit disabled=f.model.isInvalid}}
+              </div>
+            </div>
+          </div>
         {{/validated-form}}
-      {{/with}}
+      </div>
+      <div class="grid-cell"></div>
     </div>
-  </div>
-</div>
+  {{else}}
+    <div class="grid">
+      <div class="grid-cell">
+        {{render 'no-permission'}}
+      </div>
+    </div>
+  {{/if}}
+{{/with}}

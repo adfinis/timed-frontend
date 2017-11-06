@@ -1,0 +1,133 @@
+<div class="grid grid--12of12 grid-md--6of12">
+  <div class="grid-cell grid-cell-md--12of12 year-select form-inline">
+    {{#if allowTransfer}}
+      <button type="button" class="btn" {{action (perform transfer) on='click'}}>Transfer</button>
+    {{/if}}
+
+    {{one-way-select (hash value=year)
+      options         = years.lastSuccessful.value
+      optionValuePath = 'value'
+      optionLabelPath = 'label'
+      class           = 'form-control'
+      update          = (action (mut year) value='value')
+    }}
+  </div>
+
+  <div class="grid-cell">
+    <h4>Absence credits</h4>
+    <div class="card">
+      {{#if absenceCredits.isRunning}}
+        <div class="card-block empty">
+          {{loading-icon}}
+        </div>
+      {{else}}
+        {{#with absenceCredits.lastSuccessful.value as |absenceCredit|}}
+          <div class="card-block">
+            <div class="grid">
+              <div class="grid-cell">
+                <table class="table table--striped">
+                  <thead>
+                    <tr>
+                      <th>Valid as of</th>
+                      <th>Days</th>
+                      <th>Type</th>
+                      <th>Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each absenceCredit as |absenceCredit|}}
+                      <tr class="{{if (can 'edit absence-credit') 'pointer'}}" {{action (perform editAbsenceCredit) absenceCredit.id on='click'}}>
+                        <td>{{moment-format absenceCredit.date 'DD.MM.YYYY'}}</td>
+                        <td>{{absenceCredit.days}}</td>
+                        <td>{{absenceCredit.absenceType.name}}</td>
+                        <td>{{absenceCredit.comment}}</td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {{#if (can 'create absence-credit')}}
+              <div class="text-right">
+                {{#link-to 'users.edit.credits.absence-credits.new' class='card-link'}}Add new credit{{/link-to}}
+              </div>
+            {{/if}}
+          </div>
+        {{^}}
+          <div class="card-block empty">
+            <div>
+              {{fa-icon 'calendar-o'}}
+              <p>
+                No absence credits found...<br>
+                {{#if (can 'create absence-credit')}}
+                  Add a new credit by clicking the button below!<br>
+                  <br>
+                  {{#link-to 'users.edit.credits.absence-credits.new' tagName='button' class='btn btn-success'}}Add new credit{{/link-to}}
+                {{/if}}
+              </p>
+            </div>
+          </div>
+        {{/with}}
+      {{/if}}
+    </div>
+  </div>
+
+  <div class="grid-cell">
+    <h4 class="form-inline">
+      Overtime credits
+    </h4>
+    <div class="card">
+      {{#if overtimeCredits.isRunning}}
+        <div class="card-block empty">
+          {{loading-icon}}
+        </div>
+      {{else}}
+        {{#with overtimeCredits.lastSuccessful.value as |overtimeCredits|}}
+          <div class="card-block">
+            <div class="grid">
+              <div class="grid-cell">
+                <table class="table table--striped">
+                  <thead>
+                    <tr>
+                      <th>Valid as of</th>
+                      <th>Duration</th>
+                      <th>Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {{#each overtimeCredits as |overtimeCredit|}}
+                      <tr class="{{if (can 'edit overtime-credit') 'pointer'}}" {{action (perform editOvertimeCredit) overtimeCredit.id on='click'}}>
+                        <td>{{moment-format overtimeCredit.date 'DD.MM.YYYY'}}</td>
+                        <td>{{humanize-duration overtimeCredit.duration false}}</td>
+                        <td>{{overtimeCredit.comment}}</td>
+                      </tr>
+                    {{/each}}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            {{#if (can 'create overtime-credit')}}
+              <div class="text-right">
+                {{#link-to 'users.edit.credits.overtime-credits.new' class='card-link'}}Add new credit{{/link-to}}
+              </div>
+            {{/if}}
+          </div>
+        {{^}}
+          <div class="card-block empty">
+            <div>
+              {{fa-icon 'clock-o'}}
+              <p>
+                No overtime credits found...<br>
+                {{#if (can 'create overtime-credit')}}
+                  Add a new credit by clicking the button below!<br>
+                  <br>
+                  {{#link-to 'users.edit.credits.overtime-credits.new' tagName='button' class='btn btn-success'}}Add new credit{{/link-to}}
+                {{/if}}
+              </p>
+            </div>
+          </div>
+        {{/with}}
+      {{/if}}
+    </div>
+  </div>
+</div>

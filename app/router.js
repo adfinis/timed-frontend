@@ -30,6 +30,10 @@ ApplicationRouter.map(function() {
             this.route('edit', { path: '/:overtime_credit_id' })
             this.route('new')
           })
+          this.route('absence-credits', function() {
+            this.route('edit', { path: '/:absence_credit_id' })
+            this.route('new')
+          })
         })
         this.route('responsibilities')
       })

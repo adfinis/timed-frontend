@@ -88,7 +88,6 @@
     "eslint-plugin-ember": "^4.5.0",
     "eslint-plugin-ember-suave": "^1.0.0",
     "eslint-plugin-prettier": "^2.1.2",
-    "liquid-fire": "^0.28.1",
     "loader.js": "^4.1.0",
     "pagination-pager": "^3.1.0",
     "postcss-cssnext": "^3.0.2",

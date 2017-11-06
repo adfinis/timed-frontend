@@ -1,6 +1,6 @@
 import Route from '@ember/routing/route'
 
-const EDIT_PATH = 'users.edit.credits.overtime-credits.edit'
+const EDIT_PATH = 'users.edit.credits.absence-credits.edit'
 
 export default Route.extend({
   controllerName: EDIT_PATH,
@@ -13,6 +13,7 @@ export default Route.extend({
     this._super(...arguments)
 
     controller.set('user', this.modelFor('users.edit'))
+    controller.get('absenceTypes').perform()
     controller.get('credit').perform()
   }
 })
