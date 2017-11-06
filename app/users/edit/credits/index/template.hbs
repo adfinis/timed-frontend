@@ -15,7 +15,7 @@
 
   <div class="grid-cell">
     <h4>Absence credits</h4>
-    <div class="card">
+    <div class="card" data-test-absence-credits>
       {{#if absenceCredits.isRunning}}
         <div class="card-block empty">
           {{loading-icon}}
@@ -76,7 +76,7 @@
     <h4 class="form-inline">
       Overtime credits
     </h4>
-    <div class="card">
+    <div class="card" data-test-overtime-credits>
       {{#if overtimeCredits.isRunning}}
         <div class="card-block empty">
           {{loading-icon}}

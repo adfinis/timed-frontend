@@ -1,8 +1,9 @@
 import { Factory, faker } from 'ember-cli-mirage'
+import { randomDuration } from '../helpers/duration'
 import moment from 'moment'
 
 export default Factory.extend({
   date: () => moment().format('YYYY-MM-DD'),
-  days: () => faker.random.number({ min: 1, max: 25 }),
+  duration: () => randomDuration(),
   comment: () => faker.lorem.sentence()
 })
