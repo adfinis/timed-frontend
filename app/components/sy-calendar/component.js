@@ -1,17 +1,24 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
 import PowerCalendarComponent from 'ember-power-calendar/components/power-calendar'
+import moment from 'moment'
 
-/**
- * The sy calendar component
- *
- * This is just a restyled power calendar
- *
- * @class SyCalendarComponent
- * @extends EmberPowerCalendar.PowerCalendarComponent
- * @public
- */
-export default PowerCalendarComponent.extend({})
+const CURRENT_YEAR = moment().year()
+
+const YEARS_IN_FUTURE = 5
+
+export default PowerCalendarComponent.extend({
+  months: moment.months(),
+
+  years: [...new Array(40).keys()].map(
+    i => `${CURRENT_YEAR + YEARS_IN_FUTURE - i}`
+  ),
+
+  actions: {
+    changeCenter(unit, e) {
+      let newCenter = this.get('publicAPI.center')
+        .clone()
+        [unit](e.target.value)
+
+      this.onCenterChange({ moment: newCenter })
+    }
+  }
+})
