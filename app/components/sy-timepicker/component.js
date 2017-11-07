@@ -10,8 +10,6 @@ import { padStart } from 'ember-pad/utils/pad'
 
 const noop = () => {}
 
-const sanitize = value => value.replace(/[^\d:]/, '')
-
 /**
  * Timepicker component
  *
@@ -20,6 +18,10 @@ const sanitize = value => value.replace(/[^\d:]/, '')
  * @public
  */
 export default Component.extend({
+  sanitize(value) {
+    return value.replace(/[^\d:]/, '')
+  },
+
   /**
    * Tag name, use input so we don't have an additional element in the DOM
    *
@@ -170,7 +172,7 @@ export default Component.extend({
    */
   change(e) {
     if (e.target.validity.valid) {
-      let [h = NaN, m = NaN] = sanitize(e.target.value)
+      let [h = NaN, m = NaN] = this.sanitize(e.target.value)
         .split(':')
         .map(n => parseInt(n))
 
