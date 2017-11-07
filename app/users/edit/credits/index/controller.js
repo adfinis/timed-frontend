@@ -93,6 +93,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
   }),
 
   transfer: task(function*() {
+    /* istanbul ignore next */
     if (!this.get('allowTransfer')) {
       return
     }
@@ -111,6 +112,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
 
       this.resetQueryParams('year')
     } catch (e) {
+      /* istanbul ignore next */
       this.get('notify').error('Error while transfering')
     }
   }).drop(),

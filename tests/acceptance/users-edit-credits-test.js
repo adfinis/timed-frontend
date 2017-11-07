@@ -15,7 +15,7 @@ describe('Acceptance | users edit credits', function() {
   beforeEach(async function() {
     application = startApp()
 
-    this.user = server.create('user')
+    this.user = server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: this.user.id })
@@ -62,5 +62,13 @@ describe('Acceptance | users edit credits', function() {
         .add(1, 'year')
         .year()}`
     )
+  })
+
+  it('can transfer', async function() {
+    await visit(`/users/1/credits?year=${moment().year() - 1}`)
+
+    await click('.year-select .btn')
+
+    expect(currentURL()).to.equal('/users/1/credits')
   })
 })

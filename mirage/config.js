@@ -280,4 +280,6 @@ export default function() {
   this.get('/project-statistics', statisticEndpoint('project'))
   this.get('/task-statistics', statisticEndpoint('task'))
   this.get('/user-statistics', statisticEndpoint('user'))
+
+  this.post('/users/:id/transfer', () => new Response(201, {}))
 }

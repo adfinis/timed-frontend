@@ -23,6 +23,7 @@ export default Controller.extend({
   save: task(function*(changeset) {
     yield changeset.validate()
 
+    /* istanbul ignore next */
     if (changeset.get('isInvalid')) {
       return
     }
@@ -36,9 +37,10 @@ export default Controller.extend({
 
       this.transitionToRoute('users.edit.credits')
     } catch (e) {
+      /* istanbul ignore next */
       this.get('notify').error('Error while saving the overtime credit')
     }
-  }),
+  }).drop(),
 
   delete: task(function*(credit) {
     try {
@@ -50,13 +52,8 @@ export default Controller.extend({
 
       this.transitionToRoute('users.edit.credits')
     } catch (e) {
+      /* istanbul ignore next */
       this.get('notify').error('Error while deleting the overtime credit')
     }
-  }),
-
-  cancel: task(function*(changeset) {
-    yield changeset.rollback()
-
-    this.transitionToRoute('users.edit.credits')
-  })
+  }).drop()
 })

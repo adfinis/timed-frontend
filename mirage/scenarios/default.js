@@ -13,6 +13,9 @@ export default function(server) {
     isSuperuser: true
   })
 
+  server.createList('overtime-credit', 1, { user })
+  server.createList('absence-credit', 1, { user })
+
   server.createList('user', 5, { supervisorIds: [user.id] })
   server.createList('user', 5)
 

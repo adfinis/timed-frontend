@@ -21,7 +21,7 @@
               {{/f.input}}
               {{f.input type='text' label='Comment' name='comment'}}
               <div class="text-right">
-                <button type="button" class="btn" {{action (perform cancel) f.model}}>Cancel</button>
+                {{#link-to 'users.edit.credits.index' user.id tagName='button' class='btn'}}Cancel{{/link-to}}
                 {{#unless credit.isNew}}
                   <button type="button" class="btn btn-danger" {{action (perform delete) credit}}>Delete</button>
                 {{/unless}}
