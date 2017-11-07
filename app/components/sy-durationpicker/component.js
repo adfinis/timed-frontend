@@ -9,6 +9,8 @@ import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { padStart } from 'ember-pad/utils/pad'
 
+const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number
+
 /**
  * Duration selector component
  *
@@ -19,22 +21,14 @@ import { padStart } from 'ember-pad/utils/pad'
 export default SyTimepickerComponent.extend({
   name: 'duration',
 
-  /**
-   * Init hook, set min and max if not passed
-   *
-   * @method init
-   * @public
-   */
-  init() {
-    if (!this.get('min')) {
-      this.set('min', moment.duration({ h: 0, m: 0 }))
-    }
+  min: MIN_SAFE_INTEGER,
 
-    if (!this.get('max')) {
-      this.set('max', moment.duration({ h: 24, m: 0 }))
-    }
+  max: MAX_SAFE_INTEGER,
 
-    this._super(...arguments)
+  maxlength: null,
+
+  sanitize(value) {
+    return value.replace(/[^\d:-]/, '')
   },
 
   /**
@@ -53,14 +47,14 @@ export default SyTimepickerComponent.extend({
    * @property {String} pattern
    * @public
    */
-  @computed('precision')
-  pattern(p) {
+  @computed('min', 'precision')
+  pattern(min, p) {
     let count = 60 / p
     let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
 
-    return `([01]?[0-9]|2[0-3]):(${minutes
+    return `${min < 0 ? '-?' : ''}\\d+:(${minutes
       .map(m => padStart(m, 2))
-      .join('|')})|24:00`
+      .join('|')})`
   },
 
   /**

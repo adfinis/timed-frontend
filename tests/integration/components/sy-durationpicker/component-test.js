@@ -49,6 +49,26 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(15)
   })
 
+  it('can set a negative value', function() {
+    this.set(
+      'value',
+      moment.duration({
+        h: 12,
+        m: 30
+      })
+    )
+
+    this.render(
+      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+    )
+
+    this.$('input')
+      .val('-13:00')
+      .change()
+
+    expect(this.get('value').hours()).to.equal(-13)
+  })
+
   it("can't set an invalid value", function() {
     this.set(
       'value',
@@ -63,7 +83,7 @@ describe('Integration | Component | sy durationpicker', function() {
     )
 
     this.$('input')
-      .val('24:15')
+      .val('abcdef')
       .change()
 
     expect(this.get('value').hours()).to.equal(12)

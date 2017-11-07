@@ -14,7 +14,8 @@
     data-test-report-comment
   >
 </div>
-<div class="form-list-cell form-group">{{sy-durationpicker data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</div>
+<div class="form-list-cell form-group">
+  {{sy-durationpicker-day data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</div>
 <div class="form-list-cell form-group">
   {{sy-checkbox data-test-report-review checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
 </div>
