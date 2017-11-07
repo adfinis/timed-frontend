@@ -3,6 +3,7 @@ import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
+import { find } from 'ember-native-dom-helpers'
 import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
 
 describe('Integration | Component | sy datepicker btn', function() {
@@ -10,24 +11,18 @@ describe('Integration | Component | sy datepicker btn', function() {
     integration: true
   })
 
-  it('renders', function() {
-    this.set('value', moment())
-
-    this.render(hbs`{{sy-datepicker-btn value=value}}`)
-
-    expect(this.$('button')).to.have.length(1)
-  })
-
   it('toggles the calendar on click of the button', function() {
     this.set('value', moment())
 
-    this.render(hbs`{{sy-datepicker-btn value=value}}`)
+    this.render(
+      hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
+    )
 
-    expect(this.$('.sy-datepicker-picker')).to.have.length(0)
+    expect(find('.sy-datepicker')).to.not.be.ok
 
     clickTrigger()
 
-    expect(this.$('.sy-datepicker-picker')).to.have.length(1)
+    expect(find('.sy-datepicker')).to.be.ok
   })
 
   it('changes value on selection', function() {
@@ -39,11 +34,9 @@ describe('Integration | Component | sy datepicker btn', function() {
 
     clickTrigger()
 
-    let target = this.$('.ember-power-calendar-day-grid')
-      .children()
-      .last()
-      .children()
-      .last()
+    let target = find(
+      '.ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child'
+    )
 
     target.click()
 

@@ -52,14 +52,14 @@
               </thead>
               <tbody>
                 {{#each supervisees as |supervisee|}}
-                  <tr>
+                  {{#link-to 'users.edit' supervisee.id tagName='tr' class='pointer'}}
                     <td>{{supervisee.fullName}}</td>
                     <td>
                       <span class="worktime-balance {{balance-highlight-class supervisee.currentWorktimeBalance.balance}}">
                         {{format-duration supervisee.currentWorktimeBalance.balance false}}
                       </span>
                     </td>
-                  </tr>
+                  {{/link-to}}
                 {{/each}}
               </tbody>
             </table>
