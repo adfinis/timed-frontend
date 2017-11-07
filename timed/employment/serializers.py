@@ -70,10 +70,10 @@ class WorktimeBalanceSerializer(Serializer):
             return instance.date
 
         # calculate last reported day if no specific date is set
-        max_absence_date = Absence.objects.filter(user=user).exclude(
-            date=today).aggregate(date=Max('date'))
-        max_report_date = Report.objects.filter(user=user).exclude(
-            date=today).aggregate(date=Max('date'))
+        max_absence_date = Absence.objects.filter(
+            user=user, date__lt=today).aggregate(date=Max('date'))
+        max_report_date = Report.objects.filter(
+            user=user, date__lt=today).aggregate(date=Max('date'))
 
         last_reported_date = max(
             max_absence_date['date'] or date.min,

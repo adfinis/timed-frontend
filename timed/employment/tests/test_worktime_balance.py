@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+import pytest
 from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework import status
@@ -204,6 +205,7 @@ def test_worktime_balance_list_last_reported_date_no_reports(
     assert len(json['data']) == 0
 
 
+@pytest.mark.freeze_time('2017-02-02')
 def test_worktime_balance_list_last_reported_date(
         auth_client, django_assert_num_queries):
 
@@ -217,6 +219,18 @@ def test_worktime_balance_list_last_reported_date(
     ReportFactory.create(
         user=auth_client.user,
         date=date(2017, 2, 1),
+        duration=timedelta(hours=10)
+    )
+
+    # reports today and in the future should be ignored
+    ReportFactory.create(
+        user=auth_client.user,
+        date=date(2017, 2, 2),
+        duration=timedelta(hours=10)
+    )
+    ReportFactory.create(
+        user=auth_client.user,
+        date=date(2017, 2, 3),
         duration=timedelta(hours=10)
     )
 
