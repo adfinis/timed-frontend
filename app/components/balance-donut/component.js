@@ -17,7 +17,7 @@ const BalanceDonutComponent = Component.extend({
       return 1
     }
 
-    return days / credit
+    return abs(days / credit)
   },
 
   @computed('value', 'balance.usedDuration')
@@ -26,7 +26,7 @@ const BalanceDonutComponent = Component.extend({
       return 'primary'
     }
 
-    if (value > 1) {
+    if (value > 1 || value < 0) {
       return 'danger'
     }
 

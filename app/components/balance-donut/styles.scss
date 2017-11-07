@@ -32,10 +32,12 @@
   justify-content: center;
   align-items: center;
   text-align: center;
-  font-size: 1.4rem;
+  font-size: 1.2rem;
+  padding: 1rem;
+  word-break: break-all;
 
-  small {
-    font-size: 50%;
+  div:first-child:not(:last-child) {
+    font-size: 60%;
     color: color(var(--body-color) tint(30%));
   }
 }
