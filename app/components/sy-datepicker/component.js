@@ -1,51 +1,65 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
 import Component from '@ember/component'
+import computed from 'ember-computed-decorators'
+import moment from 'moment'
+import { scheduleOnce } from '@ember/runloop'
 
-/**
- * The sy datepicker component
- *
- * @class SyDatepickerComponent
- * @extends Ember.Component
- * @public
- */
+const DISPLAY_FORMAT = 'DD.MM.YYYY'
+
+const PARSE_FORMAT = 'D.M.YYYY'
+
+const parse = value => (value ? moment(value, PARSE_FORMAT) : null)
+
 export default Component.extend({
-  /**
-   * The value
-   *
-   * @property {moment} value
-   * @public
-   */
   value: null,
 
-  /**
-   * The actions for the datepicker button component
-   *
-   * @property {Object} actions
-   * @public
-   */
+  placeholder: DISPLAY_FORMAT,
+
+  @computed('value')
+  displayValue(value) {
+    return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null
+  },
+
+  name: 'date',
+
   actions: {
-    /**
-     * Change the value
-     *
-     * @method change
-     * @param {moment} value The value to change to
-     * @public
-     */
-    change(value) {
-      this.get('attrs.on-change')(value)
+    handleBlur(dd, e) {
+      if (
+        !document
+          .getElementById(`ember-basic-dropdown-content-${dd.uniqueId}`)
+          .contains(e.relatedTarget)
+      ) {
+        dd.actions.close()
+      }
     },
 
-    /**
-     * Clear the value
-     * @method clear
-     * @public
-     */
-    clear() {
-      this.set('value', '')
+    handleFocus(dd) {
+      dd.actions.open()
+    },
+
+    checkValidity() {
+      scheduleOnce('afterRender', this, () => {
+        let target = this.get('element').querySelector(
+          '.ember-basic-dropdown-trigger input'
+        )
+
+        let parsed = parse(target.value)
+
+        if (parsed && !parsed.isValid()) {
+          return target.setCustomValidity('Invalid date')
+        }
+
+        return target.setCustomValidity('')
+      })
+    },
+
+    handleChange({ target: { value, validity: { valid } } }) {
+      if (valid) {
+        let parsed = parse(value)
+
+        return this.get('attrs.on-change')(
+          parsed && parsed.isValid() ? parsed : null
+        )
+      }
     }
   }
 })
