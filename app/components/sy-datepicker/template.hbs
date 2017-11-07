@@ -10,7 +10,7 @@
       onfocus={{action 'handleFocus' dd}}
       onblur={{action 'handleBlur' dd}}
       onchange={{action 'handleChange'}}
-      oninput={{action 'handleInput'}}
+      oninput={{action 'checkValidity'}}
     >
   {{/dd.trigger}}
 
@@ -20,7 +20,7 @@
       selected       = value
       class          = 'sy-datepicker'
       onCenterChange = (action (mut center) value='moment')
-      onSelect       = (action on-change value='moment')
+      onSelect       = (action (queue (action on-change) (action 'checkValidity')) value='moment')
     }}
   {{/dd.content}}
 {{/basic-dropdown}}
