@@ -93,4 +93,24 @@ describe('Acceptance | users edit credits absence credit', function() {
 
     expect(findAll('[data-test-absence-credits] tr')).to.have.length(0)
   })
+
+  it('redirects to the year of the created absence credit', async function() {
+    await visit(`/users/${this.user.id}/credits/absence-credits/new`)
+
+    await click('.btn-group .btn:first-child')
+    await fillIn(
+      'input[name=date]',
+      moment()
+        .add(1, 'years')
+        .format('DD.MM.YYYY')
+    )
+    await fillIn('input[name=days]', '5')
+    await fillIn('input[name=comment]', 'Comment')
+
+    await click('.btn-primary')
+
+    expect(currentURL()).to.equal(
+      `/users/${this.user.id}/credits?year=${moment().year() + 1}`
+    )
+  })
 })
