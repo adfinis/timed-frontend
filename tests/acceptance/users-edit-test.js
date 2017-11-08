@@ -6,6 +6,7 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
 import { expect } from 'chai'
 import startApp from '../helpers/start-app'
+import { find } from 'ember-native-dom-helpers'
 
 describe('Acceptance | users edit', function() {
   let application
@@ -36,7 +37,8 @@ describe('Acceptance | users edit', function() {
   it('shows only supervisees to staff', async function() {
     await visit(`/users/${this.notAllowed.id}`)
 
-    expect(currentURL()).to.not.contain(this.notAllowed.id)
+    expect(find('.empty')).to.be.ok
+    expect(find('.empty').innerHTML).to.contain('Halt')
   })
 
   it('allows all to superuser', async function() {

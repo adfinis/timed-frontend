@@ -24,11 +24,18 @@
   padding-top: var(--page-padding-v);
   position: relative;
 
+  .grid {
+    position: relative;
+  }
+
   .year-select {
     position: absolute;
     top: 0;
     right: 0;
-    width: 6rem;
+
+    select {
+      width: 6rem;
+    }
   }
 
   h4 {
@@ -41,16 +48,16 @@
     opacity: 0;
     transform: translateY(50px);
     animation: card-slide-up 250ms ease-out forwards;
-  }
 
-  @for $i from 0 to 10 {
-    .card:nth-of-type(#{$i}) {
-      animation-delay: calc(50ms * #{$i});
+    .empty {
+      margin: 2rem 0;
     }
   }
 
-  .liquid-animating .card {
-    animation: none;
+  @for $i from 0 to 10 {
+    .grid-cell:nth-of-type(#{$i}) .card {
+      animation-delay: calc(100ms * #{$i});
+    }
   }
 }
 
@@ -215,7 +222,7 @@
   .user-content {
     padding-top: calc(var(--page-padding-v) * 1.25);
 
-    .year-select {
+    .year-select select {
       width: 5rem;
     }
 

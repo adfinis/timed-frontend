@@ -12,9 +12,9 @@
   dependencies:
     "@glimmer/di" "^0.2.0"
 
-"@html-next/vertical-collection@github:html-next/vertical-collection#b218268807b620854105ba76496844eb703d1959":
-  version "1.0.0-beta.8"
-  resolved "https://codeload.github.com/html-next/vertical-collection/tar.gz/b218268807b620854105ba76496844eb703d1959"
+"@html-next/vertical-collection@^1.0.0-beta.9":
+  version "1.0.0-beta.9"
+  resolved "https://registry.yarnpkg.com/@html-next/vertical-collection/-/vertical-collection-1.0.0-beta.9.tgz#a23fe4d82e4ef059e955abe276f57f27269b37a5"
   dependencies:
     babel-plugin-transform-es2015-block-scoping "^6.24.1"
     babel6-plugin-strip-class-callcheck "^6.0.0"
@@ -23,7 +23,7 @@
     broccoli-rollup "^1.2.0"
     ember-cli-babel "^6.0.0-beta.10"
     ember-cli-htmlbars "^1.1.1"
-    ember-compatibility-helpers "^0.1.0"
+    ember-compatibility-helpers "^0.1.2"
     ember-raf-scheduler "0.1.0"
 
 abbrev@1:
@@ -3094,7 +3094,7 @@ ember-cli@^2.16.2:
     walk-sync "^0.3.0"
     yam "0.0.22"
 
-ember-compatibility-helpers@^0.1.0:
+ember-compatibility-helpers@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/ember-compatibility-helpers/-/ember-compatibility-helpers-0.1.2.tgz#8eb1769ad761db273fd40242b1170d9f3841d0f0"
   dependencies:
@@ -3247,13 +3247,6 @@ ember-getowner-polyfill@^2.0.0, ember-getowner-polyfill@^2.0.1:
   dependencies:
     ember-cli-version-checker "^1.2.0"
     ember-factory-for-polyfill "^1.1.0"
-
-ember-hash-helper-polyfill@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/ember-hash-helper-polyfill/-/ember-hash-helper-polyfill-0.2.0.tgz#0913a06ad59147f345dff0edda04b112deba0f7e"
-  dependencies:
-    ember-cli-babel "^6.8.2"
-    ember-cli-version-checker "^1.2.0"
 
 ember-inflector@^2.0.0:
   version "2.0.1"
@@ -3590,13 +3583,13 @@ ember-try@^0.2.15:
     rsvp "^3.0.17"
     semver "^5.1.0"
 
-ember-validated-form@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/ember-validated-form/-/ember-validated-form-0.5.3.tgz#ed15452acc7e16e80d32b0e5b77f1202c1089967"
+ember-validated-form@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/ember-validated-form/-/ember-validated-form-0.6.0.tgz#8e7e99833684ae86c4f96a89fe5e59f279987a78"
   dependencies:
     ember-changeset "1.3.0"
     ember-changeset-validations "1.2.6"
-    ember-cli-babel "^6.3.0"
+    ember-cli-babel "^6.6.0"
     ember-cli-htmlbars "^2.0.1"
     ember-one-way-controls "1.1.2"
     ember-truth-helpers "1.2.0"
@@ -5309,21 +5302,6 @@ linkify-it@^2.0.0:
   dependencies:
     uc.micro "^1.0.1"
 
-liquid-fire@^0.28.1:
-  version "0.28.1"
-  resolved "https://registry.yarnpkg.com/liquid-fire/-/liquid-fire-0.28.1.tgz#62f03e145e0ae7ca8ecdeadddc0e6939fc1ff4cd"
-  dependencies:
-    broccoli-funnel "^1.0.1"
-    broccoli-merge-trees "^1.0.0"
-    broccoli-stew "^1.4.2"
-    ember-cli-babel "^6.3.0"
-    ember-cli-htmlbars "^2.0.1"
-    ember-cli-version-checker "^2.0.0"
-    ember-getowner-polyfill "^2.0.1"
-    ember-hash-helper-polyfill "^0.2.0"
-    match-media "^0.2.0"
-    velocity-animate ">= 0.11.8"
-
 livereload-js@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/livereload-js/-/livereload-js-2.2.2.tgz#6c87257e648ab475bc24ea257457edcc1f8d0bc2"
@@ -5950,10 +5928,6 @@ markdown-it@^8.3.0, markdown-it@^8.3.1:
     linkify-it "^2.0.0"
     mdurl "^1.0.1"
     uc.micro "^1.0.3"
-
-match-media@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/match-media/-/match-media-0.2.0.tgz#ea4e09742e7253cc7d7e1599ba627e0fa29fbc50"
 
 matcher-collection@^1.0.0:
   version "1.0.5"
@@ -8608,10 +8582,6 @@ validate-npm-package-name@~2.2.2:
 vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/vary/-/vary-1.1.2.tgz#2299f02c6ded30d4a5961b0b9f74524a18f634fc"
-
-"velocity-animate@>= 0.11.8":
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/velocity-animate/-/velocity-animate-1.5.0.tgz#fc8771d8dfe1136ff02a707e10fbb0957c4b030f"
 
 verror@1.10.0:
   version "1.10.0"

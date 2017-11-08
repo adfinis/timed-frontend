@@ -1,0 +1,48 @@
+{{#with credit.lastSuccessful.value as |credit|}}
+  {{#if (or
+    (and credit.isNew (can 'create absence-credit'))
+    (and (not credit.isNew) (can 'edit absence-credit'))
+  )}}
+    <div class="grid grid--12of12 grid-md--4of12">
+      <div class="grid-cell"></div>
+      <div class="grid-cell">
+        {{#validated-form
+          model     = (changeset credit AbsenceCreditValidations)
+          on-submit = save
+        as |f|}}
+        <h4 class="text-center">{{if credit.isNew 'New' 'Edit'}} absence credit</h4>
+          <div class="card">
+            <div class="card-block">
+              {{#f.input label='Type' name='absenceType' as |fi|}}
+                <div class="btn-group btn-group--auto">
+                  {{#each absenceTypes.lastSuccessful.value as |type|}}
+                    <button class="btn {{if (eq fi.value.id type.id) 'active'}}" type="button" {{action fi.update type}}>{{type.name}}</button>
+                  {{/each}}
+                </div>
+              {{/f.input}}
+              {{#f.input label='Date' name='date' as |fi|}}
+                {{sy-datepicker value=fi.value on-change=fi.update}}
+              {{/f.input}}
+              {{f.input type='number' label='Days' name='days'}}
+              {{f.input type='text' label='Comment' name='comment'}}
+              <div class="text-right">
+                {{#link-to 'users.edit.credits.index' user.id tagName='button' class='btn'}}Cancel{{/link-to}}
+                {{#unless credit.isNew}}
+                  <button type="button" class="btn btn-danger {{if delete.isRunning 'loading'}}" {{action (perform delete) credit}}>Delete</button>
+                {{/unless}}
+                {{f.submit disabled=f.model.isInvalid}}
+              </div>
+            </div>
+          </div>
+        {{/validated-form}}
+      </div>
+      <div class="grid-cell"></div>
+    </div>
+  {{else}}
+    <div class="grid">
+      <div class="grid-cell">
+        {{no-permission}}
+      </div>
+    </div>
+  {{/if}}
+{{/with}}

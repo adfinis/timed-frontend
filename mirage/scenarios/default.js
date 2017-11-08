@@ -9,8 +9,12 @@ export default function(server) {
   let user = server.create('user', {
     firstName: 'John',
     lastName: 'Doe',
-    password: '123qwe'
+    password: '123qwe',
+    isSuperuser: true
   })
+
+  server.createList('overtime-credit', 1, { user })
+  server.createList('absence-credit', 1, { user })
 
   server.createList('user', 5, { supervisorIds: [user.id] })
   server.createList('user', 5)

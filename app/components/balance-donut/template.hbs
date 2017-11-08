@@ -28,8 +28,10 @@
       {{format-duration balance.usedDuration false}}
     {{else}}
       {{#if balance.credit}}
-        <small>{{balance.usedDays}} of {{balance.credit}}</small>
-        {{round (mult value 100)}}%
+        <div>{{balance.usedDays}} of {{balance.credit}}</div>
+        {{#if (gte balance.credit 1)}}
+          <div>{{round (mult value 100)}}%</div>
+        {{/if}}
       {{else}}
         {{balance.usedDays}}
       {{/if}}
