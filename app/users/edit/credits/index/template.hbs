@@ -4,13 +4,14 @@
       <button type="button" class="btn" {{action (perform transfer) on='click'}}>Transfer</button>
     {{/if}}
 
-    {{one-way-select (hash value=year)
-      options         = years.lastSuccessful.value
-      optionValuePath = 'value'
-      optionLabelPath = 'label'
-      class           = 'form-control'
-      update          = (action (mut year) value='value')
-    }}
+    {{#with years.lastSuccessful.value as |years|}}
+      <select class="form-control" onchange={{action (mut year) value='target.value'}}>
+        {{#each years as |y|}}
+          <option value={{y}} selected={{eq y year}}>{{y}}</option>
+        {{/each}}
+        <option value="" selected={{not year}}>All</option>
+      </select>
+    {{/with}}
   </div>
 
   <div class="grid-cell">

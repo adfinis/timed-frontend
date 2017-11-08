@@ -8,7 +8,7 @@ import { CanMixin, computed as canComputed } from 'ember-can'
 
 const UsersEditCreditsQueryParams = new QueryParams({
   year: {
-    defaultValue: moment().year(),
+    defaultValue: `${moment().year()}`,
     replace: true,
     refresh: true
   }
@@ -32,14 +32,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
       .add(1, 'year')
       .year()
 
-    return [
-      ...[...new Array(to + 1 - from).keys()].map(i => {
-        let y = from + i
-
-        return { value: y, label: y }
-      }),
-      { value: '', label: 'All' }
-    ]
+    return [...new Array(to + 1 - from).keys()].map(i => `${from + i}`)
   }),
 
   overtimeCreditAbility: canComputed.ability('overtime-credit'),
@@ -52,7 +45,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
   )
   allowTransfer(year, canCreateOvertimeCredit, canCreateAbsenceCredit) {
     return (
-      year === moment().year() - 1 &&
+      parseInt(year) === moment().year() - 1 &&
       canCreateAbsenceCredit &&
       canCreateAbsenceCredit
     )
