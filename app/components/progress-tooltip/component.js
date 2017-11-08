@@ -129,7 +129,9 @@ const ProgressTooltipComponent = Component.extend({
 
       let { spentTime } = yield this.get(
         'metadataFetcher.fetchSingleRecordMetadata'
-      ).perform(this.get('model.constructor.modelName'), this.get('model.id'))
+      )
+        .linked()
+        .perform(this.get('model.constructor.modelName'), this.get('model.id'))
 
       this.set('spent', spentTime)
     }
