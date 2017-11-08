@@ -337,6 +337,7 @@ class AbsenceTypeViewSet(ReadOnlyModelViewSet):
 
     queryset         = models.AbsenceType.objects.all()
     serializer_class = serializers.AbsenceTypeSerializer
+    filter_class     = filters.AbsenceTypeFilterSet
     ordering         = ('name',)
 
 
