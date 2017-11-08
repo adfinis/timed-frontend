@@ -31,7 +31,6 @@ class UserSerializer(ModelSerializer):
         model  = get_user_model()
         fields = [
             'email',
-            'employments',
             'first_name',
             'is_active',
             'is_staff',
@@ -43,7 +42,6 @@ class UserSerializer(ModelSerializer):
             'username',
         ]
         read_only_fields = [
-            'employments',
             'first_name',
             'is_active',
             'is_staff',
