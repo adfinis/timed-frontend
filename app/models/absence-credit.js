@@ -37,7 +37,7 @@ export default Model.extend({
    * @property {String} comment
    * @public
    */
-  comment: attr('string'),
+  comment: attr('string', { defaultValue: '' }),
 
   /**
    * The absence type for which this credit counts
