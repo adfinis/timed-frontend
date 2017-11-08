@@ -12,7 +12,7 @@ describe('Integration | Component | no permission', function() {
   it('renders', function() {
     this.render(hbs`{{no-permission}}`)
 
-    expect(find('.empty')).to.have.length(1)
+    expect(find('.empty')).to.be.ok
     expect(find('.empty').innerHTML).to.contain('Halt')
   })
 })
