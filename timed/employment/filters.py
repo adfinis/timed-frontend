@@ -37,6 +37,16 @@ class PublicHolidayFilterSet(FilterSet):
         fields = ['year', 'location', 'date', 'from_date', 'to_date']
 
 
+class AbsenceTypeFilterSet(FilterSet):
+    fill_worktime = NumberFilter(name='fill_worktime')
+
+    class Meta:
+        """Meta information for the public holiday filter set."""
+
+        model  = models.AbsenceType
+        fields = ['fill_worktime']
+
+
 class UserFilterSet(FilterSet):
     active = NumberFilter(name='is_active')
     supervisor = NumberFilter(name='supervisors')
