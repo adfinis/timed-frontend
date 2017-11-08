@@ -11,7 +11,9 @@ export default Controller.extend({
   notify: service('notify'),
 
   absenceTypes: task(function*() {
-    return yield this.store.findAll('absence-type')
+    return yield this.store.query('absence-type', {
+      fill_worktime: 0 // eslint-disable-line camelcase
+    })
   }),
 
   credit: task(function*() {
