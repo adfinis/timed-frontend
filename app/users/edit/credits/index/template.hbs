@@ -9,7 +9,7 @@
         {{#each years as |y|}}
           <option value={{y}} selected={{eq y year}}>{{y}}</option>
         {{/each}}
-        <option>All</option>
+        <option value="" selected={{not year}}>All</option>
       </select>
     {{/with}}
   </div>
