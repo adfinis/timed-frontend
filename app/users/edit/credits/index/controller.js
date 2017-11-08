@@ -8,7 +8,7 @@ import { CanMixin, computed as canComputed } from 'ember-can'
 
 const UsersEditCreditsQueryParams = new QueryParams({
   year: {
-    defaultValue: moment().year(),
+    defaultValue: `${moment().year()}`,
     replace: true,
     refresh: true
   }
@@ -34,7 +34,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
 
     return [
       ...[...new Array(to + 1 - from).keys()].map(i => {
-        let y = from + i
+        let y = `${from + i}`
 
         return { value: y, label: y }
       }),
