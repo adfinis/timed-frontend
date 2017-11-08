@@ -139,7 +139,14 @@ class WorkReportViewSet(GenericViewSet):
 
     def get_queryset(self):
         return Report.objects.select_related(
-            'user', 'verified_by'
+            'user', 'task', 'task__project', 'task__project__customer'
+        ).prefetch_related(
+            # need to prefetch verified_by as select_related joins nullable
+            # foreign key verified_by with INNER JOIN instead of LEFT JOIN
+            # which leads to an empty result.
+            # This only happens as user and verified_by points to same table
+            # and user is not nullable
+            'verified_by'
         )
 
     def _parse_query_params(self, queryset, request):
