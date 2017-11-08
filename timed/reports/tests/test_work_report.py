@@ -14,7 +14,7 @@ from timed.tracking.factories import ReportFactory
 
 
 @pytest.mark.freeze_time('2017-09-01')
-def test_work_report_single_project(auth_client):
+def test_work_report_single_project(auth_client, django_assert_num_queries):
     user = auth_client.user
     # spaces should be replaced with underscore
     customer = CustomerFactory.create(name='Customer Name')
@@ -26,11 +26,13 @@ def test_work_report_single_project(auth_client):
     )
 
     url = reverse('work-report-list')
-    res = auth_client.get(url, data={
-        'user': auth_client.user.id,
-        'from_date': '2017-08-01',
-        'to_date': '2017-08-31',
-    })
+    with django_assert_num_queries(4):
+        res = auth_client.get(url, data={
+            'user': auth_client.user.id,
+            'from_date': '2017-08-01',
+            'to_date': '2017-08-31',
+            'not_verified': 0
+        })
     assert res.status_code == HTTP_200_OK
     assert '1708-20170901-Customer_Name-Project.ods' in (
         res['Content-Disposition']
@@ -46,7 +48,7 @@ def test_work_report_single_project(auth_client):
 
 
 @pytest.mark.freeze_time('2017-09-01')
-def test_work_report_multiple_projects(auth_client):
+def test_work_report_multiple_projects(auth_client, django_assert_num_queries):
     NUM_PROJECTS = 2
 
     user = auth_client.user
@@ -60,9 +62,11 @@ def test_work_report_multiple_projects(auth_client):
         ReportFactory.create_batch(10, user=user, task=task, date=report_date)
 
     url = reverse('work-report-list')
-    res = auth_client.get(url, data={
-        'user': auth_client.user.id
-    })
+    with django_assert_num_queries(4):
+        res = auth_client.get(url, data={
+            'user': auth_client.user.id,
+            'not_verified': 1
+        })
     assert res.status_code == HTTP_200_OK
     assert '20170901-WorkReports.zip' in (
         res['Content-Disposition']

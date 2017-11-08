@@ -95,9 +95,10 @@ class ReportFilterSet(FilterSet):
     customer     = NumberFilter(name='task__project__customer')
     review       = NumberFilter(name='review')
     not_billable = NumberFilter(name='not_billable')
-    not_verified = NumberFilter(name='verified_by', lookup_expr='isnull')
+    not_verified = NumberFilter(name='verified_by_id', lookup_expr='isnull')
     reviewer     = NumberFilter(name='task__project__reviewers')
     billing_type = NumberFilter(name='task__project__billing_type')
+    user         = NumberFilter(name='user_id')
     cost_center = NumberFilter(name='cost_center', method='filter_cost_center')
 
     def filter_cost_center(self, queryset, name, value):
