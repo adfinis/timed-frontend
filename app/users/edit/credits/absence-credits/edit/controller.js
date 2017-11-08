@@ -27,13 +27,6 @@ export default Controller.extend({
   }),
 
   save: task(function*(changeset) {
-    yield changeset.validate()
-
-    /* istanbul ignore next */
-    if (changeset.get('isInvalid')) {
-      return
-    }
-
     try {
       yield changeset.save()
 
@@ -41,7 +34,7 @@ export default Controller.extend({
 
       this.get('userController.data').perform(this.get('user.id'))
 
-      this.transitionToRoute('users.edit.credits')
+      yield this.transitionToRoute('users.edit.credits')
     } catch (e) {
       /* istanbul ignore next */
       this.get('notify').error('Error while saving the absence credit')

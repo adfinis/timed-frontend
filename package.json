@@ -82,7 +82,7 @@
     "ember-test-selectors": "^0.3.7",
     "ember-tether": "^1.0.0-beta.0",
     "ember-truth-helpers": "^2.0.0",
-    "ember-validated-form": "^0.5.3",
+    "ember-validated-form": "^0.6.0",
     "ember-wormhole": "^0.5.2",
     "eslint-config-prettier": "^2.6.0",
     "eslint-plugin-ember": "^4.5.0",

@@ -61,7 +61,8 @@ module.exports = function(environment) {
         radio: 'radio',
         help: 'error-text',
         button: 'btn btn-default',
-        submit: 'btn btn-primary'
+        submit: 'btn btn-primary',
+        loading: 'loading'
       }
     }
   }
