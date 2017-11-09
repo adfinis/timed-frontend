@@ -50,14 +50,6 @@ export default Model.extend({
   email: attr('string'),
 
   /**
-   * Defines if the user is a staff member or not.
-   *
-   * @property {Boolean} isStaff
-   * @public
-   */
-  isStaff: attr('boolean'),
-
-  /**
    * Defines if the user is a superuser
    *
    * @property {Boolean} isSuperuser

@@ -28,7 +28,7 @@ describe('Acceptance | users', function() {
     destroyApp(application)
   })
 
-  it('shows only supervisees to staff', async function() {
+  it('shows only supervisees', async function() {
     await visit('/users')
 
     // 5 supervisees and the user himself
