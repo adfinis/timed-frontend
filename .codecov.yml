@@ -1,0 +1,4 @@
+comment:
+  layout: "diff, files"
+  behaviour: default
+  require_changes: true
