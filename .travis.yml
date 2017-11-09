@@ -14,7 +14,6 @@ cache:
 install:
   - echo "ENV=travis" > .env
   - make install-dev
-  - pip install coveralls
 
 before_script:
   - psql -c "CREATE ROLE timed CREATEDB LOGIN PASSWORD 'timed';" -U postgres
@@ -22,4 +21,5 @@ before_script:
 
 script: make test
 
-after_success: coveralls
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
