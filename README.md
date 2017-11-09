@@ -8,7 +8,7 @@
     <img alt="Build Status" src="https://img.shields.io/travis/adfinis-sygroup/timed-frontend/master.svg?style=flat-square">
   </a>
   <a href="https://codecov.io/gh/adfinis-sygroup/timed-frontend">
-<img alt="Coverage" src="https://img.shields.io/codecov/c/github/adfinis-sygroup/timed-frontend/master.svg?style=flat-square">
+    <img alt="Coverage" src="https://img.shields.io/codecov/c/github/adfinis-sygroup/timed-frontend/master.svg?style=flat-square">
   </a>
   <a href="/LICENSE">
     <img alt="License" src="https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square">
