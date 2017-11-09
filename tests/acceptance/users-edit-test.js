@@ -34,7 +34,7 @@ describe('Acceptance | users edit', function() {
     expect(currentURL()).to.contain(this.allowed.id)
   })
 
-  it('shows only supervisees to staff', async function() {
+  it('shows only supervisees', async function() {
     await visit(`/users/${this.notAllowed.id}`)
 
     expect(find('.empty')).to.be.ok
