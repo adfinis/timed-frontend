@@ -1,6 +1,6 @@
 & {
   --max-offset: 0;
-  --offset: 0;
+
   transition: transform 1s ease;
   transform: translateY(calc(var(--max-offset) * var(--offset-multiplicator)));
 }
