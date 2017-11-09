@@ -21,11 +21,6 @@
       {{/link-to}}
     </li>
     <li class="nav-side-list-item">
-      {{#link-to 'analysis'}}
-        {{fa-icon 'line-chart'}} Analysis
-      {{/link-to}}
-    </li>
-    <li class="nav-side-list-item">
       {{#link-to 'statistics'}}
         {{fa-icon 'bar-chart'}} Statistics
       {{/link-to}}
@@ -34,13 +29,6 @@
       <li class="nav-side-list-item">
         {{#link-to 'users.index'}}
           {{fa-icon 'users'}} Users
-        {{/link-to}}
-      </li>
-    {{/if}}
-    {{#if user.isStaff}}
-      <li class="nav-side-list-item">
-        {{#link-to 'reschedule'}}
-          {{fa-icon 'refresh'}} Reschedule
         {{/link-to}}
       </li>
     {{/if}}
