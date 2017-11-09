@@ -9,8 +9,6 @@ addons:
 
 cache:
   yarn: true
-  directories:
-    - node_modules
 
 install:
   - yarn
@@ -19,7 +17,7 @@ script:
   - yarn test
 
 after_success:
-  - yarn run coveralls
+  - bash <(curl -s https://codecov.io/bash)
 
 env:
   - COVERAGE=true JOBS=2
