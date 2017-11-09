@@ -157,10 +157,7 @@ class ReportViewSet(ModelViewSet):
         for param in ignore_params.intersection(params.keys()):
             del params[param]
 
-        data = AggregateObject(**{
-            'queryset': queryset,
-            'pk': params.urlencode()
-        })
+        data = AggregateObject(queryset=queryset, pk=params.urlencode())
         serializer = serializers.ReportIntersectionSerializer(data)
         return Response(data=serializer.data)
 
