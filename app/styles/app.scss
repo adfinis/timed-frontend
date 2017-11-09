@@ -1,6 +1,14 @@
 /* AdCSSy variables */
 @import 'variables';
 
+/* Plugin customizations */
+@import 'ember-power-calendar';
+@import 'ember-basic-dropdown';
+@import 'ember-power-select-custom';
+
+/* Component styles */
+@import 'pod-styles';
+
 /* Custom styles */
 @import 'activities';
 @import 'attendances';
@@ -14,14 +22,6 @@
 @import 'tour';
 @import 'users-navigation';
 @import 'users';
-
-/* Plugin customizations */
-@import 'ember-power-calendar';
-@import 'ember-basic-dropdown';
-@import 'ember-power-select-custom';
-
-/* Component styles */
-@import 'pod-styles';
 
 html {
   height: 100vh;

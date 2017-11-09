@@ -64,7 +64,14 @@
               </tbody>
             </table>
           {{^}}
-            <div class="text-center"><em>No employments to show</em></div>
+            <div class="card-block empty">
+              <div>
+                {{fa-icon 'briefcase'}}
+                <p>
+                  No employments found...
+                </p>
+              </div>
+            </div>
           {{/with}}
         {{/if}}
       </div>
@@ -100,7 +107,14 @@
               </tbody>
             </table>
           {{^}}
-            <div class="text-center"><em>No absences to show</em></div>
+            <div class="card-block empty">
+              <div>
+                {{fa-icon 'calendar-times-o'}}
+                <p>
+                  No absences found...
+                </p>
+              </div>
+            </div>
           {{/with}}
         {{/if}}
       </div>

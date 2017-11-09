@@ -26,7 +26,14 @@
               </tbody>
             </table>
           {{^}}
-            <div class="text-center"><em>No projects to show</em></div>
+            <div class="card-block empty">
+              <div>
+                {{fa-icon 'folder-open-o'}}
+                <p>
+                  No projects found...
+                </p>
+              </div>
+            </div>
           {{/with}}
         {{/if}}
       </div>
@@ -64,7 +71,14 @@
               </tbody>
             </table>
           {{^}}
-            <div class="text-center"><em>No supervisees to show</em></div>
+            <div class="card-block empty">
+              <div>
+                {{fa-icon 'users'}}
+                <p>
+                  No supervisees found...
+                </p>
+              </div>
+            </div>
           {{/with}}
         {{/if}}
       </div>

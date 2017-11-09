@@ -25,11 +25,13 @@
         {{fa-icon 'bar-chart'}} Statistics
       {{/link-to}}
     </li>
-    <li class="nav-side-list-item">
-      {{#link-to 'users.index'}}
-        {{fa-icon 'users'}} Users
-      {{/link-to}}
-    </li>
+    {{#if user.isSuperuser}}
+      <li class="nav-side-list-item">
+        {{#link-to 'users.index'}}
+          {{fa-icon 'users'}} Users
+        {{/link-to}}
+      </li>
+    {{/if}}
   </ul>
   <ul class="nav-side-list">
     <li class="nav-side-list-header"></li>
