@@ -191,7 +191,15 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
 
 
 class ReportIntersectionSerializer(Serializer):
-    """Serializers intersection of given reports."""
+    """
+    Serializer of report intersections.
+
+    Serializes a representation of all fields which are the same
+    in given Report objects. If values of one field are not the same
+    in all objects it will be represented as None.
+
+    Serializer expect instance to have a queryset value.
+    """
 
     customer = relations.SerializerMethodResourceRelatedField(
         source='get_customer',
