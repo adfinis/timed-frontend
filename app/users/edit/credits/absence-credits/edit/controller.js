@@ -8,6 +8,8 @@ export default Controller.extend({
 
   userController: controller('users.edit'),
 
+  userCreditsController: controller('users.edit.credits.index'),
+
   notify: service('notify'),
 
   absenceTypes: task(function*() {
@@ -36,7 +38,20 @@ export default Controller.extend({
 
       this.get('userController.data').perform(this.get('user.id'))
 
-      yield this.transitionToRoute('users.edit.credits')
+      let allYears = this.get(
+        'userCreditsController.years.lastSuccessful.value'
+      )
+
+      if (!allYears) {
+        allYears = yield this.get('userCreditsController.years').perform()
+      }
+
+      let year =
+        allYears.find(y => y === String(changeset.get('date').year())) || ''
+
+      yield this.transitionToRoute('users.edit.credits', this.get('user.id'), {
+        queryParams: { year }
+      })
     } catch (e) {
       /* istanbul ignore next */
       this.get('notify').error('Error while saving the absence credit')

@@ -91,4 +91,23 @@ describe('Acceptance | users edit credits overtime credit', function() {
 
     expect(findAll('[data-test-overtime-credits] tr')).to.have.length(0)
   })
+
+  it('redirects to the year of the created overtime credit', async function() {
+    await visit(`/users/${this.user.id}/credits/overtime-credits/new`)
+
+    await fillIn(
+      'input[name=date]',
+      moment()
+        .add(1, 'years')
+        .format('DD.MM.YYYY')
+    )
+    await fillIn('input[name=duration]', '20:00')
+    await fillIn('input[name=comment]', 'Ding dong')
+
+    await click('.btn-primary')
+
+    expect(currentURL()).to.equal(
+      `/users/${this.user.id}/credits?year=${moment().year() + 1}`
+    )
+  })
 })
