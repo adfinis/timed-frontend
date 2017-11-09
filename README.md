@@ -1,5 +1,5 @@
 # Timed Backend
-[![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-backend.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-backend)
+[![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-backend/master.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-backend)
 [![Coverage](https://img.shields.io/codecov/c/github/adfinis-sygroup/timed-backend/master.svg?style=flat-square)](https://codecov.io/gh/adfinis-sygroup/timed-frontend)
 [![License](https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square)](LICENSE)
 
