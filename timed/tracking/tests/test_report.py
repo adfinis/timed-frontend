@@ -138,6 +138,91 @@ def test_report_list_filter_reviewer(auth_client):
     assert json['data'][0]['id'] == str(report.id)
 
 
+def test_report_list_filter_editable_owner(auth_client):
+    user = auth_client.user
+    report = ReportFactory.create(user=user)
+    ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'editable': 1})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(report.id)
+
+
+def test_report_list_filter_not_editable_owner(auth_client):
+    user = auth_client.user
+    ReportFactory.create(user=user)
+    report = ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'editable': 0})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(report.id)
+
+
+def test_report_list_filter_editable_reviewer(auth_client):
+    user = auth_client.user
+    # not editable report
+    ReportFactory.create()
+    # editable reports
+    ReportFactory.create(user=user)
+    report = ReportFactory.create()
+    report.task.project.reviewers.add(user)
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'editable': 1})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 2
+
+
+def test_report_list_filter_editable_superuser(superadmin_client):
+    report = ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = superadmin_client.get(url, data={'editable': 1})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(report.id)
+
+
+def test_report_list_filter_not_editable_superuser(superadmin_client):
+    ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = superadmin_client.get(url, data={'editable': 0})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 0
+
+
+def test_report_list_filter_editable_supervisor(auth_client):
+    user = auth_client.user
+    # not editable report
+    ReportFactory.create()
+    # editable reports
+    ReportFactory.create(user=user)
+    report = ReportFactory.create()
+    report.user.supervisors.add(user)
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'editable': 1})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 2
+
+
 def test_report_export_missing_type(auth_client):
     user = auth_client.user
     url = reverse('report-export')
