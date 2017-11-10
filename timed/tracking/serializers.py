@@ -2,17 +2,19 @@
 from datetime import timedelta
 
 from django.contrib.auth import get_user_model
+from django.db.models import BooleanField, Case, When
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
+from rest_framework_json_api import relations
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  DurationField,
-                                                 ModelSerializer,
+                                                 ModelSerializer, Serializer,
                                                  SerializerMethodField,
                                                  ValidationError)
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
-from timed.projects.models import Task
+from timed.projects.models import Customer, Project, Task
 from timed.serializers import TotalTimeRootMetaMixin
 from timed.tracking import models
 
@@ -186,6 +188,95 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
             'activity',
             'user',
         ]
+
+
+class ReportIntersectionSerializer(Serializer):
+    """
+    Serializer of report intersections.
+
+    Serializes a representation of all fields which are the same
+    in given Report objects. If values of one field are not the same
+    in all objects it will be represented as None.
+
+    Serializer expect instance to have a queryset value.
+    """
+
+    customer = relations.SerializerMethodResourceRelatedField(
+        source='get_customer',
+        model=Customer,
+        read_only=True
+    )
+    project = relations.SerializerMethodResourceRelatedField(
+        source='get_project',
+        model=Project,
+        read_only=True
+    )
+    task = relations.SerializerMethodResourceRelatedField(
+        source='get_task',
+        model=Task,
+        read_only=True
+    )
+    comment = SerializerMethodField()
+    review = SerializerMethodField()
+    not_billable = SerializerMethodField()
+    not_verified = SerializerMethodField()
+
+    def _intersection(self, instance, field, model=None):
+        """Get intersection of given field.
+
+        :return: Returns value of field if objects have same value;
+                 otherwise None
+        """
+        value = None
+        queryset = instance['queryset']
+        values = queryset.values(field).distinct()
+        if values.count() == 1:
+            value = values.first()[field]
+            if model:
+                value = model.objects.get(pk=value)
+
+        return value
+
+    def get_customer(self, instance):
+        return self._intersection(
+            instance, 'task__project__customer', Customer
+        )
+
+    def get_project(self, instance):
+        return self._intersection(instance, 'task__project', Project)
+
+    def get_task(self, instance):
+        return self._intersection(instance, 'task', Task)
+
+    def get_comment(self, instance):
+        return self._intersection(instance, 'comment')
+
+    def get_review(self, instance):
+        return self._intersection(instance, 'review')
+
+    def get_not_billable(self, instance):
+        return self._intersection(instance, 'not_billable')
+
+    def get_not_verified(self, instance):
+        queryset = instance['queryset']
+        queryset = queryset.annotate(
+            not_verified=Case(
+                When(verified_by_id__isnull=True, then=True),
+                default=False,
+                output_field=BooleanField()
+            )
+        )
+        instance['queryset'] = queryset
+        return self._intersection(instance, 'not_verified')
+
+    included_serializers = {
+        'customer': 'timed.projects.serializers.CustomerSerializer',
+        'project': 'timed.projects.serializers.ProjectSerializer',
+        'task': 'timed.projects.serializers.TaskSerializer',
+    }
+
+    class Meta:
+        resource_name = 'report-intersections'
 
 
 class AbsenceSerializer(ModelSerializer):

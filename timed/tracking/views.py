@@ -5,10 +5,12 @@ from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from rest_condition import C
 from rest_framework.decorators import list_route
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from timed.permissions import (IsAdminUser, IsAuthenticated, IsDeleteOnly,
                                IsOwner, IsReadOnly, IsSuperUser, IsUnverified)
+from timed.serializers import AggregateObject
 from timed.tracking import filters, models, serializers
 
 
@@ -127,7 +129,39 @@ class ReportViewSet(ModelViewSet):
 
         return name
 
-    @list_route()
+    @list_route(
+        methods=['get'],
+        serializer_class=serializers.ReportIntersectionSerializer,
+    )
+    def intersection(self, request):
+        """
+        Get intersection in reports of common report fields.
+
+        Use case is for api caller to know what fields are the same
+        in a list of reports. This will be mainly used for bulk update.
+
+        This will always return a single resource.
+        """
+        queryset = self.get_queryset()
+        queryset = self.filter_queryset(queryset)
+
+        # filter params represent main indication of result
+        # so it can be used as id
+        params = self.request.query_params.copy()
+        ignore_params = {
+            'ordering',
+            'page',
+            'page_size',
+            'include'
+        }
+        for param in ignore_params.intersection(params.keys()):
+            del params[param]
+
+        data = AggregateObject(queryset=queryset, pk=params.urlencode())
+        serializer = serializers.ReportIntersectionSerializer(data)
+        return Response(data=serializer.data)
+
+    @list_route(methods=['get'])
     def export(self, request):
         """Export filtered reports to given file format."""
         queryset = self.get_queryset().select_related(

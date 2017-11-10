@@ -1,5 +1,7 @@
 from rest_framework_json_api import relations
 
+from timed.serializers import AggregateObject
+
 
 class AggregateQuerysetMixin(object):
     """
@@ -17,18 +19,6 @@ class AggregateQuerysetMixin(object):
     Mixin expects the id to be the same key as the resource related
     field defined in the serializer.
     """
-
-    class AggregateObject(dict):
-        """
-        Wrap dict into an object.
-
-        All values will be accessible through attributes. Note that
-        keys must be valid python names for this to work.
-        """
-
-        def __init__(self, **kwargs):
-            self.__dict__.update(kwargs)
-            super().__init__(**kwargs)
 
     def _is_related_field(self, val):
         """
@@ -70,7 +60,7 @@ class AggregateQuerysetMixin(object):
 
         # enhance entry dicts with model instances
         data = [
-            self.AggregateObject(**{
+            AggregateObject(**{
                 **entry,
                 **{
                     field: objects[entry[field]]

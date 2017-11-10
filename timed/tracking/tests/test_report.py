@@ -38,6 +38,91 @@ def test_report_list(auth_client):
     assert json['meta']['total-time'] == '01:00:00'
 
 
+def test_report_intersection_full(auth_client):
+    report = ReportFactory.create()
+
+    url = reverse('report-intersection')
+    response = auth_client.get(url, data={
+        'ordering': 'task__name',
+        'task': report.task.id,
+        'project': report.task.project.id,
+        'customer': report.task.project.customer.id,
+        'include': 'task,customer,project'
+    })
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    pk = json['data'].pop('id')
+    assert 'task={0}'.format(report.task.id) in pk
+    assert 'project={0}'.format(report.task.project.id) in pk
+    assert 'customer={0}'.format(report.task.project.customer.id) in pk
+
+    included = json.pop('included')
+    assert len(included) == 3
+
+    expected = {
+        'data': {
+            'type': 'report-intersections',
+            'attributes': {
+                'comment': report.comment,
+                'not-billable': False,
+                'not-verified': True,
+                'review': False
+            },
+            'relationships': {
+                'customer': {
+                    'data': {
+                        'id': str(report.task.project.customer.id),
+                        'type': 'customers'
+                    }
+                },
+                'project': {
+                    'data': {
+                        'id': str(report.task.project.id),
+                        'type': 'projects'
+                    }
+                },
+                'task': {
+                    'data': {
+                        'id': str(report.task.id),
+                        'type': 'tasks',
+                    }
+                }
+            }
+        }
+    }
+    assert json == expected
+
+
+def test_report_intersection_partial(auth_client):
+    user = auth_client.user
+    ReportFactory.create(review=True, not_billable=True, comment='test')
+    ReportFactory.create(verified_by=user, comment='test')
+
+    url = reverse('report-intersection')
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    expected = {
+        'data': {
+            'id': '', 'type': 'report-intersections',
+            'attributes': {
+                'comment': 'test',
+                'not-billable': None,
+                'not-verified': None,
+                'review': None
+            },
+            'relationships': {
+                'customer': {'data': None},
+                'project': {'data': None},
+                'task': {'data': None}
+            }
+        }
+    }
+    assert json == expected
+
+
 def test_report_list_filter_reviewer(auth_client):
     user = auth_client.user
     report = ReportFactory.create(user=user)

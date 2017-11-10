@@ -18,3 +18,16 @@ class TotalTimeRootMetaMixin(object):
             )
             return data
         return {}
+
+
+class AggregateObject(dict):
+    """
+    Wrap dict into an object.
+
+    All values will be accessible through attributes. Note that
+    keys must be valid python names for this to work.
+    """
+
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+        super().__init__(**kwargs)
