@@ -1,5 +1,5 @@
 from rest_framework.permissions import (SAFE_METHODS, BasePermission,
-                                        IsAdminUser, IsAuthenticated)
+                                        IsAuthenticated)
 
 
 class IsUnverified(BasePermission):
@@ -53,7 +53,7 @@ class IsAuthenticated(IsAuthenticated):
     """
     Support mixing permission IsAuthenticated with object permission.
 
-    This is needed to use IsAdminUser with rest condition and or
+    This is needed to use IsAuthenticated with rest condition and or
     operator.
     """
 
@@ -75,16 +75,12 @@ class IsSupervisor(IsAuthenticated):
         return request.user.supervisees.filter(id=obj.user_id).exists()
 
 
-class IsAdminUser(IsAdminUser):
-    """
-    Support mixing permission IsAdminUser with object permission.
-
-    This is needed to use IsAdminUser with rest condition and or
-    operator.
-    """
+class IsReviewer(IsAuthenticated):
+    """Allows access to object only to reviewers."""
 
     def has_object_permission(self, request, view, obj):
-        return self.has_permission(request, view)
+        user = request.user
+        return obj.task.project.reviewers.filter(id=user.id).exists()
 
 
 class IsSuperUser(BasePermission):
