@@ -1,0 +1,43 @@
+<header class="nav-top-header">
+  <button class="nav-toggle nav-top-toggle" {{action (toggle 'expand' this) on='click'}}>
+    <span class="nav-toggle-icon"></span>
+  </button>
+  {{#link-to 'index'}}
+    {{timed-clock}}
+    <div class="nav-top-header-title">Timed</div>
+  {{/link-to}}
+</header>
+<section class="nav-top-body">
+  <ul class="nav-top-list">
+    <li class="nav-top-list-item">
+      {{#link-to 'index'}}
+        {{fa-icon 'clock-o'}} Tracking
+      {{/link-to}}
+    </li>
+    <li class="nav-top-list-item">
+      {{#link-to 'statistics'}}
+        {{fa-icon 'bar-chart'}} Statistics
+      {{/link-to}}
+    </li>
+    {{#if session.data.user.isSuperuser}}
+      <li class="nav-top-list-item">
+        {{#link-to 'users.index'}}
+          {{fa-icon 'users'}} Users
+        {{/link-to}}
+      </li>
+    {{/if}}
+  </ul>
+  <ul class="nav-top-list nav-top-list--right">
+    <li class="nav-top-list-item">
+      {{#link-to 'users.edit' session.data.user.id}}
+        {{fa-icon 'user'}} {{session.data.user.fullName}}
+      {{/link-to}}
+    </li>
+    <li class="nav-top-list-item">
+      <a href="#" data-test-logout {{action (optional on-logout)}}>
+        <i class="fa fa-power-off"></i>
+        Logout
+      </a>
+    </li>
+  </ul>
+</section>
