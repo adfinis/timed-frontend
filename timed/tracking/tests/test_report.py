@@ -52,58 +52,6 @@ def test_report_list_filter_reviewer(auth_client):
     assert json['data'][0]['id'] == str(report.id)
 
 
-def test_report_list_verify(admin_client):
-    user = admin_client.user
-    report = ReportFactory.create(user=user, duration=timedelta(hours=1))
-    ReportFactory.create()
-
-    url_list = reverse('report-list')
-    response = admin_client.get(url_list, data={'not_verified': 1})
-    assert response.status_code == status.HTTP_200_OK
-    json = response.json()
-    assert len(json['data']) == 2
-
-    url_verify = reverse('report-verify')
-    response = admin_client.post(url_verify, QUERY_STRING='user=%s' % user.id)
-    assert response.status_code == status.HTTP_200_OK
-
-    response = admin_client.get(url_list, data={'not_verified': 0})
-    assert response.status_code == status.HTTP_200_OK
-
-    json = response.json()
-    assert len(json['data']) == 1
-    assert json['data'][0]['id'] == str(report.id)
-    assert json['meta']['total-time'] == '01:00:00'
-
-
-def test_report_list_verify_non_admin(auth_client):
-    """Non admin resp. non staff user may not verify reports."""
-    user = auth_client.user
-    url_verify = reverse('report-verify')
-
-    res = auth_client.post(url_verify, QUERY_STRING='user=%s' % user.id)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
-
-
-def test_report_list_verify_page(admin_client):
-    user = admin_client.user
-    ReportFactory.create_batch(2, user=user)
-
-    url_verify = reverse('report-verify')
-    response = admin_client.post(
-        url_verify,
-        QUERY_STRING='user=%s&page_size=1' % user.id
-    )
-    assert response.status_code == status.HTTP_200_OK
-
-    url_list = reverse('report-list')
-    response = admin_client.get(url_list, data={'not_verified': 0})
-    assert response.status_code == status.HTTP_200_OK
-
-    json = response.json()
-    assert len(json['data']) == 1
-
-
 def test_report_export_missing_type(auth_client):
     user = auth_client.user
     url = reverse('report-export')

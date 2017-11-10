@@ -5,7 +5,6 @@ from django.db.models import Q
 from django.http import HttpResponseBadRequest
 from rest_condition import C
 from rest_framework.decorators import list_route
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from timed.permissions import (IsAdminUser, IsAuthenticated, IsDeleteOnly,
@@ -166,25 +165,6 @@ class ReportViewSet(ModelViewSet):
         return django_excel.make_response(
             sheet, file_type=file_type, file_name='report.%s' % file_type
         )
-
-    @list_route(methods=['post'], url_path='verify',
-                permission_classes=[IsAuthenticated, IsAdminUser])
-    def verify_list(self, request):
-        """
-        Bulk verify all reports by given filter.
-
-        Authenticated user will be set as verified_by on given
-        reports.
-        """
-        queryset = self.filter_queryset(self.get_queryset())
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            # page is a list so need to convert it to queryset
-            ids = [report.id for report in page]
-            queryset = models.Report.objects.filter(id__in=ids)
-        queryset.update(verified_by=request.user)
-
-        return Response(data={})
 
     def get_queryset(self):
         """Select related to reduce queries.
