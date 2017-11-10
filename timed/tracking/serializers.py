@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import BooleanField, Case, When
 from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
-from rest_framework_json_api import relations
+from rest_framework_json_api import relations, serializers
 from rest_framework_json_api.relations import ResourceRelatedField
 from rest_framework_json_api.serializers import (CurrentUserDefault,
                                                  DurationField,
@@ -193,6 +193,21 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         ]
 
 
+class ReportBulkSerializer(Serializer):
+    """Serializer used for bulk updates of reports."""
+
+    task = ResourceRelatedField(
+        queryset=Task.objects.all(), allow_null=True, required=False
+    )
+    comment = serializers.CharField(allow_null=True, required=False)
+    review = serializers.NullBooleanField(required=False)
+    not_billable = serializers.NullBooleanField(required=False)
+    verified = serializers.NullBooleanField(required=False)
+
+    class Meta:
+        resource_name = 'report-bulks'
+
+
 class ReportIntersectionSerializer(Serializer):
     """
     Serializer of report intersections.
@@ -222,7 +237,7 @@ class ReportIntersectionSerializer(Serializer):
     comment = SerializerMethodField()
     review = SerializerMethodField()
     not_billable = SerializerMethodField()
-    not_verified = SerializerMethodField()
+    verified = SerializerMethodField()
 
     def _intersection(self, instance, field, model=None):
         """Get intersection of given field.
@@ -260,17 +275,17 @@ class ReportIntersectionSerializer(Serializer):
     def get_not_billable(self, instance):
         return self._intersection(instance, 'not_billable')
 
-    def get_not_verified(self, instance):
+    def get_verified(self, instance):
         queryset = instance['queryset']
         queryset = queryset.annotate(
-            not_verified=Case(
-                When(verified_by_id__isnull=True, then=True),
-                default=False,
+            verified=Case(
+                When(verified_by_id__isnull=True, then=False),
+                default=True,
                 output_field=BooleanField()
             )
         )
         instance['queryset'] = queryset
-        return self._intersection(instance, 'not_verified')
+        return self._intersection(instance, 'verified')
 
     included_serializers = {
         'customer': 'timed.projects.serializers.CustomerSerializer',

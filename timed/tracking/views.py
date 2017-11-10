@@ -1,9 +1,12 @@
 """Viewsets for the tracking app."""
 
 import django_excel
+from django.db import transaction
 from django.db.models import Q
 from django.http import HttpResponseBadRequest
+from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
+from rest_framework import exceptions, status
 from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -161,6 +164,54 @@ class ReportViewSet(ModelViewSet):
         data = AggregateObject(queryset=queryset, pk=params.urlencode())
         serializer = serializers.ReportIntersectionSerializer(data)
         return Response(data=serializer.data)
+
+    @list_route(
+        methods=['post'],
+        # all users are allowed to bulk update but only on filtered result
+        permission_classes=[IsAuthenticated],
+        serializer_class=serializers.ReportBulkSerializer
+    )
+    def bulk(self, request):
+        user = request.user
+        queryset = self.get_queryset()
+        queryset = self.filter_queryset(queryset)
+
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        fields = {
+            key: value
+            for key, value in serializer.validated_data.items()
+            # value equal None means do not touch whereas verified
+            # is handled separately
+            if value is not None and key != 'verified'
+        }
+
+        with transaction.atomic():
+            verified = serializer.validated_data.get('verified')
+            if verified is not None:
+                # only reviewer or superuser may verify reports
+                # this is enforced when reviewer filter is set to current user
+                reviewer_id = request.query_params.get('reviewer')
+                if not user.is_superuser and str(reviewer_id) != str(user.id):
+                    raise exceptions.ParseError(
+                        _('You do not have the permission to verify reports')
+                    )
+
+                verified_by = verified and user or None
+                queryset.filter(verified_by__isnull=verified).update(
+                    verified_by=verified_by
+                )
+
+            # update all other fields
+            if fields:
+                if not request.query_params.get('editable'):
+                    raise exceptions.ParseError(
+                        _('Editable filter needs to be set for bulk update')
+                    )
+
+                queryset.update(**fields)
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @list_route(methods=['get'])
     def export(self, request):
