@@ -168,6 +168,20 @@ def test_report_list_filter_reviewer(auth_client):
     assert json['data'][0]['id'] == str(report.id)
 
 
+def test_report_list_filter_verifier(auth_client):
+    user = auth_client.user
+    report = ReportFactory.create(verified_by=user)
+    ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'verifier': user.id})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(report.id)
+
+
 def test_report_list_filter_editable_owner(auth_client):
     user = auth_client.user
     report = ReportFactory.create(user=user)

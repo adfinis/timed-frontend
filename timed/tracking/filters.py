@@ -102,6 +102,7 @@ class ReportFilterSet(FilterSet):
         name='verified_by_id', lookup_expr='isnull', exclude=True
     )
     reviewer     = NumberFilter(name='task__project__reviewers')
+    verifier     = NumberFilter(name='verified_by')
     billing_type = NumberFilter(name='task__project__billing_type')
     user         = NumberFilter(name='user_id')
     cost_center  = NumberFilter(method='filter_cost_center')
