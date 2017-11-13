@@ -1,5 +1,5 @@
 coverage==4.4.2
-factory-boy
+factory-boy==2.9.2
 flake8
 flake8-blind-except
 flake8-debugger
