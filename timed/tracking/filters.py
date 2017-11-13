@@ -122,9 +122,11 @@ class ReportFilterSet(FilterSet):
 
             # only owner, reviewer or supervisor may change reports
             queryset = queryset.filter(
-                Q(user__supervisors=user) |
-                Q(task__project__reviewers=user) |
-                Q(user=user)
+                (
+                    Q(user__supervisors=user) |
+                    Q(task__project__reviewers=user) |
+                    Q(user=user)
+                ) & Q(verified_by__isnull=True)
             )
 
             return queryset
@@ -134,9 +136,11 @@ class ReportFilterSet(FilterSet):
                 return queryset.none()
 
             queryset = queryset.exclude(
-                Q(user__supervisors=user) |
-                Q(task__project__reviewers=user) |
-                Q(user=user)
+                (
+                    Q(user__supervisors=user) |
+                    Q(task__project__reviewers=user) |
+                    Q(user=user)
+                ) & Q(verified_by__isnull=True)
             )
 
             return queryset
