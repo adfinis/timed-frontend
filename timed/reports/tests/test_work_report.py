@@ -31,7 +31,7 @@ def test_work_report_single_project(auth_client, django_assert_num_queries):
             'user': auth_client.user.id,
             'from_date': '2017-08-01',
             'to_date': '2017-08-31',
-            'not_verified': 0
+            'verified': 1
         })
     assert res.status_code == HTTP_200_OK
     assert '1708-20170901-Customer_Name-Project.ods' in (
@@ -65,7 +65,7 @@ def test_work_report_multiple_projects(auth_client, django_assert_num_queries):
     with django_assert_num_queries(4):
         res = auth_client.get(url, data={
             'user': auth_client.user.id,
-            'not_verified': 1
+            'verified': 0
         })
     assert res.status_code == HTTP_200_OK
     assert '20170901-WorkReports.zip' in (

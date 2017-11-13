@@ -96,7 +96,9 @@ class ReportFilterSet(FilterSet):
     review       = NumberFilter(name='review')
     editable     = NumberFilter(method='filter_editable')
     not_billable = NumberFilter(name='not_billable')
-    not_verified = NumberFilter(name='verified_by_id', lookup_expr='isnull')
+    verified     = NumberFilter(
+        name='verified_by_id', lookup_expr='isnull', exclude=True
+    )
     reviewer     = NumberFilter(name='task__project__reviewers')
     billing_type = NumberFilter(name='task__project__billing_type')
     user         = NumberFilter(name='user_id')
@@ -160,7 +162,7 @@ class ReportFilterSet(FilterSet):
             'user',
             'task',
             'project',
-            'not_verified',
+            'verified',
             'not_billable',
             'review',
             'reviewer',

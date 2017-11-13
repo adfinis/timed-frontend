@@ -67,7 +67,7 @@ def test_report_intersection_full(auth_client):
             'attributes': {
                 'comment': report.comment,
                 'not-billable': False,
-                'not-verified': True,
+                'verified': False,
                 'review': False
             },
             'relationships': {
@@ -111,7 +111,7 @@ def test_report_intersection_partial(auth_client):
             'attributes': {
                 'comment': 'test',
                 'not-billable': None,
-                'not-verified': None,
+                'verified': None,
                 'review': None
             },
             'relationships': {
@@ -281,6 +281,119 @@ def test_report_create(auth_client):
     )
 
     assert json['data']['relationships']['task']['data']['id'] == str(task.id)
+
+
+def test_report_update_bulk(auth_client):
+    task = TaskFactory.create()
+    report = ReportFactory.create(user=auth_client.user)
+
+    url = reverse('report-bulk')
+
+    data = {
+        'data': {
+            'type': 'report-bulks',
+            'id': None,
+            'relationships': {
+                'task': {
+                    'data': {
+                        'type': 'tasks',
+                        'id': task.id
+                    }
+                }
+            },
+        }
+    }
+
+    response = auth_client.post(url + '?editable=1', data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert report.task == task
+
+
+def test_report_update_bulk_verify_non_reviewer(auth_client):
+    ReportFactory.create(user=auth_client.user)
+
+    url = reverse('report-bulk')
+
+    data = {
+        'data': {
+            'type': 'report-bulks',
+            'id': None,
+            'attributes': {
+                'verified': True
+            }
+        }
+    }
+
+    response = auth_client.post(url + '?editable=1', data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_report_update_bulk_verify_superuser(superadmin_client):
+    user = superadmin_client.user
+    report = ReportFactory.create(user=user)
+
+    url = reverse('report-bulk')
+
+    data = {
+        'data': {
+            'type': 'report-bulks',
+            'id': None,
+            'attributes': {
+                'verified': True
+            }
+        }
+    }
+
+    response = superadmin_client.post(url + '?editable=1', data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert report.verified_by == user
+
+
+def test_report_update_bulk_reset_verify_reviewer(auth_client):
+    user = auth_client.user
+    report = ReportFactory.create(verified_by=user)
+    report.task.project.reviewers.add(user)
+
+    url = reverse('report-bulk')
+
+    data = {
+        'data': {
+            'type': 'report-bulks',
+            'id': None,
+            'attributes': {
+                'verified': False
+            }
+        }
+    }
+
+    response = auth_client.post(
+        url + '?editable=1&reviewer={0}'.format(user.id), data
+    )
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert report.verified_by_id is None
+
+
+def test_report_update_bulk_not_editable(auth_client):
+    url = reverse('report-bulk')
+
+    data = {
+        'data': {
+            'type': 'report-bulks',
+            'id': None,
+            'attributes': {
+                'not_billable': True
+            },
+        }
+    }
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_report_update_verified_as_non_staff_but_owner(auth_client):
