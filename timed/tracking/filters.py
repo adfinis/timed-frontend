@@ -3,9 +3,9 @@
 from functools import wraps
 
 from django.db.models import Q
-from django_filters import DateFilter, Filter, FilterSet, NumberFilter
+from django_filters import (BaseInFilter, DateFilter, Filter, FilterSet,
+                            NumberFilter)
 
-from timed.filters import ListFilter
 from timed.tracking import models
 
 
@@ -90,7 +90,7 @@ class AttendanceFilterSet(FilterSet):
 class ReportFilterSet(FilterSet):
     """Filter set for the reports endpoint."""
 
-    id           = ListFilter()
+    id           = BaseInFilter()
     from_date    = DateFilter(name='date', lookup_expr='gte')
     to_date      = DateFilter(name='date', lookup_expr='lte')
     project      = NumberFilter(name='task__project')
