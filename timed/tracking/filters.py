@@ -3,7 +3,8 @@
 from functools import wraps
 
 from django.db.models import Q
-from django_filters import DateFilter, Filter, FilterSet, NumberFilter
+from django_filters import (BaseInFilter, DateFilter, Filter, FilterSet,
+                            NumberFilter)
 
 from timed.tracking import models
 
@@ -89,6 +90,7 @@ class AttendanceFilterSet(FilterSet):
 class ReportFilterSet(FilterSet):
     """Filter set for the reports endpoint."""
 
+    id           = BaseInFilter()
     from_date    = DateFilter(name='date', lookup_expr='gte')
     to_date      = DateFilter(name='date', lookup_expr='lte')
     project      = NumberFilter(name='task__project')
@@ -100,6 +102,7 @@ class ReportFilterSet(FilterSet):
         name='verified_by_id', lookup_expr='isnull', exclude=True
     )
     reviewer     = NumberFilter(name='task__project__reviewers')
+    verifier     = NumberFilter(name='verified_by')
     billing_type = NumberFilter(name='task__project__billing_type')
     user         = NumberFilter(name='user_id')
     cost_center  = NumberFilter(method='filter_cost_center')

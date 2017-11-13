@@ -124,6 +124,36 @@ def test_report_intersection_partial(auth_client):
     assert json == expected
 
 
+def test_report_list_filter_id(auth_client):
+    report_1 = ReportFactory.create(date='2017-01-01')
+    report_2 = ReportFactory.create(date='2017-02-01')
+    ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={
+        'id': '{0},{1}'.format(report_1.id, report_2.id),
+        'ordering': 'id'
+    })
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 2
+    assert json['data'][0]['id'] == str(report_1.id)
+    assert json['data'][1]['id'] == str(report_2.id)
+
+
+def test_report_list_filter_id_empty(auth_client):
+    """Test that empty id filter is ignored."""
+    ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'id': ''})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+
+
 def test_report_list_filter_reviewer(auth_client):
     user = auth_client.user
     report = ReportFactory.create(user=user)
@@ -132,6 +162,20 @@ def test_report_list_filter_reviewer(auth_client):
     url = reverse('report-list')
 
     response = auth_client.get(url, data={'reviewer': user.id})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(report.id)
+
+
+def test_report_list_filter_verifier(auth_client):
+    user = auth_client.user
+    report = ReportFactory.create(verified_by=user)
+    ReportFactory.create()
+
+    url = reverse('report-list')
+
+    response = auth_client.get(url, data={'verifier': user.id})
     assert response.status_code == status.HTTP_200_OK
     json = response.json()
     assert len(json['data']) == 1
