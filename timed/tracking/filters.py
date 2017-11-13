@@ -103,7 +103,11 @@ class ReportFilterSet(FilterSet):
     cost_center  = NumberFilter(method='filter_cost_center')
 
     def filter_editable(self, queryset, name, value):
-        """Filter reports whether there are editable by current user."""
+        """Filter reports whether they are editable by current user.
+
+        When set to `1` filter all results to what is editable by current
+        user. If set to `0` to not editable.
+        """
         user = self.request.user
 
         if value:  # editable
