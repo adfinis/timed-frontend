@@ -1,0 +1,18 @@
+<div class="filter-sidebar-title">
+  {{#if appliedCount}}
+    {{appliedCount}} Filter{{unless (eq appliedCount 1) 's'}} applied
+  {{else}}
+    Filters
+  {{/if}}
+  {{#if on-reset}}
+    <a href="#" class="filter-sidebar-reset" {{action on-reset on='click'}}>
+      Reset
+    </a>
+  {{/if}}
+</div>
+
+{{yield (hash
+  group  = (component 'filter-sidebar/group')
+  label  = (component 'filter-sidebar/label')
+  filter = (component 'filter-sidebar/filter')
+)}}

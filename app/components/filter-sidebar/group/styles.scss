@@ -1,0 +1,40 @@
+& {
+  display: flex;
+  flex-direction: column;
+}
+
+&.filter-sidebar-group--expanded .filter-sidebar-group-label .fa {
+  transform: rotate(90deg);
+}
+
+&.filter-sidebar-group--expanded .filter-sidebar-group-label,
+.filter-sidebar-group-label:hover {
+  color: var(--body-color);
+}
+
+.filter-sidebar-group-label {
+  display: flex;
+  flex: 1 0 100%;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 1rem;
+  color: color(var(--body-color) tint(50%));
+  border-top: 1px solid var(--color-border);
+  transition: color .3s ease;
+}
+
+.filter-sidebar-group-body {
+  display: block;
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .3s ease;
+}
+
+.filter-sidebar-group-content {
+  padding: .5rem 1rem;
+}
+
+.filter-sidebar-group-label .fa {
+  transition: transform .3s ease
+}
