@@ -94,12 +94,47 @@ class ReportFilterSet(FilterSet):
     project      = NumberFilter(name='task__project')
     customer     = NumberFilter(name='task__project__customer')
     review       = NumberFilter(name='review')
+    editable     = NumberFilter(method='filter_editable')
     not_billable = NumberFilter(name='not_billable')
     not_verified = NumberFilter(name='verified_by_id', lookup_expr='isnull')
     reviewer     = NumberFilter(name='task__project__reviewers')
     billing_type = NumberFilter(name='task__project__billing_type')
     user         = NumberFilter(name='user_id')
-    cost_center = NumberFilter(name='cost_center', method='filter_cost_center')
+    cost_center  = NumberFilter(method='filter_cost_center')
+
+    def filter_editable(self, queryset, name, value):
+        """Filter reports whether they are editable by current user.
+
+        When set to `1` filter all results to what is editable by current
+        user. If set to `0` to not editable.
+        """
+        user = self.request.user
+
+        if value:  # editable
+            if user.is_superuser:
+                # superuser may edit all reports
+                return queryset
+
+            # only owner, reviewer or supervisor may change reports
+            queryset = queryset.filter(
+                Q(user__supervisors=user) |
+                Q(task__project__reviewers=user) |
+                Q(user=user)
+            )
+
+            return queryset
+        else:  # not editable
+            if user.is_superuser:
+                # no reports which are not editable
+                return queryset.none()
+
+            queryset = queryset.exclude(
+                Q(user__supervisors=user) |
+                Q(task__project__reviewers=user) |
+                Q(user=user)
+            )
+
+            return queryset
 
     def filter_cost_center(self, queryset, name, value):
         """
