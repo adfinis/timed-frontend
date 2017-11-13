@@ -8,6 +8,7 @@ from django.core.urlresolvers import reverse
 from django.utils.duration import duration_string
 from rest_framework import status
 
+from timed.employment.factories import UserFactory
 from timed.projects.factories import (CostCenterFactory, ProjectFactory,
                                       TaskFactory)
 from timed.tracking.factories import ReportFactory
@@ -272,8 +273,10 @@ def test_report_update_owner(auth_client):
     )
 
 
-def test_report_update_date_staff(admin_client):
+def test_report_update_date_reviewer(auth_client):
+    user = auth_client.user
     report = ReportFactory.create()
+    report.task.project.reviewers.add(user)
 
     data = {
         'data': {
@@ -287,12 +290,14 @@ def test_report_update_date_staff(admin_client):
 
     url = reverse('report-detail', args=[report.id])
 
-    response = admin_client.patch(url, data)
+    response = auth_client.patch(url, data)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_duration_staff(admin_client):
+def test_report_update_duration_reviewer(auth_client):
+    user = auth_client.user
     report = ReportFactory.create(duration=timedelta(hours=2))
+    report.task.project.reviewers.add(user)
 
     data = {
         'data': {
@@ -308,11 +313,11 @@ def test_report_update_duration_staff(admin_client):
         report.id
     ])
 
-    res = admin_client.patch(url, data)
+    res = auth_client.patch(url, data)
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_not_staff_user(auth_client):
+def test_report_update_by_user(auth_client):
     """Updating of report belonging to different user is not allowed."""
     report = ReportFactory.create()
     data = {
@@ -330,8 +335,8 @@ def test_report_update_not_staff_user(auth_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_report_set_verified_by_not_staff_user(auth_client):
-    """Not staff user may not set verified by."""
+def test_report_set_verified_by_user(auth_client):
+    """Test that normal user may not verify report."""
     user = auth_client.user
     report = ReportFactory.create(user=user)
     data = {
@@ -354,9 +359,10 @@ def test_report_set_verified_by_not_staff_user(auth_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_staff_user(admin_client):
-    user = admin_client.user
+def test_report_update_reviewer(auth_client):
+    user = auth_client.user
     report = ReportFactory.create(user=user)
+    report.task.project.reviewers.add(user)
 
     data = {
         'data': {
@@ -378,14 +384,61 @@ def test_report_update_staff_user(admin_client):
 
     url = reverse('report-detail', args=[report.id])
 
-    response = admin_client.patch(url, data)
+    response = auth_client.patch(url, data)
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_report_reset_verified_by_staff_user(admin_client):
-    """Staff user may reset verified by on report."""
-    user = admin_client.user
+def test_report_update_supervisor(auth_client):
+    user = auth_client.user
+    report = ReportFactory.create(user=user)
+    report.user.supervisors.add(user)
+
+    data = {
+        'data': {
+            'type': 'reports',
+            'id': report.id,
+            'attributes': {
+                'comment':  'foobar',
+            },
+        }
+    }
+
+    url = reverse('report-detail', args=[report.id])
+
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+
+def test_report_verify_other_user(superadmin_client):
+    """Verify that superuser may not verify to other user."""
+    user = UserFactory.create()
+    report = ReportFactory.create()
+
+    data = {
+        'data': {
+            'type': 'reports',
+            'id': report.id,
+            'relationships': {
+                'verified-by': {
+                    'data': {
+                        'id': user.id,
+                        'type': 'users'
+                    }
+                },
+            }
+        }
+    }
+
+    url = reverse('report-detail', args=[report.id])
+    response = superadmin_client.patch(url, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_report_reset_verified_by_reviewer(auth_client):
+    """Test that reviewer  may reset verified by on report."""
+    user = auth_client.user
     report = ReportFactory.create(user=user, verified_by=user)
+    report.task.project.reviewers.add(user)
 
     data = {
         'data': {
@@ -403,7 +456,7 @@ def test_report_reset_verified_by_staff_user(admin_client):
     }
 
     url = reverse('report-detail', args=[report.id])
-    response = admin_client.patch(url, data)
+    response = auth_client.patch(url, data)
     assert response.status_code == status.HTTP_200_OK
 
 

@@ -145,24 +145,6 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
 
         return value
 
-    def validate_verified_by(self, value):
-        user = self.context['request'].user
-        current_verified_by = self.instance and self.instance.verified_by
-
-        if value == current_verified_by:
-            # no validation needed when nothing has changed
-            return value
-
-        if value is None and user.is_staff:
-            # staff is allowed to reset verified by
-            return value
-
-        if value is not None and user.is_staff and value == user:
-            # staff user is allowed to set it's own user as verified by
-            return value
-
-        raise ValidationError(_('Only staff user may verify reports.'))
-
     def validate_duration(self, value):
         """Only owner is allowed to change duration."""
         if self.instance is not None:
@@ -173,9 +155,30 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
 
         return value
 
-    class Meta:
-        """Meta information for the report serializer."""
+    def validate(self, data):
+        """Validate that verified by is only set by reviewer or superuser."""
+        user = self.context['request'].user
+        current_verified_by = self.instance and self.instance.verified_by
+        new_verified_by = data.get('verified_by')
+        task = data.get('task') or self.instance.task
 
+        if new_verified_by != current_verified_by:
+            is_reviewer = (
+                user.is_superuser or
+                task.project.reviewers.filter(id=user.id).exists()
+            )
+
+            if not is_reviewer:
+                raise ValidationError(_('Only reviewer may verify reports.'))
+
+            if new_verified_by is not None and new_verified_by != user:
+                raise ValidationError(
+                    _('You may only verifiy with your own user')
+                )
+
+        return data
+
+    class Meta:
         model  = models.Report
         fields = [
             'comment',
@@ -183,10 +186,10 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
             'duration',
             'review',
             'not_billable',
-            'verified_by',
             'task',
             'activity',
             'user',
+            'verified_by',
         ]
 
 

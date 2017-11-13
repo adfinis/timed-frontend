@@ -8,8 +8,9 @@ from rest_framework.decorators import list_route
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from timed.permissions import (IsAdminUser, IsAuthenticated, IsDeleteOnly,
-                               IsOwner, IsReadOnly, IsSuperUser, IsUnverified)
+from timed.permissions import (IsAuthenticated, IsDeleteOnly, IsOwner,
+                               IsReadOnly, IsReviewer, IsSuperUser,
+                               IsSupervisor, IsUnverified)
 from timed.serializers import AggregateObject
 from timed.tracking import filters, models, serializers
 
@@ -82,8 +83,8 @@ class ReportViewSet(ModelViewSet):
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
     permission_classes = [
-        # admin user can change all but not delete
-        C(IsAuthenticated) & C(IsAdminUser) & ~C(IsDeleteOnly) |
+        # reviewer, supervisor or superuser may change but not delete reports
+        (C(IsSuperUser) | C(IsReviewer) | C(IsSupervisor)) & ~C(IsDeleteOnly) |
         # owner may only change its own unverified reports
         C(IsAuthenticated) & C(IsOwner) & C(IsUnverified) |
         # all authenticated users may read all reports
