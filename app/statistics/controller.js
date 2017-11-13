@@ -119,16 +119,6 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     return this.store.findAll('cost-center')
   },
 
-  @computed('billingType', 'prefetchData.lastSuccessful.value.billingTypes')
-  selectedBillingType(id) {
-    return id && this.store.peekRecord('billing-type', id)
-  },
-
-  @computed('costCenter', 'prefetchData.lastSuccessful.value.costCenters')
-  selectedCostCenter(id) {
-    return id && this.store.peekRecord('cost-center', id)
-  },
-
   @computed('customer', 'prefetchData.lastSuccessful.value.customer')
   selectedCustomer(id) {
     return id && this.store.peekRecord('customer', id)
@@ -193,6 +183,13 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     if (Object.keys(changed).includes('type')) {
       this.resetQueryParams('ordering')
     }
+  },
+
+  @computed('queryParamsState')
+  appliedFilters(state) {
+    return Object.keys(state).filter(key => {
+      return this.get(`queryParamsState.${key}.changed`)
+    })
   },
 
   @computed('type')
