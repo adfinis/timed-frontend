@@ -1,19 +1,22 @@
-:root {
+.user-header {
   --user-header-padding-v: 0.5rem;
   --user-header-padding-h: var(--page-padding-h);
-}
+  --user-header-margin-top-extra: 0px;
 
-.user-header {
   display: flex;
   flex-shrink: 0;
   flex-direction: column;
   position: relative;
 
-  margin: calc(var(--page-padding-v) * -1) calc(var(--page-padding-h) * -1) 0;
+  margin: calc(var(--page-padding-v) * -1 + var(--user-header-margin-top-extra)) calc(var(--page-padding-h) * -1) 0;
   padding: var(--user-header-padding-v) var(--user-header-padding-h);
 
   background-color: rgb(240, 240, 240);
   border-bottom: 1px solid var(--color-border);
+}
+
+.nav-top--fixed + .user-header {
+  --user-header-margin-top-extra: 51px;
 }
 
 .user-content {
@@ -215,7 +218,7 @@
 
 @media (--lg-viewport) {
   .user-header {
-    margin: calc(var(--page-padding-v) * 1.25 * -1) calc(var(--page-padding-h) * 1.25 * -1) 0;
+    margin: calc(var(--page-padding-v) * 1.25 * -1 + var(--user-header-margin-top-extra)) calc(var(--page-padding-h) * 1.25 * -1) 0;
     padding: calc(var(--user-header-padding-v) * 1.25) calc(var(--user-header-padding-h) * 1.25);
   }
 
@@ -234,7 +237,7 @@
 
 @media (--xl-viewport) {
   .user-header {
-    margin: calc(var(--page-padding-v) * 1.5 * -1) calc(var(--page-padding-h) * 1.5 * -1) 0;
+    margin: calc(var(--page-padding-v) * 1.5 * -1 + var(--user-header-margin-top-extra)) calc(var(--page-padding-h) * 1.5 * -1) 0;
     padding: calc(var(--user-header-padding-v) * 1.5) calc(var(--user-header-padding-h) * 1.5);
   }
 

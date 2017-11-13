@@ -1,15 +1,11 @@
-<div class="nav-side-wrapper">
-  {{sy-sidenav on-logout=(route-action 'invalidateSession')}}
+<main class="page-main">
+  {{#if loading}}<span class="loader"></span>{{/if}}
+  <div class="page-content page-content--scroll">
+    {{sy-topnav on-logout=(route-action 'invalidateSession')}}
 
-  <main class="page-main">
-    {{#if loading}}<span class="loader"></span>{{/if}}
-    <div class="page-wrapper">
-      <div class="page-content page-content--scroll">
-        {{outlet}}
-      </div>
-    </div>
-  </main>
-</div>
+    {{outlet}}
+  </div>
+</main>
 
 {{welcome-modal
   visible  = visible
