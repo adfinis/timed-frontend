@@ -1,0 +1,47 @@
+{{#if (eq type 'button')}}
+  <div class="btn-group btn-group--auto">
+    {{#each options as |option|}}
+      <button
+        class="btn {{if (eq (get option valuePath) selected) 'active'}}"
+        {{action (optional on-change) (get option valuePath)}}
+      >
+        {{get option labelPath}}
+      </button>
+      {{yield}}
+    {{/each}}
+  </div>
+{{else if (eq type 'date')}}
+  {{sy-datepicker
+    value=selected
+    on-change=(action (optional on-change))
+    placeholder=(if placeholder placeholder)
+    name=(if name name 'date')
+  }}
+{{else if (eq type 'search')}}
+  <input
+    type="search"
+    class="form-control"
+    placeholder={{if placeholder placeholder 'Search'}}
+    name={{if name name 'search'}}
+    value={{selected}}
+    oninput={{action (optional on-change) value='target.value'}}
+    onchange={{action (optional on-change) value='target.value'}}
+  >
+{{else if (eq type 'select')}}
+  <select class="form-control" onchange={{action (optional on-change) value='target.value'}}>
+    {{#if prompt}}
+      <option value="">{{prompt}}</option>
+    {{/if}}
+    {{#each options as |option|}}
+      <option
+        value={{get option valuePath}}
+        selected={{if (eq selected (get option valuePath)) 'selected'}}
+      >
+        {{get option labelPath}}
+      </option>
+    {{/each}}
+    {{yield}}
+  </select>
+{{else}}
+  {{yield}}
+{{/if}}

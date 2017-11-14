@@ -1,0 +1,11 @@
+& {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-sidebar-title {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
