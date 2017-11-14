@@ -23,25 +23,6 @@
 @import 'users-navigation';
 @import 'users';
 
-html {
-  height: 100vh;
-}
-
-body {
-  min-height: 100%;
-}
-
-.nav-side-wrapper {
-  display: flex;
-  width: 100vw;
-}
-
-.page-wrapper {
-  flex-grow: 1;
-  height: 100vh;
-  overflow: hidden;
-}
-
 .pointer {
   cursor: pointer;
 }

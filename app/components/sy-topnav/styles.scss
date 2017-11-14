@@ -1,0 +1,19 @@
+.nav-top-header-title {
+  display: none;
+  font-weight: 500;
+}
+
+.timed-clock {
+  padding: .3rem 0;
+  margin-right: .3rem;
+}
+
+@media (--nav-top-mobile-width) {
+  .nav-top-header-title {
+    display: block;
+  }
+
+  .nav-top-list-item a {
+    padding: .6rem .8rem;
+  }
+}

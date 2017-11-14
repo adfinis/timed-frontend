@@ -1,5 +1,39 @@
-<div class="clock">
-  <div class="hour"></div>
-  <div class="minute"></div>
-  <div class="second"></div>
-</div>
+<svg viewBox="0 0 512 512" width="100%" height="100%">
+  <circle
+    class="circle"
+    r="240"
+    cx="256"
+    cy="256"
+    stroke-width="20"
+  />
+  <line
+    class="hour"
+    x1="256"
+    y1="144"
+    x2="256"
+    y2="288"
+    stroke-width="30"
+    stroke-linecap="round"
+    transform="rotate({{hour}} 256 256)"
+  />
+  <line
+    class="minute"
+    x1="256"
+    y1="80"
+    x2="256"
+    y2="288"
+    stroke-width="20"
+    stroke-linecap="round"
+    transform="rotate({{minute}} 256 256)"
+  />
+  <line
+    class="second"
+    x1="256"
+    y1="64"
+    x2="256"
+    y2="288"
+    stroke-width="20"
+    stroke-linecap="round"
+    transform="rotate({{second}} 256 256)"
+  />
+</svg>
