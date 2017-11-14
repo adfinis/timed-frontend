@@ -6,11 +6,11 @@ help:
 
 install: ## Install production environment
 	@pip install --upgrade pip
-	@pip install --upgrade --process-dependency-links .
+	@pip install --upgrade requirements.txt
 
 install-dev: ## Install development environment
 	@pip install --upgrade pip
-	@pip install --upgrade --process-dependency-links -r dev_requirements.txt -e .
+	@pip install --upgrade -r requirements.txt -r dev_requirements.txt
 
 start: ## Start the development server
 	@docker-compose start db
