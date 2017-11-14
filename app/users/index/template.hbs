@@ -7,6 +7,7 @@
         {{#fs.label}}
           Search
           {{fs.filter 'search'
+            data-test-filter-search
             selected = search
             on-change = (perform setSearchFilter)
           }}
@@ -14,7 +15,7 @@
         {{#if currentUser.isSuperuser}}
           {{#fs.label}}
             Supervisor
-            {{#fs.filter}}
+            {{#fs.filter data-test-filter-user}}
               {{#user-selection
                 user      = selectedSupervisor
                 on-change = (perform setModelFilter 'supervisor')
@@ -27,6 +28,7 @@
         {{#fs.label}}
           Active
           {{fs.filter 'button'
+            data-test-filter-active
             selected  = active
             valuePath = 'value'
             labelPath = 'label'
