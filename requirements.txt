@@ -1,0 +1,23 @@
+python-dateutil>=2.6,<2.7
+django>=1.11,<1.12 # pyup: >=1.11,<1.12
+django-auth-ldap==1.2.11
+django-filter==1.0.2
+django-multiselectfield==0.1.6
+djangorestframework>=3.6,<3.7
+djangorestframework-jwt==1.10.0
+psycopg2>=2.7,<2.8
+pytz==2017.2
+pyexcel-webio==0.1.2
+pyexcel-io==0.5.1
+django-excel==0.0.9
+pyexcel-ods3==0.5.0
+pyexcel-xlsx==0.5.0.1
+pyexcel-ezodf==0.3.3
+django-environ==0.4.3
+rest_condition==1.0.3
+django-money==0.11.4
+python-redmine==2.0.2
+# TODO: when following PR are released, change back to official release
+# https://github.com/django-json-api/django-rest-framework-json-api/pull/376
+# https://github.com/django-json-api/django-rest-framework-json-api/pull/374
+git+https://github.com/adfinis-forks/django-rest-framework-json-api.git@timed_master
