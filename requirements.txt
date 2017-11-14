@@ -15,7 +15,7 @@ pyexcel-xlsx==0.5.0.1
 pyexcel-ezodf==0.3.3
 django-environ==0.4.3
 rest_condition==1.0.3
-django-money==0.11.4
+django-money==0.12
 python-redmine==2.0.2
 # TODO: when following PR are released, change back to official release
 # https://github.com/django-json-api/django-rest-framework-json-api/pull/376
