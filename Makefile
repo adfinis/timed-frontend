@@ -6,7 +6,7 @@ help:
 
 install: ## Install production environment
 	@pip install --upgrade pip
-	@pip install --upgrade requirements.txt
+	@pip install --upgrade -r requirements.txt
 
 install-dev: ## Install development environment
 	@pip install --upgrade pip
