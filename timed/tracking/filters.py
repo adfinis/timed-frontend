@@ -3,8 +3,8 @@
 from functools import wraps
 
 from django.db.models import Q
-from django_filters import (BaseInFilter, DateFilter, Filter, FilterSet,
-                            NumberFilter)
+from django_filters.rest_framework import (BaseInFilter, DateFilter, Filter,
+                                           FilterSet, NumberFilter)
 
 from timed.tracking import models
 

@@ -2,7 +2,8 @@ from datetime import date
 
 from django.db.models import Value
 from django.db.models.functions import Coalesce
-from django_filters import DateFilter, Filter, FilterSet, NumberFilter
+from django_filters.rest_framework import (DateFilter, Filter, FilterSet,
+                                           NumberFilter)
 
 from timed.employment import models
 

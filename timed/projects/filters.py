@@ -2,7 +2,7 @@
 from datetime import date, timedelta
 
 from django.db.models import Count
-from django_filters import Filter, FilterSet, NumberFilter
+from django_filters.rest_framework import Filter, FilterSet, NumberFilter
 
 from timed.projects import models
 
@@ -10,7 +10,7 @@ from timed.projects import models
 class CustomerFilterSet(FilterSet):
     """Filter set for the customers endpoint."""
 
-    archived = NumberFilter(name='archived')
+    archived = NumberFilter(field_name='archived')
 
     class Meta:
         """Meta information for the customer filter set."""
