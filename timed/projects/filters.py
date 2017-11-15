@@ -25,8 +25,8 @@ class CustomerFilterSet(FilterSet):
 class ProjectFilterSet(FilterSet):
     """Filter set for the projects endpoint."""
 
-    archived = NumberFilter(name='archived')
-    reviewer = NumberFilter(name='reviewers')
+    archived = NumberFilter(field_name='archived')
+    reviewer = NumberFilter(field_name='reviewers')
 
     class Meta:
         """Meta information for the project filter set."""
@@ -82,7 +82,7 @@ class TaskFilterSet(FilterSet):
     """Filter set for the tasks endpoint."""
 
     my_most_frequent = MyMostFrequentTaskFilter()
-    archived         = NumberFilter(name='archived')
+    archived         = NumberFilter(field_name='archived')
 
     class Meta:
         """Meta information for the task filter set."""
