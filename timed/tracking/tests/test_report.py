@@ -397,10 +397,35 @@ def test_report_update_bulk_verify_superuser(superadmin_client):
     assert report.verified_by == user
 
 
-def test_report_update_bulk_reset_verify_reviewer(auth_client):
+def test_report_update_bulk_verify_reviewer(auth_client):
     user = auth_client.user
-    report = ReportFactory.create(verified_by=user)
+    report = ReportFactory.create(user=user)
     report.task.project.reviewers.add(user)
+
+    url = reverse('report-bulk')
+
+    data = {
+        'data': {
+            'type': 'report-bulks',
+            'id': None,
+            'attributes': {
+                'verified': True
+            }
+        }
+    }
+
+    response = auth_client.post(
+        url + '?editable=1&reviewer={0}'.format(user.id), data
+    )
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert report.verified_by == user
+
+
+def test_report_update_bulk_reset_verify(superadmin_client):
+    user = superadmin_client.user
+    report = ReportFactory.create(verified_by=user)
 
     url = reverse('report-bulk')
 
@@ -414,9 +439,7 @@ def test_report_update_bulk_reset_verify_reviewer(auth_client):
         }
     }
 
-    response = auth_client.post(
-        url + '?editable=1&reviewer={0}'.format(user.id), data
-    )
+    response = superadmin_client.post(url + '?editable=1', data)
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     report.refresh_from_db()
@@ -677,7 +700,7 @@ def test_report_verify_other_user(superadmin_client):
 
 
 def test_report_reset_verified_by_reviewer(auth_client):
-    """Test that reviewer  may reset verified by on report."""
+    """Test that reviewer may not change verified report."""
     user = auth_client.user
     report = ReportFactory.create(user=user, verified_by=user)
     report.task.project.reviewers.add(user)
@@ -699,7 +722,7 @@ def test_report_reset_verified_by_reviewer(auth_client):
 
     url = reverse('report-detail', args=[report.id])
     response = auth_client.patch(url, data)
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
 def test_report_delete(auth_client):

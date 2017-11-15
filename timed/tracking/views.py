@@ -86,8 +86,12 @@ class ReportViewSet(ModelViewSet):
     serializer_class = serializers.ReportSerializer
     filter_class     = filters.ReportFilterSet
     permission_classes = [
-        # reviewer, supervisor or superuser may change but not delete reports
-        (C(IsSuperUser) | C(IsReviewer) | C(IsSupervisor)) & ~C(IsDeleteOnly) |
+        # superuser may edit all reports but not delete
+        C(IsSuperUser) & ~C(IsDeleteOnly) |
+        # reviewer and supervisor may change unverified reports
+        # but not delete them
+        (C(IsReviewer) | C(IsSupervisor)) &
+        C(IsUnverified) & ~C(IsDeleteOnly) |
         # owner may only change its own unverified reports
         C(IsAuthenticated) & C(IsOwner) & C(IsUnverified) |
         # all authenticated users may read all reports
@@ -186,6 +190,12 @@ class ReportViewSet(ModelViewSet):
             if value is not None and key != 'verified'
         }
 
+        editable = request.query_params.get('editable')
+        if not user.is_superuser and not editable:
+            raise exceptions.ParseError(
+                _('Editable filter needs to be set for bulk update')
+            )
+
         with transaction.atomic():
             verified = serializer.validated_data.get('verified')
             if verified is not None:
@@ -194,7 +204,7 @@ class ReportViewSet(ModelViewSet):
                 reviewer_id = request.query_params.get('reviewer')
                 if not user.is_superuser and str(reviewer_id) != str(user.id):
                     raise exceptions.ParseError(
-                        _('You do not have the permission to verify reports')
+                        _('Reviewer filter needs to be set to verifying user')
                     )
 
                 verified_by = verified and user or None
@@ -204,11 +214,6 @@ class ReportViewSet(ModelViewSet):
 
             # update all other fields
             if fields:
-                if not request.query_params.get('editable'):
-                    raise exceptions.ParseError(
-                        _('Editable filter needs to be set for bulk update')
-                    )
-
                 queryset.update(**fields)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
