@@ -115,17 +115,20 @@ class ReportFilterSet(FilterSet):
         """
         user = self.request.user
 
+        def get_editable_query():
+            return (
+                Q(user__supervisors=user) |
+                Q(task__project__reviewers=user) |
+                Q(user=user)
+            ) & Q(verified_by__isnull=True)
+
         if value:  # editable
             if user.is_superuser:
                 # superuser may edit all reports
                 return queryset
 
-            # only owner, reviewer or supervisor may change reports
-            queryset = queryset.filter(
-                Q(user__supervisors=user) |
-                Q(task__project__reviewers=user) |
-                Q(user=user)
-            )
+            # only owner, reviewer or supervisor may change unverified reports
+            queryset = queryset.filter(get_editable_query())
 
             return queryset
         else:  # not editable
@@ -133,12 +136,7 @@ class ReportFilterSet(FilterSet):
                 # no reports which are not editable
                 return queryset.none()
 
-            queryset = queryset.exclude(
-                Q(user__supervisors=user) |
-                Q(task__project__reviewers=user) |
-                Q(user=user)
-            )
-
+            queryset = queryset.exclude(get_editable_query())
             return queryset
 
     def filter_cost_center(self, queryset, name, value):
