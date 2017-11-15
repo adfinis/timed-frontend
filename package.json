@@ -37,7 +37,6 @@
     "ember-cli-chart": "^3.4.0",
     "ember-cli-code-coverage": "^0.4.2",
     "ember-cli-dependency-checker": "^2.0.0",
-    "ember-cli-dotenv": "^1.2.0",
     "ember-cli-eslint": "^4.2.1",
     "ember-cli-htmlbars": "^2.0.2",
     "ember-cli-htmlbars-inline-precompile": "^0.4.4",
@@ -93,5 +92,11 @@
     "postcss-import": "^11.0.0",
     "postcss-responsive-type": "^1.0.0",
     "prettier": "^1.7.4"
+  },
+  "greenkeper": {
+    "ignore": [
+      "ember-cli-htmlbars-inline-precompile",
+      "ember-cli-mirage"
+    ]
   }
 }
