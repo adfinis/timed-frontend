@@ -20,7 +20,7 @@ class YearFilter(Filter):
         :rtype:             QuerySet
         """
         return qs.filter(**{
-            '%s__year' % self.name: value
+            '%s__year' % self.field_name: value
         })
 
 
