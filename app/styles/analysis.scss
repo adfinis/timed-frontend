@@ -1,0 +1,64 @@
+.table--analysis {
+  margin-bottom: 0;
+  table-layout: fixed;
+}
+
+.table--analysis > tbody > tr:first-of-type td {
+  border-top: none;
+}
+
+.table--analysis > colgroup > col {
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3) {
+    width: 8%;
+  }
+
+  &:nth-child(4),
+  &:nth-child(5),
+  &:nth-child(6) {
+    width: 11%;
+  }
+
+  &:nth-child(8) {
+    width: 8%;
+  }
+
+  &:nth-child(9),
+  &:nth-child(10) {
+    width: 7%;
+  }
+
+  &:nth-child(7) {
+    width: 20%;
+  }
+}
+
+.export-buttons {
+  text-align: right;
+  margin-top: 1rem;
+}
+
+.analysis-scrollable-container::after,
+.analysis-scrollable-container::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  height: 15px;
+  background: linear-gradient(
+    to bottom,
+    rgba(0,0,0,.075),
+    rgba(0,0,0,.0)
+  );
+}
+
+.analysis-scrollable-container::before {
+  top: 0;
+}
+
+.analysis-scrollable-container::after {
+  bottom: 0;
+  transform: rotate(180deg);
+}
