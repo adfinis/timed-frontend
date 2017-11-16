@@ -17,6 +17,8 @@
 
 ## Requirements
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/adfinis-sygroup/timed-frontend.svg)](https://greenkeeper.io/)
+
 You will need the following things properly installed on your computer.
 
 * [Git](https://git-scm.com/)
