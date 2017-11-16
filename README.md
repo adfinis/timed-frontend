@@ -1,19 +1,9 @@
-<p align="center">
-  <img width="500" src="/public/assets/logo_text.png?raw=true">
-  <br><br>
-</p>
+![Timed Logo](/public/assets/logo_text.png)
 
-<p align="center">
-  <a href="https://travis-ci.org/adfinis-sygroup/timed-frontend">
-    <img alt="Build Status" src="https://img.shields.io/travis/adfinis-sygroup/timed-frontend/master.svg?style=flat-square">
-  </a>
-  <a href="https://codecov.io/gh/adfinis-sygroup/timed-frontend">
-    <img alt="Coverage" src="https://img.shields.io/codecov/c/github/adfinis-sygroup/timed-frontend/master.svg?style=flat-square">
-  </a>
-  <a href="/LICENSE">
-    <img alt="License" src="https://img.shields.io/github/license/adfinis-sygroup/timed-frontend.svg?style=flat-square">
-  </a>
-</p>
+[![Build Status](https://travis-ci.org/adfinis-sygroup/timed-frontend.svg?branch=master)](https://travis-ci.org/adfinis-sygroup/timed-frontend)
+[![Codecov](https://codecov.io/gh/adfinis-sygroup/timed-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/timed-frontend)
+[![Greenkeeper](https://badges.greenkeeper.io/adfinis-sygroup/timed-frontend.svg)](https://greenkeeper.io/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 ## Requirements
 
