@@ -3,8 +3,8 @@
 from functools import wraps
 
 from django.db.models import Q
-from django_filters import (BaseInFilter, DateFilter, Filter, FilterSet,
-                            NumberFilter)
+from django_filters.rest_framework import (BaseInFilter, DateFilter, Filter,
+                                           FilterSet, NumberFilter)
 
 from timed.tracking import models
 
@@ -58,7 +58,7 @@ class ActivityFilterSet(FilterSet):
     """Filter set for the activities endpoint."""
 
     active = ActivityActiveFilter()
-    day    = DateFilter(name='date')
+    day    = DateFilter(field_name='date')
 
     class Meta:
         """Meta information for the activity filter set."""
@@ -91,20 +91,20 @@ class ReportFilterSet(FilterSet):
     """Filter set for the reports endpoint."""
 
     id           = BaseInFilter()
-    from_date    = DateFilter(name='date', lookup_expr='gte')
-    to_date      = DateFilter(name='date', lookup_expr='lte')
-    project      = NumberFilter(name='task__project')
-    customer     = NumberFilter(name='task__project__customer')
-    review       = NumberFilter(name='review')
+    from_date    = DateFilter(field_name='date', lookup_expr='gte')
+    to_date      = DateFilter(field_name='date', lookup_expr='lte')
+    project      = NumberFilter(field_name='task__project')
+    customer     = NumberFilter(field_name='task__project__customer')
+    review       = NumberFilter(field_name='review')
     editable     = NumberFilter(method='filter_editable')
-    not_billable = NumberFilter(name='not_billable')
+    not_billable = NumberFilter(field_name='not_billable')
     verified     = NumberFilter(
         name='verified_by_id', lookup_expr='isnull', exclude=True
     )
-    reviewer     = NumberFilter(name='task__project__reviewers')
-    verifier     = NumberFilter(name='verified_by')
-    billing_type = NumberFilter(name='task__project__billing_type')
-    user         = NumberFilter(name='user_id')
+    reviewer     = NumberFilter(field_name='task__project__reviewers')
+    verifier     = NumberFilter(field_name='verified_by')
+    billing_type = NumberFilter(field_name='task__project__billing_type')
+    user         = NumberFilter(field_name='user_id')
     cost_center  = NumberFilter(method='filter_cost_center')
 
     def filter_editable(self, queryset, name, value):
@@ -174,8 +174,8 @@ class ReportFilterSet(FilterSet):
 class AbsenceFilterSet(FilterSet):
     """Filter set for the absences endpoint."""
 
-    from_date = DateFilter(name='date', lookup_expr='gte')
-    to_date   = DateFilter(name='date', lookup_expr='lte')
+    from_date = DateFilter(field_name='date', lookup_expr='gte')
+    to_date   = DateFilter(field_name='date', lookup_expr='lte')
 
     class Meta:
         """Meta information for the absence filter set."""

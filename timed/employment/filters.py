@@ -2,7 +2,8 @@ from datetime import date
 
 from django.db.models import Value
 from django.db.models.functions import Coalesce
-from django_filters import DateFilter, Filter, FilterSet, NumberFilter
+from django_filters.rest_framework import (DateFilter, Filter, FilterSet,
+                                           NumberFilter)
 
 from timed.employment import models
 
@@ -19,16 +20,16 @@ class YearFilter(Filter):
         :rtype:             QuerySet
         """
         return qs.filter(**{
-            '%s__year' % self.name: value
+            '%s__year' % self.field_name: value
         })
 
 
 class PublicHolidayFilterSet(FilterSet):
     """Filter set for the public holidays endpoint."""
 
-    year      = YearFilter(name='date')
-    from_date = DateFilter(name='date', lookup_expr='gte')
-    to_date   = DateFilter(name='date', lookup_expr='lte')
+    year      = YearFilter(field_name='date')
+    from_date = DateFilter(field_name='date', lookup_expr='gte')
+    to_date   = DateFilter(field_name='date', lookup_expr='lte')
 
     class Meta:
         """Meta information for the public holiday filter set."""
@@ -38,7 +39,7 @@ class PublicHolidayFilterSet(FilterSet):
 
 
 class AbsenceTypeFilterSet(FilterSet):
-    fill_worktime = NumberFilter(name='fill_worktime')
+    fill_worktime = NumberFilter(field_name='fill_worktime')
 
     class Meta:
         """Meta information for the public holiday filter set."""
@@ -48,8 +49,8 @@ class AbsenceTypeFilterSet(FilterSet):
 
 
 class UserFilterSet(FilterSet):
-    active = NumberFilter(name='is_active')
-    supervisor = NumberFilter(name='supervisors')
+    active = NumberFilter(field_name='is_active')
+    supervisor = NumberFilter(field_name='supervisors')
 
     class Meta:
         model  = models.User
@@ -77,9 +78,9 @@ class EmploymentFilterSet(FilterSet):
 
 
 class OvertimeCreditFilterSet(FilterSet):
-    year      = YearFilter(name='date')
-    from_date = DateFilter(name='date', lookup_expr='gte')
-    to_date   = DateFilter(name='date', lookup_expr='lte')
+    year      = YearFilter(field_name='date')
+    from_date = DateFilter(field_name='date', lookup_expr='gte')
+    to_date   = DateFilter(field_name='date', lookup_expr='lte')
 
     class Meta:
         model  = models.OvertimeCredit
@@ -87,9 +88,9 @@ class OvertimeCreditFilterSet(FilterSet):
 
 
 class AbsenceCreditFilterSet(FilterSet):
-    year      = YearFilter(name='date')
-    from_date = DateFilter(name='date', lookup_expr='gte')
-    to_date   = DateFilter(name='date', lookup_expr='lte')
+    year      = YearFilter(field_name='date')
+    from_date = DateFilter(field_name='date', lookup_expr='gte')
+    to_date   = DateFilter(field_name='date', lookup_expr='lte')
 
     class Meta:
         model  = models.AbsenceCredit
@@ -99,8 +100,8 @@ class AbsenceCreditFilterSet(FilterSet):
 
 
 class WorktimeBalanceFilterSet(FilterSet):
-    user = NumberFilter(name='id')
-    supervisor = NumberFilter(name='supervisors')
+    user = NumberFilter(field_name='id')
+    supervisor = NumberFilter(field_name='supervisors')
     # additional filters analyzed in WorktimeBalanceView
     # date = DateFilter()
     # last_reported_date = NumberFilter()
@@ -111,7 +112,7 @@ class WorktimeBalanceFilterSet(FilterSet):
 
 
 class AbsenceBalanceFilterSet(FilterSet):
-    absence_type = NumberFilter(name='id')
+    absence_type = NumberFilter(field_name='id')
 
     class Meta:
         model  = models.AbsenceType
