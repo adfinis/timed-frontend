@@ -4,10 +4,13 @@ from . import models
 
 
 class PackageFilter(FilterSet):
+    customer = NumberFilter(field_name='billing_type__projects__customer')
+
     class Meta:
         model = models.Package
         fields = (
             'billing_type',
+            'customer',
         )
 
 
