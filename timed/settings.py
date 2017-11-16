@@ -164,7 +164,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'timed.authentication.JSONWebTokenAuthenticationQueryParam',
         'rest_framework.authentication.SessionAuthentication',
     ),
     'DEFAULT_METADATA_CLASS':
