@@ -1,16 +1,6 @@
 from django_filters import FilterSet, NumberFilter
 
-from timed.projects.models import Project
-
 from . import models
-
-
-class SubscriptionProjectFilter(FilterSet):
-    class Meta:
-        model = Project
-        fields = (
-            'billing_type',
-        )
 
 
 class PackageFilter(FilterSet):

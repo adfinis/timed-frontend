@@ -1,6 +1,7 @@
 from rest_framework import (decorators, exceptions, mixins, permissions,
                             response, status, viewsets)
 
+from timed.projects.filters import ProjectFilterSet
 from timed.projects.models import Project
 
 from . import filters, models, serializers
@@ -15,7 +16,7 @@ class SubscriptionProjectViewSet(viewsets.ReadOnlyModelViewSet):
     """
 
     serializer_class = serializers.SubscriptionProjectSerializer
-    filter_class = filters.SubscriptionProjectFilter
+    filter_class = ProjectFilterSet
     ordering_fields = (
         'name',
         'id'
