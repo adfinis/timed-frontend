@@ -1,45 +1,50 @@
 <h1>Users</h1>
 
-<div>
-  <div class="grid grid--12of12 grid-sm--2of12">
-    <div class="grid-cell form-group">
-      <input
-        type="search"
-        class="form-control"
-        placeholder="Search..."
-        value={{search}}
-        oninput={{action (perform setFilter 'search') value='target.value'}}
-      >
-    </div>
-    {{#if currentUser.isSuperuser}}
-      <div class="grid-cell form-group">
-        {{#user-selection
-          user      = _supervisor
-          on-change = (perform setModelFilter 'supervisor')
-        as |u|}}
-          {{u.user placeholder='Select supervisor...'}}
-        {{/user-selection}}
-      </div>
-    {{/if}}
-    <div class="grid-cell form-group">
-      {{#sy-checkbox checked=active on-change=(perform setBooleanFilter 'active')}}
-        Only active users
-      {{/sy-checkbox}}
-    </div>
-    {{#unless currentUser.isSuperuser}}
-      <div class="grid-cell"></div>
-    {{/unless}}
-    <div class="grid-cell"></div>
-    <div class="grid-cell"></div>
-    <div class="grid-cell"></div>
-    <div class="grid-cell form-group">
-      <button type="button" class="btn" {{action (perform resetFilter)}}>Reset filter</button>
-    </div>
+<div class="filter-page">
+  <div class="filter-page-sidebar">
+    {{#filter-sidebar on-reset=(perform resetFilter) as |fs|}}
+      {{#fs.group label='General' expanded=true}}
+        {{#fs.label}}
+          Search
+          {{fs.filter 'search'
+            data-test-filter-search
+            selected = search
+            on-change = (perform setSearchFilter)
+          }}
+        {{/fs.label}}
+        {{#if currentUser.isSuperuser}}
+          {{#fs.label}}
+            Supervisor
+            {{#fs.filter data-test-filter-user}}
+              {{#user-selection
+                user      = selectedSupervisor
+                on-change = (perform setModelFilter 'supervisor')
+              as |u|}}
+                {{u.user placeholder='Select supervisor...'}}
+              {{/user-selection}}
+            {{/fs.filter}}
+          {{/fs.label}}
+        {{/if}}
+        {{#fs.label}}
+          Active
+          {{fs.filter 'button'
+            data-test-filter-active
+            selected  = active
+            valuePath = 'value'
+            labelPath = 'label'
+            options   = (array
+              (hash value='' label='All')
+              (hash value='1' label='Only actives')
+              (hash value='0' label='Only inactives')
+            )
+            on-change = (action (mut active))
+          }}
+        {{/fs.label}}
+      {{/fs.group}}
+    {{/filter-sidebar}}
   </div>
-</div>
 
-<div class="grid grid--12of12" data-test-users-list>
-  <div class="grid-cell">
+  <div class="filter-page-content" data-test-users-list>
     {{#async-list data as |section data|}}
       {{#if (eq section 'empty')}}
         <div class="empty">
