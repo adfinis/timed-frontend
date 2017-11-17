@@ -2673,6 +2673,24 @@ ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.10, ember-cli-babel@^6.0.0-b
     clone "^2.0.0"
     ember-cli-version-checker "^2.0.0"
 
+ember-cli-babel@^6.9.0:
+  version "6.9.2"
+  resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-6.9.2.tgz#ab9c650e1fdf229e70936d9629aba699a355ab40"
+  dependencies:
+    amd-name-resolver "0.0.7"
+    babel-plugin-debug-macros "^0.1.11"
+    babel-plugin-ember-modules-api-polyfill "^2.0.1"
+    babel-plugin-transform-es2015-modules-amd "^6.24.0"
+    babel-polyfill "^6.16.0"
+    babel-preset-env "^1.5.1"
+    broccoli-babel-transpiler "^6.1.2"
+    broccoli-debug "^0.6.2"
+    broccoli-funnel "^1.0.0"
+    broccoli-source "^1.1.0"
+    clone "^2.0.0"
+    ember-cli-version-checker "^2.1.0"
+    semver "^5.4.1"
+
 ember-cli-broccoli-sane-watcher@^2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/ember-cli-broccoli-sane-watcher/-/ember-cli-broccoli-sane-watcher-2.0.4.tgz#f43f42f75b7509c212fb926cd9aea86ae19264c6"
@@ -2869,7 +2887,7 @@ ember-cli-mocha@^0.14.4:
     mocha "^2.5.3"
     resolve "^1.1.7"
 
-ember-cli-moment-shim@^3.1.0, ember-cli-moment-shim@^3.5.0:
+ember-cli-moment-shim@^3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/ember-cli-moment-shim/-/ember-cli-moment-shim-3.5.0.tgz#7ea8d42b0a04c767258287b30447681e52fba0c4"
   dependencies:
@@ -3124,9 +3142,9 @@ ember-compatibility-helpers@^0.1.0:
     ember-cli-version-checker "^2.0.0"
     semver "^5.4.1"
 
-ember-component-css@^0.3.5:
-  version "0.3.7"
-  resolved "https://registry.yarnpkg.com/ember-component-css/-/ember-component-css-0.3.7.tgz#bde1a8db53116cca1a134aaf6379b2b259b79799"
+ember-component-css@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/ember-component-css/-/ember-component-css-0.5.0.tgz#5de2d70a951bf74a38c8cefeaa3f1a88ccd13393"
   dependencies:
     broccoli-concat "^3.2.2"
     broccoli-funnel "^2.0.1"
@@ -3381,7 +3399,7 @@ ember-mocha@^0.12.0:
   dependencies:
     ember-test-helpers "^0.6.3"
 
-ember-moment@^7.3.0, ember-moment@^7.4.1:
+ember-moment@^7.4.1, ember-moment@^7.5.0:
   version "7.5.0"
   resolved "https://registry.yarnpkg.com/ember-moment/-/ember-moment-7.5.0.tgz#9ed25b32ae941b2f1d9116c44f518a52bdb01722"
   dependencies:
@@ -3438,16 +3456,16 @@ ember-parachute@^0.3.5:
     ember-cli-babel "^6.0.0"
     ember-getowner-polyfill "^2.0.1"
 
-ember-power-calendar@^0.5.0:
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.5.0.tgz#fd3e312d0725fb6e621c595b1900deab0912fa01"
+ember-power-calendar@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.6.1.tgz#82cf51db56b48da20d8a80607370c11c092e0afa"
   dependencies:
     ember-assign-helper "0.1.2"
-    ember-cli-babel "^6.0.0"
-    ember-cli-htmlbars "^1.1.1"
-    ember-cli-moment-shim "^3.1.0"
-    ember-concurrency "^0.8.1"
-    ember-moment "^7.3.0"
+    ember-cli-babel "^6.9.0"
+    ember-cli-htmlbars "^2.0.1"
+    ember-cli-moment-shim "^3.5.0"
+    ember-concurrency "^0.8.12"
+    ember-moment "^7.5.0"
 
 ember-power-select@^1.9.11:
   version "1.9.11"
