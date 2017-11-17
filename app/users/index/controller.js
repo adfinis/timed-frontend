@@ -34,7 +34,7 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   @oneWay('session.data.user') currentUser: null,
 
   @computed('supervisor', 'prefetchData.lastSuccessful.value.supervisor')
-  _supervisor(supervisorId) {
+  selectedSupervisor(supervisorId) {
     return this.store.peekRecord('user', supervisorId)
   },
 
@@ -77,18 +77,14 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
     })
   }).restartable(),
 
-  setFilter: task(function*(key, value) {
+  setSearchFilter: task(function*(value) {
     yield timeout(500)
 
-    this.set(key, value)
+    this.set('search', value)
   }).restartable(),
 
   setModelFilter: task(function*(key, value) {
-    yield this.get('setFilter').perform(key, value && value.id)
-  }),
-
-  setBooleanFilter: task(function*(key, value) {
-    yield this.get('setFilter').perform(key, value ? '1' : '')
+    yield this.set(key, value && value.id)
   }),
 
   resetFilter: task(function*() {
