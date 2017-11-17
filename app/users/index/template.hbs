@@ -70,10 +70,6 @@
             bufferSize        = 10
             containerSelector = '.page-content--scroll'
           as |user|}}
-          {{!--
-          <tbody>
-          {{#each data as |user|}}
-          --}}
             {{#link-to 'users.edit' user.id tagName='tr' class='pointer'}}
               <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
               {{#if user.activeEmployment}}
@@ -88,10 +84,6 @@
                 </span>
               </td>
             {{/link-to}}
-          {{!--
-          {{/each}}
-          </tbody>
-          --}}
           {{/vertical-collection}}
         </table>
       {{/if}}
