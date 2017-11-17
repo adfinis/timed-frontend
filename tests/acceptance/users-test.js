@@ -55,16 +55,16 @@ describe('Acceptance | users', function() {
 
     await visit('/users')
 
-    await click('input[type=checkbox]')
-    await fillIn('input[type=search]', 'foobar')
-    await selectSearch('.user-select', user.username)
+    await click('[data-test-filter-active] button:nth-child(1)')
+    await fillIn('[data-test-filter-search] input', 'foobar')
+    await selectSearch('[data-test-filter-user] .user-select', user.username)
     await userSelect()
 
     expect(currentURL()).to.contain('search=foobar')
     expect(currentURL()).to.contain('active=')
     expect(currentURL()).to.contain('supervisor=12')
 
-    await click('button:contains(Reset filter)')
+    await click('.filter-sidebar-reset')
 
     expect(currentURL()).to.equal('/users')
   })
