@@ -5,7 +5,6 @@
  */
 import Route from '@ember/routing/route'
 import { inject as service } from '@ember/service'
-import $ from 'jquery'
 import Ember from 'ember'
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin'
 
@@ -29,18 +28,6 @@ export default Route.extend(ApplicationRouteMixin, {
   session: service('session'),
 
   autostartTour: service('autostart-tour'),
-
-  /**
-   * After model hook
-   *
-   * Removes the loading mask
-   *
-   * @method afterModel
-   * @public
-   */
-  afterModel() {
-    $('body').removeClass('loading-mask')
-  },
 
   /**
    * Transition to login after logout
