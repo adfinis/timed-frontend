@@ -10,6 +10,11 @@ import RSVP from 'rsvp'
 import { cleanParams, toQueryString } from 'timed/utils/url'
 import fetch from 'fetch'
 import download from 'downloadjs'
+import Ember from 'ember'
+import { get } from '@ember/object'
+import { underscore } from '@ember/string'
+
+const { testing } = Ember
 
 const raf = () => {
   return new RSVP.Promise(resolve => {
@@ -141,6 +146,12 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   @oneWay('session.data.authenticated.token') jwt: null,
 
+  init() {
+    this._super(...arguments)
+
+    this.set('_dataCache', A())
+  },
+
   setup() {
     this.get('prefetchData').perform()
     this.get('data').perform()
@@ -165,7 +176,6 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   _shouldLoadMore: false,
   _canLoadMore: true,
   _lastPage: 0,
-  _dataCache: A(),
 
   @computed('queryParamsState')
   appliedFilters(state) {
@@ -195,10 +205,21 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   }),
 
   data: task(function*() {
+    let all = this.get('allQueryParams')
+
+    let params = Object.keys(all).reduce((parsed, key) => {
+      let serialize = get(AnalysisQueryParams, `queryParams.${key}.serialize`)
+      let value = get(all, key)
+
+      return key === 'type'
+        ? parsed
+        : { ...parsed, [underscore(key)]: serialize ? serialize(value) : value }
+    }, {})
+
     let data = yield this.store.query('report', {
       page: this.get('_lastPage') + 1,
       page_size: 20, // eslint-disable-line camelcase
-      ...this.get('allQueryParams'),
+      ...params,
       include: 'task,task.project,task.project.customer,user'
     })
 
@@ -224,20 +245,6 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     }
   }).drop(),
 
-  /**
-   * Content-Disposition regex explaination:
-   *
-   * filename      # match filename, followed by
-   * [^;=\n]*      # anything but a ;, a = or a newline
-   * =
-   * (             # first capturing group
-   *     (['"])    # either single or double quote, put it in capturing group 2
-   *     .*?       # anything up until the first...
-   *     \2        # matching quote (single if we found single, double if we find double)
-   * |             # OR
-   *     [^;\n]*   # anything but a ; or a newline
-   * )
-   */
   download: task({
     url: null,
     params: {},
@@ -260,6 +267,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
         })
 
         if (!res.ok) {
+          /* istanbul ignore next */
           throw new Error(res.statusText)
         }
 
@@ -268,17 +276,20 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
         let filename =
           res.headers.map['content-disposition']
             .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
-            .replace('filename=', '') || 'export.csv'
+            .replace('filename=', '') || 'Unknown file'
 
-        download(file, filename, file.type)
+        if (!testing) {
+          // ignore since we can't really test this..
+          /* istanbul ignore next */
+          download(file, filename, file.type)
+        }
 
         notify.success('File was downloaded')
       } catch (e) {
+        /* istanbul ignore next */
         notify.error(
           'Error while downloading, try again or try reducing results'
         )
-      } finally {
-        this.setProperties({ url: null, params: {} })
       }
     }
   }),
@@ -290,7 +301,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     reset() {
       this.resetQueryParams(
-        this.get('queryParams').filter(k => k !== 'ordering')
+        Object.keys(this.get('allQueryParams')).filter(k => k !== 'ordering')
       )
     }
   }
