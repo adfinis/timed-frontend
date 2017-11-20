@@ -48,5 +48,7 @@ module.exports = function (defaults) {
     ]
   })
 
+  app.import('node_modules/intersection-observer/intersection-observer.js')
+
   return app.toTree()
 }

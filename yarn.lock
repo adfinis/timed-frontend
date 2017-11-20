@@ -3313,13 +3313,6 @@ ember-getowner-polyfill@^2.0.0, ember-getowner-polyfill@^2.0.1:
     ember-cli-version-checker "^1.2.0"
     ember-factory-for-polyfill "^1.1.0"
 
-ember-in-viewport@^2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/ember-in-viewport/-/ember-in-viewport-2.1.1.tgz#6306c2dd62045211bd57b664bd90c453d13644c0"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-getowner-polyfill "^1.1.1"
-
 ember-inflector@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/ember-inflector/-/ember-inflector-2.0.1.tgz#e9ac469ffa17992a43276bb1c9b8d87992b10d37"
@@ -4990,6 +4983,10 @@ inquirer@^3.0.6:
     string-width "^2.1.0"
     strip-ansi "^4.0.0"
     through "^2.3.6"
+
+intersection-observer@^0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.4.3.tgz#22ff07442269d8be694551a782e0b081ecd4adfd"
 
 invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.2"

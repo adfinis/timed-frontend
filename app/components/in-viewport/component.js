@@ -1,31 +1,28 @@
 import Component from '@ember/component'
-import InViewportMixin from 'ember-in-viewport'
 import { on } from 'ember-computed-decorators'
 
-// We can ignore this in coverage since it's fully tested by ember-in-viewport
+const InViewportComponent = Component.extend({
+  rootSelector: 'body',
+  rootMargin: 0,
 
-/* istanbul ignore next */
-const InViewportComponent = Component.extend(InViewportMixin, {
   @on('didInsertElement')
-  viewportOptionsOverride() {
-    this.setProperties({
-      viewportUseRAF: true,
-      viewportSpy: true,
-      viewportTolerance: {
-        top: 100,
-        bottom: 100,
-        right: 0,
-        left: 0
+  initIntersectionObserver() {
+    let observer = new IntersectionObserver(
+      ([{ isIntersecting }]) => {
+        if (isIntersecting) {
+          return this.getWithDefault('on-enter-viewport', () => {})()
+        }
+
+        return this.getWithDefault('on-exit-viewport', () => {})()
+      },
+      {
+        root: document.querySelector(this.get('rootSelector')),
+        rootMargin: `${this.get('rootMargin')}px`
       }
-    })
-  },
+    )
 
-  didEnterViewport() {
-    this.getWithDefault('on-enter-viewport', () => {})()
-  },
-
-  didExitViewport() {
-    this.getWithDefault('on-exit-viewport', () => {})()
+    // eslint-disable-next-line ember/no-observers
+    observer.observe(this.get('element'))
   }
 })
 
