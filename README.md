@@ -1,7 +1,9 @@
 # Timed Backend
-[![Build Status](https://img.shields.io/travis/adfinis-sygroup/timed-backend/master.svg?style=flat-square)](https://travis-ci.org/adfinis-sygroup/timed-backend)
-[![Coverage](https://img.shields.io/codecov/c/github/adfinis-sygroup/timed-backend/master.svg?style=flat-square)](https://codecov.io/gh/adfinis-sygroup/timed-backend)
-[![License](https://img.shields.io/github/license/adfinis-sygroup/timed-backend.svg?style=flat-square)](LICENSE)
+
+[![Build Status](https://travis-ci.org/adfinis-sygroup/timed-backend.svg?branch=master)](https://travis-ci.org/adfinis-sygroup/timed-backend)
+[![Codecov](https://codecov.io/gh/adfinis-sygroup/timed-backend/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/timed-backend)
+[![Pyup](https://pyup.io/repos/github/adfinis-sygroup/timed-backend/shield.svg)](https://pyup.io/account/repos/github/adfinis-sygroup/timed-backend/)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 Timed timetracking software REST API built with Django
 
