@@ -16,7 +16,7 @@ import { underscore } from '@ember/string'
 
 const { testing } = Ember
 
-const raf = () => {
+const rAF = () => {
   return new RSVP.Promise(resolve => {
     window.requestAnimationFrame(resolve)
   })
@@ -241,7 +241,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     while (this.get('_shouldLoadMore') && this.get('_canLoadMore')) {
       yield this.get('data').perform()
 
-      yield raf()
+      yield rAF()
     }
   }).drop(),
 
@@ -266,8 +266,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
           }
         })
 
+        /* istanbul ignore next */
         if (!res.ok) {
-          /* istanbul ignore next */
           throw new Error(res.statusText)
         }
 
@@ -278,9 +278,9 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
             .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
             .replace('filename=', '') || 'Unknown file'
 
+        // ignore since we can't really test this..
+        /* istanbul ignore next */
         if (!testing) {
-          // ignore since we can't really test this..
-          /* istanbul ignore next */
           download(file, filename, file.type)
         }
 
