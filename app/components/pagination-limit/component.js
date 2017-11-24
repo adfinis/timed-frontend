@@ -9,11 +9,9 @@ export default Component.extend({
    */
   classNames: ['pagination-limit'],
 
-  /**
-   * The selectable page limits
-   *
-   * @property {Number[]} limits
-   * @public
-   */
-  limits: [10, 20, 50, 100]
+  init() {
+    this._super(...arguments)
+
+    this.set('limits', [10, 20, 50, 100])
+  }
 })

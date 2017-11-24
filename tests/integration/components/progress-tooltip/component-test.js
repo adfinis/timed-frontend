@@ -6,7 +6,7 @@ import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
 import wait from 'ember-test-helpers/wait'
 import moment from 'moment'
-import $ from 'jquery'
+import { find } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | progress tooltip', function() {
   setupComponentTest('progress-tooltip', {
@@ -39,21 +39,21 @@ describe('Integration | Component | progress tooltip', function() {
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
-    expect($('.progress-tooltip')).to.have.length(0)
+    expect(find('.progress-tooltip')).to.not.be.ok
 
     return wait().then(() => {
-      expect($('.progress-tooltip')).to.have.length(1)
+      expect(find('.progress-tooltip')).to.be.ok
 
       expect(
-        $('.progress-tooltip .time-info .time-info-durations p:nth-child(1)')
-          .text()
-          .trim()
+        find(
+          '.progress-tooltip .time-info .time-info-durations p:nth-child(1)'
+        ).innerHTML.trim()
       ).to.match(/^Spent: \d+h \d+m$/)
 
       expect(
-        $('.progress-tooltip .time-info .time-info-durations p:nth-child(2)')
-          .text()
-          .trim()
+        find(
+          '.progress-tooltip .time-info .time-info-durations p:nth-child(2)'
+        ).innerHTML.trim()
       ).to.equal('Estimate: 50h 0m')
     })
   })
@@ -74,21 +74,21 @@ describe('Integration | Component | progress tooltip', function() {
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
-    expect($('.progress-tooltip')).to.have.length(0)
+    expect(find('.progress-tooltip')).to.not.be.ok
 
     return wait().then(() => {
-      expect($('.progress-tooltip')).to.have.length(1)
+      expect(find('.progress-tooltip')).to.be.ok
 
       expect(
-        $('.progress-tooltip .time-info .time-info-durations p:nth-child(1)')
-          .text()
-          .trim()
+        find(
+          '.progress-tooltip .time-info .time-info-durations p:nth-child(1)'
+        ).innerHTML.trim()
       ).to.match(/^Spent: \d+h \d+m$/)
 
       expect(
-        $('.progress-tooltip .time-info .time-info-durations p:nth-child(2)')
-          .text()
-          .trim()
+        find(
+          '.progress-tooltip .time-info .time-info-durations p:nth-child(2)'
+        ).innerHTML.trim()
       ).to.equal('Estimate: 100h 30m')
     })
   })
@@ -111,12 +111,12 @@ describe('Integration | Component | progress tooltip', function() {
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=visible}}
     `)
 
-    expect($('.progress-tooltip')).to.have.length(0)
+    expect(find('.progress-tooltip')).to.not.be.ok
 
     this.set('visible', true)
 
     return wait().then(() => {
-      expect($('.progress-tooltip')).to.have.length(1)
+      expect(find('.progress-tooltip')).to.be.ok
     })
   })
 
@@ -146,8 +146,8 @@ describe('Integration | Component | progress tooltip', function() {
     `)
 
     return wait().then(() => {
-      expect($('.progress-tooltip .badge--danger')).to.have.length(1)
-      expect($('.progress-tooltip .progress-bar.danger')).to.have.length(1)
+      expect(find('.progress-tooltip .badge--danger')).to.be.ok
+      expect(find('.progress-tooltip .progress-bar.danger')).to.be.ok
     })
   })
 
@@ -177,8 +177,8 @@ describe('Integration | Component | progress tooltip', function() {
     `)
 
     return wait().then(() => {
-      expect($('.progress-tooltip .badge--warning')).to.have.length(1)
-      expect($('.progress-tooltip .progress-bar.warning')).to.have.length(1)
+      expect(find('.progress-tooltip .badge--warning')).to.be.ok
+      expect(find('.progress-tooltip .progress-bar.warning')).to.be.ok
     })
   })
 })

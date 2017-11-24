@@ -6,9 +6,12 @@ import hbs from 'htmlbars-inline-precompile'
 import Service from '@ember/service'
 
 export const trackingStub = Service.extend({
-  activity: {
-    comment: 'asdf'
+  init() {
+    this._super(...arguments)
+
+    this.set('activity', { comment: 'asdf' })
   },
+
   customers: task(function*() {
     return yield []
   }),
