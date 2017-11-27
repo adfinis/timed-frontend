@@ -80,7 +80,7 @@ class Command(BaseCommand):
                     'value': total_hours
                 }]
                 issue.save()
-            except redminelib.exceptions.ResourceNotFoundError:
+            except redminelib.exceptions.BaseRedmineError:
                 sys.stderr.write(
                     'Project {0} has an invalid Redmine '
                     'issue {1} assigned. Skipping'.format(
