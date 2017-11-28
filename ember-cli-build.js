@@ -4,7 +4,7 @@
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app')
 
-module.exports = function(defaults) {
+module.exports = function (defaults) {
   let app = new EmberApp(defaults, {
     sassOptions: {
       onlyIncluded: true
@@ -41,6 +41,14 @@ module.exports = function(defaults) {
   })
 
   app.import('vendor/adcssy.min.css')
+
+  app.import('node_modules/downloadjs/download.min.js', {
+    using: [
+      { transformation: 'amd', as: 'downloadjs' }
+    ]
+  })
+
+  app.import('node_modules/intersection-observer/intersection-observer.js')
 
   return app.toTree()
 }
