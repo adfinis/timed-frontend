@@ -190,7 +190,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 AUTH_LDAP_ENABLED = env.bool('DJANGO_AUTH_LDAP_ENABLED', default=False)
-if AUTH_LDAP_ENABLED:  # pragma: todo cover
+if AUTH_LDAP_ENABLED:
     AUTH_LDAP_USER_ATTR_MAP = env.dict(
         'DJANGO_AUTH_LDAP_USER_ATTR_MAP',
         default={
@@ -201,8 +201,8 @@ if AUTH_LDAP_ENABLED:  # pragma: todo cover
     )
 
     AUTH_LDAP_SERVER_URI = env.str('DJANGO_AUTH_LDAP_SERVER_URI')
-    AUTH_LDAP_BIND_DN = env.str('DJANGO_AUTH_LDAP_BIND_DN')
-    AUTH_LDAP_PASSWORD = env.str('DJANGO_AUTH_LDAP_PASSWORD')
+    AUTH_LDAP_BIND_DN = env.str('DJANGO_AUTH_LDAP_BIND_DN', default='')
+    AUTH_LDAP_PASSWORD = env.str('DJANGO_AUTH_LDAP_PASSWORD', default='')
     AUTH_LDAP_USER_DN_TEMPLATE = env.str('DJANGO_AUTH_LDAP_USER_DN_TEMPLATE')
     AUTHENTICATION_BACKENDS.insert(0, 'django_auth_ldap.backend.LDAPBackend')
 

@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
@@ -20,6 +21,14 @@ def test_user_update_unauthenticated(client):
     url = reverse('user-detail', args=[user.id])
     response = client.patch(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+def test_user_login_ldap(client):
+    client.login('ldapuser', 'Test1234!')
+    user = get_user_model().objects.get(username='ldapuser')
+    assert user.first_name == 'givenName'
+    assert user.last_name == 'LdapUser'
+    assert user.email == 'ldapuser@example.net'
 
 
 def test_user_list(auth_client, django_assert_num_queries):
