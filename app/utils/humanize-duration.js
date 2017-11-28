@@ -4,7 +4,7 @@
  * @public
  */
 
-const { floor } = Math
+const { abs, floor } = Math
 
 /**
  * Converts a moment duration into a string with hours minutes and optionally
@@ -21,15 +21,17 @@ export default function humanizeDuration(duration, seconds = false) {
     return seconds ? '0h 0m 0s' : '0h 0m'
   }
 
+  let prefix = duration.asMinutes() < 0 ? '-' : ''
+
   // TODO: The locale should be defined by the browser
-  let h = floor(duration.asHours()).toLocaleString('de-CH')
-  let m = duration.minutes()
+  let h = floor(abs(duration.asHours())).toLocaleString('de-CH')
+  let m = abs(duration.minutes())
 
   if (seconds) {
-    let s = duration.seconds()
+    let s = abs(duration.seconds())
 
-    return `${h}h ${m}m ${s}s`
+    return `${prefix}${h}h ${m}m ${s}s`
   }
 
-  return `${h}h ${m}m`
+  return `${prefix}${h}h ${m}m`
 }

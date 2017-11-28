@@ -11,6 +11,8 @@ import { padStart } from 'ember-pad/utils/pad'
 
 const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number
 
+const { abs } = Math
+
 /**
  * Duration selector component
  *
@@ -71,6 +73,26 @@ export default SyTimepickerComponent.extend({
   },
 
   /**
+   * Get the duration for given hours and minutes
+   *
+   * If one of the given numbers is negative, both have to be.
+   *
+   * @method _getDurationFromHoursAndMinutes
+   * @param {Number} h The hours of the wanted duration
+   * @param {Number} m The minutes of the wanted duration
+   * @return {moment.duration} The resulted duration
+   * @private
+   */
+  _getDurationFromHoursAndMinutes(h, m) {
+    let negative = [h, m].some(n => n < 0)
+
+    h = abs(h) * (negative ? -1 : 1)
+    m = abs(m) * (negative ? -1 : 1)
+
+    return moment.duration({ h, m })
+  },
+
+  /**
    * Set the current value
    *
    * @method _set
@@ -80,7 +102,7 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _set(h, m) {
-    return moment.duration({ h, m })
+    return this._getDurationFromHoursAndMinutes(h, m)
   },
 
   /**
@@ -93,6 +115,8 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _add(h, m) {
-    return moment.duration(this.get('value')).add({ h, m })
+    return moment
+      .duration(this.get('value'))
+      .add(this._getDurationFromHoursAndMinutes(h, m))
   }
 })
