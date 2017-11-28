@@ -8,12 +8,24 @@
   margin-right: .3rem;
 }
 
+
 @media (--nav-top-mobile-width) {
   .nav-top-header-title {
     display: block;
   }
 
+  .nav-top-list-item a.active {
+    background-color: var(--color-primary);
+    color: #fff;
+  }
+
+  .nav-top-list-item a:hover {
+    background-color: color(var(--color-primary) tint(20%));
+    color: #fff;
+  }
+
   .nav-top-list-item a {
     padding: .6rem .8rem;
+    border-radius: 0;
   }
 }

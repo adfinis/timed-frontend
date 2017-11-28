@@ -124,13 +124,29 @@ export default function() {
   this.patch('/activities/:id')
   this.del('/activities/:id')
 
-  this.get('/reports', function({ reports }) {
-    return {
-      ...this.serialize(reports.all()),
-      meta: {
-        'total-time': randomDuration()
-      }
+  this.get('/reports', function(
+    { reports },
+    { queryParams: { page, page_size: limit } }
+  ) {
+    let data = reports.all()
+    let meta = {
+      'total-time': randomDuration()
     }
+
+    page = page && parseInt(page)
+    if (page && limit) {
+      meta = {
+        ...meta,
+        pagination: {
+          pages: Math.ceil(data.length / limit),
+          page
+        }
+      }
+
+      data = data.slice((page - 1) * limit, page * limit)
+    }
+
+    return { ...this.serialize(data), meta }
   })
   this.post('/reports', function({ reports, users }) {
     return reports.create({
@@ -282,4 +298,17 @@ export default function() {
   this.get('/user-statistics', statisticEndpoint('user'))
 
   this.post('/users/:id/transfer', () => new Response(201, {}))
+
+  this.get('/reports/export', function(
+    _,
+    { queryParams: { file_type: type } }
+  ) {
+    return new Response(
+      200,
+      {
+        'Content-Disposition': `attachment; filename=testytesyexport.${type}`
+      },
+      new Blob()
+    )
+  })
 }
