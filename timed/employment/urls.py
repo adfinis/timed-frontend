@@ -1,11 +1,11 @@
 """URL to view mapping for the employment app."""
 
 from django.conf import settings
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
 from timed.employment import views
 
-r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
+r = SimpleRouter(trailing_slash=settings.APPEND_SLASH)
 
 r.register(r'users',            views.UserViewSet,           'user')
 r.register(r'employments',      views.EmploymentViewSet,     'employment')
