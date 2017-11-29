@@ -1,11 +1,11 @@
 """URL to view mapping for the tracking app."""
 
 from django.conf import settings
-from rest_framework.routers import DefaultRouter
+from rest_framework.routers import SimpleRouter
 
 from timed.tracking import views
 
-r = DefaultRouter(trailing_slash=settings.APPEND_SLASH)
+r = SimpleRouter(trailing_slash=settings.APPEND_SLASH)
 
 r.register(r'activities',      views.ActivityViewSet,      'activity')
 r.register(r'activity-blocks', views.ActivityBlockViewSet, 'activity-block')
