@@ -1,12 +1,14 @@
 import Component from '@ember/component'
-import { on } from 'ember-computed-decorators'
 
 const InViewportComponent = Component.extend({
   rootSelector: 'body',
   rootMargin: 0,
 
-  @on('didInsertElement')
-  initIntersectionObserver() {
+  _observer: null,
+
+  didInsertElement() {
+    this._super(...arguments)
+
     let observer = new IntersectionObserver(
       ([{ isIntersecting }]) => {
         if (isIntersecting) {
@@ -21,8 +23,16 @@ const InViewportComponent = Component.extend({
       }
     )
 
+    this.set('_observer', observer)
+
     // eslint-disable-next-line ember/no-observers
     observer.observe(this.get('element'))
+  },
+
+  willDestroyElement() {
+    this._super(...arguments)
+
+    this.get('_observer').disconnect()
   }
 })
 
