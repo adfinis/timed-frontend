@@ -59,6 +59,18 @@ export default SyTimepickerComponent.extend({
       .join('|')})`
   },
 
+  change({ target: { validity, value } }) {
+    if (validity.valid) {
+      let negative = /^-/.test(value)
+
+      let [h = NaN, m = NaN] = this.sanitize(value)
+        .split(':')
+        .map(n => abs(parseInt(n)) * (negative ? -1 : 1))
+
+      this._change([h, m].some(isNaN) ? null : this._set(h, m))
+    }
+  },
+
   /**
    * The display representation of the value
    *
@@ -73,26 +85,6 @@ export default SyTimepickerComponent.extend({
   },
 
   /**
-   * Get the duration for given hours and minutes
-   *
-   * If one of the given numbers is negative, both have to be.
-   *
-   * @method _getDurationFromHoursAndMinutes
-   * @param {Number} h The hours of the wanted duration
-   * @param {Number} m The minutes of the wanted duration
-   * @return {moment.duration} The resulted duration
-   * @private
-   */
-  _getDurationFromHoursAndMinutes(h, m) {
-    let negative = [h, m].some(n => n < 0)
-
-    h = abs(h) * (negative ? -1 : 1)
-    m = abs(m) * (negative ? -1 : 1)
-
-    return moment.duration({ h, m })
-  },
-
-  /**
    * Set the current value
    *
    * @method _set
@@ -102,7 +94,7 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _set(h, m) {
-    return this._getDurationFromHoursAndMinutes(h, m)
+    return moment.duration({ h, m })
   },
 
   /**
@@ -115,8 +107,6 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _add(h, m) {
-    return moment
-      .duration(this.get('value'))
-      .add(this._getDurationFromHoursAndMinutes(h, m))
+    return moment.duration(this.get('value')).add({ h, m })
   }
 })
