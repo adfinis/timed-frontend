@@ -141,16 +141,16 @@
           {{#fs.label}}
             Verified
             {{fs.filter 'button'
-              data-test-filter-not-verified
-              selected  = notVerified
+              data-test-filter-verified
+              selected  = verified
               valuePath = 'value'
               labelPath = 'label'
               options = (array
                 (hash label='All' value='')
-                (hash label='Verified' value='0')
-                (hash label='Not verified' value='1')
+                (hash label='Verified' value='1')
+                (hash label='Not verified' value='0')
               )
-              on-change = (action (mut notVerified))
+              on-change = (action (mut verified))
             }}
           {{/fs.label}}
         {{/fs.group}}

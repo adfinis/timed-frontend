@@ -11,6 +11,16 @@ import computed from 'ember-computed-decorators'
  * @public
  */
 export default Service.extend({
+  init() {
+    this._super(...arguments)
+
+    this.set('tours', [
+      'index.activities',
+      'index.attendances',
+      'index.reports'
+    ])
+  },
+
   /**
    * The item key to use in the localstorage
    *
@@ -20,19 +30,12 @@ export default Service.extend({
   doneKey: 'timed-tour',
 
   /**
-   * All available tours
-   *
-   * @property {String[]} tours
-   * @public
-   */
-  tours: ['index.activities', 'index.attendances', 'index.reports'],
-
-  /**
    * All done tours
    *
    * @property {String[]} done
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed()
   done: {
     get() {
@@ -46,6 +49,7 @@ export default Service.extend({
       return value
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * Whether all tours are done

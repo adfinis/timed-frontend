@@ -134,7 +134,7 @@ describe('Acceptance | statistics', function() {
       toDate: moment().format('YYYY-MM-DD'),
       review: 1,
       notBillable: 0,
-      notVerified: 0
+      verified: 0
     }
 
     await visit(
@@ -177,6 +177,6 @@ describe('Acceptance | statistics', function() {
 
     expect(await find('[data-test-filter-review] .btn.active')).to.be.ok
     expect(await find('[data-test-filter-not-billable] .btn.active')).to.be.ok
-    expect(await find('[data-test-filter-not-verified] .btn.active')).to.be.ok
+    expect(await find('[data-test-filter-verified] .btn.active')).to.be.ok
   })
 })

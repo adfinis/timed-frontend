@@ -75,7 +75,7 @@ describe('Acceptance | analysis', function() {
       toDate: '2017-12-01',
       review: '',
       notBillable: '',
-      notVerified: ''
+      verified: ''
     }
 
     await visit(
@@ -122,8 +122,8 @@ describe('Acceptance | analysis', function() {
       )
     ).to.equal(0)
     expect(
-      findAll('[data-test-filter-not-verified] button').indexOf(
-        find('[data-test-filter-not-verified] button.active')
+      findAll('[data-test-filter-verified] button').indexOf(
+        find('[data-test-filter-verified] button.active')
       )
     ).to.equal(0)
   })

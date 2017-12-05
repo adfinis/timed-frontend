@@ -1,8 +1,8 @@
 import PowerSelectComponent from 'ember-power-select/components/power-select'
 import Ember from 'ember'
-import $ from 'jquery'
+import { isBlank } from '@ember/utils'
 
-const { isBlank, testing } = Ember
+const { testing } = Ember
 
 /* istanbul ignore next */
 const PowerSelectCustomComponent = PowerSelectComponent.extend({
@@ -44,24 +44,24 @@ const PowerSelectCustomComponent = PowerSelectComponent.extend({
     },
 
     scrollTo() {
-      let options = $(
+      let options = document.querySelector(
         `#ember-power-select-options-${this.get('publicAPI').uniqueId}`
       )
 
-      let current = options.find('[aria-current=true]')
+      let current = options.querySelector('[aria-current=true]')
 
-      if (!current.length) {
+      if (!current) {
         return
       }
 
-      let currentScrollY = options.scrollTop()
-      let { top } = current.position()
-      let bottomOfOption = top + current.height()
+      let currentScrollY = options.scrollTop
+      let top = current.offsetTop
+      let bottomOfOption = top + current.offsetHeight
 
-      if (bottomOfOption > currentScrollY + options.height()) {
-        options.scrollTop(bottomOfOption - options.height())
+      if (bottomOfOption > currentScrollY + options.offsetHeight) {
+        options.scrollTop = bottomOfOption - options.offsetHeight
       } else if (top < currentScrollY) {
-        options.scrollTop(top)
+        options.scrollTop = top
       }
     }
   }

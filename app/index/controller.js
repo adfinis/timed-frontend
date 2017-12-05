@@ -24,6 +24,13 @@ const { testing } = Ember
  * @public
  */
 export default Controller.extend({
+  init() {
+    this._super(...arguments)
+
+    this.set('_activeActivityBlockDuration', moment.duration())
+    this.set('disabledDates', [])
+  },
+
   /**
    * Validations for the edit absence form
    *
@@ -114,8 +121,6 @@ export default Controller.extend({
       return dur.add(cur.get('duration'))
     }, additional)
   },
-
-  _activeActivityBlockDuration: moment.duration(),
 
   /**
    * Compute the current activity sum
@@ -294,6 +299,7 @@ export default Controller.extend({
    * @property {moment} date
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed('day')
   date: {
     get(day) {
@@ -305,6 +311,7 @@ export default Controller.extend({
       return value
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * The expected worktime of the user
@@ -321,7 +328,9 @@ export default Controller.extend({
    * @property {Number[]} workdays
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @oneWay('user.activeEmployment.location.workdays') workdays: [],
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * The data for the weekly overview
@@ -419,17 +428,6 @@ export default Controller.extend({
       }
     })
   }).restartable(),
-
-  /**
-   * Dates on which no absence can be created
-   *  * Weekends
-   *  * Days on which an absence exists
-   *  * Public holidays
-   *
-   * @property {moment[]} disabledDates
-   * @public
-   */
-  disabledDates: [],
 
   /**
    * Set a new center for the calendar and load all disabled dates
