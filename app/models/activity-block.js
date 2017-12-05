@@ -49,6 +49,7 @@ export default Model.extend({
    * @property {moment} from
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed('activity.date', 'fromTime')
   from: {
     get(date, time) {
@@ -68,6 +69,7 @@ export default Model.extend({
       return value
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * The end time, with the date of the related activity
@@ -75,6 +77,7 @@ export default Model.extend({
    * @property {moment} to
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed('activity.date', 'toTime')
   to: {
     get(date, time) {
@@ -94,4 +97,5 @@ export default Model.extend({
       return value
     }
   }
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 })
