@@ -171,7 +171,8 @@ export default Service.extend({
    * @property {Activity} activity
    * @public
    */
-  @computed
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
+  @computed()
   activity: {
     get() {
       return this.get('_activity')
@@ -184,6 +185,7 @@ export default Service.extend({
       return newActivity
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * Start the activity
