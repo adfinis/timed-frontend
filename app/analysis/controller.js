@@ -90,7 +90,7 @@ const AnalysisQueryParams = new QueryParams({
     replace: true,
     refresh: true
   },
-  notVerified: {
+  verified: {
     defaultValue: '',
     replace: true,
     refresh: true

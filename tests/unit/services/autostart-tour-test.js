@@ -19,7 +19,9 @@ describe('Unit | Service | autostart tour', function() {
   })
 
   it('can set and get the done tours', function() {
-    let service = this.subject({ doneKey: 'timed-tour-test' })
+    let service = this.subject()
+
+    service.setProperties({ doneKey: 'timed-tour-test' })
 
     expect(service.get('done')).to.deep.equal([])
 
@@ -29,7 +31,9 @@ describe('Unit | Service | autostart tour', function() {
   })
 
   it('can check if all tours are done', function() {
-    let service = this.subject({ doneKey: 'timed-tour-test', tours: ['test'] })
+    let service = this.subject()
+
+    service.setProperties({ doneKey: 'timed-tour-test', tours: ['test'] })
 
     expect(service.allDone()).to.not.be.ok
 

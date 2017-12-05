@@ -6,6 +6,7 @@
 
 .ember-power-select-options[role='listbox'] {
   max-height: 425px;
+  position: relative;
 }
 
 .ember-power-select-option:not(

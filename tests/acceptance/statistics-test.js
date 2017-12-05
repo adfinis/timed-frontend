@@ -84,18 +84,19 @@ describe('Acceptance | statistics', function() {
   it('can filter and reset filter', async function() {
     await visit('/statistics')
 
-    let from = moment().format('YYYY-MM-DD')
-    let to = moment().format('YYYY-MM-DD')
+    let from = moment()
+    let to = moment().subtract(10, 'days')
 
-    await click('[data-test-filter-from-date] input')
-    await click(`[data-date=${from}]`)
-    await click('[data-test-filter-to-date] input')
-    await click(`[data-date=${to}]`)
+    await fillIn(
+      '[data-test-filter-from-date] input',
+      from.format('DD.MM.YYYY')
+    )
+    await fillIn('[data-test-filter-to-date] input', to.format('DD.MM.YYYY'))
 
-    expect(currentURL()).to.contain(`fromDate=${from}`)
-    expect(currentURL()).to.contain(`toDate=${to}`)
+    expect(currentURL()).to.contain(`fromDate=${from.format('YYYY-MM-DD')}`)
+    expect(currentURL()).to.contain(`toDate=${to.format('YYYY-MM-DD')}`)
 
-    await click('[data-test-filter-reset] button')
+    await click('.filter-sidebar-reset')
 
     expect(currentURL()).to.not.contain(`fromDate=${from}`)
     expect(currentURL()).to.not.contain(`toDate=${to}`)
@@ -133,7 +134,7 @@ describe('Acceptance | statistics', function() {
       toDate: moment().format('YYYY-MM-DD'),
       review: 1,
       notBillable: 0,
-      notVerified: 0
+      verified: 0
     }
 
     await visit(
@@ -174,16 +175,8 @@ describe('Acceptance | statistics', function() {
 
     expect(await find('[data-test-filter-to-date] input').value).to.be.ok
 
-    expect(
-      await find('[data-test-filter-review] select').options.selectedIndex
-    ).to.be.at.least(1)
-
-    expect(
-      await find('[data-test-filter-not-billable] select').options.selectedIndex
-    ).to.be.at.least(1)
-
-    expect(
-      await find('[data-test-filter-not-verified] select').options.selectedIndex
-    ).to.be.at.least(1)
+    expect(await find('[data-test-filter-review] .btn.active')).to.be.ok
+    expect(await find('[data-test-filter-not-billable] .btn.active')).to.be.ok
+    expect(await find('[data-test-filter-verified] .btn.active')).to.be.ok
   })
 })

@@ -1,5 +1,5 @@
 module.exports = {
   rules: {
-    'require-jsdoc': 'off'
+    'ember/avoid-leaking-state-in-ember-objects': 'off'
   }
 }

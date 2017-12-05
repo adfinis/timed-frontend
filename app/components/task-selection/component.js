@@ -170,6 +170,7 @@ export default Component.extend({
    * @property {Customer} customer
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed('_customer')
   customer: {
     get(customer) {
@@ -200,6 +201,7 @@ export default Component.extend({
       return value
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * The selected project
@@ -210,6 +212,7 @@ export default Component.extend({
    * @property {Project} project
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed('_project')
   project: {
     get(project) {
@@ -237,6 +240,7 @@ export default Component.extend({
       return value
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * The currently selected task
@@ -244,6 +248,7 @@ export default Component.extend({
    * @property {Task} task
    * @public
    */
+  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
   @computed('_task')
   task: {
     get(task) {
@@ -266,6 +271,7 @@ export default Component.extend({
       return value
     }
   },
+  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
   /**
    * All customers and recent tasks which are selectable in the dropdown

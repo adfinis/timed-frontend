@@ -16,23 +16,8 @@ module.exports = {
     browser: true
   },
   plugins: ['ember', 'prettier'],
-  extends: [
-    'eslint:recommended',
-    'plugin:ember/recommended',
-    'plugin:ember-suave/recommended',
-    'prettier'
-  ],
+  extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
   rules: {
-    'valid-jsdoc': ['error', { requireReturn: false }],
-    'require-jsdoc': 'error',
-    'ember/avoid-leaking-state-in-components': 'off',
-    'ember/named-functions-in-promises': 'off',
-    'ember/alias-model-in-controller': 'off',
-    'ember/use-ember-get-and-set': 'off',
-    'ember/order-in-components': 'off',
-    'ember/order-in-controllers': 'off',
-    'ember/order-in-routes': 'off',
-    'ember/no-old-shims': 'error',
-    'prettier/prettier': ['error', { singleQuote: true, semi: false }]
+    'prettier/prettier': 'error'
   }
 }
