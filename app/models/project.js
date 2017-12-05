@@ -66,5 +66,13 @@ export default Model.extend({
    * @type {Task[]}
    * @public
    */
-  tasks: hasMany('task')
+  tasks: hasMany('task'),
+
+  /**
+   * Reviewers of this project
+   *
+   * @property {User[]} reviewers
+   * @public
+   */
+  reviewers: hasMany('user')
 })

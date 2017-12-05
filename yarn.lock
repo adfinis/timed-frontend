@@ -4987,9 +4987,9 @@ inquirer@^3.0.6:
     strip-ansi "^4.0.0"
     through "^2.3.6"
 
-intersection-observer@^0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.4.3.tgz#22ff07442269d8be694551a782e0b081ecd4adfd"
+intersection-observer@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/intersection-observer/-/intersection-observer-0.5.0.tgz#9fe8bee3953c755b1485c38efd9633d535775ea6"
 
 invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.2"
