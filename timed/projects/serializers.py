@@ -56,7 +56,8 @@ class ProjectSerializer(ModelSerializer):
     included_serializers = {
         'customer':     'timed.projects.serializers.CustomerSerializer',
         'billing_type': 'timed.projects.serializers.BillingTypeSerializer',
-        'cost_center':  'timed.projects.serializers.CostCenterSerializer'
+        'cost_center':  'timed.projects.serializers.CostCenterSerializer',
+        'reviewers':    'timed.employment.serializers.UserSerializer',
     }
 
     def get_root_meta(self, resource, many):
@@ -82,7 +83,8 @@ class ProjectSerializer(ModelSerializer):
             'archived',
             'customer',
             'billing_type',
-            'cost_center'
+            'cost_center',
+            'reviewers'
         ]
 
 
