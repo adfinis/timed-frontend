@@ -35,7 +35,7 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
 
   @computed('supervisor', 'prefetchData.lastSuccessful.value.supervisor')
   selectedSupervisor(supervisorId) {
-    return this.store.peekRecord('user', supervisorId)
+    return supervisorId && this.store.peekRecord('user', supervisorId)
   },
 
   setup() {
