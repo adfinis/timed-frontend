@@ -14,6 +14,15 @@ describe('Unit | Ability | report', function() {
     expect(ability.get('canEdit')).to.be.true
   })
 
+  it('can edit when user is superuser and report is verified', function() {
+    let ability = this.subject({
+      user: { isSuperuser: true },
+      model: { verifiedBy: { id: 1 } }
+    })
+
+    expect(ability.get('canEdit')).to.be.true
+  })
+
   it('can edit when user owns report', function() {
     let ability = this.subject({
       user: { id: 1 },
@@ -47,6 +56,19 @@ describe('Unit | Ability | report', function() {
       model: {
         user: { id: 2, supervisors: [{ id: 2 }] },
         task: { project: { reviewers: [{ id: 2 }] } }
+      }
+    })
+
+    expect(ability.get('canEdit')).to.be.false
+  })
+
+  it('can not edit when report is verified', function() {
+    let ability = this.subject({
+      user: { id: 1, isSuperuser: false },
+      model: {
+        user: { id: 1, supervisors: [{ id: 1 }] },
+        task: { project: { reviewers: [{ id: 1 }] } },
+        verifiedBy: { id: 1 }
       }
     })
 
