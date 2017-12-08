@@ -1,6 +1,7 @@
 """Viewsets for the projects app."""
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework_json_api.views import PrefetchForIncludesHelperMixin
 
 from timed.projects import filters, models, serializers
 
@@ -39,21 +40,23 @@ class CostCenterViewSet(ReadOnlyModelViewSet):
         return models.CostCenter.objects.all()
 
 
-class ProjectViewSet(ReadOnlyModelViewSet):
+class ProjectViewSet(PrefetchForIncludesHelperMixin, ReadOnlyModelViewSet):
     """Project view set."""
 
     serializer_class = serializers.ProjectSerializer
     filter_class     = filters.ProjectFilterSet
     ordering_fields  = ('customer__name', 'name',)
     ordering         = 'name'
+    queryset         = models.Project.objects.all()
+
+    prefetch_for_includes = {
+        '__all__':   ['reviewers'],
+        'reviewers': ['reviewers__supervisors'],
+    }
 
     def get_queryset(self):
-        """Prefetch related data.
-
-        :return: The projects
-        :rtype:  QuerySet
-        """
-        return models.Project.objects.select_related(
+        queryset = super().get_queryset()
+        return queryset.select_related(
             'customer', 'billing_type', 'cost_center'
         )
 

@@ -4,7 +4,9 @@ from datetime import timedelta
 from django.core.urlresolvers import reverse
 from rest_framework import status
 
+from timed.employment.factories import UserFactory
 from timed.projects.factories import ProjectFactory, TaskFactory
+from timed.projects.serializers import ProjectSerializer
 from timed.tracking.factories import ReportFactory
 
 
@@ -15,6 +17,24 @@ def test_project_list_not_archived(auth_client):
     url = reverse('project-list')
 
     response = auth_client.get(url, data={'archived': 0})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json['data']) == 1
+    assert json['data'][0]['id'] == str(project.id)
+
+
+def test_project_list_include(auth_client, django_assert_num_queries):
+    project = ProjectFactory.create()
+    users = UserFactory.create_batch(2)
+    project.reviewers.add(*users)
+
+    url = reverse('project-list')
+
+    with django_assert_num_queries(6):
+        response = auth_client.get(url, data={
+            'include': ','.join(ProjectSerializer.included_serializers.keys())
+        })
     assert response.status_code == status.HTTP_200_OK
 
     json = response.json()

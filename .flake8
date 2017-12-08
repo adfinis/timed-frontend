@@ -21,6 +21,7 @@ ignore =
     # Missing docstring in __init__
     D107
 
+doctests = True
 exclude =
     manage.py,
     Makefile,
