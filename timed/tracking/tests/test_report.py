@@ -89,7 +89,10 @@ def test_report_intersection_full(auth_client):
                         'type': 'tasks',
                     }
                 }
-            }
+            },
+        },
+        'meta': {
+            'count': 1
         }
     }
     assert json == expected
@@ -118,7 +121,10 @@ def test_report_intersection_partial(auth_client):
                 'customer': {'data': None},
                 'project': {'data': None},
                 'task': {'data': None}
-            }
+            },
+        },
+        'meta': {
+            'count': 2
         }
     }
     assert json == expected
