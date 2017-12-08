@@ -16,7 +16,7 @@ export default Ability.extend({
   ) {
     return (
       isSuperuser ||
-      (!verifiedBy &&
+      (!(verifiedBy && verifiedBy.get('id')) &&
         (userId === currentUserId ||
           supervisors.mapBy('id').includes(currentUserId) ||
           reviewers.mapBy('id').includes(currentUserId)))
