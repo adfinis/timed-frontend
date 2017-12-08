@@ -166,7 +166,7 @@ class ReportViewSet(ModelViewSet):
             del params[param]
 
         data = AggregateObject(queryset=queryset, pk=params.urlencode())
-        serializer = serializers.ReportIntersectionSerializer(data)
+        serializer = self.get_serializer(data)
         return Response(data=serializer.data)
 
     @list_route(

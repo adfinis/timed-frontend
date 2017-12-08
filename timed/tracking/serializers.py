@@ -287,6 +287,13 @@ class ReportIntersectionSerializer(Serializer):
         instance['queryset'] = queryset
         return self._intersection(instance, 'verified')
 
+    def get_root_meta(self, resource, many):
+        """Add number of results to meta."""
+        queryset = self.instance['queryset']
+        return {
+            'count': queryset.count()
+        }
+
     included_serializers = {
         'customer': 'timed.projects.serializers.CustomerSerializer',
         'project': 'timed.projects.serializers.ProjectSerializer',
