@@ -4,6 +4,8 @@
  * @public
  */
 import Component from '@ember/component'
+import computed from 'ember-computed-decorators'
+import { scheduleOnce } from '@ember/runloop'
 
 /**
  * Component for an adcssy styled checkbox
@@ -13,6 +15,23 @@ import Component from '@ember/component'
  * @public
  */
 export default Component.extend({
+  @computed('elementId')
+  checkboxElementId(id) {
+    return `${id}-checkbox`
+  },
+
+  didReceiveAttrs() {
+    scheduleOnce('afterRender', () => {
+      if (this.get('checked') === null) {
+        let cb = this.get('element').querySelector(
+          `#${this.get('checkboxElementId')}`
+        )
+
+        cb.indeterminate = true
+      }
+    })
+  },
+
   /**
    * The CSS class names
    *

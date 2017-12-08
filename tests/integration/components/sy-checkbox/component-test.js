@@ -36,17 +36,34 @@ describe('Integration | Component | sy checkbox', function() {
       hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
     )
 
-    expect(find('input').checked).to.not.be.ok
-    expect(this.get('checked')).to.not.be.ok
+    expect(find('input').checked).to.be.false
+    expect(this.get('checked')).to.be.false
 
     click('label')
 
-    expect(find('input').checked).to.be.ok
-    expect(this.get('checked')).to.be.ok
+    expect(find('input').checked).to.be.true
+    expect(this.get('checked')).to.be.true
 
     click('label')
 
-    expect(find('input').checked).to.not.be.ok
-    expect(this.get('checked')).to.not.be.ok
+    expect(find('input').checked).to.be.false
+    expect(this.get('checked')).to.be.false
+  })
+
+  it('can be indeterminate', function() {
+    this.set('checked', null)
+
+    this.render(
+      hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
+    )
+
+    expect(find('input').indeterminate).to.be.true
+    expect(this.get('checked')).to.be.null
+
+    click('label')
+
+    // clicking on an indeterminate checkbox makes it checked
+    expect(find('input').checked).to.be.true
+    expect(this.get('checked')).to.be.true
   })
 })
