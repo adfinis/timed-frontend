@@ -18,6 +18,16 @@ class AggregateQuerysetMixin(object):
 
     Mixin expects the id to be the same key as the resource related
     field defined in the serializer.
+
+    To reduce number of queries `prefetch_related_for_field` can be defined
+    to prefetch related data per field like the following:
+    >>> from rest_framework.viewsets import ReadOnlyModelViewSet
+    ... class MyView(ReadOnlyModelViewSet, AggregateQuerysetMixin):
+    ...   # ...
+    ...   prefetch_related_for_field = {
+    ...     'field_name': ['field_name_prefetch']
+    ...   }
+    ...   # ...
     """
 
     def _is_related_field(self, val):
@@ -50,12 +60,15 @@ class AggregateQuerysetMixin(object):
                     obj_ids = data.values_list(source, flat=True)
                 else:
                     obj_ids = [data[0][source]]
-                objects = {
-                    obj.id: obj
-                    for obj in value.model.objects.filter(
-                        id__in=obj_ids
-                    ).select_related()
-                }
+
+                qs = value.model.objects.filter(id__in=obj_ids)
+                qs = qs.select_related()
+                if hasattr(self, 'prefetch_related_for_field'):
+                    qs = qs.prefetch_related(
+                        *self.prefetch_related_for_field.get(source, [])
+                    )
+
+                objects = {obj.id: obj for obj in qs}
                 prefetch_per_field[source] = objects
 
         # enhance entry dicts with model instances

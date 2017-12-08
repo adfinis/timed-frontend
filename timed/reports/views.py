@@ -79,6 +79,10 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ordering_fields = ('task__project__name', 'duration')
     ordering = ('task__project__name', )
 
+    prefetch_related_for_field = {
+        'task__project': ['reviewers'],
+    }
+
     def get_queryset(self):
         queryset = Report.objects.all()
 
@@ -96,6 +100,10 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     filter_class = ReportFilterSet
     ordering_fields = ('task__name', 'duration')
     ordering = ('task__name', )
+
+    prefetch_related_for_field = {
+        'task': ['project__reviewers'],
+    }
 
     def get_queryset(self):
         queryset = Report.objects.all()
