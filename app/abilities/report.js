@@ -1,5 +1,6 @@
 import { Ability } from 'ember-can'
 import computed from 'ember-computed-decorators'
+import { get } from '@ember/object'
 
 export default Ability.extend({
   @computed(
@@ -16,7 +17,7 @@ export default Ability.extend({
   ) {
     return (
       isSuperuser ||
-      (!(verifiedBy && verifiedBy.get('id')) &&
+      (!(verifiedBy && get(verifiedBy, 'id')) &&
         (userId === currentUserId ||
           supervisors.mapBy('id').includes(currentUserId) ||
           reviewers.mapBy('id').includes(currentUserId)))
