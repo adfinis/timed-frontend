@@ -27,7 +27,7 @@ export default function formatDuration(duration, seconds = true) {
     return seconds ? '--:--:--' : '--:--'
   }
 
-  let prefix = duration.asMinutes() < 0 ? '-' : ''
+  let prefix = duration < 0 ? '-' : ''
 
   let hours = floor(abs(duration.asHours()))
   let minutes = abs(duration.minutes())
