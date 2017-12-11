@@ -34,7 +34,7 @@ def test_notify_reviewers(db, mailoutbox):
     mail = mailoutbox[0]
     assert mail.to == [reviewer_work.email]
     url = (
-        'http://localhost:4200/reschedule?from_date=2017-07-01&'
-        'to_date=2017-07-31&reviewer=%d'
+        'http://localhost:4200/reschedule?fromDate=2017-07-01&'
+        'toDate=2017-07-31&reviewer=%d&editable=1'
     ) % reviewer_work.id
     assert url in mail.body
