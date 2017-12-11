@@ -62,3 +62,12 @@
   bottom: 0;
   transform: rotate(180deg);
 }
+
+.table--analysis tr.selected {
+  background-color: color(var(--color-primary) tint(50%)) !important;
+}
+
+.table--analysis tr.selected + tr td,
+.table--analysis tr.selected td {
+  border-color: color(var(--color-primary) tint(40%)) !important;
+}

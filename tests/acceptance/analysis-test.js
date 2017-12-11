@@ -127,4 +127,16 @@ describe('Acceptance | analysis', function() {
       )
     ).to.equal(0)
   })
+
+  it('can select a report', async function() {
+    await visit('/analysis')
+
+    await click('tbody > tr:first-child')
+
+    expect(find('tbody > tr:first-child.selected')).to.be.ok
+
+    await click('tbody > tr:first-child')
+
+    expect(find('tbody > tr:first-child.selected')).to.not.be.ok
+  })
 })

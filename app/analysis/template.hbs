@@ -209,7 +209,7 @@
             </colgroup>
             <tbody>
               {{#each reports as |report|}}
-                <tr>
+                <tr class="{{if (contains report.id selectedReportIds) 'selected'}} {{if (can 'edit report' report) 'pointer'}}" {{action 'selectRow' report}}>
                   <td>{{report.user.username}}</td>
                   <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
                   <td>{{format-duration report.duration false}}</td>
