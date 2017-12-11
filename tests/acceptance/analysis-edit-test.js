@@ -43,8 +43,8 @@ describe('Acceptance | analysis edit', function() {
     })
 
     await fillIn('[data-test-comment] input', 'test comment 123')
-    await click('[data-test-not-billable] label')
-    await click('[data-test-review] label')
+    await click('[data-test-not-billable] input')
+    await click('[data-test-review] input')
 
     await click('.btn-primary')
 
