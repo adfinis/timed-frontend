@@ -28,10 +28,6 @@
     background-color: color(var(--body-background-color) b(5%));
   }
 
-  .form-list-body > .form-list-row:hover {
-    background-color: color(var(--body-background-color) b(7.5%));
-  }
-
   /* Form list head, foot and caption are not allowed for mobile devices */
   .form-list-head,
   .form-list-foot,

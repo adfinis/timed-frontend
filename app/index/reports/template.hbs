@@ -5,26 +5,13 @@
 <div class="form-list form-list--reports">
   <div class="form-list-body">
     {{#each reports as |report|}}
-      {{#if report.verifiedBy}}
-        <div class="form-list-row" title="This entry is already verified and therefore not editable anymore">
-          <div class="form-list-cell">{{report.task.project.customer.name}}</div>
-          <div class="form-list-cell">{{report.task.project.name}}</div>
-          <div class="form-list-cell">{{report.task.name}}</div>
-          <div class="form-list-cell">{{report.comment}}</div>
-          <div class="form-list-cell">{{format-duration report.duration false}}</div>
-          <div class="form-list-cell">{{sy-checkbox disabled=true value=report.review label='Needs review'}}</div>
-          <div class="form-list-cell">{{sy-checkbox disabled=true value=report.notBillable label='Not billable'}}</div>
-          <div class="form-list-cell"></div>
-        </div>
-      {{else}}
-        {{report-row
-          report
-          data-test-report-row
-          data-test-report-row-id = report.id
-          on-save                 = (route-action 'saveReport')
-          on-delete               = (route-action 'deleteReport')
-        }}
-      {{/if}}
+      {{report-row
+        report
+        data-test-report-row
+        data-test-report-row-id = report.id
+        on-save                 = (route-action 'saveReport')
+        on-delete               = (route-action 'deleteReport')
+      }}
     {{/each}}
   </div>
 </div>

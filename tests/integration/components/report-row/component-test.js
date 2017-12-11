@@ -3,6 +3,8 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
+import EmberObject from '@ember/object'
+import { find, findAll } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | report row', function() {
   setupComponentTest('report-row', {
@@ -18,7 +20,7 @@ describe('Integration | Component | report row', function() {
   })
 
   it('renders', function() {
-    this.set('report', {})
+    this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
 
     this.render(hbs`{{report-row report}}`)
 
@@ -29,7 +31,7 @@ describe('Integration | Component | report row', function() {
   })
 
   it('can delete row', function() {
-    this.set('report', {})
+    this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
     this.set('didDelete', false)
 
     this.render(
@@ -39,5 +41,29 @@ describe('Integration | Component | report row', function() {
     this.$('.btn-danger').click()
 
     expect(this.get('didDelete')).to.be.ok
+  })
+
+  it('can be read-only', function() {
+    this.set(
+      'report',
+      EmberObject.create({
+        verifiedBy: EmberObject.create({
+          id: 1,
+          fullName: 'John Doe'
+        })
+      })
+    )
+
+    this.render(hbs`{{report-row report}}`)
+
+    expect(findAll('input').every(x => x.disabled)).to.be.true
+    expect(find('form').title).to.contain('John Doe')
+    expect(findAll('.btn')).to.have.length(0)
+
+    this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
+
+    expect(findAll('input').some(x => x.disabled)).to.be.false
+    expect(find('form').title).to.equal('')
+    expect(findAll('.btn')).to.have.length(2)
   })
 })

@@ -7,7 +7,7 @@ import Component from '@ember/component'
 import ReportValidations from 'timed/validations/report'
 import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
-import computed from 'ember-computed-decorators'
+import computed, { not } from 'ember-computed-decorators'
 
 /**
  * Component for the editable report row
@@ -32,6 +32,19 @@ const ReportRowComponent = Component.extend({
    * @public
    */
   classNames: ['form-list-row'],
+
+  attributeBindings: ['title'],
+
+  @not('report.verifiedBy.id') editable: true,
+
+  @computed('report.verifiedBy')
+  title(verifier) {
+    return verifier.get('id')
+      ? `This entry was already verified by ${verifier.get(
+          'fullName'
+        )} and therefore not editable anymore`
+      : ''
+  },
 
   /**
    * The changeset to edit
