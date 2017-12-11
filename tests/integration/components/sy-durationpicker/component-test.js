@@ -4,6 +4,7 @@ import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import $ from 'jquery'
+import formatDuration from 'timed/utils/format-duration'
 
 const event = $.Event
 
@@ -166,5 +167,22 @@ describe('Integration | Component | sy durationpicker', function() {
 
     expect(this.get('value').hours()).to.equal(12)
     expect(this.get('value').minutes()).to.equal(30)
+  })
+
+  it('can set a negative value with minutes', function() {
+    this.set('value', null)
+
+    this.render(
+      hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
+    )
+
+    this.$('input')
+      .val('-04:30')
+      .change()
+
+    expect(this.get('value').hours()).to.equal(-4)
+    expect(this.get('value').minutes()).to.equal(-30)
+
+    expect(formatDuration(this.get('value'), false)).to.equal('-04:30')
   })
 })
