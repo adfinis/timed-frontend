@@ -4,7 +4,12 @@
   </button>
   {{#link-to 'index'}}
     {{timed-clock}}
-    <div class="nav-top-header-title">Timed</div>
+    <div class="nav-top-header-title">
+      Timed
+      <div class="nav-top-header-title-version">
+        v{{app-version hideSha=true}}
+      </div>
+    </div>
   {{/link-to}}
 </header>
 <section class="nav-top-body">

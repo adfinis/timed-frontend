@@ -8,10 +8,15 @@
   margin-right: .3rem;
 }
 
-
 @media (--nav-top-mobile-width) {
   .nav-top-header-title {
     display: block;
+  }
+
+  .nav-top-header-title-version {
+    color: rgb(150,150,150);
+    font-size: .5rem;
+    font-family: var(--font-family-mono);
   }
 
   .nav-top-list-item a.active {
