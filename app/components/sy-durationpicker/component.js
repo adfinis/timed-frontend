@@ -11,6 +11,8 @@ import { padStart } from 'ember-pad/utils/pad'
 
 const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number
 
+const { abs } = Math
+
 /**
  * Duration selector component
  *
@@ -55,6 +57,18 @@ export default SyTimepickerComponent.extend({
     return `${min < 0 ? '-?' : ''}\\d+:(${minutes
       .map(m => padStart(m, 2))
       .join('|')})`
+  },
+
+  change({ target: { validity, value } }) {
+    if (validity.valid) {
+      let negative = /^-/.test(value)
+
+      let [h = NaN, m = NaN] = this.sanitize(value)
+        .split(':')
+        .map(n => abs(parseInt(n)) * (negative ? -1 : 1))
+
+      this._change([h, m].some(isNaN) ? null : this._set(h, m))
+    }
   },
 
   /**

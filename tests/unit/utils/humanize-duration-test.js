@@ -61,4 +61,10 @@ describe('Unit | Utility | humanize duration', function() {
 
     expect(result).to.equal(`${hours.toLocaleString('de-CH')}h 0m`)
   })
+
+  it('works with negative durations', function() {
+    let result = humanizeDuration(moment.duration({ hours: -4, minutes: -30 }))
+
+    expect(result).to.equal('-4h 30m')
+  })
 })
