@@ -11,9 +11,11 @@ import { cleanParams, toQueryString } from 'timed/utils/url'
 import fetch from 'fetch'
 import download from 'downloadjs'
 import Ember from 'ember'
-import { get } from '@ember/object'
-import { underscore } from '@ember/string'
 import { CanMixin } from 'ember-can'
+import {
+  underscoreQueryParams,
+  serializeParachuteQueryParams
+} from 'timed/utils/query-params'
 
 const { testing } = Ember
 
@@ -164,7 +166,8 @@ const AnalysisController = Controller.extend(
 
     setup() {
       this.get('prefetchData').perform()
-      this.get('data').perform()
+
+      this._reset()
     },
 
     _reset() {
@@ -219,19 +222,12 @@ const AnalysisController = Controller.extend(
     }),
 
     data: task(function*() {
-      let all = this.get('allQueryParams')
-
-      let params = Object.keys(all).reduce((parsed, key) => {
-        let serialize = get(AnalysisQueryParams, `queryParams.${key}.serialize`)
-        let value = get(all, key)
-
-        return key === 'type'
-          ? parsed
-          : {
-              ...parsed,
-              [underscore(key)]: serialize ? serialize(value) : value
-            }
-      }, {})
+      let params = underscoreQueryParams(
+        serializeParachuteQueryParams(
+          this.get('allQueryParams'),
+          AnalysisQueryParams
+        )
+      )
 
       let data = yield this.store.query('report', {
         page: this.get('_lastPage') + 1,

@@ -2,11 +2,14 @@ import Controller from '@ember/controller'
 import { inject as service } from '@ember/service'
 import { task } from 'ember-concurrency'
 import { AnalysisQueryParams } from '../index/controller'
-import { get } from '@ember/object'
-import { dasherize, underscore } from '@ember/string'
+import { dasherize } from '@ember/string'
 import { cleanParams } from 'timed/utils/url'
 import computed from 'ember-computed-decorators'
-import { inject as controller } from '@ember/controller'
+import { toQueryString } from 'timed/utils/url'
+import {
+  underscoreQueryParams,
+  serializeParachuteQueryParams
+} from 'timed/utils/query-params'
 
 /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
 export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
@@ -24,32 +27,18 @@ export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
 })
 /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
-const prepareParams = params => {
-  return cleanParams(
-    Object.keys(params).reduce((parsed, key) => {
-      let serialize = get(
-        AnalysisEditQueryParams,
-        `queryParams.${key}.serialize`
-      )
-      let value = get(params, key)
-
-      return key === 'type'
-        ? parsed
-        : {
-            ...parsed,
-            [underscore(key)]: serialize ? serialize(value) : value
-          }
-    }, {})
+const prepareParams = params =>
+  cleanParams(
+    underscoreQueryParams(
+      serializeParachuteQueryParams(params, AnalysisEditQueryParams)
+    )
   )
-}
 
 const filterUnchanged = (attributes, changes) => {
   return Object.keys(attributes).reduce((obj, attr) => {
-    if (changes.map(({ key }) => dasherize(key)).includes(attr)) {
-      return { ...obj, [attr]: attributes[attr] }
-    }
-
-    return { ...obj }
+    return changes.map(({ key }) => dasherize(key)).includes(attr)
+      ? { ...obj, [attr]: attributes[attr] }
+      : obj
   }, {})
 }
 
@@ -57,7 +46,6 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   notify: service('notify'),
   ajax: service('ajax'),
   session: service('session'),
-  analysisController: controller('analysis.index'),
 
   setup() {
     this.get('intersection').perform()
@@ -99,9 +87,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     try {
       let params = prepareParams(this.get('allQueryParams'))
 
-      let queryString = Object.keys(params)
-        .map(k => `${k}=${params[k]}`)
-        .join('&')
+      let queryString = toQueryString(params)
 
       yield changeset.execute()
 
@@ -121,8 +107,6 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         method: 'POST',
         data: { data }
       })
-
-      this.get('analysisController')._reset()
 
       this.transitionToRoute('analysis.index', {
         queryParams: {
