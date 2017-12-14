@@ -1,2 +1,8 @@
-{{one-way-checkbox checked disabled=disabled update=(action on-change) elementId=(concat elementId '-checkbox')}}
-<label for="{{elementId}}-checkbox" title={{title}}>{{#if hasBlock}}{{~yield~}}{{else}}{{#if label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
+<input
+  type="checkbox"
+  id={{checkboxElementId}}
+  checked={{checked}}
+  disabled={{disabled}}
+  onchange={{action on-change value='target.checked'}}
+>
+<label for={{checkboxElementId}} title={{title}}>{{#if hasBlock}}{{~yield~}}{{else}}{{#if label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
