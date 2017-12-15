@@ -139,4 +139,27 @@ describe('Acceptance | analysis', function() {
 
     expect(find('tbody > tr:first-child.selected')).to.not.be.ok
   })
+
+  it('can edit', async function() {
+    server.create('report-intersection')
+
+    await visit('/analysis?editable=1')
+
+    await click('[data-test-edit-all]')
+
+    expect(currentURL()).to.equal('/analysis/edit?editable=1')
+  })
+
+  it('can edit selected reports', async function() {
+    server.create('report-intersection')
+
+    await visit('/analysis')
+
+    await click('tbody > tr:nth-child(1)')
+    await click('tbody > tr:nth-child(2)')
+
+    await click('[data-test-edit-selected]')
+
+    expect(currentURL()).to.equal('/analysis/edit?id=1%2C2')
+  })
 })

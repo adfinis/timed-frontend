@@ -4,16 +4,18 @@ import { task, hash } from 'ember-concurrency'
 import computed, { oneWay } from 'ember-computed-decorators'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
-import config from '../config/environment'
+import config from '../../config/environment'
 import { inject as service } from '@ember/service'
 import RSVP from 'rsvp'
 import { cleanParams, toQueryString } from 'timed/utils/url'
 import fetch from 'fetch'
 import download from 'downloadjs'
 import Ember from 'ember'
-import { get } from '@ember/object'
-import { underscore } from '@ember/string'
 import { CanMixin } from 'ember-can'
+import {
+  underscoreQueryParams,
+  serializeParachuteQueryParams
+} from 'timed/utils/query-params'
 
 const { testing } = Ember
 
@@ -31,7 +33,7 @@ const serializeMoment = momentObject =>
 const deserializeMoment = momentString =>
   (momentString && moment(momentString, DATE_FORMAT)) || null
 
-const AnalysisQueryParams = new QueryParams({
+export const AnalysisQueryParams = new QueryParams({
   customer: {
     defaultValue: null,
     replace: true,
@@ -92,6 +94,11 @@ const AnalysisQueryParams = new QueryParams({
     refresh: true
   },
   verified: {
+    defaultValue: '',
+    replace: true,
+    refresh: true
+  },
+  editable: {
     defaultValue: '',
     replace: true,
     refresh: true
@@ -159,22 +166,27 @@ const AnalysisController = Controller.extend(
 
     setup() {
       this.get('prefetchData').perform()
+
+      this._reset()
+    },
+
+    _reset() {
+      this.get('data').cancelAll()
+      this.get('loadNext').cancelAll()
+
+      this.setProperties({
+        _lastPage: 0,
+        _canLoadMore: true,
+        _shouldLoadMore: false,
+        _dataCache: A()
+      })
+
       this.get('data').perform()
     },
 
     queryParamsDidChange({ shouldRefresh }) {
       if (shouldRefresh) {
-        this.get('data').cancelAll()
-        this.get('loadNext').cancelAll()
-
-        this.setProperties({
-          _lastPage: 0,
-          _canLoadMore: true,
-          _shouldLoadMore: false,
-          _dataCache: A()
-        })
-
-        this.get('data').perform()
+        this._reset()
       }
     },
 
@@ -210,19 +222,12 @@ const AnalysisController = Controller.extend(
     }),
 
     data: task(function*() {
-      let all = this.get('allQueryParams')
-
-      let params = Object.keys(all).reduce((parsed, key) => {
-        let serialize = get(AnalysisQueryParams, `queryParams.${key}.serialize`)
-        let value = get(all, key)
-
-        return key === 'type'
-          ? parsed
-          : {
-              ...parsed,
-              [underscore(key)]: serialize ? serialize(value) : value
-            }
-      }, {})
+      let params = underscoreQueryParams(
+        serializeParachuteQueryParams(
+          this.get('allQueryParams'),
+          AnalysisQueryParams
+        )
+      )
 
       let data = yield this.store.query('report', {
         page: this.get('_lastPage') + 1,
@@ -314,6 +319,15 @@ const AnalysisController = Controller.extend(
     }),
 
     actions: {
+      edit(ids = []) {
+        this.transitionToRoute('analysis.edit', {
+          queryParams: {
+            id: ids,
+            ...this.get('allQueryParams')
+          }
+        })
+      },
+
       selectRow(report) {
         if (this.can('edit report', report)) {
           let selected = this.get('selectedReportIds')

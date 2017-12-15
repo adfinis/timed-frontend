@@ -1,0 +1,99 @@
+<div class="grid grid--12of12 grid-md--4of12">
+  <div class="grid-cell"></div>
+  <div class="grid-cell">
+    {{#if intersection.isRunning}}
+      <div class="empty">
+        {{loading-icon}}
+      </div>
+    {{else}}
+      <h1 class="text-center">
+        {{#unless (eq intersection.lastSuccessful.value.meta.count 1)}}
+          Bulk edit {{intersection.lastSuccessful.value.meta.count}} reports
+        {{else}}
+          Edit report
+        {{/unless}}
+      </h1>
+      <div class="card">
+        <div class="card-block">
+          {{#with intersection.lastSuccessful.value.model as |model|}}
+            {{#validated-form
+              model     = (changeset model)
+              on-submit = save
+            as |f|}}
+              {{#f.input name='task' as |fi|}}
+                {{#task-selection
+                  on-set-task = fi.update
+                  initial     = (hash
+                    customer  = _customer
+                    project   = _project
+                    task      = _task
+                  )
+                as |t|}}
+                  <div class="form-group" data-test-customer>
+                    <label>
+                      Customer
+                      {{#unless f.model.customer}}{{not-identical-warning}}{{/unless}}
+                    </label>
+                    {{t.customer}}
+                  </div>
+                  <div class="form-group" data-test-project>
+                    <label>
+                      Project
+                      {{#unless f.model.project}}{{not-identical-warning}}{{/unless}}
+                    </label>
+                    {{t.project}}
+                  </div>
+                  <div class="form-group" data-test-task>
+                    <label>
+                      Task
+                      {{#unless f.model.task}}{{not-identical-warning}}{{/unless}}
+                    </label>
+                    {{t.task}}
+                  </div>
+                {{/task-selection}}
+              {{/f.input}}
+
+              {{#f.input data-test-comment name='comment' as |fi|}}
+                <label>
+                  Comment
+                  {{#if (eq f.model.comment null)}}{{not-identical-warning}}{{/if}}
+                </label>
+                <input type="text" placeholder="Enter comment..." class="form-control" onchange={{action fi.update value='target.value'}} value={{fi.value}}>
+              {{/f.input}}
+
+              {{#f.input data-test-not-billable name='notBillable' as |fi|}}
+                {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                  Not billable
+                  {{#if (eq f.model.notBillable null)}}{{not-identical-warning}}{{/if}}
+                {{/sy-checkbox}}
+              {{/f.input}}
+
+              {{#f.input data-test-review name='review' as |fi|}}
+                {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                  Needs Review
+                  {{#if (eq f.model.review null)}}{{not-identical-warning}}{{/if}}
+                {{/sy-checkbox}}
+              {{/f.input}}
+
+              {{#if (or (eq reviewer session.data.user.id) session.data.user.isSuperuser)}}
+                {{#f.input data-test-verified name='verified' as |fi|}}
+                  {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                    Verfied
+                    {{#if (eq f.model.verified null)}}{{not-identical-warning}}{{/if}}
+                  {{/sy-checkbox}}
+                {{/f.input}}
+              {{/if}}
+
+              <div class="text-right">
+                <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
+                <button data-test-reset type="button" class="btn" {{action 'reset' f.model}}>Reset</button>
+                {{f.submit}}
+              </div>
+            {{/validated-form}}
+          {{/with}}
+        </div>
+      </div>
+    {{/if}}
+  </div>
+  <div class="grid-cell"></div>
+</div>
