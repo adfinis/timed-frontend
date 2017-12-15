@@ -282,14 +282,6 @@ export default function() {
   this.patch('/absences/:id')
   this.del('/absences/:id')
 
-  this.post('/reports/verify', ({ reports, users }) => {
-    let user = users.first()
-
-    reports.all().update('verifiedBy', user)
-
-    return new Response(200, {}, {})
-  })
-
   this.get('/year-statistics', statisticEndpoint('year'))
   this.get('/month-statistics', statisticEndpoint('month'))
   this.get('/customer-statistics', statisticEndpoint('customer'))
@@ -310,5 +302,13 @@ export default function() {
       },
       new Blob()
     )
+  })
+
+  this.get('/reports/intersection', function({ reportIntersections }) {
+    return reportIntersections.first()
+  })
+
+  this.post('/reports/bulk', function() {
+    return new Response(200, {})
   })
 }

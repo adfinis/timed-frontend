@@ -1,10 +1,13 @@
 import Controller from '@ember/controller'
 import { get, computed as computedFn } from '@ember/object'
-import { underscore } from '@ember/string'
 import QueryParams from 'ember-parachute'
 import { task, hash } from 'ember-concurrency'
 import computed from 'ember-computed-decorators'
 import moment from 'moment'
+import {
+  underscoreQueryParams,
+  serializeParachuteQueryParams
+} from 'timed/utils/query-params'
 
 const DATE_FORMAT = 'YYYY-MM-DD'
 
@@ -223,14 +226,16 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     }
 
     let type = this.get('type')
-    let all = this.get('allQueryParams')
-    let params = Object.keys(all).reduce((parsed, key) => {
-      let serialize = get(StatisticsQueryParams, `queryParams.${key}.serialize`)
-      let value = get(all, key)
 
-      return key === 'type'
-        ? parsed
-        : { ...parsed, [underscore(key)]: serialize ? serialize(value) : value }
+    let params = underscoreQueryParams(
+      serializeParachuteQueryParams(
+        this.get('allQueryParams'),
+        StatisticsQueryParams
+      )
+    )
+
+    params = Object.keys(params).reduce((obj, key) => {
+      return key !== 'type' ? { ...obj, [key]: get(params, key) } : obj
     }, {})
 
     return yield this.store.query(`${type}-statistic`, {

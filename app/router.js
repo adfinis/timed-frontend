@@ -19,7 +19,9 @@ ApplicationRouter.map(function() {
       this.route('attendances')
       this.route('reports')
     })
-    this.route('analysis', { resetNamespace })
+    this.route('analysis', { resetNamespace }, function() {
+      this.route('edit')
+    })
     this.route('statistics', { resetNamespace })
     this.route('users', { resetNamespace }, function() {
       this.route('edit', { path: '/:user_id' }, function() {
