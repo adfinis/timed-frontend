@@ -1,32 +1,27 @@
 import Controller from '@ember/controller'
 import { task, all, hash } from 'ember-concurrency'
-import computed from 'ember-computed-decorators'
 import moment from 'moment'
+import QueryParams from 'ember-parachute'
 
-export default Controller.extend({
-  @computed('model.id')
-  data(userId) {
-    let task = this.get('_fetchData')
+const UsersEditQueryParams = new QueryParams({})
 
-    task.perform(userId)
-
-    return task
+export default Controller.extend(UsersEditQueryParams.Mixin, {
+  setup() {
+    this.get('data').perform(this.get('model.id'))
   },
 
-  _fetchData: task(function*(userId) {
+  data: task(function*(uid) {
     return yield hash({
       worktimeBalanceLastValidTimesheet: this.get(
-        '_fetchWorktimeBalanceLastValidTimesheet'
-      ).perform(userId),
-      worktimeBalanceToday: this.get('_fetchWorktimeBalanceToday').perform(
-        userId
-      ),
-      worktimeBalances: this.get('_fetchWorktimeBalances').perform(userId),
-      absenceBalances: this.get('_fetchAbsenceBalances').perform(userId)
+        'worktimeBalanceLastValidTimesheet'
+      ).perform(uid),
+      worktimeBalanceToday: this.get('worktimeBalanceToday').perform(uid),
+      worktimeBalances: this.get('worktimeBalances').perform(uid),
+      absenceBalances: this.get('absenceBalances').perform(uid)
     })
   }),
 
-  _fetchWorktimeBalanceLastValidTimesheet: task(function*(user) {
+  worktimeBalanceLastValidTimesheet: task(function*(user) {
     let worktimeBalance = yield this.store.query('worktime-balance', {
       user,
       last_reported_date: 1 // eslint-disable-line camelcase
@@ -35,7 +30,7 @@ export default Controller.extend({
     return worktimeBalance.get('firstObject')
   }),
 
-  _fetchWorktimeBalanceToday: task(function*(user) {
+  worktimeBalanceToday: task(function*(user) {
     let worktimeBalance = yield this.store.query('worktime-balance', {
       user,
       date: moment().format('YYYY-MM-DD')
@@ -44,7 +39,7 @@ export default Controller.extend({
     return worktimeBalance.get('firstObject')
   }),
 
-  _fetchAbsenceBalances: task(function*(user) {
+  absenceBalances: task(function*(user) {
     return yield this.store.query('absence-balance', {
       user,
       date: moment().format('YYYY-MM-DD'),
@@ -52,7 +47,7 @@ export default Controller.extend({
     })
   }),
 
-  _fetchWorktimeBalances: task(function*(user) {
+  worktimeBalances: task(function*(user) {
     let dates = [...Array(10).keys()]
       .map(i => moment().subtract(i, 'days'))
       .reverse()
