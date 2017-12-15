@@ -1,4 +1,4 @@
-{{#task-selection task=changeset.task as |t|}}
+{{#task-selection disabled=(not editable) task=changeset.task as |t|}}
   <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</div>
   <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</div>
   <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
@@ -10,19 +10,22 @@
     placeholder="Comment"
     name="comment"
     value={{changeset.comment}}
+    disabled={{not editable}}
     onchange={{action (mut changeset.comment) value='target.value'}}
     data-test-report-comment
   >
 </div>
 <div class="form-list-cell form-group">
-  {{sy-durationpicker-day data-test-report-duration value=changeset.duration on-change=(action (mut changeset.duration))}}</div>
+  {{sy-durationpicker-day data-test-report-duration disabled=(not editable) value=changeset.duration on-change=(action (mut changeset.duration))}}</div>
 <div class="form-list-cell form-group">
-  {{sy-checkbox data-test-report-review checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
+  {{sy-checkbox data-test-report-review disabled=(not editable) checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
 </div>
 <div class="form-list-cell form-group">
-  {{sy-checkbox data-test-report-not-billable checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
+  {{sy-checkbox data-test-report-not-billable disabled=(not editable) checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
 </div>
 <div class="form-list-cell form-group">
-  <button type="button" data-test-delete-report class="btn btn-danger" {{action 'delete'}}>{{fa-icon 'trash'}}</button>
-  <button type="submit" data-test-save-report class="btn btn-primary" disabled={{or (not changeset.isDirty) (not changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
+  {{#if editable}}
+    <button type="button" data-test-delete-report class="btn btn-danger" {{action 'delete'}}>{{fa-icon 'trash'}}</button>
+    <button type="submit" data-test-save-report class="btn btn-primary" disabled={{or (not changeset.isDirty) (not changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
+  {{/if}}
 </div>
