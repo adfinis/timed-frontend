@@ -24,6 +24,10 @@
 @import 'users-navigation';
 @import 'users';
 
+html {
+  hyphens: auto;
+}
+
 .pointer {
   cursor: pointer;
 }
