@@ -16,6 +16,7 @@ import {
   underscoreQueryParams,
   serializeParachuteQueryParams
 } from 'timed/utils/query-params'
+import parseDjangoDuration from 'timed/utils/parse-django-duration'
 
 const { testing } = Ember
 
@@ -237,12 +238,14 @@ const AnalysisController = Controller.extend(
           'task,task.project,task.project.customer,task.project.reviewers,user'
       })
 
-      this.set(
-        '_canLoadMore',
-        data.get('meta.pagination.pages') !== data.get('meta.pagination.page')
-      )
-
-      this.set('_lastPage', data.get('meta.pagination.page'))
+      this.setProperties({
+        totalTime: parseDjangoDuration(data.get('meta.total-time')),
+        totalItems: parseInt(data.get('meta.pagination.count')),
+        _canLoadMore:
+          data.get('meta.pagination.pages') !==
+          data.get('meta.pagination.page'),
+        _lastPage: data.get('meta.pagination.page')
+      })
 
       this.get('_dataCache').pushObjects(data.toArray())
 
