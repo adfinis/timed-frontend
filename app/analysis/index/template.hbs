@@ -117,8 +117,8 @@
               labelPath = 'label'
               options = (array
                 (hash label='All' value='')
-                (hash label='Review needed' value='1')
-                (hash label='No review needed' value='0')
+                (hash label='Needed' value='1')
+                (hash label='Not needed' value='0')
               )
               on-change = (action (mut review))
             }}
@@ -133,7 +133,7 @@
               options = (array
                 (hash label='All' value='')
                 (hash label='Billable' value='0')
-                (hash label='Unbillable' value='1')
+                (hash label='Not billable' value='1')
               )
               on-change = (action (mut notBillable))
             }}
