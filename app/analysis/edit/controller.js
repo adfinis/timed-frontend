@@ -68,17 +68,17 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     }
   }),
 
-  @computed('intersection.lastSuccessful.value.customer.id')
+  @computed('intersection.lastSuccessful.value.model.customer.id')
   _customer(id) {
     return id && this.store.peekRecord('customer', id)
   },
 
-  @computed('intersection.lastSuccessful.value.project.id')
+  @computed('intersection.lastSuccessful.value.model.project.id')
   _project(id) {
     return id && this.store.peekRecord('project', id)
   },
 
-  @computed('intersection.lastSuccessful.value.task.id')
+  @computed('intersection.lastSuccessful.value.model.task.id')
   _task(id) {
     return id && this.store.peekRecord('task', id)
   },
