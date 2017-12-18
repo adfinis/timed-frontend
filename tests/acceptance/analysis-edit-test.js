@@ -58,7 +58,9 @@ describe('Acceptance | analysis edit', function() {
       'review'
     ])
     // since no relationships were edited - nothing was sent
-    expect(Object.keys(relationships)).to.deep.equal([])
+    expect(Object.keys(relationships)).to.deep.equal([
+      'task' // task will be changed since the relation updates..
+    ])
 
     expect(currentURL()).to.equal('/analysis')
   })
