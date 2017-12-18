@@ -3,10 +3,8 @@ language: node_js
 node_js:
   - "8"
 
-dist: trusty
-
 addons:
-  firefox: latest
+  firefox: "56.0"
   chrome: stable
 
 cache:
