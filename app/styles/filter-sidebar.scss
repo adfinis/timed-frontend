@@ -1,0 +1,106 @@
+.filter-sidebar {
+  position: fixed;
+  top: 50px;
+  right: 0;
+  bottom: 0;
+  z-index: 999;
+  display: flex;
+  min-width: 300px;
+  max-width: 340px;
+  flex-direction: column;
+  background: rgb(255,255,255);
+  transform: translateX(100%);
+  transition: transform 300ms ease;
+}
+
+.filter-sidebar--visible {
+  box-shadow: 0 0 10px rgba(0,0,0,.2);
+  transform: translateX(0);
+}
+
+.filter-sidebar-title {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+}
+
+.filter-sidebar-toggle {
+  position: absolute;
+  left: 0;
+  top: 2rem;
+  transform: translateX(-100%);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  background: transparent;
+  width: 6rem;
+  height: 3.5rem;
+  text-align: right;
+  color: rgb(255,255,255);
+  overflow: hidden;
+  padding: .5rem 0;
+  outline: none;
+}
+
+.filter-sidebar-toggle-background,
+.filter-sidebar-toggle-icon,
+.filter-sidebar-toggle-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 0;
+  top: .5rem;
+  height: 2.5rem;
+}
+
+.filter-sidebar-toggle-background {
+  width: 100%;
+  background-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(0,0,0,.2);
+  border-top-left-radius: .3rem;
+  border-bottom-left-radius: .3rem;
+  transform: translateX(3.5rem);
+  transition: transform 300ms ease;
+}
+
+.filter-sidebar-toggle-icon {
+  width: 2.5rem;
+}
+
+.filter-sidebar-toggle-text {
+  flex-shrink: 1;
+  width: 3rem;
+  left: .75rem;
+  right: auto;
+  opacity: 0;
+  transform: translateX(3.5rem);
+  transition: transform 300ms ease, opacity 300ms ease;
+}
+
+.filter-sidebar-toggle:hover > .filter-sidebar-toggle-background {
+  transform: translateX(0);
+}
+
+.filter-sidebar-toggle:hover > .filter-sidebar-toggle-text {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.filter-sidebar-overlay {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0,0,0,.2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+}
+
+.filter-sidebar-overlay--visible {
+  pointer-events: all;
+  opacity: 1;
+}

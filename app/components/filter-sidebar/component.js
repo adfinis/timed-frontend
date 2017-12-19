@@ -1,6 +1,13 @@
 import Component from '@ember/component'
 
 export default Component.extend({
-  tagName: 'aside',
-  classNames: ['filter-sidebar']
+  tagName: '',
+
+  visible: false,
+
+  didInsertElement() {
+    this._super(...arguments)
+
+    this.set('destination', document.getElementById('filter-sidebar-target'))
+  }
 })
