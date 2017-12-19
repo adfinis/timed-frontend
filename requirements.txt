@@ -11,7 +11,7 @@ pyexcel-webio==0.1.4
 pyexcel-io==0.5.4
 django-excel==0.0.9
 pyexcel-ods3==0.5.2
-pyexcel-xlsx==0.5.4
+pyexcel-xlsx==0.5.5
 pyexcel-ezodf==0.3.4
 django-environ==0.4.4
 rest_condition==1.0.3
