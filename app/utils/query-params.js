@@ -2,6 +2,15 @@ import { get } from '@ember/object'
 import { underscore } from '@ember/string'
 
 /**
+ * Filter params by key
+ */
+export const filterQueryParams = (params, ...keys) => {
+  return Object.keys(params).reduce((obj, key) => {
+    return keys.includes(key) ? obj : { ...obj, [key]: get(params, key) }
+  }, {})
+}
+
+/**
  * Underscore all object keys
  */
 export const underscoreQueryParams = params => {

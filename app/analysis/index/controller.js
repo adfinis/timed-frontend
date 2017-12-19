@@ -179,7 +179,8 @@ const AnalysisController = Controller.extend(
         _lastPage: 0,
         _canLoadMore: true,
         _shouldLoadMore: false,
-        _dataCache: A()
+        _dataCache: A(),
+        selectedReportIds: A()
       })
 
       this.get('data').perform()

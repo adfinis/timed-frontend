@@ -8,7 +8,8 @@ import computed from 'ember-computed-decorators'
 import { toQueryString } from 'timed/utils/url'
 import {
   underscoreQueryParams,
-  serializeParachuteQueryParams
+  serializeParachuteQueryParams,
+  filterQueryParams
 } from 'timed/utils/query-params'
 
 /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
@@ -30,7 +31,10 @@ export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
 const prepareParams = params =>
   cleanParams(
     underscoreQueryParams(
-      serializeParachuteQueryParams(params, AnalysisEditQueryParams)
+      serializeParachuteQueryParams(
+        filterQueryParams(params, 'editable'),
+        AnalysisEditQueryParams
+      )
     )
   )
 
@@ -58,6 +62,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       method: 'GET',
       data: {
         ...prepareParams(this.get('allQueryParams')),
+        editable: 1,
         include: 'task,project,customer'
       }
     })

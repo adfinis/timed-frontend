@@ -191,7 +191,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   @computed('queryParamsState')
   appliedFilters(state) {
     return Object.keys(state).filter(key => {
-      return this.get(`queryParamsState.${key}.changed`)
+      return this.get(`queryParamsState.${key}.changed`) && key !== 'type'
     })
   },
 

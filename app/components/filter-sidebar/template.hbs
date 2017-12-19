@@ -13,11 +13,13 @@
       {{/if}}
     </div>
 
-    {{yield (hash
-      group  = (component 'filter-sidebar/group')
-      label  = (component 'filter-sidebar/label')
-      filter = (component 'filter-sidebar/filter')
-    )}}
+    <div class="filter-sidebar-content">
+      {{yield (hash
+        group  = (component 'filter-sidebar/group')
+        label  = (component 'filter-sidebar/label')
+        filter = (component 'filter-sidebar/filter')
+      )}}
+    </div>
 
     <button
       title="{{if visible 'Hide' 'Show'}} filters"
@@ -25,7 +27,12 @@
       {{action (toggle 'visible' this)}}
     >
       <span class="filter-sidebar-toggle-background"></span>
-      {{fa-icon 'sliders' size='lg' class='filter-sidebar-toggle-icon'}}
+      <span class="filter-sidebar-toggle-icon">
+        {{fa-icon 'sliders'}}
+        {{#if appliedCount}}
+          <span class="filter-sidebar-toggle-icon-badge">{{appliedCount}}</span>
+        {{/if}}
+      </span>
       <span class="filter-sidebar-toggle-text">Filters</span>
     </button>
   </aside>

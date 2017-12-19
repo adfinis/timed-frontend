@@ -2,7 +2,8 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import {
   serializeParachuteQueryParams,
-  underscoreQueryParams
+  underscoreQueryParams,
+  filterQueryParams
 } from 'timed/utils/query-params'
 
 describe('Unit | Utility | query params', function() {
@@ -27,5 +28,12 @@ describe('Unit | Utility | query params', function() {
     let result = underscoreQueryParams(params)
 
     expect(Object.keys(result)).to.deep.equal(['foo_bar', 'baz_x'])
+  })
+
+  it('can filter params', function() {
+    let params = { foo: 10, bar: 10, baz: 10 }
+    let result = filterQueryParams(params, 'foo', 'bar')
+
+    expect(result).to.deep.equal({ baz: 10 })
   })
 })
