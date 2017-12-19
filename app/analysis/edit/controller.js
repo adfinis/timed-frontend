@@ -132,6 +132,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       }).then(() => {
         let task = this.get('analysisIndexController.data')
 
+        /* istanbul ignore next */
         if (task.get('lastSuccessful')) {
           task.cancelAll()
         }
