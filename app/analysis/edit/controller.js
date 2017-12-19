@@ -1,4 +1,4 @@
-import Controller from '@ember/controller'
+import Controller, { inject as controller } from '@ember/controller'
 import { inject as service } from '@ember/service'
 import { task } from 'ember-concurrency'
 import { AnalysisQueryParams } from '../index/controller'
@@ -46,6 +46,8 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   notify: service('notify'),
   ajax: service('ajax'),
   session: service('session'),
+
+  analysisIndexController: controller('analysis.index'),
 
   setup() {
     this.get('intersection').perform()
@@ -126,6 +128,13 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       this.transitionToRoute('analysis.index', {
         queryParams: {
           ...this.get('allQueryParams')
+        }
+      }).then(() => {
+        let task = this.get('analysisIndexController.data')
+
+        /* istanbul ignore next */
+        if (task.get('lastSuccessful')) {
+          task.cancelAll()
         }
       })
     },
