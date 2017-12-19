@@ -19,16 +19,18 @@
         {{fa-icon 'clock-o'}} Tracking
       {{/link-to}}
     </li>
-    <li class="nav-top-list-item">
-      {{#link-to 'analysis'}}
-        {{fa-icon 'line-chart'}} Analysis
-      {{/link-to}}
-    </li>
-    <li class="nav-top-list-item">
-      {{#link-to 'statistics'}}
-        {{fa-icon 'bar-chart'}} Statistics
-      {{/link-to}}
-    </li>
+    {{#unless navMobile}}
+      <li class="nav-top-list-item">
+        {{#link-to 'analysis'}}
+          {{fa-icon 'line-chart'}} Analysis
+        {{/link-to}}
+      </li>
+      <li class="nav-top-list-item">
+        {{#link-to 'statistics'}}
+          {{fa-icon 'bar-chart'}} Statistics
+        {{/link-to}}
+      </li>
+    {{/unless}}
     {{#if session.data.user.isSuperuser}}
       <li class="nav-top-list-item">
         {{#link-to 'users.index'}}

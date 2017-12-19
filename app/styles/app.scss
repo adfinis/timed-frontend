@@ -14,6 +14,7 @@
 @import 'analysis';
 @import 'attendances';
 @import 'badge';
+@import 'filter-sidebar';
 @import 'form-list';
 @import 'loader';
 @import 'progress-tooltip';
@@ -232,39 +233,4 @@ html {
   h3 {
     color: inherit;
   }
-}
-
-.filter-page {
-  display: flex;
-  flex: 1 1 100%;
-  flex-wrap: wrap;
-  min-height: 0;
-}
-
-.filter-page-sidebar,
-.filter-page-content {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-}
-
-.filter-page-sidebar {
-  flex: 0 0 100%;
-  padding-right: 1rem;
-  padding-bottom: 1rem;
-  overflow-y: auto;
-}
-
-.filter-page-content {
-  flex: 1 1 100%;
-  padding-left: 1rem;
-}
-
-@media (--md-viewport) {
-  .filter-page {
-    flex-wrap: nowrap;
-  }
-
-  .filter-page-sidebar { flex-basis: 20%; }
-  .filter-page-content { flex-basis: auto; }
 }
