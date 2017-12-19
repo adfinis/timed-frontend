@@ -3,6 +3,14 @@
   table-layout: fixed;
 }
 
+.table--analysis > tbody > tr.pointer {
+  color: rgb(0,0,0);
+}
+
+.table--analysis > tbody > tr.pointer > td:last-child {
+  box-shadow: inset -2px 0 0 var(--color-primary);
+}
+
 .table--analysis > tbody > tr:first-of-type td {
   border-top: none;
 }
