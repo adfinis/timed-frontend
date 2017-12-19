@@ -14,6 +14,9 @@ def test_order_list(auth_client):
 
     json = res.json()
     assert len(json['data']) == 1
+    assert json['data'][0]['relationships']['project']['data']['type'] == (
+        'subscription-project'
+    )
 
 
 def test_order_delete(auth_client):
