@@ -16,7 +16,7 @@ def test_subscription_project_list(auth_client):
         billing_type=billing_type,
         customer=customer
     )
-    PackageFactory.create(billing_type=billing_type)
+    PackageFactory.create_batch(2, billing_type=billing_type)
     # create spent hours
     task = TaskFactory.create(project=project)
     TaskFactory.create(project=project)
@@ -65,3 +65,17 @@ def test_subscription_project_list(auth_client):
     attrs = json['data'][0]['attributes']
     assert attrs['spent-time'] == '05:00:00'
     assert attrs['purchased-time'] == '06:00:00'
+
+
+def test_subscription_project_detail(auth_client):
+    billing_type = BillingTypeFactory()
+    project = ProjectFactory.create(
+        billing_type=billing_type
+    )
+    PackageFactory.create_batch(2, billing_type=billing_type)
+
+    url = reverse('subscription-project-detail', args=[project.id])
+    res = auth_client.get(url)
+    assert res.status_code == HTTP_200_OK
+    json = res.json()
+    assert json['data']['id'] == str(project.id)
