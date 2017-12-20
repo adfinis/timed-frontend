@@ -67,9 +67,13 @@ export default Component.extend({
    * @return {Task|Project|Customer} The setted task, project or customer
    * @public
    */
-  async didReceiveAttrs() {
+  didReceiveAttrs() {
     this._super(...arguments)
 
+    this._setInitial()
+  },
+
+  _setInitial() {
     let { customer, project, task } = this.getWithDefault('initial', {
       customer: null,
       project: null,
@@ -372,6 +376,12 @@ export default Component.extend({
         project: null,
         task: null
       })
+    },
+
+    reset() {
+      this.send('clear')
+
+      this._setInitial()
     }
   }
 })

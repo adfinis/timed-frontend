@@ -107,7 +107,13 @@ export const AnalysisQueryParams = new QueryParams({
   ordering: {
     defaultValue: '-date',
     replace: true,
-    refresh: true
+    refresh: true,
+    serialize(val) {
+      return `${val},id`
+    },
+    deserialize(val) {
+      return val.replace(',id', '')
+    }
   }
 })
 
@@ -168,7 +174,9 @@ const AnalysisController = Controller.extend(
     setup() {
       this.get('prefetchData').perform()
 
-      this._reset()
+      if (!this.get('skipResetOnSetup')) {
+        this._reset()
+      }
     },
 
     _reset() {

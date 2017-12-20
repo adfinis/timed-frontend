@@ -54,12 +54,12 @@ describe('Acceptance | analysis', function() {
     expect(currentURL()).to.contain('user=1')
     expect(currentURL()).to.contain('fromDate=2016-12-01')
     expect(currentURL()).to.contain('toDate=2017-12-01')
-    expect(currentURL()).to.contain('ordering=-user__username')
+    expect(currentURL()).to.contain('ordering=-user__username%2Cid')
 
     await click('.filter-sidebar-reset')
 
     // ordering should not be resetted
-    expect(currentURL()).to.equal('/analysis?ordering=-user__username')
+    expect(currentURL()).to.equal('/analysis?ordering=-user__username%2Cid')
   })
 
   it('can have initial filters', async function() {
