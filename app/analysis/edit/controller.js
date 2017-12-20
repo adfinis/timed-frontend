@@ -6,6 +6,7 @@ import { dasherize } from '@ember/string'
 import { cleanParams } from 'timed/utils/url'
 import computed from 'ember-computed-decorators'
 import { toQueryString } from 'timed/utils/url'
+import IntersectionValidations from 'timed/validations/intersection'
 import {
   underscoreQueryParams,
   serializeParachuteQueryParams,
@@ -47,6 +48,8 @@ const filterUnchanged = (attributes, changes) => {
 }
 
 export default Controller.extend(AnalysisEditQueryParams.Mixin, {
+  IntersectionValidations,
+
   notify: service('notify'),
   ajax: service('ajax'),
   session: service('session'),
@@ -129,18 +132,24 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   }),
 
   actions: {
+    validate(changeset) {
+      changeset.validate()
+    },
+
     cancel() {
+      let task = this.get('analysisIndexController.data')
+
+      /* istanbul ignore next */
+      if (task.get('lastSuccessful')) {
+        this.set('analysisIndexController.skipResetOnSetup', true)
+      }
+
       this.transitionToRoute('analysis.index', {
         queryParams: {
           ...this.get('allQueryParams')
         }
       }).then(() => {
-        let task = this.get('analysisIndexController.data')
-
-        /* istanbul ignore next */
-        if (task.get('lastSuccessful')) {
-          task.cancelAll()
-        }
+        this.set('analysisIndexController.skipResetOnSetup', false)
       })
     },
 
