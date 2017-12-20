@@ -650,6 +650,12 @@ babel-plugin-ember-modules-api-polyfill@^2.0.1:
   dependencies:
     ember-rfc176-data "^0.3.0"
 
+babel-plugin-ember-modules-api-polyfill@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-ember-modules-api-polyfill/-/babel-plugin-ember-modules-api-polyfill-2.3.0.tgz#0c01f359658cfb9c797f705af6b09f6220205ae0"
+  dependencies:
+    ember-rfc176-data "^0.3.0"
+
 babel-plugin-eval@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-eval/-/babel-plugin-eval-1.0.1.tgz#a2faed25ce6be69ade4bfec263f70169195950da"
@@ -2688,13 +2694,13 @@ ember-cli-babel@^6.0.0, ember-cli-babel@^6.0.0-beta.10, ember-cli-babel@^6.0.0-b
     clone "^2.0.0"
     ember-cli-version-checker "^2.0.0"
 
-ember-cli-babel@^6.9.0:
-  version "6.9.2"
-  resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-6.9.2.tgz#ab9c650e1fdf229e70936d9629aba699a355ab40"
+ember-cli-babel@^6.11.0:
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-6.11.0.tgz#79cb184bac3c05bfe181ddc306bac100ab1f9493"
   dependencies:
     amd-name-resolver "0.0.7"
     babel-plugin-debug-macros "^0.1.11"
-    babel-plugin-ember-modules-api-polyfill "^2.0.1"
+    babel-plugin-ember-modules-api-polyfill "^2.3.0"
     babel-plugin-transform-es2015-modules-amd "^6.24.0"
     babel-polyfill "^6.16.0"
     babel-preset-env "^1.5.1"
@@ -3416,6 +3422,13 @@ ember-moment@^7.4.1, ember-moment@^7.5.0:
     ember-getowner-polyfill "^2.0.1"
     ember-macro-helpers "^0.17.0"
 
+ember-native-dom-helpers@^0.5.10:
+  version "0.5.10"
+  resolved "https://registry.yarnpkg.com/ember-native-dom-helpers/-/ember-native-dom-helpers-0.5.10.tgz#9c7172e4ddfa5dd86830c46a936e2f8eca3e5896"
+  dependencies:
+    broccoli-funnel "^1.1.0"
+    ember-cli-babel "^6.6.0"
+
 ember-native-dom-helpers@^0.5.4:
   version "0.5.4"
   resolved "https://registry.yarnpkg.com/ember-native-dom-helpers/-/ember-native-dom-helpers-0.5.4.tgz#0bc1506a643fb7adc0abf1d09c44a7914459296b"
@@ -3472,16 +3485,17 @@ ember-parachute@^0.3.5:
     ember-cli-babel "^6.0.0"
     ember-getowner-polyfill "^2.0.1"
 
-ember-power-calendar@^0.6.1:
-  version "0.6.1"
-  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.6.1.tgz#82cf51db56b48da20d8a80607370c11c092e0afa"
+ember-power-calendar@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.7.0.tgz#3da1946345c5727516b376b433143c72715c1818"
   dependencies:
     ember-assign-helper "0.1.2"
-    ember-cli-babel "^6.9.0"
+    ember-cli-babel "^6.11.0"
     ember-cli-htmlbars "^2.0.1"
     ember-cli-moment-shim "^3.5.0"
     ember-concurrency "^0.8.12"
     ember-moment "^7.5.0"
+    ember-native-dom-helpers "^0.5.10"
 
 ember-power-select@^1.9.11:
   version "1.9.11"
