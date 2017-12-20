@@ -220,17 +220,27 @@ def test_report_list_filter_editable_reviewer(auth_client):
     user = auth_client.user
     # not editable report
     ReportFactory.create()
+
     # editable reports
+    # 1st report of current user
     ReportFactory.create(user=user)
-    report = ReportFactory.create()
+    # 2nd case: report of a project which has several
+    # reviewers and report is created by current user
+    report = ReportFactory.create(user=user)
+    other_user = UserFactory.create()
     report.task.project.reviewers.add(user)
+    report.task.project.reviewers.add(other_user)
+    # 3rd case: report by other user and current user
+    # is the reviewer
+    reviewer_report = ReportFactory.create()
+    reviewer_report.task.project.reviewers.add(user)
 
     url = reverse('report-list')
 
     response = auth_client.get(url, data={'editable': 1})
     assert response.status_code == status.HTTP_200_OK
     json = response.json()
-    assert len(json['data']) == 2
+    assert len(json['data']) == 3
 
 
 def test_report_list_filter_editable_superuser(superadmin_client):
@@ -260,17 +270,25 @@ def test_report_list_filter_editable_supervisor(auth_client):
     user = auth_client.user
     # not editable report
     ReportFactory.create()
+
     # editable reports
+    # 1st case: report by current user
     ReportFactory.create(user=user)
-    report = ReportFactory.create()
+    # 2nd case: report by current user with several supervisors
+    report = ReportFactory.create(user=user)
     report.user.supervisors.add(user)
+    other_user = UserFactory.create()
+    report.user.supervisors.add(other_user)
+    # 3rd case: report by different user with current user as supervisor
+    supervisor_report = ReportFactory.create()
+    supervisor_report.user.supervisors.add(user)
 
     url = reverse('report-list')
 
     response = auth_client.get(url, data={'editable': 1})
     assert response.status_code == status.HTTP_200_OK
     json = response.json()
-    assert len(json['data']) == 2
+    assert len(json['data']) == 3
 
 
 def test_report_export_missing_type(auth_client):

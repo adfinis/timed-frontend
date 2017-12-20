@@ -117,8 +117,9 @@ class ReportFilterSet(FilterSet):
 
         def get_editable_query():
             return (
-                Q(user__supervisors=user) |
-                Q(task__project__reviewers=user) |
+                # avoid duplicates by using subqueries instead of joins
+                Q(user__in=user.supervisees.values('id')) |
+                Q(task__project__in=user.reviews.values('id')) |
                 Q(user=user)
             ) & Q(verified_by__isnull=True)
 

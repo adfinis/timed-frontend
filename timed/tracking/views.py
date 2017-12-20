@@ -97,7 +97,7 @@ class ReportViewSet(ModelViewSet):
         # all authenticated users may read all reports
         C(IsAuthenticated) & C(IsReadOnly)
     ]
-    ordering = ('date', )
+    ordering = ('date', 'id')
     ordering_fields = (
         'date',
         'duration',
