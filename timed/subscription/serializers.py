@@ -76,7 +76,8 @@ class OrderSerializer(ModelSerializer):
     project = ResourceRelatedField(queryset=Project.objects.all())
 
     included_serializers = {
-        'project': 'timed.subscription.serializers.SubscriptionProjectSerializer',
+        'project': ('timed.subscription.serializers'
+                    '.SubscriptionProjectSerializer'),
     }
 
     class Meta:
