@@ -7,6 +7,7 @@ import { cleanParams } from 'timed/utils/url'
 import computed from 'ember-computed-decorators'
 import { toQueryString } from 'timed/utils/url'
 import IntersectionValidations from 'timed/validations/intersection'
+import { later } from '@ember/runloop'
 import {
   underscoreQueryParams,
   serializeParachuteQueryParams,
@@ -154,7 +155,12 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     },
 
     reset(changeset) {
-      changeset.rollback()
+      // We have to defer the rollback for some milliseconds since the combobox
+      // reset action triggers mutation of customer, task, and project which
+      // would be run after this rollback and therefore trigger changes
+      later(() => {
+        changeset.rollback()
+      }, 100)
     }
   }
 })

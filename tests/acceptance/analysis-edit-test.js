@@ -51,15 +51,17 @@ describe('Acceptance | analysis edit', function() {
     let { data: { type, attributes, relationships } } = res
 
     expect(type).to.equal('report-bulks')
+
     // only changed attributes were sent
     expect(Object.keys(attributes)).to.deep.equal([
       'comment',
       'not-billable',
       'review'
     ])
-    // since no relationships were edited - nothing was sent
     expect(Object.keys(relationships)).to.deep.equal([
-      'task' // task will be changed since the relation updates..
+      'customer',
+      'project',
+      'task'
     ])
 
     expect(currentURL()).to.equal('/analysis')
