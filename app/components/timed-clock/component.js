@@ -22,7 +22,7 @@ export default Component.extend({
 
     let second = now.seconds() * 6
     let minute = now.minutes() * 6 + second / 60
-    let hour = (now.hours() % 12) / 12 * 360 + 90 + minute / 12
+    let hour = (now.hours() % 12) / 12 * 360 + minute / 12
 
     this.setProperties({ second, minute, hour })
   },
