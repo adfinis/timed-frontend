@@ -44,7 +44,7 @@ class SubscriptionProjectSerializer(ModelSerializer):
 
     class Meta:
         model = Project
-        resource_name = 'subscription-project'
+        resource_name = 'subscription-projects'
         fields = (
             'name',
             'billing_type',
@@ -64,7 +64,7 @@ class PackageSerializer(ModelSerializer):
 
     class Meta:
         model = Package
-        resource_name = 'subscription-package'
+        resource_name = 'subscription-packages'
         fields = (
             'duration',
             'price',
@@ -82,7 +82,7 @@ class OrderSerializer(ModelSerializer):
 
     class Meta:
         model = Order
-        resource_name = 'subscription-order'
+        resource_name = 'subscription-orders'
         fields = (
             'duration',
             'acknowledged',
