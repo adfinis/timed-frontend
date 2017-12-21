@@ -160,7 +160,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       // would be run after this rollback and therefore trigger changes
       later(() => {
         changeset.rollback()
-      }, 100)
+      })
     }
   }
 })
