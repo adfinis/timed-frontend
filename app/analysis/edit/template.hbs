@@ -34,21 +34,24 @@
                   <div class="form-group" data-test-customer>
                     <label>
                       Customer
-                      {{#unless f.model.customer}}{{not-identical-warning}}{{/unless}}
+                      {{#unless model.customer}}{{not-identical-warning}}{{/unless}}
+                      {{#unless (eq f.model.change.customer.id model.customer.id)}}{{changed-warning}}{{/unless}}
                     </label>
                     {{t.customer}}
                   </div>
                   <div class="form-group" data-test-project>
                     <label>
                       Project
-                      {{#unless f.model.project}}{{not-identical-warning}}{{/unless}}
+                      {{#unless model.project}}{{not-identical-warning}}{{/unless}}
+                      {{#unless (eq f.model.change.project.id model.project.id)}}{{changed-warning}}{{/unless}}
                     </label>
                     {{t.project}}
                   </div>
                   <div class="form-group" data-test-task>
                     <label>
                       Task
-                      {{#unless f.model.task}}{{not-identical-warning}}{{/unless}}
+                      {{#unless model.task}}{{not-identical-warning}}{{/unless}}
+                      {{#unless (eq f.model.change.task.id model.task.id)}}{{changed-warning}}{{/unless}}
                     </label>
                     {{t.task}}
                   </div>
@@ -57,7 +60,8 @@
                 {{#f.input data-test-comment name='comment' as |fi|}}
                   <label>
                     Comment
-                    {{#if (eq f.model.comment null)}}{{not-identical-warning}}{{/if}}
+                    {{#if (eq model.comment null)}}{{not-identical-warning}}{{/if}}
+                    {{#unless (eq f.model.comment model.comment)}}{{changed-warning}}{{/unless}}
                   </label>
                   <input type="text" placeholder="Enter comment..." class="form-control" onchange={{action fi.update value='target.value'}} value={{fi.value}}>
                 {{/f.input}}
@@ -65,14 +69,16 @@
                 {{#f.input data-test-not-billable name='notBillable' as |fi|}}
                   {{#sy-checkbox checked=fi.value on-change=fi.update}}
                     Not billable
-                    {{#if (eq f.model.notBillable null)}}{{not-identical-warning}}{{/if}}
+                    {{#if (eq model.notBillable null)}}{{not-identical-warning}}{{/if}}
+                    {{#unless (eq f.model.notBillable model.notBillable)}}{{changed-warning}}{{/unless}}
                   {{/sy-checkbox}}
                 {{/f.input}}
 
                 {{#f.input data-test-review name='review' as |fi|}}
                   {{#sy-checkbox checked=fi.value on-change=fi.update}}
                     Needs Review
-                    {{#if (eq f.model.review null)}}{{not-identical-warning}}{{/if}}
+                    {{#if (eq model.review null)}}{{not-identical-warning}}{{/if}}
+                    {{#unless (eq f.model.review model.review)}}{{changed-warning}}{{/unless}}
                   {{/sy-checkbox}}
                 {{/f.input}}
 
@@ -80,7 +86,8 @@
                   {{#f.input data-test-verified name='verified' as |fi|}}
                     {{#sy-checkbox checked=fi.value on-change=fi.update}}
                       Verfied
-                      {{#if (eq f.model.verified null)}}{{not-identical-warning}}{{/if}}
+                      {{#if (eq model.verified null)}}{{not-identical-warning}}{{/if}}
+                      {{#unless (eq f.model.verified model.verified)}}{{changed-warning}}{{/unless}}
                     {{/sy-checkbox}}
                   {{/f.input}}
                 {{/if}}

@@ -226,7 +226,7 @@ export default Component.extend({
       this.set('_project', value)
 
       if (value && value.get('customer')) {
-        this.set('_customer', value.get('customer'))
+        this.set('customer', value.get('customer'))
       }
 
       /* istanbul ignore else */
@@ -262,10 +262,7 @@ export default Component.extend({
       this.set('_task', value)
 
       if (value && value.get('project')) {
-        this.setProperties({
-          _project: value.get('project'),
-          _customer: value.get('project.customer')
-        })
+        this.set('project', value.get('project'))
       }
 
       later(this, () => {
