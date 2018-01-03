@@ -280,10 +280,15 @@ const AnalysisController = Controller.extend(
           this.setProperties({ url, params })
 
           let queryString = toQueryString(
-            cleanParams({
-              ...params,
-              ...allQueryParams
-            })
+            underscoreQueryParams(
+              cleanParams({
+                ...params,
+                ...serializeParachuteQueryParams(
+                  allQueryParams,
+                  AnalysisQueryParams
+                )
+              })
+            )
           )
 
           let res = yield fetch(`${url}?${queryString}`, {
