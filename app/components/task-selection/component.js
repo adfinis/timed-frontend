@@ -11,6 +11,7 @@ import { later } from '@ember/runloop'
 import customerOptionTemplate from 'timed/templates/customer-option'
 import projectOptionTemplate from 'timed/templates/project-option'
 import taskOptionTemplate from 'timed/templates/task-option'
+import { resolve } from 'rsvp'
 
 const SELECTED_TEMPLATE = hbs`{{selected.name}}`
 
@@ -225,8 +226,10 @@ export default Component.extend({
     set(value) {
       this.set('_project', value)
 
-      if (value && value.get('customer')) {
-        this.set('customer', value.get('customer'))
+      if (value && value.get('customer.id')) {
+        resolve(value.get('customer')).then(c => {
+          this.set('customer', c)
+        })
       }
 
       /* istanbul ignore else */
@@ -261,8 +264,10 @@ export default Component.extend({
     set(value) {
       this.set('_task', value)
 
-      if (value && value.get('project')) {
-        this.set('project', value.get('project'))
+      if (value && value.get('project.id')) {
+        resolve(value.get('project')).then(p => {
+          this.set('project', p)
+        })
       }
 
       later(this, () => {
