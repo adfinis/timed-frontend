@@ -149,6 +149,19 @@ class Report(models.Model):
         indexes = [models.Index(fields=['date'])]
 
 
+class AbsenceManager(models.Manager):
+    def get_queryset(self):
+        from timed.employment.models import PublicHoliday
+
+        queryset = super().get_queryset()
+        queryset = queryset.exclude(date__in=models.Subquery(
+            PublicHoliday.objects.filter(
+                location__employments__user=models.OuterRef('user')
+            ).values('date')
+        ))
+        return queryset
+
+
 class Absence(models.Model):
     """Absence model.
 
@@ -162,6 +175,7 @@ class Absence(models.Model):
                                  related_name='absences')
     user     = models.ForeignKey(settings.AUTH_USER_MODEL,
                                  related_name='absences')
+    objects = AbsenceManager()
 
     def calculate_duration(self, employment):
         """
