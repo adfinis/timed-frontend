@@ -65,11 +65,11 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
-
     return wait().then(() => {
+      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
+      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
+      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
+
       expect(
         this.$('.customer-select .ember-power-select-selected-item')
           .text()
@@ -93,11 +93,11 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
-
     return wait().then(() => {
+      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
+      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
+      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
+
       expect(
         this.$('.customer-select .ember-power-select-selected-item')
           .text()
@@ -126,11 +126,11 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
-
     return wait().then(() => {
+      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
+      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
+      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
+
       expect(
         this.$('.customer-select .ember-power-select-selected-item')
           .text()
