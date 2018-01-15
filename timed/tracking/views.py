@@ -99,6 +99,7 @@ class ReportViewSet(ModelViewSet):
     ]
     ordering = ('date', 'id')
     ordering_fields = (
+        'id',
         'date',
         'duration',
         'task__project__customer__name',
