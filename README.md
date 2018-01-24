@@ -25,6 +25,8 @@ $ ./manage.py createsuperuser                  # Create a new Django superuser
 
 You can now access the API at http://localhost:8000/api/v1 and the admin interface at http://localhost:8000/admin/
 
+For end user interface have a look at our [Timed Frontend](https://github.com/adfinis-sygroup/timed-frontend) project.
+
 ## Configuration
 
 Following options can be set as environment variables to configure Timed backend in documented [format](https://github.com/joke2k/django-environ#supported-types)
