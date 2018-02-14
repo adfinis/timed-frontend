@@ -79,7 +79,7 @@
     "ember-scrollable": "^0.4.9",
     "ember-simple-auth": "^1.4.0",
     "ember-site-tour": "^1.1.0",
-    "ember-source": "^2.16.0",
+    "ember-source": "^3.0.0",
     "ember-test-selectors": "^0.3.7",
     "ember-tether": "^1.0.0-beta.0",
     "ember-truth-helpers": "^2.0.0",
