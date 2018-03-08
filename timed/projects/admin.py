@@ -11,7 +11,6 @@ from timed.redmine.admin import RedmineProjectInline
 from timed.subscription.admin import CustomerPasswordInline
 
 
-
 @admin.register(models.Customer)
 class CustomerAdmin(admin.ModelAdmin):
     """Customer admin view."""
