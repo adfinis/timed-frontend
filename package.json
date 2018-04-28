@@ -45,7 +45,7 @@
     "ember-cli-mirage": "^0.3.4",
     "ember-cli-mocha": "^0.14.4",
     "ember-cli-moment-shim": "^3.5.0",
-    "ember-cli-nouislider": "^0.14.1",
+    "ember-cli-nouislider": "^1.0.0",
     "ember-cli-postcss": "^3.5.2",
     "ember-cli-release": "^1.0.0-beta.2",
     "ember-cli-sass": "^7.0.0",
