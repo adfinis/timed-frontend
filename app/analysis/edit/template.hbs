@@ -85,7 +85,7 @@
                 {{#if (or (eq reviewer session.data.user.id) session.data.user.isSuperuser)}}
                   {{#f.input data-test-verified name='verified' as |fi|}}
                     {{#sy-checkbox checked=fi.value on-change=fi.update}}
-                      Verfied
+                      Verified
                       {{#if (eq model.verified null)}}{{not-identical-warning}}{{/if}}
                       {{#unless (eq f.model.verified model.verified)}}{{changed-warning}}{{/unless}}
                     {{/sy-checkbox}}
