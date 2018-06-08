@@ -7,13 +7,13 @@ from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api import relations, serializers
 from rest_framework_json_api.relations import ResourceRelatedField
-from rest_framework_json_api.serializers import (CurrentUserDefault,
-                                                 DurationField,
+from rest_framework_json_api.serializers import (DurationField,
                                                  ModelSerializer, Serializer,
                                                  SerializerMethodField,
                                                  ValidationError)
 
 from timed.employment.models import AbsenceType, Employment, PublicHoliday
+from timed.employment.relations import CurrentUserResourceRelatedField
 from timed.projects.models import Customer, Project, Task
 from timed.serializers import TotalTimeRootMetaMixin
 from timed.tracking import models
@@ -23,8 +23,7 @@ class ActivitySerializer(ModelSerializer):
     """Activity serializer."""
 
     duration = DurationField(read_only=True)
-    user     = ResourceRelatedField(read_only=True,
-                                    default=CurrentUserDefault())
+    user     = CurrentUserResourceRelatedField()
     task     = ResourceRelatedField(queryset=Task.objects.all(),
                                     allow_null=True,
                                     required=False)
@@ -99,7 +98,7 @@ class ActivityBlockSerializer(ModelSerializer):
 class AttendanceSerializer(ModelSerializer):
     """Attendance serializer."""
 
-    user = ResourceRelatedField(read_only=True, default=CurrentUserDefault())
+    user = CurrentUserResourceRelatedField()
 
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
@@ -124,8 +123,7 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
     activity     = ResourceRelatedField(queryset=models.Activity.objects.all(),
                                         allow_null=True,
                                         required=False)
-    user         = ResourceRelatedField(read_only=True,
-                                        default=CurrentUserDefault())
+    user         = CurrentUserResourceRelatedField()
     verified_by  = ResourceRelatedField(queryset=get_user_model().objects,
                                         required=False, allow_null=True)
 
@@ -309,8 +307,7 @@ class AbsenceSerializer(ModelSerializer):
 
     duration = SerializerMethodField(source='get_duration')
     type     = ResourceRelatedField(queryset=AbsenceType.objects.all())
-    user     = ResourceRelatedField(read_only=True,
-                                    default=CurrentUserDefault())
+    user     = CurrentUserResourceRelatedField()
 
     included_serializers = {
         'user': 'timed.employment.serializers.UserSerializer',
@@ -356,9 +353,11 @@ class AbsenceSerializer(ModelSerializer):
         :returns: The validated data
         :rtype:   dict
         """
+        instance = self.instance
+        user = data.get('user', instance and instance.user)
         try:
             location = Employment.objects.get_at(
-                data.get('user'),
+                user,
                 data.get('date')
             ).location
         except Employment.DoesNotExist:
