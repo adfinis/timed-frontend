@@ -7,7 +7,7 @@ from django.http import HttpResponseBadRequest
 from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
 from rest_framework import exceptions, status
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
@@ -138,7 +138,8 @@ class ReportViewSet(ModelViewSet):
 
         return name
 
-    @list_route(
+    @action(
+        detail=False,
         methods=['get'],
         serializer_class=serializers.ReportIntersectionSerializer,
     )
@@ -170,7 +171,8 @@ class ReportViewSet(ModelViewSet):
         serializer = self.get_serializer(data)
         return Response(data=serializer.data)
 
-    @list_route(
+    @action(
+        detail=False,
         methods=['post'],
         # all users are allowed to bulk update but only on filtered result
         permission_classes=[IsAuthenticated],
@@ -219,7 +221,7 @@ class ReportViewSet(ModelViewSet):
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @list_route(methods=['get'])
+    @action(methods=['get'], detail=False)
     def export(self, request):
         """Export filtered reports to given file format."""
         queryset = self.get_queryset().select_related(

@@ -7,7 +7,7 @@ from django.db.models.functions import Concat
 from django.utils.translation import ugettext_lazy as _
 from rest_condition import C
 from rest_framework import exceptions, status
-from rest_framework.decorators import detail_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
@@ -48,7 +48,7 @@ class UserViewSet(ModelViewSet):
             'employments', 'supervisees', 'supervisors'
         )
 
-    @detail_route(methods=['post'])
+    @action(methods=['post'], detail=True)
     def transfer(self, request, pk=None):
         """
         Transfer worktime and absence balance to new year.
