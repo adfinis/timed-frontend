@@ -8,19 +8,20 @@
 Timed timetracking software REST API built with Django
 
 ## Installation
+
 **Requirements**
-* python 3.5.2
+* Min. python 3.5
 * docker
 * docker-compose
 
 After installing and configuring those requirements, you should be able to run the following
 commands to complete the installation:
 ```bash
-$ echo "ENV=dev" >> .env                       # Django settings will be configured for development
-$ make install                                 # Install Python requirements
-$ docker-compose up -d db                      # Start the containers
-$ ./manage.py migrate                          # Run Django migrations
-$ ./manage.py createsuperuser                  # Create a new Django superuser
+# configure environment variables as listed in configuration chapter below
+make install
+docker-compose up -d db
+./manage.py migrate
+./manage.py createsuperuser
 ```
 
 You can now access the API at http://localhost:8000/api/v1 and the admin interface at http://localhost:8000/admin/
@@ -34,6 +35,7 @@ according to type.
 
 | Parameter                           | Description                                                | Default                          |
 | ----------------------------------- | ---------------------------------------------------------- | -------------------------------- |
+| `DJANGO_ENV_FILE`                   | Path to setup environment vars in a file                   | .env                             |
 | `DJANGO_DEBUG`                      | Boolean that turns on/off debug mode                       | False                            |
 | `DJANGO_SECRET_KEY`                 | Secret key for cryptographic signing                       | not set (required)               |
 | `DJANGO_ALLOWED_HOSTS`              | List of hosts representing the host/domain names           | not set (required)               |
@@ -54,6 +56,10 @@ according to type.
 | `DJANGO_ADMINS`                     | List of people who get error notifications                 | not set                          |
 | `DJANGO_WORK_REPORT_PATH`           | Path of custom work report template                        | not set                          |
 
+
+## Development
+
+For development setup you can set environment variables `ENV=dev`. This way default values will be used. NOT TO BE USED IN PRODUCTION!
 
 ## Testing
 Run tests by executing `make test`
