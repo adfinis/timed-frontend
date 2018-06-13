@@ -39,10 +39,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RemoveField(
-            model_name='customerpassword',
-            name='customer',
-        ),
-        migrations.RemoveField(
             model_name='subscriptionproject',
             name='project',
         ),
@@ -60,9 +56,6 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='package',
             name='subscription',
-        ),
-        migrations.DeleteModel(
-            name='CustomerPassword',
         ),
         migrations.DeleteModel(
             name='Subscription',
