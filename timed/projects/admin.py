@@ -8,8 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from timed.forms import DurationInHoursField
 from timed.projects import models
 from timed.redmine.admin import RedmineProjectInline
-from timed.subscription.admin import (CustomerPasswordInline,
-                                      SubscriptionProjectInline)
+from timed.subscription.admin import CustomerPasswordInline
 
 
 @admin.register(models.Customer)
@@ -112,8 +111,7 @@ class ProjectAdmin(admin.ModelAdmin):
     inlines = [
         TaskInline,
         ReviewerInline,
-        RedmineProjectInline,
-        SubscriptionProjectInline
+        RedmineProjectInline
     ]
     exclude = ('reviewers', )
 

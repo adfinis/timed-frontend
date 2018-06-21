@@ -2,26 +2,25 @@ import hashlib
 
 from django import forms
 from django.contrib import admin
+from django.utils.translation import ugettext_lazy as _
+
+from timed.forms import DurationInHoursField
 
 from . import models
 
 
-@admin.register(models.Subscription)
-class SubscriptionAdmin(admin.ModelAdmin):
-    """Subscription admin view."""
-
-    list_display = ['name', 'archived']
+class PackageForm(forms.ModelForm):
+    model = models.Package
+    duration = DurationInHoursField(
+        label=_('Duration in hours'),
+        required=True,
+    )
 
 
 @admin.register(models.Package)
 class PackageAdmin(admin.ModelAdmin):
-    """Attendance admin view."""
-
-    list_display = ['subscription', 'duration', 'price']
-
-
-class SubscriptionProjectInline(admin.StackedInline):
-    model = models.SubscriptionProject
+    list_display = ['billing_type', 'duration', 'price']
+    form = PackageForm
 
 
 class CustomerPasswordForm(forms.ModelForm):
