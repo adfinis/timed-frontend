@@ -22,16 +22,14 @@ def test_subscription_package_filter_customer(auth_client):
     customer = CustomerFactory.create()
     billing_type = BillingTypeFactory.create()
     package = PackageFactory.create(billing_type=billing_type)
-    ProjectFactory.create(billing_type=billing_type, customer=customer)
-
-    my_project = ProjectFactory.create(
-        billing_type=billing_type,
-        customer=customer
+    ProjectFactory.create_batch(
+        2,
+        billing_type=billing_type, customer=customer
     )
 
     url = reverse('subscription-package-list')
 
-    res = auth_client.get(url, data={'customer': my_project.customer.id})
+    res = auth_client.get(url, data={'customer': customer.id})
     assert res.status_code == HTTP_200_OK
 
     json = res.json()
