@@ -1,7 +1,8 @@
 from django.core.urlresolvers import reverse
 from rest_framework.status import HTTP_200_OK
 
-from timed.projects.factories import ProjectFactory
+from timed.projects.factories import (BillingTypeFactory, CustomerFactory,
+                                      ProjectFactory)
 from timed.subscription.factories import PackageFactory
 
 
@@ -18,11 +19,15 @@ def test_subscription_package_list(auth_client):
 
 
 def test_subscription_package_filter_customer(auth_client):
-    other_project = ProjectFactory.create()
-    PackageFactory.create(billing_type=other_project.billing_type)
+    customer = CustomerFactory.create()
+    billing_type = BillingTypeFactory.create()
+    package = PackageFactory.create(billing_type=billing_type)
+    ProjectFactory.create(billing_type=billing_type, customer=customer)
 
-    my_project = ProjectFactory.create()
-    package = PackageFactory.create(billing_type=my_project.billing_type)
+    my_project = ProjectFactory.create(
+        billing_type=billing_type,
+        customer=customer
+    )
 
     url = reverse('subscription-package-list')
 
