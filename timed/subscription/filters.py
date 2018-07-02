@@ -9,8 +9,11 @@ class PackageFilter(FilterSet):
     customer = NumberFilter(method='filter_customer')
 
     def filter_customer(self, queryset, name, value):
-        billing_types = (Project.objects.filter(customer=value)
-                         .values('billing_type'))
+        billing_types = Project.objects.filter(
+            customer=value
+        ).values(
+            'billing_type'
+        )
         return queryset.filter(billing_type__in=billing_types)
 
     class Meta:
