@@ -50,10 +50,9 @@ export default Component.extend({
       return this.get('store')
         .peekAll('user')
         .sortBy('username')
-    } else {
-      return this.get('store')
-        .query('user', queryOptions)
-        .then(users => users.sortBy('username'))
     }
+
+    queryOptions['ordering'] = 'username'
+    return this.get('store').query('user', queryOptions)
   }
 })
