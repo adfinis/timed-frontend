@@ -27,8 +27,6 @@ export default Component.extend({
   async init() {
     this._super(...arguments)
 
-    this.set('queryOptions', {})
-
     try {
       await this.get('tracking.users').perform()
     } catch (e) {
@@ -45,6 +43,7 @@ export default Component.extend({
   @computed('queryOptions')
   async users(queryOptions) {
     await this.get('tracking.users.last')
+    queryOptions = queryOptions || {}
 
     if (queryOptions.active === 0) {
       return this.get('store')
