@@ -2,23 +2,37 @@ import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
+import { click } from 'ember-native-dom-helpers'
+import moment from 'moment'
 
 describe('Integration | Component | date buttons', function() {
   setupComponentTest('date-buttons', {
     integration: true
   })
 
-  it('renders', function() {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.on('myAction', function(val) { ... });
-    // Template block usage:
-    // this.render(hbs`
-    //   {{#date-buttons}}
-    //     template content
-    //   {{/date-buttons}}
-    // `);
+  it('changes the date', async function() {
+    let format = 'YYYY-MM-DD'
+    this.set('date', null)
 
-    this.render(hbs`{{date-buttons}}`)
-    expect(this.$()).to.have.length(1)
+    this.render(hbs`{{date-buttons presetDate=(action (mut date))}}`)
+
+    await click('[data-test-preset-date="0"]')
+    expect(this.get('date').format(format)).to.equal(
+      moment()
+        .day(1)
+        .format(format)
+    )
+    await click('[data-test-preset-date="1"]')
+    expect(this.get('date').format(format)).to.equal(
+      moment()
+        .date(1)
+        .format(format)
+    )
+    await click('[data-test-preset-date="2"]')
+    expect(this.get('date').format(format)).to.equal(
+      moment()
+        .dayOfYear(1)
+        .format(format)
+    )
   })
 })

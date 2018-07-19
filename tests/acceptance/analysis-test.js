@@ -7,7 +7,6 @@ import { expect } from 'chai'
 import destroyApp from '../helpers/destroy-app'
 import startApp from '../helpers/start-app'
 import { findAll, find, click } from 'ember-native-dom-helpers'
-import moment from 'moment'
 
 describe('Acceptance | analysis', function() {
   let application
@@ -61,27 +60,6 @@ describe('Acceptance | analysis', function() {
 
     // ordering should not be resetted
     expect(currentURL()).to.equal('/analysis?ordering=-user__username%2Cid')
-
-    // test date presets
-    let format = 'YYYY-MM-DD'
-    await click('[data-test-preset-date="0"]')
-    expect(currentURL()).to.contain(
-      `fromDate=${moment()
-        .day(1)
-        .format(format)}`
-    )
-    await click('[data-test-preset-date="1"]')
-    expect(currentURL()).to.contain(
-      `fromDate=${moment()
-        .date(1)
-        .format(format)}`
-    )
-    await click('[data-test-preset-date="2"]')
-    expect(currentURL()).to.contain(
-      `fromDate=${moment()
-        .dayOfYear(1)
-        .format(format)}`
-    )
   })
 
   it('can have initial filters', async function() {
