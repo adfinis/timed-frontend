@@ -44,9 +44,8 @@
           User
           {{#fs.filter data-test-filter-user}}
             {{#user-selection
-              inactive  = true
-              user      = selectedUser
-              on-change = (action 'setModelFilter' 'user')
+              user          = selectedUser
+              on-change     = (action 'setModelFilter' 'user')
             as |u|}}
               {{u.user}}
             {{/user-selection}}
@@ -56,8 +55,9 @@
           Reviewer
           {{#fs.filter data-test-filter-reviewer}}
             {{#user-selection
-              user      = selectedReviewer
-              on-change = (action 'setModelFilter' 'reviewer')
+              user          = selectedReviewer
+              on-change     = (action 'setModelFilter' 'reviewer')
+              queryOptions  = (hash is_reviewer=1)
             as |u|}}
               {{u.user placeholder='Select reviewer...'}}
             {{/user-selection}}
