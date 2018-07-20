@@ -1,9 +1,8 @@
 import Component from '@ember/component'
-import { A } from '@ember/array'
 import moment from 'moment'
 
 export default Component.extend({
-  choices: A(['this week', 'this month', 'this year']),
+  choices: ['this week', 'this month', 'this year'],
   actions: {
     selectDate(expr) {
       switch (expr) {

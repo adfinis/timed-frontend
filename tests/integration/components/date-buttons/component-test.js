@@ -11,7 +11,7 @@ describe('Integration | Component | date buttons', function() {
   })
 
   it('changes the date', async function() {
-    let format = 'YYYY-MM-DD'
+    const format = 'YYYY-MM-DD'
     this.set('date', null)
 
     this.render(hbs`{{date-buttons presetDate=(action (mut date))}}`)
