@@ -2,6 +2,7 @@
 from datetime import date, timedelta
 
 from django.db.models import Count
+from django_filters.constants import EMPTY_VALUES
 from django_filters.rest_framework import Filter, FilterSet, NumberFilter
 
 from timed.projects import models
@@ -62,6 +63,9 @@ class MyMostFrequentTaskFilter(Filter):
         :return:            The filtered queryset
         :rtype:             QuerySet
         """
+        if value in EMPTY_VALUES:
+            return qs
+
         user = self.parent.request.user
         from_date = date.today() - timedelta(days=60)
 

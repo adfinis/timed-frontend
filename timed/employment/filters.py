@@ -2,6 +2,7 @@ from datetime import date
 
 from django.db.models import Value
 from django.db.models.functions import Coalesce
+from django_filters.constants import EMPTY_VALUES
 from django_filters.rest_framework import (DateFilter, Filter, FilterSet,
                                            NumberFilter)
 
@@ -13,13 +14,9 @@ class YearFilter(Filter):
     """Filter to filter a queryset by year."""
 
     def filter(self, qs, value):
-        """Filter the queryset.
+        if value in EMPTY_VALUES:
+            return qs
 
-        :param QuerySet qs: The queryset to filter
-        :param str   value: The year to filter to
-        :return:            The filtered queryset
-        :rtype:             QuerySet
-        """
         return qs.filter(**{
             '%s__year' % self.field_name: value
         })

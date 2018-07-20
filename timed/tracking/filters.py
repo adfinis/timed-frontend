@@ -3,6 +3,7 @@
 from functools import wraps
 
 from django.db.models import Q
+from django_filters.constants import EMPTY_VALUES
 from django_filters.rest_framework import (BaseInFilter, DateFilter, Filter,
                                            FilterSet, NumberFilter)
 
@@ -18,13 +19,9 @@ def boolean_filter(func):
     """
     @wraps(func)
     def wrapper(self, qs, value):
-        """Wrap the initial function.
+        if value in EMPTY_VALUES:
+            return qs
 
-        :param QuerySet qs: The queryset to filter
-        :param str   value: The value to cast
-        :return:            The original function
-        :rtype:             function
-        """
         value = value.lower() not in ('1', 'true', 'yes')
 
         return func(self, qs, value)
@@ -99,7 +96,7 @@ class ReportFilterSet(FilterSet):
     editable     = NumberFilter(method='filter_editable')
     not_billable = NumberFilter(field_name='not_billable')
     verified     = NumberFilter(
-        name='verified_by_id', lookup_expr='isnull', exclude=True
+        field_name='verified_by_id', lookup_expr='isnull', exclude=True
     )
     reviewer     = NumberFilter(field_name='task__project__reviewers')
     verifier     = NumberFilter(field_name='verified_by')
