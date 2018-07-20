@@ -150,6 +150,16 @@ describe('Acceptance | analysis', function() {
     expect(currentURL()).to.equal('/analysis/edit?editable=1')
   })
 
+  it('can not edit', async function() {
+    server.create('report-intersection')
+
+    await visit('/analysis')
+
+    await click('[data-test-edit-all]')
+
+    expect(currentURL()).to.equal('/analysis')
+  })
+
   it('can edit selected reports', async function() {
     server.create('report-intersection')
 
