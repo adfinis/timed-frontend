@@ -15,8 +15,9 @@
         Supervisor
         {{#fs.filter data-test-filter-user}}
           {{#user-selection
-            user      = selectedSupervisor
-            on-change = (perform setModelFilter 'supervisor')
+            user          = selectedSupervisor
+            on-change     = (perform setModelFilter 'supervisor')
+            queryOptions  = (hash is_supervisor=1 active=1)
           as |u|}}
             {{u.user placeholder='Select supervisor...'}}
           {{/user-selection}}
