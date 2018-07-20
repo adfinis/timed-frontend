@@ -179,9 +179,16 @@
   {{else}}
     {{#with data.lastSuccessful.value as |reports|}}
       <div class="btn-toolbar btn-toolbar--right form-group">
-        {{#if editable}}
-          <button data-test-edit-all type="button" class="btn" {{action 'edit'}}>Edit all</button>
-        {{/if}}
+        <button
+          data-test-edit-all
+          type="button"
+          class="btn"
+          title={{unless editable 'Please enable the "editable" filter to modify all entries at once.'}}
+          disabled={{unless editable 'true'}}
+          {{action 'edit'}}
+        >
+          Edit all
+        </button>
         {{#if selectedReportIds.length}}
           <button
             data-test-edit-selected
