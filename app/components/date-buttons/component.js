@@ -2,7 +2,11 @@ import Component from '@ember/component'
 import moment from 'moment'
 
 export default Component.extend({
-  choices: ['this week', 'this month', 'this year'],
+  init(){
+    this._super(...arguments)
+    this.set('choices', ['this week', 'this month', 'this year'])
+  },
+
   actions: {
     selectDate(expr) {
       switch (expr) {
