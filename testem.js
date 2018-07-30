@@ -9,11 +9,13 @@ module.exports = {
   launch_in_ci: ['chromium', 'firefox'],
   browser_args: {
     chromium: [
+      process.env.TRAVIS ? '--no-sandbox' : null,
+
       '--headless',
       '--disable-gpu',
       '--remote-debugging-port=9222',
       '--window-size=1440,900'
-    ],
+    ].filter(Boolean),
     firefox: ['--headless']
   }
 }
