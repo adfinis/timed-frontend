@@ -86,4 +86,10 @@ describe('Acceptance | analysis edit', function() {
 
     expect(find('[data-test-comment] input').value).to.not.equal('test')
   })
+
+  it('can not verify', async function() {
+    await visit('/analysis/edit')
+
+    expect(find('[data-test-verified] input').disabled).to.equal(true)
+  })
 })

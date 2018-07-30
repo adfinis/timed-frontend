@@ -24,7 +24,7 @@ export default Component.extend({
 
   optionTemplate: OPTION_TEMPLATE,
 
-  inactive: false,
+  queryOptions: null,
 
   async init() {
     this._super(...arguments)
@@ -42,15 +42,12 @@ export default Component.extend({
     }
   },
 
-  @computed('inactive')
-  async users(inactive) {
+  @computed('queryOptions')
+  async users(queryOptions) {
     await this.get('tracking.users.last')
+    queryOptions = queryOptions || {}
 
-    return this.get('store')
-      .peekAll('user')
-      .filter(u => {
-        return inactive ? true : u.get('isActive')
-      })
-      .sortBy('username')
+    queryOptions['ordering'] = 'username'
+    return this.get('store').query('user', queryOptions)
   }
 })
