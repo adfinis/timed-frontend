@@ -343,7 +343,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     },
 
     selectRow(report) {
-      if (this.can('edit report', report)) {
+      if (this.get('can').can('edit report', report)) {
         let selected = this.get('selectedReportIds')
 
         if (selected.includes(report.id)) {

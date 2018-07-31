@@ -113,7 +113,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   }).drop(),
 
   editAbsenceCredit: task(function*(id) {
-    if (this.can('edit absence-credit')) {
+    if (this.get('can').can('edit absence-credit')) {
       yield this.transitionToRoute(
         'users.edit.credits.absence-credits.edit',
         id
@@ -122,7 +122,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   }).drop(),
 
   editOvertimeCredit: task(function*(id) {
-    if (this.can('edit overtime-credit')) {
+    if (this.get('can').can('edit overtime-credit')) {
       yield this.transitionToRoute(
         'users.edit.credits.overtime-credits.edit',
         id
