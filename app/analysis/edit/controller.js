@@ -94,6 +94,11 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     return id && this.store.peekRecord('task', id)
   },
 
+  @computed('allQueryParams.reviewer', 'session.data.user')
+  canVerify(reviewer, user) {
+    return reviewer === user.get('id') || user.get('isSuperuser')
+  },
+
   save: task(function*(changeset) {
     try {
       let params = prepareParams(this.get('allQueryParams'))
