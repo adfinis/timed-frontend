@@ -4,7 +4,7 @@ import { task } from 'ember-concurrency'
 import computed from 'ember-computed-decorators'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
-import { computed as canComputed } from 'ember-can'
+import { ability } from 'ember-can/computed'
 
 const UsersEditCreditsQueryParams = new QueryParams({
   year: {
@@ -37,8 +37,8 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     return [...new Array(to + 1 - from).keys()].map(i => `${from + i}`)
   }),
 
-  overtimeCreditAbility: canComputed.ability('overtime-credit'),
-  absenceCreditAbility: canComputed.ability('overtime-credit'),
+  overtimeCreditAbility: ability('overtime-credit'),
+  absenceCreditAbility: ability('absence-credit'),
 
   @computed(
     'year',
