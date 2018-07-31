@@ -4,7 +4,7 @@ import { task } from 'ember-concurrency'
 import computed from 'ember-computed-decorators'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
-import { CanMixin, computed as canComputed } from 'ember-can'
+import { computed as canComputed } from 'ember-can'
 
 const UsersEditCreditsQueryParams = new QueryParams({
   year: {
@@ -14,10 +14,12 @@ const UsersEditCreditsQueryParams = new QueryParams({
   }
 })
 
-export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
+export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   notify: service('notify'),
 
   ajax: service('ajax'),
+
+  can: service(),
 
   userController: controller('users.edit'),
 
