@@ -9,7 +9,7 @@ describe('Unit | Controller | analysis/edit', function() {
       'service:ajax',
       'service:session',
       'service:notify',
-      'helper:can',
+      'service:can',
       'ability:report',
       'controller:analysis/index'
     ]
