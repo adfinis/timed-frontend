@@ -19,7 +19,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
   ajax: service('ajax'),
 
-  can: service(),
+  can: service('can'),
 
   userController: controller('users.edit'),
 

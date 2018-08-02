@@ -158,7 +158,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   notify: service('notify'),
 
-  can: service(),
+  can: service('can'),
 
   @oneWay('session.data.authenticated.token') jwt: null,
 
