@@ -8,8 +8,10 @@ describe('Unit | Controller | users/edit/credits/index', function() {
     needs: [
       'controller:users.edit',
       'service:notify',
+      'service:ajax',
       'service:can',
-      'service:ajax'
+      'ability:overtime-credit',
+      'ability:absence-credit'
     ]
   })
 

@@ -5,7 +5,12 @@ import { setupTest } from 'ember-mocha'
 describe('Unit | Controller | analysis/index', function() {
   setupTest('controller:analysis/index', {
     // Specify the other units that are required for this test.
-    needs: ['service:can', 'service:session', 'service:notify']
+    needs: [
+      'service:can',
+      'service:session',
+      'service:notify',
+      'ability:report'
+    ]
   })
 
   // Replace this with your real tests.

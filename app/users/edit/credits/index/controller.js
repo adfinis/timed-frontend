@@ -4,7 +4,7 @@ import { task } from 'ember-concurrency'
 import computed from 'ember-computed-decorators'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
-import { CanMixin, computed as canComputed } from 'ember-can'
+import { ability } from 'ember-can/computed'
 
 const UsersEditCreditsQueryParams = new QueryParams({
   year: {
@@ -14,10 +14,12 @@ const UsersEditCreditsQueryParams = new QueryParams({
   }
 })
 
-export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
+export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   notify: service('notify'),
 
   ajax: service('ajax'),
+
+  can: service('can'),
 
   userController: controller('users.edit'),
 
@@ -35,8 +37,8 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
     return [...new Array(to + 1 - from).keys()].map(i => `${from + i}`)
   }),
 
-  overtimeCreditAbility: canComputed.ability('overtime-credit'),
-  absenceCreditAbility: canComputed.ability('overtime-credit'),
+  overtimeCreditAbility: ability('overtime-credit'),
+  absenceCreditAbility: ability('absence-credit'),
 
   @computed(
     'year',
@@ -111,7 +113,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
   }).drop(),
 
   editAbsenceCredit: task(function*(id) {
-    if (this.can('edit absence-credit')) {
+    if (this.get('can').can('edit absence-credit')) {
       yield this.transitionToRoute(
         'users.edit.credits.absence-credits.edit',
         id
@@ -120,7 +122,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, CanMixin, {
   }).drop(),
 
   editOvertimeCredit: task(function*(id) {
-    if (this.can('edit overtime-credit')) {
+    if (this.get('can').can('edit overtime-credit')) {
       yield this.transitionToRoute(
         'users.edit.credits.overtime-credits.edit',
         id
