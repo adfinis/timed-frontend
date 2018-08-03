@@ -11,7 +11,6 @@ import { cleanParams, toQueryString } from 'timed/utils/url'
 import fetch from 'fetch'
 import download from 'downloadjs'
 import Ember from 'ember'
-import { CanMixin } from 'ember-can'
 import {
   underscoreQueryParams,
   serializeParachuteQueryParams
@@ -117,260 +116,257 @@ export const AnalysisQueryParams = new QueryParams({
   }
 })
 
-const AnalysisController = Controller.extend(
-  AnalysisQueryParams.Mixin,
-  CanMixin,
-  {
-    @computed('prefetchData.lastSuccessful.value.billingTypes')
-    billingTypes() {
-      return this.store.findAll('billing-type')
-    },
+const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
+  @computed('prefetchData.lastSuccessful.value.billingTypes')
+  billingTypes() {
+    return this.store.findAll('billing-type')
+  },
 
-    @computed('prefetchData.lastSuccessful.value.costCenters')
-    costCenters() {
-      return this.store.findAll('cost-center')
-    },
+  @computed('prefetchData.lastSuccessful.value.costCenters')
+  costCenters() {
+    return this.store.findAll('cost-center')
+  },
 
-    @computed('customer', 'prefetchData.lastSuccessful.value.customer')
-    selectedCustomer(id) {
-      return id && this.store.peekRecord('customer', id)
-    },
+  @computed('customer', 'prefetchData.lastSuccessful.value.customer')
+  selectedCustomer(id) {
+    return id && this.store.peekRecord('customer', id)
+  },
 
-    @computed('project', 'prefetchData.lastSuccessful.value.project')
-    selectedProject(id) {
-      return id && this.store.peekRecord('project', id)
-    },
+  @computed('project', 'prefetchData.lastSuccessful.value.project')
+  selectedProject(id) {
+    return id && this.store.peekRecord('project', id)
+  },
 
-    @computed('task', 'prefetchData.lastSuccessful.value.task')
-    selectedTask(id) {
-      return id && this.store.peekRecord('task', id)
-    },
+  @computed('task', 'prefetchData.lastSuccessful.value.task')
+  selectedTask(id) {
+    return id && this.store.peekRecord('task', id)
+  },
 
-    @computed('user', 'prefetchData.lastSuccessful.value.user')
-    selectedUser(id) {
-      return id && this.store.peekRecord('user', id)
-    },
+  @computed('user', 'prefetchData.lastSuccessful.value.user')
+  selectedUser(id) {
+    return id && this.store.peekRecord('user', id)
+  },
 
-    @computed('reviewer', 'prefetchData.lastSuccessful.value.reviewer')
-    selectedReviewer(id) {
-      return id && this.store.peekRecord('user', id)
-    },
+  @computed('reviewer', 'prefetchData.lastSuccessful.value.reviewer')
+  selectedReviewer(id) {
+    return id && this.store.peekRecord('user', id)
+  },
 
-    exportLinks: config.APP.REPORTEXPORTS,
+  exportLinks: config.APP.REPORTEXPORTS,
 
-    session: service('session'),
+  session: service('session'),
 
-    notify: service('notify'),
+  notify: service('notify'),
 
-    @oneWay('session.data.authenticated.token') jwt: null,
+  can: service('can'),
 
-    init() {
-      this._super(...arguments)
+  @oneWay('session.data.authenticated.token') jwt: null,
 
-      this.set('_dataCache', A())
-      this.set('selectedReportIds', A())
-    },
+  init() {
+    this._super(...arguments)
 
-    setup() {
-      this.get('prefetchData').perform()
+    this.set('_dataCache', A())
+    this.set('selectedReportIds', A())
+  },
 
-      if (!this.get('skipResetOnSetup')) {
-        this._reset()
-      }
-    },
+  setup() {
+    this.get('prefetchData').perform()
 
-    _reset() {
-      this.get('data').cancelAll()
-      this.get('loadNext').cancelAll()
+    if (!this.get('skipResetOnSetup')) {
+      this._reset()
+    }
+  },
 
-      this.setProperties({
-        _lastPage: 0,
-        _canLoadMore: true,
-        _shouldLoadMore: false,
-        _dataCache: A(),
-        selectedReportIds: A()
-      })
+  _reset() {
+    this.get('data').cancelAll()
+    this.get('loadNext').cancelAll()
 
-      this.get('data').perform()
-    },
+    this.setProperties({
+      _lastPage: 0,
+      _canLoadMore: true,
+      _shouldLoadMore: false,
+      _dataCache: A(),
+      selectedReportIds: A()
+    })
 
-    queryParamsDidChange({ shouldRefresh }) {
-      if (shouldRefresh) {
-        this._reset()
-      }
-    },
+    this.get('data').perform()
+  },
 
-    _shouldLoadMore: false,
-    _canLoadMore: true,
-    _lastPage: 0,
+  queryParamsDidChange({ shouldRefresh }) {
+    if (shouldRefresh) {
+      this._reset()
+    }
+  },
 
-    @computed('queryParamsState')
-    appliedFilters(state) {
-      return Object.keys(state).filter(key => {
-        return key !== 'ordering' && this.get(`queryParamsState.${key}.changed`)
-      })
-    },
+  _shouldLoadMore: false,
+  _canLoadMore: true,
+  _lastPage: 0,
 
-    prefetchData: task(function*() {
-      let {
-        customer: customerId,
-        project: projectId,
-        task: taskId,
-        user: userId,
-        reviewer: reviewerId
-      } = this.get('allQueryParams')
+  @computed('queryParamsState')
+  appliedFilters(state) {
+    return Object.keys(state).filter(key => {
+      return key !== 'ordering' && this.get(`queryParamsState.${key}.changed`)
+    })
+  },
 
-      return yield hash({
-        customer: customerId && this.store.findRecord('customer', customerId),
-        project: projectId && this.store.findRecord('project', projectId),
-        task: taskId && this.store.findRecord('task', taskId),
-        user: userId && this.store.findRecord('user', userId),
-        reviewer: reviewerId && this.store.findRecord('user', reviewerId),
-        billingTypes: this.store.findAll('billing-type'),
-        costCenters: this.store.findAll('cost-center')
-      })
-    }),
+  prefetchData: task(function*() {
+    let {
+      customer: customerId,
+      project: projectId,
+      task: taskId,
+      user: userId,
+      reviewer: reviewerId
+    } = this.get('allQueryParams')
 
-    data: task(function*() {
-      let params = underscoreQueryParams(
-        serializeParachuteQueryParams(
-          this.get('allQueryParams'),
-          AnalysisQueryParams
-        )
+    return yield hash({
+      customer: customerId && this.store.findRecord('customer', customerId),
+      project: projectId && this.store.findRecord('project', projectId),
+      task: taskId && this.store.findRecord('task', taskId),
+      user: userId && this.store.findRecord('user', userId),
+      reviewer: reviewerId && this.store.findRecord('user', reviewerId),
+      billingTypes: this.store.findAll('billing-type'),
+      costCenters: this.store.findAll('cost-center')
+    })
+  }),
+
+  data: task(function*() {
+    let params = underscoreQueryParams(
+      serializeParachuteQueryParams(
+        this.get('allQueryParams'),
+        AnalysisQueryParams
       )
+    )
 
-      let data = yield this.store.query('report', {
-        page: this.get('_lastPage') + 1,
-        page_size: 20, // eslint-disable-line camelcase
-        ...params,
-        include:
-          'task,task.project,task.project.customer,task.project.reviewers,user'
-      })
+    let data = yield this.store.query('report', {
+      page: this.get('_lastPage') + 1,
+      page_size: 20, // eslint-disable-line camelcase
+      ...params,
+      include:
+        'task,task.project,task.project.customer,task.project.reviewers,user'
+    })
 
-      this.setProperties({
-        totalTime: parseDjangoDuration(data.get('meta.total-time')),
-        totalItems: parseInt(data.get('meta.pagination.count')),
-        _canLoadMore:
-          data.get('meta.pagination.pages') !==
-          data.get('meta.pagination.page'),
-        _lastPage: data.get('meta.pagination.page')
-      })
+    this.setProperties({
+      totalTime: parseDjangoDuration(data.get('meta.total-time')),
+      totalItems: parseInt(data.get('meta.pagination.count')),
+      _canLoadMore:
+        data.get('meta.pagination.pages') !== data.get('meta.pagination.page'),
+      _lastPage: data.get('meta.pagination.page')
+    })
 
-      this.get('_dataCache').pushObjects(data.toArray())
+    this.get('_dataCache').pushObjects(data.toArray())
 
-      return this.get('_dataCache')
-    }).enqueue(),
+    return this.get('_dataCache')
+  }).enqueue(),
 
-    loadNext: task(function*() {
-      this.set('_shouldLoadMore', true)
+  loadNext: task(function*() {
+    this.set('_shouldLoadMore', true)
 
-      while (this.get('_shouldLoadMore') && this.get('_canLoadMore')) {
-        yield this.get('data').perform()
+    while (this.get('_shouldLoadMore') && this.get('_canLoadMore')) {
+      yield this.get('data').perform()
 
-        yield rAF()
-      }
-    }).drop(),
+      yield rAF()
+    }
+  }).drop(),
 
-    download: task({
-      url: null,
-      params: {},
+  download: task({
+    url: null,
+    params: {},
 
-      *perform(notify, allQueryParams, jwt, { url, params }) {
-        try {
-          this.setProperties({ url, params })
+    *perform(notify, allQueryParams, jwt, { url, params }) {
+      try {
+        this.setProperties({ url, params })
 
-          let queryString = toQueryString(
-            underscoreQueryParams(
-              cleanParams({
-                ...params,
-                ...serializeParachuteQueryParams(
-                  allQueryParams,
-                  AnalysisQueryParams
-                )
-              })
-            )
+        let queryString = toQueryString(
+          underscoreQueryParams(
+            cleanParams({
+              ...params,
+              ...serializeParachuteQueryParams(
+                allQueryParams,
+                AnalysisQueryParams
+              )
+            })
           )
+        )
 
-          let res = yield fetch(`${url}?${queryString}`, {
-            headers: {
-              Authorization: `Bearer ${jwt}`
-            }
-          })
-
-          /* istanbul ignore next */
-          if (!res.ok) {
-            throw new Error(res.statusText)
-          }
-
-          let file = yield res.blob()
-
-          // filename      match filename, followed by
-          // [^;=\n]*      anything but a ;, a = or a newline
-          // =
-          // (             first capturing group
-          //     (['"])    either single or double quote, put it in capturing group 2
-          //     .*?       anything up until the first...
-          //     \2        matching quote (single if we found single, double if we find double)
-          // |
-          //     [^;\n]*   anything but a ; or a newline
-          // )
-          let filename =
-            res.headers.map['content-disposition']
-              .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
-              .replace('filename=', '') || 'Unknown file'
-
-          // ignore since we can't really test this..
-          /* istanbul ignore next */
-          if (!testing) {
-            download(file, filename, file.type)
-          }
-
-          notify.success('File was downloaded')
-        } catch (e) {
-          /* istanbul ignore next */
-          notify.error(
-            'Error while downloading, try again or try reducing results'
-          )
-        }
-      }
-    }),
-
-    actions: {
-      edit(ids = []) {
-        this.transitionToRoute('analysis.edit', {
-          queryParams: {
-            id: ids,
-            ...this.get('allQueryParams')
+        let res = yield fetch(`${url}?${queryString}`, {
+          headers: {
+            Authorization: `Bearer ${jwt}`
           }
         })
-      },
 
-      selectRow(report) {
-        if (this.can('edit report', report)) {
-          let selected = this.get('selectedReportIds')
-
-          if (selected.includes(report.id)) {
-            this.set(
-              'selectedReportIds',
-              A([...selected.filter(id => id !== report.id)])
-            )
-          } else {
-            this.set('selectedReportIds', A([...selected, report.id]))
-          }
+        /* istanbul ignore next */
+        if (!res.ok) {
+          throw new Error(res.statusText)
         }
-      },
 
-      setModelFilter(key, value) {
-        this.set(key, value && value.id)
-      },
+        let file = yield res.blob()
 
-      reset() {
-        this.resetQueryParams(
-          Object.keys(this.get('allQueryParams')).filter(k => k !== 'ordering')
+        // filename      match filename, followed by
+        // [^;=\n]*      anything but a ;, a = or a newline
+        // =
+        // (             first capturing group
+        //     (['"])    either single or double quote, put it in capturing group 2
+        //     .*?       anything up until the first...
+        //     \2        matching quote (single if we found single, double if we find double)
+        // |
+        //     [^;\n]*   anything but a ; or a newline
+        // )
+        let filename =
+          res.headers.map['content-disposition']
+            .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
+            .replace('filename=', '') || 'Unknown file'
+
+        // ignore since we can't really test this..
+        /* istanbul ignore next */
+        if (!testing) {
+          download(file, filename, file.type)
+        }
+
+        notify.success('File was downloaded')
+      } catch (e) {
+        /* istanbul ignore next */
+        notify.error(
+          'Error while downloading, try again or try reducing results'
         )
       }
     }
+  }),
+
+  actions: {
+    edit(ids = []) {
+      this.transitionToRoute('analysis.edit', {
+        queryParams: {
+          id: ids,
+          ...this.get('allQueryParams')
+        }
+      })
+    },
+
+    selectRow(report) {
+      if (this.get('can').can('edit report', report)) {
+        let selected = this.get('selectedReportIds')
+
+        if (selected.includes(report.id)) {
+          this.set(
+            'selectedReportIds',
+            A([...selected.filter(id => id !== report.id)])
+          )
+        } else {
+          this.set('selectedReportIds', A([...selected, report.id]))
+        }
+      }
+    },
+
+    setModelFilter(key, value) {
+      this.set(key, value && value.id)
+    },
+
+    reset() {
+      this.resetQueryParams(
+        Object.keys(this.get('allQueryParams')).filter(k => k !== 'ordering')
+      )
+    }
   }
-)
+})
 
 export default AnalysisController
