@@ -92,7 +92,7 @@
     "loader.js": "^4.1.0",
     "pagination-pager": "^3.1.0",
     "postcss-cssnext": "^3.0.2",
-    "postcss-import": "^11.0.0",
+    "postcss-import": "^12.0.0",
     "postcss-responsive-type": "^1.0.0",
     "prettier": "^1.7.4"
   },
