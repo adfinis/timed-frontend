@@ -162,6 +162,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   @oneWay('session.data.authenticated.token') jwt: null,
 
+  _scrollOffset: 0,
+
   init() {
     this._super(...arguments)
 
@@ -186,7 +188,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _canLoadMore: true,
       _shouldLoadMore: false,
       _dataCache: A(),
-      selectedReportIds: A()
+      selectedReportIds: A(),
+      _scrollOffset: 0
     })
 
     this.get('data').perform()

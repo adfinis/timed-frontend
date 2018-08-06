@@ -180,6 +180,9 @@
   {{else}}
     {{#with data.lastSuccessful.value as |reports|}}
       <div class="btn-toolbar btn-toolbar--right form-group">
+        {{#unless (eq _scrollOffset 0)}}
+          <button type="button" class="btn" {{action (mut _scrollOffset) 0}}>Reset Scroll</button>
+        {{/unless}}
         <button
           data-test-edit-all
           type="button"
@@ -230,7 +233,7 @@
           </tr>
         </thead>
       </table>
-      {{#ember-scrollable class='analysis-scrollable-container'}}
+      {{#ember-scrollable scrollToY=_scrollOffset onScrollY=(action (mut _scrollOffset)) class='analysis-scrollable-container'}}
         <table class="table table--striped table--analysis">
           <colgroup>
             <col>
