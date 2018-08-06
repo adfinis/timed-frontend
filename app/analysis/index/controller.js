@@ -162,6 +162,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   @oneWay('session.data.authenticated.token') jwt: null,
 
+  _scrollOffset: 0,
+
   init() {
     this._super(...arguments)
 
