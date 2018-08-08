@@ -55,7 +55,7 @@ export default Service.extend({
     this._super()
 
     let actives = await this.get('store').query('activity', {
-      include: 'blocks,task,task.project,task.project.customer',
+      include: 'task,task.project,task.project.customer',
       active: true
     })
 
@@ -125,12 +125,7 @@ export default Service.extend({
    */
   _computeTitle: task(function*() {
     while (this.get('activity.active')) {
-      let elapsed = this.get('activity.duration') || moment.duration()
-      let duration = moment.duration(
-        moment().diff(this.get('activity.activeBlock.from'))
-      )
-
-      let full = moment.duration(elapsed).add(duration)
+      let duration = moment.duration(moment().diff(this.get('activity.from')))
 
       let task = 'Unknown Task'
 
@@ -142,7 +137,7 @@ export default Service.extend({
         task = `${c} > ${p} > ${t}`
       }
 
-      this.setTitle(`${formatDuration(full)} (${task})`)
+      this.setTitle(`${formatDuration(duration)} (${task})`)
 
       /* istanbul ignore else */
       if (testing) {
@@ -168,7 +163,7 @@ export default Service.extend({
    * @property {Activity} activity
    * @public
    */
-  activity: computed({
+  activity: computed('_activity', {
     get() {
       return this.get('_activity')
     },
@@ -189,7 +184,8 @@ export default Service.extend({
    */
   startActivity: task(function*() {
     try {
-      yield this.get('activity').start()
+      let activity = yield this.get('activity').start()
+      this.set('activity', activity)
 
       this.get('notify').success('Activity was started')
     } catch (e) {

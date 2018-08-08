@@ -28,7 +28,7 @@ export default Controller.extend({
   init() {
     this._super(...arguments)
 
-    this.set('_activeActivityBlockDuration', moment.duration())
+    this.set('_activeActivityDuration', moment.duration())
     this.set('disabledDates', [])
   },
 
@@ -120,12 +120,12 @@ export default Controller.extend({
    * @public
    */
   activitySum: computed(
-    '_activities.@each.duration',
-    '_activeActivityBlockDuration',
+    '_activities.@each.{fromTime,duration}',
+    '_activeActivityDuration',
     function() {
       return this.get('_activities').reduce((dur, cur) => {
         return dur.add(cur.get('duration'))
-      }, this.get('_activeActivityBlockDuration'))
+      }, this.get('_activeActivityDuration'))
     }
   ),
 
@@ -138,15 +138,12 @@ export default Controller.extend({
   _activitySum: task(function*() {
     for (;;) {
       let duration = this.get('_activities')
-        .filterBy('activeBlock')
+        .filterBy('active')
         .reduce((dur, cur) => {
-          return dur.add(
-            moment().diff(cur.get('activeBlock.from')),
-            'milliseconds'
-          )
+          return dur.add(moment().diff(cur.get('from')))
         }, moment.duration())
 
-      this.set('_activeActivityBlockDuration', duration)
+      this.set('_activeActivityDuration', duration)
 
       /* istanbul ignore else */
       if (testing) {

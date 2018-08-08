@@ -17,7 +17,7 @@ const storeStub = Service.extend({
 describe('Unit | Service | tracking', function() {
   setupTest('service:tracking', {
     // Specify the other units that are required for this test.
-    needs: ['model:activity', 'model:activity-block', 'service:notify']
+    needs: ['model:activity', 'service:notify']
   })
 
   beforeEach(function() {

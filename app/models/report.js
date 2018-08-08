@@ -58,14 +58,6 @@ export default Model.extend({
   notBillable: attr('boolean', { defaultValue: false }),
 
   /**
-   * The activity this report was generated from
-   *
-   * @property {Activity} activity
-   * @public
-   */
-  activity: belongsTo('activity'),
-
-  /**
    * The task
    *
    * @property {Task} task

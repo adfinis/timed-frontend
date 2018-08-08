@@ -76,7 +76,7 @@ strong {
 }
 
 .worktime-balance {
-  border-bottom: 3px double rgb(0,0,0);
+  border-bottom: 3px double rgb(0, 0, 0);
   font-weight: bold;
 }
 
@@ -111,7 +111,7 @@ strong {
     &:focus {
       border-color: color(var(--color-danger) tint(20%));
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
-                  0 0   8px color(var(--color-danger) a(60%));
+        0 0 8px color(var(--color-danger) a(60%));
     }
   }
 }
@@ -120,8 +120,12 @@ strong {
   flex-grow: 1;
 }
 
-.no-margin  { margin: 0 !important  }
-.no-padding { padding: 0 !important }
+.no-margin {
+  margin: 0 !important;
+}
+.no-padding {
+  padding: 0 !important;
+}
 
 .nav-tab--buttons {
   position: absolute;
@@ -170,24 +174,72 @@ strong {
   }
 
   .table--activities tr {
-    height: 80px;
+    height: 45px;
     display: flex;
+    min-width: 0;
 
     td {
       display: flex;
       align-items: center;
 
-      &:nth-child(1) { flex-basis: 40% }
-      &:nth-child(2) { flex-basis: 40% }
-      &:nth-child(3) { flex-basis: 10% }
-
-      &:nth-child(4) {
+      &:nth-child(1) {
         flex-basis: 10%;
+      }
+      &:nth-child(2) {
+        flex-basis: 25%;
+        // inline-grid property because it doesnt work the right way
+        display: inline-grid;
+
+        div {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+      &:nth-child(3) {
+        flex-basis: 35%;
+        display: inline-grid;
+
+        div {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+      }
+      &:nth-child(4) {
+        flex-basis: 20%;
+        justify-content: space-around;
+
+        div.i {
+          margin-right: 5px;
+        }
+      }
+      &:nth-child(5) {
+        flex-basis: 5%;
+      }
+      &:nth-child(6) {
+        flex-basis: 5%;
         justify-content: flex-end;
 
         .btn {
           margin-left: 10px;
         }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 680px) {
+  .table--activities tr td {
+    display: flex;
+
+    &:nth-child(4) {
+      div {
+        margin-right: 10px;
+      }
+
+      div > i {
+        margin-right: 5px;
       }
     }
   }
