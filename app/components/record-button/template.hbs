@@ -1,8 +1,8 @@
 <div class="record-button-container record-button-container--start-stop">
-  {{#if recording}}
+  {{#if active}}
     <button data-test-record-stop type="submit" class="record-button record-button--stop" {{action 'stop'}}></button>
     <div class="record-button-timer">
-      {{duration-since activity.activeBlock.from elapsed=activity.duration}}
+      {{duration-since activity.fromTime}}
     </div>
   {{else}}
     <button data-test-record-start type="submit" class="record-button record-button--start" {{action 'start'}}></button>

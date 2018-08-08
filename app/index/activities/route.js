@@ -33,13 +33,17 @@ export default Route.extend(RouteAutostartTourMixin, {
    */
   tracking: service('tracking'),
 
+  model() {
+    return this.modelFor('index')
+  },
+
   /**
    * Setup controller hook, set the current user
    *
    * @method setupContrller
    * @param {Ember.Controller} controller The controller
-   * @public
-   */
+     * @public
+     */
   setupController(controller) {
     this._super(...arguments)
 
@@ -62,12 +66,14 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     editActivity(activity) {
-      let { id } = this.paramsFor('index.activities.edit')
+      if (!activity.get('transferred')) {
+        let { id } = this.paramsFor('index.activities.edit')
 
-      if (id === activity.get('id')) {
-        this.transitionTo('index.activities')
-      } else {
-        this.transitionTo('index.activities.edit', activity.get('id'))
+        if (id === activity.get('id')) {
+          this.transitionTo('index.activities')
+        } else {
+          this.transitionTo('index.activities.edit', activity.get('id'))
+        }
       }
     },
 
@@ -121,9 +127,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         undefined
       )
       let hasOverlapping = !!this.get('controller.activities').find(a => {
-        return (
-          a.get('active') && !a.get('activeBlock.from').isSame(moment(), 'day')
-        )
+        return a.get('active') && !a.get('fromTime').isSame(moment(), 'day')
       })
 
       this.set('controller.showUnknownWarning', hasUnknown)
@@ -151,35 +155,45 @@ export default Route.extend(RouteAutostartTourMixin, {
               a =>
                 a.get('task.id') &&
                 !(
-                  a.get('active') &&
-                  !a.get('activeBlock.from').isSame(moment(), 'day')
-                )
+                  a.get('active') && !a.get('fromTime').isSame(moment(), 'day')
+                ) &&
+                !a.get('transferred')
             )
             .map(async activity => {
               let duration = moment.duration(activity.get('duration'))
 
               if (activity.get('active')) {
-                duration.add(moment().diff(activity.get('activeBlock.from')))
+                duration.add(moment().diff(activity.get('fromTime')))
               }
 
               let data = {
-                activity,
                 duration,
                 date: activity.get('date'),
                 task: activity.get('task'),
-                comment: activity.get('comment')
+                review: activity.get('review'),
+                notBillable: activity.get('notBillable'),
+                comment: activity.get('comment').trim()
               }
 
               let report = this.store.peekAll('report').find(r => {
-                return r.get('activity.id') == activity.get('id')
+                return (
+                  r.get('comment').trim() === activity.get('comment').trim() &&
+                  r.get('task.id') === activity.get('task.id') &&
+                  r.get('review') === activity.get('review') &&
+                  r.get('notBillable') === activity.get('notBillable')
+                )
               })
 
               if (report) {
+                data.duration.add(report.get('duation'))
                 report.setProperties(data)
               } else {
                 report = this.store.createRecord('report', data)
               }
 
+              activity.set('transferred', true)
+
+              await activity.save()
               await report.save()
             })
         )

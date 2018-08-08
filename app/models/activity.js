@@ -6,11 +6,11 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import moment from 'moment'
-import computed from 'ember-computed-decorators'
 import RSVP from 'rsvp'
+import { computed } from '@ember/object'
 import { inject as service } from '@ember/service'
 
-import { belongsTo, hasMany } from 'ember-data/relationships'
+import { belongsTo } from 'ember-data/relationships'
 
 const { min } = Math
 
@@ -22,6 +22,22 @@ const { min } = Math
  * @public
  */
 export default Model.extend({
+  /**
+   * The start time
+   *
+   * @property {moment} fromTime
+   * @public
+   */
+  fromTime: attr('django-time'),
+
+  /**
+   * The end time
+   *
+   * @property {moment} toTime
+   * @public
+   */
+  toTime: attr('django-time'),
+
   /**
    * The comment
    *
@@ -39,14 +55,11 @@ export default Model.extend({
    */
   date: attr('django-date'),
 
-  /**
-   * The duration
-   *
-   * @property duration
-   * @type {moment.duration}
-   * @public
-   */
-  duration: attr('django-duration'),
+  transferred: attr('boolean', { defaultValue: false }),
+
+  review: attr('boolean', { defaultValue: false }),
+
+  notBillable: attr('boolean', { defaultValue: false }),
 
   /**
    * The task
@@ -67,15 +80,6 @@ export default Model.extend({
   user: belongsTo('user'),
 
   /**
-   * The blocks
-   *
-   * @property blocks
-   * @type {ActivityBlock[]}
-   * @public
-   */
-  blocks: hasMany('activity-block'),
-
-  /**
    * The notify service
    *
    * @property {EmberNotify.NotifyService} notify
@@ -84,30 +88,23 @@ export default Model.extend({
   notify: service('notify'),
 
   /**
-   * The currently active block
-   *
-   * @property activeBlock
-   * @type {ActivityBlock}
-   * @public
-   */
-  @computed('blocks.@each.to')
-  activeBlock(blocks) {
-    let activeBlocks = blocks.filter(b => !b.get('to'))
-
-    return activeBlocks.get('length') ? activeBlocks.get('firstObject') : null
-  },
-
-  /**
    * Whether the activity is active
    *
    * @property active
    * @type {Boolean}
    * @public
    */
-  @computed('activeBlock')
-  active(block) {
-    return Boolean(block && block.get('from'))
-  },
+  active: computed('toTime', function() {
+    return !this.get('toTime')
+  }),
+
+  duration: computed('fromTime', 'toTime', function() {
+    return moment.duration(
+      (this.get('toTime') ? this.get('toTime') : moment()).diff(
+        this.get('fromTime')
+      )
+    )
+  }),
 
   /**
    * Start the activity
@@ -116,28 +113,18 @@ export default Model.extend({
    * @public
    */
   async start() {
-    /* istanbul ignore next */
-    if (this.get('active')) {
-      return
-    }
-
-    if (this.get('isNew')) {
-      this.set('date', moment())
-
-      await this.save()
-    }
-
-    let block = this.get('store').createRecord('activity-block', {
-      activity: this,
-      fromTime: moment()
+    let activity = this.get('store').createRecord('activity', {
+      date: moment(),
+      fromTime: moment(),
+      task: this.get('task'),
+      comment: this.get('comment'),
+      review: this.get('review'),
+      notBillable: this.get('notBillable')
     })
 
-    await block.save()
+    await activity.save()
 
-    // Sadly, we need to do this here since the computed property
-    // 'activeBlock' on the activity does not sense a change when the blocks
-    // change from new to actually loaded
-    this.notifyPropertyChange('blocks')
+    return activity
   },
 
   /**
@@ -166,7 +153,10 @@ export default Model.extend({
           task: this.get('task'),
           comment: this.get('comment'),
           user: this.get('user'),
-          date: moment(this.get('date')).add(1, 'days')
+          date: moment(this.get('date')).add(1, 'days'),
+          review: this.get('review'),
+          notBillable: this.get('notBillable'),
+          fromTime: moment({ h: 0, m: 0, s: 0 })
         })
       )
     }
@@ -177,14 +167,7 @@ export default Model.extend({
           await activity.save()
         }
 
-        let block =
-          activity.get('activeBlock') ||
-          this.get('store').createRecord('activity-block', {
-            activity,
-            fromTime: moment({ h: 0, m: 0, s: 0 })
-          })
-
-        block.set(
+        activity.set(
           'toTime',
           moment(
             min(
@@ -198,7 +181,7 @@ export default Model.extend({
           )
         )
 
-        await block.save({ adapterOptions: { include: 'activity' } })
+        await activity.save()
       })
     )
 

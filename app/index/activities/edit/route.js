@@ -9,30 +9,6 @@ import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
 import ActivityValidator from 'timed/validations/activity'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
-import ActivityBlockValidator from 'timed/validations/activity-block'
-import EmberObject from '@ember/object'
-import { oneWay } from 'ember-computed-decorators'
-import RSVP from 'rsvp'
-
-const changesetFromBlock = block => {
-  let changeset = new Changeset(
-    block,
-    lookupValidator(ActivityBlockValidator),
-    ActivityBlockValidator
-  )
-
-  changeset.validate()
-
-  return EmberObject.create({
-    changeset,
-    model: block,
-    @oneWay('model.isDeleted') isDeleted: false,
-    @oneWay('changeset.isValid') isValid: false,
-    @oneWay('changeset.isDirty') isDirty: false,
-    @oneWay('changeset.from') from: null,
-    @oneWay('changeset.to') to: null
-  })
-}
 
 /**
  * Route to edit an activity
@@ -60,7 +36,13 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   model({ id }) {
-    return this.store.findRecord('activity', id, { include: 'blocks' })
+    return this.store.findRecord('activity', id)
+  },
+
+  afterModel(model) {
+    if (model.get('transferred')) {
+      this.transitionTo('index')
+    }
   },
 
   /**
@@ -82,12 +64,7 @@ export default Route.extend(RouteAutostartTourMixin, {
 
     activity.validate()
 
-    let blocks = model
-      .get('blocks')
-      .sortBy('id')
-      .map(changesetFromBlock)
-
-    controller.setProperties({ activity, blocks })
+    controller.setProperties({ activity })
   },
 
   /**
@@ -98,42 +75,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    */
   actions: {
     /**
-     * Add a new activity block
-     *
-     * @method addBlock
-     * @public
-     */
-    addBlock() {
-      let newBlock = this.store.createRecord('activity-block', {
-        activity: this.get('currentModel')
-      })
-
-      this.get('controller.blocks').pushObject(changesetFromBlock(newBlock))
-    },
-
-    /**
-     * Delete a certain activity block
-     *
-     * This only sets the `isDeleted` flag, so the block is only really deleted
-     * after saving the activity.
-     *
-     * @method deleteBlock
-     * @param {Object} block The block (changeset and model) to delete
-     * @public
-     */
-    deleteBlock(block) {
-      let { changeset, model } = block
-
-      changeset.rollback()
-      model.deleteRecord()
-
-      if (!model.get('id')) {
-        this.get('controller.blocks').removeObject(block)
-      }
-    },
-
-    /**
-     * Save the activity and the related edited blocks
+     * Save the activity
      *
      * @method save
      * @public
@@ -146,16 +88,6 @@ export default Route.extend(RouteAutostartTourMixin, {
       }
 
       try {
-        await RSVP.all(
-          this.get('controller.blocks')
-            .filter(({ changeset, model }) => {
-              return changeset.get('isDirty') || model.get('isDeleted')
-            })
-            .map(async ({ changeset }) => {
-              await changeset.save()
-            })
-        )
-
         await this.get('controller.activity').save()
 
         this.get('notify').success('Activity was saved')

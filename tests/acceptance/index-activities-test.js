@@ -346,8 +346,8 @@ describe('Acceptance | index activities', function() {
     duration = moment.duration(duration, 'HH:mm:ss').add(
       moment().diff(
         moment(
-          activity.blocks.models.find(b => {
-            return !b.toTime
+          activity.models.find(a => {
+            return !a.toTime
           }).fromTime,
           'HH:mm:ss'
         )

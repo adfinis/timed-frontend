@@ -11,7 +11,7 @@ import formatDuration from 'timed/utils/format-duration'
 import { getOwner } from '@ember/application'
 import { scheduleOnce } from '@ember/runloop'
 
-import computed, { observes } from 'ember-computed-decorators'
+import { computed, observer } from '@ember/object'
 
 import { camelize, capitalize } from '@ember/string'
 
@@ -55,7 +55,7 @@ export default Service.extend({
     this._super()
 
     let actives = await this.get('store').query('activity', {
-      include: 'blocks,task,task.project,task.project.customer',
+      include: 'task,task.project,task.project.customer',
       active: true
     })
 
@@ -70,10 +70,9 @@ export default Service.extend({
    * @property {Ember.Application} application
    * @public
    */
-  @computed
-  application() {
+  application: computed(function() {
     return getOwner(this).lookup('application:main')
-  },
+  }),
 
   /**
    * The default application title
@@ -81,10 +80,9 @@ export default Service.extend({
    * @property {String} title
    * @public
    */
-  @computed('application.name')
-  title(name) {
-    return capitalize(camelize(name || 'Timed'))
-  },
+  title: computed('application.name', function() {
+    return capitalize(camelize(this.get('application.name') || 'Timed'))
+  }),
 
   /**
    * Trigger a reload of the title because the activity has changed
@@ -92,14 +90,13 @@ export default Service.extend({
    * @method _triggerTitle
    * @private
    */
-  @observes('activity.active')
-  _triggerTitle() {
-    if (this.get('activity.active')) {
+  _triggerTitle: observer('activity.active', function() {
+    if (!this.get('activity.active')) {
       this.get('_computeTitle').perform()
     } else {
       this.setTitle(this.get('title'))
     }
-  },
+  }),
 
   /**
    * Set the doctitle
@@ -127,10 +124,10 @@ export default Service.extend({
    * @private
    */
   _computeTitle: task(function*() {
-    while (this.get('activity.active')) {
+    while (!this.get('activity.active')) {
       let elapsed = this.get('activity.duration') || moment.duration()
       let duration = moment.duration(
-        moment().diff(this.get('activity.activeBlock.from'))
+        moment().diff(this.get('activity.fromTime'))
       )
 
       let full = moment.duration(elapsed).add(duration)
@@ -171,21 +168,18 @@ export default Service.extend({
    * @property {Activity} activity
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed()
-  activity: {
+  activity: computed('_activity', {
     get() {
       return this.get('_activity')
     },
-    set(value) {
+    set(key, value) {
       let newActivity = value || this.get('store').createRecord('activity')
 
       this.set('_activity', newActivity)
 
       return newActivity
     }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  }),
 
   /**
    * Start the activity
@@ -195,7 +189,8 @@ export default Service.extend({
    */
   startActivity: task(function*() {
     try {
-      yield this.get('activity').start()
+      let activity = yield this.get('activity').start()
+      this.set('activity', activity)
 
       this.get('notify').success('Activity was started')
     } catch (e) {

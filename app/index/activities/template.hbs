@@ -7,29 +7,40 @@
     {{#if activities}}
       <table class="table table--striped table--activities">
         <tbody>
-          {{#each activities as |activity|}}
+          {{#each sortedActivities as |activity|}}
           <tr
-            title="Click to edit"
+             title={{unless activity.transferred "Click to edit"}}
             data-test-activity-row
             data-test-activity-row-id={{activity.id}}
-            class="pointer {{if activity.active 'primary'}}"
+            class="{{if activity.transferred 'transferred' 'pointer'}} {{if activity.active 'primary'}}"
             {{action 'editActivity' activity}}
           >
               <td>
+                {{moment-format activity.fromTime 'HH:mm'}}
+                -
+                {{#unless activity.active}}
+                  {{moment-format activity.toTime 'HH:mm'}}
+                {{/unless}}
+              </td>
+              <td title='{{activity.task.project.customer.name}} > {{activity.task.project.name}} > {{activity.task.name}}'>
                 {{#if activity.task}}
                   <div>
-                    <strong>{{activity.task.project.name}}</strong> ({{activity.task.project.customer.name}})
-                    <br>
-                    <small><em>{{activity.task.name}}</em></small>
+                    {{activity.task.project.customer.name}} <strong>&gt;</strong>
+                    {{activity.task.project.name}} <strong>&gt;</strong>
+                    {{activity.task.name}}
                   </div>
                 {{else}}
-                <strong>Unknown task</strong>
+                  <strong>Unknown task</strong>
                 {{/if}}
               </td>
-              <td>{{activity.comment}}</td>
+              <td title={{activity.comment}}><div>{{activity.comment}}</div></td>
+              <td>
+                <div>{{sy-checkmark checked=activity.review}} Needs review</div>
+                <div>{{sy-checkmark checked=activtiy.notBillable}} Not billable</div>
+              </td>
               <td>
                 {{#if activity.active}}
-                  {{duration-since activity.activeBlock.from elapsed=activity.duration}}
+                  {{duration-since activity.fromTime}}
                 {{else}}
                   {{format-duration activity.duration}}
                 {{/if}}

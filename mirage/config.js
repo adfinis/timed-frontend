@@ -101,20 +101,17 @@ export default function() {
   this.del('/attendances/:id')
 
   this.get('/activities', function(
-    { activities, activityBlocks },
+    { activities },
     { queryParams: { active } }
   ) {
     if (active) {
-      return activities.where(a => {
-        let blocks = activityBlocks.where(b => b.activityId === a.id).models
-
-        return blocks.any(b => !b.toTime)
-      })
+      return activities.where({ toTime: null })
     }
 
     return activities.all()
   })
   this.post('/activities', function({ activities, users }) {
+    console.log(...this.normalizedRequestAttrs())
     return activities.create({
       ...this.normalizedRequestAttrs(),
       userId: users.first().id
@@ -157,17 +154,6 @@ export default function() {
   this.get('/reports/:id')
   this.patch('/reports/:id')
   this.del('/reports/:id')
-
-  this.get('/activity-blocks')
-  this.post('/activity-blocks', function({ activityBlocks }) {
-    return activityBlocks.create({
-      ...this.normalizedRequestAttrs(),
-      fromDatetime: moment().format()
-    })
-  })
-  this.get('/activity-blocks/:id')
-  this.patch('/activity-blocks/:id')
-  this.del('/activity-blocks/:id')
 
   this.get('/customers')
   this.get('/customers/:id')
