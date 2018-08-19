@@ -71,7 +71,7 @@
     "ember-one-way-controls": "^3.0.1",
     "ember-pad": "^1.2.2",
     "ember-parachute": "^0.3.5",
-    "ember-power-calendar": "^0.7.3",
+    "ember-power-calendar": "^0.8.0",
     "ember-power-select": "^1.9.11",
     "ember-resolver": "^5.0.1",
     "ember-responsive": "^2.0.5",
