@@ -7,8 +7,7 @@ from django.utils.duration import duration_string
 from django.utils.translation import ugettext_lazy as _
 from rest_framework_json_api import relations, serializers
 from rest_framework_json_api.relations import ResourceRelatedField
-from rest_framework_json_api.serializers import (DurationField,
-                                                 ModelSerializer, Serializer,
+from rest_framework_json_api.serializers import (ModelSerializer, Serializer,
                                                  SerializerMethodField,
                                                  ValidationError)
 
@@ -22,56 +21,27 @@ from timed.tracking import models
 class ActivitySerializer(ModelSerializer):
     """Activity serializer."""
 
-    duration = DurationField(read_only=True)
     user     = CurrentUserResourceRelatedField()
-    task     = ResourceRelatedField(queryset=Task.objects.all(),
-                                    allow_null=True,
-                                    required=False)
-    blocks   = ResourceRelatedField(read_only=True, many=True)
 
     included_serializers = {
-        'blocks': 'timed.tracking.serializers.ActivityBlockSerializer',
         'task':   'timed.projects.serializers.TaskSerializer',
         'user': 'timed.employment.serializers.UserSerializer',
-    }
-
-    class Meta:
-        """Meta information for the activity serializer."""
-
-        model  = models.Activity
-        fields = [
-            'comment',
-            'date',
-            'duration',
-            'user',
-            'task',
-            'blocks',
-        ]
-
-
-class ActivityBlockSerializer(ModelSerializer):
-    """Activity block serializer."""
-
-    activity = ResourceRelatedField(queryset=models.Activity.objects.all())
-
-    included_serializers = {
-        'activity': 'timed.tracking.serializers.ActivitySerializer',
     }
 
     def validate(self, data):
         """Validate the activity block.
 
-        Ensure that a user can only have one activity with an active block
+        Ensure that a user can only have one activity
         which doesn't end before it started.
         """
         instance = self.instance
         from_time = data.get('from_time', instance and instance.from_time)
         to_time = data.get('to_time', instance and instance.to_time)
-        user = instance and instance.activity.user or data.get('activity').user
+        user = instance and instance.user or data['user']
 
         # validate that there is only one active activity
-        blocks = models.ActivityBlock.objects.filter(activity__user=user)
-        if blocks.filter(to_time__isnull=True) and to_time is None:
+        activity = models.Activity.objects.filter(user=user)
+        if activity.filter(to_time__isnull=True) and to_time is None:
             raise ValidationError(
                 _('A user can only have one active activity')
             )
@@ -85,14 +55,10 @@ class ActivityBlockSerializer(ModelSerializer):
         return data
 
     class Meta:
-        """Meta information for the activity block serializer."""
+        """Meta information for the activity serializer."""
 
-        model  = models.ActivityBlock
-        fields = [
-            'activity',
-            'from_time',
-            'to_time',
-        ]
+        model  = models.Activity
+        fields = '__all__'
 
 
 class AttendanceSerializer(ModelSerializer):

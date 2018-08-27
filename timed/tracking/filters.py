@@ -46,8 +46,7 @@ class ActivityActiveFilter(Filter):
         :rtype:             QuerySet
         """
         return qs.filter(
-            blocks__isnull=False,
-            blocks__to_time__exact=None
+            to_time__exact=None
         ).distinct()
 
 
@@ -62,16 +61,6 @@ class ActivityFilterSet(FilterSet):
 
         model  = models.Activity
         fields = ['active', 'day']
-
-
-class ActivityBlockFilterSet(FilterSet):
-    """Filter set for the activity blocks endpoint."""
-
-    class Meta:
-        """Meta information for the activity block filter set."""
-
-        model  = models.ActivityBlock
-        fields = ['activity']
 
 
 class AttendanceFilterSet(FilterSet):
