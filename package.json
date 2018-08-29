@@ -33,7 +33,7 @@
     "ember-changeset-validations": "^1.2.8",
     "ember-cli": "^3.3.0",
     "ember-cli-app-version": "^3.0.0",
-    "ember-cli-babel": "^6.6.0",
+    "ember-cli-babel": "^7.1.0",
     "ember-cli-chai": "^0.5.0",
     "ember-cli-chart": "^3.4.0",
     "ember-cli-code-coverage": "^0.4.2",
