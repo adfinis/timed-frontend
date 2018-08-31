@@ -38,8 +38,8 @@ def test_notify_reviewers(db, mailoutbox):
     cc = mail.to[-1]
     mail.to.pop()
 
-    for item in mail.body.split("\n"):
-        if "test" in item:
+    for item in mail.body.split('\n'):
+        if 'test' in item:
             msg = item.strip()
 
     assert len(mailoutbox) == 1
