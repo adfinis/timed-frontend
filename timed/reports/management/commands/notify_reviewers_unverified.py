@@ -7,6 +7,7 @@ from django.core.mail import send_mass_mail
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.template.loader import render_to_string
+from django.core.mail import get_connection, EmailMessage
 
 from timed.tracking.models import Report
 
@@ -50,15 +51,17 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             '--message',
+            default='',
             type=str,
             dest='message',
             help='Additional message to send if there are unverified reports'
         )
         parser.add_argument(
             '--cc',
-            type=str,
+            default=[],
+            action='append',
             dest='cc',
-            help='Email address where to send a cc'
+            help='List of email addresses where to send a cc'
         )
 
     def handle(self, *args, **options):
@@ -100,7 +103,7 @@ class Command(BaseCommand):
         reviewers = User.objects.all_reviewers().filter(email__isnull=False)
         subject = '[Timed] Verification of reports'
         from_email = settings.DEFAULT_FROM_EMAIL
-        mails = []
+        connection = get_connection()
 
         for reviewer in reviewers:
             if reports.filter(task__project__reviewers=reviewer).exists():
@@ -116,7 +119,15 @@ class Command(BaseCommand):
                     }, using='text'
                 )
 
-                mails.append((subject, body, from_email, [reviewer.email, cc]))
-
-        if len(mails) > 0:
-            send_mass_mail(mails)
+                messages = [
+                    EmailMessage(
+                        subject=subject,
+                        body=body,
+                        from_email=from_email,
+                        to=[reviewer.email],
+                        cc=cc,
+                        connection=connection
+                    )
+                ]
+        if len(messages) > 0:
+            connection.send_messages(messages)

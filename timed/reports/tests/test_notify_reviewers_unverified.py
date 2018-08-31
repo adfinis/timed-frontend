@@ -35,13 +35,6 @@ def test_notify_reviewers(db, mailoutbox):
 
     # checks
     mail = mailoutbox[0]
-    cc = mail.to[-1]
-    mail.to.pop()
-
-    for item in mail.body.split('\n'):
-        if 'test' in item:
-            msg = item.strip()
-
     assert len(mailoutbox) == 1
     assert mail.to == [reviewer_work.email]
     url = (
@@ -49,5 +42,5 @@ def test_notify_reviewers(db, mailoutbox):
         'toDate=2017-07-31&reviewer=%d&editable=1'
     ) % reviewer_work.id
     assert url in mail.body
-    assert msg == 'This is a test'
-    assert cc == 'example@example.com'
+    assert 'This is a test' in mail.body
+    assert mail.cc == ['example@example.com']
