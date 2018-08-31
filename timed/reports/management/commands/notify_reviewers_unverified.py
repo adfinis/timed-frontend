@@ -48,10 +48,24 @@ class Command(BaseCommand):
             dest='offset',
             help='Period will end today minus given offset.'
         )
+        parser.add_argument(
+            '--message',
+            type=str,
+            dest='message',
+            help='Additional message to send if there are unverified reports'
+        )
+        parser.add_argument(
+            '--cc',
+            type=str,
+            dest='cc',
+            help='Email address where to send a cc'
+        )
 
     def handle(self, *args, **options):
         months = options['months']
         offset = options['offset']
+        message = options['message']
+        cc = options['cc']
 
         today = date.today()
         # -1 as we also skip today
@@ -60,7 +74,7 @@ class Command(BaseCommand):
         start = end - relativedelta(months=months, days=-1)
 
         reports = self._get_unverified_reports(start, end)
-        self._notify_reviewers(start, end, reports)
+        self._notify_reviewers(start, end, reports, message, cc)
 
     def _get_unverified_reports(self, start, end):
         """
@@ -80,7 +94,7 @@ class Command(BaseCommand):
 
         return queryset
 
-    def _notify_reviewers(self, start, end, reports):
+    def _notify_reviewers(self, start, end, reports, message, cc):
         """Notify reviewers on their unverified reports."""
         User = get_user_model()
         reviewers = User.objects.all_reviewers().filter(email__isnull=False)
@@ -95,13 +109,14 @@ class Command(BaseCommand):
                         # we need start and end date in system format
                         'start': str(start),
                         'end': str(end),
+                        'message': message,
                         'reviewer': reviewer,
                         'protocol': settings.HOST_PROTOCOL,
                         'domain': settings.HOST_DOMAIN,
                     }, using='text'
                 )
 
-                mails.append((subject, body, from_email, [reviewer.email]))
+                mails.append((subject, body, from_email, [reviewer.email, cc]))
 
         if len(mails) > 0:
             send_mass_mail(mails)

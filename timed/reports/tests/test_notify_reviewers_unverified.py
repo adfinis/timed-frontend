@@ -27,14 +27,27 @@ def test_notify_reviewers(db, mailoutbox):
     ReportFactory.create(date=date(2017, 7, 1), task=task_no_work,
                          verified_by=reviewer_no_work)
 
-    call_command('notify_reviewers_unverified')
+    call_command(
+        'notify_reviewers_unverified',
+        '--cc=example@example.com',
+        '--message=This is a test'
+    )
 
     # checks
-    assert len(mailoutbox) == 1
     mail = mailoutbox[0]
+    cc = mail.to[-1]
+    mail.to.pop()
+
+    for item in mail.body.split("\n"):
+        if "test" in item:
+            msg = item.strip()
+
+    assert len(mailoutbox) == 1
     assert mail.to == [reviewer_work.email]
     url = (
         'http://localhost:4200/analysis?fromDate=2017-07-01&'
         'toDate=2017-07-31&reviewer=%d&editable=1'
     ) % reviewer_work.id
     assert url in mail.body
+    assert msg == 'This is a test'
+    assert cc == 'example@example.com'
