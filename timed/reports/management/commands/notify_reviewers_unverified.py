@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import get_connection, EmailMessage
+from django.core.mail import EmailMessage, get_connection
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.template.loader import render_to_string
