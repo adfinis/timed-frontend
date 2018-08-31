@@ -3,11 +3,10 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mass_mail
+from django.core.mail import get_connection, EmailMessage
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.template.loader import render_to_string
-from django.core.mail import get_connection, EmailMessage
 
 from timed.tracking.models import Report
 
@@ -104,6 +103,7 @@ class Command(BaseCommand):
         subject = '[Timed] Verification of reports'
         from_email = settings.DEFAULT_FROM_EMAIL
         connection = get_connection()
+        messages = []
 
         for reviewer in reviewers:
             if reports.filter(task__project__reviewers=reviewer).exists():
@@ -119,15 +119,18 @@ class Command(BaseCommand):
                     }, using='text'
                 )
 
-                messages = [
-                    EmailMessage(
-                        subject=subject,
-                        body=body,
-                        from_email=from_email,
-                        to=[reviewer.email],
-                        cc=cc,
-                        connection=connection
-                    )
-                ]
+                message = EmailMessage(
+                    subject=subject,
+                    body=body,
+                    from_email=from_email,
+                    to=[reviewer.email],
+                    connection=connection
+                )
+
+                if cc:
+                    message.cc = cc
+
+                messages.append(message)
+
         if len(messages) > 0:
             connection.send_messages(messages)

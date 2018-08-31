@@ -44,3 +44,49 @@ def test_notify_reviewers(db, mailoutbox):
     assert url in mail.body
     assert 'This is a test' in mail.body
     assert mail.cc == ['example@example.com']
+
+    call_command('notify_reviewers_unverified',)
+
+    # checks
+    mail = mailoutbox[1]
+    assert len(mailoutbox) == 2
+    assert mail.to == [reviewer_work.email]
+    url = (
+        'http://localhost:4200/analysis?fromDate=2017-07-01&'
+        'toDate=2017-07-31&reviewer=%d&editable=1'
+    ) % reviewer_work.id
+    assert url in mail.body
+    assert mail.cc == []
+
+    call_command(
+        'notify_reviewers_unverified',
+        '--message=This is a test'
+    )
+
+    # checks
+    mail = mailoutbox[2]
+    assert len(mailoutbox) == 3
+    assert mail.to == [reviewer_work.email]
+    url = (
+        'http://localhost:4200/analysis?fromDate=2017-07-01&'
+        'toDate=2017-07-31&reviewer=%d&editable=1'
+    ) % reviewer_work.id
+    assert url in mail.body
+    assert 'This is a test' in mail.body
+    assert mail.cc == []
+
+    call_command(
+        'notify_reviewers_unverified',
+        '--cc=example@example.com'
+    )
+
+    # checks
+    mail = mailoutbox[3]
+    assert len(mailoutbox) == 4
+    assert mail.to == [reviewer_work.email]
+    url = (
+        'http://localhost:4200/analysis?fromDate=2017-07-01&'
+        'toDate=2017-07-31&reviewer=%d&editable=1'
+    ) % reviewer_work.id
+    assert url in mail.body
+    assert mail.cc == ['example@example.com']
