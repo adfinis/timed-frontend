@@ -1,5 +1,5 @@
 from datetime import date
-
+import re
 import pytest
 from django.core.management import call_command
 
@@ -9,7 +9,14 @@ from timed.tracking.factories import ReportFactory
 
 
 @pytest.mark.freeze_time('2017-8-4')
-def test_notify_reviewers(db, mailoutbox):
+@pytest.mark.parametrize('cc,message', [
+    ('', ''),
+    ('example@example.com', ''),
+    ('example@example.com', 'This is a test'),
+    ('', 'This is a test'),
+    ('test.ch', '')
+])
+def test_notify_reviewers(db, mailoutbox, cc, message):
     """Test time range 2017-7-1 till 2017-7-31."""
     # a reviewer which will be notified
     reviewer_work = UserFactory.create()
@@ -29,64 +36,21 @@ def test_notify_reviewers(db, mailoutbox):
 
     call_command(
         'notify_reviewers_unverified',
-        '--cc=example@example.com',
-        '--message=This is a test'
+        '--cc={}'.format(cc),
+        '--message={}'.format(message)
     )
 
-    # checks
-    mail = mailoutbox[0]
+    if not re.match(r'[^@]+@[^@]+\.[^@]+', ', '.join(cc)):
+        cc = ''
+
+        # checks
     assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
     assert mail.to == [reviewer_work.email]
     url = (
         'http://localhost:4200/analysis?fromDate=2017-07-01&'
         'toDate=2017-07-31&reviewer=%d&editable=1'
     ) % reviewer_work.id
     assert url in mail.body
-    assert 'This is a test' in mail.body
-    assert mail.cc == ['example@example.com']
-
-    call_command('notify_reviewers_unverified',)
-
-    # checks
-    mail = mailoutbox[1]
-    assert len(mailoutbox) == 2
-    assert mail.to == [reviewer_work.email]
-    url = (
-        'http://localhost:4200/analysis?fromDate=2017-07-01&'
-        'toDate=2017-07-31&reviewer=%d&editable=1'
-    ) % reviewer_work.id
-    assert url in mail.body
-    assert mail.cc == []
-
-    call_command(
-        'notify_reviewers_unverified',
-        '--message=This is a test'
-    )
-
-    # checks
-    mail = mailoutbox[2]
-    assert len(mailoutbox) == 3
-    assert mail.to == [reviewer_work.email]
-    url = (
-        'http://localhost:4200/analysis?fromDate=2017-07-01&'
-        'toDate=2017-07-31&reviewer=%d&editable=1'
-    ) % reviewer_work.id
-    assert url in mail.body
-    assert 'This is a test' in mail.body
-    assert mail.cc == []
-
-    call_command(
-        'notify_reviewers_unverified',
-        '--cc=example@example.com'
-    )
-
-    # checks
-    mail = mailoutbox[3]
-    assert len(mailoutbox) == 4
-    assert mail.to == [reviewer_work.email]
-    url = (
-        'http://localhost:4200/analysis?fromDate=2017-07-01&'
-        'toDate=2017-07-31&reviewer=%d&editable=1'
-    ) % reviewer_work.id
-    assert url in mail.body
-    assert mail.cc == ['example@example.com']
+    assert message in mail.body
+    assert mail.cc[0] == cc

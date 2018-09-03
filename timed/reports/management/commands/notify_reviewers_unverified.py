@@ -1,3 +1,4 @@
+import re
 from datetime import date, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -57,7 +58,6 @@ class Command(BaseCommand):
         )
         parser.add_argument(
             '--cc',
-            default=[],
             action='append',
             dest='cc',
             help='List of email addresses where to send a cc'
@@ -104,6 +104,9 @@ class Command(BaseCommand):
         from_email = settings.DEFAULT_FROM_EMAIL
         connection = get_connection()
         messages = []
+        match = re.match('[^@]+@[^@]+\.[^@]+', ', '.join(cc))
+        if not match:
+            cc = ['']
 
         for reviewer in reviewers:
             if reports.filter(task__project__reviewers=reviewer).exists():
@@ -124,13 +127,10 @@ class Command(BaseCommand):
                     body=body,
                     from_email=from_email,
                     to=[reviewer.email],
+                    cc=cc,
                     connection=connection
                 )
 
-                if cc:
-                    message.cc = cc
-
                 messages.append(message)
-
         if len(messages) > 0:
             connection.send_messages(messages)
