@@ -48,7 +48,7 @@
     "ember-cli-nouislider": "^1.0.0",
     "ember-cli-postcss": "^4.0.0",
     "ember-cli-release": "^1.0.0-beta.2",
-    "ember-cli-sass": "^7.0.0",
+    "ember-cli-sass": "^9.0.0",
     "ember-cli-shims": "^1.1.0",
     "ember-cli-sri": "^2.1.0",
     "ember-cli-test-loader": "^2.1.0",
