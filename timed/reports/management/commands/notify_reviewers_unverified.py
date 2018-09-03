@@ -1,4 +1,3 @@
-import re
 from datetime import date, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -104,9 +103,6 @@ class Command(BaseCommand):
         from_email = settings.DEFAULT_FROM_EMAIL
         connection = get_connection()
         messages = []
-        match = re.match('[^@]+@[^@]+\.[^@]+', ', '.join(cc))
-        if not match:
-            cc = ['']
 
         for reviewer in reviewers:
             if reports.filter(task__project__reviewers=reviewer).exists():
