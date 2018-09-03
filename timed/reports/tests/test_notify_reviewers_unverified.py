@@ -1,5 +1,6 @@
-from datetime import date
 import re
+from datetime import date
+
 import pytest
 from django.core.management import call_command
 
@@ -36,8 +37,8 @@ def test_notify_reviewers(db, mailoutbox, cc, message):
 
     call_command(
         'notify_reviewers_unverified',
-        '--cc={}'.format(cc),
-        '--message={}'.format(message)
+        '--cc={0}'.format(cc),
+        '--message={0}'.format(message)
     )
 
     if not re.match(r'[^@]+@[^@]+\.[^@]+', ', '.join(cc)):
