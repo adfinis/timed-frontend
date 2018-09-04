@@ -42,7 +42,8 @@ class ActivitySerializer(ModelSerializer):
         # validate that there is only one active activity
         activity = models.Activity.objects.filter(user=user)
         if (activity.filter(to_time__isnull=True) and
-           to_time is None and instance is None):
+           to_time is None and not
+           (instance is not None and to_time is instance.to_time)):
             raise ValidationError(
                 _('A user can only have one active activity')
             )

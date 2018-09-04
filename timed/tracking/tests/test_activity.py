@@ -246,7 +246,7 @@ def test_activity_retrievable_not_editable(auth_client):
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_activity_patch_no_reject(auth_client):
+def test_activity_active_update(auth_client):
     activity = ActivityFactory.create(user=auth_client.user, to_time=None)
 
     data = {
@@ -268,3 +268,23 @@ def test_activity_patch_no_reject(auth_client):
         json['data']['attributes']['comment'] ==
         data['data']['attributes']['comment']
     )
+
+
+def test_activity_set_to_time_none(auth_client):
+    ActivityFactory.create(user=auth_client.user, to_time=None)
+    activity = ActivityFactory.create(user=auth_client.user)
+
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': activity.id,
+            'attributes': {
+                'to-time': None,
+            }
+        }
+    }
+
+    url = reverse('activity-detail', args=[activity.id])
+
+    res = auth_client.patch(url, data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
