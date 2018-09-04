@@ -244,3 +244,47 @@ def test_activity_retrievable_not_editable(auth_client):
 
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_200_OK
+
+
+def test_activity_active_update(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user, to_time=None)
+
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': activity.id,
+            'attributes': {
+                'from-time': '08:00',
+                'comment': 'Changed Comment',
+            }
+        }
+    }
+
+    url = reverse('activity-detail', args=[activity.id])
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert (
+        json['data']['attributes']['comment'] ==
+        data['data']['attributes']['comment']
+    )
+
+
+def test_activity_set_to_time_none(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user)
+    ActivityFactory.create(user=auth_client.user, to_time=None)
+
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': activity.id,
+            'attributes': {
+                'to-time': None,
+            }
+        }
+    }
+
+    url = reverse('activity-detail', args=[activity.id])
+
+    res = auth_client.patch(url, data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
