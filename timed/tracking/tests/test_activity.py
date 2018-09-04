@@ -244,3 +244,27 @@ def test_activity_retrievable_not_editable(auth_client):
 
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_200_OK
+
+
+def test_activity_patch_no_reject(auth_client):
+    activity = ActivityFactory.create(user=auth_client.user, to_time=None)
+
+    data = {
+        'data': {
+            'type': 'activities',
+            'id': activity.id,
+            'attributes': {
+                'from-time': '08:00',
+                'comment': 'Changed Comment',
+            }
+        }
+    }
+
+    url = reverse('activity-detail', args=[activity.id])
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert (
+        json['data']['attributes']['comment'] ==
+        data['data']['attributes']['comment']
+    )
