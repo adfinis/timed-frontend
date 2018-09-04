@@ -39,14 +39,20 @@ class ActivitySerializer(ModelSerializer):
         to_time = data.get('to_time', instance and instance.to_time)
         user = instance and instance.user or data['user']
 
+        def validate_running_activity():
+            if activity.filter(to_time__isnull=True).exists():
+                raise ValidationError(
+                    _('A user can only have one active activity')
+                )
+
         # validate that there is only one active activity
         activity = models.Activity.objects.filter(user=user)
-        if (activity.filter(to_time__isnull=True) and
-           to_time is None and not
-           (instance is not None and to_time is instance.to_time)):
-            raise ValidationError(
-                _('A user can only have one active activity')
-            )
+        # if the request creates a new activity
+        if instance is None and to_time is None:
+            validate_running_activity()
+        # if the request mutates an existsting activity
+        if instance and instance.to_time and to_time is None:
+            validate_running_activity()
 
         # validate that to is not before from
         if to_time is not None and to_time < from_time:

@@ -271,8 +271,8 @@ def test_activity_active_update(auth_client):
 
 
 def test_activity_set_to_time_none(auth_client):
-    ActivityFactory.create(user=auth_client.user, to_time=None)
     activity = ActivityFactory.create(user=auth_client.user)
+    ActivityFactory.create(user=auth_client.user, to_time=None)
 
     data = {
         'data': {
