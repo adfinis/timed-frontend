@@ -3,7 +3,7 @@ from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mass_mail
+from django.core.mail import EmailMessage, get_connection
 from django.core.management.base import BaseCommand
 from django.db.models import Count
 from django.template.loader import render_to_string
@@ -48,10 +48,25 @@ class Command(BaseCommand):
             dest='offset',
             help='Period will end today minus given offset.'
         )
+        parser.add_argument(
+            '--message',
+            default='',
+            type=str,
+            dest='message',
+            help='Additional message to send if there are unverified reports'
+        )
+        parser.add_argument(
+            '--cc',
+            action='append',
+            dest='cc',
+            help='List of email addresses where to send a cc'
+        )
 
     def handle(self, *args, **options):
         months = options['months']
         offset = options['offset']
+        message = options['message']
+        cc = options['cc']
 
         today = date.today()
         # -1 as we also skip today
@@ -60,7 +75,7 @@ class Command(BaseCommand):
         start = end - relativedelta(months=months, days=-1)
 
         reports = self._get_unverified_reports(start, end)
-        self._notify_reviewers(start, end, reports)
+        self._notify_reviewers(start, end, reports, message, cc)
 
     def _get_unverified_reports(self, start, end):
         """
@@ -80,13 +95,14 @@ class Command(BaseCommand):
 
         return queryset
 
-    def _notify_reviewers(self, start, end, reports):
+    def _notify_reviewers(self, start, end, reports, message, cc):
         """Notify reviewers on their unverified reports."""
         User = get_user_model()
         reviewers = User.objects.all_reviewers().filter(email__isnull=False)
         subject = '[Timed] Verification of reports'
         from_email = settings.DEFAULT_FROM_EMAIL
-        mails = []
+        connection = get_connection()
+        messages = []
 
         for reviewer in reviewers:
             if reports.filter(task__project__reviewers=reviewer).exists():
@@ -95,13 +111,22 @@ class Command(BaseCommand):
                         # we need start and end date in system format
                         'start': str(start),
                         'end': str(end),
+                        'message': message,
                         'reviewer': reviewer,
                         'protocol': settings.HOST_PROTOCOL,
                         'domain': settings.HOST_DOMAIN,
                     }, using='text'
                 )
 
-                mails.append((subject, body, from_email, [reviewer.email]))
+                message = EmailMessage(
+                    subject=subject,
+                    body=body,
+                    from_email=from_email,
+                    to=[reviewer.email],
+                    cc=cc,
+                    connection=connection
+                )
 
-        if len(mails) > 0:
-            send_mass_mail(mails)
+                messages.append(message)
+        if len(messages) > 0:
+            connection.send_messages(messages)
