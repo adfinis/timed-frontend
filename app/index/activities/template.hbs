@@ -16,10 +16,10 @@
             {{action 'editActivity' activity}}
           >
               <td>
-                {{moment-format activity.fromTime 'HH:mm'}}
+                {{moment-format activity.from 'HH:mm'}}
                 -
                 {{#unless activity.active}}
-                  {{moment-format activity.toTime 'HH:mm'}}
+                  {{moment-format activity.to 'HH:mm'}}
                 {{/unless}}
               </td>
               <td title='{{activity.task.project.customer.name}} > {{activity.task.project.name}} > {{activity.task.name}}'>
@@ -36,11 +36,11 @@
               <td title={{activity.comment}}><div>{{activity.comment}}</div></td>
               <td>
                 <div>{{sy-checkmark checked=activity.review}} Needs review</div>
-                <div>{{sy-checkmark checked=activtiy.notBillable}} Not billable</div>
+                <div>{{sy-checkmark checked=activity.notBillable}} Not billable</div>
               </td>
               <td>
                 {{#if activity.active}}
-                  {{duration-since activity.fromTime}}
+                  {{duration-since activity.from}}
                 {{else}}
                   {{format-duration activity.duration}}
                 {{/if}}

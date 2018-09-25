@@ -91,7 +91,7 @@ export default Service.extend({
    * @private
    */
   _triggerTitle: observer('activity.active', function() {
-    if (!this.get('activity.active')) {
+    if (this.get('activity.active')) {
       this.get('_computeTitle').perform()
     } else {
       this.setTitle(this.get('title'))
@@ -124,13 +124,8 @@ export default Service.extend({
    * @private
    */
   _computeTitle: task(function*() {
-    while (!this.get('activity.active')) {
-      let elapsed = this.get('activity.duration') || moment.duration()
-      let duration = moment.duration(
-        moment().diff(this.get('activity.fromTime'))
-      )
-
-      let full = moment.duration(elapsed).add(duration)
+    while (this.get('activity.active')) {
+      let duration = moment.duration(moment().diff(this.get('activity.from')))
 
       let task = 'Unknown Task'
 
@@ -142,7 +137,7 @@ export default Service.extend({
         task = `${c} > ${p} > ${t}`
       }
 
-      this.setTitle(`${formatDuration(full)} (${task})`)
+      this.setTitle(`${formatDuration(duration)} (${task})`)
 
       /* istanbul ignore else */
       if (testing) {

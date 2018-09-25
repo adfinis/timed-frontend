@@ -95,15 +95,51 @@ export default Model.extend({
    * @public
    */
   active: computed('toTime', function() {
-    return !this.get('toTime')
+    return !this.get('toTime') && !!this.get('id')
   }),
 
   duration: computed('fromTime', 'toTime', function() {
     return moment.duration(
-      (this.get('toTime') ? this.get('toTime') : moment()).diff(
-        this.get('fromTime')
-      )
+      (this.get('to') ? this.get('to') : moment()).diff(this.get('from'))
     )
+  }),
+
+  from: computed('date', 'fromTime', {
+    get() {
+      let time = this.get('fromTime')
+      return (
+        time &&
+        moment(this.get('date')).set({
+          h: time.hours(),
+          m: time.minutes(),
+          s: time.seconds(),
+          ms: time.milliseconds()
+        })
+      )
+    },
+    set(key, val) {
+      this.set('fromTime', val)
+      return val
+    }
+  }),
+
+  to: computed('date', 'toTime', {
+    get() {
+      let time = this.get('toTime')
+      return (
+        time &&
+        moment(this.get('date')).set({
+          h: time.hours(),
+          m: time.minutes(),
+          s: time.seconds(),
+          ms: time.milliseconds()
+        })
+      )
+    },
+    set(key, val) {
+      this.set('toTime', val)
+      return val
+    }
   }),
 
   /**

@@ -12,6 +12,6 @@ import validateMoment from 'timed/validators/moment'
  * @public
  */
 export default {
-  fromTime: validateMoment({ lt: 'toTime' }),
-  toTime: validateMoment({ gt: 'fromTime' })
+  from: validateMoment({ lt: 'to' }),
+  to: validateMoment({ gt: 'from' })
 }

@@ -126,8 +126,8 @@ export default Route.extend(RouteAutostartTourMixin, {
         'task.id',
         undefined
       )
-      let hasOverlapping = !!this.get('controller.activities').find(a => {
-        return a.get('active') && !a.get('fromTime').isSame(moment(), 'day')
+      let hasOverlapping = !!this.get('controller.sortedActivities').find(a => {
+        return a.get('active') && !a.get('from').isSame(moment(), 'day')
       })
 
       this.set('controller.showUnknownWarning', hasUnknown)
@@ -154,16 +154,18 @@ export default Route.extend(RouteAutostartTourMixin, {
             .filter(
               a =>
                 a.get('task.id') &&
-                !(
-                  a.get('active') && !a.get('fromTime').isSame(moment(), 'day')
-                ) &&
+                !(a.get('active') && !a.get('from').isSame(moment(), 'day')) &&
                 !a.get('transferred')
             )
             .map(async activity => {
               let duration = moment.duration(activity.get('duration'))
 
               if (activity.get('active')) {
-                duration.add(moment().diff(activity.get('fromTime')))
+                duration.add(moment().diff(activity.get('from')))
+
+                await this.get('tracking.stopActivity').perform()
+                this.set('tracking.activity', activity)
+                await this.get('tracking.startActivity').perform()
               }
 
               let data = {

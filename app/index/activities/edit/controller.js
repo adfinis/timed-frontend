@@ -23,8 +23,8 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {Boolean} saveEnabled
    * @public
    */
-  saveEnabled: computed('activity.{isValid,isDirty}', function() {
-    return this.get('activity.isDirty') && this.get('activity.isValid')
+  saveEnabled: computed('changeset.{isValid,isDirty}', function() {
+    return this.get('changeset.isDirty') && this.get('changeset.isValid')
   }),
 
   actions: {

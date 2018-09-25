@@ -120,7 +120,7 @@ export default Controller.extend({
    * @public
    */
   activitySum: computed(
-    '_activities.@each.{fromTime,toTime,duration}',
+    '_activities.@each.{fromTime,duration}',
     '_activeActivityDuration',
     function() {
       return this.get('_activities').reduce((dur, cur) => {
@@ -140,7 +140,7 @@ export default Controller.extend({
       let duration = this.get('_activities')
         .filterBy('active')
         .reduce((dur, cur) => {
-          return dur.add(moment().diff(cur.get('fromTime')))
+          return dur.add(moment().diff(cur.get('from')))
         }, moment.duration())
 
       this.set('_activeActivityDuration', duration)
@@ -502,8 +502,8 @@ export default Controller.extend({
     'absence.date',
     'disabledDates.[]',
     function() {
-      return this.get('absence.date').filter(
-        d => !d.isSame(this.get('disabledDates'), 'day')
+      return this.get('disabledDates').filter(
+        d => !d.isSame(this.get('absence.date'), 'day')
       )
     }
   ),

@@ -111,7 +111,6 @@ export default function() {
     return activities.all()
   })
   this.post('/activities', function({ activities, users }) {
-    console.log(...this.normalizedRequestAttrs())
     return activities.create({
       ...this.normalizedRequestAttrs(),
       userId: users.first().id

@@ -44,7 +44,7 @@ export default Controller.extend({
         return (
           a.get('date') &&
           a.get('date').isSame(this.get('model'), 'day') &&
-          a.get('user.id') === this.get('user').get('id') &&
+          a.get('user.id') === this.get('user.id') &&
           !a.get('isNew') &&
           !a.get('isDeleted')
         )
@@ -53,8 +53,8 @@ export default Controller.extend({
   ),
 
   sortedActivities: sort('activities', function(a, b) {
-    let dateA = a.get('fromTime').toDate()
-    let dateB = b.get('fromTime').toDate()
+    let dateA = a.get('from').toDate()
+    let dateB = b.get('from').toDate()
     if (dateA > dateB) {
       return -1
     }

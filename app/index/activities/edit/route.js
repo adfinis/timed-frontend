@@ -56,15 +56,15 @@ export default Route.extend(RouteAutostartTourMixin, {
   setupController(controller, model) {
     this._super(...arguments)
 
-    let activity = new Changeset(
+    let changeset = new Changeset(
       model,
       lookupValidator(ActivityValidator),
       ActivityValidator
     )
 
-    activity.validate()
+    changeset.validate()
 
-    controller.setProperties({ activity })
+    controller.setProperties({ changeset })
   },
 
   /**
@@ -88,7 +88,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       }
 
       try {
-        await this.get('controller.activity').save()
+        await this.get('controller.changeset').save()
 
         this.get('notify').success('Activity was saved')
 

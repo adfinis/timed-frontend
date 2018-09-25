@@ -1,21 +1,22 @@
 import { Factory, faker, trait } from 'ember-cli-mirage'
-import { randomDuration } from '../helpers/duration'
+//import { randomDuration } from '../helpers/duration'
 import moment from 'moment'
 
 export default Factory.extend({
   comment: () => faker.lorem.sentence(),
-  duration: () => randomDuration(1, true),
-  transferred: faker.random.boolean(),
+  transferred: false,
   review: faker.random.boolean(),
   notBillable: faker.random.boolean(),
   // task: association(),
 
   date: () => moment(),
 
-  fromTime: () => this.activity.date.clone().format('HH:mm:ss'),
+  fromTime() {
+    return this.date.clone().format('HH:mm:ss')
+  },
 
-  toTime: () => {
-    let start = moment(this.fromDatetime, 'HH:mm:ss')
+  toTime() {
+    let start = moment(this.fromTime, 'HH:mm:ss')
 
     return start
       .add(faker.random.number({ min: 15, max: 60 }), 'minutes')

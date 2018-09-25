@@ -3,7 +3,7 @@ import { setResolver } from 'ember-mocha'
 import { mocha } from 'mocha'
 
 mocha.setup({
-  timeout: 10000,
+  timeout: 100000,
   slow: 1000
 })
 
