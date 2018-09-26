@@ -1,5 +1,4 @@
 import { Factory, faker, trait } from 'ember-cli-mirage'
-//import { randomDuration } from '../helpers/duration'
 import moment from 'moment'
 
 export default Factory.extend({
@@ -26,6 +25,13 @@ export default Factory.extend({
 
   afterCreate(activity, server) {
     activity.update({ taskId: server.create('task').id })
+    activity.update({
+      duration: moment.duration(
+        (activity.toTime ? moment(activity.toTime, 'HH:mm:ss') : moment()).diff(
+          moment(activity.fromTime, 'HH:mm:ss')
+        )
+      )
+    })
   },
 
   active: trait({
@@ -35,6 +41,12 @@ export default Factory.extend({
   unknown: trait({
     afterCreate(activity) {
       activity.task.destroy()
+    }
+  }),
+
+  defineTask: trait({
+    afterCreate(activity) {
+      activity.update({ taskId: activity.definedTask })
     }
   })
 })

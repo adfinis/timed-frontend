@@ -149,56 +149,60 @@ export default Route.extend(RouteAutostartTourMixin, {
       this.set('controller.showOverlappingWarning', false)
 
       try {
-        await RSVP.all(
-          this.get('controller.activities')
-            .filter(
-              a =>
-                a.get('task.id') &&
-                !(a.get('active') && !a.get('from').isSame(moment(), 'day')) &&
-                !a.get('transferred')
-            )
-            .map(async activity => {
-              let duration = moment.duration(activity.get('duration'))
+        await this.get('controller.activities')
+          .filter(
+            a =>
+              a.get('task.id') &&
+              !(a.get('active') && !a.get('from').isSame(moment(), 'day')) &&
+              !a.get('transferred')
+          )
+          .reduce(async (reducer, activity) => {
+            let duration = activity.get('duration')
 
-              if (activity.get('active')) {
-                duration.add(moment().diff(activity.get('from')))
+            if (activity.get('active')) {
+              duration.add(moment().diff(activity.get('from')))
 
-                await this.get('tracking.stopActivity').perform()
-                this.set('tracking.activity', activity)
-                await this.get('tracking.startActivity').perform()
-              }
+              await this.get('tracking.stopActivity').perform()
+              this.set('tracking.activity', activity)
+              await this.get('tracking.startActivity').perform()
+            }
 
-              let data = {
-                duration,
-                date: activity.get('date'),
-                task: activity.get('task'),
-                review: activity.get('review'),
-                notBillable: activity.get('notBillable'),
-                comment: activity.get('comment').trim()
-              }
+            let data = {
+              duration,
+              date: activity.get('date'),
+              task: activity.get('task'),
+              review: activity.get('review'),
+              notBillable: activity.get('notBillable'),
+              comment: activity.get('comment').trim()
+            }
 
-              let report = this.store.peekAll('report').find(r => {
-                return (
-                  r.get('comment').trim() === activity.get('comment').trim() &&
-                  r.get('task.id') === activity.get('task.id') &&
-                  r.get('review') === activity.get('review') &&
-                  r.get('notBillable') === activity.get('notBillable')
-                )
-              })
-
-              if (report) {
-                data.duration.add(report.get('duation'))
-                report.setProperties(data)
-              } else {
-                report = this.store.createRecord('report', data)
-              }
-
-              activity.set('transferred', true)
-
-              await activity.save()
-              await report.save()
+            let report = this.store.peekAll('report').find(r => {
+              return (
+                (!r.get('user.id') ||
+                  r.get('user.id') === activity.get('user.id')) &&
+                r.get('date').isSame(data.date, 'day') &&
+                r.get('comment').trim() === data.comment &&
+                r.get('task.id') === data.task.get('id') &&
+                r.get('review') === data.review &&
+                r.get('notBillable') === data.notBillable &&
+                !r.get('verfiedBy') &&
+                !r.get('isDeleted')
+              )
             })
-        )
+
+            if (report) {
+              data.duration.add(report.get('duration'))
+              report.set('duration', data.duration)
+            } else {
+              report = this.store.createRecord('report', data)
+            }
+
+            activity.set('transferred', true)
+
+            return reducer
+              .then(activity.save.bind(activity))
+              .then(report.save.bind(report))
+          }, RSVP.resolve())
 
         await this.transitionTo('index.reports')
       } catch (e) {

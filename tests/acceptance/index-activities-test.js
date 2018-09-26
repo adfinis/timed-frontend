@@ -310,7 +310,7 @@ describe('Acceptance | index activities', function() {
 
     duration = moment
       .duration(duration, 'HH:mm:ss')
-      .add(moment().diff(activity.fromTime))
+      .add(moment().diff(moment(activity.fromTime, 'HH:mm:ss')))
 
     await visit('/')
 
@@ -322,6 +322,33 @@ describe('Acceptance | index activities', function() {
 
     expect(
       find(`${`[data-test-report-row-id="${id}"]`} [name=duration]`).val()
+    ).to.equal(formatDuration(duration, false))
+  })
+
+  it('combines identical activities when generating', async function() {
+    let task = server.create('task')
+    let activities = server.createList('activity', 3, 'defineTask', {
+      userId: this.user.id,
+      comment: 'Test',
+      review: false,
+      notBillable: false,
+      definedTask: task.id
+    })
+
+    let duration = activities.reduce((acc, val) => {
+      return acc.add(val.duration)
+    }, moment.duration())
+
+    await visit('/')
+
+    await click(find('button:contains(Generate timesheet)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find('[data-test-report-row]')).to.have.length(7)
+
+    expect(
+      find(`[data-test-report-row-id="6"] [name=duration]`).val()
     ).to.equal(formatDuration(duration, false))
   })
 })
