@@ -110,6 +110,10 @@ describe('Acceptance | index activities edit', function() {
       '[data-test-activity-block-row] td:nth-child(3) input',
       '08:30'
     )
+    await triggerEvent(
+      '[data-test-activity-block-row] td:nth-child(3) input',
+      'blur'
+    )
 
     expect(
       find('[data-test-activity-block-row] td:nth-child(3)').hasClass(
