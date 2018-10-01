@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { padStartTpl } from 'ember-pad/utils/pad'
@@ -71,15 +71,16 @@ export default Component.extend({
    * @property {Number[]} start
    * @public
    */
-  @computed('attendance.{from,to}')
-  start(from, to) {
+  start: computed('attendance.{from,to}', function() {
     return [
-      from.hour() * 60 + from.minute(),
+      this.get('attendance.from').hour() * 60 +
+        this.get('attendance.from').minute(),
       // If the end time is 00:00 we need to clarify that this would be 00:00
       // of the next day
-      to.hour() * 60 + to.minute() || 24 * 60
+      this.get('attendance.to').hour() * 60 +
+        this.get('attendance.to').minute() || 24 * 60
     ]
-  },
+  }),
 
   /**
    * The duration of the attendance as a string
@@ -87,13 +88,12 @@ export default Component.extend({
    * @property {String} duration
    * @public
    */
-  @computed('values')
-  duration([fromMin, toMin]) {
-    let from = moment({ hour: 0 }).minute(fromMin)
-    let to = moment({ hour: 0 }).minute(toMin)
+  duration: computed('values', function() {
+    let from = moment({ hour: 0 }).minute(this.get('values')[0])
+    let to = moment({ hour: 0 }).minute(this.get('values')[1])
 
     return formatDuration(moment.duration(to.diff(from)), false)
-  },
+  }),
 
   /**
    * The labels for the slider
@@ -101,8 +101,7 @@ export default Component.extend({
    * @property {String[]} labels
    * @public
    */
-  @computed
-  labels() {
+  labels: computed(function() {
     let labels = []
 
     for (let h = 0; h <= 24; h++) {
@@ -119,7 +118,7 @@ export default Component.extend({
     }
 
     return labels
-  },
+  }),
 
   /**
    * Save the attendance

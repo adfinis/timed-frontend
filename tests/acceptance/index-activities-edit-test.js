@@ -136,4 +136,15 @@ describe('Acceptance | index activities edit', function() {
       )
     ).to.not.be.ok
   })
+
+  it('can not edit transferred activities', async function() {
+    let { id } = server.create('activity', {
+      userId: this.user.id,
+      transferred: true
+    })
+
+    await visit(`/edit/${id}`)
+
+    expect(currentURL()).to.equal('/')
+  })
 })

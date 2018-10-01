@@ -47,7 +47,7 @@
 
 @media (--lg-viewport) {
   .activities-edit:not(:empty) + .activities-list {
-    flex-basis: auto;
+    flex-basis: 70%;
   }
 
   .activities-edit {

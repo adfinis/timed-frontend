@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import { htmlSafe } from '@ember/string'
 
 /**
@@ -63,8 +63,9 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  @computed('max', 'hours')
-  style(max, hours) {
-    return htmlSafe(`bottom: calc(100% / ${max} * ${hours})`)
-  }
+  style: computed('max', 'hours', function() {
+    return htmlSafe(
+      `bottom: calc(100% / ${this.get('max')} * ${this.get('hours')})`
+    )
+  })
 })

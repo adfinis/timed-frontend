@@ -4,7 +4,7 @@
  * @public
  */
 import { inject as service } from '@ember/service'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import AjaxService from 'ember-ajax/services/ajax'
 
 /**
@@ -31,19 +31,20 @@ export default AjaxService.extend({
    * @property {Object} headers
    * @public
    */
-  @computed('session.data.authenticated.token')
-  headers(token) {
+  headers: computed('session.data.authenticated.token', function() {
     let headers = {
       Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json'
     }
 
-    let auth = token
+    let auth = this.get('session.data.authenticated.token')
       ? {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${this.get(
+            'session.data.authenticated.token'
+          )}`
         }
       : {}
 
     return Object.assign(headers, auth)
-  }
+  })
 })

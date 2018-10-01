@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import { scheduleOnce } from '@ember/runloop'
 
 /**
@@ -15,10 +15,9 @@ import { scheduleOnce } from '@ember/runloop'
  * @public
  */
 export default Component.extend({
-  @computed('elementId')
-  checkboxElementId(id) {
-    return `${id}-checkbox`
-  },
+  checkboxElementId: computed('elementId', function() {
+    return `${this.get('elementId')}-checkbox`
+  }),
 
   didReceiveAttrs() {
     scheduleOnce('afterRender', () => {
