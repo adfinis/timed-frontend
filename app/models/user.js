@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { hasMany } from 'ember-data/relationships'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 
 /**
@@ -121,14 +121,13 @@ export default Model.extend({
    * @property {String} fullName
    * @public
    */
-  @computed('firstName', 'lastName')
-  fullName(firstName, lastName) {
-    if (!firstName && !lastName) {
+  fullName: computed('firstName', 'lastName', function() {
+    if (!this.get('firstName') && !this.get('lastName')) {
       return ''
     }
 
-    return `${firstName} ${lastName}`
-  },
+    return `${this.get('firstName')} ${this.get('lastName')}`
+  }),
 
   /**
    * The long name
@@ -139,10 +138,11 @@ export default Model.extend({
    * @property {String} longName
    * @public
    */
-  @computed('username', 'fullName')
-  longName(username, fullName) {
-    return fullName ? `${fullName} (${username})` : username
-  },
+  longName: computed('username', 'fullName', function() {
+    return this.get('fullName')
+      ? `${this.get('fullName')} (${this.get('username')})`
+      : this.get('username')
+  }),
 
   /**
    * The active employment
@@ -152,8 +152,7 @@ export default Model.extend({
    * @property {Employment} activeEmployment
    * @public
    */
-  @computed('employments.[]')
-  activeEmployment() {
+  activeEmployment: computed('employments.[]', function() {
     return (
       this.store.peekAll('employment').find(e => {
         return (
@@ -162,7 +161,7 @@ export default Model.extend({
         )
       }) || null
     )
-  },
+  }),
 
   /**
    * The current worktime balance
@@ -170,8 +169,7 @@ export default Model.extend({
    * @property {WorktimeBalance} currentWorktimeBalance
    * @public
    */
-  @computed('worktimeBalances.[]')
-  currentWorktimeBalance() {
+  currentWorktimeBalance: computed('worktimeBalances.[]', function() {
     return (
       this.store.peekAll('worktime-balance').find(balance => {
         return (
@@ -180,5 +178,5 @@ export default Model.extend({
         )
       }) || null
     )
-  }
+  })
 })

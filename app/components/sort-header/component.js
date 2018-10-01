@@ -1,6 +1,5 @@
 import Component from '@ember/component'
-
-import computed, { readOnly } from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 const getDirection = state => {
   return state.startsWith('-') ? 'desc' : 'asc'
@@ -11,20 +10,16 @@ const getColname = state => (state.startsWith('-') ? state.substring(1) : state)
 export default Component.extend({
   tagName: 'th',
 
-  @readOnly
-  @computed('current')
-  direction(current) {
-    return getDirection(current)
-  },
+  direction: computed('current', function() {
+    return getDirection(this.get('current'))
+  }).readOnly(),
 
-  @readOnly
-  @computed('current')
-  active() {
+  active: computed('current', function() {
     let by = this.get('by')
     let current = this.get('current')
 
     return getColname(current) === by
-  },
+  }).readOnly(),
 
   click() {
     let current = this.get('current')

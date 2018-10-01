@@ -7,7 +7,6 @@ import Component from '@ember/component'
 import moment from 'moment'
 import Ember from 'ember'
 import { task, timeout } from 'ember-concurrency'
-import { on } from 'ember-computed-decorators'
 
 const { testing } = Ember
 
@@ -60,13 +59,17 @@ const DurationSinceComponent = Component.extend({
    */
   duration: moment.duration(),
 
+  init() {
+    this._super(...arguments)
+    this._compute()
+  },
+
   /**
    * Compute the duration
    *
    * @method _compute
    * @private
    */
-  @on('init')
   _compute() {
     this.set(
       'duration',

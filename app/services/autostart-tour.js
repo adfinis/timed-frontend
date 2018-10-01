@@ -1,5 +1,5 @@
 import Service from '@ember/service'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 /**
  * Autostart tour service
@@ -35,21 +35,18 @@ export default Service.extend({
    * @property {String[]} done
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed()
-  done: {
+  done: computed({
     get() {
       return Array.from(
         JSON.parse(localStorage.getItem(this.get('doneKey'))) || []
       )
     },
-    set(value = []) {
+    set(key, value = []) {
       localStorage.setItem(this.get('doneKey'), JSON.stringify(value))
 
       return value
     }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  }),
 
   /**
    * Whether all tours are done

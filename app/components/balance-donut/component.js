@@ -1,6 +1,6 @@
 import Component from '@ember/component'
 import { htmlSafe } from '@ember/string'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 const { PI, floor, min, abs } = Math
 
@@ -11,47 +11,44 @@ const BalanceDonutComponent = Component.extend({
 
   classNameBindings: ['color'],
 
-  @computed('balance.{usedDays,usedDuration,credit}')
-  value(days, duration, credit) {
-    if (duration || !credit) {
+  value: computed('balance.{usedDays,usedDuration,credit}', function() {
+    if (this.get('balance.usedDuration') || !this.get('balance.credit')) {
       return 1
     }
 
-    return abs(days / credit)
-  },
+    return abs(this.get('balance.usedDays') / this.get('balance.credit'))
+  }),
 
-  @computed('value', 'balance.usedDuration')
-  color(value, hasDuration) {
-    if (hasDuration) {
+  color: computed('value', 'balance.usedDuration', function() {
+    if (this.get('balance.usedDuration')) {
       return 'primary'
     }
 
-    if (value > 1 || value < 0) {
+    if (this.get('value') > 1 || this.get('value') < 0) {
       return 'danger'
     }
 
-    if (value === 1) {
+    if (this.get('value') === 1) {
       return 'warning'
     }
 
     return 'success'
-  },
+  }),
 
   radius: 100 / (2 * PI),
 
-  @computed('count', 'index')
-  style(count, i) {
-    let mean = count / 2
+  style: computed('count', 'index', function() {
+    let mean = this.get('count') / 2
 
     let median = [floor(mean), ...(isInteger(mean) ? [floor(mean - 1)] : [])]
 
-    let deviation = min(...median.map(m => abs(m - i)))
+    let deviation = min(...median.map(m => abs(m - this.get('index'))))
 
     let offset =
       deviation && 1 / (floor(mean) - (isInteger(mean) ? 1 : 0)) * deviation
 
     return htmlSafe(`--offset-multiplicator: ${offset};`)
-  }
+  })
 })
 
 BalanceDonutComponent.reopenClass({

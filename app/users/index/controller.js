@@ -3,7 +3,8 @@ import QueryParams from 'ember-parachute'
 import { task, timeout, hash } from 'ember-concurrency'
 import { inject as service } from '@ember/service'
 import moment from 'moment'
-import computed, { oneWay } from 'ember-computed-decorators'
+import { computed } from '@ember/object'
+import { oneWay } from '@ember/object/computed'
 
 const UsersQueryParams = new QueryParams({
   search: {
@@ -31,12 +32,18 @@ const UsersQueryParams = new QueryParams({
 const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   session: service('session'),
 
-  @oneWay('session.data.user') currentUser: null,
+  currentUser: oneWay('session.data.user'),
 
-  @computed('supervisor', 'prefetchData.lastSuccessful.value.supervisor')
-  selectedSupervisor(supervisorId) {
-    return supervisorId && this.store.peekRecord('user', supervisorId)
-  },
+  selectedSupervisor: computed(
+    'supervisor',
+    'prefetchData.lastSuccessful.value.supervisor',
+    function() {
+      return (
+        this.get('supervisor') &&
+        this.store.peekRecord('user', this.get('supervisor'))
+      )
+    }
+  ),
 
   setup() {
     this.get('prefetchData').perform()

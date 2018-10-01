@@ -1,5 +1,5 @@
 import { Ability } from 'ember-can'
-import { oneWay } from 'ember-computed-decorators'
+import { oneWay } from '@ember/object/computed'
 
 /**
  * Initializer to inject the session into all abilities and
@@ -12,7 +12,7 @@ export function initialize(application) {
   application.inject('ability', 'session', 'service:session')
 
   Ability.reopen({
-    @oneWay('session.data.user') user: null
+    user: oneWay('session.data.user')
   })
 }
 

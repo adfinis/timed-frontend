@@ -1,5 +1,5 @@
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 import { scheduleOnce } from '@ember/runloop'
 
@@ -14,10 +14,10 @@ export default Component.extend({
 
   placeholder: DISPLAY_FORMAT,
 
-  @computed('value')
-  displayValue(value) {
+  displayValue: computed('value', function() {
+    let value = this.get('value')
     return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null
-  },
+  }),
 
   name: 'date',
 

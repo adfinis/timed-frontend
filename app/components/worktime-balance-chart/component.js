@@ -1,6 +1,6 @@
 import EmberChartComponent from 'ember-cli-chart/components/ember-chart'
 import humanizeDuration from 'timed/utils/humanize-duration'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 
 const FONT_FAMILY = 'TheSansLT'
@@ -8,21 +8,22 @@ const FONT_FAMILY = 'TheSansLT'
 export default EmberChartComponent.extend({
   type: 'line',
 
-  @computed('worktimeBalances.[]')
-  data(balances) {
-    if (!balances) {
+  data: computed('worktimeBalances.[]', function() {
+    if (!this.get('worktimeBalances')) {
       return []
     }
 
     return {
-      labels: balances.mapBy('date'),
+      labels: this.get('worktimeBalances').mapBy('date'),
       datasets: [
         {
-          data: balances.map(balance => balance.get('balance').asHours())
+          data: this.get('worktimeBalances').map(balance =>
+            balance.get('balance').asHours()
+          )
         }
       ]
     }
-  },
+  }),
 
   init() {
     this._super(...arguments)

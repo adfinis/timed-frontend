@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from '@ember/controller'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 /**
  * The index activities controller
@@ -20,10 +20,9 @@ export default Controller.extend({
    * @property {Activity[]} _allActivities
    * @private
    */
-  @computed()
-  _allActivities() {
+  _allActivities: computed(function() {
     return this.store.peekAll('activity')
-  },
+  }),
 
   /**
    * The activities filtered by the selected day
@@ -31,16 +30,20 @@ export default Controller.extend({
    * @property {Activity[]} activities
    * @public
    */
-  @computed('_allActivities.@each.{date,user,isNew,isDeleted}', 'model', 'user')
-  activities(activities, day, user) {
-    return activities.filter(a => {
-      return (
-        a.get('date') &&
-        a.get('date').isSame(day, 'day') &&
-        a.get('user.id') === user.get('id') &&
-        !a.get('isNew') &&
-        !a.get('isDeleted')
-      )
-    })
-  }
+  activities: computed(
+    '_allActivities.@each.{date,user,isNew,isDeleted}',
+    'model',
+    'user',
+    function() {
+      return this.get('_allActivities').filter(a => {
+        return (
+          a.get('date') &&
+          a.get('date').isSame(this.get('model'), 'day') &&
+          a.get('user.id') === this.get('user.id') &&
+          !a.get('isNew') &&
+          !a.get('isDeleted')
+        )
+      })
+    }
+  )
 })

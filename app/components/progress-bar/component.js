@@ -1,5 +1,5 @@
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 const { round } = Math
 
@@ -66,10 +66,9 @@ const ProgressBarComponent = Component.extend({
    * @property {Number} value
    * @public
    */
-  @computed('progress')
-  value(progress) {
-    return round(progress * 100)
-  },
+  value: computed('progress', function() {
+    return round(this.get('progress') * 100)
+  }),
 
   /**
    * The max value

@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import { htmlSafe } from '@ember/string'
 
 const { min } = Math
@@ -83,18 +83,17 @@ export default Component.extend({
    * @property {String} title
    * @public
    */
-  @computed('worktime', 'prefix')
-  title(worktime, prefix) {
-    let pre = prefix.length ? `${prefix}, ` : ''
+  title: computed('worktime', 'prefix', function() {
+    let pre = this.get('prefix.length') ? `${this.get('prefix')}, ` : ''
 
-    let title = `${worktime.hours()}h`
+    let title = `${this.get('worktime').hours()}h`
 
-    if (worktime.minutes()) {
-      title += ` ${worktime.minutes()}m`
+    if (this.get('worktime').minutes()) {
+      title += ` ${this.get('worktime').minutes()}m`
     }
 
     return `${pre}${title}`
-  },
+  }),
 
   /**
    * Whether the day is a workday
@@ -112,12 +111,14 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  @computed('max', 'worktime')
-  style(max, actual) {
-    let height = min(actual.asHours() / max * 100, 100)
+  style: computed('max', 'worktime', function() {
+    let height = min(
+      this.get('worktime').asHours() / this.get('max') * 100,
+      100
+    )
 
     return htmlSafe(`height: ${height}%;`)
-  },
+  }),
 
   /**
    * Click event - fire the on-click action

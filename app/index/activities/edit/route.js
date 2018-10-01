@@ -11,7 +11,7 @@ import ActivityValidator from 'timed/validations/activity'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 import ActivityBlockValidator from 'timed/validations/activity-block'
 import EmberObject from '@ember/object'
-import { oneWay } from 'ember-computed-decorators'
+import { oneWay } from '@ember/object/computed'
 import RSVP from 'rsvp'
 
 const changesetFromBlock = block => {
@@ -26,11 +26,11 @@ const changesetFromBlock = block => {
   return EmberObject.create({
     changeset,
     model: block,
-    @oneWay('model.isDeleted') isDeleted: false,
-    @oneWay('changeset.isValid') isValid: false,
-    @oneWay('changeset.isDirty') isDirty: false,
-    @oneWay('changeset.from') from: null,
-    @oneWay('changeset.to') to: null
+    isDeleted: oneWay('model.isDeleted'),
+    isValid: oneWay('changeset.isValid'),
+    isDirty: oneWay('changeset.isDirty'),
+    from: oneWay('changeset.from'),
+    to: oneWay('changeset.to')
   })
 }
 

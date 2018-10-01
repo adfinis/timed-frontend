@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { belongsTo } from 'ember-data/relationships'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 
 /**
@@ -59,10 +59,14 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  @computed('from', 'to')
-  duration(from, to) {
-    let calcTo = to.format('HH:mm') === '00:00' ? to.clone().add(1, 'day') : to
+  duration: computed('from', 'to', function() {
+    let calcTo =
+      this.get('to').format('HH:mm') === '00:00'
+        ? this.get('to')
+            .clone()
+            .add(1, 'day')
+        : this.get('to')
 
-    return moment.duration(calcTo.diff(from))
-  }
+    return moment.duration(calcTo.diff(this.get('from')))
+  })
 })

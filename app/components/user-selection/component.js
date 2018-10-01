@@ -1,7 +1,7 @@
 import Component from '@ember/component'
 import hbs from 'htmlbars-inline-precompile'
 import { inject as service } from '@ember/service'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 const SELECTED_TEMPLATE = hbs`{{selected.longName}}`
 
@@ -42,12 +42,11 @@ export default Component.extend({
     }
   },
 
-  @computed('queryOptions')
-  async users(queryOptions) {
+  users: computed('queryOptions', async function() {
     await this.get('tracking.users.last')
-    queryOptions = queryOptions || {}
+    let queryOptions = this.get('queryOptions') || {}
 
     queryOptions['ordering'] = 'username'
     return this.get('store').query('user', queryOptions)
-  }
+  })
 })
