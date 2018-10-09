@@ -262,7 +262,7 @@ export default Component.extend({
         })
       }
 
-      later(this, async () => {
+      later(this, () => {
         this.getWithDefault('attrs.on-set-task', () => {})(value)
       })
 
