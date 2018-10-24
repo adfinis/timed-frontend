@@ -1,18 +1,16 @@
-version: '2'
+version: "3"
 services:
   db:
     image: postgres:9.4
     ports:
-      - '5432:5432'
+      - "5432:5432"
     environment:
       - POSTGRES_USER=timed
       - POSTGRES_PASSWORD=timed
   backend:
     build: .
     ports:
-      - '8000:80'
-    volumes:
-      - .:/app
+      - "8000:80"
     depends_on:
       - db
     environment:
