@@ -14,9 +14,10 @@ ENV DJANGO_SETTINGS_MODULE timed.settings
 ENV STATIC_ROOT /var/www/static
 ENV UWSGI_INI /app/uwsgi.ini
 
-COPY . /app
+COPY requirements.txt /app
+RUN pip install --upgrade -r requirements.txt
 
-RUN make install
+COPY . /app
 
 RUN mkdir -p /var/www/static \
 && ENV=docker ./manage.py collectstatic --noinput
