@@ -40,6 +40,7 @@
     {{/if}}
   </ul>
   <ul class="nav-top-list nav-top-list--right">
+    {{review-warning}}
     <li class="nav-top-list-item">
       {{#link-to 'users.edit' session.data.user.id}}
         {{fa-icon 'user'}} {{session.data.user.fullName}}

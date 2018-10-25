@@ -242,4 +242,34 @@ describe('Acceptance | index', function() {
       find('[data-date=2017-06-30].ember-power-calendar-day--selected')
     ).to.have.length(0)
   })
+
+  it('sets query paramaters correctly when clicked on review warning button', async function() {
+    let fromDate = moment()
+      .startOf('month')
+      .subtract(1, 'months')
+      .format('YYYY-MM-DD')
+    let toDate = moment()
+      .endOf('month')
+      .subtract(1, 'months')
+      .format('YYYY-MM-DD')
+    let date = moment()
+      .subtract(1, 'months')
+      .format('YYYY-MM-DD')
+    let project = server.create('project', {
+      user: this.user.id
+    })
+
+    server.create('report', {
+      date: date,
+      review: true,
+      projectId: project.id
+    })
+
+    await visit('/')
+    expect(find('[data-test-review-warning]')).to.have.length(1)
+    await click('[data-test-review-warning]')
+    expect(currentURL()).to.equal(`
+    /analysis?editable=1&fromDate=${fromDate}&reviewer=${this.user
+      .id}&toDate=${toDate}`)
+  })
 })

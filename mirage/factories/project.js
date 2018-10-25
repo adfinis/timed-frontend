@@ -9,5 +9,7 @@ export default Factory.extend({
 
   afterCreate(project, server) {
     project.update({ customerId: server.create('customer').id })
+
+    project.update({ reviewer: server.create('user').id })
   }
 })
