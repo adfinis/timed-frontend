@@ -61,7 +61,7 @@
     "ember-export-application-global": "^2.0.0",
     "ember-fetch": "^5.1.1",
     "ember-font-awesome": "^3.0.5",
-    "ember-load-initializers": "^1.0.0",
+    "ember-load-initializers": "^2.0.0",
     "ember-math-helpers": "^2.2.3",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-mocha": "^0.12.0",
