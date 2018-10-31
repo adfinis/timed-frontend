@@ -1,11 +1,18 @@
 import { Ability } from 'ember-can'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 export default Ability.extend({
-  @computed('user.{id,isSuperuser}', 'model.{id,supervisors}')
-  canRead(id, isSuperuser, modelId, modelSupervisors) {
-    return (
-      isSuperuser || id === modelId || modelSupervisors.mapBy('id').includes(id)
-    )
-  }
+  canRead: computed(
+    'user.{id,isSuperuser}',
+    'model.{id,supervisors}',
+    function() {
+      return (
+        this.get('user.isSuperuser') ||
+        this.get('user.id') === this.get('model.id') ||
+        this.get('model.supervisors')
+          .mapBy('id')
+          .includes(this.get('user.id'))
+      )
+    }
+  )
 })

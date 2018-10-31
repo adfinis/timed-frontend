@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { belongsTo } from 'ember-data/relationships'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 /**
  * The task model
@@ -63,12 +63,11 @@ export default Model.extend({
    */
   isTask: true,
 
-  @computed('project')
-  longName(project) {
+  longName: computed('project', function() {
     let taskName = this.get('name')
-    let projectName = project.get('name')
-    let customerName = project.get('customer.name')
+    let projectName = this.get('project.name')
+    let customerName = this.get('project.customer.name')
 
     return `${customerName} > ${projectName} > ${taskName}`
-  }
+  })
 })

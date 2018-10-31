@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import moment from 'moment'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 
 import { belongsTo } from 'ember-data/relationships'
 
@@ -49,13 +49,12 @@ export default Model.extend({
    * @property {moment} from
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed('activity.date', 'fromTime')
-  from: {
-    get(date, time) {
+  from: computed('activity.date', 'fromTime', {
+    get() {
+      let time = this.get('fromTime')
       return (
         time &&
-        moment(date).set({
+        moment(this.get('activity.date')).set({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
@@ -63,13 +62,12 @@ export default Model.extend({
         })
       )
     },
-    set(value) {
+    set(key, value) {
       this.set('fromTime', value)
 
       return value
     }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  }),
 
   /**
    * The end time, with the date of the related activity
@@ -77,13 +75,12 @@ export default Model.extend({
    * @property {moment} to
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed('activity.date', 'toTime')
-  to: {
-    get(date, time) {
+  to: computed('activity.date', 'toTime', {
+    get() {
+      let time = this.get('toTime')
       return (
         time &&
-        moment(date).set({
+        moment(this.get('activity.date')).set({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
@@ -91,11 +88,10 @@ export default Model.extend({
         })
       )
     },
-    set(value) {
+    set(key, value) {
       this.set('toTime', value)
 
       return value
     }
-  }
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  })
 })

@@ -1,8 +1,7 @@
 import Controller from '@ember/controller'
-import { get, computed as computedFn } from '@ember/object'
+import { get, computed } from '@ember/object'
 import QueryParams from 'ember-parachute'
 import { task, hash } from 'ember-concurrency'
-import computed from 'ember-computed-decorators'
 import moment from 'moment'
 import {
   underscoreQueryParams,
@@ -112,40 +111,68 @@ export const StatisticsQueryParams = new QueryParams({
 export default Controller.extend(StatisticsQueryParams.Mixin, {
   types: Object.keys(TYPES),
 
-  @computed('prefetchData.lastSuccessful.value.billingTypes')
-  billingTypes() {
-    return this.store.findAll('billing-type')
-  },
+  billingTypes: computed(
+    'prefetchData.lastSuccessful.value.billingTypes',
+    function() {
+      return this.store.findAll('billing-type')
+    }
+  ),
 
-  @computed('prefetchData.lastSuccessful.value.costCenters')
-  costCenters() {
-    return this.store.findAll('cost-center')
-  },
+  costCenters: computed(
+    'prefetchData.lastSuccessful.value.costCenters',
+    function() {
+      return this.store.findAll('cost-center')
+    }
+  ),
 
-  @computed('customer', 'prefetchData.lastSuccessful.value.customer')
-  selectedCustomer(id) {
-    return id && this.store.peekRecord('customer', id)
-  },
+  selectedCustomer: computed(
+    'customer',
+    'prefetchData.lastSuccessful.value.customer',
+    function() {
+      return (
+        this.get('customer') &&
+        this.store.peekRecord('customer', this.get('customer'))
+      )
+    }
+  ),
 
-  @computed('project', 'prefetchData.lastSuccessful.value.project')
-  selectedProject(id) {
-    return id && this.store.peekRecord('project', id)
-  },
+  selectedProject: computed(
+    'project',
+    'prefetchData.lastSuccessful.value.project',
+    function() {
+      return (
+        this.get('project') &&
+        this.store.peekRecord('project', this.get('project'))
+      )
+    }
+  ),
 
-  @computed('task', 'prefetchData.lastSuccessful.value.task')
-  selectedTask(id) {
-    return id && this.store.peekRecord('task', id)
-  },
+  selectedTask: computed(
+    'task',
+    'prefetchData.lastSuccessful.value.task',
+    function() {
+      return this.get('task') && this.store.peekRecord('task', this.get('task'))
+    }
+  ),
 
-  @computed('user', 'prefetchData.lastSuccessful.value.user')
-  selectedUser(id) {
-    return id && this.store.peekRecord('user', id)
-  },
+  selectedUser: computed(
+    'user',
+    'prefetchData.lastSuccessful.value.user',
+    function() {
+      return this.get('user') && this.store.peekRecord('user', this.get('user'))
+    }
+  ),
 
-  @computed('reviewer', 'prefetchData.lastSuccessful.value.reviewer')
-  selectedReviewer(id) {
-    return id && this.store.peekRecord('user', id)
-  },
+  selectedReviewer: computed(
+    'reviewer',
+    'prefetchData.lastSuccessful.value.reviewer',
+    function() {
+      return (
+        this.get('reviewer') &&
+        this.store.peekRecord('user', this.get('reviewer'))
+      )
+    }
+  ),
 
   setup() {
     let observed = Object.keys(TYPES).reduce((set, key) => {
@@ -157,7 +184,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
     this.set(
       'missingParams',
-      computedFn(
+      computed(
         'requiredParams.[]',
         `queryParamsState.{${observed.join(',')}}.changed`,
         () => {
@@ -188,17 +215,15 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     }
   },
 
-  @computed('queryParamsState')
-  appliedFilters(state) {
-    return Object.keys(state).filter(key => {
+  appliedFilters: computed('queryParamsState', function() {
+    return Object.keys(this.get('queryParamsState')).filter(key => {
       return this.get(`queryParamsState.${key}.changed`) && key !== 'type'
     })
-  },
+  }),
 
-  @computed('type')
-  requiredParams(type) {
-    return TYPES[type].requiredParams
-  },
+  requiredParams: computed('type', function() {
+    return TYPES[this.get('type')].requiredParams
+  }),
 
   prefetchData: task(function*() {
     let {

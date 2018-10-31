@@ -1,5 +1,6 @@
 import Component from '@ember/component'
-import computed, { oneWay } from 'ember-computed-decorators'
+import { computed } from '@ember/object'
+import { oneWay } from '@ember/object/computed'
 import moment from 'moment'
 import { task, timeout } from 'ember-concurrency'
 import { inject as service } from '@ember/service'
@@ -62,7 +63,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {moment.duration} estimated
    * @public
    */
-  @oneWay('model.estimatedTime') estimated: moment.duration(),
+  estimated: oneWay('model.estimatedTime'),
 
   /**
    * The spent time
@@ -78,10 +79,11 @@ const ProgressTooltipComponent = Component.extend({
    * @property {Number} progress
    * @public
    */
-  @computed('estimated', 'spent')
-  progress(estimated, spent) {
-    return estimated && estimated.asHours() ? spent / estimated : 0
-  },
+  progress: computed('estimated', 'spent', function() {
+    return this.get('estimated') && this.get('estimated').asHours()
+      ? this.get('spent') / this.get('estimated')
+      : 0
+  }),
 
   /**
    * The color of the badge and progress bar
@@ -89,16 +91,15 @@ const ProgressTooltipComponent = Component.extend({
    * @property {String} color
    * @public
    */
-  @computed('progress')
-  color(progress) {
-    if (progress > 1) {
+  color: computed('progress', function() {
+    if (this.get('progress') > 1) {
       return 'danger'
-    } else if (progress >= 0.9) {
+    } else if (this.get('progress') >= 0.9) {
       return 'warning'
     }
 
     return 'success'
-  },
+  }),
 
   /**
    * Whether the tooltip is visible or not
@@ -106,14 +107,13 @@ const ProgressTooltipComponent = Component.extend({
    * @property {EmberConcurrency.Task} tooltipVisible
    * @public
    */
-  @computed('visible')
-  tooltipVisible(visible) {
+  tooltipVisible: computed('visible', function() {
     let task = this.get('_computeTooltipVisible')
 
-    task.perform(visible)
+    task.perform(this.get('visible'))
 
     return task
-  },
+  }),
 
   /**
    * Task to toggle the visibility and fetch the needed data

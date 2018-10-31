@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import { inject as service } from '@ember/service'
 import hbs from 'htmlbars-inline-precompile'
 import { later } from '@ember/runloop'
@@ -175,13 +175,11 @@ export default Component.extend({
    * @property {Customer} customer
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed('_customer')
-  customer: {
-    get(customer) {
-      return customer
+  customer: computed('_customer', {
+    get() {
+      return this.get('_customer')
     },
-    set(value) {
+    set(key, value) {
       // It is also possible a task was selected from the history.
       if (value && value.get('constructor.modelName') === 'task') {
         this.set('task', value)
@@ -205,8 +203,7 @@ export default Component.extend({
 
       return value
     }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  }),
 
   /**
    * The selected project
@@ -217,13 +214,11 @@ export default Component.extend({
    * @property {Project} project
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed('_project')
-  project: {
-    get(project) {
-      return project
+  project: computed('_project', {
+    get() {
+      return this.get('_project')
     },
-    set(value) {
+    set(key, value) {
       this.set('_project', value)
 
       if (value && value.get('customer.id')) {
@@ -246,8 +241,7 @@ export default Component.extend({
 
       return value
     }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  }),
 
   /**
    * The currently selected task
@@ -255,13 +249,11 @@ export default Component.extend({
    * @property {Task} task
    * @public
    */
-  /* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-  @computed('_task')
-  task: {
-    get(task) {
-      return task
+  task: computed('_task', {
+    get() {
+      return this.get('_task')
     },
-    set(value) {
+    set(key, value) {
       this.set('_task', value)
 
       if (value && value.get('project.id')) {
@@ -270,14 +262,13 @@ export default Component.extend({
         })
       }
 
-      later(this, () => {
+      later(this, async () => {
         this.getWithDefault('attrs.on-set-task', () => {})(value)
       })
 
       return value
     }
-  },
-  /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
+  }),
 
   /**
    * All customers and recent tasks which are selectable in the dropdown
@@ -285,13 +276,12 @@ export default Component.extend({
    * @property {Array} customersAndRecentTasks
    * @public
    */
-  @computed('history', 'archived')
-  async customersAndRecentTasks(history, archived) {
+  customersAndRecentTasks: computed('history', 'archived', async function() {
     let ids = []
 
     await this.get('tracking.customers.last')
 
-    if (history) {
+    if (this.get('history')) {
       await this.get('tracking.recentTasks.last')
 
       let last = this.get('tracking.recentTasks.last.value')
@@ -302,7 +292,7 @@ export default Component.extend({
     let customers = this.get('store')
       .peekAll('customer')
       .filter(c => {
-        return archived ? true : !c.get('archived')
+        return this.get('archived') ? true : !c.get('archived')
       })
       .sortBy('name')
 
@@ -310,12 +300,13 @@ export default Component.extend({
       .peekAll('task')
       .filter(t => {
         return (
-          ids.includes(t.get('id')) && (archived ? true : !t.get('archived'))
+          ids.includes(t.get('id')) &&
+          (this.get('archived') ? true : !t.get('archived'))
         )
       })
 
     return [...tasks.toArray(), ...customers.toArray()]
-  },
+  }),
 
   /**
    * All projects which are selectable in the dropdown
@@ -325,21 +316,21 @@ export default Component.extend({
    * @property {Project[]} projects
    * @public
    */
-  @computed('customer.id', 'archived')
-  async projects(id, archived) {
-    if (id) {
-      await this.get('tracking.projects').perform(id)
+  projects: computed('customer.id', 'archived', async function() {
+    if (this.get('customer.id')) {
+      await this.get('tracking.projects').perform(this.get('customer.id'))
     }
 
     return this.get('store')
       .peekAll('project')
       .filter(p => {
         return (
-          p.get('customer.id') === id && (archived ? true : !p.get('archived'))
+          p.get('customer.id') === this.get('customer.id') &&
+          (this.get('archived') ? true : !p.get('archived'))
         )
       })
       .sortBy('name')
-  },
+  }),
 
   /**
    * All tasks which are selectable in the dropdown
@@ -349,21 +340,21 @@ export default Component.extend({
    * @property {Task[]} tasks
    * @public
    */
-  @computed('project.id', 'archived')
-  async tasks(id, archived) {
-    if (id) {
-      await this.get('tracking.tasks').perform(id)
+  tasks: computed('project.id', 'archived', async function() {
+    if (this.get('project.id')) {
+      await this.get('tracking.tasks').perform(this.get('project.id'))
     }
 
     return this.get('store')
       .peekAll('task')
       .filter(t => {
         return (
-          t.get('project.id') === id && (archived ? true : !t.get('archived'))
+          t.get('project.id') === this.get('project.id') &&
+          (this.get('archived') ? true : !t.get('archived'))
         )
       })
       .sortBy('name')
-  },
+  }),
 
   actions: {
     /**

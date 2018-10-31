@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { hasMany } from 'ember-data/relationships'
-import { oneWay } from 'ember-computed-decorators'
+import { oneWay } from '@ember/object/computed'
 
 /**
  * The customer model
@@ -49,7 +49,7 @@ const Customer = Model.extend({
    * @property {String} longName
    * @public
    */
-  @oneWay('name') longName: ''
+  longName: oneWay('name')
 })
 
 export default Customer

@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import { htmlSafe } from '@ember/string'
 
 /**
@@ -37,10 +37,9 @@ export default Component.extend({
    * @property {Number} hours
    * @public
    */
-  @computed('expected')
-  hours(expected) {
-    return expected.asHours()
-  },
+  hours: computed('expected', function() {
+    return this.get('expected').asHours()
+  }),
 
   /**
    * The style of the element
@@ -50,8 +49,7 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  @computed('height')
-  style(height) {
-    return htmlSafe(`height: ${height}px;`)
-  }
+  style: computed('height', function() {
+    return htmlSafe(`height: ${this.get('height')}px;`)
+  })
 })

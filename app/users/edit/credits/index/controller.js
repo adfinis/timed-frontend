@@ -1,7 +1,7 @@
 import Controller, { inject as controller } from '@ember/controller'
 import { inject as service } from '@ember/service'
 import { task } from 'ember-concurrency'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
 import { ability } from 'ember-can/computed'
@@ -40,18 +40,18 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   overtimeCreditAbility: ability('overtime-credit'),
   absenceCreditAbility: ability('absence-credit'),
 
-  @computed(
+  allowTransfer: computed(
     'year',
     'overtimeCreditAbility.canCreate',
-    'absenceCreditAbility.canCreate'
-  )
-  allowTransfer(year, canCreateOvertimeCredit, canCreateAbsenceCredit) {
-    return (
-      parseInt(year) === moment().year() - 1 &&
-      canCreateAbsenceCredit &&
-      canCreateAbsenceCredit
-    )
-  },
+    'absenceCreditAbility.canCreate',
+    function() {
+      return (
+        parseInt(this.get('year')) === moment().year() - 1 &&
+        this.get('overtimeCreditAbility.canCreate') &&
+        this.get('absenceCreditAbility.canCreate')
+      )
+    }
+  ),
 
   setup() {
     this.get('years').perform()

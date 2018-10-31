@@ -7,7 +7,8 @@ import Component from '@ember/component'
 import ReportValidations from 'timed/validations/report'
 import Changeset from 'ember-changeset'
 import lookupValidator from 'ember-changeset-validations'
-import computed, { not } from 'ember-computed-decorators'
+import { computed } from '@ember/object'
+import { not } from '@ember/object/computed'
 
 /**
  * Component for the editable report row
@@ -35,16 +36,15 @@ const ReportRowComponent = Component.extend({
 
   attributeBindings: ['title'],
 
-  @not('report.verifiedBy.id') editable: true,
+  editable: not('report.verifiedBy.id'),
 
-  @computed('report.verifiedBy')
-  title(verifier) {
-    return verifier.get('id')
-      ? `This entry was already verified by ${verifier.get(
-          'fullName'
+  title: computed('report.verifiedBy', function() {
+    return this.get('report.verifiedBy.id')
+      ? `This entry was already verified by ${this.get(
+          'report.verifiedBy.fullName'
         )} and therefore not editable anymore`
       : ''
-  },
+  }),
 
   /**
    * The changeset to edit
@@ -52,8 +52,7 @@ const ReportRowComponent = Component.extend({
    * @property {EmberChangeset.Changeset} changeset
    * @public
    */
-  @computed('report.{id,verifiedBy}')
-  changeset() {
+  changeset: computed('report.{id,verifiedBy}', function() {
     let c = new Changeset(
       this.get('report'),
       lookupValidator(ReportValidations),
@@ -63,7 +62,7 @@ const ReportRowComponent = Component.extend({
     c.validate()
 
     return c
-  },
+  }),
 
   actions: {
     /**

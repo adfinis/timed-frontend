@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from '@ember/controller'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 
 /**
@@ -21,18 +21,19 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {moment.duration} total
    * @public
    */
-  @computed('blocks.@each.{from,to,isDeleted}')
-  total(blocks) {
-    return blocks.filterBy('isDeleted', false).reduce((dur, block) => {
-      let { from, to } = block.getProperties('from', 'to')
+  total: computed('blocks.@each.{from,to,isDeleted}', function() {
+    return this.get('blocks')
+      .filterBy('isDeleted', false)
+      .reduce((dur, block) => {
+        let { from, to } = block.getProperties('from', 'to')
 
-      if (to) {
-        dur.add(to.diff(from))
-      }
+        if (to) {
+          dur.add(to.diff(from))
+        }
 
-      return dur
-    }, moment.duration())
-  },
+        return dur
+      }, moment.duration())
+  }),
 
   /**
    * Whether the save button is enabled
@@ -43,18 +44,20 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {Boolean} saveEnabled
    * @public
    */
-  @computed(
+  saveEnabled: computed(
     'blocks.@each.{isValid,isDirty,isDeleted}',
-    'activity.{isValid,isDirty}'
-  )
-  saveEnabled(blocks, activityValid, activityDirty) {
-    return (
-      (activityDirty ||
-        blocks.some(b => b.get('isDirty') || b.get('isDeleted'))) &&
-      activityValid &&
-      blocks.every(b => b.get('isDeleted') || b.get('isValid'))
-    )
-  },
+    'activity.{isValid,isDirty}',
+    function() {
+      return (
+        (this.get('activity.isDirty') ||
+          this.get('blocks').some(
+            b => b.get('isDirty') || b.get('isDeleted')
+          )) &&
+        this.get('activity.isValid') &&
+        this.get('blocks').every(b => b.get('isDeleted') || b.get('isValid'))
+      )
+    }
+  ),
 
   actions: {
     /**

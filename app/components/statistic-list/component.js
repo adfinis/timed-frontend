@@ -1,6 +1,5 @@
 import Component from '@ember/component'
-import { get } from '@ember/object'
-import computed from 'ember-computed-decorators'
+import { get, computed } from '@ember/object'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import { capitalize } from '@ember/string'
@@ -57,40 +56,43 @@ const COLUMN_MAP = {
 }
 
 export default Component.extend({
-  @computed('data.last.value.@each.duration')
-  maxDuration(data) {
-    return data && moment.duration(Math.max(...data.mapBy('duration')))
-  },
+  maxDuration: computed('data.last.value.@each.duration', function() {
+    return (
+      this.get('data.last.value') &&
+      moment.duration(
+        Math.max(...this.get('data.last.value').mapBy('duration'))
+      )
+    )
+  }),
 
-  @computed('data.last.value')
-  total(data) {
-    return parseDjangoDuration(data.getWithDefault('meta.total-time', null))
-  },
+  total: computed('data.last.value', function() {
+    return parseDjangoDuration(
+      this.getWithDefault('data.last.value.meta.total-time', null)
+    )
+  }),
 
-  @computed('type')
-  columns(type) {
-    return get(COLUMN_MAP, type).map(col => ({
+  columns: computed('type', function() {
+    return get(COLUMN_MAP, this.get('type')).map(col => ({
       ...col,
       ordering: col.ordering || col.path.replace(/\./g, '__')
     }))
-  },
+  }),
 
-  @computed('missingParams.[]')
-  missingParamsMessage(params) {
-    if (!params.length) {
+  missingParamsMessage: computed('missingParams.[]', function() {
+    if (!this.get('missingParams.length')) {
       return ''
     }
 
-    let text = params
+    let text = this.get('missingParams')
       .map((param, index) => {
         if (index === 0) {
           param = capitalize(param)
         }
 
-        if (params.length > 1) {
-          if (index + 1 === params.length) {
+        if (this.get('missingParams.length') > 1) {
+          if (index + 1 === this.get('missingParams.length')) {
             param = `and ${param}`
-          } else if (index + 2 !== params.length) {
+          } else if (index + 2 !== this.get('missingParams.length')) {
             param = `${param},`
           }
         }
@@ -100,8 +102,10 @@ export default Component.extend({
       .join(' ')
 
     let suffix =
-      params.length > 1 ? 'are required parameters' : 'is a required parameter'
+      this.get('missingParams.length') > 1
+        ? 'are required parameters'
+        : 'is a required parameter'
 
     return `${text} ${suffix} for this statistic`
-  }
+  })
 })

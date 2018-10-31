@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import moment from 'moment'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import RSVP from 'rsvp'
 import { inject as service } from '@ember/service'
 
@@ -90,12 +90,11 @@ export default Model.extend({
    * @type {ActivityBlock}
    * @public
    */
-  @computed('blocks.@each.to')
-  activeBlock(blocks) {
-    let activeBlocks = blocks.filter(b => !b.get('to'))
+  activeBlock: computed('blocks.@each.to', function() {
+    let activeBlocks = this.get('blocks').filter(b => !b.get('to'))
 
     return activeBlocks.get('length') ? activeBlocks.get('firstObject') : null
-  },
+  }),
 
   /**
    * Whether the activity is active
@@ -104,10 +103,9 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  @computed('activeBlock')
-  active(block) {
-    return Boolean(block && block.get('from'))
-  },
+  active: computed('activeBlock', function() {
+    return Boolean(this.get('activeBlock') && this.get('activeBlock.from'))
+  }),
 
   /**
    * Start the activity

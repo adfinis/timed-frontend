@@ -1,9 +1,9 @@
 import { Ability } from 'ember-can'
-import { oneWay } from 'ember-computed-decorators'
+import { oneWay } from '@ember/object/computed'
 
 const AbsenceCreditAbility = Ability.extend({
-  @oneWay('user.isSuperuser') canEdit: false,
-  @oneWay('user.isSuperuser') canCreate: false
+  canEdit: oneWay('user.isSuperuser'),
+  canCreate: oneWay('user.isSuperuser')
 })
 
 export default AbsenceCreditAbility

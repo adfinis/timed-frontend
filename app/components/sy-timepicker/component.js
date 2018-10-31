@@ -4,7 +4,7 @@
  * @public
  */
 import Component from '@ember/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 import { padStart } from 'ember-pad/utils/pad'
 
@@ -111,13 +111,12 @@ export default Component.extend({
    * @property {String} pattern
    * @public
    */
-  @computed('precision')
-  pattern(p) {
-    let count = 60 / p
+  pattern: computed('precision', function() {
+    let count = 60 / this.get('precision')
     let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
 
     return `([01]?[0-9]|2[0-3]):(${minutes.map(m => padStart(m, 2)).join('|')})`
-  },
+  }),
 
   /**
    * The display representation of the value
@@ -127,10 +126,10 @@ export default Component.extend({
    * @property {String} displayValue
    * @public
    */
-  @computed('value')
-  displayValue(value) {
+  displayValue: computed('value', function() {
+    let value = this.get('value')
     return value && value.isValid() ? value.format('HH:mm') : ''
-  },
+  }),
 
   /**
    * Init hook, set min and max if not passed

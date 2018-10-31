@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from '@ember/controller'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import ReportValidations from 'timed/validations/report'
 
 /**
@@ -25,10 +25,9 @@ export default Controller.extend({
    * @property {Report[]} _allReports
    * @private
    */
-  @computed()
-  _allReports() {
+  _allReports: computed(function() {
     return this.store.peekAll('report')
-  },
+  }),
 
   /**
    * The reports filtered by the selected day
@@ -38,20 +37,24 @@ export default Controller.extend({
    * @property {Report[]} reports
    * @public
    */
-  @computed('_allReports.@each.{user,date,isNew,isDeleted}', 'model', 'user')
-  reports(reports, day, user) {
-    let reportsToday = reports.filter(r => {
-      return (
-        (!r.get('user.id') || r.get('user.id') === user.get('id')) &&
-        r.get('date').isSame(day, 'day') &&
-        !r.get('isDeleted')
-      )
-    })
+  reports: computed(
+    '_allReports.@each.{user,date,isNew,isDeleted}',
+    'model',
+    'user',
+    function() {
+      let reportsToday = this.get('_allReports').filter(r => {
+        return (
+          (!r.get('user.id') || r.get('user.id') === this.get('user.id')) &&
+          r.get('date').isSame(this.get('model'), 'day') &&
+          !r.get('isDeleted')
+        )
+      })
 
-    if (!reportsToday.filterBy('isNew', true).get('length')) {
-      this.store.createRecord('report', { date: this.get('model') })
+      if (!reportsToday.filterBy('isNew', true).get('length')) {
+        this.store.createRecord('report', { date: this.get('model') })
+      }
+
+      return reportsToday.sort(a => (a.get('isNew') ? 1 : -1))
     }
-
-    return reportsToday.sort(a => (a.get('isNew') ? 1 : -1))
-  }
+  )
 })

@@ -4,7 +4,7 @@
  * @public
  */
 import SyTimepickerComponent from 'timed/components/sy-timepicker/component'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { padStart } from 'ember-pad/utils/pad'
@@ -49,15 +49,14 @@ export default SyTimepickerComponent.extend({
    * @property {String} pattern
    * @public
    */
-  @computed('min', 'precision')
-  pattern(min, p) {
-    let count = 60 / p
+  pattern: computed('min', 'precision', function() {
+    let count = 60 / this.get('precision')
     let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
 
-    return `${min < 0 ? '-?' : ''}\\d+:(${minutes
-      .map(m => padStart(m, 2))
-      .join('|')})`
-  },
+    return `${this.get('min') < 0
+      ? '-?'
+      : ''}\\d+:(${minutes.map(m => padStart(m, 2)).join('|')})`
+  }),
 
   change({ target: { validity, value } }) {
     if (validity.valid) {
@@ -79,10 +78,9 @@ export default SyTimepickerComponent.extend({
    * @property {String} displayValue
    * @public
    */
-  @computed('value')
-  displayValue(value) {
-    return value ? formatDuration(value, false) : ''
-  },
+  displayValue: computed('value', function() {
+    return this.get('value') ? formatDuration(this.get('value'), false) : ''
+  }),
 
   /**
    * Set the current value

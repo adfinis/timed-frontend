@@ -4,7 +4,7 @@ import { task } from 'ember-concurrency'
 import { AnalysisQueryParams } from '../index/controller'
 import { dasherize } from '@ember/string'
 import { cleanParams } from 'timed/utils/url'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import { toQueryString } from 'timed/utils/url'
 import IntersectionValidations from 'timed/validations/intersection'
 import { later } from '@ember/runloop'
@@ -79,25 +79,41 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     }
   }),
 
-  @computed('intersection.lastSuccessful.value.model.customer.id')
-  _customer(id) {
-    return id && this.store.peekRecord('customer', id)
-  },
+  _customer: computed(
+    'intersection.lastSuccessful.value.model.customer.id',
+    function() {
+      let id = this.get('intersection.lastSuccessful.value.model.customer.id')
+      return id && this.store.peekRecord('customer', id)
+    }
+  ),
 
-  @computed('intersection.lastSuccessful.value.model.project.id')
-  _project(id) {
-    return id && this.store.peekRecord('project', id)
-  },
+  _project: computed(
+    'intersection.lastSuccessful.value.model.project.id',
+    function() {
+      let id = this.get('intersection.lastSuccessful.value.model.project.id')
+      return id && this.store.peekRecord('project', id)
+    }
+  ),
 
-  @computed('intersection.lastSuccessful.value.model.task.id')
-  _task(id) {
-    return id && this.store.peekRecord('task', id)
-  },
+  _task: computed(
+    'intersection.lastSuccessful.value.model.task.id',
+    function() {
+      let id = this.get('intersection.lastSuccessful.value.model.task.id')
+      return id && this.store.peekRecord('task', id)
+    }
+  ),
 
-  @computed('allQueryParams.reviewer', 'session.data.user')
-  canVerify(reviewer, user) {
-    return reviewer === user.get('id') || user.get('isSuperuser')
-  },
+  canVerify: computed(
+    'allQueryParams.reviewer',
+    'session.data.user',
+    function() {
+      return (
+        this.get('allQueryParams.reviewer') ===
+          this.get('session.data.user.id') ||
+        this.get('session.data.user.isSuperuser')
+      )
+    }
+  ),
 
   save: task(function*(changeset) {
     try {

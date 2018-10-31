@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from '@ember/controller'
-import computed from 'ember-computed-decorators'
+import { computed } from '@ember/object'
 import AttendanceValidator from 'timed/validations/attendance'
 
 /**
@@ -23,10 +23,9 @@ export default Controller.extend({
    * @property {Attendance[]} _allAttendances
    * @private
    */
-  @computed()
-  _allAttendances() {
+  _allAttendances: computed(function() {
     return this.store.peekAll('attendance')
-  },
+  }),
 
   /**
    * The attendances filtered by the selected day
@@ -34,14 +33,18 @@ export default Controller.extend({
    * @property {Attendance[]} attendances
    * @public
    */
-  @computed('_allAttendances.@each.{date,user,isDeleted}', 'model', 'user')
-  attendances(attendances, date, user) {
-    return attendances.filter(a => {
-      return (
-        a.get('date').isSame(date, 'day') &&
-        a.get('user.id') === user.get('id') &&
-        !a.get('isDeleted')
-      )
-    })
-  }
+  attendances: computed(
+    '_allAttendances.@each.{date,user,isDeleted}',
+    'model',
+    'user',
+    function() {
+      return this.get('_allAttendances').filter(a => {
+        return (
+          a.get('date').isSame(this.get('date'), 'day') &&
+          a.get('user.id') === this.get('user.id') &&
+          !a.get('isDeleted')
+        )
+      })
+    }
+  )
 })
