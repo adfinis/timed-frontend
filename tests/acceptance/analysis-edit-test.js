@@ -1,3 +1,4 @@
+import { click, find, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -6,7 +7,6 @@ import { describe, it, beforeEach, afterEach } from 'mocha'
 import { expect } from 'chai'
 import destroyApp from '../helpers/destroy-app'
 import startApp from '../helpers/start-app'
-import { find, click } from 'ember-native-dom-helpers'
 
 describe('Acceptance | analysis edit', function() {
   let application

@@ -1,3 +1,4 @@
+import { click } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -30,7 +31,7 @@ describe('Integration | Component | report row', function() {
     expect(this.$('.btn-primary')).to.have.length(1)
   })
 
-  it('can delete row', function() {
+  it('can delete row', async function() {
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
     this.set('didDelete', false)
 
@@ -38,7 +39,7 @@ describe('Integration | Component | report row', function() {
       hbs`{{report-row report on-delete=(action (mut didDelete) true)}}`
     )
 
-    this.$('.btn-danger').click()
+    await click('.btn-danger')
 
     expect(this.get('didDelete')).to.be.ok
   })

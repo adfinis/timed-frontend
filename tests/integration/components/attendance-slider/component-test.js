@@ -1,3 +1,4 @@
+import { click, find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -25,7 +26,7 @@ describe('Integration | Component | attendance slider', function() {
     expect(this.$('.noUi-connect')).to.be.ok
   })
 
-  it('can delete', function() {
+  it('can delete', async function() {
     this.set('attendance', ATTENDANCE)
 
     this.on('delete', attendance => {
@@ -39,7 +40,7 @@ describe('Integration | Component | attendance slider', function() {
       }}
     `)
 
-    this.$('.fa-trash').click()
+    await click('.fa-trash')
   })
 
   it('can handle attendances until 00:00', function() {
@@ -55,10 +56,6 @@ describe('Integration | Component | attendance slider', function() {
       {{attendance-slider attendance=attendance}}
     `)
 
-    expect(
-      this.$('span')
-        .text()
-        .trim()
-    ).to.equal('24:00')
+    expect(find('span').textContent.trim()).to.equal('24:00')
   })
 })

@@ -1,3 +1,4 @@
+import { find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -11,6 +12,6 @@ describe('Integration | Component | progress bar', function() {
   it('renders', function() {
     this.render(hbs`{{progress-bar 0.5}}`)
 
-    expect(parseInt(this.$('progress').attr('value'))).to.equal(50)
+    expect(parseInt(find('progress').getAttribute('value'))).to.equal(50)
   })
 })

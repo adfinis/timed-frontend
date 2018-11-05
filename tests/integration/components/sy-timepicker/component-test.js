@@ -1,3 +1,4 @@
+import { find, fillIn, blur } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -17,10 +18,10 @@ describe('Integration | Component | sy timepicker', function() {
 
     this.render(hbs`{{sy-timepicker value=value}}`)
 
-    expect(this.$('input').val()).to.equal(moment().format('HH:mm'))
+    expect(find('input').value).to.equal(moment().format('HH:mm'))
   })
 
-  it('can change the value', function() {
+  it('can change the value', async function() {
     this.set(
       'value',
       moment({
@@ -33,15 +34,14 @@ describe('Integration | Component | sy timepicker', function() {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('13:15')
-      .change()
+    await fillIn('input', '13:15')
+    await blur('input')
 
     expect(this.get('value').hour()).to.equal(13)
     expect(this.get('value').minute()).to.equal(15)
   })
 
-  it("can't set an invalid value", function() {
+  it("can't set an invalid value", async function() {
     this.set(
       'value',
       moment({
@@ -54,30 +54,27 @@ describe('Integration | Component | sy timepicker', function() {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('24:15')
-      .change()
+    await fillIn('input', '24:15')
+    await blur('input')
 
     expect(this.get('value').hour()).to.equal(12)
     expect(this.get('value').minute()).to.equal(30)
   })
 
-  it('can only input digits and colons', function() {
+  it('can only input digits and colons', async function() {
     this.set('value', null)
 
     this.render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('xx:xx')
-      .change()
+    await fillIn('input', 'xx:xx')
+    await blur('input')
 
     expect(this.get('value')).to.be.null
 
-    this.$('input')
-      .val('01:30')
-      .change()
+    await fillIn('input', '01:30')
+    await blur('input')
 
     expect(this.get('value')).to.not.be.null
   })
@@ -282,16 +279,15 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(5)
   })
 
-  it('can handle null values', function() {
+  it('can handle null values', async function() {
     this.set('value', moment({ h: 12, m: 30 }))
 
     this.render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('')
-      .change()
+    await fillIn('input', '')
+    await blur('input')
 
     expect(this.get('value')).to.be.null
   })

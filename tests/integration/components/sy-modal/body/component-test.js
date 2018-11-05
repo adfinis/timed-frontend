@@ -1,3 +1,4 @@
+import { find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -11,10 +12,6 @@ describe('Integration | Component | sy modal/body', function() {
   it('renders', function() {
     this.render(hbs`{{#sy-modal/body}}Test{{/sy-modal/body}}`)
 
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.equal('Test')
+    expect(find('*').textContent.trim()).to.equal('Test')
   })
 })

@@ -1,3 +1,4 @@
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import { authenticateSession } from 'timed/tests/helpers/ember-simple-auth'
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'

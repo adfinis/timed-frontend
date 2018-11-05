@@ -1,4 +1,7 @@
 module.exports = {
+  globals: {
+    server: true
+  },
   root: true,
   parser: 'babel-eslint',
   parserOptions: {
@@ -15,15 +18,20 @@ module.exports = {
   plugins: ['ember', 'prettier'],
   extends: ['eslint:recommended', 'plugin:ember/recommended', 'prettier'],
   rules: {
+<<<<<<< HEAD
     'prettier/prettier': 'error'
+  }
+}
+=======
   },
   overrides: [
     // node files
     {
       files: [
-        'testem.js',
         'ember-cli-build.js',
-        'config/**/*.js'
+        'testem.js',
+        'config/**/*.js',
+        'lib/*/index.js'
       ],
       parserOptions: {
         sourceType: 'script',
@@ -33,15 +41,7 @@ module.exports = {
         browser: false,
         node: true
       }
-    },
-
-    // test files
-    {
-      files: ['tests/**/*.js'],
-      excludedFiles: ['tests/dummy/**/*.js'],
-      env: {
-        embertest: true
-      }
     }
   ]
-}
+};
+>>>>>>> 12f91d1... message

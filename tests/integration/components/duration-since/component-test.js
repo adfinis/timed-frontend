@@ -1,3 +1,4 @@
+import { find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -23,11 +24,7 @@ describe('Integration | Component | duration since', function() {
     this.render(hbs`{{duration-since start}}`)
 
     expect(this.$()).to.have.length(1)
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.equal('00:05:05')
+    expect(find('*').textContent.trim()).to.equal('00:05:05')
   })
 
   it('computes the duration correctly with elapsed time', function() {
@@ -51,10 +48,6 @@ describe('Integration | Component | duration since', function() {
     this.render(hbs`{{duration-since start elapsed=elapsed}}`)
 
     expect(this.$()).to.have.length(1)
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.equal('01:06:06')
+    expect(find('*').textContent.trim()).to.equal('01:06:06')
   })
 })

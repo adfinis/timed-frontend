@@ -1,3 +1,4 @@
+import { click, find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -20,11 +21,7 @@ describe('Integration | Component | weekly overview day', function() {
 
     expect(this.$()).to.have.length(1)
 
-    expect(
-      this.$('.day')
-        .text()
-        .trim()
-    ).to.equal('05\n  Th')
+    expect(find('.day').textContent.trim()).to.equal('05\n  Th')
   })
 
   it('computes a title', function() {
@@ -39,7 +36,7 @@ describe('Integration | Component | weekly overview day', function() {
     expect(this.$(':eq(0)').attr('title')).to.equal('Ferien, 8h 30m')
   })
 
-  it('fires on-click action on click', function() {
+  it('fires on-click action on click', async function() {
     this.set('day', moment({ y: 2017, m: 4, d: 5 }))
     this.set('expected', moment.duration({ h: 8, m: 30 }))
     this.set('worktime', moment.duration({ h: 8, m: 30 }))
@@ -50,8 +47,8 @@ describe('Integration | Component | weekly overview day', function() {
     )
 
     expect(this.get('clicked')).to.not.be.ok
-    this.$('.bar').click()
-    this.$('.day').click()
+    await click('.bar')
+    await click('.day')
     expect(this.get('clicked')).to.not.be.ok
 
     this.render(
@@ -60,7 +57,7 @@ describe('Integration | Component | weekly overview day', function() {
 
     expect(this.get('clicked')).to.not.be.ok
 
-    this.$('.bar').click()
+    await click('.bar')
 
     expect(this.get('clicked')).to.be.ok
 
@@ -68,7 +65,7 @@ describe('Integration | Component | weekly overview day', function() {
 
     expect(this.get('clicked')).to.not.be.ok
 
-    this.$('.day').click()
+    await click('.day')
 
     expect(this.get('clicked')).to.be.ok
   })

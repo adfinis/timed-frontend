@@ -1,3 +1,4 @@
+import { click } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -13,7 +14,7 @@ describe('Integration | Component | sort header', function() {
     expect(this.$('.fa-sort')).to.have.length(1)
   })
 
-  it('renders active state', function() {
+  it('renders active state', async function() {
     this.set('current', '-test')
     this.set('update', sort => {
       this.set('current', sort)
@@ -22,7 +23,7 @@ describe('Integration | Component | sort header', function() {
     this.render(hbs`{{sort-header current=current by='test' update=update}}`)
     expect(this.$('.fa-sort-desc')).to.have.length(1)
 
-    this.$('i').click()
+    await click('i')
     expect(this.$('.fa-sort-asc')).to.have.length(1)
   })
 })

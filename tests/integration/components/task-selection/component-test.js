@@ -1,3 +1,4 @@
+import { click, find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -71,9 +72,9 @@ describe('Integration | Component | task selection', function() {
       expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
 
       expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.customer-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(CUSTOMER.name)
     })
   })
@@ -99,14 +100,14 @@ describe('Integration | Component | task selection', function() {
       expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
 
       expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.customer-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(CUSTOMER.name)
       expect(
-        this.$('.project-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.project-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(PROJECT.name)
     })
   })
@@ -132,19 +133,19 @@ describe('Integration | Component | task selection', function() {
       expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
 
       expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.customer-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(CUSTOMER.name)
       expect(
-        this.$('.project-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.project-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(PROJECT.name)
       expect(
-        this.$('.task-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.task-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(TASK.name)
     })
   })
@@ -165,7 +166,7 @@ describe('Integration | Component | task selection', function() {
     `)
   })
 
-  it('can clear all filters', function() {
+  it('can clear all filters', async function() {
     this.set('task', TASK)
 
     this.render(hbs`
@@ -181,7 +182,7 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    this.$('button').click()
+    await click('button')
 
     return wait().then(() => {
       expect(

@@ -1,3 +1,4 @@
+import { currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession

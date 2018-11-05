@@ -1,3 +1,4 @@
+import { click } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -13,7 +14,7 @@ describe('Integration | Component | record button', function() {
     expect(this.$('[data-test-record-stop]')).to.have.length(0)
   })
 
-  it('can stop', function() {
+  it('can stop', async function() {
     this.set('recording', true)
 
     this.on('stop', () => {
@@ -26,10 +27,10 @@ describe('Integration | Component | record button', function() {
       hbs`{{record-button recording=recording on-stop=(action 'stop')}}`
     )
 
-    this.$('[data-test-record-stop]').click()
+    await click('[data-test-record-stop]')
   })
 
-  it('can start', function() {
+  it('can start', async function() {
     this.set('recording', false)
     this.set('activity', { id: 1 })
 
@@ -43,6 +44,6 @@ describe('Integration | Component | record button', function() {
       hbs`{{record-button recording=recording activity=activity on-start=(action 'start')}}`
     )
 
-    this.$('[data-test-record-start]').click()
+    await click('[data-test-record-start]')
   })
 })

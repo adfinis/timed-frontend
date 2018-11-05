@@ -1,3 +1,4 @@
+import { find, fillIn, blur } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -18,7 +19,7 @@ describe('Integration | Component | sy durationpicker', function() {
 
     this.render(hbs`{{sy-durationpicker value=value}}`)
 
-    expect(this.$('input').val()).to.equal('01:30')
+    expect(find('input').value).to.equal('01:30')
   })
 
   it('renders without value', function() {
@@ -26,10 +27,10 @@ describe('Integration | Component | sy durationpicker', function() {
 
     this.render(hbs`{{sy-durationpicker value=value}}`)
 
-    expect(this.$('input').val()).to.equal('')
+    expect(find('input').value).to.equal('')
   })
 
-  it('can change the value', function() {
+  it('can change the value', async function() {
     this.set(
       'value',
       moment.duration({
@@ -42,15 +43,14 @@ describe('Integration | Component | sy durationpicker', function() {
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('13:15')
-      .change()
+    await fillIn('input', '13:15')
+    await blur('input')
 
     expect(this.get('value').hours()).to.equal(13)
     expect(this.get('value').minutes()).to.equal(15)
   })
 
-  it('can set a negative value', function() {
+  it('can set a negative value', async function() {
     this.set(
       'value',
       moment.duration({
@@ -63,14 +63,13 @@ describe('Integration | Component | sy durationpicker', function() {
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('-13:00')
-      .change()
+    await fillIn('input', '-13:00')
+    await blur('input')
 
     expect(this.get('value').hours()).to.equal(-13)
   })
 
-  it("can't set an invalid value", function() {
+  it("can't set an invalid value", async function() {
     this.set(
       'value',
       moment.duration({
@@ -83,9 +82,8 @@ describe('Integration | Component | sy durationpicker', function() {
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('abcdef')
-      .change()
+    await fillIn('input', 'abcdef')
+    await blur('input')
 
     expect(this.get('value').hours()).to.equal(12)
     expect(this.get('value').minutes()).to.equal(30)
@@ -169,16 +167,15 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(30)
   })
 
-  it('can set a negative value with minutes', function() {
+  it('can set a negative value with minutes', async function() {
     this.set('value', null)
 
     this.render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input')
-      .val('-04:30')
-      .change()
+    await fillIn('input', '-04:30')
+    await blur('input')
 
     expect(this.get('value').hours()).to.equal(-4)
     expect(this.get('value').minutes()).to.equal(-30)

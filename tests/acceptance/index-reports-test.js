@@ -1,3 +1,4 @@
+import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -71,12 +72,12 @@ describe('Acceptance | index reports', function() {
     expect(
       find(
         '[data-test-report-row]:nth-last-child(2) [data-test-report-duration]'
-      ).val()
+      ).value
     ).to.equal('03:30')
     expect(
       find(
         '[data-test-report-row]:nth-last-child(2) [data-test-report-comment]'
-      ).val()
+      ).value
     ).to.equal('Test comment report')
   })
 
@@ -117,14 +118,12 @@ describe('Acceptance | index reports', function() {
     ).to.be.ok
 
     expect(
-      find(
-        `${`[data-test-report-row-id="${id}"]`} [data-test-report-duration]`
-      ).val()
+      find(`${`[data-test-report-row-id="${id}"]`} [data-test-report-duration]`)
+        .value
     ).to.equal('00:15')
     expect(
-      find(
-        `${`[data-test-report-row-id="${id}"]`} [data-test-report-comment]`
-      ).val()
+      find(`${`[data-test-report-row-id="${id}"]`} [data-test-report-comment]`)
+        .value
     ).to.equal('Testyy')
   })
 
@@ -161,7 +160,7 @@ describe('Acceptance | index reports', function() {
     await visit('/reports')
 
     await click('[data-test-edit-absence]')
-    expect(find('[data-test-edit-absence-form] textarea').val()).to.equal(
+    expect(find('[data-test-edit-absence-form] textarea').value).to.equal(
       comment
     )
     await click('[data-test-edit-absence-form] button.close')
@@ -173,7 +172,7 @@ describe('Acceptance | index reports', function() {
     await click(`[data-test-report-row-id="${id}"] [data-test-save-report]`)
 
     await click('[data-test-edit-absence]')
-    let c1 = find('[data-test-edit-absence-form] textarea').val()
+    let c1 = find('[data-test-edit-absence-form] textarea').value
     await click('[data-test-edit-absence-form] button.close')
 
     expect(c1).to.not.equal(comment)
@@ -181,7 +180,7 @@ describe('Acceptance | index reports', function() {
     await click(`[data-test-report-row-id="${id}"] [data-test-delete-report]`)
 
     await click('[data-test-edit-absence]')
-    let c2 = find('[data-test-edit-absence-form] textarea').val()
+    let c2 = find('[data-test-edit-absence-form] textarea').value
     await click('[data-test-edit-absence-form] button.close')
 
     expect(c2).to.not.equal(c1)

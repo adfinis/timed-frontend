@@ -1,3 +1,4 @@
+import { click } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -21,38 +22,38 @@ describe('Integration | Component | date navigation', function() {
     expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-10')
   })
 
-  it('can select the next day', function() {
+  it('can select the next day', async function() {
     this.set('date', DATE)
 
     this.render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    this.$('[data-test-next]').click()
+    await click('[data-test-next]')
 
     expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-11')
   })
 
-  it('can select the previous day', function() {
+  it('can select the previous day', async function() {
     this.set('date', DATE)
 
     this.render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    this.$('[data-test-previous]').click()
+    await click('[data-test-previous]')
 
     expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-09')
   })
 
-  it('can select the current day', function() {
+  it('can select the current day', async function() {
     this.set('date', DATE)
 
     this.render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    this.$('[data-test-today]').click()
+    await click('[data-test-today]')
 
     expect(this.get('date').format('YYYY-MM-DD')).to.equal(
       moment().format('YYYY-MM-DD')

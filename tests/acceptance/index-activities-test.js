@@ -1,3 +1,4 @@
+import { click, find, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -40,6 +41,19 @@ describe('Acceptance | index activities', function() {
     await visit('/')
 
     expect(find('[data-test-activity-row]')).to.have.length(5)
+  })
+
+  it('can not start an active activity', async function() {
+    let [{ id }] = this.activities
+
+    await visit('/')
+
+    await click(
+      `${`[data-test-activity-row-id="${id}"]`} [data-test-start-activity]`
+    )
+
+    expect(find(`[data-test-activity-row-id="${id}"]`).hasClass('primary')).to
+      .be.ok
   })
 
   it('can start an activity', async function() {

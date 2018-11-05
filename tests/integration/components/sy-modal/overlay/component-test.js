@@ -1,3 +1,4 @@
+import { click } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -14,7 +15,7 @@ describe('Integration | Component | sy modal/overlay', function() {
     expect(this.$()).to.have.length(1)
   })
 
-  it('closes on click', function() {
+  it('closes on click', async function() {
     this.set('visible', true)
     this.on('close', () => this.set('visible', false))
 
@@ -24,12 +25,12 @@ describe('Integration | Component | sy modal/overlay', function() {
 
     expect(this.get('visible')).to.be.ok
 
-    this.$('.modal').click()
+    await click('.modal')
 
     expect(this.get('visible')).to.not.be.ok
   })
 
-  it('does not close on click of a child element', function() {
+  it('does not close on click of a child element', async function() {
     this.set('visible', true)
     this.on('close', () => this.set('visible', false))
 
@@ -41,7 +42,7 @@ describe('Integration | Component | sy modal/overlay', function() {
 
     expect(this.get('visible')).to.be.ok
 
-    this.$('.modal #some-child').click()
+    await click('.modal #some-child')
 
     expect(this.get('visible')).to.be.ok
   })

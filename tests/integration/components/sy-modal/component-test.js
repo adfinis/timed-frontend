@@ -1,3 +1,4 @@
+import { click, find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -26,29 +27,17 @@ describe('Integration | Component | sy modal', function() {
 
     expect(this.$('#sy-modals').children()).to.have.length(1)
 
-    expect(
-      this.$('#sy-modals .modal-header')
-        .text()
-        .trim()
-    ).to.contain('Header')
-    expect(
-      this.$('#sy-modals .modal-header')
-        .text()
-        .trim()
-    ).to.contain('×')
-    expect(
-      this.$('#sy-modals .modal-body')
-        .text()
-        .trim()
-    ).to.equal('Body')
-    expect(
-      this.$('#sy-modals .modal-footer')
-        .text()
-        .trim()
-    ).to.equal('Footer')
+    expect(find('#sy-modals .modal-header').textContent.trim()).to.contain(
+      'Header'
+    )
+    expect(find('#sy-modals .modal-header').textContent.trim()).to.contain('×')
+    expect(find('#sy-modals .modal-body').textContent.trim()).to.equal('Body')
+    expect(find('#sy-modals .modal-footer').textContent.trim()).to.equal(
+      'Footer'
+    )
   })
 
-  it('closes on click of the close icon', function() {
+  it('closes on click of the close icon', async function() {
     this.set('visible', true)
 
     this.render(hbs`
@@ -60,7 +49,7 @@ describe('Integration | Component | sy modal', function() {
 
     expect(this.get('visible')).to.be.ok
 
-    this.$('#sy-modals .modal-header button').click()
+    await click('#sy-modals .modal-header button')
 
     expect(this.get('visible')).to.not.be.ok
   })

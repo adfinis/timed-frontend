@@ -1,3 +1,4 @@
+import { find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -46,9 +47,7 @@ describe('Integration | Component | power select', function() {
 
     return wait().then(() => {
       expect(
-        this.$('.ember-power-select-selected-item')
-          .text()
-          .trim()
+        find('.ember-power-select-selected-item').textContent.trim()
       ).to.equal('Selected: Test 1')
       expect(
         this.$('.ember-power-select-option')

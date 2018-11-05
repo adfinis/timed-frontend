@@ -1,3 +1,4 @@
+import { click, find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -15,19 +16,11 @@ describe('Integration | Component | sy modal/header', function() {
       hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
     )
 
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.contain('Test')
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.contain('×')
+    expect(find('*').textContent.trim()).to.contain('Test')
+    expect(find('*').textContent.trim()).to.contain('×')
   })
 
-  it('closes on click of the close icon', function() {
+  it('closes on click of the close icon', async function() {
     this.set('visible', true)
 
     this.render(
@@ -36,7 +29,7 @@ describe('Integration | Component | sy modal/header', function() {
 
     expect(this.get('visible')).to.be.ok
 
-    this.$('button').click()
+    await click('button')
 
     expect(this.get('visible')).to.not.be.ok
   })

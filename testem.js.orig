@@ -1,3 +1,5 @@
+/* eslint-env node */
+/* eslint-disable camelcase */
 module.exports = {
   framework: 'mocha+chai',
   test_page: 'tests/index.html',
@@ -6,6 +8,7 @@ module.exports = {
   launch_in_dev: [],
   launch_in_ci: ['chromium', 'firefox'],
   browser_args: {
+<<<<<<< HEAD
     chromium: [
       process.env.TRAVIS ? '--no-sandbox' : null,
 
@@ -15,5 +18,19 @@ module.exports = {
       '--window-size=1440,900'
     ].filter(Boolean),
     firefox: ['--headless']
+=======
+    Chrome: {
+      mode: 'ci',
+      args: [
+        // --no-sandbox is needed when running Chrome inside a container
+        process.env.TRAVIS ? '--no-sandbox' : null,
+
+        '--disable-gpu',
+        '--headless',
+        '--remote-debugging-port=0',
+        '--window-size=1440,900'
+      ].filter(Boolean)
+    }
+>>>>>>> 12f91d1... message
   }
 }

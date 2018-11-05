@@ -1,3 +1,4 @@
+import { find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it, beforeEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -33,6 +34,6 @@ describe('Integration | Component | tracking bar', function() {
   it('renders', function() {
     this.render(hbs`{{tracking-bar}}`)
 
-    expect(this.$('input[type=text]').val()).to.equal('asdf')
+    expect(find('input[type=text]').value).to.equal('asdf')
   })
 })

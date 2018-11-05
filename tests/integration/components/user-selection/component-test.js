@@ -1,3 +1,4 @@
+import { find } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it, beforeEach, afterEach } from 'mocha'
 import { setupComponentTest } from 'ember-mocha'
@@ -38,9 +39,9 @@ describe('Integration | Component | user selection', function() {
 
     return wait().then(() => {
       expect(
-        this.$('.user-select .ember-power-select-selected-item')
-          .text()
-          .trim()
+        find(
+          '.user-select .ember-power-select-selected-item'
+        ).textContent.trim()
       ).to.equal(USER.longName)
     })
   })

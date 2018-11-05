@@ -38,6 +38,11 @@ or
 * `COVERAGE=true ember test`
 * `COVERAGE=true ember test --server`
 
+### Linting
+
+* `npm run lint:js`
+* `npm run lint:js -- --fix`
+
 ### Building
 
 * `ember build` (development)

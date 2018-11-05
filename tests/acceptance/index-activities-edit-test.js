@@ -1,4 +1,13 @@
 import {
+  click,
+  fillIn,
+  find,
+  currentURL,
+  findAll,
+  blur,
+  visit
+} from '@ember/test-helpers'
+import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
