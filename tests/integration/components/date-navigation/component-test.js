@@ -1,21 +1,19 @@
-import { click } from '@ember/test-helpers'
+import { click, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 
 const DATE = moment({ y: 2017, m: 2, d: 10 })
 
 describe('Integration | Component | date navigation', function() {
-  setupComponentTest('date-navigation', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
@@ -25,7 +23,7 @@ describe('Integration | Component | date navigation', function() {
   it('can select the next day', async function() {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
@@ -37,7 +35,7 @@ describe('Integration | Component | date navigation', function() {
   it('can select the previous day', async function() {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
@@ -49,7 +47,7 @@ describe('Integration | Component | date navigation', function() {
   it('can select the current day', async function() {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 

@@ -1,14 +1,13 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | paginated table', function() {
-  setupComponentTest('paginated-table', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.on('myAction', function(val) { ... });
     // Template block usage:
@@ -18,7 +17,7 @@ describe('Integration | Component | paginated table', function() {
     //   {{/paginated-table}}
     // `);
 
-    this.render(hbs`{{paginated-table}}`)
+    await render(hbs`{{paginated-table}}`)
     expect(this.$()).to.have.length(1)
   })
 })

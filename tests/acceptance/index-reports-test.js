@@ -1,34 +1,26 @@
 import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
 import { faker } from 'ember-cli-mirage'
 import moment from 'moment'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
+import taskSelect from 'timed/tests/helpers/task-select'
 
 describe('Acceptance | index reports', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('report', 5, { userId: user.id })
+    this.server.createList('report', 5, { userId: user.id })
 
     this.user = user
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
   })
 
   it('can visit /reports', async function() {
@@ -82,7 +74,7 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can edit report', async function() {
-    let { id } = server.create('report', { userId: this.user.id })
+    let { id } = this.server.create('report', { userId: this.user.id })
 
     await visit('/reports')
 
@@ -128,7 +120,7 @@ describe('Acceptance | index reports', function() {
   })
 
   it('can delete report', async function() {
-    let { id } = server.create('report', { userId: this.user.id })
+    let { id } = this.server.create('report', { userId: this.user.id })
 
     await visit('/reports')
 
@@ -142,12 +134,12 @@ describe('Acceptance | index reports', function() {
   })
 
   it('reloads absences after saving or deleting a report', async function() {
-    server.loadFixtures('absence-types')
+    this.server.loadFixtures('absence-types')
 
-    let absence = server.create('absence', { userId: this.user.id })
-    let { id } = server.create('report', { userId: this.user.id })
+    let absence = this.server.create('absence', { userId: this.user.id })
+    let { id } = this.server.create('report', { userId: this.user.id })
 
-    server.get('/absences/:id', ({ absences }, { params: { id } }) => {
+    this.server.get('/absences/:id', ({ absences }, { params: { id } }) => {
       let a = absences.find(id)
 
       a.comment = faker.lorem.sentence()

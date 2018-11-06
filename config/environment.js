@@ -88,6 +88,8 @@ module.exports = function(environment) {
     ENV['ember-tether'] = {
       bodyElementId: 'ember-testing'
     }
+
+    ENV.APP.autoboot = false
   }
 
   if (environment === 'production') {

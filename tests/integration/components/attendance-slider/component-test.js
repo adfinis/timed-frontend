@@ -1,7 +1,7 @@
-import { click, find } from '@ember/test-helpers'
+import { click, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import EmberObject from '@ember/object'
 import moment from 'moment'
@@ -12,14 +12,12 @@ const ATTENDANCE = EmberObject.create({
 })
 
 describe('Integration | Component | attendance slider', function() {
-  setupComponentTest('attendance-slider', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('attendance', ATTENDANCE)
 
-    this.render(hbs`
+    await render(hbs`
       {{attendance-slider attendance=attendance}}
     `)
 
@@ -29,21 +27,21 @@ describe('Integration | Component | attendance slider', function() {
   it('can delete', async function() {
     this.set('attendance', ATTENDANCE)
 
-    this.on('delete', attendance => {
+    this.set('delete', attendance => {
       expect(attendance).to.be.ok
     })
 
-    this.render(hbs`
+    await render(hbs`
       {{attendance-slider
         attendance = attendance
-        on-delete  = (action 'delete')
+        on-delete  = (action delete)
       }}
     `)
 
     await click('.fa-trash')
   })
 
-  it('can handle attendances until 00:00', function() {
+  it('can handle attendances until 00:00', async function() {
     this.set(
       'attendance',
       EmberObject.create({
@@ -52,7 +50,7 @@ describe('Integration | Component | attendance slider', function() {
       })
     )
 
-    this.render(hbs`
+    await render(hbs`
       {{attendance-slider attendance=attendance}}
     `)
 

@@ -1,18 +1,14 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 import EmberObject from '@ember/object'
 import moment from 'moment'
 
 describe('Unit | Component | statistic list', function() {
-  setupComponentTest('statistic-list', {
-    // Specify the other units that are required for this test
-    // needs: ['component:foo', 'helper:bar'],
-    unit: true
-  })
+  setupTest()
 
   it('calculates max duration', function() {
-    let component = this.subject({
+    let component = this.owner.factoryFor('component:statistic-list').create({
       data: {
         last: {
           value: [
@@ -28,7 +24,7 @@ describe('Unit | Component | statistic list', function() {
   })
 
   it('parses total', function() {
-    let component = this.subject({
+    let component = this.owner.factoryFor('component:statistic-list').create({
       data: {
         last: {
           value: EmberObject.create({
@@ -53,7 +49,7 @@ describe('Unit | Component | statistic list', function() {
       user: ['User', 'Duration']
     }
 
-    let component = this.subject()
+    let component = this.owner.factoryFor('component:statistic-list').create()
 
     Object.keys(expected).forEach(type => {
       component.set('type', type)
@@ -82,7 +78,7 @@ describe('Unit | Component | statistic list', function() {
       }
     ]
 
-    let component = this.subject()
+    let component = this.owner.factoryFor('component:statistic-list').create()
 
     expected.forEach(({ params, text }) => {
       component.set('missingParams', params)

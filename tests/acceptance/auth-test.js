@@ -1,25 +1,20 @@
 import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
-import { authenticateSession } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | auth', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(function() {
-    application = startApp()
-
-    this.user = server.create('user', {
+    this.user = this.server.create('user', {
       firstName: 'John',
       lastName: 'Doe',
       password: '123qwe'
     })
-  })
-
-  afterEach(function() {
-    destroyApp(application)
   })
 
   it('prevents unauthenticated access', async function() {
@@ -58,7 +53,7 @@ describe('Acceptance | auth', function() {
 
   it('can logout', async function() {
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
+    await authenticateSession({ user_id: this.user.id })
 
     await visit('/')
 

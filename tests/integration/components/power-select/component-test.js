@@ -1,7 +1,7 @@
-import { find } from '@ember/test-helpers'
+import { find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import wait from 'ember-test-helpers/wait'
 import {
@@ -17,18 +17,16 @@ const OPTIONS = [
 ]
 
 describe('Integration | Component | power select', function() {
-  setupComponentTest('power-select', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('can use blockless', function() {
+  it('can use blockless', async function() {
     this.set('options', OPTIONS)
     this.set('selected', OPTIONS[0])
 
     this.set('selectedTemplate', hbs`Selected: {{selected.name}}`)
     this.set('optionTemplate', hbs`Option: {{option.name}}`)
 
-    this.render(hbs`
+    await render(hbs`
       {{power-select
         options            = options
         selected           = selected
@@ -58,14 +56,14 @@ describe('Integration | Component | power select', function() {
     })
   })
 
-  it('can select with tab', function() {
+  it('can select with tab', async function() {
     this.set('options', OPTIONS)
     this.set('selected', OPTIONS[0])
 
     this.set('selectedTemplate', hbs`Selected: {{selected.name}}`)
     this.set('optionTemplate', hbs`Option: {{option.name}}`)
 
-    this.render(hbs`
+    await render(hbs`
       {{power-select
         options            = options
         selected           = selected

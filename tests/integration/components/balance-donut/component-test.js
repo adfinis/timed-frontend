@@ -1,22 +1,21 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import { find } from 'ember-native-dom-helpers'
 import moment from 'moment'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | balance donut', function() {
-  setupComponentTest('balance-donut', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders with a credit', function() {
+  it('renders with a credit', async function() {
     this.set('balance', {
       credit: 10,
       usedDays: 5
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
     expect(find('.donut-content').innerHTML).to.contain('5 of 10')
     expect(find('.donut-content').innerHTML).to.contain('50%')
@@ -26,13 +25,13 @@ describe('Integration | Component | balance donut', function() {
     )
   })
 
-  it('renders without a credit', function() {
+  it('renders without a credit', async function() {
     this.set('balance', {
       credit: 0,
       usedDays: 3
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
     expect(find('.donut-content').innerHTML).to.contain('3')
     expect(find('.donut-content').innerHTML).to.not.contain('0')
@@ -42,13 +41,13 @@ describe('Integration | Component | balance donut', function() {
     )
   })
 
-  it('renders with a smaller credit than used days', function() {
+  it('renders with a smaller credit than used days', async function() {
     this.set('balance', {
       credit: 10,
       usedDays: 20
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
     expect(find('.donut-content').innerHTML).to.contain('20 of 10')
     expect(find('.donut-content').innerHTML).to.contain('200%')
@@ -58,12 +57,12 @@ describe('Integration | Component | balance donut', function() {
     )
   })
 
-  it('renders with a duration', function() {
+  it('renders with a duration', async function() {
     this.set('balance', {
       usedDuration: moment.duration({ h: 10 })
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
     expect(find('.donut-content').innerHTML).to.contain('10:00')
 

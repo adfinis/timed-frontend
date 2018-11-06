@@ -1,7 +1,7 @@
-import { click, find } from '@ember/test-helpers'
+import { click, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
@@ -25,9 +25,7 @@ const TASK = EmberObject.create({
 })
 
 describe('Integration | Component | task selection', function() {
-  setupComponentTest('task-selection', {
-    integration: true
-  })
+  setupRenderingTest()
 
   beforeEach(function() {
     this.server = startMirage()
@@ -37,8 +35,8 @@ describe('Integration | Component | task selection', function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
-    this.render(hbs`
+  it('renders', async function() {
+    await render(hbs`
       {{#task-selection as |t|}}
         {{t.customer}}
         {{t.project}}
@@ -51,10 +49,10 @@ describe('Integration | Component | task selection', function() {
     expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
   })
 
-  it('can set initial customer', function() {
+  it('can set initial customer', async function() {
     this.set('customer', CUSTOMER)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial    = (hash
           customer = customer
@@ -79,10 +77,10 @@ describe('Integration | Component | task selection', function() {
     })
   })
 
-  it('can set initial project', function() {
+  it('can set initial project', async function() {
     this.set('project', PROJECT)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial   = (hash
           project = project
@@ -112,10 +110,10 @@ describe('Integration | Component | task selection', function() {
     })
   })
 
-  it('can set initial task', function() {
+  it('can set initial task', async function() {
     this.set('task', TASK)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial = (hash
           task  = task
@@ -150,10 +148,10 @@ describe('Integration | Component | task selection', function() {
     })
   })
 
-  it('can clear customer', function() {
+  it('can clear customer', async function() {
     this.set('task', TASK)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial = (hash
           task  = task
@@ -169,7 +167,7 @@ describe('Integration | Component | task selection', function() {
   it('can clear all filters', async function() {
     this.set('task', TASK)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial = (hash
           task  = task

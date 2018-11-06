@@ -1,32 +1,23 @@
 import { currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
 import { find } from 'ember-native-dom-helpers'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | users edit', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
+    let user = this.server.create('user')
 
-    let user = server.create('user')
-
-    this.allowed = server.create('user', { supervisorIds: [user.id] })
-    this.notAllowed = server.create('user')
+    this.allowed = this.server.create('user', { supervisorIds: [user.id] })
+    this.notAllowed = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await authenticateSession({ user_id: user.id })
   })
 
   it('can visit /users/:id', async function() {
@@ -43,10 +34,10 @@ describe('Acceptance | users edit', function() {
   })
 
   it('allows all to superuser', async function() {
-    let user = server.create('user', { isSuperuser: true })
+    let user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit(`/users/${this.notAllowed.id}`)
 

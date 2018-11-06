@@ -1,21 +1,19 @@
-import { click, find } from '@ember/test-helpers'
+import { click, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 
 describe('Integration | Component | weekly overview day', function() {
-  setupComponentTest('weekly-overview-day', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('day', moment({ y: 2017, m: 4, d: 5 }))
     this.set('expected', moment.duration({ h: 8 }))
     this.set('worktime', moment.duration({ h: 8 }))
 
-    this.render(
+    await render(
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
     )
 
@@ -24,12 +22,12 @@ describe('Integration | Component | weekly overview day', function() {
     expect(find('.day').textContent.trim()).to.equal('05\n  Th')
   })
 
-  it('computes a title', function() {
+  it('computes a title', async function() {
     this.set('day', moment({ y: 2017, m: 4, d: 5 }))
     this.set('expected', moment.duration({ h: 8, m: 30 }))
     this.set('worktime', moment.duration({ h: 8, m: 30 }))
 
-    this.render(
+    await render(
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime prefix='Ferien'}}`
     )
 
@@ -42,7 +40,7 @@ describe('Integration | Component | weekly overview day', function() {
     this.set('worktime', moment.duration({ h: 8, m: 30 }))
     this.set('clicked', false)
 
-    this.render(
+    await render(
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
     )
 
@@ -51,7 +49,7 @@ describe('Integration | Component | weekly overview day', function() {
     await click('.day')
     expect(this.get('clicked')).to.not.be.ok
 
-    this.render(
+    await render(
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime on-click=(action (mut clicked) true)}}`
     )
 

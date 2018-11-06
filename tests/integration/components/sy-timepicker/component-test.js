@@ -1,7 +1,7 @@
-import { find, fillIn, blur } from '@ember/test-helpers'
+import { blur, fillIn, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import $ from 'jquery'
@@ -9,14 +9,12 @@ import $ from 'jquery'
 const event = $.Event
 
 describe('Integration | Component | sy timepicker', function() {
-  setupComponentTest('sy-timepicker', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('value', moment())
 
-    this.render(hbs`{{sy-timepicker value=value}}`)
+    await render(hbs`{{sy-timepicker value=value}}`)
 
     expect(find('input').value).to.equal(moment().format('HH:mm'))
   })
@@ -30,7 +28,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -50,7 +48,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -64,7 +62,7 @@ describe('Integration | Component | sy timepicker', function() {
   it('can only input digits and colons', async function() {
     this.set('value', null)
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -79,7 +77,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value')).to.not.be.null
   })
 
-  it('can increase minutes per arrow', function() {
+  it('can increase minutes per arrow', async function() {
     this.set(
       'value',
       moment({
@@ -88,7 +86,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -98,7 +96,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(30)
   })
 
-  it('can decrease minutes per arrow', function() {
+  it('can decrease minutes per arrow', async function() {
     this.set(
       'value',
       moment({
@@ -107,7 +105,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -117,7 +115,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(0)
   })
 
-  it('can increase hours per arrow with shift', function() {
+  it('can increase hours per arrow with shift', async function() {
     this.set(
       'value',
       moment({
@@ -126,7 +124,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -138,7 +136,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(15)
   })
 
-  it('can decrease minutes per arrow with shift', function() {
+  it('can decrease minutes per arrow with shift', async function() {
     this.set(
       'value',
       moment({
@@ -147,7 +145,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -159,7 +157,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(15)
   })
 
-  it('can increase hours per arrow with ctrl', function() {
+  it('can increase hours per arrow with ctrl', async function() {
     this.set(
       'value',
       moment({
@@ -168,7 +166,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -180,7 +178,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(15)
   })
 
-  it('can decrease minutes per arrow with ctrl', function() {
+  it('can decrease minutes per arrow with ctrl', async function() {
     this.set(
       'value',
       moment({
@@ -189,7 +187,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -201,7 +199,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(15)
   })
 
-  it("can't change day", function() {
+  it("can't change day", async function() {
     this.set(
       'value',
       moment({
@@ -210,7 +208,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -220,7 +218,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(45)
   })
 
-  it("can't be bigger than max or smaller than min", function() {
+  it("can't be bigger than max or smaller than min", async function() {
     this.set(
       'value',
       moment({
@@ -245,7 +243,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker min=min max=max value=value on-change=(action (mut value))}}`
     )
 
@@ -260,7 +258,7 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(30)
   })
 
-  it('respects the precision', function() {
+  it('respects the precision', async function() {
     this.set(
       'value',
       moment({
@@ -269,7 +267,7 @@ describe('Integration | Component | sy timepicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker precision=5 value=value on-change=(action (mut value))}}`
     )
 
@@ -282,7 +280,7 @@ describe('Integration | Component | sy timepicker', function() {
   it('can handle null values', async function() {
     this.set('value', moment({ h: 12, m: 30 }))
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -292,10 +290,10 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value')).to.be.null
   })
 
-  it('can handle null values with arrow up', function() {
+  it('can handle null values with arrow up', async function() {
     this.set('value', null)
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
@@ -305,10 +303,10 @@ describe('Integration | Component | sy timepicker', function() {
     expect(this.get('value').minute()).to.equal(15)
   })
 
-  it('can handle null values with arrow down', function() {
+  it('can handle null values with arrow down', async function() {
     this.set('value', null)
 
-    this.render(
+    await render(
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 

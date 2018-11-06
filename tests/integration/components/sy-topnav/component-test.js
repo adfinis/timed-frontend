@@ -1,15 +1,14 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy topnav', function() {
-  setupComponentTest('sy-topnav', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`{{sy-topnav}}`)
+  it('renders', async function() {
+    await render(hbs`{{sy-topnav}}`)
     expect(this.$()).to.have.length(1)
   })
 })

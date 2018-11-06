@@ -1,16 +1,14 @@
-import { click, find } from '@ember/test-helpers'
+import { click, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy modal', function() {
-  setupComponentTest('sy-modal', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`
+  it('renders', async function() {
+    await render(hbs`
       {{sy-modal-target}}
       {{#sy-modal visible=true as |m|}}
         {{#m.header}}
@@ -40,7 +38,7 @@ describe('Integration | Component | sy modal', function() {
   it('closes on click of the close icon', async function() {
     this.set('visible', true)
 
-    this.render(hbs`
+    await render(hbs`
       {{sy-modal-target}}
       {{#sy-modal visible=visible as |m|}}
         {{m.header}}

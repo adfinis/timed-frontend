@@ -1,16 +1,15 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import { find } from 'ember-native-dom-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | statistic list/bar', function() {
-  setupComponentTest('statistic-list/bar', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`{{statistic-list/bar 0.5}}`)
+  it('renders', async function() {
+    await render(hbs`{{statistic-list/bar 0.5}}`)
 
     let el = find('.statistic-list-bar')
 

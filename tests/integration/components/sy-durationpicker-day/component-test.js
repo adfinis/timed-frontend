@@ -1,15 +1,14 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy durationpicker day', function() {
-  setupComponentTest('sy-durationpicker-day', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`{{sy-durationpicker-day}}`)
+  it('renders', async function() {
+    await render(hbs`{{sy-durationpicker-day}}`)
     expect(this.$()).to.have.length(1)
   })
 })

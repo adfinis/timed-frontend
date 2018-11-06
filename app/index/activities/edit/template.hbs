@@ -63,8 +63,8 @@
       </table>
     </div>
     <div class="card-footer text-right">
-      <button class="btn btn-danger" type="button" disabled={{model.active}} {{action 'delete'}}>Delete</button>
-      <button class="btn btn-primary" type="submit" disabled={{not saveEnabled}}>Save</button>
+      <button class="btn btn-danger" type="button" disabled={{model.active}} {{action 'delete'}} data-test-delete>Delete</button>
+      <button class="btn btn-primary" type="submit" disabled={{not saveEnabled}} data-test-save>Save</button>
     </div>
   </div>
 </form>

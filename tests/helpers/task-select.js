@@ -1,7 +1,6 @@
-import { registerAsyncHelper } from '@ember/test'
+import { selectChoose } from 'ember-power-select/test-support/helpers'
 
-export default registerAsyncHelper('taskSelect', async function(
-  app,
+export default async function taskSelect(
   selector = '',
   options = { fromHistory: false }
 ) {
@@ -30,4 +29,4 @@ export default registerAsyncHelper('taskSelect', async function(
     '.ember-power-select-option',
     0
   )
-})
+}

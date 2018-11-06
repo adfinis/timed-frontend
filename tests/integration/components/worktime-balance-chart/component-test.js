@@ -1,15 +1,14 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | worktime balance chart', function() {
-  setupComponentTest('worktime-balance-chart', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`{{worktime-balance-chart}}`)
+  it('renders', async function() {
+    await render(hbs`{{worktime-balance-chart}}`)
     expect(this.$()).to.have.length(1)
   })
 })

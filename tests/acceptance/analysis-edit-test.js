@@ -1,31 +1,22 @@
 import { click, find, fillIn, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | analysis edit', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
     this.user = user
 
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
 
-    server.create('report-intersection', { verified: false })
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    this.server.create('report-intersection', { verified: false })
   })
 
   it('can visit /analysis/edit', async function() {
@@ -39,7 +30,7 @@ describe('Acceptance | analysis edit', function() {
 
     let res = {}
 
-    server.post('/reports/bulk', (_, { requestBody }) => {
+    this.server.post('/reports/bulk', (_, { requestBody }) => {
       res = JSON.parse(requestBody)
     })
 

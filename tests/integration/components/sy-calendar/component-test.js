@@ -1,20 +1,19 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import wait from 'ember-test-helpers/wait'
 import { find, triggerEvent } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | sy calendar', function() {
-  setupComponentTest('sy-calendar', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('can select a year', function() {
+  it('can select a year', async function() {
     this.set('center', moment({ y: 2017, m: 10, d: 7 }))
 
-    this.render(
+    await render(
       hbs`{{sy-calendar center=center onCenterChange=(action (mut center) value='moment')}}`
     )
 
@@ -29,10 +28,10 @@ describe('Integration | Component | sy calendar', function() {
     })
   })
 
-  it('can select a month', function() {
+  it('can select a month', async function() {
     this.set('center', moment({ y: 2017, m: 10, d: 7 }))
 
-    this.render(
+    await render(
       hbs`{{sy-calendar center=center onCenterChange=(action (mut center) value='moment')}}`
     )
 

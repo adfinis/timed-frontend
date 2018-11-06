@@ -2,22 +2,15 @@ import { currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+} from 'ember-simple-auth/test-support'
+import { describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | notfound', function() {
-  let application
-
-  beforeEach(async function() {
-    application = startApp()
-  })
-
-  afterEach(async function() {
-    destroyApp(application)
-  })
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   it('redirects to login for undefined routes if not logged in', async function() {
     await visit('/thiswillneverbeavalidrouteurl')
@@ -26,10 +19,10 @@ describe('Acceptance | notfound', function() {
   })
 
   it('displays a 404 page for undefined routes if logged in', async function() {
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit('/thiswillneverbeavalidrouteurl')
 

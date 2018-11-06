@@ -1,20 +1,19 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import { find } from 'ember-native-dom-helpers'
 import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
 
 describe('Integration | Component | sy datepicker btn', function() {
-  setupComponentTest('sy-datepicker-btn', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('toggles the calendar on click of the button', function() {
+  it('toggles the calendar on click of the button', async function() {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
     )
 
@@ -25,10 +24,10 @@ describe('Integration | Component | sy datepicker btn', function() {
     expect(find('.sy-datepicker')).to.be.ok
   })
 
-  it('changes value on selection', function() {
+  it('changes value on selection', async function() {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
     )
 

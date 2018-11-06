@@ -1,14 +1,13 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | pagination limit', function() {
-  setupComponentTest('pagination-limit', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.on('myAction', function(val) { ... });
     // Template block usage:
@@ -18,14 +17,14 @@ describe('Integration | Component | pagination limit', function() {
     //   {{/pagination-limit}}
     // `);
 
-    this.render(hbs`{{pagination-limit}}`)
+    await render(hbs`{{pagination-limit}}`)
     expect(this.$()).to.have.length(1)
   })
 
-  it('can change limit', function() {
+  it('can change limit', async function() {
     this.set('limit', 10)
 
-    this.render(hbs`{{pagination-limit pages=5 page_size=limit}}`)
+    await render(hbs`{{pagination-limit pages=5 page_size=limit}}`)
 
     expect(this.$('span')).to.have.length(4)
     expect(this.$('a')).to.have.length(3)

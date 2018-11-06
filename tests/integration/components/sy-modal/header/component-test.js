@@ -1,18 +1,16 @@
-import { click, find } from '@ember/test-helpers'
+import { click, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy modal/header', function() {
-  setupComponentTest('sy-modal/header', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('visible', true)
 
-    this.render(
+    await render(
       hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
     )
 
@@ -23,7 +21,7 @@ describe('Integration | Component | sy modal/header', function() {
   it('closes on click of the close icon', async function() {
     this.set('visible', true)
 
-    this.render(
+    await render(
       hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
     )
 

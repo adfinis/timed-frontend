@@ -1,19 +1,18 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import { click, find } from 'ember-native-dom-helpers'
 import wait from 'ember-test-helpers/wait'
 
 describe('Integration | Component | filter sidebar', function() {
-  setupComponentTest('filter-sidebar', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('can reset', function() {
+  it('can reset', async function() {
     this.set('didReset', false)
 
-    this.render(hbs`
+    await render(hbs`
       <div id="filter-sidebar-target"></div>
       {{filter-sidebar on-reset=(action (mut didReset) true)}}
     `)
@@ -25,10 +24,10 @@ describe('Integration | Component | filter sidebar', function() {
     })
   })
 
-  it('shows applied filter count', function() {
+  it('shows applied filter count', async function() {
     this.set('count', 0)
 
-    this.render(hbs`
+    await render(hbs`
       <div id="filter-sidebar-target"></div>
       {{filter-sidebar appliedCount=count}}
     `)

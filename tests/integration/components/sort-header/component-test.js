@@ -1,16 +1,14 @@
-import { click } from '@ember/test-helpers'
+import { click, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sort header', function() {
-  setupComponentTest('sort-header', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`{{sort-header current='-test' by='foo'}}`)
+  it('renders', async function() {
+    await render(hbs`{{sort-header current='-test' by='foo'}}`)
     expect(this.$('.fa-sort')).to.have.length(1)
   })
 
@@ -20,7 +18,7 @@ describe('Integration | Component | sort header', function() {
       this.set('current', sort)
     })
 
-    this.render(hbs`{{sort-header current=current by='test' update=update}}`)
+    await render(hbs`{{sort-header current=current by='test' update=update}}`)
     expect(this.$('.fa-sort-desc')).to.have.length(1)
 
     await click('i')

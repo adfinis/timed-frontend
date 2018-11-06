@@ -1,7 +1,7 @@
-import { find, fillIn, blur } from '@ember/test-helpers'
+import { blur, fillIn, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import $ from 'jquery'
@@ -10,22 +10,20 @@ import formatDuration from 'timed/utils/format-duration'
 const event = $.Event
 
 describe('Integration | Component | sy durationpicker', function() {
-  setupComponentTest('sy-durationpicker', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('value', moment.duration({ h: 1, m: 30 }))
 
-    this.render(hbs`{{sy-durationpicker value=value}}`)
+    await render(hbs`{{sy-durationpicker value=value}}`)
 
     expect(find('input').value).to.equal('01:30')
   })
 
-  it('renders without value', function() {
+  it('renders without value', async function() {
     this.set('value', null)
 
-    this.render(hbs`{{sy-durationpicker value=value}}`)
+    await render(hbs`{{sy-durationpicker value=value}}`)
 
     expect(find('input').value).to.equal('')
   })
@@ -39,7 +37,7 @@ describe('Integration | Component | sy durationpicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
@@ -59,7 +57,7 @@ describe('Integration | Component | sy durationpicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
@@ -78,7 +76,7 @@ describe('Integration | Component | sy durationpicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
@@ -89,7 +87,7 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(30)
   })
 
-  it('can increase minutes per arrow', function() {
+  it('can increase minutes per arrow', async function() {
     this.set(
       'value',
       moment.duration({
@@ -98,7 +96,7 @@ describe('Integration | Component | sy durationpicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
@@ -108,7 +106,7 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(30)
   })
 
-  it('can decrease minutes per arrow', function() {
+  it('can decrease minutes per arrow', async function() {
     this.set(
       'value',
       moment.duration({
@@ -117,7 +115,7 @@ describe('Integration | Component | sy durationpicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
@@ -127,7 +125,7 @@ describe('Integration | Component | sy durationpicker', function() {
     expect(this.get('value').minutes()).to.equal(0)
   })
 
-  it("can't be bigger than max or smaller than min", function() {
+  it("can't be bigger than max or smaller than min", async function() {
     this.set(
       'value',
       moment.duration({
@@ -152,7 +150,7 @@ describe('Integration | Component | sy durationpicker', function() {
       })
     )
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker min=min max=max value=value on-change=(action (mut value))}}`
     )
 
@@ -170,7 +168,7 @@ describe('Integration | Component | sy durationpicker', function() {
   it('can set a negative value with minutes', async function() {
     this.set('value', null)
 
-    this.render(
+    await render(
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 

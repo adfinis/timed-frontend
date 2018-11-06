@@ -1,29 +1,20 @@
 import { visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
 import { findAll } from 'ember-native-dom-helpers'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | users edit responsibilities', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    this.user = server.create('user')
+    this.user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await authenticateSession({ user_id: this.user.id })
   })
 
   it('can visit /users/:id/responsibilities', async function() {

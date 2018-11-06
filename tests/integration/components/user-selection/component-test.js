@@ -1,7 +1,7 @@
-import { find } from '@ember/test-helpers'
+import { find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import wait from 'ember-test-helpers/wait'
@@ -16,9 +16,7 @@ const USER = EmberObject.create({
 })
 
 describe('Integration | Component | user selection', function() {
-  setupComponentTest('user-selection', {
-    integration: true
-  })
+  setupRenderingTest()
 
   beforeEach(function() {
     this.server = startMirage()
@@ -28,10 +26,10 @@ describe('Integration | Component | user selection', function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set('user', USER)
 
-    this.render(hbs`
+    await render(hbs`
       {{#user-selection user=user on-change=(action (mut user)) as |u|}}
         {{u.user}}
       {{/user-selection}}

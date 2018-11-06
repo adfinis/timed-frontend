@@ -1,18 +1,17 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import { findAll, find } from 'ember-native-dom-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | async list', function() {
-  setupComponentTest('async-list', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('yields list on success', function() {
+  it('yields list on success', async function() {
     this.set('data', { last: { value: ['a', 'b'] } })
 
-    this.render(hbs`
+    await render(hbs`
       {{#async-list data as |section data|}}
         {{#if (eq section 'body')}}
           {{#each data as |d|}}
@@ -25,10 +24,10 @@ describe('Integration | Component | async list', function() {
     expect(findAll('div.item')).to.have.length(2)
   })
 
-  it('yields empty section', function() {
+  it('yields empty section', async function() {
     this.set('data', { last: { value: [] } })
 
-    this.render(hbs`
+    await render(hbs`
       {{#async-list data as |section data|}}
         {{#if (eq section 'empty')}}
           <div class="check-me"></div>
@@ -39,20 +38,20 @@ describe('Integration | Component | async list', function() {
     expect(find('.check-me')).to.be.ok
   })
 
-  it('shows loading icon', function() {
+  it('shows loading icon', async function() {
     this.set('data', { isRunning: true })
 
-    this.render(hbs`
+    await render(hbs`
       {{#async-list data}}{{/async-list}}
     `)
 
     expect(find('.loading-icon')).to.be.ok
   })
 
-  it('shows error message', function() {
+  it('shows error message', async function() {
     this.set('data', { last: { isError: true } })
 
-    this.render(hbs`
+    await render(hbs`
       {{#async-list data as |section data|}}{{/async-list}}
     `)
 

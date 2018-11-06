@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 import EmberObject from '@ember/object'
 import moment from 'moment'
 
@@ -9,18 +9,16 @@ const WorktimeBalance = EmberObject.extend({
 })
 
 describe('Unit | Component | worktime balance chart', function() {
-  setupComponentTest('worktime-balance-chart', {
-    // Specify the other units that are required for this test
-    // needs: ['component:foo', 'helper:bar'],
-    unit: true
-  })
+  setupTest()
 
   it('computes the data correctly', function() {
     let dates = [...new Array(3).keys()].map(i => moment().subtract(i, 'days'))
 
-    let component = this.subject({
-      worktimeBalances: dates.map(date => WorktimeBalance.create({ date }))
-    })
+    let component = this.owner
+      .factoryFor('component:worktime-balance-chart')
+      .create({
+        worktimeBalances: dates.map(date => WorktimeBalance.create({ date }))
+      })
 
     expect(
       component.get('data.labels').map(l => l.format('YYYY-MM-DD'))
@@ -32,7 +30,9 @@ describe('Unit | Component | worktime balance chart', function() {
   })
 
   it('computes tooltip correctly', function() {
-    let component = this.subject()
+    let component = this.owner
+      .factoryFor('component:worktime-balance-chart')
+      .create()
 
     let titleFn = component.get('options.tooltips.callbacks.title')
     let labelFn = component.get('options.tooltips.callbacks.label')

@@ -7,6 +7,8 @@ export default Factory.extend({
   estimatedTime: () => randomDuration(),
 
   afterCreate(task, server) {
-    task.update({ projectId: server.create('project').id })
+    task.update({
+      projectId: server.create('project').id
+    })
   }
 })

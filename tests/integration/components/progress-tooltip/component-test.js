@@ -1,6 +1,7 @@
 import { expect } from 'chai'
 import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
@@ -9,9 +10,7 @@ import moment from 'moment'
 import { find } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | progress tooltip', function() {
-  setupComponentTest('progress-tooltip', {
-    integration: true
-  })
+  setupRenderingTest()
 
   beforeEach(function() {
     this.server = startMirage()
@@ -23,7 +22,7 @@ describe('Integration | Component | progress tooltip', function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
+  it('renders', async function() {
     this.set(
       'model',
       EmberObject.create({
@@ -35,7 +34,7 @@ describe('Integration | Component | progress tooltip', function() {
       })
     )
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
@@ -58,7 +57,7 @@ describe('Integration | Component | progress tooltip', function() {
     })
   })
 
-  it('renders with tasks', function() {
+  it('renders with tasks', async function() {
     this.set(
       'model',
       EmberObject.create({
@@ -70,7 +69,7 @@ describe('Integration | Component | progress tooltip', function() {
       })
     )
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
@@ -93,7 +92,7 @@ describe('Integration | Component | progress tooltip', function() {
     })
   })
 
-  it('toggles correctly', function() {
+  it('toggles correctly', async function() {
     this.set(
       'model',
       EmberObject.create({
@@ -107,7 +106,7 @@ describe('Integration | Component | progress tooltip', function() {
 
     this.set('visible', false)
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=visible}}
     `)
 
@@ -120,7 +119,7 @@ describe('Integration | Component | progress tooltip', function() {
     })
   })
 
-  it('uses danger color when the factor is more than 1', function() {
+  it('uses danger color when the factor is more than 1', async function() {
     this.set(
       'model',
       EmberObject.create({
@@ -141,7 +140,7 @@ describe('Integration | Component | progress tooltip', function() {
       }
     })
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
@@ -151,7 +150,7 @@ describe('Integration | Component | progress tooltip', function() {
     })
   })
 
-  it('uses warning color when the factor is 0.9 or more', function() {
+  it('uses warning color when the factor is 0.9 or more', async function() {
     this.set(
       'model',
       EmberObject.create({
@@ -172,7 +171,7 @@ describe('Integration | Component | progress tooltip', function() {
       }
     })
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 

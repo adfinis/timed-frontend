@@ -6,32 +6,24 @@ import {
   currentURL,
   visit
 } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
+import userSelect from 'timed/tests/helpers/user-select'
 
 describe('Acceptance | analysis', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('report', 40, { userId: user.id })
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    this.server.createList('report', 40, { userId: user.id })
   })
 
   it('can visit /analysis', async function() {
@@ -71,13 +63,13 @@ describe('Acceptance | analysis', function() {
 
   it('can have initial filters', async function() {
     let params = {
-      customer: server.create('customer').id,
-      project: server.create('project').id,
-      task: server.create('task').id,
-      user: server.create('user').id,
-      reviewer: server.create('user').id,
-      billingType: server.create('billing-type').id,
-      costCenter: server.create('cost-center').id,
+      customer: this.server.create('customer').id,
+      project: this.server.create('project').id,
+      task: this.server.create('task').id,
+      user: this.server.create('user').id,
+      reviewer: this.server.create('user').id,
+      billingType: this.server.create('billing-type').id,
+      costCenter: this.server.create('cost-center').id,
       fromDate: '2016-12-01',
       toDate: '2017-12-01',
       review: '',
@@ -148,7 +140,7 @@ describe('Acceptance | analysis', function() {
   })
 
   it('can edit', async function() {
-    server.create('report-intersection')
+    this.server.create('report-intersection')
 
     await visit('/analysis?editable=1')
 
@@ -158,7 +150,7 @@ describe('Acceptance | analysis', function() {
   })
 
   it('can not edit', async function() {
-    server.create('report-intersection')
+    this.server.create('report-intersection')
 
     await visit('/analysis')
 
@@ -168,7 +160,7 @@ describe('Acceptance | analysis', function() {
   })
 
   it('can edit selected reports', async function() {
-    server.create('report-intersection')
+    this.server.create('report-intersection')
 
     await visit('/analysis')
 

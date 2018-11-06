@@ -18,10 +18,17 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
   /**
    * The authorizer
    *
-   * @property {String} authorizer
+   * @param {Object} xhr the XHR Object
    * @public
    */
-  authorizer: 'authorizer:application',
+  authorize(xhr) {
+    if (this.get('session.data.authenticated.token')) {
+      xhr.setRequestHeader(
+        'Authorization',
+        `Bearer ${this.get('session.data.authenticated.token')}`
+      )
+    }
+  },
 
   /**
    * The API namespace

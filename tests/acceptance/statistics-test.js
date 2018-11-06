@@ -1,37 +1,28 @@
 import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
 import { findAll, find } from 'ember-native-dom-helpers'
 import moment from 'moment'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | statistics', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('year-statistic', 5)
-    server.createList('month-statistic', 5)
-    server.createList('customer-statistic', 5)
-    server.createList('project-statistic', 5)
-    server.createList('task-statistic', 5)
-    server.createList('user-statistic', 5)
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    this.server.createList('year-statistic', 5)
+    this.server.createList('month-statistic', 5)
+    this.server.createList('customer-statistic', 5)
+    this.server.createList('project-statistic', 5)
+    this.server.createList('task-statistic', 5)
+    this.server.createList('user-statistic', 5)
   })
 
   it('can view statistics by year', async function() {
@@ -120,7 +111,7 @@ describe('Acceptance | statistics', function() {
   })
 
   it('can have initial filters', async function() {
-    await server.createList('billing-type', 3)
+    await this.server.createList('billing-type', 3)
 
     let params = {
       customer: 1,

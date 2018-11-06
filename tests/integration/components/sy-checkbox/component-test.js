@@ -1,30 +1,28 @@
-import { find, click } from '@ember/test-helpers'
+import { click, find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | sy checkbox', function() {
-  setupComponentTest('sy-checkbox', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('works', function() {
-    this.render(hbs`{{sy-checkbox label='Test Label'}}`)
+  it('works', async function() {
+    await render(hbs`{{sy-checkbox label='Test Label'}}`)
 
     expect(find('label').textContent.trim()).to.equal('Test Label')
   })
 
-  it('works in block style', function() {
-    this.render(hbs`{{#sy-checkbox}}Test Label{{/sy-checkbox}}`)
+  it('works in block style', async function() {
+    await render(hbs`{{#sy-checkbox}}Test Label{{/sy-checkbox}}`)
 
     expect(find('label').textContent.trim()).to.equal('Test Label')
   })
 
-  it('changes state', function() {
+  it('changes state', async function() {
     this.set('checked', false)
 
-    this.render(
+    await render(
       hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
     )
 
@@ -42,10 +40,10 @@ describe('Integration | Component | sy checkbox', function() {
     expect(this.get('checked')).to.be.false
   })
 
-  it('can be indeterminate', function() {
+  it('can be indeterminate', async function() {
     this.set('checked', null)
 
-    this.render(
+    await render(
       hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
     )
 

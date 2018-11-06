@@ -1,32 +1,23 @@
 import { click, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | tour', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user', { tourDone: false })
+    let user = this.server.create('user', { tourDone: false })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     localStorage.removeItem('timed-tour')
 
     setBreakpoint('xl')
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
   })
 
   it('shows a welcome dialog', async function() {
@@ -36,10 +27,10 @@ describe('Acceptance | tour', function() {
   })
 
   it('does not show a welcome dialog when tour completed', async function() {
-    let user = server.create('user', { tourDone: true })
+    let user = this.server.create('user', { tourDone: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit('/')
 

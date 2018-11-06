@@ -1,16 +1,15 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import { find } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | filter sidebar/label', function() {
-  setupComponentTest('filter-sidebar/label', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`
+  it('renders', async function() {
+    await render(hbs`
       {{#filter-sidebar/label}}
         Some label
       {{/filter-sidebar/label}}

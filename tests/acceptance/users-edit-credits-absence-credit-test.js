@@ -1,31 +1,22 @@
 import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { beforeEach, describe, it } from 'mocha'
+import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import startApp from '../helpers/start-app'
 import { findAll, find } from 'ember-native-dom-helpers'
 import moment from 'moment'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | users edit credits absence credit', function() {
-  let application
+  let application = setupApplicationTest()
+  setupMirage(application)
 
   beforeEach(async function() {
-    application = startApp()
-
-    this.user = server.create('user', { isSuperuser: true })
-    this.types = server.loadFixtures('absence-types')
+    this.user = this.server.create('user', { isSuperuser: true })
+    this.types = this.server.loadFixtures('absence-types')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
-  })
-
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await authenticateSession({ user_id: this.user.id })
   })
 
   it('can create an absence credit', async function() {
@@ -44,7 +35,7 @@ describe('Acceptance | users edit credits absence credit', function() {
   })
 
   it('can edit an absence credit', async function() {
-    let { id } = server.create('absence-credit', { user: this.user })
+    let { id } = this.server.create('absence-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits`)
 
@@ -84,7 +75,7 @@ describe('Acceptance | users edit credits absence credit', function() {
   })
 
   it('can delete an absence credit', async function() {
-    let { id } = server.create('absence-credit', { user: this.user })
+    let { id } = this.server.create('absence-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits/absence-credits/${id}`)
 

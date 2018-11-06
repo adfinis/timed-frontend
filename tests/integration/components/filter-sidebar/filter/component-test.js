@@ -1,16 +1,15 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import { click, findAll, find, fillIn } from 'ember-native-dom-helpers'
 import moment from 'moment'
 
 describe('Integration | Component | filter sidebar/filter', function() {
-  setupComponentTest('filter-sidebar/filter', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('works with type button', function() {
+  it('works with type button', async function() {
     this.setProperties({
       options: [
         { id: 1, label: 'test 1' },
@@ -20,7 +19,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
       selected: 2
     })
 
-    this.render(hbs`
+    await render(hbs`
       {{filter-sidebar/filter 'button'
         selected=selected
         options=options
@@ -45,7 +44,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
     expect(this.get('selected')).to.equal(1)
   })
 
-  it('works with type select', function() {
+  it('works with type select', async function() {
     this.setProperties({
       options: [
         { id: 1, label: 'test 1' },
@@ -55,7 +54,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
       selected: 2
     })
 
-    this.render(hbs`
+    await render(hbs`
       {{filter-sidebar/filter 'select'
         selected=selected
         options=options
@@ -81,10 +80,10 @@ describe('Integration | Component | filter sidebar/filter', function() {
     expect(this.get('selected')).to.equal('1')
   })
 
-  it('works with type date', function() {
+  it('works with type date', async function() {
     this.set('selected', moment({ year: 2017, month: 10, day: 1 }))
 
-    this.render(hbs`
+    await render(hbs`
       {{filter-sidebar/filter 'date'
         selected=selected
         on-change=(action (mut selected))
@@ -102,10 +101,10 @@ describe('Integration | Component | filter sidebar/filter', function() {
     )
   })
 
-  it('works with type search', function() {
+  it('works with type search', async function() {
     this.set('selected', 'foobar')
 
-    this.render(hbs`
+    await render(hbs`
       {{filter-sidebar/filter 'search'
         selected=selected
         on-change=(action (mut selected))
@@ -119,8 +118,8 @@ describe('Integration | Component | filter sidebar/filter', function() {
     expect(this.get('selected')).to.equal('foobarbaz')
   })
 
-  it('works with block style', function() {
-    this.render(hbs`
+  it('works with block style', async function() {
+    await render(hbs`
       {{#filter-sidebar/filter}}
         Works
       {{/filter-sidebar/filter}}

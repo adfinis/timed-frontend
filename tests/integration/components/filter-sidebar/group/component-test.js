@@ -1,16 +1,15 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { setupRenderingTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import { find, click } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | filter sidebar/group', function() {
-  setupComponentTest('filter-sidebar/group', {
-    integration: true
-  })
+  setupRenderingTest()
 
-  it('renders', function() {
-    this.render(hbs`
+  it('renders', async function() {
+    await render(hbs`
       {{#filter-sidebar/group label='Group'}}
         Group content
       {{/filter-sidebar/group}}
@@ -22,8 +21,8 @@ describe('Integration | Component | filter sidebar/group', function() {
     )
   })
 
-  it('can be toggled', function() {
-    this.render(hbs`
+  it('can be toggled', async function() {
+    await render(hbs`
       {{#filter-sidebar/group label='Group'}}
         Group content
       {{/filter-sidebar/group}}
