@@ -5,6 +5,7 @@
  */
 import Component from '@ember/component'
 import moment from 'moment'
+import { computed } from '@ember/object'
 
 /**
  * The record button component
@@ -20,7 +21,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: ['recording'],
+  classNameBindings: ['active:recording'],
 
   /**
    * The start time
@@ -38,6 +39,10 @@ export default Component.extend({
    */
   recording: false,
 
+  active: computed('recording', 'activity.id', function() {
+    return this.get('recording') && this.get('activity.id')
+  }),
+
   /**
    * The actions for the record button component
    *
@@ -52,7 +57,7 @@ export default Component.extend({
      * @public
      */
     start() {
-      this.get('attrs.on-start')()
+      this.get('on-start')()
     },
 
     /**
@@ -62,7 +67,7 @@ export default Component.extend({
      * @public
      */
     stop() {
-      this.get('attrs.on-stop')()
+      this.get('on-stop')()
     }
   }
 })

@@ -38,11 +38,11 @@ describe('Acceptance | index activities edit', function() {
     await taskSelect('[data-test-activity-edit-form]')
 
     await fillIn(
-      '[data-test-activity-edit-form] [data-test-activity-block-row]:eq(0) td:nth-child(2) input',
+      '[data-test-activity-edit-form] [data-test-activity-block-row] td:nth-child(1) input',
       '03:30'
     )
     await fillIn(
-      '[data-test-activity-edit-form] [data-test-activity-block-row]:eq(0) td:nth-child(4) input',
+      '[data-test-activity-edit-form] [data-test-activity-block-row] td:nth-child(3) input',
       '04:30'
     )
 
@@ -52,7 +52,7 @@ describe('Acceptance | index activities edit', function() {
 
     expect(currentURL()).to.equal('/')
 
-    expect(find('[data-test-activity-row] td:eq(1)').text()).to.equal('Test')
+    expect(find('[data-test-activity-row-id="1"]').text()).to.include('Test')
   })
 
   it('can delete an activity', async function() {
@@ -68,25 +68,6 @@ describe('Acceptance | index activities edit', function() {
 
     expect(find('[data-test-activity-row-id="1"]')).to.have.length(0)
     expect(find('[data-test-activity-row]')).to.have.length(4)
-  })
-
-  it('can delete an activity block', async function() {
-    await visit('/edit/1')
-
-    await click(
-      '[data-test-activity-block-row-id="1"] [data-test-delete-activity-block]'
-    )
-
-    expect(find('[data-test-activity-block-row-id="0"]')).to.have.length(0)
-    expect(find('[data-test-activity-block-row]')).to.have.length(0)
-  })
-
-  it('can add an activity block', async function() {
-    await visit('/edit/1')
-
-    await click(find('[data-test-add-activity-block]'))
-
-    expect(find('[data-test-activity-block-row]')).to.have.length(2)
   })
 
   it("can't delete an active activity", async function() {
@@ -116,61 +97,52 @@ describe('Acceptance | index activities edit', function() {
     expect(currentURL()).to.equal('/')
   })
 
-  it('can delete a just added block', async function() {
-    let { id } = server.create('activity', { userId: this.user.id })
-
-    await visit(`/edit/${id}`)
-
-    await click(find('[data-test-add-activity-block]'))
-
-    expect(find('[data-test-activity-block-row]')).to.have.length(2)
-
-    await click(
-      '[data-test-activity-block-row]:nth-child(2) [data-test-delete-activity-block]'
-    )
-
-    expect(find('[data-test-activity-block-row]')).to.have.length(1)
-
-    await click(find('button:contains(Save)'))
-
-    await visit(`/edit/${id}`)
-
-    expect(find('[data-test-activity-block-row]')).to.have.length(1)
-  })
-
-  it('validates blocks on blur', async function() {
+  it('validates time on blur', async function() {
     let { id } = server.create('activity', { userId: this.user.id })
 
     await visit(`/edit/${id}`)
 
     await fillIn(
-      '[data-test-activity-block-row] td:nth-child(2) input',
-      '09:30'
+      '[data-test-activity-block-row] td:nth-child(1) input',
+      '02:30'
     )
     await fillIn(
-      '[data-test-activity-block-row] td:nth-child(4) input',
-      '08:30'
+      '[data-test-activity-block-row] td:nth-child(3) input',
+      '01:30'
+    )
+    await triggerEvent(
+      '[data-test-activity-block-row] td:nth-child(3) input',
+      'blur'
     )
 
     expect(
-      find('[data-test-activity-block-row] td:nth-child(4)').hasClass(
+      find('[data-test-activity-block-row] td:nth-child(3)').hasClass(
         'has-error'
       )
     ).to.be.ok
 
     await fillIn(
-      '[data-test-activity-block-row] td:nth-child(2) input',
-      '07:30'
+      '[data-test-activity-block-row] td:nth-child(1) input',
+      '00:30'
     )
     await triggerEvent(
-      '[data-test-activity-block-row] td:nth-child(2) input',
+      '[data-test-activity-block-row] td:nth-child(1) input',
       'blur'
     )
 
     expect(
-      find('[data-test-activity-block-row] td:nth-child(4)').hasClass(
+      find('[data-test-activity-block-row] td:nth-child(3)').hasClass(
         'has-error'
       )
     ).to.not.be.ok
+  })
+
+  it('can not edit transferred activities', async function() {
+    let { id } = server.create('activity', {
+      userId: this.user.id,
+      transferred: true
+    })
+    await visit(`/edit/${id}`)
+    expect(currentURL()).to.equal('/')
   })
 })

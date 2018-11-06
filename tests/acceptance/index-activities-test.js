@@ -42,19 +42,6 @@ describe('Acceptance | index activities', function() {
     expect(find('[data-test-activity-row]')).to.have.length(5)
   })
 
-  it('can not start an active activity', async function() {
-    let [{ id }] = this.activities
-
-    await visit('/')
-
-    await click(
-      `${`[data-test-activity-row-id="${id}"]`} [data-test-start-activity]`
-    )
-
-    expect(find(`[data-test-activity-row-id="${id}"]`).hasClass('primary')).to
-      .be.ok
-  })
-
   it('can start an activity', async function() {
     await visit('/')
 
@@ -62,7 +49,7 @@ describe('Acceptance | index activities', function() {
       find('[data-test-activity-row-id="1"] [data-test-start-activity]')
     )
 
-    expect(find('[data-test-activity-row-id="1"]').hasClass('primary')).to.be.ok
+    expect(find('[data-test-activity-row-id="6"]').hasClass('primary')).to.be.ok
   })
 
   it('can start an activity of a past day', async function() {
@@ -70,7 +57,8 @@ describe('Acceptance | index activities', function() {
 
     let activity = server.create('activity', {
       date: lastDay,
-      userId: this.user.id
+      userId: this.user.id,
+      comment: 'Test'
     })
 
     await visit(`/?day=${lastDay.format('YYYY-MM-DD')}`)
@@ -81,9 +69,9 @@ describe('Acceptance | index activities', function() {
 
     expect(currentURL()).to.equal('/')
 
-    expect(
-      find('[data-test-activity-row]:last-child td:eq(1)').text()
-    ).to.equal(activity.comment)
+    expect(find('[data-test-activity-row-id="7"] td:eq(2)').text()).to.equals(
+      activity.comment
+    )
   })
 
   it('can stop an activity', async function() {
@@ -93,18 +81,22 @@ describe('Acceptance | index activities', function() {
       find('[data-test-activity-row-id="1"] [data-test-start-activity]')
     )
 
-    expect(find('[data-test-activity-row-id="1"]').hasClass('primary')).to.be.ok
+    expect(find('[data-test-activity-row-id="6"]').hasClass('primary')).to.be.ok
 
     await click(
-      find('[data-test-activity-row-id="1"] [data-test-stop-activity]')
+      find('[data-test-activity-row-id="6"] [data-test-stop-activity]')
     )
 
-    expect(find('[data-test-activity-row-id="1"]').hasClass('primary')).to.not
+    expect(find('[data-test-activity-row-id="6"]').hasClass('primary')).to.not
       .be.ok
   })
 
   it('can generate reports', async function() {
-    let activity = server.create('activity', { userId: this.user.id })
+    let activity = server.create('activity', {
+      userId: this.user.id,
+      review: true,
+      notBillable: true
+    })
     let { id } = activity
 
     await visit('/')
@@ -117,25 +109,31 @@ describe('Acceptance | index activities', function() {
 
     expect(
       find(
-        `${`[data-test-report-row-id="${id}"]`} .form-group:eq(0) .ember-power-select-selected-item`
+        `[data-test-report-row-id="${id}"] .form-group:eq(0) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.project.customer.name)
     expect(
       find(
-        `${`[data-test-report-row-id="${id}"]`} .form-group:eq(1) .ember-power-select-selected-item`
+        `[data-test-report-row-id="${id}"] .form-group:eq(1) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.project.name)
     expect(
       find(
-        `${`[data-test-report-row-id="${id}"]`} .form-group:eq(2) .ember-power-select-selected-item`
+        `[data-test-report-row-id="${id}"] .form-group:eq(2) .ember-power-select-selected-item`
       )
         .text()
         .trim()
     ).to.equal(activity.task.name)
+
+    await visit('/')
+
+    expect(find('[data-test-activity-row-id="1"]').attr('class')).to.include(
+      'transferred'
+    )
   })
 
   it('can not generate reports twice', async function() {
@@ -156,39 +154,6 @@ describe('Acceptance | index activities', function() {
     expect(find('[data-test-report-row]')).to.have.length(6)
   })
 
-  it('can update reports when generating', async function() {
-    await server.db.activities.update(this.activities[0].id, {
-      duration: '02:30:00'
-    })
-
-    await visit('/')
-
-    await click(find('button:contains(Generate timesheet)'))
-
-    expect(currentURL()).to.equal('/reports')
-
-    expect(find('[data-test-report-row]')).to.have.length(6)
-
-    expect(
-      find('[data-test-report-row]:eq(0) .form-group:eq(4) input').val()
-    ).to.equal('02:30')
-
-    await server.db.activities.update(this.activities[0].id, {
-      duration: '05:30:00'
-    })
-
-    await visit('/somenonexistentsite') // navigate away from index to reload the model
-    await visit('/')
-
-    await click(find('button:contains(Generate timesheet)'))
-
-    expect(currentURL()).to.equal('/reports')
-
-    expect(
-      find('[data-test-report-row]:eq(0) .form-group:eq(4) input').val()
-    ).to.equal('05:30')
-  })
-
   it('shows a warning when generating reports from unknown tasks', async function() {
     server.create('activity', 'unknown', { userId: this.user.id })
 
@@ -205,7 +170,7 @@ describe('Acceptance | index activities', function() {
     expect(currentURL()).to.equal('/reports')
   })
 
-  it('shows a warning when generating reports from overlapping activities', async function() {
+  it('shows a warning when generating reports from day overlapping activities', async function() {
     let date = moment().subtract(1, 'days')
 
     server.create('activity', 'active', { userId: this.user.id, date })
@@ -282,7 +247,7 @@ describe('Acceptance | index activities', function() {
     await click(`[data-test-activity-row] td:contains(${activity.comment})`)
 
     expect(
-      find('[data-test-activity-block-row] td:eq(1) input').val()
+      find('[data-test-activity-block-row] td:eq(0) input').val()
     ).to.equal('00:00')
 
     // yesterday block should be from old start time to 23:59
@@ -296,7 +261,7 @@ describe('Acceptance | index activities', function() {
     await click(`[data-test-activity-row] td:contains(${activity.comment})`)
 
     expect(
-      find('[data-test-activity-block-row]:last td:eq(3) input').val()
+      find('[data-test-activity-block-row] td:eq(2) input').val()
     ).to.equal('23:59')
   })
 
@@ -335,7 +300,7 @@ describe('Acceptance | index activities', function() {
     await click(`[data-test-activity-row] td:contains(${activity.comment})`)
 
     expect(
-      find('[data-test-activity-block-row]:last td:eq(3) input').val()
+      find('[data-test-activity-block-row]:last td:eq(2) input').val()
     ).to.equal('23:59')
   })
 
@@ -343,16 +308,9 @@ describe('Acceptance | index activities', function() {
     let activity = server.create('activity', 'active', { userId: this.user.id })
     let { id, duration } = activity
 
-    duration = moment.duration(duration, 'HH:mm:ss').add(
-      moment().diff(
-        moment(
-          activity.blocks.models.find(b => {
-            return !b.toTime
-          }).fromTime,
-          'HH:mm:ss'
-        )
-      )
-    )
+    duration = moment
+      .duration(duration, 'HH:mm:ss')
+      .add(moment().diff(moment(activity.fromTime, 'HH:mm:ss')))
 
     await visit('/')
 
@@ -364,6 +322,33 @@ describe('Acceptance | index activities', function() {
 
     expect(
       find(`${`[data-test-report-row-id="${id}"]`} [name=duration]`).val()
+    ).to.equal(formatDuration(duration, false))
+  })
+
+  it('combines identical activities when generating', async function() {
+    let task = server.create('task')
+    let activities = server.createList('activity', 3, 'defineTask', {
+      userId: this.user.id,
+      comment: 'Test',
+      review: false,
+      notBillable: false,
+      definedTask: task.id
+    })
+
+    let duration = activities.reduce((acc, val) => {
+      return acc.add(val.duration)
+    }, moment.duration())
+
+    await visit('/')
+
+    await click(find('button:contains(Generate timesheet)'))
+
+    expect(currentURL()).to.equal('/reports')
+
+    expect(find('[data-test-report-row]')).to.have.length(7)
+
+    expect(
+      find(`[data-test-report-row-id="6"] [name=duration]`).val()
     ).to.equal(formatDuration(duration, false))
   })
 })
