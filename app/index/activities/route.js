@@ -33,10 +33,14 @@ export default Route.extend(RouteAutostartTourMixin, {
    */
   tracking: service('tracking'),
 
+  model() {
+    return this.modelFor('index')
+  },
+
   /**
    * Setup controller hook, set the current user
    *
-   * @method setupContrller
+   * @method setupController
    * @param {Ember.Controller} controller The controller
    * @public
    */
@@ -62,12 +66,14 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     editActivity(activity) {
-      let { id } = this.paramsFor('index.activities.edit')
+      if (!activity.get('transferred')) {
+        let { id } = this.paramsFor('index.activities.edit')
 
-      if (id === activity.get('id')) {
-        this.transitionTo('index.activities')
-      } else {
-        this.transitionTo('index.activities.edit', activity.get('id'))
+        if (id === activity.get('id')) {
+          this.transitionTo('index.activities')
+        } else {
+          this.transitionTo('index.activities.edit', activity.get('id'))
+        }
       }
     },
 
@@ -120,10 +126,8 @@ export default Route.extend(RouteAutostartTourMixin, {
         'task.id',
         undefined
       )
-      let hasOverlapping = !!this.get('controller.activities').find(a => {
-        return (
-          a.get('active') && !a.get('activeBlock.from').isSame(moment(), 'day')
-        )
+      let hasOverlapping = !!this.get('controller.sortedActivities').find(a => {
+        return a.get('active') && !a.get('from').isSame(moment(), 'day')
       })
 
       this.set('controller.showUnknownWarning', hasUnknown)
@@ -145,44 +149,60 @@ export default Route.extend(RouteAutostartTourMixin, {
       this.set('controller.showOverlappingWarning', false)
 
       try {
-        await RSVP.all(
-          this.get('controller.activities')
-            .filter(
-              a =>
-                a.get('task.id') &&
-                !(
-                  a.get('active') &&
-                  !a.get('activeBlock.from').isSame(moment(), 'day')
-                )
-            )
-            .map(async activity => {
-              let duration = moment.duration(activity.get('duration'))
+        await this.get('controller.activities')
+          .filter(
+            a =>
+              a.get('task.id') &&
+              !(a.get('active') && !a.get('from').isSame(moment(), 'day')) &&
+              !a.get('transferred')
+          )
+          .reduce(async (reducer, activity) => {
+            let duration = activity.get('duration')
 
-              if (activity.get('active')) {
-                duration.add(moment().diff(activity.get('activeBlock.from')))
-              }
+            if (activity.get('active')) {
+              duration.add(moment().diff(activity.get('from')))
 
-              let data = {
-                activity,
-                duration,
-                date: activity.get('date'),
-                task: activity.get('task'),
-                comment: activity.get('comment')
-              }
+              await this.get('tracking.stopActivity').perform()
+              this.set('tracking.activity', activity)
+              await this.get('tracking.startActivity').perform()
+            }
 
-              let report = this.store.peekAll('report').find(r => {
-                return r.get('activity.id') == activity.get('id')
-              })
+            let data = {
+              duration,
+              date: activity.get('date'),
+              task: activity.get('task'),
+              review: activity.get('review'),
+              notBillable: activity.get('notBillable'),
+              comment: activity.get('comment').trim()
+            }
 
-              if (report) {
-                report.setProperties(data)
-              } else {
-                report = this.store.createRecord('report', data)
-              }
-
-              await report.save()
+            let report = this.store.peekAll('report').find(r => {
+              return (
+                (!r.get('user.id') ||
+                  r.get('user.id') === activity.get('user.id')) &&
+                r.get('date').isSame(data.date, 'day') &&
+                r.get('comment').trim() === data.comment &&
+                r.get('task.id') === data.task.get('id') &&
+                r.get('review') === data.review &&
+                r.get('notBillable') === data.notBillable &&
+                !r.get('verfiedBy') &&
+                !r.get('isDeleted')
+              )
             })
-        )
+
+            if (report) {
+              data.duration.add(report.get('duration'))
+              report.set('duration', data.duration)
+            } else {
+              report = this.store.createRecord('report', data)
+            }
+
+            activity.set('transferred', true)
+
+            return reducer
+              .then(activity.save.bind(activity))
+              .then(report.save.bind(report))
+          }, RSVP.resolve())
 
         await this.transitionTo('index.reports')
       } catch (e) {

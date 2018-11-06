@@ -5,6 +5,7 @@
  */
 import Controller from '@ember/controller'
 import { computed } from '@ember/object'
+import { sort } from '@ember/object/computed'
 
 /**
  * The index activities controller
@@ -45,5 +46,9 @@ export default Controller.extend({
         )
       })
     }
-  )
+  ),
+
+  sortedActivities: sort('activities', function(a, b) {
+    return b.get('from').toDate() - a.get('from').toDate()
+  })
 })

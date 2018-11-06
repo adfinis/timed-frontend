@@ -31,6 +31,7 @@ describe('Integration | Component | record button', function() {
 
   it('can start', function() {
     this.set('recording', false)
+    this.set('activity', { id: 1 })
 
     this.on('start', () => {
       this.set('recording', true)
@@ -39,7 +40,7 @@ describe('Integration | Component | record button', function() {
     })
 
     this.render(
-      hbs`{{record-button recording=recording on-start=(action 'start')}}`
+      hbs`{{record-button recording=recording activity=activity on-start=(action 'start')}}`
     )
 
     this.$('[data-test-record-start]').click()

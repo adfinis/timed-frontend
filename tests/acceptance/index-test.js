@@ -62,8 +62,8 @@ describe('Acceptance | index', function() {
         .hasClass('recording')
     ).to.be.ok
     expect(
-      find('[data-test-activity-row]:first-child div small').text()
-    ).to.equal(task.name)
+      find('[data-test-activity-row]:first-child td:eq(1) div').text()
+    ).to.contain(task.name)
   })
 
   it('can start a new activity from the history', async function() {
@@ -86,8 +86,8 @@ describe('Acceptance | index', function() {
         .hasClass('recording')
     ).to.be.ok
     expect(
-      find('[data-test-activity-row]:first-child div small').text()
-    ).to.equal(task.name)
+      find('[data-test-activity-row]:first-child td:eq(1) div').text()
+    ).to.contain(task.name)
   })
 
   it('can stop an active activity', async function() {

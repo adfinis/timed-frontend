@@ -83,7 +83,7 @@ export default Route.extend(RouteAutostartTourMixin, {
 
     return RSVP.all([
       this.store.query('activity', {
-        include: 'blocks,task,task.project,task.project.customer',
+        include: 'task,task.project,task.project.customer',
         day
       }),
       this.store.query('attendance', { date: day }),
