@@ -18,7 +18,7 @@ const IndexActivitiesEditController = Controller.extend({
    * Whether the save button is enabled
    *
    * This is true if the activity is valid and there are some
-   * kind of changes on the activity
+   * changes on the activity
    *
    * @property {Boolean} saveEnabled
    * @public
