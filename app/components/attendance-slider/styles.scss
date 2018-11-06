@@ -12,10 +12,10 @@
 }
 
 .noUi-handle {
+  right: 0 !important;
   width: 8px;
   height: 25px;
   top: -4px;
-  left: -4px;
   border-radius: 0;
 
   &::after,
