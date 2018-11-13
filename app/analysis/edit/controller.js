@@ -127,6 +127,18 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         'intersection.lastSuccessful.value.model'
       ).serialize()
 
+      params.id.split(',').forEach(async id => {
+        if (id) {
+          let report = await this.store.peekRecord('report', id)
+          if (report) {
+            changeset.get('changes').forEach(obj => {
+              report.set(obj.key, obj.value)
+            })
+            await report.save()
+          }
+        }
+      })
+
       let data = {
         type: 'report-bulks',
         attributes: filterUnchanged(attributes, changeset.get('changes')),
@@ -140,6 +152,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         data: { data }
       })
 
+      this.set('analysisIndexController.skipResetOnSetup', true)
       this.transitionToRoute('analysis.index', {
         queryParams: {
           ...this.get('allQueryParams')

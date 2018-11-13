@@ -193,6 +193,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   _scrollOffset: 0,
 
+  dataIntegrity: true,
+
   init() {
     this._super(...arguments)
 
@@ -205,6 +207,11 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     if (!this.get('skipResetOnSetup')) {
       this._reset()
+    } else {
+      this.setProperties({
+        selectedReportIds: A(),
+        dataIntegrity: false
+      })
     }
   },
 
@@ -218,7 +225,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _shouldLoadMore: false,
       _dataCache: A(),
       selectedReportIds: A(),
-      _scrollOffset: 0
+      _scrollOffset: 0,
+      dataIntegrity: true
     })
 
     this.get('data').perform()
@@ -396,6 +404,10 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       this.resetQueryParams(
         Object.keys(this.get('allQueryParams')).filter(k => k !== 'ordering')
       )
+    },
+
+    refresh() {
+      this._reset()
     }
   }
 })
