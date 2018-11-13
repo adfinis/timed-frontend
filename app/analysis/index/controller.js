@@ -193,6 +193,9 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   _scrollOffset: 0,
 
+  // dataIntegrity is the status of the Data,
+  // and shows if its from the Database or the Store.
+  // true means its from the Database and false the Store
   dataIntegrity: true,
 
   init() {
@@ -209,7 +212,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       this._reset()
     } else {
       this.setProperties({
-        selectedReportIds: A(),
+        selectedReportIds: [],
         dataIntegrity: false
       })
     }

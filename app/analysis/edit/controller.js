@@ -127,8 +127,10 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         'intersection.lastSuccessful.value.model'
       ).serialize()
 
-      params.id.split(',').forEach(async id => {
-        if (id) {
+      params.id
+        .split(',')
+        .without('')
+        .forEach(async id => {
           let report = await this.store.peekRecord('report', id)
           if (report) {
             changeset.get('changes').forEach(obj => {
@@ -136,8 +138,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
             })
             await report.save()
           }
-        }
-      })
+        })
 
       let data = {
         type: 'report-bulks',
