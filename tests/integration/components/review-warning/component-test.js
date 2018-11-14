@@ -9,7 +9,6 @@ describe('Integration | Component | review warning', function() {
   })
 
   it('renders', function() {
-
     this.render(hbs`{{review-warning}}`)
     expect(this.$()).to.have.length(1)
   })
