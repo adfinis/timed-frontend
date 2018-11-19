@@ -1,4 +1,5 @@
 {{#task-selection
+  disabled    = tracking.activity.active
   on-set-task = (action (mut tracking.activity.task))
   initial     = (hash
     task      = tracking.activity.task
@@ -21,6 +22,7 @@ as |t|}}
         placeholder = 'Comment'
         name        = 'comment'
         value       = tracking.activity.comment
+        disabled    = tracking.activity.active
       }}
     </div>
     <div class="form-group">
