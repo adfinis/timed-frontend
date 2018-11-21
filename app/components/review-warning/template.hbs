@@ -1,10 +1,11 @@
 <li class="nav-top-list nav-top-list--right">
-      {{#link-to 'analysis' (query-params
+  {{#link-to 'analysis'
+    (query-params
       reviewer=session.data.user.id
       editable=1
       fromDate=startOfMonth
-      toDate=endOfMonth
-      )data-test-review-warning}}
-        {{fa-icon 'exclamation-triangle'}} Review warning
-      {{/link-to}}
+      toDate=endOfMonth)
+    data-test-review-warning}}
+    {{fa-icon 'exclamation-triangle'}} Review warning
+  {{/link-to}}
   </li>
