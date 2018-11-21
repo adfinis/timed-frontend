@@ -268,8 +268,10 @@ describe('Acceptance | index', function() {
     await visit('/')
     expect(find('[data-test-review-warning]')).to.have.length(1)
     await click('[data-test-review-warning]')
-    expect(currentURL()).to.equal(`
+
+    let expectedUrl = `
     /analysis?editable=1&fromDate=${fromDate}&reviewer=${this.user
-      .id}&toDate=${toDate}`)
+      .id}&toDate=${toDate}`
+    expect(currentURL()).to.equal(expectedUrl.trim())
   })
 })
