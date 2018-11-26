@@ -269,7 +269,7 @@ describe('Acceptance | index', function() {
     expect(find('[data-test-review-warning]')).to.have.length(1)
     await click('[data-test-review-warning]')
 
-    let expectedUrl = `
+    const expectedUrl = `
     /analysis?editable=1&fromDate=${fromDate}&reviewer=${this.user
       .id}&toDate=${toDate}`
     expect(currentURL()).to.equal(expectedUrl.trim())
