@@ -4,7 +4,7 @@
 }
 
 .table--analysis > tbody > tr.pointer {
-  color: rgb(0,0,0);
+  color: rgb(0, 0, 0);
 }
 
 .table--analysis > tbody > tr.pointer > td:last-child {
@@ -55,11 +55,7 @@
   left: 0;
   right: 0;
   height: 7px;
-  background: linear-gradient(
-    to bottom,
-    rgba(0,0,0,.03),
-    rgba(0,0,0,.0)
-  );
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0));
 }
 
 .analysis-scrollable-container::before {
@@ -78,4 +74,8 @@
 .table--analysis tr.selected + tr td,
 .table--analysis tr.selected td {
   border-color: color(var(--color-primary) tint(40%)) !important;
+}
+
+.highlight {
+  box-shadow: inset 5px 0 color(var(--color-primary));
 }

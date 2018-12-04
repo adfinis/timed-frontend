@@ -5,7 +5,6 @@ import { randomDuration } from '../helpers/duration'
 export default Factory.extend({
   name: () => capitalize(faker.hacker.ingverb()),
   estimatedTime: () => randomDuration(),
-  // project: association()
 
   afterCreate(task, server) {
     task.update({ projectId: server.create('project').id })

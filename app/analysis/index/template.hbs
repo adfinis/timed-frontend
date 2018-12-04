@@ -200,9 +200,7 @@
         >
           Edit all
         </button>
-        {{#unless dataIntegrity}}
         <button type="button" class="btn" {{action "refresh"}} data-test-refresh>{{fa-icon "refresh"}}</button>
-        {{/unless}}
       </div>
 
       <table class="table table--striped table--analysis">
@@ -250,7 +248,7 @@
           <tbody>
             {{#each reports as |report|}}
               <tr class="{{if (contains report.id selectedReportIds) 'selected'}} {{if (can 'edit report' report) 'pointer'}}" {{action 'selectRow' report}}>
-                <td>{{report.user.username}}</td>
+                <td class="{{if (contains report.id pastSelectedReportIds) 'highlight'}}">{{report.user.username}}</td>
                 <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
                 <td>{{format-duration report.duration false}}</td>
                 <td>{{report.task.project.customer.name}}</td>

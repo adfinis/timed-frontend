@@ -134,6 +134,10 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
           let report = await this.store.peekRecord('report', id)
           if (report) {
             changeset.get('changes').forEach(obj => {
+              if (obj.key === 'verified') {
+                obj.key = 'verifiedBy'
+                obj.value = obj.value ? this.get('session.data.user') : null
+              }
               report.set(obj.key, obj.value)
             })
             await report.save()
@@ -154,6 +158,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       })
 
       this.set('analysisIndexController.skipResetOnSetup', true)
+      this.set('analysisIndexController.saved', true)
       this.transitionToRoute('analysis.index', {
         queryParams: {
           ...this.get('allQueryParams')
@@ -180,6 +185,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         this.set('analysisIndexController.skipResetOnSetup', true)
       }
 
+      this.set('analysisIndexController.saved', false)
       this.transitionToRoute('analysis.index', {
         queryParams: {
           ...this.get('allQueryParams')
