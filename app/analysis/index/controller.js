@@ -193,16 +193,12 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   _scrollOffset: 0,
 
-  // dataIntegrity is the status of the Data,
-  // and shows if its from the Database or the Store.
-  // true means its from the Database and false the Store
-  dataIntegrity: true,
-
   init() {
     this._super(...arguments)
 
     this.set('_dataCache', A())
     this.set('selectedReportIds', A())
+    this.set('pastSelectedReportIds', A())
   },
 
   setup() {
@@ -210,11 +206,11 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     if (!this.get('skipResetOnSetup')) {
       this._reset()
-    } else {
-      this.setProperties({
-        selectedReportIds: [],
-        dataIntegrity: false
-      })
+    } else if (this.get('saved')) {
+      this.get('pastSelectedReportIds')
+        .pushObjects(this.get('selectedReportIds'))
+        .uniq()
+      this.set('selectedReportIds', [])
     }
   },
 
@@ -228,8 +224,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _shouldLoadMore: false,
       _dataCache: A(),
       selectedReportIds: A(),
-      _scrollOffset: 0,
-      dataIntegrity: true
+      pastSelectedReportIds: A(),
+      _scrollOffset: 0
     })
 
     this.get('data').perform()

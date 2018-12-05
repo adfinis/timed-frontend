@@ -8,6 +8,7 @@ export default Factory.extend({
   duration: () => randomDuration(),
   review: () => faker.random.boolean(),
   notBillable: () => faker.random.boolean(),
+  verifiedBy: null,
 
   afterCreate(report, server) {
     report.update({ taskId: server.create('task').id })

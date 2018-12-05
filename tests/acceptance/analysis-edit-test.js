@@ -14,12 +14,16 @@ describe('Acceptance | analysis edit', function() {
   beforeEach(async function() {
     application = startApp()
 
-    let user = server.create('user')
+    let user = server.create('user', {
+      firstName: 'foo',
+      lastName: 'bar'
+    })
+    this.user = user
 
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: user.id })
 
-    server.create('report-intersection')
+    server.create('report-intersection', { verified: false })
   })
 
   afterEach(async function() {
@@ -94,19 +98,30 @@ describe('Acceptance | analysis edit', function() {
   })
 
   it('saves changes to store first', async function() {
-    server.create('report')
+    let project = server.create('project', { reviewers: [this.user] })
+    let task = server.create('task', { project: project })
+    let report = server.create('report', { task: task })
 
     await visit('/analysis')
-    await visit('/analysis/edit?id=1')
+    await visit(`/analysis/edit?id=${report.id}&reviewer=${this.user.id}`)
 
     await fillIn('[data-test-comment] input', 'test')
+    await click('[data-test-verified] div input')
     await click('.btn-primary')
 
+    expect(find('tbody tr:first-child td:nth-child(8)').innerHTML).to.equal(
+      'foob'
+    )
     expect(
       find('tbody tr:first-child td:nth-child(7) span').innerHTML
     ).to.equal('test')
 
     await click('[data-test-refresh]')
-    expect(find('[data-test-refresh]')).to.not.be.ok
+
+    await visit(`/analysis/edit?id=${report.id}&reviewer=${this.user.id}`)
+    await click('[data-test-verified] div input')
+    await click('.btn-primary')
+
+    expect(find('tbody tr:first-child td:nth-child(8)').innerHTML).to.equal('')
   })
 })
