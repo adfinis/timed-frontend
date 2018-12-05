@@ -92,4 +92,21 @@ describe('Acceptance | analysis edit', function() {
 
     expect(find('[data-test-verified] input').disabled).to.equal(true)
   })
+
+  it('saves changes to store first', async function() {
+    server.create('report')
+
+    await visit('/analysis')
+    await visit('/analysis/edit?id=1')
+
+    await fillIn('[data-test-comment] input', 'test')
+    await click('.btn-primary')
+
+    expect(
+      find('tbody tr:first-child td:nth-child(7) span').innerHTML
+    ).to.equal('test')
+
+    await click('[data-test-refresh]')
+    expect(find('[data-test-refresh]')).to.not.be.ok
+  })
 })

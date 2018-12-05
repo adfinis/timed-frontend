@@ -180,19 +180,6 @@
   {{else}}
     {{#with data.lastSuccessful.value as |reports|}}
       <div class="btn-toolbar btn-toolbar--right form-group">
-        {{#unless (eq _scrollOffset 0)}}
-          <button type="button" class="btn" {{action (mut _scrollOffset) 0}}>Reset Scroll</button>
-        {{/unless}}
-        <button
-          data-test-edit-all
-          type="button"
-          class="btn"
-          title={{unless editable 'Please enable the "editable" filter to modify all entries at once.'}}
-          disabled={{unless editable 'true'}}
-          {{action 'edit'}}
-        >
-          Edit all
-        </button>
         {{#if selectedReportIds.length}}
           <button
             data-test-edit-selected
@@ -203,6 +190,19 @@
             Edit {{selectedReportIds.length}} selected report{{unless (eq selectedReportIds.length 1) 's'}}
           </button>
         {{/if}}
+        <button
+          data-test-edit-all
+          type="button"
+          class="btn"
+          title={{unless editable 'Please enable the "editable" filter to modify all entries at once.'}}
+          disabled={{unless editable 'true'}}
+          {{action 'edit'}}
+        >
+          Edit all
+        </button>
+        {{#unless dataIntegrity}}
+        <button type="button" class="btn" {{action "refresh"}} data-test-refresh>{{fa-icon "refresh"}}</button>
+        {{/unless}}
       </div>
 
       <table class="table table--striped table--analysis">
