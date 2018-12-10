@@ -2926,11 +2926,13 @@ ember-adcssy@^1.2.1:
     postcss-import "^11.0.0"
     postcss-responsive-type "^1.0.0"
 
-ember-ajax@^3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/ember-ajax/-/ember-ajax-3.0.0.tgz#8f21e9da0c1d433cf879aa855fce464d517e9ab5"
+ember-ajax@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/ember-ajax/-/ember-ajax-4.0.1.tgz#2a33e10857019637f9ab574bbfc3c42ba21b4cf1"
+  integrity sha512-HbcXTltsxeIhfzwKBOMOE7PBsmVkbqLoenKThoPODMIiiJLtQ46NJztgIcKk5Hgw6zSDOtjHv8YG0nPkO379Aw==
   dependencies:
-    ember-cli-babel "^6.0.0"
+    ember-cli-babel "^6.16.0"
+    najax "^1.0.3"
 
 ember-assign-helper@0.1.2:
   version "0.1.2"
@@ -3076,9 +3078,10 @@ ember-cli-babel@^6.11.0:
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^6.9.2:
+ember-cli-babel@^6.16.0, ember-cli-babel@^6.9.2:
   version "6.17.2"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-6.17.2.tgz#f0d53d2fb95e70c15d8db84760d045f88f458f69"
+  integrity sha512-9KcCvF1PcelEFTSiJ/Ld20tfuW9acMkwHC/xINLsmwqJVDbm3oEqWtiFDZ5ebaC278O5I0GqNJWJLYNoWMNZ8g==
   dependencies:
     amd-name-resolver "1.2.0"
     babel-plugin-debug-macros "^0.2.0-beta.6"
@@ -5990,6 +5993,11 @@ jest-docblock@^21.0.0:
   version "21.2.0"
   resolved "https://registry.yarnpkg.com/jest-docblock/-/jest-docblock-21.2.0.tgz#51529c3b30d5fd159da60c27ceedc195faf8d414"
 
+jquery-deferred@^0.3.0:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/jquery-deferred/-/jquery-deferred-0.3.1.tgz#596eca1caaff54f61b110962b23cafea74c35355"
+  integrity sha1-WW7KHKr/VPYbEQlisjyv6nTDU1U=
+
 jquery@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
@@ -7126,6 +7134,15 @@ mute-stream@0.0.6:
 mute-stream@0.0.7, mute-stream@~0.0.4:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
+
+najax@^1.0.3:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/najax/-/najax-1.0.4.tgz#63fd8dbf15d18f24dc895b3a16fec66c136b8084"
+  integrity sha512-wsSacA+RkgY1wxRxXCT3tdqzmamEv9PLeoV/ub9SlLf2RngbPMSqc3A7H35XJDfURC0twMmZsnPdsYPkuuFSVg==
+  dependencies:
+    jquery-deferred "^0.3.0"
+    lodash.defaultsdeep "^4.6.0"
+    qs "^6.2.0"
 
 nan@^2.3.2:
   version "2.7.0"
@@ -8294,6 +8311,11 @@ q@^1.1.2:
 qs@6.5.1, qs@^6.4.0, qs@~6.5.1:
   version "6.5.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.1.tgz#349cdf6eef89ec45c12d7d5eb3fc0c870343a6d8"
+
+qs@^6.2.0:
+  version "6.6.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.6.0.tgz#a99c0f69a8d26bf7ef012f871cdabb0aee4424c2"
+  integrity sha512-KIJqT9jQJDQx5h5uAVPimw6yVg2SekOKu959OCtktD3FjzbpvaPr8i4zzg07DOMz+igA4W/aNM7OV8H37pFYfA==
 
 qs@~5.2.0:
   version "5.2.1"
