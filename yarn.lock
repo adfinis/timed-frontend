@@ -3883,7 +3883,7 @@ ember-mocha@^0.13.0:
     ember-cli-test-loader "^2.2.0"
     mocha "^2.5.3"
 
-ember-moment@^7.4.1, ember-moment@^7.5.0:
+ember-moment@^7.4.1:
   version "7.5.0"
   resolved "https://registry.yarnpkg.com/ember-moment/-/ember-moment-7.5.0.tgz#9ed25b32ae941b2f1d9116c44f518a52bdb01722"
   dependencies:
@@ -3947,16 +3947,15 @@ ember-parachute@^0.3.5:
     ember-cli-babel "^6.0.0"
     ember-getowner-polyfill "^2.0.1"
 
-ember-power-calendar@^0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.7.3.tgz#af4cb8c93be8ba9f4a5e9375041e130f0f7deb77"
+ember-power-calendar@^0.9.3:
+  version "0.9.3"
+  resolved "https://registry.yarnpkg.com/ember-power-calendar/-/ember-power-calendar-0.9.3.tgz#dcd94dcee85fcc784adfa6b1cc8d6e1ad412d3cf"
+  integrity sha512-kzB4hTiY9qet6bcgkEp2hNeE9hzbq1e/RUpWTJEGMaXVbR1atT2IN2OFIoxQdK0EHeBpSfWG1AxdjVah/NQqBg==
   dependencies:
     ember-assign-helper "0.1.2"
     ember-cli-babel "^6.11.0"
     ember-cli-htmlbars "^2.0.1"
-    ember-cli-moment-shim "^3.5.0"
     ember-concurrency "^0.8.19"
-    ember-moment "^7.5.0"
 
 ember-power-select@^1.9.11:
   version "1.9.11"
