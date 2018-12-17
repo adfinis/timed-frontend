@@ -207,9 +207,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     if (!this.get('skipResetOnSetup')) {
       this._reset()
     } else if (this.get('saved')) {
-      this.get('pastSelectedReportIds')
-        .pushObjects(this.get('selectedReportIds'))
-        .uniq()
+      this.set('pastSelectedReportIds', this.get('selectedReportIds'))
       this.set('selectedReportIds', [])
     }
   },
