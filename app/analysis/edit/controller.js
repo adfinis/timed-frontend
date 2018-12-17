@@ -140,16 +140,29 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         data: { data }
       })
 
-      if (params.id) {
-        yield this.store.pushPayload(
-          'report',
-          yield this.get('ajax').request(`/api/v1/reports?id=${params.id}`, {
-            method: 'GET'
-          })
+      let ids = params.id
+      if (!params.id) {
+        let editableReports = yield this.get(
+          'ajax'
+        ).request('/api/v1/reports?editable=1', {
+          method: 'GET'
+        })
+        let editableReportsIds = editableReports.data.mapBy('id')
+        ids = editableReportsIds.join(',')
+        this.set(
+          'analysisIndexController.selectedReportIds',
+          editableReportsIds
         )
       }
 
-      this.set('analysisIndexController.skipResetOnSetup', !!params.id)
+      yield this.store.pushPayload(
+        'report',
+        yield this.get('ajax').request(`/api/v1/reports?id=${ids}`, {
+          method: 'GET'
+        })
+      )
+
+      this.set('analysisIndexController.skipResetOnSetup', true)
       this.set('analysisIndexController.saved', true)
       this.transitionToRoute('analysis.index', {
         queryParams: {
