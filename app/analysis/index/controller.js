@@ -198,7 +198,6 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     this.set('_dataCache', A())
     this.set('selectedReportIds', A())
-    this.set('pastSelectedReportIds', A())
   },
 
   setup() {
@@ -206,9 +205,6 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     if (!this.get('skipResetOnSetup')) {
       this._reset()
-    } else if (this.get('saved')) {
-      this.set('pastSelectedReportIds', this.get('selectedReportIds'))
-      this.set('selectedReportIds', [])
     }
   },
 
@@ -221,9 +217,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _canLoadMore: true,
       _shouldLoadMore: false,
       _dataCache: A(),
-      selectedReportIds: A(),
-      pastSelectedReportIds: A(),
-      _scrollOffset: 0
+      selectedReportIds: A()
     })
 
     this.get('data').perform()
@@ -401,10 +395,6 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       this.resetQueryParams(
         Object.keys(this.get('allQueryParams')).filter(k => k !== 'ordering')
       )
-    },
-
-    refresh() {
-      this._reset()
     }
   }
 })

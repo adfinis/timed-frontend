@@ -148,8 +148,6 @@ describe('Acceptance | analysis', function() {
     await click('[data-test-edit-all]')
 
     expect(currentURL()).to.equal('/analysis/edit?editable=1')
-
-    await click('.btn-primary')
   })
 
   it('can not edit', async function() {
