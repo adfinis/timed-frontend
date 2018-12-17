@@ -127,6 +127,23 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         'intersection.lastSuccessful.value.model'
       ).serialize()
 
+      params.id
+        .split(',')
+        .without('')
+        .forEach(async id => {
+          let report = await this.store.peekRecord('report', id)
+          if (report) {
+            changeset.get('changes').forEach(obj => {
+              if (obj.key === 'verified') {
+                obj.key = 'verifiedBy'
+                obj.value = obj.value ? this.get('session.data.user') : null
+              }
+              report.set(obj.key, obj.value)
+            })
+            await report.save()
+          }
+        })
+
       let data = {
         type: 'report-bulks',
         attributes: filterUnchanged(attributes, changeset.get('changes')),
@@ -139,28 +156,6 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         method: 'POST',
         data: { data }
       })
-
-      let ids = params.id
-      if (!params.id) {
-        let editableReports = yield this.get(
-          'ajax'
-        ).request('/api/v1/reports?editable=1', {
-          method: 'GET'
-        })
-        let editableReportsIds = editableReports.data.mapBy('id')
-        ids = editableReportsIds.join(',')
-        this.set(
-          'analysisIndexController.selectedReportIds',
-          editableReportsIds
-        )
-      }
-
-      yield this.store.pushPayload(
-        'report',
-        yield this.get('ajax').request(`/api/v1/reports?id=${ids}`, {
-          method: 'GET'
-        })
-      )
 
       this.set('analysisIndexController.skipResetOnSetup', true)
       this.set('analysisIndexController.saved', true)
