@@ -14,10 +14,7 @@ describe('Acceptance | analysis edit', function() {
   beforeEach(async function() {
     application = startApp()
 
-    let user = server.create('user', {
-      firstName: 'foo',
-      lastName: 'bar'
-    })
+    let user = server.create('user')
     this.user = user
 
     // eslint-disable-next-line camelcase
@@ -95,24 +92,5 @@ describe('Acceptance | analysis edit', function() {
     await visit('/analysis/edit')
 
     expect(find('[data-test-verified] input').disabled).to.equal(true)
-  })
-
-  it('saves changes to store first', async function() {
-    let project = server.create('project', { reviewers: [this.user] })
-    let task = server.create('task', { project: project })
-    let report = server.create('report', { task: task, userId: this.user.id })
-
-    await visit('/analysis')
-    await visit(`/analysis/edit?id=${report.id}&reviewer=${this.user.id}`)
-
-    await fillIn('[data-test-comment] input', 'test')
-    await click('[data-test-verified] div input')
-    await click('.btn-primary')
-
-    await click('[data-test-refresh]')
-
-    await visit(`/analysis/edit?id=${report.id}&reviewer=${this.user.id}`)
-    await click('[data-test-verified] div input')
-    await click('.btn-primary')
   })
 })

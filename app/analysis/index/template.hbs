@@ -200,7 +200,6 @@
         >
           Edit all
         </button>
-        <button type="button" class="btn" {{action "refresh"}} data-test-refresh>{{fa-icon "refresh"}}</button>
       </div>
 
       <table class="table table--striped table--analysis">
@@ -231,7 +230,7 @@
           </tr>
         </thead>
       </table>
-      {{#ember-scrollable scrollToY=_scrollOffset onScrollY=(action (mut _scrollOffset)) class='analysis-scrollable-container'}}
+      {{#ember-scrollable class='analysis-scrollable-container'}}
         <table class="table table--striped table--analysis">
           <colgroup>
             <col>
@@ -248,7 +247,7 @@
           <tbody>
             {{#each reports as |report|}}
               <tr class="{{if (contains report.id selectedReportIds) 'selected'}} {{if (can 'edit report' report) 'pointer'}}" {{action 'selectRow' report}}>
-                <td class="{{if (contains report.id pastSelectedReportIds) 'highlight'}}">{{report.user.username}}</td>
+                <td>{{report.user.username}}</td>
                 <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
                 <td>{{format-duration report.duration false}}</td>
                 <td>{{report.task.project.customer.name}}</td>
