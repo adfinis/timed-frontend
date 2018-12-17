@@ -127,23 +127,6 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         'intersection.lastSuccessful.value.model'
       ).serialize()
 
-      params.id
-        .split(',')
-        .without('')
-        .forEach(async id => {
-          let report = await this.store.peekRecord('report', id)
-          if (report) {
-            changeset.get('changes').forEach(obj => {
-              if (obj.key === 'verified') {
-                obj.key = 'verifiedBy'
-                obj.value = obj.value ? this.get('session.data.user') : null
-              }
-              report.set(obj.key, obj.value)
-            })
-            await report.save()
-          }
-        })
-
       let data = {
         type: 'report-bulks',
         attributes: filterUnchanged(attributes, changeset.get('changes')),
@@ -157,7 +140,16 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         data: { data }
       })
 
-      this.set('analysisIndexController.skipResetOnSetup', true)
+      if (params.id) {
+        yield this.store.pushPayload(
+          'report',
+          yield this.get('ajax').request(`/api/v1/reports?id=${params.id}`, {
+            method: 'GET'
+          })
+        )
+      }
+
+      this.set('analysisIndexController.skipResetOnSetup', !!params.id)
       this.set('analysisIndexController.saved', true)
       this.transitionToRoute('analysis.index', {
         queryParams: {
