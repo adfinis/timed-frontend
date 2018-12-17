@@ -100,7 +100,7 @@ describe('Acceptance | analysis edit', function() {
   it('saves changes to store first', async function() {
     let project = server.create('project', { reviewers: [this.user] })
     let task = server.create('task', { project: project })
-    let report = server.create('report', { task: task, userId: this.user.id })
+    let report = server.create('report', { task: task })
 
     await visit('/analysis')
     await visit(`/analysis/edit?id=${report.id}&reviewer=${this.user.id}`)
@@ -109,10 +109,19 @@ describe('Acceptance | analysis edit', function() {
     await click('[data-test-verified] div input')
     await click('.btn-primary')
 
+    expect(find('tbody tr:first-child td:nth-child(8)').innerHTML).to.equal(
+      'foob'
+    )
+    expect(
+      find('tbody tr:first-child td:nth-child(7) span').innerHTML
+    ).to.equal('test')
+
     await click('[data-test-refresh]')
 
     await visit(`/analysis/edit?id=${report.id}&reviewer=${this.user.id}`)
     await click('[data-test-verified] div input')
     await click('.btn-primary')
+
+    expect(find('tbody tr:first-child td:nth-child(8)').innerHTML).to.equal('')
   })
 })
