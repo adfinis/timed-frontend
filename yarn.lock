@@ -3006,12 +3006,13 @@ ember-changeset@1.5.0, ember-changeset@^1.5.0:
     ember-cli-babel "^6.8.2"
     ember-deep-set "^0.1.4"
 
-ember-cli-app-version@^3.0.0:
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/ember-cli-app-version/-/ember-cli-app-version-3.1.0.tgz#074b0330581a7b8ab094ff07fefb34e0d0254bfd"
+ember-cli-app-version@^3.2.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/ember-cli-app-version/-/ember-cli-app-version-3.2.0.tgz#7b9ad0e1b63ae0518648356ee24c703e922bc26e"
+  integrity sha512-fHWOJElSw8JL03FNCHrT0RdWhGpWEQ4VQ10unEwwhVZ+OANNcOLz8O2dA3D5iuB4bb0fMLwjEwYZGM62+TBs1Q==
   dependencies:
-    ember-cli-babel "^6.8.0"
-    git-repo-version "0.4.1"
+    ember-cli-babel "^6.12.0"
+    git-repo-version "^1.0.2"
 
 ember-cli-babel@6.12.0, ember-cli-babel@^6.12.0:
   version "6.12.0"
@@ -5151,15 +5152,12 @@ git-repo-info@^1.1.2, git-repo-info@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/git-repo-info/-/git-repo-info-1.4.1.tgz#2a072823254aaf62fcf0766007d7b6651bd41943"
 
-git-repo-info@~1.2.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/git-repo-info/-/git-repo-info-1.2.0.tgz#43d8513e04a24dd441330a2f7c6655a709fdbaf2"
-
-git-repo-version@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/git-repo-version/-/git-repo-version-0.4.1.tgz#75fab9a0a4ec8470755b0eea7fdaa6f9d41453bf"
+git-repo-version@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/git-repo-version/-/git-repo-version-1.0.2.tgz#2c8e9bee5d970cafc0dd58480f9dc56d9afe8e4f"
+  integrity sha512-OPtwtHx9E8/rTMcWT+BU6GNj6Kq/O40bHJZaZAGy+pN2RXGmeKcfr0ix4M+SQuFY8vl5L/wfPSGOAtvUT/e3Qg==
   dependencies:
-    git-repo-info "~1.2.0"
+    git-repo-info "^1.4.1"
 
 git-tools@^0.1.4:
   version "0.1.4"
