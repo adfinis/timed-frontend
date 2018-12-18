@@ -1,6 +1,6 @@
 {
   "name": "timed",
-  "version": "0.12.0",
+  "version": "0.12.1",
   "description": "A time tracking software written in Ember.js",
   "directories": {
     "test": "tests"
