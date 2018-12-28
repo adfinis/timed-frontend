@@ -9,7 +9,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - dbdata:/var/lib/postgresq
+      - dbdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=timed
       - POSTGRES_PASSWORD=timed
