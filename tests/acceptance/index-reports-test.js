@@ -1,4 +1,11 @@
-import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
+import {
+  click,
+  fillIn,
+  find,
+  findAll,
+  currentURL,
+  visit
+} from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
@@ -79,24 +86,20 @@ describe('Acceptance | index reports', function() {
     await visit('/reports')
 
     expect(
-      find(`${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`).is(
-        ':disabled'
-      )
+      find(`[data-test-report-row-id="${id}"] [data-test-save-report]:disabled`)
     ).to.be.ok
 
     await fillIn(
-      `${`[data-test-report-row-id="${id}"]`} [data-test-report-duration]`,
+      `[data-test-report-row-id="${id}"] [data-test-report-duration]`,
       '00:15'
     )
     await fillIn(
-      `${`[data-test-report-row-id="${id}"]`} [data-test-report-comment]`,
+      `[data-test-report-row-id="${id}"] [data-test-report-comment]`,
       'Testyy'
     )
 
     expect(
-      find(`${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`).is(
-        ':disabled'
-      )
+      find(`[data-test-report-row-id="${id}"] [data-test-save-report]:disabled`)
     ).to.not.be.ok
 
     await click(
@@ -104,18 +107,15 @@ describe('Acceptance | index reports', function() {
     )
 
     expect(
-      find(`${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`).is(
-        ':disabled'
-      )
+      find(`[data-test-report-row-id="${id}"] [data-test-save-report]:disabled`)
     ).to.be.ok
 
     expect(
-      find(`${`[data-test-report-row-id="${id}"]`} [data-test-report-duration]`)
+      find(`[data-test-report-row-id="${id}"] [data-test-report-duration]`)
         .value
     ).to.equal('00:15')
     expect(
-      find(`${`[data-test-report-row-id="${id}"]`} [data-test-report-comment]`)
-        .value
+      find(`[data-test-report-row-id="${id}"] [data-test-report-comment]`).value
     ).to.equal('Testyy')
   })
 
@@ -124,13 +124,13 @@ describe('Acceptance | index reports', function() {
 
     await visit('/reports')
 
-    expect(find(`[data-test-report-row-id="${id}"]`)).to.have.length(1)
+    expect(findAll(`[data-test-report-row-id="${id}"]`)).to.have.length(1)
 
     await click(
       `${`[data-test-report-row-id="${id}"]`} [data-test-delete-report]`
     )
 
-    expect(find(`[data-test-report-row-id="${id}"]`)).to.have.length(0)
+    expect(findAll(`[data-test-report-row-id="${id}"]`)).to.have.length(0)
   })
 
   it('reloads absences after saving or deleting a report', async function() {
@@ -184,13 +184,13 @@ describe('Acceptance | index reports', function() {
       .format('YYYY-MM-DD')
 
     await visit('/reports')
-    expect(find('[data-test-report-row]')).to.have.length(6)
+    expect(findAll('[data-test-report-row]')).to.have.length(6)
 
-    await click(find('button:contains(Reschedule)'))
+    await click(find('.btn-success'))
     await click(find(`button[data-date="${tomorrow}"]`))
-    await click(find('button:contains(Save)'))
+    await click(find('[data-test-reschedule]'))
 
     expect(currentURL()).to.equal(`/reports?day=${tomorrow}`)
-    expect(find('[data-test-report-row]')).to.have.length(6)
+    expect(findAll('[data-test-report-row]')).to.have.length(6)
   })
 })

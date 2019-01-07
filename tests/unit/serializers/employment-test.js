@@ -1,20 +1,12 @@
 import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 import { expect } from 'chai'
 
 describe('Unit | Serializer | employment', function() {
-  setupModelTest('employment', {
-    needs: [
-      'serializer:employment',
-      'transform:django-duration',
-      'transform:django-date',
-      'model:user',
-      'model:location'
-    ]
-  })
+  setupTest()
 
   it('serializes records', function() {
-    let record = this.subject()
+    let record = this.owner.lookup('service:store').createRecord('employment')
 
     let serializedRecord = record.serialize()
 

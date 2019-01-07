@@ -6,6 +6,7 @@ import { expect } from 'chai'
 import { findAll } from 'ember-native-dom-helpers'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 import userSelect from 'timed/tests/helpers/user-select'
+import { selectSearch } from 'ember-power-select/test-support'
 
 describe('Acceptance | users', function() {
   let application = setupApplicationTest()
@@ -44,7 +45,7 @@ describe('Acceptance | users', function() {
     let user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit('/users')
 

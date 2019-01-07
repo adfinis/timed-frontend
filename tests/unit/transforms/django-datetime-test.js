@@ -4,13 +4,10 @@ import { expect } from 'chai'
 import moment from 'moment'
 
 describe('Unit | Transform | django datetime', function() {
-  setupTest('transform:django-datetime', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+  setupTest()
 
   it('serializes', function() {
-    let transform = this.subject()
+    let transform = this.owner.lookup('transform:django-datetime')
 
     let zone = moment().utcOffset()
 
@@ -30,7 +27,7 @@ describe('Unit | Transform | django datetime', function() {
   })
 
   it('deserializes', function() {
-    let transform = this.subject()
+    let transform = this.owner.lookup('transform:django-datetime')
 
     let datetime = moment({
       y: 2017,

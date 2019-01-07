@@ -3,18 +3,12 @@ import { describe, it } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
 describe('Unit | Controller | users/edit/credits/overtime credits/edit', function() {
-  setupTest('controller:users/edit/credits/overtime-credits/edit', {
-    // Specify the other units that are required for this test.
-    needs: [
-      'controller:users.edit',
-      'controller:users.edit.credits.index',
-      'service:notify'
-    ]
-  })
+  setupTest()
 
-  // Replace this with your real tests.
   it('exists', function() {
-    let controller = this.subject()
+    let controller = this.owner.lookup(
+      'controller:users/edit/credits/overtime-credits/edit'
+    )
     expect(controller).to.be.ok
   })
 })

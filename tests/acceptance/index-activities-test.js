@@ -221,7 +221,7 @@ describe('Acceptance | index activities', function() {
   })
 
   it('splits 1 day overlapping activities when stopping', async function() {
-    let activity = this.server.create('activity', 'active', {
+    this.server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(1, 'days')
     })
@@ -231,33 +231,25 @@ describe('Acceptance | index activities', function() {
     await click('[data-test-record-stop]')
 
     // today block should be from 00:00 to now
-    expect(
-      findAll(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(1)
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+    await click('[data-test-activity-row]:last-child')
 
     expect(
-      find('[data-test-activity-block-row] td:nth-child(1) input').value
+      find('[data-test-activity-time] td:first-child input').value
     ).to.equal('00:00')
 
     // yesterday block should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')
 
-    expect(
-      findAll(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(1)
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+    await click('[data-test-activity-row]:first-child')
 
     expect(
-      find('[data-test-activity-block-row] td:nth-child(3) input').value
+      find('[data-test-activity-time] td:last-child input').value
     ).to.equal('23:59')
   })
 
   it("doesn't split >1 days overlapping activities when stopping", async function() {
-    let activity = this.server.create('activity', 'active', {
+    this.server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(2, 'days')
     })
@@ -266,32 +258,24 @@ describe('Acceptance | index activities', function() {
 
     await click('[data-test-record-stop]')
 
-    // today block should not exist
-    expect(
-      findAll(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(0)
+    // today activity should not exist
+    expect(findAll('[data-test-activity-row]')).to.have.length(5)
 
-    // yesterday block should not exist
+    // yesterday activity should not exist
     await visit('/')
     await click('[data-test-previous]')
 
-    expect(
-      findAll(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(0)
+    expect(findAll('[data-test-activity-row]')).to.have.length(0)
 
-    // day before yesterday block should be from old start time to 23:59
+    // day before yesterday activity should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')
     await click('[data-test-previous]')
 
-    expect(
-      findAll(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(1)
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+    await click('[data-test-activity-row]:first-child')
 
     expect(
-      find('[data-test-activity-block-row]:last td:nth-child(3) input').value
+      find('[data-test-activity-time]:last-child td:last-child input').value
     ).to.equal('23:59')
   })
 

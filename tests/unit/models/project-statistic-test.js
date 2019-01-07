@@ -1,17 +1,14 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 
 describe('Unit | Model | project statistic', function() {
-  setupModelTest('project-statistic', {
-    // Specify the other units that are required for this test.
-    needs: []
-  })
+  setupTest()
 
-  // Replace this with your real tests.
   it('exists', function() {
-    let model = this.subject()
-    // var store = this.store();
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('project-statistic')
     expect(model).to.be.ok
   })
 })

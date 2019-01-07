@@ -3,13 +3,12 @@ import { describe, it } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
 describe('Unit | Route | users/edit/credits/overtime credits/new', function() {
-  setupTest('route:users/edit/credits/overtime-credits/new', {
-    // Specify the other units that are required for this test.
-    // needs: ['controller:foo']
-  })
+  setupTest()
 
   it('exists', function() {
-    let route = this.subject()
+    let route = this.owner.subject(
+      'route:users/edit/credits/overtime-credits/new'
+    )
     expect(route).to.be.ok
   })
 })

@@ -3,18 +3,15 @@ import { describe, it } from 'mocha'
 import { setupTest } from 'ember-mocha'
 
 describe('Unit | Service | ajax', function() {
-  setupTest('service:ajax', {
-    // Specify the other units that are required for this test.
-    needs: ['service:session']
-  })
+  setupTest()
 
   it('exists', function() {
-    let service = this.subject()
+    let service = this.owner.lookup('service:ajax')
     expect(service).to.be.ok
   })
 
   it('adds the auth token to the headers', function() {
-    let service = this.subject()
+    let service = this.owner.lookup('service:ajax')
 
     service.get('session').set('data', { authenticated: { token: 'test' } })
 
@@ -22,7 +19,7 @@ describe('Unit | Service | ajax', function() {
   })
 
   it('does not add the auth token to the headers if no token is given', function() {
-    let service = this.subject()
+    let service = this.owner.lookup('service:ajax')
 
     service.get('session').set('data', { authenticated: { token: null } })
 

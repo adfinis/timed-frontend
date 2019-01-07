@@ -1,4 +1,4 @@
-import { click, currentURL, visit } from '@ember/test-helpers'
+import { click, currentURL, visit, findAll } from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
@@ -28,17 +28,17 @@ describe('Acceptance | index attendances', function() {
   it('can list attendances', async function() {
     await visit('/attendances')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    expect(findAll('[data-test-attendance-slider]')).to.have.length(2)
   })
 
   it('can save an attendances', async function() {
     await visit('/attendances')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    expect(findAll('[data-test-attendance-slider]')).to.have.length(2)
 
     await click('[data-test-attendance-slider-id="1"] .noUi-draggable')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    expect(findAll('[data-test-attendance-slider]')).to.have.length(2)
   })
 
   it('can add an attendance', async function() {
@@ -46,7 +46,7 @@ describe('Acceptance | index attendances', function() {
 
     await click('[data-test-add-attendance]')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(3)
+    expect(findAll('[data-test-attendance-slider]')).to.have.length(3)
   })
 
   it('can delete an attendance', async function() {
@@ -56,8 +56,8 @@ describe('Acceptance | index attendances', function() {
       '[data-test-attendance-slider-id="1"] [data-test-delete-attendance]'
     )
 
-    expect(find('[data-test-attendance-slider-id]', 1)).to.have.length(0)
+    expect(findAll('[data-test-attendance-slider-id="1"]')).to.have.length(0)
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(1)
+    expect(findAll('[data-test-attendance-slider]')).to.have.length(1)
   })
 })

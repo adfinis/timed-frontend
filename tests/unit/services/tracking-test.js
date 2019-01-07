@@ -15,19 +15,15 @@ const storeStub = Service.extend({
 })
 
 describe('Unit | Service | tracking', function() {
-  setupTest('service:tracking', {
-    // Specify the other units that are required for this test.
-    needs: ['model:activity', 'service:notify']
-  })
+  setupTest()
 
   beforeEach(function() {
-    this.register('service:store', storeStub)
-    this.inject.service('store', { as: 'store' })
+    this.owner.register('service:store', storeStub, { instantiate: false })
+    this.owner.inject('service:tracking', 'store', 'service:store')
   })
 
-  // Replace this with your real tests.
   it('exists', function() {
-    let service = this.subject()
+    let service = this.owner.lookup('service:tracking')
     expect(service).to.be.ok
   })
 })

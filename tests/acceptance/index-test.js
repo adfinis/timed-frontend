@@ -1,4 +1,11 @@
-import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
+import {
+  click,
+  fillIn,
+  find,
+  findAll,
+  currentURL,
+  visit
+} from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
@@ -40,22 +47,21 @@ describe('Acceptance | index', function() {
 
     await taskSelect('[data-test-tracking-bar]')
 
-    await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
+    await fillIn('[data-test-tracking-comment] input', 'Some Random Comment')
 
-    expect(find('[data-test-record-start]')).to.have.length(1)
+    expect(findAll('[data-test-record-start]')).to.have.length(1)
 
     await click('[data-test-record-start]')
 
-    expect(find('[data-test-record-start]')).to.have.length(0)
-    expect(find('[data-test-record-stop]')).to.have.length(1)
+    expect(findAll('[data-test-record-start]')).to.have.length(0)
+    expect(findAll('[data-test-record-stop]')).to.have.length(1)
     expect(
-      find('[data-test-record-stop]')
-        .parent()
-        .parent()
-        .hasClass('recording')
+      find(
+        '[data-test-record-stop]'
+      ).parentElement.parentElement.classList.contains('recording')
     ).to.be.ok
     expect(
-      find('[data-test-activity-row]:first-child td:eq(1) div').text()
+      find('[data-test-activity-row]:first-child td:nth-child(2) div').innerText
     ).to.contain(task.name)
   })
 
@@ -66,20 +72,19 @@ describe('Acceptance | index', function() {
 
     await taskSelect('[data-test-tracking-bar]', { fromHistory: true })
 
-    await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
+    await fillIn('[data-test-tracking-comment] input', 'Some Random Comment')
 
     await click('[data-test-record-start]')
 
-    expect(find('[data-test-record-start]')).to.have.length(0)
-    expect(find('[data-test-record-stop]')).to.have.length(1)
+    expect(findAll('[data-test-record-start]')).to.have.length(0)
+    expect(findAll('[data-test-record-stop]')).to.have.length(1)
     expect(
-      find('[data-test-record-stop]')
-        .parent()
-        .parent()
-        .hasClass('recording')
+      find(
+        '[data-test-record-stop]'
+      ).parentElement.parentElement.classList.contains('recording')
     ).to.be.ok
     expect(
-      find('[data-test-activity-row]:first-child td:eq(1) div').text()
+      find('[data-test-activity-row]:first-child td:nth-child(2) div').innerText
     ).to.contain(task.name)
   })
 
@@ -91,27 +96,25 @@ describe('Acceptance | index', function() {
     await visit('/')
 
     expect(
-      find('[data-test-record-stop]')
-        .parent()
-        .parent()
-        .hasClass('recording')
+      find(
+        '[data-test-record-stop]'
+      ).parentElement.parentElement.classList.contains('recording')
     ).to.be.ok
-    expect(find('[data-test-record-stop]')).to.have.length(1)
-    expect(find('[data-test-tracking-comment] input').val()).to.equal(
+    expect(findAll('[data-test-record-stop]')).to.have.length(1)
+    expect(find('[data-test-tracking-comment] input').value).to.equal(
       activity.comment
     )
 
     await click('[data-test-record-stop]')
 
-    expect(find('[data-test-record-start]')).to.have.length(1)
-    expect(find('[data-test-record-stop]')).to.have.length(0)
+    expect(findAll('[data-test-record-start]')).to.have.length(1)
+    expect(findAll('[data-test-record-stop]')).to.have.length(0)
     expect(
-      find('[data-test-record-start]')
-        .parent()
-        .parent()
-        .hasClass('recording')
+      find(
+        '[data-test-record-start]'
+      ).parentElement.parentElement.classList.contains('recording')
     ).to.not.be.ok
-    expect(find('[data-test-tracking-comment] input').val()).to.equal('')
+    expect(find('[data-test-tracking-comment] input').value).to.equal('')
   })
 
   it('can set the document title', async function() {
@@ -142,25 +145,25 @@ describe('Acceptance | index', function() {
 
     await click('[data-test-add-absence]')
 
-    expect(find('[data-test-add-absence-form]')).to.have.length(1)
+    expect(findAll('[data-test-add-absence-form]')).to.have.length(1)
 
     await click('[data-test-add-absence-form] .btn-group .btn:first-child')
 
-    await click(find('[data-date=2017-06-28]'))
-    await click(find('[data-date=2017-06-30]'))
+    await click('[data-date="2017-06-28"]')
+    await click('[data-date="2017-06-30"]')
 
-    await click('[data-test-add-absence-form] button:contains(Save)')
+    await click('[data-test-add-absence-form] .btn-primary')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    expect(find('[data-test-edit-absence]')).to.be.ok
 
     await click('[data-test-next]')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    expect(find('[data-test-edit-absence]')).to.be.ok
 
     await click('[data-test-previous]')
     await click('[data-test-previous]')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    expect(find('[data-test-edit-absence]')).to.be.ok
   })
 
   it('can edit an absence', async function() {
@@ -172,19 +175,19 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    expect(find('[data-test-edit-absence]')).to.be.ok
 
     await click('[data-test-edit-absence]')
 
-    await click(find('[data-date=2017-06-30]'))
+    await click('[data-date="2017-06-30"]')
 
-    await click('[data-test-edit-absence-form] button:contains(Save)')
+    await click('[data-test-edit-absence-form] .btn-primary')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(0)
+    expect(find('[data-test-edit-absence]')).to.be.not.ok
 
     await click('[data-test-next]')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    expect(find('[data-test-edit-absence]')).to.be.ok
   })
 
   it('can delete an absence', async function() {
@@ -196,13 +199,13 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    expect(find('[data-test-edit-absence]')).to.be.ok
 
     await click('[data-test-edit-absence]')
 
-    await click('[data-test-edit-absence-form] button:contains(Delete)')
+    await click('[data-test-edit-absence-form] .btn-danger')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(0)
+    expect(find('[data-test-edit-absence]')).to.be.not.ok
   })
 
   it('highlights holidays', async function() {
@@ -210,8 +213,8 @@ describe('Acceptance | index', function() {
     this.server.create('public-holiday', { date })
     await visit('/?day=2017-06-29')
 
-    expect(find('[data-test-weekly-overview-day=29].holiday')).to.have.length(1)
-    expect(find('[data-test-weekly-overview-day=28].holiday')).to.have.length(0)
+    expect(find('[data-test-weekly-overview-day="29"].holiday')).to.be.ok
+    expect(find('[data-test-weekly-overview-day="28"].holiday')).to.not.be.ok
   })
 
   it('rollbacks the absence modal', async function() {
@@ -219,22 +222,19 @@ describe('Acceptance | index', function() {
 
     await click('[data-test-add-absence]')
 
-    expect(
-      find('[data-date=2017-06-29].ember-power-calendar-day--selected')
-    ).to.have.length(1)
+    expect(find('[data-date="2017-06-29"].ember-power-calendar-day--selected'))
+      .to.be.ok
 
-    await click('[data-date=2017-06-30]')
+    await click('[data-date="2017-06-30"]')
 
-    expect(
-      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
-    ).to.have.length(1)
+    expect(find('[data-date="2017-06-30"].ember-power-calendar-day--selected'))
+      .to.be.ok
 
     await click('[data-test-add-absence-form] .close')
 
     await click('[data-test-add-absence]')
 
-    expect(
-      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
-    ).to.have.length(0)
+    expect(find('[data-date="2017-06-30"].ember-power-calendar-day--selected'))
+      .to.not.be.ok
   })
 })

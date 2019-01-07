@@ -1,21 +1,21 @@
 import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 import { expect } from 'chai'
 import moment from 'moment'
 
 describe('Unit | Model | user', function() {
-  setupModelTest('user', {
-    needs: ['model:employment', 'model:location', 'model:absence-credit']
-  })
+  setupTest()
 
   it('exists', function() {
-    let model = this.subject()
+    let model = this.owner.lookup('service:store').createRecord('user')
 
     expect(model).to.be.ok
   })
 
   it('computes a full name', function() {
-    let model = this.subject({ firstName: 'Hans', lastName: 'Muster' })
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('user', { firstName: 'Hans', lastName: 'Muster' })
 
     expect(model).to.be.ok
 
@@ -23,7 +23,7 @@ describe('Unit | Model | user', function() {
   })
 
   it('computes a long name with full name', function() {
-    let model = this.subject({
+    let model = this.owner.lookup('service:store').createRecord('user', {
       username: 'hansm',
       firstName: 'Hans',
       lastName: 'Muster'
@@ -35,7 +35,9 @@ describe('Unit | Model | user', function() {
   })
 
   it('computes a long name without full name', function() {
-    let model = this.subject({ username: 'hansm' })
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('user', { username: 'hansm' })
 
     expect(model).to.be.ok
 
@@ -43,15 +45,21 @@ describe('Unit | Model | user', function() {
   })
 
   it('computes the active employment', function() {
-    let model = this.subject({ username: 'hansm' })
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('user', { username: 'hansm' })
 
     expect(model).to.be.ok
 
     expect(model.get('activeEmployment')).to.be.null
 
     model.set('employments', [
-      this.store().createRecord('employment', { id: 1, to: null }),
-      this.store().createRecord('employment', { id: 2, to: moment() })
+      this.owner
+        .lookup('service:store')
+        .createRecord('employment', { id: 1, to: null }),
+      this.owner
+        .lookup('service:store')
+        .createRecord('employment', { id: 2, to: moment() })
     ])
 
     expect(Number(model.get('activeEmployment.id'))).to.equal(1)

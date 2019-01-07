@@ -1,4 +1,4 @@
-import { currentURL, visit } from '@ember/test-helpers'
+import { currentURL, visit, find } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -26,7 +26,7 @@ describe('Acceptance | notfound', function() {
 
     await visit('/thiswillneverbeavalidrouteurl')
 
-    expect(find('[data-test-notfound]')).to.have.length(1)
+    expect(find('[data-test-notfound]')).to.be.ok
 
     await invalidateSession(application)
   })

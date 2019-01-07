@@ -1,15 +1,12 @@
 import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
+import { setupTest } from 'ember-mocha'
 import { expect } from 'chai'
 
 describe('Unit | Model | location', function() {
-  setupModelTest('location', {
-    // needs: []
-  })
+  setupTest()
 
   it('exists', function() {
-    let model = this.subject()
-    // var store = this.store()
+    let model = this.owner.lookup('service:store').createRecord('location')
     expect(model).to.be.ok
   })
 })

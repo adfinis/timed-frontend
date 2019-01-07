@@ -14,7 +14,7 @@ describe('Acceptance | analysis edit', function() {
     this.user = user
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     this.server.create('report-intersection', { verified: false })
   })
@@ -55,8 +55,6 @@ describe('Acceptance | analysis edit', function() {
       'project',
       'task'
     ])
-
-    expect(currentURL()).to.equal('/analysis')
   })
 
   it('can cancel', async function() {

@@ -39,11 +39,11 @@ describe('Acceptance | index activities edit', function() {
     await taskSelect('[data-test-activity-edit-form]')
 
     await fillIn(
-      '[data-test-activity-edit-form] [data-test-activity-block-row] td:nth-child(1) input',
+      '[data-test-activity-edit-form] [data-test-activity-time] td:nth-child(1) input',
       '03:30'
     )
     await fillIn(
-      '[data-test-activity-edit-form] [data-test-activity-block-row] td:nth-child(3) input',
+      '[data-test-activity-edit-form] [data-test-activity-time] td:nth-child(3) input',
       '04:30'
     )
 
@@ -105,36 +105,27 @@ describe('Acceptance | index activities edit', function() {
 
     await visit(`/edit/${id}`)
 
-    await fillIn(
-      '[data-test-activity-block-row] td:nth-child(1) input',
-      '02:30'
-    )
-    await fillIn(
-      '[data-test-activity-block-row] td:nth-child(3) input',
-      '01:30'
-    )
+    await fillIn('[data-test-activity-time] td:nth-child(1) input', '02:30')
+    await fillIn('[data-test-activity-time] td:nth-child(3) input', '01:30')
     await triggerEvent(
-      '[data-test-activity-block-row] td:nth-child(3) input',
+      '[data-test-activity-time] td:nth-child(3) input',
       'blur'
     )
 
     expect(
-      find('[data-test-activity-block-row] td:nth-child(3)').classList.contains(
+      find('[data-test-activity-time] td:nth-child(3)').classList.contains(
         'has-error'
       )
     ).to.be.ok
 
-    await fillIn(
-      '[data-test-activity-block-row] td:nth-child(1) input',
-      '00:30'
-    )
+    await fillIn('[data-test-activity-time] td:nth-child(1) input', '00:30')
     await triggerEvent(
-      '[data-test-activity-block-row] td:nth-child(1) input',
+      '[data-test-activity-time] td:nth-child(1) input',
       'blur'
     )
 
     expect(
-      find('[data-test-activity-block-row] td:nth-child(3)').classList.contains(
+      find('[data-test-activity-time] td:nth-child(3)').classList.contains(
         'has-error'
       )
     ).to.not.be.ok

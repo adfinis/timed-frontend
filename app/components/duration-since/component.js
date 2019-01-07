@@ -8,8 +8,6 @@ import moment from 'moment'
 import Ember from 'ember'
 import { task, timeout } from 'ember-concurrency'
 
-const { testing } = Ember
-
 /**
  * The duration since component
  *
@@ -88,7 +86,7 @@ const DurationSinceComponent = Component.extend({
       this._compute()
 
       /* istanbul ignore else */
-      if (testing) {
+      if (Ember.testing) {
         return
       }
 
