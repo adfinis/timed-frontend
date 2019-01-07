@@ -17,6 +17,7 @@ import { inject as service } from '@ember/service'
 export default Mixin.create(RouteTourMixin, {
   autostartTour: service('autostart-tour'),
   notify: service('notify'),
+  media: service('media'),
 
   /**
    * Get the route name of the parent route

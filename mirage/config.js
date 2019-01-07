@@ -274,7 +274,7 @@ export default function() {
   this.get('/task-statistics', statisticEndpoint('task'))
   this.get('/user-statistics', statisticEndpoint('user'))
 
-  this.post('/users/:id/transfer', () => new Response(201, {}))
+  this.post('/users/:id/transfer', () => [200, {}])
 
   this.get('/reports/export', function(
     _,

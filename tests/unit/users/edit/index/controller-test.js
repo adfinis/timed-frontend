@@ -6,7 +6,7 @@ describe('Unit | Controller | users/edit/index', function() {
   setupTest()
 
   it('exists', function() {
-    let controller = this.subject('controller:users/edit/index')
+    let controller = this.owner.lookup('controller:users/edit/index')
     expect(controller).to.be.ok
   })
 })

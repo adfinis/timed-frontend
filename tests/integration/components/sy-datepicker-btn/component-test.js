@@ -1,11 +1,10 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import { click, find, render, waitFor } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import { find } from 'ember-native-dom-helpers'
-import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers'
 
 describe('Integration | Component | sy datepicker btn', function() {
   setupRenderingTest()
@@ -17,11 +16,12 @@ describe('Integration | Component | sy datepicker btn', function() {
       hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('.sy-datepicker')).to.not.be.ok
+    expect(find('.sy-datepicker')).to.not.exist
 
-    clickTrigger()
+    await clickTrigger()
 
-    expect(find('.sy-datepicker')).to.be.ok
+    await waitFor('.sy-datepicker')
+    expect(find('.sy-datepicker')).to.exist
   })
 
   it('changes value on selection', async function() {
@@ -31,13 +31,11 @@ describe('Integration | Component | sy datepicker btn', function() {
       hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
     )
 
-    clickTrigger()
+    await clickTrigger()
 
-    let target = find(
+    await click(
       '.ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child'
     )
-
-    target.click()
 
     let expected = moment()
       .endOf('month')

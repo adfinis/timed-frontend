@@ -4,6 +4,7 @@ import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
+import { setBreakpoint } from 'ember-responsive/test-support'
 
 describe('Acceptance | index attendances', function() {
   let application = setupApplicationTest()
@@ -17,6 +18,8 @@ describe('Acceptance | index attendances', function() {
 
     this.server.create('attendance', 'morning', { userId: user.id })
     this.server.create('attendance', 'afternoon', { userId: user.id })
+
+    await setBreakpoint('xl')
   })
 
   it('can visit /attendances', async function() {

@@ -1,11 +1,10 @@
-import { click, find, render } from '@ember/test-helpers'
+import { click, find, findAll, render } from '@ember/test-helpers'
 import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
-import { startMirage } from 'timed/initializers/ember-cli-mirage'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 import EmberObject from '@ember/object'
-import wait from 'ember-test-helpers/wait'
 
 const CUSTOMER = EmberObject.create({
   id: 1,
@@ -25,15 +24,8 @@ const TASK = EmberObject.create({
 })
 
 describe('Integration | Component | task selection', function() {
-  setupRenderingTest()
-
-  beforeEach(function() {
-    this.server = startMirage()
-  })
-
-  afterEach(function() {
-    this.server.shutdown()
-  })
+  let app = setupRenderingTest()
+  setupMirage(app)
 
   it('renders', async function() {
     await render(hbs`
@@ -44,9 +36,9 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.project-select [aria-disabled=true]')).to.have.length(1)
-    expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
+    expect(findAll('.customer-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.project-select [aria-disabled=true]')).to.have.length(1)
+    expect(findAll('.task-select [aria-disabled=true]')).to.have.length(1)
   })
 
   it('can set initial customer', async function() {
@@ -64,17 +56,15 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    return wait().then(() => {
-      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
+    expect(findAll('.customer-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.project-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.task-select [aria-disabled=true]')).to.have.length(1)
 
-      expect(
-        find(
-          '.customer-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(CUSTOMER.name)
-    })
+    expect(
+      find(
+        '.customer-select .ember-power-select-selected-item'
+      ).textContent.trim()
+    ).to.equal(CUSTOMER.name)
   })
 
   it('can set initial project', async function() {
@@ -92,22 +82,20 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    return wait().then(() => {
-      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.customer-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.project-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.task-select [aria-disabled=true]')).to.have.length(0)
 
-      expect(
-        find(
-          '.customer-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(CUSTOMER.name)
-      expect(
-        find(
-          '.project-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(PROJECT.name)
-    })
+    expect(
+      find(
+        '.customer-select .ember-power-select-selected-item'
+      ).textContent.trim()
+    ).to.equal(CUSTOMER.name)
+    expect(
+      find(
+        '.project-select .ember-power-select-selected-item'
+      ).textContent.trim()
+    ).to.equal(PROJECT.name)
   })
 
   it('can set initial task', async function() {
@@ -125,27 +113,23 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    return wait().then(() => {
-      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.customer-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.project-select [aria-disabled=true]')).to.have.length(0)
+    expect(findAll('.task-select [aria-disabled=true]')).to.have.length(0)
 
-      expect(
-        find(
-          '.customer-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(CUSTOMER.name)
-      expect(
-        find(
-          '.project-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(PROJECT.name)
-      expect(
-        find(
-          '.task-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(TASK.name)
-    })
+    expect(
+      find(
+        '.customer-select .ember-power-select-selected-item'
+      ).textContent.trim()
+    ).to.equal(CUSTOMER.name)
+    expect(
+      find(
+        '.project-select .ember-power-select-selected-item'
+      ).textContent.trim()
+    ).to.equal(PROJECT.name)
+    expect(
+      find('.task-select .ember-power-select-selected-item').textContent.trim()
+    ).to.equal(TASK.name)
   })
 
   it('can clear customer', async function() {
@@ -182,16 +166,14 @@ describe('Integration | Component | task selection', function() {
 
     await click('button')
 
-    return wait().then(() => {
-      expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-      ).to.have.length(0)
-      expect(
-        this.$('.project-select .ember-power-select-selected-item')
-      ).to.have.length(0)
-      expect(
-        this.$('.project-select .ember-power-select-selected-item')
-      ).to.have.length(0)
-    })
+    expect(
+      findAll('.customer-select .ember-power-select-selected-item')
+    ).to.have.length(0)
+    expect(
+      findAll('.project-select .ember-power-select-selected-item')
+    ).to.have.length(0)
+    expect(
+      findAll('.project-select .ember-power-select-selected-item')
+    ).to.have.length(0)
   })
 })

@@ -1,14 +1,18 @@
-import { find, render } from '@ember/test-helpers'
+import {
+  find,
+  findAll,
+  render,
+  triggerKeyEvent,
+  waitFor
+} from '@ember/test-helpers'
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
-import wait from 'ember-test-helpers/wait'
 import {
   clickTrigger,
   typeInSearch
-} from 'timed/tests/helpers/ember-power-select'
-import { keyEvent } from 'ember-native-dom-helpers'
+} from 'ember-power-select/test-support/helpers'
 
 const OPTIONS = [
   { id: 1, name: 'Test 1' },
@@ -16,7 +20,7 @@ const OPTIONS = [
   { id: 3, name: 'Test 3' }
 ]
 
-describe('Integration | Component | power select', function() {
+describe('Integration | Component | power select', async function() {
   setupRenderingTest()
 
   it('can use blockless', async function() {
@@ -41,19 +45,15 @@ describe('Integration | Component | power select', function() {
       }}
     `)
 
-    clickTrigger('.select')
+    await clickTrigger('.select')
 
-    return wait().then(() => {
-      expect(
-        find('.ember-power-select-selected-item').textContent.trim()
-      ).to.equal('Selected: Test 1')
-      expect(
-        this.$('.ember-power-select-option')
-          .first()
-          .text()
-          .trim()
-      ).to.equal('Option: Test 1')
-    })
+    await waitFor('.ember-power-select-option')
+    expect(
+      find('.ember-power-select-selected-item').textContent.trim()
+    ).to.equal('Selected: Test 1')
+    expect(findAll('.ember-power-select-option')[0].innerText.trim()).to.equal(
+      'Option: Test 1'
+    )
   })
 
   it('can select with tab', async function() {
@@ -79,13 +79,11 @@ describe('Integration | Component | power select', function() {
       }}
     `)
 
-    clickTrigger('.select')
-    typeInSearch('2')
+    await clickTrigger('.select')
+    await typeInSearch('2')
 
-    keyEvent('.ember-power-select-search-input', 'keydown', 9)
+    await triggerKeyEvent('.ember-power-select-search-input', 'keydown', 9)
 
-    return wait().then(() => {
-      expect(this.get('selected').id).to.equal(2)
-    })
+    expect(this.get('selected').id).to.equal(2)
   })
 })

@@ -64,7 +64,7 @@ describe('Acceptance | index activities', function() {
     expect(currentURL()).to.equal('/')
 
     expect(
-      find('[data-test-activity-row-id="7"] td:nth-child(3)').innerText
+      find('[data-test-activity-row-id="7"] td:nth-child(3)').innerText.trim()
     ).to.equals(activity.comment)
   })
 

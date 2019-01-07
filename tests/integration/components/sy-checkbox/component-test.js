@@ -29,12 +29,12 @@ describe('Integration | Component | sy checkbox', function() {
     expect(find('input').checked).to.be.false
     expect(this.get('checked')).to.be.false
 
-    click('label')
+    await click('label')
 
     expect(find('input').checked).to.be.true
     expect(this.get('checked')).to.be.true
 
-    click('label')
+    await click('label')
 
     expect(find('input').checked).to.be.false
     expect(this.get('checked')).to.be.false
@@ -50,7 +50,7 @@ describe('Integration | Component | sy checkbox', function() {
     expect(find('input').indeterminate).to.be.true
     expect(this.get('checked')).to.be.null
 
-    click('label')
+    await click('label')
 
     // clicking on an indeterminate checkbox makes it checked
     expect(find('input').checked).to.be.true

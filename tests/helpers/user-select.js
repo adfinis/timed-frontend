@@ -1,4 +1,4 @@
-import { selectChoose } from 'ember-power-select/test-support/helpers'
+import { selectChoose } from 'ember-power-select/test-support'
 
 export default async function userSelect(selector = '') {
   await selectChoose(

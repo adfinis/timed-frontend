@@ -6,7 +6,7 @@ describe('Unit | Route | users/edit/credits/overtime credits/new', function() {
   setupTest()
 
   it('exists', function() {
-    let route = this.owner.subject(
+    let route = this.owner.lookup(
       'route:users/edit/credits/overtime-credits/new'
     )
     expect(route).to.be.ok

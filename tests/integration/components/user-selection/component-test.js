@@ -1,10 +1,9 @@
 import { find, render } from '@ember/test-helpers'
 import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
-import { startMirage } from 'timed/initializers/ember-cli-mirage'
-import wait from 'ember-test-helpers/wait'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 import EmberObject from '@ember/object'
 
 const USER = EmberObject.create({
@@ -16,15 +15,8 @@ const USER = EmberObject.create({
 })
 
 describe('Integration | Component | user selection', function() {
-  setupRenderingTest()
-
-  beforeEach(function() {
-    this.server = startMirage()
-  })
-
-  afterEach(function() {
-    this.server.shutdown()
-  })
+  let app = setupRenderingTest()
+  setupMirage(app)
 
   it('renders', async function() {
     this.set('user', USER)
@@ -35,12 +27,8 @@ describe('Integration | Component | user selection', function() {
       {{/user-selection}}
     `)
 
-    return wait().then(() => {
-      expect(
-        find(
-          '.user-select .ember-power-select-selected-item'
-        ).textContent.trim()
-      ).to.equal(USER.longName)
-    })
+    expect(
+      find('.user-select .ember-power-select-selected-item').textContent.trim()
+    ).to.equal(USER.longName)
   })
 })

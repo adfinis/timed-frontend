@@ -1,11 +1,19 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import {
+  find,
+  triggerKeyEvent,
+  click,
+  render,
+  waitFor,
+  fillIn,
+  focus,
+  blur
+} from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import { find, triggerEvent, click } from 'ember-native-dom-helpers'
-import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers'
 
 describe('Integration | Component | sy datepicker', function() {
   setupRenderingTest()
@@ -17,7 +25,7 @@ describe('Integration | Component | sy datepicker', function() {
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('input').value).to.be.equal(moment().format('DD.MM.YYYY'))
+    expect(find('input').value).to.equal(moment().format('DD.MM.YYYY'))
   })
 
   it('toggles the calendar on click of the input', async function() {
@@ -29,8 +37,9 @@ describe('Integration | Component | sy datepicker', function() {
 
     expect(find('.sy-datepicker')).to.not.be.ok
 
-    clickTrigger()
+    await clickTrigger()
 
+    await waitFor('.sy-datepicker')
     expect(find('.sy-datepicker')).to.be.ok
   })
 
@@ -43,13 +52,13 @@ describe('Integration | Component | sy datepicker', function() {
 
     expect(find('input').validity.valid).to.be.true
 
-    find('input').value = '20.20.20'
-    triggerEvent('input', 'input')
+    await fillIn('input', '20.20.20')
+    await triggerKeyEvent('input', 'keydown', 'Enter')
 
     expect(find('input').validity.valid).to.be.false
 
-    find('input').value = '20.12.20'
-    triggerEvent('input', 'input')
+    await fillIn('input', '20.12.20')
+    await triggerKeyEvent('input', 'keydown', 'Enter')
 
     expect(find('input').validity.valid).to.be.true
   })
@@ -61,18 +70,18 @@ describe('Integration | Component | sy datepicker', function() {
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    find('input').value = '1.2.2018'
-    triggerEvent('input', 'change')
+    await fillIn('input', '1.2.2018')
+    await triggerKeyEvent('input', 'keydown', 'Enter')
 
     expect(this.get('value').format('YYYY-MM-DD')).to.equal('2018-02-01')
 
-    find('input').value = ''
-    triggerEvent('input', 'change')
+    await fillIn('input', '')
+    await triggerKeyEvent('input', 'keydown', 'Enter')
 
     expect(this.get('value')).to.be.null
 
-    find('input').value = 'somewrongthing'
-    triggerEvent('input', 'change')
+    await fillIn('input', 'somewrongthing')
+    await triggerKeyEvent('input', 'keydown', 'Enter')
 
     // value stays unchanged
     expect(this.get('value')).to.be.null
@@ -85,8 +94,8 @@ describe('Integration | Component | sy datepicker', function() {
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    clickTrigger()
-    click(
+    await clickTrigger()
+    await click(
       '.ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child'
     )
 
@@ -107,15 +116,17 @@ describe('Integration | Component | sy datepicker', function() {
     expect(find('.sy-datepicker')).to.not.be.ok
 
     // show if focus is on input
-    triggerEvent('input', 'focus')
+    await focus('input')
     expect(find('.sy-datepicker')).to.be.ok
 
     // do not hide if focus changed into the picker
-    triggerEvent('input', 'blur', { relatedTarget: find('.sy-datepicker') })
+    await focus(
+      '.ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child'
+    )
     expect(find('.sy-datepicker')).to.be.ok
 
     // hide if focus changed into another element
-    triggerEvent('input', 'blur')
+    await blur('input')
     expect(find('.sy-datepicker')).to.not.be.ok
   })
 })

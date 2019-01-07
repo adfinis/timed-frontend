@@ -1,9 +1,8 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import { click, findAll, find, fillIn, render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
-import { click, findAll, find, fillIn } from 'ember-native-dom-helpers'
 import moment from 'moment'
 
 describe('Integration | Component | filter sidebar/filter', function() {
@@ -39,7 +38,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
 
     expect(find('button.active').innerHTML.trim()).to.equal('test 2')
 
-    click('button:nth-child(1)')
+    await click('button:nth-child(1)')
 
     expect(this.get('selected')).to.equal(1)
   })
@@ -75,7 +74,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
       findAll('option')[find('select').options.selectedIndex].innerHTML.trim()
     ).to.equal('test 2')
 
-    fillIn('select', '1')
+    await fillIn('select', '1')
 
     expect(this.get('selected')).to.equal('1')
   })
@@ -94,7 +93,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
       this.get('selected').format('DD.MM.YYYY')
     )
 
-    fillIn('input', '10.10.2010')
+    await fillIn('input', '10.10.2010')
 
     expect(this.get('selected').format()).to.equal(
       moment({ year: 2010, month: 9, day: 10 }).format()
@@ -113,7 +112,7 @@ describe('Integration | Component | filter sidebar/filter', function() {
 
     expect(find('input').value).to.equal(this.get('selected'))
 
-    fillIn('input', 'foobarbaz')
+    await fillIn('input', 'foobarbaz')
 
     expect(this.get('selected')).to.equal('foobarbaz')
   })

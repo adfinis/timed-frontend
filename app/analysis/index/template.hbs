@@ -1,4 +1,4 @@
-{{#if (or media.isMo media.isXs media.isSm)}}
+{{#if (or (media 'isMo') (media 'isXs') (media 'isSm'))}}
   {{no-mobile-message}}
 {{else}}
   <h1>Analysis</h1>

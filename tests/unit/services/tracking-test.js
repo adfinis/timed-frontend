@@ -18,8 +18,8 @@ describe('Unit | Service | tracking', function() {
   setupTest()
 
   beforeEach(function() {
-    this.owner.register('service:store', storeStub, { instantiate: false })
-    this.owner.inject('service:tracking', 'store', 'service:store')
+    this.owner.register('service:mockStore', storeStub)
+    this.owner.inject('service:tracking', 'store', 'service:mockStore')
   })
 
   it('exists', function() {

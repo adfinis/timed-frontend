@@ -1,9 +1,8 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import { find, click, render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
-import { find, click } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | filter sidebar/group', function() {
   setupRenderingTest()
@@ -30,11 +29,11 @@ describe('Integration | Component | filter sidebar/group', function() {
 
     expect(find('.filter-sidebar-group--expanded')).to.not.be.ok
 
-    click('.filter-sidebar-group-label')
+    await click('.filter-sidebar-group-label')
 
     expect(find('.filter-sidebar-group--expanded')).to.be.ok
 
-    click('.filter-sidebar-group-label')
+    await click('.filter-sidebar-group-label')
 
     expect(find('.filter-sidebar-group--expanded')).to.not.be.ok
   })

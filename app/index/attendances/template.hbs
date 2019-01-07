@@ -3,7 +3,7 @@
 </div>
 <div class="attendances">
   {{#if attendances}}
-    {{#if (or media.isXl media.isLg media.isMd)}}
+    {{#if (or (media 'isXl') (media 'isLg') (media 'isMd'))}}
       {{#each attendances as |attendance|}}
         {{attendance-slider
           data-test-attendance-slider

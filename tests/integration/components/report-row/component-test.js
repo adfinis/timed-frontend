@@ -1,32 +1,24 @@
-import { click, render } from '@ember/test-helpers'
+import { find, findAll, click, render } from '@ember/test-helpers'
 import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
+import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
 import hbs from 'htmlbars-inline-precompile'
-import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
-import { find, findAll } from 'ember-native-dom-helpers'
+import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Integration | Component | report row', function() {
-  setupRenderingTest()
-
-  beforeEach(function() {
-    this.server = startMirage()
-  })
-
-  afterEach(function() {
-    this.server.shutdown()
-  })
+  let app = setupRenderingTest()
+  setupMirage(app)
 
   it('renders', async function() {
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
 
     await render(hbs`{{report-row report}}`)
 
-    expect(this.$('form')).to.have.length(1)
-    expect(this.$('.form-group')).to.have.length(8)
-    expect(this.$('.btn-danger')).to.have.length(1)
-    expect(this.$('.btn-primary')).to.have.length(1)
+    expect(findAll('form')).to.have.length(1)
+    expect(findAll('.form-group')).to.have.length(8)
+    expect(findAll('.btn-danger')).to.have.length(1)
+    expect(findAll('.btn-primary')).to.have.length(1)
   })
 
   it('can delete row', async function() {
