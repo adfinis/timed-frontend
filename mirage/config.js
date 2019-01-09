@@ -274,7 +274,7 @@ export default function() {
   this.get('/task-statistics', statisticEndpoint('task'))
   this.get('/user-statistics', statisticEndpoint('user'))
 
-  this.post('/users/:id/transfer', () => [200, {}])
+  this.post('/users/:id/transfer', () => [201, {}])
 
   this.get('/reports/export', function(
     _,
@@ -293,7 +293,5 @@ export default function() {
     return reportIntersections.first()
   })
 
-  this.post('/reports/bulk', function() {
-    return new Response(200, {})
-  })
+  this.post('/reports/bulk', () => [200, {}])
 }
