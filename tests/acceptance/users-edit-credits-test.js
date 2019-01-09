@@ -1,9 +1,15 @@
-import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
+import {
+  click,
+  fillIn,
+  currentURL,
+  visit,
+  findAll,
+  find
+} from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import { findAll, find } from 'ember-native-dom-helpers'
 import moment from 'moment'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 

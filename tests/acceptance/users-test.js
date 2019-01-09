@@ -1,9 +1,8 @@
-import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
+import { click, fillIn, currentURL, visit, findAll } from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import { findAll } from 'ember-native-dom-helpers'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 import userSelect from 'timed/tests/helpers/user-select'
 import { selectSearch } from 'ember-power-select/test-support'
@@ -26,7 +25,7 @@ describe('Acceptance | users', function() {
     await visit('/users')
 
     // 5 supervisees and the user himself
-    expect(await findAll('table tr')).to.have.length(6)
+    expect(findAll('table tr')).to.have.length(6)
   })
 
   it('shows all to superuser', async function() {

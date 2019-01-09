@@ -1,9 +1,8 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import { render, find } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
-import { find } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | in viewport', function() {
   setupRenderingTest()

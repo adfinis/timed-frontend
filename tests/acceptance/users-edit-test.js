@@ -1,9 +1,8 @@
-import { currentURL, visit } from '@ember/test-helpers'
+import { currentURL, visit, find } from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import { find } from 'ember-native-dom-helpers'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | users edit', function() {

@@ -23,11 +23,10 @@ export default Component.extend({
 
   actions: {
     handleBlur(dd, e) {
-      if (
-        !document
-          .getElementById(`ember-basic-dropdown-content-${dd.uniqueId}`)
-          .contains(e.relatedTarget)
-      ) {
+      let element = document.getElementById(
+        `ember-basic-dropdown-content-${dd.uniqueId}`
+      )
+      if (element && !element.contains(e.relatedTarget)) {
         dd.actions.close()
       }
     },

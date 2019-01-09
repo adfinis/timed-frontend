@@ -1,8 +1,7 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
-import { findAll, find } from 'ember-native-dom-helpers'
+import { render, findAll, find } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 describe('Integration | Component | async list', function() {

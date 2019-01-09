@@ -1,11 +1,9 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import { render, find, triggerEvent } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import wait from 'ember-test-helpers/wait'
-import { find, triggerEvent } from 'ember-native-dom-helpers'
 
 describe('Integration | Component | sy calendar', function() {
   setupRenderingTest()
@@ -21,11 +19,9 @@ describe('Integration | Component | sy calendar', function() {
 
     sel.value = '2010'
 
-    triggerEvent(sel, 'change')
+    await triggerEvent(sel, 'change')
 
-    return wait().then(() => {
-      expect(this.get('center').year()).to.equal(2010)
-    })
+    expect(this.get('center').year()).to.equal(2010)
   })
 
   it('can select a month', async function() {
@@ -39,10 +35,8 @@ describe('Integration | Component | sy calendar', function() {
 
     sel.value = 'May'
 
-    triggerEvent(sel, 'change')
+    await triggerEvent(sel, 'change')
 
-    return wait().then(() => {
-      expect(this.get('center').month()).to.equal(4)
-    })
+    expect(this.get('center').month()).to.equal(4)
   })
 })

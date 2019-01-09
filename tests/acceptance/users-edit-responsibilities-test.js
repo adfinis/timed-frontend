@@ -1,9 +1,8 @@
-import { visit } from '@ember/test-helpers'
+import { visit, findAll } from '@ember/test-helpers'
 import { authenticateSession } from 'ember-simple-auth/test-support'
 import { beforeEach, describe, it } from 'mocha'
 import { setupApplicationTest } from 'ember-mocha'
 import { expect } from 'chai'
-import { findAll } from 'ember-native-dom-helpers'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Acceptance | users edit responsibilities', function() {

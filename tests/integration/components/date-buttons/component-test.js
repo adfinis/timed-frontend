@@ -1,9 +1,8 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
+import { render, click } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
-import { click } from 'ember-native-dom-helpers'
 import moment from 'moment'
 
 describe('Integration | Component | date buttons', function() {

@@ -1,8 +1,7 @@
 import { expect } from 'chai'
 import { describe, it } from 'mocha'
 import { setupRenderingTest } from 'ember-mocha'
-import { render } from '@ember/test-helpers'
-import { find } from 'ember-native-dom-helpers'
+import { render, find } from '@ember/test-helpers'
 import moment from 'moment'
 import hbs from 'htmlbars-inline-precompile'
 
