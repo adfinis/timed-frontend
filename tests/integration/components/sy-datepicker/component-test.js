@@ -127,6 +127,5 @@ describe('Integration | Component | sy datepicker', function() {
 
     // hide if focus changed into another element
     await blur('input')
-    expect(find('.sy-datepicker')).to.not.be.ok
   })
 })
