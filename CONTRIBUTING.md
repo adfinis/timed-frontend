@@ -46,7 +46,7 @@ Writing of code can still happen outside the docker container of course.
 ### Install new requirements
 
 In case you're adding new requirements you simply need to build the docker container
-again for those to be installed and re-open shell.
+again for them to be installed and re-open shell.
 
 ```bash
 docker-compose build --pull
