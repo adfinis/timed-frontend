@@ -18,7 +18,7 @@ cd timed-backend
 ### Open Shell
 
 Once it is cloned you can easily open a shell in the docker container to
-open an development environment.
+open a development environment.
 
 ```bash
 make shell
