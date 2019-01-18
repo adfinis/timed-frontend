@@ -54,7 +54,7 @@ docker-compose build --pull
 
 ### Setup pre commit
 
-Pre commit hooks is an additional option instead of executing checks in your editor of choice.
+Pre commit hooks are an additional option instead of executing checks in your editor of choice.
 
 First create a virtualenv with the tool of your choice before running below commands:
 
