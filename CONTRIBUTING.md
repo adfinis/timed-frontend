@@ -26,7 +26,7 @@ make shell
 
 ### Testing
 
-Once you have shelled in docker container as described above
+Once you have shelled in to the docker container as described above
 you can use common python tooling for formatting, linting, testing
 etc.
 
