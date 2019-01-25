@@ -45,6 +45,33 @@
   justify-content: space-around;
 }
 
+.activity-time {
+  position: relative;
+  justify-content: center;
+
+  &-from {
+    .activity-time-sameasprev & {
+      position:absolute;
+      bottom: -.75em;
+      left: 50%;
+      z-index: 1;
+
+      display: block; 
+      width: 3.3em;
+      margin-left: -1.65em;
+      text-align: center;
+      line-height: 1.3;
+      border: 1px solid #e1e1e1;
+      background-color: #fff;
+      font-size: .8em;
+    }
+
+    .activity-time-overflowsprev & {
+      color: red;
+    }
+  }
+}
+
 @media (--lg-viewport) {
   .activities-edit:not(:empty) + .activities-list {
     flex-basis: 70%;

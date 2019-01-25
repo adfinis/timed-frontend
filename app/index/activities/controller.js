@@ -8,6 +8,17 @@ import { computed } from '@ember/object'
 import { sort } from '@ember/object/computed'
 
 /**
+ * Determines if the timestamps are (more or less) equal.
+ *
+ * @param {number} a One of the two timestamps.
+ * @param {number} b The other timestamp to compare.
+ * @returns {boolean}
+ */
+function isSame(a, b, tolerance = 5) {
+  return Math.abs(a - b) < 1000 * 60 * tolerance
+}
+
+/**
  * The index activities controller
  *
  * @class IndexActivitiesController
@@ -50,5 +61,31 @@ export default Controller.extend({
 
   sortedActivities: sort('activities', function(a, b) {
     return b.get('from').toDate() - a.get('from').toDate()
+  }),
+
+  mergedActivities: computed('sortedActivities', function () {
+    let reversed = this.get('sortedActivities').reverse()
+    let fromTimes = reversed.map(activity => +activity.get('fromTime'))
+    let toTimes = reversed.map(activity => +activity.get('toTime'))
+
+    return reversed
+      .map((current, index) => {
+        let prev = toTimes[index - 1]
+        let next = fromTimes[index + 1]
+        let fromTime = +current.get('fromTime')
+        let toTime = +current.get('toTime')
+
+        if (typeof prev !== undefined) {
+          current.set('sameAsPrev', isSame(prev, fromTime))
+          current.set('overflowsPrev', fromTime - prev < 0)
+        }
+
+        if (typeof next !== undefined) {
+          current.set('sameAsNext', isSame(next, toTime))
+        }
+
+        return current
+      })
+      .reverse()
   })
 })
