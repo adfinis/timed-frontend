@@ -23,7 +23,7 @@ export default Component.extend({
 
   actions: {
     handleBlur(dd, e) {
-      let element = document.getElementById(
+      const element = document.getElementById(
         `ember-basic-dropdown-content-${dd.uniqueId}`
       )
       if (element && !element.contains(e.relatedTarget)) {

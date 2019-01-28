@@ -8,7 +8,7 @@ import EmberObject from '@ember/object'
 import moment from 'moment'
 
 describe('Integration | Component | progress tooltip', function() {
-  let app = setupRenderingTest()
+  const app = setupRenderingTest()
   setupMirage(app)
 
   beforeEach(function() {

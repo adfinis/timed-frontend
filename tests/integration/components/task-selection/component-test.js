@@ -24,7 +24,7 @@ const TASK = EmberObject.create({
 })
 
 describe('Integration | Component | task selection', function() {
-  let app = setupRenderingTest()
+  const app = setupRenderingTest()
   setupMirage(app)
 
   it('renders', async function() {

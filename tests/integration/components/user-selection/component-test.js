@@ -15,7 +15,7 @@ const USER = EmberObject.create({
 })
 
 describe('Integration | Component | user selection', function() {
-  let app = setupRenderingTest()
+  const app = setupRenderingTest()
   setupMirage(app)
 
   it('renders', async function() {

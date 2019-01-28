@@ -7,7 +7,7 @@ import EmberObject from '@ember/object'
 import setupMirage from 'ember-cli-mirage/test-support/setup-mirage'
 
 describe('Integration | Component | report row', function() {
-  let app = setupRenderingTest()
+  const app = setupRenderingTest()
   setupMirage(app)
 
   it('renders', async function() {
