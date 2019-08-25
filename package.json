@@ -65,7 +65,7 @@
     "ember-math-helpers": "^2.2.3",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-mocha": "^0.12.0",
-    "ember-moment": "^7.4.1",
+    "ember-moment": "^8.0.0",
     "ember-native-dom-helpers": "^0.6.1",
     "ember-notify": "^5.2.1",
     "ember-one-way-controls": "^3.0.1",
