@@ -107,7 +107,10 @@
             on-change = (action (mut toDate))
           }}
         {{/fs.label}}
-        {{date-buttons presetDate=(action (mut fromDate))}}
+        {{date-buttons
+            onUpdateFromDate=(action (mut fromDate))
+            onUpdateToDate=(action (mut toDate))
+        }}
       {{/fs.group}}
       {{#fs.group label='State'}}
         {{#fs.label}}
