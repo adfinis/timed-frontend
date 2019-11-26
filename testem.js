@@ -6,9 +6,9 @@ module.exports = {
   disable_watching: true,
   parallel: -1,
   launch_in_dev: [],
-  launch_in_ci: ['chromium', 'firefox'],
+  launch_in_ci: ['chrome', 'firefox'],
   browser_args: {
-    chromium: [
+    chrome: [
       process.env.TRAVIS ? '--no-sandbox' : null,
 
       '--headless',
