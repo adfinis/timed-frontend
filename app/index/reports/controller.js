@@ -54,7 +54,7 @@ export default Controller.extend({
         this.store.createRecord('report', { date: this.get('model') })
       }
 
-      return reportsToday.sort(a => (a.get('isNew') ? 1 : -1))
+      return reportsToday.sort(a => (a.get('isNew') ? 1 : 0))
     }
   )
 })
