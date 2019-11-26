@@ -226,7 +226,7 @@
             {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__customer__name'}}Customer{{/sort-header}}
             {{#sort-header update=(action (mut ordering)) current=ordering by='task__project__name'}}Project{{/sort-header}}
             {{#sort-header update=(action (mut ordering)) current=ordering by='task__name'}}Task{{/sort-header}}
-            <th>Comment</th>
+            {{#sort-header update=(action (mut ordering)) current=ordering by='comment'}}Comment{{/sort-header}}
             {{#sort-header update=(action (mut ordering)) current=ordering by='verified_by__username'}}Verified by{{/sort-header}}
             <th>Review</th>
             <th>Not billable</th>
