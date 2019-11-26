@@ -1,9 +1,9 @@
 /* jshint node: true */
 
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
     modulePrefix: 'timed',
-    environment: environment,
+    environment,
     rootURL: '/',
     locationType: 'auto',
     moment: {
