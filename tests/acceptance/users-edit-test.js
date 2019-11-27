@@ -1,17 +1,16 @@
+import { currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import { find } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
 
-describe('Acceptance | users edit', function() {
+module('Acceptance | users edit', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -23,25 +22,25 @@ describe('Acceptance | users edit', function() {
     await authenticateSession(application, { user_id: user.id })
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can visit /users/:id', async function() {
+  test('can visit /users/:id', async function(assert) {
     await visit(`/users/${this.allowed.id}`)
 
-    expect(currentURL()).to.contain(this.allowed.id)
+    assert.dom(currentURL()).includesText(this.allowed.id)
   })
 
-  it('shows only supervisees', async function() {
+  test('shows only supervisees', async function(assert) {
     await visit(`/users/${this.notAllowed.id}`)
 
-    expect(find('.empty')).to.be.ok
-    expect(find('.empty').innerHTML).to.contain('Halt')
+    assert.dom('.empty').exists()
+    assert.dom('.empty').includesText('Halt')
   })
 
-  it('allows all to superuser', async function() {
+  test('allows all to superuser', async function(assert) {
     let user = server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
@@ -49,6 +48,6 @@ describe('Acceptance | users edit', function() {
 
     await visit(`/users/${this.notAllowed.id}`)
 
-    expect(currentURL()).to.contain(this.notAllowed.id)
+    assert.dom(currentURL()).includesText(this.notAllowed.id)
   })
 })

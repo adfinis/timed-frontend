@@ -1,6 +1,6 @@
-import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { find, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import wait from 'ember-test-helpers/wait'
@@ -14,34 +14,33 @@ const USER = EmberObject.create({
   longName: 'Hans Muster (hansm)'
 })
 
-describe('Integration | Component | user selection', function() {
-  setupComponentTest('user-selection', {
-    integration: true
-  })
+module('Integration | Component | user selection', function(hooks) {
+  setupRenderingTest(hooks)
 
-  beforeEach(function() {
+  hooks.beforeEach(function() {
     this.server = startMirage()
   })
 
-  afterEach(function() {
+  hooks.afterEach(function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('user', USER)
 
-    this.render(hbs`
+    await render(hbs`
       {{#user-selection user=user on-change=(action (mut user)) as |u|}}
         {{u.user}}
       {{/user-selection}}
     `)
 
     return wait().then(() => {
-      expect(
-        this.$('.user-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(USER.longName)
+      assert.equal(
+        find(
+          '.user-select .ember-power-select-selected-item'
+        ).textContent.trim(),
+        USER.longName
+      )
     })
   })
 })

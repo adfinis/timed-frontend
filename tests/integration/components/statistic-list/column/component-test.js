@@ -1,16 +1,13 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
-import { find } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
 import hbs from 'htmlbars-inline-precompile'
+import { setupRenderingTest } from 'ember-qunit'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | statistic list/column', function() {
-  setupComponentTest('statistic-list/column', {
-    integration: true
-  })
+module('Integration | Component | statistic list/column', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{statistic-list/column}}`)
-    expect(find('td')).to.be.ok
+  test('renders', async function(assert) {
+    await render(hbs`{{statistic-list/column}}`)
+    assert.equal(find('td'), true)
   })
 })

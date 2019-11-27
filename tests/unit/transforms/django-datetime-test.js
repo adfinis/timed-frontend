@@ -1,16 +1,12 @@
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import moment from 'moment'
 
-describe('Unit | Transform | django datetime', function() {
-  setupTest('transform:django-datetime', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+module('Unit | Transform | django datetime', function(hooks) {
+  setupTest(hooks)
 
-  it('serializes', function() {
-    let transform = this.subject()
+  test('serializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-datetime')
 
     let zone = moment().utcOffset()
 
@@ -26,11 +22,11 @@ describe('Unit | Transform | django datetime', function() {
 
     let result = transform.serialize(datetime)
 
-    expect(result).to.equal(datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
+    assert.equal(result, datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
   })
 
-  it('deserializes', function() {
-    let transform = this.subject()
+  test('deserializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-datetime')
 
     let datetime = moment({
       y: 2017,
@@ -42,13 +38,13 @@ describe('Unit | Transform | django datetime', function() {
       ms: 11
     }).utc()
 
-    expect(transform.deserialize('')).to.be.null
-    expect(transform.deserialize(null)).to.be.null
+    assert.notOk(transform.deserialize(''))
+    assert.notOk(transform.deserialize(null))
 
     let result = transform
       .deserialize(datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
       .utc()
 
-    expect(result.toISOString()).to.be.equal(datetime.toISOString())
+    assert.equal(result.toISOString(), datetime.toISOString())
   })
 })

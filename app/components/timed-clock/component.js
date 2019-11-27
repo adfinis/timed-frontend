@@ -8,8 +8,6 @@ import moment from 'moment'
 import Ember from 'ember'
 import { task, timeout } from 'ember-concurrency'
 
-const { testing } = Ember
-
 export default Component.extend({
   classNames: ['timed-clock'],
 
@@ -32,7 +30,7 @@ export default Component.extend({
       this._update()
 
       /* istanbul ignore else */
-      if (testing) {
+      if (Ember.testing) {
         return
       }
 

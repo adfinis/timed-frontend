@@ -1,18 +1,17 @@
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
-import { findAll, find } from 'ember-native-dom-helpers'
 import moment from 'moment'
+import { module, test } from 'qunit'
 
-describe('Acceptance | users edit credits', function() {
+module('Acceptance | users edit credits', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     this.user = server.create('user', { isSuperuser: true })
@@ -21,34 +20,34 @@ describe('Acceptance | users edit credits', function() {
     await authenticateSession(application, { user_id: this.user.id })
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can visit /users/:id/credits', async function() {
+  test('can visit /users/:id/credits', async function(assert) {
     await visit(`/users/1/credits`)
 
-    expect(findAll('.card')).to.have.length(2)
+    assert.dom('.card').exists({ count: 2 })
   })
 
-  it('can change year', async function() {
+  test('can change year', async function(assert) {
     let { employments: { models: [activeEmployment] } } = this.user
 
     await visit(`/users/1/credits`)
 
-    expect(find('select option:first-child').innerHTML.trim()).to.equal(
-      activeEmployment.start.getFullYear().toString()
-    )
+    assert
+      .dom('select option:first-child')
+      .hasText(activeEmployment.start.getFullYear().toString())
 
-    expect(find('select option:nth-last-child(2)').innerHTML.trim()).to.equal(
+    assert.dom('select option:nth-last-child(2)').hasText(
       moment()
         .add(1, 'year')
         .year()
         .toString()
     )
 
-    expect(find('select option:last-child').innerHTML.trim()).to.equal('All')
+    assert.dom('select option:last-child').hasText('All')
 
     await fillIn(
       'select',
@@ -57,18 +56,18 @@ describe('Acceptance | users edit credits', function() {
         .year()
     )
 
-    expect(currentURL()).to.contain(
+    assert.dom(currentURL()).includesText(
       `year=${moment()
         .add(1, 'year')
         .year()}`
     )
   })
 
-  it('can transfer', async function() {
+  test('can transfer', async function(assert) {
     await visit(`/users/1/credits?year=${moment().year() - 1}`)
 
     await click('.year-select .btn')
 
-    expect(currentURL()).to.equal('/users/1/credits')
+    assert.equal(currentURL(), '/users/1/credits')
   })
 })

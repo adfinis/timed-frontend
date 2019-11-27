@@ -2,14 +2,12 @@ import PowerSelectComponent from 'ember-power-select/components/power-select'
 import Ember from 'ember'
 import { isBlank } from '@ember/utils'
 
-const { testing } = Ember
-
 /* istanbul ignore next */
 const PowerSelectCustomComponent = PowerSelectComponent.extend({
   init() {
     this._super(...arguments)
 
-    this.set('extra.testing', testing)
+    this.set('extra.testing', Ember.testing)
   },
 
   _handleKeyTab() {
@@ -19,7 +17,7 @@ const PowerSelectCustomComponent = PowerSelectComponent.extend({
   _focusComesFromOutside(e) {
     let blurredEl = e.relatedTarget
 
-    if (isBlank(blurredEl) || testing) {
+    if (isBlank(blurredEl) || Ember.testing) {
       return false
     }
 

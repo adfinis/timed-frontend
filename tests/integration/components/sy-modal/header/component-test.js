@@ -1,43 +1,33 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, find, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | sy modal/header', function() {
-  setupComponentTest('sy-modal/header', {
-    integration: true
-  })
+module('Integration | Component | sy modal/header', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('visible', true)
 
-    this.render(
+    await render(
       hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
     )
 
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.contain('Test')
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.contain('×')
+    assert.equal(find('*').textContent.trim(), 'Test')
+    assert.equal(find('*').textContent.trim(), '×')
   })
 
-  it('closes on click of the close icon', function() {
+  test('closes on click of the close icon', async function(assert) {
     this.set('visible', true)
 
-    this.render(
+    await render(
       hbs`{{#sy-modal/header close=(action (mut visible) false)}}Test{{/sy-modal/header}}`
     )
 
-    expect(this.get('visible')).to.be.ok
+    assert.ok(this.get('visible'))
 
-    this.$('button').click()
+    await click('button')
 
-    expect(this.get('visible')).to.not.be.ok
+    assert.notOk(this.get('visible'))
   })
 })

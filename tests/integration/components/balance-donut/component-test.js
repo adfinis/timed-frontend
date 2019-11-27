@@ -1,73 +1,74 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
-import { find } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
+import { find, render } from '@ember/test-helpers'
 import moment from 'moment'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | balance donut', function() {
-  setupComponentTest('balance-donut', {
-    integration: true
-  })
+module('Integration | Component | balance donut', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders with a credit', function() {
+  test('renders with a credit', async function(assert) {
     this.set('balance', {
       credit: 10,
       usedDays: 5
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
-    expect(find('.donut-content').innerHTML).to.contain('5 of 10')
-    expect(find('.donut-content').innerHTML).to.contain('50%')
+    assert.dom('.donut-content').includesText('5 of 10')
+    assert.dom('.donut-content').includesText('50%')
 
-    expect(find('.donut-segment').getAttribute('stroke-dasharray')).to.equal(
+    assert.equal(
+      find('.donut-segment').getAttribute('stroke-dasharray'),
       '50 50'
     )
   })
 
-  it('renders without a credit', function() {
+  test('renders without a credit', async function(assert) {
     this.set('balance', {
       credit: 0,
       usedDays: 3
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
-    expect(find('.donut-content').innerHTML).to.contain('3')
-    expect(find('.donut-content').innerHTML).to.not.contain('0')
+    assert.dom('.donut-content').includesText('3')
+    assert.dom('.donut-content').doesNotIncludeText('0')
 
-    expect(find('.donut-segment').getAttribute('stroke-dasharray')).to.equal(
+    assert.equal(
+      find('.donut-segment').getAttribute('stroke-dasharray'),
       '100 0'
     )
   })
 
-  it('renders with a smaller credit than used days', function() {
+  test('renders with a smaller credit than used days', async function(assert) {
     this.set('balance', {
       credit: 10,
       usedDays: 20
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
-    expect(find('.donut-content').innerHTML).to.contain('20 of 10')
-    expect(find('.donut-content').innerHTML).to.contain('200%')
+    assert.dom('.donut-content').includesText('20 of 10')
+    assert.dom('.donut-content').includesText('200%')
 
-    expect(find('.donut-segment').getAttribute('stroke-dasharray')).to.equal(
+    assert.equal(
+      find('.donut-segment').getAttribute('stroke-dasharray'),
       '100 0'
     )
   })
 
-  it('renders with a duration', function() {
+  test('renders with a duration', async function(assert) {
     this.set('balance', {
       usedDuration: moment.duration({ h: 10 })
     })
 
-    this.render(hbs`{{balance-donut balance}}`)
+    await render(hbs`{{balance-donut balance}}`)
 
-    expect(find('.donut-content').innerHTML).to.contain('10:00')
+    assert.dom('.donut-content').includesText('10:00')
 
-    expect(find('.donut-segment').getAttribute('stroke-dasharray')).to.equal(
+    assert.equal(
+      find('.donut-segment').getAttribute('stroke-dasharray'),
       '100 0'
     )
   })

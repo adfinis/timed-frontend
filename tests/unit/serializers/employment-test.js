@@ -1,23 +1,14 @@
-import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Serializer | employment', function() {
-  setupModelTest('employment', {
-    needs: [
-      'serializer:employment',
-      'transform:django-duration',
-      'transform:django-date',
-      'model:user',
-      'model:location'
-    ]
-  })
+module('Unit | Serializer | employment', function(hooks) {
+  setupTest(hooks)
 
-  it('serializes records', function() {
-    let record = this.subject()
+  test('serializes records', function(assert) {
+    let record = this.owner.lookup('service:store').createRecord('employment')
 
     let serializedRecord = record.serialize()
 
-    expect(serializedRecord).to.be.ok
+    assert.ok(serializedRecord)
   })
 })

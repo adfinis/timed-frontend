@@ -1,56 +1,54 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Ability | report', function() {
-  setupTest('ability:report', {
-    // Specify the other units that are required for this test.
-    needs: ['service:session']
-  })
+module('Unit | Ability | report', function(hooks) {
+  setupTest(hooks)
 
-  it('can edit when user is superuser', function() {
+  test('can edit when user is superuser', function(assert) {
     let ability = this.subject({ user: { isSuperuser: true } })
 
-    expect(ability.get('canEdit')).to.be.true
+    assert.equal(ability.get('canEdit'), true)
   })
 
-  it('can edit when user is superuser and report is verified', function() {
+  test('can edit when user is superuser and report is verified', function(
+    assert
+  ) {
     let ability = this.subject({
       user: { isSuperuser: true },
       model: { verifiedBy: { id: 1 } }
     })
 
-    expect(ability.get('canEdit')).to.be.true
+    assert.equal(ability.get('canEdit'), true)
   })
 
-  it('can edit when user owns report', function() {
+  test('can edit when user owns report', function(assert) {
     let ability = this.subject({
       user: { id: 1 },
       model: { user: { id: 1 } }
     })
 
-    expect(ability.get('canEdit')).to.be.true
+    assert.equal(ability.get('canEdit'), true)
   })
 
-  it('can edit when user is supervisor of owner', function() {
+  test('can edit when user is supervisor of owner', function(assert) {
     let ability = this.subject({
       user: { id: 1 },
       model: { user: { supervisors: [{ id: 1 }] } }
     })
 
-    expect(ability.get('canEdit')).to.be.true
+    assert.equal(ability.get('canEdit'), true)
   })
 
-  it('can edit when user reviewer of project', function() {
+  test('can edit when user reviewer of project', function(assert) {
     let ability = this.subject({
       user: { id: 1 },
       model: { task: { project: { reviewers: [{ id: 1 }] } } }
     })
 
-    expect(ability.get('canEdit')).to.be.true
+    assert.equal(ability.get('canEdit'), true)
   })
 
-  it('can not edit when not allowed', function() {
+  test('can not edit when not allowed', function(assert) {
     let ability = this.subject({
       user: { id: 1, isSuperuser: false },
       model: {
@@ -59,10 +57,10 @@ describe('Unit | Ability | report', function() {
       }
     })
 
-    expect(ability.get('canEdit')).to.be.false
+    assert.equal(ability.get('canEdit'), false)
   })
 
-  it('can not edit when report is verified', function() {
+  test('can not edit when report is verified', function(assert) {
     let ability = this.subject({
       user: { id: 1, isSuperuser: false },
       model: {
@@ -72,6 +70,6 @@ describe('Unit | Ability | report', function() {
       }
     })
 
-    expect(ability.get('canEdit')).to.be.false
+    assert.equal(ability.get('canEdit'), false)
   })
 })

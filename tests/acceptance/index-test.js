@@ -1,17 +1,17 @@
+import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import moment from 'moment'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | index', function() {
+module('Acceptance | index', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -22,26 +22,26 @@ describe('Acceptance | index', function() {
     this.user = user
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can select a day', async function() {
+  test('can select a day', async function(assert) {
     await visit('/')
 
     await click('[data-test-previous]')
 
     let lastDay = moment().subtract(1, 'day')
 
-    expect(currentURL()).to.equal(`/?day=${lastDay.format('YYYY-MM-DD')}`)
+    assert.equal(currentURL(), `/?day=${lastDay.format('YYYY-MM-DD')}`)
 
     await click('[data-test-today]')
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
   })
 
-  it('can start a new activity', async function() {
+  test('can start a new activity', async function(assert) {
     let task = server.create('task')
     await visit('/')
 
@@ -49,24 +49,23 @@ describe('Acceptance | index', function() {
 
     await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
 
-    expect(find('[data-test-record-start]')).to.have.length(1)
+    assert.dom('[data-test-record-start]').exists({ count: 1 })
 
     await click('[data-test-record-start]')
 
-    expect(find('[data-test-record-start]')).to.have.length(0)
-    expect(find('[data-test-record-stop]')).to.have.length(1)
-    expect(
-      find('[data-test-record-stop]')
-        .parent()
-        .parent()
-        .hasClass('recording')
-    ).to.be.ok
-    expect(
-      find('[data-test-activity-row]:first-child td:eq(1) div').text()
-    ).to.contain(task.name)
+    assert.dom('[data-test-record-start]').doesNotExist()
+    assert.dom('[data-test-record-stop]').exists({ count: 1 })
+    assert
+      .dom('[data-test-record-stop]')
+      .parent()
+      .parent()
+      .hasClass('recording')
+    assert
+      .dom('[data-test-activity-row]:first-child td:eq(1) div')
+      .containsText(task.name)
   })
 
-  it('can start a new activity from the history', async function() {
+  test('can start a new activity from the history', async function(assert) {
     let task = server.create('task')
 
     await visit('/')
@@ -77,77 +76,76 @@ describe('Acceptance | index', function() {
 
     await click('[data-test-record-start]')
 
-    expect(find('[data-test-record-start]')).to.have.length(0)
-    expect(find('[data-test-record-stop]')).to.have.length(1)
-    expect(
-      find('[data-test-record-stop]')
-        .parent()
-        .parent()
-        .hasClass('recording')
-    ).to.be.ok
-    expect(
-      find('[data-test-activity-row]:first-child td:eq(1) div').text()
-    ).to.contain(task.name)
+    assert.dom('[data-test-record-start]').doesNotExist()
+    assert.dom('[data-test-record-stop]').exists({ count: 1 })
+    assert
+      .dom('[data-test-record-stop]')
+      .parent()
+      .parent()
+      .hasClass('recording')
+    assert
+      .dom('[data-test-activity-row]:first-child td:eq(1) div')
+      .containsText(task.name)
   })
 
-  it('can stop an active activity', async function() {
+  test('can stop an active activity', async function(assert) {
     let activity = server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
-    expect(
-      find('[data-test-record-stop]')
-        .parent()
-        .parent()
-        .hasClass('recording')
-    ).to.be.ok
-    expect(find('[data-test-record-stop]')).to.have.length(1)
-    expect(find('[data-test-tracking-comment] input').val()).to.equal(
-      activity.comment
-    )
+    assert
+      .dom('[data-test-record-stop]')
+      .parent()
+      .parent()
+      .hasClass('recording')
+    assert.dom('[data-test-record-stop]').exists({ count: 1 })
+    assert
+      .dom('[data-test-tracking-comment] input')
+      .containsText(activity.comment)
 
     await click('[data-test-record-stop]')
 
-    expect(find('[data-test-record-start]')).to.have.length(1)
-    expect(find('[data-test-record-stop]')).to.have.length(0)
-    expect(
-      find('[data-test-record-start]')
-        .parent()
-        .parent()
-        .hasClass('recording')
-    ).to.not.be.ok
-    expect(find('[data-test-tracking-comment] input').val()).to.equal('')
+    assert.dom('[data-test-record-start]').exists({ count: 1 })
+    assert.dom('[data-test-record-stop]').doesNotExist()
+    assert
+      .dom('[data-test-record-start]')
+      .parent()
+      .parent()
+      .hasClass('recording')
+    assert.dom('[data-test-tracking-comment] input').hasText('')
   })
 
-  it('can set the document title', async function() {
+  test('can set the document title', async function(assert) {
     server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
-    expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
+    assert.dom(document.title).hasText(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
 
     await click('[data-test-record-stop]')
 
-    expect(document.title).to.not.match(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
+    assert.notDeepEqual(document.title, /\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
   })
 
-  it('can set the document title without task', async function() {
+  test('can set the document title without task', async function(assert) {
     let a = server.create('activity', 'active', { userId: this.user.id })
     a.update('task', null)
 
     await visit('/')
 
-    expect(document.title).to.match(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/)
+    assert.dom(document.title).hasText(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/)
   })
 
-  it('can add an absence for multiple days and current day is preselected', async function() {
+  test('can add an absence for multiple days and current day is preselected', async function(
+    assert
+  ) {
     server.loadFixtures('absence-types')
 
     await visit('/?day=2017-06-29')
 
     await click('[data-test-add-absence]')
 
-    expect(find('[data-test-add-absence-form]')).to.have.length(1)
+    assert.dom('[data-test-add-absence-form]').exists({ count: 1 })
 
     await click('[data-test-add-absence-form] .btn-group .btn:first-child')
 
@@ -156,19 +154,19 @@ describe('Acceptance | index', function() {
 
     await click('[data-test-add-absence-form] button:contains(Save)')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    assert.dom('[data-test-edit-absence]').isVisible()
 
     await click('[data-test-next]')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    assert.dom('[data-test-edit-absence]').isVisible()
 
     await click('[data-test-previous]')
     await click('[data-test-previous]')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    assert.dom('[data-test-edit-absence]').isVisible()
   })
 
-  it('can edit an absence', async function() {
+  test('can edit an absence', async function(assert) {
     server.loadFixtures('absence-types')
     server.create('absence', {
       date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD'),
@@ -177,7 +175,7 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    assert.dom('[data-test-edit-absence]').isVisible()
 
     await click('[data-test-edit-absence]')
 
@@ -185,14 +183,14 @@ describe('Acceptance | index', function() {
 
     await click('[data-test-edit-absence-form] button:contains(Save)')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(0)
+    assert.dom('[data-test-edit-absence]').isNotVisible()
 
     await click('[data-test-next]')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    assert.dom('[data-test-edit-absence]').isVisible()
   })
 
-  it('can delete an absence', async function() {
+  test('can delete an absence', async function(assert) {
     server.loadFixtures('absence-types')
     server.create('absence', {
       date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD'),
@@ -201,45 +199,47 @@ describe('Acceptance | index', function() {
 
     await visit('/?day=2017-06-29')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(1)
+    assert.dom('[data-test-edit-absence]').isVisible()
 
     await click('[data-test-edit-absence]')
 
     await click('[data-test-edit-absence-form] button:contains(Delete)')
 
-    expect(find('[data-test-edit-absence]:visible')).to.have.length(0)
+    assert.dom('[data-test-edit-absence]').isNotVisible()
   })
 
-  it('highlights holidays', async function() {
+  test('highlights holidays', async function(assert) {
     let date = moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
     server.create('public-holiday', { date })
     await visit('/?day=2017-06-29')
 
-    expect(find('[data-test-weekly-overview-day=29].holiday')).to.have.length(1)
-    expect(find('[data-test-weekly-overview-day=28].holiday')).to.have.length(0)
+    assert
+      .dom('[data-test-weekly-overview-day=29].holiday')
+      .exists({ count: 1 })
+    assert.dom('[data-test-weekly-overview-day=28].holiday').doesNotExist()
   })
 
-  it('rollbacks the absence modal', async function() {
+  test('rollbacks the absence modal', async function(assert) {
     await visit('/?day=2017-06-29')
 
     await click('[data-test-add-absence]')
 
-    expect(
-      find('[data-date=2017-06-29].ember-power-calendar-day--selected')
-    ).to.have.length(1)
+    assert
+      .dom('[data-date=2017-06-29].ember-power-calendar-day--selected')
+      .exists({ count: 1 })
 
     await click('[data-date=2017-06-30]')
 
-    expect(
-      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
-    ).to.have.length(1)
+    assert
+      .dom('[data-date=2017-06-30].ember-power-calendar-day--selected')
+      .exists({ count: 1 })
 
     await click('[data-test-add-absence-form] .close')
 
     await click('[data-test-add-absence]')
 
-    expect(
-      find('[data-date=2017-06-30].ember-power-calendar-day--selected')
-    ).to.have.length(0)
+    assert
+      .dom('[data-date=2017-06-30].ember-power-calendar-day--selected')
+      .doesNotExist()
   })
 })

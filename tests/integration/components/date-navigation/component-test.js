@@ -1,60 +1,59 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 
 const DATE = moment({ y: 2017, m: 2, d: 10 })
 
-describe('Integration | Component | date navigation', function() {
-  setupComponentTest('date-navigation', {
-    integration: true
-  })
+module('Integration | Component | date navigation', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-10')
+    assert.equal(this.get('date').format('YYYY-MM-DD'), '2017-01-10')
   })
 
-  it('can select the next day', function() {
+  test('can select the next day', async function(assert) {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    this.$('[data-test-next]').click()
+    await click('[data-test-next]')
 
-    expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-11')
+    assert.equal(this.get('date').format('YYYY-MM-DD'), '2017-01-11')
   })
 
-  it('can select the previous day', function() {
+  test('can select the previous day', async function(assert) {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    this.$('[data-test-previous]').click()
+    await click('[data-test-previous]')
 
-    expect(this.get('date').format('YYYY-MM-DD')).to.equal('2017-01-09')
+    assert.equal(this.get('date').format('YYYY-MM-DD'), '2017-01-09')
   })
 
-  it('can select the current day', function() {
+  test('can select the current day', async function(assert) {
     this.set('date', DATE)
 
-    this.render(
+    await render(
       hbs`{{date-navigation current=date on-change=(action (mut date))}}`
     )
 
-    this.$('[data-test-today]').click()
+    await click('[data-test-today]')
 
-    expect(this.get('date').format('YYYY-MM-DD')).to.equal(
+    assert.equal(
+      this.get('date').format('YYYY-MM-DD'),
       moment().format('YYYY-MM-DD')
     )
   })

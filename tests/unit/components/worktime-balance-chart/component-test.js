@@ -1,21 +1,17 @@
 import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
 import EmberObject from '@ember/object'
 import moment from 'moment'
+import { setupRenderingTest } from 'ember-qunit'
 
 const WorktimeBalance = EmberObject.extend({
   balance: moment.duration({ h: 10 })
 })
 
-describe('Unit | Component | worktime balance chart', function() {
-  setupComponentTest('worktime-balance-chart', {
-    // Specify the other units that are required for this test
-    // needs: ['component:foo', 'helper:bar'],
-    unit: true
-  })
+module('Unit | Component | worktime balance chart', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('computes the data correctly', function() {
+  test('computes the data correctly', function(assert) {
     let dates = [...new Array(3).keys()].map(i => moment().subtract(i, 'days'))
 
     let component = this.subject({
@@ -26,20 +22,19 @@ describe('Unit | Component | worktime balance chart', function() {
       component.get('data.labels').map(l => l.format('YYYY-MM-DD'))
     ).to.deep.equal(dates.map(d => d.format('YYYY-MM-DD')))
 
-    expect(component.get('data.datasets')).to.deep.equal([
-      { data: [10, 10, 10] }
-    ])
+    assert.deepEqual(component.get('data.datasets'), [{ data: [10, 10, 10] }])
   })
 
-  it('computes tooltip correctly', function() {
+  test('computes tooltip correctly', function(assert) {
     let component = this.subject()
 
     let titleFn = component.get('options.tooltips.callbacks.title')
     let labelFn = component.get('options.tooltips.callbacks.label')
 
-    expect(titleFn([{ index: 0 }], { labels: [moment()] })).to.equal(
+    assert.equal(
+      titleFn([{ index: 0 }], { labels: [moment()] }),
       moment().format('DD.MM.YYYY')
     )
-    expect(labelFn({ yLabel: 10.5 })).to.equal('10h 30m')
+    assert.equal(labelFn({ yLabel: 10.5 }), '10h 30m')
   })
 })

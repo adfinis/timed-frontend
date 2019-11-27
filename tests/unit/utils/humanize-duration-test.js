@@ -1,10 +1,9 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import humanizeDuration from 'timed/utils/humanize-duration'
 import moment from 'moment'
 
-describe('Unit | Utility | humanize duration', function() {
-  it('works', function() {
+module('Unit | Utility | humanize duration', function() {
+  test('works', function(assert) {
     let duration = moment.duration({
       hours: 11,
       minutes: 12,
@@ -13,10 +12,10 @@ describe('Unit | Utility | humanize duration', function() {
 
     let result = humanizeDuration(duration)
 
-    expect(result).to.equal('11h 12m')
+    assert.equal(result, '11h 12m')
   })
 
-  it('works with seconds', function() {
+  test('works with seconds', function(assert) {
     let duration = moment.duration({
       hours: 11,
       minutes: 12,
@@ -25,10 +24,10 @@ describe('Unit | Utility | humanize duration', function() {
 
     let result = humanizeDuration(duration, true)
 
-    expect(result).to.equal('11h 12m 13s')
+    assert.equal(result, '11h 12m 13s')
   })
 
-  it('renders days as hours', function() {
+  test('renders days as hours', function(assert) {
     let duration = moment.duration({
       days: 2,
       hours: 2,
@@ -37,34 +36,34 @@ describe('Unit | Utility | humanize duration', function() {
 
     let result = humanizeDuration(duration)
 
-    expect(result).to.equal('50h 0m')
+    assert.equal(result, '50h 0m')
   })
 
-  it('has a fallback', function() {
+  test('has a fallback', function(assert) {
     let result = humanizeDuration(null)
 
-    expect(result).to.equal('0h 0m')
+    assert.equal(result, '0h 0m')
   })
 
-  it('has a fallback with seconds', function() {
+  test('has a fallback with seconds', function(assert) {
     let result = humanizeDuration(null, true)
 
-    expect(result).to.equal('0h 0m 0s')
+    assert.equal(result, '0h 0m 0s')
   })
 
-  it('splits big numbers', function() {
+  test('splits big numbers', function(assert) {
     let hours = 1000000
 
     let duration = moment.duration({ hours })
 
     let result = humanizeDuration(duration)
 
-    expect(result).to.equal(`${hours.toLocaleString('de-CH')}h 0m`)
+    assert.equal(result, `${hours.toLocaleString('de-CH')}h 0m`)
   })
 
-  it('works with negative durations', function() {
+  test('works with negative durations', function(assert) {
     let result = humanizeDuration(moment.duration({ hours: -4, minutes: -30 }))
 
-    expect(result).to.equal('-4h 30m')
+    assert.equal(result, '-4h 30m')
   })
 })

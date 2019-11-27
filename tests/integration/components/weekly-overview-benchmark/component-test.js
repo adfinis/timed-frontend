@@ -1,28 +1,29 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { find, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | weekly overview benchmark', function() {
-  setupComponentTest('weekly-overview-benchmark', {
-    integration: true
+module('Integration | Component | weekly overview benchmark', function(hooks) {
+  setupRenderingTest(hooks)
+
+  test('renders', async function(assert) {
+    await render(hbs`{{weekly-overview-benchmark hours=20}}`)
+
+    assert.length(this.$(), 1)
   })
 
-  it('renders', function() {
-    this.render(hbs`{{weekly-overview-benchmark hours=20}}`)
+  test('computes the position correctly', async function(assert) {
+    await render(hbs`{{weekly-overview-benchmark hours=10 max=10}}`)
 
-    expect(this.$()).to.have.length(1)
+    assert.equal(
+      find('hr').getAttribute('style'),
+      'bottom: calc(100% / 10 * 10)'
+    )
   })
 
-  it('computes the position correctly', function() {
-    this.render(hbs`{{weekly-overview-benchmark hours=10 max=10}}`)
+  test('shows labels only when permitted', async function(assert) {
+    await render(hbs`{{weekly-overview-benchmark showLabel=true hours=8.5}}`)
 
-    expect(this.$('hr').attr('style')).to.equal('bottom: calc(100% / 10 * 10)')
-  })
-
-  it('shows labels only when permitted', function() {
-    this.render(hbs`{{weekly-overview-benchmark showLabel=true hours=8.5}}`)
-
-    expect(this.$('span').text()).to.equal('8.5h')
+    assert.equal(find('span').textContent, '8.5h')
   })
 })

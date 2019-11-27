@@ -1,93 +1,90 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import { find, triggerEvent, click } from 'ember-native-dom-helpers'
+import { find, triggerEvent, click, render } from '@ember/test-helpers'
 import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
 
-describe('Integration | Component | sy datepicker', function() {
-  setupComponentTest('sy-datepicker', {
-    integration: true
-  })
+module('Integration | Component | sy datepicker', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('input').value).to.be.equal(moment().format('DD.MM.YYYY'))
+    assert.dom('input').hasText(moment().format('DD.MM.YYYY'))
   })
 
-  it('toggles the calendar on click of the input', function() {
+  test('toggles the calendar on click of the input', async function(assert) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('.sy-datepicker')).to.not.be.ok
+    assert.dom('.sy-datepicker').doesNotExist()
 
-    clickTrigger()
+    await clickTrigger()
 
-    expect(find('.sy-datepicker')).to.be.ok
+    assert.dom('.sy-datepicker').exists()
   })
 
-  it('validates the input', function() {
+  test('validates the input', async function(assert) {
     this.set('value', null)
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('input').validity.valid).to.be.true
+    assert.ok(find('input').validity.valid)
 
     find('input').value = '20.20.20'
-    triggerEvent('input', 'input')
+    await triggerEvent('input', 'input')
 
-    expect(find('input').validity.valid).to.be.false
+    assert.notOk(find('input').validity.valid)
 
     find('input').value = '20.12.20'
-    triggerEvent('input', 'input')
+    await triggerEvent('input', 'input')
 
-    expect(find('input').validity.valid).to.be.true
+    assert.ok(find('input').validity.valid)
   })
 
-  it('changes value on change (input)', function() {
+  test('changes value on change (input)', async function(assert) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
     find('input').value = '1.2.2018'
-    triggerEvent('input', 'change')
+    await triggerEvent('input', 'change')
 
-    expect(this.get('value').format('YYYY-MM-DD')).to.equal('2018-02-01')
+    assert.equal(this.get('value').format('YYYY-MM-DD'), '2018-02-01')
 
     find('input').value = ''
-    triggerEvent('input', 'change')
+    await triggerEvent('input', 'change')
 
-    expect(this.get('value')).to.be.null
+    assert.equal(this.get('value'), null)
 
     find('input').value = 'somewrongthing'
-    triggerEvent('input', 'change')
+    await triggerEvent('input', 'change')
 
     // value stays unchanged
-    expect(this.get('value')).to.be.null
+    assert.equal(this.get('value'), null)
   })
 
-  it('changes value on selection', function() {
+  test('changes value on selection', async function(assert) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    clickTrigger()
-    click(
+    await clickTrigger()
+    await click(
       '.ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child'
     )
 
@@ -95,28 +92,32 @@ describe('Integration | Component | sy datepicker', function() {
       .endOf('month')
       .endOf('week')
 
-    expect(this.get('value').isSame(expected, 'day')).to.be.ok
+    assert.ok(this.get('value').isSame(expected, 'day'))
   })
 
-  it('toggles the calendar on focus and blur of the input', function() {
+  test('toggles the calendar on focus and blur of the input', async function(
+    assert
+  ) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('.sy-datepicker')).to.not.be.ok
+    assert.dom('.sy-datepicker').doesNotExist()
 
     // show if focus is on input
-    triggerEvent('input', 'focus')
-    expect(find('.sy-datepicker')).to.be.ok
+    await triggerEvent('input', 'focus')
+    assert.dom('.sy-datepicker').exists()
 
     // do not hide if focus changed into the picker
-    triggerEvent('input', 'blur', { relatedTarget: find('.sy-datepicker') })
-    expect(find('.sy-datepicker')).to.be.ok
+    await triggerEvent('input', 'blur', {
+      relatedTarget: find('.sy-datepicker')
+    })
+    assert.dom('.sy-datepicker').exists()
 
     // hide if focus changed into another element
-    triggerEvent('input', 'blur')
-    expect(find('.sy-datepicker')).to.not.be.ok
+    await triggerEvent('input', 'blur')
+    assert.dom('.sy-datepicker').doesNotExist()
   })
 })

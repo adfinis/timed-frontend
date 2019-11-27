@@ -1,18 +1,17 @@
+import { click, fillIn, currentURL, visit, find } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { expect } from 'chai'
 import destroyApp from '../helpers/destroy-app'
 import startApp from '../helpers/start-app'
-import { findAll, find } from 'ember-native-dom-helpers'
 import moment from 'moment'
+import { module, test } from 'qunit'
 
-describe('Acceptance | statistics', function() {
+module('Acceptance | statistics', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -28,60 +27,60 @@ describe('Acceptance | statistics', function() {
     server.createList('user-statistic', 5)
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can view statistics by year', async function() {
+  test('can view statistics by year', async function(assert) {
     await visit('/statistics')
 
-    expect(await findAll('thead > tr > th')).to.have.length(3)
-    expect(await findAll('tbody > tr')).to.have.length(5)
-    expect(await find('tfoot').innerHTML).to.contain('Total')
+    assert.dom('thead > tr > th').exists({ count: 3 })
+    assert.dom('tbody > tr').exists({ count: 5 })
+    assert.dom('tfoot').includesText('Total')
   })
 
-  it('can view statistics by month', async function() {
+  test('can view statistics by month', async function(assert) {
     await visit('/statistics?type=month')
 
-    expect(await findAll('thead > tr > th')).to.have.length(4)
-    expect(await findAll('tbody > tr')).to.have.length(5)
-    expect(await find('tfoot').innerHTML).to.contain('Total')
+    assert.dom('thead > tr > th').exists({ count: 4 })
+    assert.dom('tbody > tr').exists({ count: 5 })
+    assert.dom('tfoot').includesText('Total')
   })
 
-  it('can view statistics by customer', async function() {
+  test('can view statistics by customer', async function(assert) {
     await visit('/statistics?type=customer')
 
-    expect(await findAll('thead > tr > th')).to.have.length(3)
-    expect(await findAll('tbody > tr')).to.have.length(5)
-    expect(await find('tfoot').innerHTML).to.contain('Total')
+    assert.dom('thead > tr > th').exists({ count: 3 })
+    assert.dom('tbody > tr').exists({ count: 5 })
+    assert.dom('tfoot').includesText('Total')
   })
 
-  it('can view statistics by project', async function() {
+  test('can view statistics by project', async function(assert) {
     await visit('/statistics?type=project&customer=1')
 
-    expect(await findAll('thead > tr > th')).to.have.length(5)
-    expect(await findAll('tbody > tr')).to.have.length(5)
-    expect(await find('tfoot').innerHTML).to.contain('Total')
+    assert.dom('thead > tr > th').exists({ count: 5 })
+    assert.dom('tbody > tr').exists({ count: 5 })
+    assert.dom('tfoot').includesText('Total')
   })
 
-  it('can view statistics by task', async function() {
+  test('can view statistics by task', async function(assert) {
     await visit('/statistics?type=task&customer=1&project=1')
 
-    expect(await findAll('thead > tr > th')).to.have.length(6)
-    expect(await findAll('tbody > tr')).to.have.length(5)
-    expect(await find('tfoot').innerHTML).to.contain('Total')
+    assert.dom('thead > tr > th').exists({ count: 6 })
+    assert.dom('tbody > tr').exists({ count: 5 })
+    assert.dom('tfoot').includesText('Total')
   })
 
-  it('can view statistics by user', async function() {
+  test('can view statistics by user', async function(assert) {
     await visit('/statistics?type=user')
 
-    expect(await findAll('thead > tr > th')).to.have.length(3)
-    expect(await findAll('tbody > tr')).to.have.length(5)
-    expect(await find('tfoot').innerHTML).to.contain('Total')
+    assert.dom('thead > tr > th').exists({ count: 3 })
+    assert.dom('tbody > tr').exists({ count: 5 })
+    assert.dom('tfoot').includesText('Total')
   })
 
-  it('can filter and reset filter', async function() {
+  test('can filter and reset filter', async function(assert) {
     await visit('/statistics')
 
     let from = moment()
@@ -93,32 +92,36 @@ describe('Acceptance | statistics', function() {
     )
     await fillIn('[data-test-filter-to-date] input', to.format('DD.MM.YYYY'))
 
-    expect(currentURL()).to.contain(`fromDate=${from.format('YYYY-MM-DD')}`)
-    expect(currentURL()).to.contain(`toDate=${to.format('YYYY-MM-DD')}`)
+    assert
+      .dom(currentURL())
+      .includesText(`fromDate=${from.format('YYYY-MM-DD')}`)
+    assert.dom(currentURL()).includesText(`toDate=${to.format('YYYY-MM-DD')}`)
 
     await click('.filter-sidebar-reset')
 
-    expect(currentURL()).to.not.contain(`fromDate=${from}`)
-    expect(currentURL()).to.not.contain(`toDate=${to}`)
+    assert.dom(currentURL()).doesNotIncludeText(`fromDate=${from}`)
+    assert.dom(currentURL()).doesNotIncludeText(`toDate=${to}`)
   })
 
-  it('shows missing parameters message', async function() {
+  test('shows missing parameters message', async function(assert) {
     await visit('/statistics?type=task')
 
-    expect(await find('.empty').innerHTML).to.contain(
-      'Customer and project are required parameters'
-    )
+    assert
+      .dom('.empty')
+      .includesText('Customer and project are required parameters')
   })
 
-  it('resets ordering on type change', async function() {
+  test('resets ordering on type change', async function(assert) {
     await visit('/statistics?type=month&ordering=year')
 
     await click('.nav-tabs li a:first-child')
 
-    expect(currentURL()).to.not.contain('ordering')
+    assert
+      .dom(currentURL())
+      .doesNotIncludeText('Customer and project are required parameters')
   })
 
-  it('can have initial filters', async function() {
+  test('can have initial filters', async function(assert) {
     await server.createList('billing-type', 3)
 
     let params = {
@@ -143,40 +146,37 @@ describe('Acceptance | statistics', function() {
         .join('&')}`
     )
 
-    expect(
-      await find(
-        '[data-test-filter-customer] .ember-power-select-selected-item'
-      )
-    ).to.be.ok
+    assert
+      .dom('[data-test-filter-customer] .ember-power-select-selected-item')
+      .exists()
 
-    expect(
-      await find('[data-test-filter-project] .ember-power-select-selected-item')
-    ).to.be.ok
+    assert
+      .dom('[data-test-filter-project] .ember-power-select-selected-item')
+      .exists()
 
-    expect(
-      await find('[data-test-filter-task] .ember-power-select-selected-item')
-    ).to.be.ok
+    assert
+      .dom('[data-test-filter-task] .ember-power-select-selected-item')
+      .exists()
 
-    expect(
-      await find('[data-test-filter-user] .ember-power-select-selected-item')
-    ).to.be.ok
+    assert
+      .dom('[data-test-filter-user] .ember-power-select-selected-item')
+      .exists()
 
-    expect(
-      await find(
-        '[data-test-filter-reviewer] .ember-power-select-selected-item'
-      )
-    ).to.be.ok
+    assert
+      .dom('[data-test-filter-reviewer] .ember-power-select-selected-item')
+      .exists()
 
-    expect(
-      await find('[data-test-filter-billing-type] select').options.selectedIndex
-    ).to.be.at.least(1)
+    assert.equal(
+      find('[data-test-filter-billing-type] select').options.selectedIndex,
+      1
+    )
 
-    expect(await find('[data-test-filter-from-date] input').value).to.be.ok
+    assert.dom('[data-test-filter-from-date] input').exists()
 
-    expect(await find('[data-test-filter-to-date] input').value).to.be.ok
+    assert.dom('[data-test-filter-to-date] input').exists()
 
-    expect(await find('[data-test-filter-review] .btn.active')).to.be.ok
-    expect(await find('[data-test-filter-not-billable] .btn.active')).to.be.ok
-    expect(await find('[data-test-filter-verified] .btn.active')).to.be.ok
+    assert.dom('[data-test-filter-review] .btn.active').exists()
+    assert.dom('[data-test-filter-not-billable] .btn.active').exists()
+    assert.dom('[data-test-filter-verified] .btn.active').exists()
   })
 })

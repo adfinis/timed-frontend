@@ -1,48 +1,46 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | record button', function() {
-  setupComponentTest('record-button', {
-    integration: true
+module('Integration | Component | record button', function(hooks) {
+  setupRenderingTest(hooks)
+
+  test('renders', async function(assert) {
+    await render(hbs`{{record-button}}`)
+    assert.dom(this.$('[data-test-record-stop]')).doesNotExist()
   })
 
-  it('renders', function() {
-    this.render(hbs`{{record-button}}`)
-    expect(this.$('[data-test-record-stop]')).to.have.length(0)
-  })
-
-  it('can stop', function() {
+  test('can stop', async function(assert) {
     this.set('recording', true)
 
     this.on('stop', () => {
       this.set('recording', false)
 
-      expect(this.$('[data-test-record-stop]')).to.have.length(0)
+      assert.dom(this.$('[data-test-record-stop]')).doesNotExist()
     })
 
-    this.render(
+    await render(
       hbs`{{record-button recording=recording on-stop=(action 'stop')}}`
     )
 
-    this.$('[data-test-record-stop]').click()
+    await click('[data-test-record-stop]')
   })
 
-  it('can start', function() {
+  test('can start', async function(assert) {
     this.set('recording', false)
     this.set('activity', { id: 1 })
 
     this.on('start', () => {
       this.set('recording', true)
 
-      expect(this.$('[data-test-record-stop]')).to.have.length(1)
+      assert.dom(this.$('[data-test-record-stop]')).exist({ count: 1 })
     })
 
-    this.render(
+    await render(
       hbs`{{record-button recording=recording activity=activity on-start=(action 'start')}}`
     )
 
-    this.$('[data-test-record-start]').click()
+    await click('[data-test-record-start]')
   })
 })

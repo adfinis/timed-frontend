@@ -1,20 +1,18 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | sy checkmark', function() {
-  setupComponentTest('sy-checkmark', {
-    integration: true
+module('Integration | Component | sy checkmark', function(hooks) {
+  setupRenderingTest(hooks)
+
+  test('works unchecked', async function(assert) {
+    await render(hbs`{{sy-checkmark checked=false}}`)
+    assert.dom(this.$('.fa-square-o')).exists({ count: 1 })
   })
 
-  it('works unchecked', function() {
-    this.render(hbs`{{sy-checkmark checked=false}}`)
-    expect(this.$('.fa-square-o')).to.have.length(1)
-  })
-
-  it('works checked', function() {
-    this.render(hbs`{{sy-checkmark checked=true}}`)
-    expect(this.$('.fa-check-square-o')).to.have.length(1)
+  test('works checked', async function(assert) {
+    await render(hbs`{{sy-checkmark checked=true}}`)
+    assert.dom(this.$('.fa-check-square-o')).exists({ count: 1 })
   })
 })

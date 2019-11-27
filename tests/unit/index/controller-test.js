@@ -1,21 +1,17 @@
-import { expect } from 'chai'
-import { it, describe, beforeEach } from 'mocha'
-import { setupTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import { trackingStub } from 'timed/tests/integration/components/tracking-bar/component-test'
 
-describe('Unit | Controller | index', function() {
-  setupTest('controller:index', {
-    // Specify the other units that are required for this test.
-    needs: ['model:activity', 'model:absence', 'service:session']
-  })
+module('Unit | Controller | index', function(hooks) {
+  setupTest(hooks)
 
-  beforeEach(function() {
+  hooks.beforeEach(function() {
     this.register('service:tracking', trackingStub)
     this.inject.service('tracking', { as: 'tracking' })
   })
 
-  it('exists', function() {
-    let controller = this.subject()
-    expect(controller).to.be.ok
+  test('exists', function(assert) {
+    let controller = this.owner.lookup('controller:index')
+    assert.ok(controller)
   })
 })

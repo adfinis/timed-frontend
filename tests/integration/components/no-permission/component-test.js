@@ -1,18 +1,15 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { find } from 'ember-native-dom-helpers'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | no permission', function() {
-  setupComponentTest('no-permission', {
-    integration: true
-  })
+module('Integration | Component | no permission', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{no-permission}}`)
+  test('renders', async function(assert) {
+    await render(hbs`{{no-permission}}`)
 
-    expect(find('.empty')).to.be.ok
-    expect(find('.empty').innerHTML).to.contain('Halt')
+    assert.dom('.empty').exists()
+    assert.dom('.empty').includesText('Halt')
   })
 })

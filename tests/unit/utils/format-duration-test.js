@@ -1,10 +1,9 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
 import formatDuration from 'timed/utils/format-duration'
 import moment from 'moment'
 
-describe('Unit | Utility | format duration', function() {
-  it('works', function() {
+module('Unit | Utility | format duration', function() {
+  test('works', function(assert) {
     let duration = moment.duration({
       hours: 11,
       minutes: 50,
@@ -13,10 +12,10 @@ describe('Unit | Utility | format duration', function() {
 
     let result = formatDuration(duration)
 
-    expect(result).to.equal('11:50:15')
+    assert.equal(result, '11:50:15')
   })
 
-  it('converts days into hours', function() {
+  test('converts days into hours', function(assert) {
     let duration = moment.duration({
       hours: 44,
       minutes: 24,
@@ -25,10 +24,10 @@ describe('Unit | Utility | format duration', function() {
 
     let result = formatDuration(duration)
 
-    expect(result).to.equal('44:24:19')
+    assert.equal(result, '44:24:19')
   })
 
-  it('zeropads all numbers', function() {
+  test('zeropads all numbers', function(assert) {
     let duration = moment.duration({
       hours: 1,
       minutes: 1,
@@ -37,10 +36,10 @@ describe('Unit | Utility | format duration', function() {
 
     let result = formatDuration(duration)
 
-    expect(result).to.equal('01:01:01')
+    assert.equal(result, '01:01:01')
   })
 
-  it('can hide seconds', function() {
+  test('can hide seconds', function(assert) {
     let duration = moment.duration({
       hours: 22,
       minutes: 12
@@ -48,10 +47,10 @@ describe('Unit | Utility | format duration', function() {
 
     let result = formatDuration(duration, false)
 
-    expect(result).to.equal('22:12')
+    assert.equal(result, '22:12')
   })
 
-  it('can be negative', function() {
+  test('can be negative', function(assert) {
     let duration = moment.duration({
       hours: -1,
       minutes: -1,
@@ -60,28 +59,28 @@ describe('Unit | Utility | format duration', function() {
 
     let result = formatDuration(duration)
 
-    expect(result).to.equal('-01:01:01')
+    assert.equal(result, '-01:01:01')
   })
 
-  it('has a fallback', function() {
+  test('has a fallback', function(assert) {
     let result1 = formatDuration(null)
 
-    expect(result1).to.equal('--:--:--')
+    assert.equal(result1, '--:--:--')
 
     let result2 = formatDuration(null, false)
 
-    expect(result2).to.equal('--:--')
+    assert.equal(result2, '--:--')
   })
 
-  it('works with a number instead of a duration', function() {
+  test('works with a number instead of a duration', function(assert) {
     let num = 11 * 60 * 60 * 1000 + 12 * 60 * 1000 + 13 * 1000
 
     let result1 = formatDuration(num)
 
-    expect(result1).to.equal('11:12:13')
+    assert.equal(result1, '11:12:13')
 
     let result2 = formatDuration(num, false)
 
-    expect(result2).to.equal('11:12')
+    assert.equal(result2, '11:12')
   })
 })

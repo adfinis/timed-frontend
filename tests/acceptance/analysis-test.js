@@ -1,17 +1,23 @@
 import {
+  click,
+  fillIn,
+  currentURL,
+  visit,
+  find,
+  findAll
+} from '@ember/test-helpers'
+import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { expect } from 'chai'
 import destroyApp from '../helpers/destroy-app'
 import startApp from '../helpers/start-app'
-import { findAll, find, click } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
 
-describe('Acceptance | analysis', function() {
+module('Acceptance | analysis', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -22,28 +28,28 @@ describe('Acceptance | analysis', function() {
     server.createList('report', 40, { userId: user.id })
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can visit /analysis', async function() {
+  test('can visit /analysis', async function(assert) {
     await visit('/analysis')
 
-    expect(findAll('.table--analysis tbody tr')).to.have.length(21)
+    assert.dom('.table--analysis tbody tr').exists({ count: 21 })
 
     await find('.table--analysis tbody tr:last-child').scrollIntoView()
   })
 
-  it('can download a file', async function() {
+  test('can download a file', async function(assert) {
     await visit('/analysis')
 
     await click('.export-buttons .btn:first-child')
 
-    expect(find('[data-download-count="1"]')).to.be.ok
+    assert.dom('[data-download-count="1"]').exists()
   })
 
-  it('can filter and reset filter', async function() {
+  test('can filter and reset filter', async function(assert) {
     await visit('/analysis')
 
     await userSelect('[data-test-filter-user]')
@@ -51,18 +57,18 @@ describe('Acceptance | analysis', function() {
     await fillIn('[data-test-filter-to-date] input', '01.12.2017')
     await click('thead > tr > th:first-child')
 
-    expect(currentURL()).to.contain('user=1')
-    expect(currentURL()).to.contain('fromDate=2016-12-01')
-    expect(currentURL()).to.contain('toDate=2017-12-01')
-    expect(currentURL()).to.contain('ordering=-user__username%2Cid')
+    assert.dom(currentURL()).includesText('user=1')
+    assert.dom(currentURL()).includesText('fromDate=2016-12-01')
+    assert.dom(currentURL()).includesText('toDate=2017-12-01')
+    assert.dom(currentURL()).includesText('ordering=-user__username%2Cid')
 
     await click('.filter-sidebar-reset')
 
     // ordering should not be resetted
-    expect(currentURL()).to.equal('/analysis?ordering=-user__username%2Cid')
+    assert.equal(currentURL(), '/analysis?ordering=-user__username%2Cid')
   })
 
-  it('can have initial filters', async function() {
+  test('can have initial filters', async function(assert) {
     let params = {
       customer: server.create('customer').id,
       project: server.create('project').id,
@@ -84,83 +90,83 @@ describe('Acceptance | analysis', function() {
         .join('&')}`
     )
 
-    expect(
-      find('[data-test-filter-customer] .ember-power-select-selected-item')
-    ).to.be.ok
-    expect(find('[data-test-filter-project] .ember-power-select-selected-item'))
-      .to.be.ok
-    expect(find('[data-test-filter-task] .ember-power-select-selected-item')).to
-      .be.ok
-    expect(find('[data-test-filter-user] .ember-power-select-selected-item')).to
-      .be.ok
-    expect(
-      find('[data-test-filter-reviewer] .ember-power-select-selected-item')
-    ).to.be.ok
-
-    expect(
-      find('[data-test-filter-billing-type] select').selectedIndex
-    ).to.be.at.least(1)
-    expect(
-      find('[data-test-filter-cost-center] select').selectedIndex
-    ).to.be.at.least(1)
-
-    expect(find('[data-test-filter-from-date] input').value).to.equal(
-      '01.12.2016'
+    assert
+      .dom('[data-test-filter-customer] .ember-power-select-selected-item')
+      .exists()
+    assert
+      .dom('[data-test-filter-project] .ember-power-select-selected-item')
+      .exists()
+    assert
+      .dom('[data-test-filter-task] .ember-power-select-selected-item')
+      .exists()
+    assert
+      .dom('[data-test-filter-user] .ember-power-select-selected-item')
+      .exists()
+    assert
+      .dom('[data-test-filter-reviewer] .ember-power-select-selected-item')
+      .exists()
+    assert.equal(
+      find('[data-test-filter-billing-type] select').selectedIndex,
+      1
     )
-    expect(find('[data-test-filter-to-date] input').value).to.equal(
-      '01.12.2017'
-    )
+    assert.equal(find('[data-test-filter-cost-center] select').selectedIndex, 1)
 
-    expect(
+    assert.dom('[data-test-filter-from-date] input').hasText('01.12.2016')
+    assert.dom('[data-test-filter-to-date] input').hasText('01.12.2017')
+
+    assert.equal(
       findAll('[data-test-filter-review] button').indexOf(
         find('[data-test-filter-review] button.active')
-      )
-    ).to.equal(0)
-    expect(
+      ),
+      0
+    )
+    assert.equal(
       findAll('[data-test-filter-not-billable] button').indexOf(
         find('[data-test-filter-not-billable] button.active')
-      )
-    ).to.equal(0)
-    expect(
+      ),
+      0
+    )
+    assert.equal(
       findAll('[data-test-filter-verified] button').indexOf(
         find('[data-test-filter-verified] button.active')
-      )
-    ).to.equal(0)
+      ),
+      0
+    )
   })
 
-  it('can select a report', async function() {
+  test('can select a report', async function(assert) {
     await visit('/analysis')
 
     await click('tbody > tr:first-child')
 
-    expect(find('tbody > tr:first-child.selected')).to.be.ok
+    assert.ok(find('tbody > tr:first-child.selected'))
 
     await click('tbody > tr:first-child')
 
-    expect(find('tbody > tr:first-child.selected')).to.not.be.ok
+    assert.notOk(find('tbody > tr:first-child.selected'))
   })
 
-  it('can edit', async function() {
+  test('can edit', async function(assert) {
     server.create('report-intersection')
 
     await visit('/analysis?editable=1')
 
     await click('[data-test-edit-all]')
 
-    expect(currentURL()).to.equal('/analysis/edit?editable=1')
+    assert.equal(currentURL(), '/analysis/edit?editable=1')
   })
 
-  it('can not edit', async function() {
+  test('can not edit', async function(assert) {
     server.create('report-intersection')
 
     await visit('/analysis')
 
     await click('[data-test-edit-all]')
 
-    expect(currentURL()).to.equal('/analysis')
+    assert.equal(currentURL(), '/analysis')
   })
 
-  it('can edit selected reports', async function() {
+  test('can edit selected reports', async function(assert) {
     server.create('report-intersection')
 
     await visit('/analysis')
@@ -170,6 +176,6 @@ describe('Acceptance | analysis', function() {
 
     await click('[data-test-edit-selected]')
 
-    expect(currentURL()).to.equal('/analysis/edit?id=1%2C2')
+    assert.equal(currentURL(), '/analysis/edit?id=1%2C2')
   })
 })

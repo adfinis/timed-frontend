@@ -1,17 +1,14 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
-import { findAll } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | loading icon', function() {
-  setupComponentTest('loading-icon', {
-    integration: true
-  })
+module('Integration | Component | loading icon', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{loading-icon}}`)
+  test('renders', async function(assert) {
+    await render(hbs`{{loading-icon}}`)
 
-    expect(findAll('.loading-dot')).to.have.length(9)
+    assert.dom('.loading-dot').exists({ count: 9 })
   })
 })

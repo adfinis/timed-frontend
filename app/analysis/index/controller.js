@@ -18,8 +18,6 @@ import {
 } from 'timed/utils/query-params'
 import parseDjangoDuration from 'timed/utils/parse-django-duration'
 
-const { testing } = Ember
-
 const rAF = () => {
   return new RSVP.Promise(resolve => {
     window.requestAnimationFrame(resolve)
@@ -348,7 +346,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
         // ignore since we can't really test this..
         /* istanbul ignore next */
-        if (!testing) {
+        if (!Ember.testing) {
           download(file, filename, file.type)
         }
 

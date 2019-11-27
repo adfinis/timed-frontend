@@ -1,59 +1,62 @@
-import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import moment from 'moment'
 
-describe('Unit | Model | user', function() {
-  setupModelTest('user', {
-    needs: ['model:employment', 'model:location', 'model:absence-credit']
+module('Unit | Model | user', function(hooks) {
+  setupTest(hooks)
+
+  test('exists', function(assert) {
+    let model = this.owner.lookup('service:store').createRecord('user')
+
+    assert.ok(model)
   })
 
-  it('exists', function() {
-    let model = this.subject()
+  test('computes a full name', function(assert) {
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('user', { firstName: 'Hans', lastName: 'Muster' })
 
-    expect(model).to.be.ok
+    assert.ok(model)
+
+    assert.equal(model.get('fullName'), 'Hans Muster')
   })
 
-  it('computes a full name', function() {
-    let model = this.subject({ firstName: 'Hans', lastName: 'Muster' })
-
-    expect(model).to.be.ok
-
-    expect(model.get('fullName')).to.equal('Hans Muster')
-  })
-
-  it('computes a long name with full name', function() {
-    let model = this.subject({
+  test('computes a long name with full name', function(assert) {
+    let model = this.owner.lookup('service:store').createRecord('user', {
       username: 'hansm',
       firstName: 'Hans',
       lastName: 'Muster'
     })
 
-    expect(model).to.be.ok
+    assert.ok(model)
 
-    expect(model.get('longName')).to.equal('Hans Muster (hansm)')
+    assert.equal(model.get('longName'), 'Hans Muster (hansm)')
   })
 
-  it('computes a long name without full name', function() {
-    let model = this.subject({ username: 'hansm' })
+  test('computes a long name without full name', function(assert) {
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('user', { username: 'hansm' })
 
-    expect(model).to.be.ok
+    assert.ok(model)
 
-    expect(model.get('longName')).to.equal('hansm')
+    assert.equal(model.get('longName'), 'hansm')
   })
 
-  it('computes the active employment', function() {
-    let model = this.subject({ username: 'hansm' })
+  test('computes the active employment', function(assert) {
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('user', { username: 'hansm' })
 
-    expect(model).to.be.ok
+    assert.ok(model)
 
-    expect(model.get('activeEmployment')).to.be.null
+    assert.notOk(model.get('activeEmployment'))
 
     model.set('employments', [
       this.store().createRecord('employment', { id: 1, to: null }),
       this.store().createRecord('employment', { id: 2, to: moment() })
     ])
 
-    expect(Number(model.get('activeEmployment.id'))).to.equal(1)
+    assert.equal(Number(model.get('activeEmployment.id')), 1)
   })
 })

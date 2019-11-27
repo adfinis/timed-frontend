@@ -1,34 +1,31 @@
-import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import moment from 'moment'
 
-describe('Unit | Model | attendance', function() {
-  setupModelTest('attendance', {
-    needs: ['model:user']
-  })
+module('Unit | Model | attendance', function(hooks) {
+  setupTest(hooks)
 
-  it('exists', function() {
+  test('exists', function(assert) {
     let model = this.subject()
     // var store = this.store()
-    expect(model).to.be.ok
+    assert.ok(model)
   })
 
-  it('calculates the duration', function() {
-    let model = this.subject({
+  test('calculates the duration', function(assert) {
+    let model = this.owner.lookup('service:store').createRecord('attendance', {
       from: moment({ h: 8, m: 0, s: 0 }),
       to: moment({ h: 17, m: 0, s: 0 })
     })
 
-    expect(model.get('duration').asHours()).to.equal(9)
+    assert.equal(model.get('duration').asHours(), 9)
   })
 
-  it('calculates the duration when the end time is 00:00', function() {
-    let model = this.subject({
+  test('calculates the duration when the end time is 00:00', function(assert) {
+    let model = this.owner.lookup('service:store').createRecord('attendance', {
       from: moment({ h: 0, m: 0, s: 0 }),
       to: moment({ h: 0, m: 0, s: 0 })
     })
 
-    expect(model.get('duration').asHours()).to.equal(24)
+    assert.equal(model.get('duration').asHours(), 24)
   })
 })

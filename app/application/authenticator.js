@@ -11,8 +11,6 @@ import Ember from 'ember'
 
 import { later, cancel } from '@ember/runloop'
 
-const { testing } = Ember
-
 /**
  * The application authorizer
  *
@@ -194,7 +192,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
 
     Reflect.deleteProperty(this, '_refreshTokenTimeout')
 
-    if (!testing) {
+    if (!Ember.testing) {
       this._refreshTokenTimeout = later(this, this._refreshToken, token, wait)
     }
   },

@@ -1,17 +1,16 @@
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { expect } from 'chai'
 import destroyApp from '../helpers/destroy-app'
 import startApp from '../helpers/start-app'
-import { find, click } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
 
-describe('Acceptance | analysis edit', function() {
+module('Acceptance | analysis edit', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -23,18 +22,18 @@ describe('Acceptance | analysis edit', function() {
     server.create('report-intersection', { verified: false })
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can visit /analysis/edit', async function() {
+  test('can visit /analysis/edit', async function(assert) {
     await visit('/analysis/edit')
 
-    expect(currentURL()).to.equal('/analysis/edit')
+    assert.equal(currentURL(), '/analysis/edit')
   })
 
-  it('can edit', async function() {
+  test('can edit', async function(assert) {
     await visit('/analysis/edit?id=1,2,3')
 
     let res = {}
@@ -51,46 +50,46 @@ describe('Acceptance | analysis edit', function() {
 
     let { data: { type, attributes, relationships } } = res
 
-    expect(type).to.equal('report-bulks')
+    assert.equal(type, 'report-bulks')
 
     // only changed attributes were sent
-    expect(Object.keys(attributes)).to.deep.equal([
+    assert.deepEqual(Object.keys(attributes), [
       'comment',
       'not-billable',
       'review'
     ])
-    expect(Object.keys(relationships)).to.deep.equal([
+    assert.deepEqual(Object.keys(relationships), [
       'customer',
       'project',
       'task'
     ])
 
-    expect(currentURL()).to.equal('/analysis')
+    assert.equal(currentURL(), '/analysis')
   })
 
-  it('can cancel', async function() {
+  test('can cancel', async function(assert) {
     await visit('/analysis/edit')
 
     await click('[data-test-cancel]')
 
-    expect(currentURL()).to.equal('/analysis')
+    assert.equal(currentURL(), '/analysis')
   })
 
-  it('can reset', async function() {
+  test('can reset', async function(assert) {
     await visit('/analysis/edit')
 
     await fillIn('[data-test-comment] input', 'test')
 
-    expect(find('[data-test-comment] input').value).to.equal('test')
+    assert.dom('[data-test-comment] input').hasText('test')
 
     await click('[data-test-reset]')
 
-    expect(find('[data-test-comment] input').value).to.not.equal('test')
+    assert.dom('[data-test-comment] input').doesNotIncludeText('test')
   })
 
-  it('can not verify', async function() {
+  test('can not verify', async function(assert) {
     await visit('/analysis/edit')
 
-    expect(find('[data-test-verified] input').disabled).to.equal(true)
+    assert.dom('[data-test-verified] input').isDisabled()
   })
 })

@@ -1,52 +1,45 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { click, find } from 'ember-native-dom-helpers'
+import { click, render } from '@ember/test-helpers'
 import wait from 'ember-test-helpers/wait'
 
-describe('Integration | Component | filter sidebar', function() {
-  setupComponentTest('filter-sidebar', {
-    integration: true
-  })
+module('Integration | Component | filter sidebar', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('can reset', function() {
+  test('can reset', async function(assert) {
     this.set('didReset', false)
 
-    this.render(hbs`
+    await render(hbs`
       <div id="filter-sidebar-target"></div>
       {{filter-sidebar on-reset=(action (mut didReset) true)}}
     `)
 
-    return wait().then(() => {
-      click('.filter-sidebar-reset')
+    return wait().then(async () => {
+      await click('.filter-sidebar-reset')
 
-      expect(this.get('didReset')).to.be.true
+      assert.ok(this.get('didReset'))
     })
   })
 
-  it('shows applied filter count', function() {
+  test('shows applied filter count', async function(assert) {
     this.set('count', 0)
 
-    this.render(hbs`
+    await render(hbs`
       <div id="filter-sidebar-target"></div>
       {{filter-sidebar appliedCount=count}}
     `)
 
     return wait().then(() => {
-      expect(find('.filter-sidebar-title').innerHTML).to.contain('Filters')
+      assert.dom('.filter-sidebar-title').includesText('Filters')
 
       this.set('count', 1)
 
-      expect(find('.filter-sidebar-title').innerHTML).to.contain(
-        '1 Filter applied'
-      )
+      assert.dom('.filter-sidebar-title').includesText('1 Filter applied')
 
       this.set('count', 5)
 
-      expect(find('.filter-sidebar-title').innerHTML).to.contain(
-        '5 Filters applied'
-      )
+      assert.dom('.filter-sidebar-title').includesText('5 Filters applied')
     })
   })
 })

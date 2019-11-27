@@ -1,16 +1,12 @@
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import moment from 'moment'
 
-describe('Unit | Transform | django time', function() {
-  setupTest('transform:django-time', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+module('Unit | Transform | django time', function(hooks) {
+  setupTest(hooks)
 
-  it('serializes', function() {
-    let transform = this.subject()
+  test('serializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-time')
 
     let result = transform.serialize(
       moment({
@@ -20,7 +16,7 @@ describe('Unit | Transform | django time', function() {
       })
     )
 
-    expect(result).to.equal('12:12:12')
+    assert.equal(result, '12:12:12')
 
     let result2 = transform.serialize(
       moment({
@@ -30,22 +26,22 @@ describe('Unit | Transform | django time', function() {
       })
     )
 
-    expect(result2).to.equal('08:08:08')
+    assert.equal(result2, '08:08:08')
   })
 
-  it('deserializes', function() {
-    let transform = this.subject()
+  test('deserializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-time')
 
     let result = transform.deserialize('12:12:12')
 
-    expect(result.hour()).to.equal(12)
-    expect(result.minute()).to.equal(12)
-    expect(result.second()).to.equal(12)
+    assert.equal(result.hour(), 12)
+    assert.equal(result.minute(), 12)
+    assert.equal(result.second(), 12)
 
     let result2 = transform.deserialize('08:08:08')
 
-    expect(result2.hour()).to.equal(8)
-    expect(result2.minute()).to.equal(8)
-    expect(result2.second()).to.equal(8)
+    assert.equal(result2.hour(), 8)
+    assert.equal(result2.minute(), 8)
+    assert.equal(result2.second(), 8)
   })
 })

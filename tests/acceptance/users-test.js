@@ -1,17 +1,16 @@
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import { findAll } from 'ember-native-dom-helpers'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | users', function() {
+module('Acceptance | users', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -23,19 +22,19 @@ describe('Acceptance | users', function() {
     await authenticateSession(application, { user_id: user.id })
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('shows only supervisees', async function() {
+  test('shows only supervisees', async function(assert) {
     await visit('/users')
 
     // 5 supervisees and the user himself
-    expect(await findAll('table tr')).to.have.length(6)
+    assert.dom('table tr').exists({ count: 6 })
   })
 
-  it('shows all to superuser', async function() {
+  test('shows all to superuser', async function(assert) {
     let user = server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
@@ -44,10 +43,10 @@ describe('Acceptance | users', function() {
     await visit('/users')
 
     // 12 users and the user himself
-    expect(findAll('table tr')).to.have.length(13)
+    assert.dom('table tr').exists({ count: 13 })
   })
 
-  it('can filter and reset', async function() {
+  test('can filter and reset', async function(assert) {
     let user = server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
@@ -60,12 +59,12 @@ describe('Acceptance | users', function() {
     await selectSearch('[data-test-filter-user] .user-select', user.username)
     await userSelect()
 
-    expect(currentURL()).to.contain('search=foobar')
-    expect(currentURL()).to.contain('active=')
-    expect(currentURL()).to.contain('supervisor=12')
+    assert.dom(currentURL()).includesText('search=foobar')
+    assert.dom(currentURL()).includesText('active=')
+    assert.dom(currentURL()).includesText('supervisor=12')
 
     await click('.filter-sidebar-reset')
 
-    expect(currentURL()).to.equal('/users')
+    assert.equal(currentURL(), '/users')
   })
 })

@@ -1,15 +1,13 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | sy modal', function() {
-  setupComponentTest('sy-modal', {
-    integration: true
-  })
+module('Integration | Component | sy modal', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`
+  test('renders', async function(assert) {
+    await render(hbs`
       {{sy-modal-target}}
       {{#sy-modal visible=true as |m|}}
         {{#m.header}}
@@ -24,44 +22,28 @@ describe('Integration | Component | sy modal', function() {
       {{/sy-modal}}
     `)
 
-    expect(this.$('#sy-modals').children()).to.have.length(1)
+    assert.dom(this.$('#sy-modals').children()).exists({ count: 1 })
 
-    expect(
-      this.$('#sy-modals .modal-header')
-        .text()
-        .trim()
-    ).to.contain('Header')
-    expect(
-      this.$('#sy-modals .modal-header')
-        .text()
-        .trim()
-    ).to.contain('×')
-    expect(
-      this.$('#sy-modals .modal-body')
-        .text()
-        .trim()
-    ).to.equal('Body')
-    expect(
-      this.$('#sy-modals .modal-footer')
-        .text()
-        .trim()
-    ).to.equal('Footer')
+    assert.dom('#sy-modals .modal-header').includesText('Header')
+    assert.dom('#sy-modals .modal-header').includesText('x')
+    assert.dom('#sy-modals .modal-body').includesText('Body')
+    assert.dom('#sy-modals .modal-footer').includesText('Footer')
   })
 
-  it('closes on click of the close icon', function() {
+  test('closes on click of the close icon', async function(assert) {
     this.set('visible', true)
 
-    this.render(hbs`
+    await render(hbs`
       {{sy-modal-target}}
       {{#sy-modal visible=visible as |m|}}
         {{m.header}}
       {{/sy-modal}}
     `)
 
-    expect(this.get('visible')).to.be.ok
+    assert.ok(this.get('visible'))
 
-    this.$('#sy-modals .modal-header button').click()
+    await click('#sy-modals .modal-header button')
 
-    expect(this.get('visible')).to.not.be.ok
+    assert.notOk(this.get('visible'))
   })
 })

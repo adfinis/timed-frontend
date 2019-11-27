@@ -1,16 +1,14 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { find, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | progress bar', function() {
-  setupComponentTest('progress-bar', {
-    integration: true
-  })
+module('Integration | Component | progress bar', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{progress-bar 0.5}}`)
+  test('renders', async function(assert) {
+    await render(hbs`{{progress-bar 0.5}}`)
 
-    expect(parseInt(this.$('progress').attr('value'))).to.equal(50)
+    assert.equal(parseInt(find('progress').getAttribute('value')), 50)
   })
 })

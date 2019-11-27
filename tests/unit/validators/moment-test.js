@@ -1,60 +1,63 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import validateMoment from 'timed/validators/moment'
 import moment from 'moment'
 
-describe('Unit | Validator | moment', function() {
-  it('works without value', function() {
-    expect(validateMoment()('key', null, null, {}, {})).to.be.false
-    expect(validateMoment()('key', moment(), null, {}, {})).to.be.true
+module('Unit | Validator | moment', function() {
+  test('works without value', function(assert) {
+    assert.equal(validateMoment()('key', null, null, {}, {}), false)
+    assert.equal(validateMoment()('key', moment(), null, {}, {}), true)
   })
 
-  it('works with gt', function() {
-    expect(
+  test('works with gt', function(assert) {
+    assert.equal(
       validateMoment({ gt: 'otherKey' })(
         'key',
         moment(),
         null,
         {},
         { otherKey: moment().add(-1, 'second') }
-      )
-    ).to.be.true
+      ),
+      true
+    )
 
-    expect(
+    assert.equal(
       validateMoment({ gt: 'otherKey' })(
         'key',
         moment(),
         null,
         {},
         { otherKey: moment().add(1, 'second') }
-      )
-    ).to.be.false
+      ),
+      false
+    )
   })
 
-  it('works with lt', function() {
-    expect(
+  test('works with lt', function(assert) {
+    assert.equal(
       validateMoment({ lt: 'otherKey' })(
         'key',
         moment(),
         null,
         {},
         { otherKey: moment().add(1, 'second') }
-      )
-    ).to.be.true
+      ),
+      true
+    )
 
-    expect(
+    assert.equal(
       validateMoment({ lt: 'otherKey' })(
         'key',
         moment(),
         null,
         {},
         { otherKey: moment().add(-1, 'second') }
-      )
-    ).to.be.false
+      ),
+      false
+    )
   })
 
-  it('works with gt and lt', function() {
-    expect(
+  test('works with gt and lt', function(assert) {
+    assert.equal(
       validateMoment({ lt: 'ltKey', gt: 'gtKey' })(
         'key',
         moment(),
@@ -64,12 +67,13 @@ describe('Unit | Validator | moment', function() {
           gtKey: moment().add(-1, 'second'),
           ltKey: moment().add(1, 'second')
         }
-      )
-    ).to.be.true
+      ),
+      true
+    )
   })
 
-  it('works with changes', function() {
-    expect(
+  test('works with changes', function(assert) {
+    assert.equal(
       validateMoment({ lt: 'ltKey', gt: 'gtKey' })(
         'key',
         moment(),
@@ -79,12 +83,13 @@ describe('Unit | Validator | moment', function() {
           ltKey: moment().add(1, 'second')
         },
         {}
-      )
-    ).to.be.true
+      ),
+      true
+    )
   })
 
-  it('prefers changes before the original object', function() {
-    expect(
+  test('prefers changes before the original object', function(assert) {
+    assert.equal(
       validateMoment({ gt: 'gtKey' })(
         'key',
         moment(),
@@ -95,7 +100,8 @@ describe('Unit | Validator | moment', function() {
         {
           gtKey: moment().add(1, 'second')
         }
-      )
-    ).to.be.true
+      ),
+      true
+    )
   })
 })

@@ -1,6 +1,6 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import EmberObject from '@ember/object'
 import moment from 'moment'
@@ -10,39 +10,37 @@ const ATTENDANCE = EmberObject.create({
   to: moment({ h: 8, m: 0, s: 0, ms: 0 })
 })
 
-describe('Integration | Component | attendance slider', function() {
-  setupComponentTest('attendance-slider', {
-    integration: true
-  })
+module('Integration | Component | attendance slider', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('attendance', ATTENDANCE)
 
-    this.render(hbs`
+    await render(hbs`
       {{attendance-slider attendance=attendance}}
     `)
 
-    expect(this.$('.noUi-connect')).to.be.ok
+    assert.dom('.noUi-connect').exists()
   })
 
-  it('can delete', function() {
+  test('can delete', async function(assert) {
     this.set('attendance', ATTENDANCE)
 
     this.on('delete', attendance => {
-      expect(attendance).to.be.ok
+      assert.ok(attendance)
     })
 
-    this.render(hbs`
+    await render(hbs`
       {{attendance-slider
         attendance = attendance
         on-delete  = (action 'delete')
       }}
     `)
 
-    this.$('.fa-trash').click()
+    await click('.fa-trash')
   })
 
-  it('can handle attendances until 00:00', function() {
+  test('can handle attendances until 00:00', async function(assert) {
     this.set(
       'attendance',
       EmberObject.create({
@@ -51,14 +49,10 @@ describe('Integration | Component | attendance slider', function() {
       })
     )
 
-    this.render(hbs`
+    await render(hbs`
       {{attendance-slider attendance=attendance}}
     `)
 
-    expect(
-      this.$('span')
-        .text()
-        .trim()
-    ).to.equal('24:00')
+    assert.dom('span').hasText('24:00')
   })
 })

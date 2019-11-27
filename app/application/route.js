@@ -8,8 +8,6 @@ import { inject as service } from '@ember/service'
 import Ember from 'ember'
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin'
 
-const { testing } = Ember
-
 /**
  * The application route
  *
@@ -37,7 +35,7 @@ export default Route.extend(ApplicationRouteMixin, {
    */
   sessionInvalidated() {
     this.transitionTo('login').then(() => {
-      if (!testing) {
+      if (!Ember.testing) {
         /* istanbul ignore next */
         location.reload()
       }

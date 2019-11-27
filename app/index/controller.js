@@ -15,8 +15,6 @@ import MultipleAbsenceValidations from 'timed/validations/multiple-absence'
 import { scheduleOnce } from '@ember/runloop'
 import { camelize } from '@ember/string'
 
-const { testing } = Ember
-
 /**
  * The index controller
  *
@@ -146,7 +144,7 @@ export default Controller.extend({
       this.set('_activeActivityDuration', duration)
 
       /* istanbul ignore else */
-      if (testing) {
+      if (Ember.testing) {
         return
       }
 

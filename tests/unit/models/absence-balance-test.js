@@ -1,17 +1,15 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Model | absence balance', function() {
-  setupModelTest('absence-balance', {
-    // Specify the other units that are required for this test.
-    needs: []
-  })
+module('Unit | Model | absence balance', function(hooks) {
+  setupTest(hooks)
 
   // Replace this with your real tests.
-  it('exists', function() {
-    let model = this.subject()
+  test('exists', function(assert) {
+    let model = this.owner
+      .lookup('service:store')
+      .createRecord('absence-balance')
     // var store = this.store();
-    expect(model).to.be.ok
+    assert.ok(model)
   })
 })

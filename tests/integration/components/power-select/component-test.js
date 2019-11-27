@@ -1,13 +1,12 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import wait from 'ember-test-helpers/wait'
 import {
   clickTrigger,
   typeInSearch
 } from 'timed/tests/helpers/ember-power-select'
-import { keyEvent } from 'ember-native-dom-helpers'
+import { triggerKeyEvent, render } from '@ember/test-helpers'
 
 const OPTIONS = [
   { id: 1, name: 'Test 1' },
@@ -15,19 +14,17 @@ const OPTIONS = [
   { id: 3, name: 'Test 3' }
 ]
 
-describe('Integration | Component | power select', function() {
-  setupComponentTest('power-select', {
-    integration: true
-  })
+module('Integration | Component | power select', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('can use blockless', function() {
+  test('can use blockless', async function(assert) {
     this.set('options', OPTIONS)
     this.set('selected', OPTIONS[0])
 
     this.set('selectedTemplate', hbs`Selected: {{selected.name}}`)
     this.set('optionTemplate', hbs`Option: {{option.name}}`)
 
-    this.render(hbs`
+    await render(hbs`
       {{power-select
         options            = options
         selected           = selected
@@ -42,31 +39,31 @@ describe('Integration | Component | power select', function() {
       }}
     `)
 
-    clickTrigger('.select')
+    await clickTrigger('.select')
 
     return wait().then(() => {
-      expect(
-        this.$('.ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal('Selected: Test 1')
-      expect(
-        this.$('.ember-power-select-option')
-          .first()
-          .text()
-          .trim()
-      ).to.equal('Option: Test 1')
+      assert
+        .dom('.ember-power-select-selected-item')
+        .hasText('Selected: Test 1')
+      assert
+        .dom(
+          this.$('.ember-power-select-option')
+            .first()
+            .text()
+            .trim()
+        )
+        .hasText('Option: Test 1')
     })
   })
 
-  it('can select with tab', function() {
+  test('can select with tab', async function(assert) {
     this.set('options', OPTIONS)
     this.set('selected', OPTIONS[0])
 
     this.set('selectedTemplate', hbs`Selected: {{selected.name}}`)
     this.set('optionTemplate', hbs`Option: {{option.name}}`)
 
-    this.render(hbs`
+    await render(hbs`
       {{power-select
         options            = options
         selected           = selected
@@ -82,13 +79,13 @@ describe('Integration | Component | power select', function() {
       }}
     `)
 
-    clickTrigger('.select')
-    typeInSearch('2')
+    await clickTrigger('.select')
+    await typeInSearch('2')
 
-    keyEvent('.ember-power-select-search-input', 'keydown', 9)
+    await triggerKeyEvent('.ember-power-select-search-input', 'keydown', 9)
 
     return wait().then(() => {
-      expect(this.get('selected').id).to.equal(2)
+      assert.equal(this.get('selected'), 2)
     })
   })
 })

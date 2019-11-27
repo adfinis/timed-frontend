@@ -1,16 +1,16 @@
+import { click, currentURL, visit, find } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | index attendances', function() {
+module('Acceptance | index attendances', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -22,50 +22,50 @@ describe('Acceptance | index attendances', function() {
     server.create('attendance', 'afternoon', { userId: user.id })
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can visit /attendances', async function() {
+  test('can visit /attendances', async function(assert) {
     await visit('/attendances')
 
-    expect(currentURL()).to.equal('/attendances')
+    assert.equal(currentURL(), '/attendances')
   })
 
-  it('can list attendances', async function() {
+  test('can list attendances', async function(assert) {
     await visit('/attendances')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
   })
 
-  it('can save an attendances', async function() {
+  test('can save an attendances', async function(assert) {
     await visit('/attendances')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
 
     await click('[data-test-attendance-slider-id="1"] .noUi-draggable')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
   })
 
-  it('can add an attendance', async function() {
+  test('can add an attendance', async function(assert) {
     await visit('/attendances')
 
     await click('[data-test-add-attendance]')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(3)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 3 })
   })
 
-  it('can delete an attendance', async function() {
+  test('can delete an attendance', async function(assert) {
     await visit('/attendances')
 
     await click(
       '[data-test-attendance-slider-id="1"] [data-test-delete-attendance]'
     )
 
-    expect(find('[data-test-attendance-slider-id]', 1)).to.have.length(0)
+    assert.equal(find('[data-test-attendance-slider-id]', 1).length, 0)
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(1)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 1 })
   })
 })

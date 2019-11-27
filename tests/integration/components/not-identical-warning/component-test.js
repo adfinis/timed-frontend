@@ -1,17 +1,14 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { find } from 'ember-native-dom-helpers'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | not identical warning', function() {
-  setupComponentTest('not-identical-warning', {
-    integration: true
-  })
+module('Integration | Component | not identical warning', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{not-identical-warning}}`)
+  test('renders', async function(assert) {
+    await render(hbs`{{not-identical-warning}}`)
 
-    expect(find('i.fa.fa-info-circle')).to.be.ok
+    assert.dom('i.fa.fa-info-circle').exists()
   })
 })

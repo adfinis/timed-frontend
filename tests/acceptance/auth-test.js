@@ -1,13 +1,13 @@
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import { authenticateSession } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | auth', function() {
+module('Acceptance | auth', function(hooks) {
   let application
 
-  beforeEach(function() {
+  hooks.beforeEach(function() {
     application = startApp()
 
     this.user = server.create('user', {
@@ -17,16 +17,16 @@ describe('Acceptance | auth', function() {
     })
   })
 
-  afterEach(function() {
+  hooks.afterEach(function() {
     destroyApp(application)
   })
 
-  it('prevents unauthenticated access', async function() {
+  test('prevents unauthenticated access', async function(assert) {
     await visit('/')
-    expect(currentURL()).to.equal('/login')
+    assert.equal(currentURL(), '/login')
   })
 
-  it('can login', async function() {
+  test('can login', async function(assert) {
     await visit('/login')
 
     await fillIn('input[type=text]', 'johnd')
@@ -34,10 +34,10 @@ describe('Acceptance | auth', function() {
 
     await click('button[type=submit]')
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
   })
 
-  it('validates login', async function() {
+  test('validates login', async function(assert) {
     await visit('/login')
 
     await fillIn('input[type=text]', 'johnd')
@@ -45,26 +45,26 @@ describe('Acceptance | auth', function() {
 
     await click('button[type=submit]')
 
-    expect(currentURL()).to.equal('/login')
+    assert.equal(currentURL(), '/login')
 
     await fillIn('input[type=text]', '')
     await fillIn('input[type=password]', '')
 
     await click('button[type=submit]')
 
-    expect(currentURL()).to.equal('/login')
+    assert.equal(currentURL(), '/login')
   })
 
-  it('can logout', async function() {
+  test('can logout', async function(assert) {
     // eslint-disable-next-line camelcase
     await authenticateSession(application, { user_id: this.user.id })
 
     await visit('/')
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
 
     await click('[data-test-logout]')
 
-    expect(currentURL()).to.equal('/login')
+    assert.equal(currentURL(), '/login')
   })
 })

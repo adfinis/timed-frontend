@@ -1,30 +1,34 @@
+import { currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | notfound', function() {
+module('Acceptance | notfound', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     destroyApp(application)
   })
 
-  it('redirects to login for undefined routes if not logged in', async function() {
+  test('redirects to login for undefined routes if not logged in', async function(
+    assert
+  ) {
     await visit('/thiswillneverbeavalidrouteurl')
 
-    expect(currentURL()).to.equal('/login')
+    assert.equal(currentURL(), '/login')
   })
 
-  it('displays a 404 page for undefined routes if logged in', async function() {
+  test('displays a 404 page for undefined routes if logged in', async function(
+    assert
+  ) {
     let user = server.create('user')
 
     // eslint-disable-next-line camelcase
@@ -32,7 +36,7 @@ describe('Acceptance | notfound', function() {
 
     await visit('/thiswillneverbeavalidrouteurl')
 
-    expect(find('[data-test-notfound]')).to.have.length(1)
+    assert.dom('[data-test-notfound]').exists({ count: 1 })
 
     await invalidateSession(application)
   })

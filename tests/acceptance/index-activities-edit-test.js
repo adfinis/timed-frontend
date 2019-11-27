@@ -1,16 +1,23 @@
 import {
+  click,
+  fillIn,
+  find,
+  currentURL,
+  blur,
+  visit
+} from '@ember/test-helpers'
+import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | index activities edit', function() {
+module('Acceptance | index activities edit', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user')
@@ -23,17 +30,17 @@ describe('Acceptance | index activities edit', function() {
     this.user = user
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('can edit an activity', async function() {
+  test('can edit an activity', async function(assert) {
     await visit('/')
 
     await click(find('[data-test-activity-row-id="1"]'))
 
-    expect(currentURL()).to.equal('/edit/1')
+    assert.equal(currentURL(), '/edit/1')
 
     await taskSelect('[data-test-activity-edit-form]')
 
@@ -50,54 +57,56 @@ describe('Acceptance | index activities edit', function() {
 
     await click(find('button:contains(Save)'))
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
 
-    expect(find('[data-test-activity-row-id="1"]').text()).to.include('Test')
+    assert.dom('[data-test-activity-row-id="1"]').includesText('Test')
   })
 
-  it('can delete an activity', async function() {
+  test('can delete an activity', async function(assert) {
     await visit('/')
 
-    await click(find('[data-test-activity-row-id="1"]'))
+    await click('[data-test-activity-row-id="1"]')
 
-    expect(currentURL()).to.equal('/edit/1')
+    assert.equal(currentURL(), '/edit/1')
 
     await click(find('button:contains(Delete)'))
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
 
-    expect(find('[data-test-activity-row-id="1"]')).to.have.length(0)
-    expect(find('[data-test-activity-row]')).to.have.length(4)
+    assert.dom('[data-test-activity-row-id="1"]').doesNotExist()
+    assert.dom('[data-test-activity-row]').exists({ count: 4 })
   })
 
-  it("can't delete an active activity", async function() {
+  test("can't delete an active activity", async function(assert) {
     let { id } = server.create('activity', 'active', { userId: this.user.id })
 
     await visit(`/edit/${id}`)
 
     await click(find('button:contains(Delete)'))
 
-    expect(find('button:contains(Delete)').is(':disabled')).to.be.ok
-    expect(find(`[data-test-activity-row-id="${id}"]`)).to.have.length(1)
+    assert.dom(find('button:contains(Delete)')).isDisabled()
+    assert.dom(`[data-test-activity-row-id="${id}"]`).exists()
   })
 
-  it('closes edit window when clicking on the currently edited activity row', async function() {
+  test('closes edit window when clicking on the currently edited activity row', async function(
+    assert
+  ) {
     await visit('/')
 
-    await click(find('[data-test-activity-row-id="1"]'))
+    await click('[data-test-activity-row-id="1"]')
 
-    expect(currentURL()).to.equal('/edit/1')
+    assert.equal(currentURL(), '/edit/1')
 
-    await click(find('[data-test-activity-row-id="2"]'))
+    await click('[data-test-activity-row-id="2"]')
 
-    expect(currentURL()).to.equal('/edit/2')
+    assert.equal(currentURL(), '/edit/2')
 
-    await click(find('[data-test-activity-row-id="2"]'))
+    await click('[data-test-activity-row-id="2"]')
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
   })
 
-  it('validates time on blur', async function() {
+  test('validates time on blur', async function(assert) {
     let { id } = server.create('activity', { userId: this.user.id })
 
     await visit(`/edit/${id}`)
@@ -110,39 +119,29 @@ describe('Acceptance | index activities edit', function() {
       '[data-test-activity-block-row] td:nth-child(3) input',
       '01:30'
     )
-    await triggerEvent(
-      '[data-test-activity-block-row] td:nth-child(3) input',
-      'blur'
-    )
+    await blur('[data-test-activity-block-row] td:nth-child(3) input')
 
-    expect(
-      find('[data-test-activity-block-row] td:nth-child(3)').hasClass(
-        'has-error'
-      )
-    ).to.be.ok
+    assert
+      .dom('[data-test-activity-block-row] td:nth-child(3)')
+      .hasClass('has-error')
 
     await fillIn(
       '[data-test-activity-block-row] td:nth-child(1) input',
       '00:30'
     )
-    await triggerEvent(
-      '[data-test-activity-block-row] td:nth-child(1) input',
-      'blur'
-    )
+    await blur('[data-test-activity-block-row] td:nth-child(1) input')
 
-    expect(
-      find('[data-test-activity-block-row] td:nth-child(3)').hasClass(
-        'has-error'
-      )
-    ).to.not.be.ok
+    assert
+      .dom('[data-test-activity-block-row] td:nth-child(3)')
+      .doesNotHaveClass('has-error')
   })
 
-  it('can not edit transferred activities', async function() {
+  test('can not edit transferred activities', async function(assert) {
     let { id } = server.create('activity', {
       userId: this.user.id,
       transferred: true
     })
     await visit(`/edit/${id}`)
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
   })
 })

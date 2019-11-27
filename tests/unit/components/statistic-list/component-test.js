@@ -1,17 +1,12 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
 import EmberObject from '@ember/object'
 import moment from 'moment'
+import { setupRenderingTest } from 'ember-qunit'
 
-describe('Unit | Component | statistic list', function() {
-  setupComponentTest('statistic-list', {
-    // Specify the other units that are required for this test
-    // needs: ['component:foo', 'helper:bar'],
-    unit: true
-  })
+module('Unit | Component | statistic list', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('calculates max duration', function() {
+  test('calculates max duration', function(assert) {
     let component = this.subject({
       data: {
         last: {
@@ -24,10 +19,10 @@ describe('Unit | Component | statistic list', function() {
       }
     })
 
-    expect(component.get('maxDuration').hours()).to.equal(15)
+    assert.equal(component.get('maxDuration').hours(), 15)
   })
 
-  it('parses total', function() {
+  test('parses total', function(assert) {
     let component = this.subject({
       data: {
         last: {
@@ -40,10 +35,10 @@ describe('Unit | Component | statistic list', function() {
       }
     })
 
-    expect(component.get('total').asHours()).to.equal(34.5)
+    assert.equal(component.get('total').asHours(), 34.5)
   })
 
-  it('computes columns', function() {
+  test('computes columns', function(assert) {
     let expected = {
       year: ['Year', 'Duration'],
       month: ['Year', 'Month', 'Duration'],
@@ -58,13 +53,11 @@ describe('Unit | Component | statistic list', function() {
     Object.keys(expected).forEach(type => {
       component.set('type', type)
 
-      expect(component.get('columns').mapBy('title')).to.deep.equal(
-        expected[type]
-      )
+      assert.deepEqual(component.get('columns').mapBy('title'), expected[type])
     })
   })
 
-  it('computes correct missing params message', function() {
+  test('computes correct missing params message', function(assert) {
     let expected = [
       { params: [], text: '' },
       {
@@ -87,7 +80,7 @@ describe('Unit | Component | statistic list', function() {
     expected.forEach(({ params, text }) => {
       component.set('missingParams', params)
 
-      expect(component.get('missingParamsMessage')).to.equal(text)
+      assert.equal(component.get('missingParamsMessage'), text)
     })
   })
 })

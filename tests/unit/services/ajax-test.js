@@ -1,31 +1,29 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Service | ajax', function() {
-  setupTest('service:ajax', {
-    // Specify the other units that are required for this test.
-    needs: ['service:session']
+module('Unit | Service | ajax', function(hooks) {
+  setupTest(hooks)
+
+  test('exists', function(assert) {
+    let service = this.owner.lookup('service:ajax')
+    assert.ok(service)
   })
 
-  it('exists', function() {
-    let service = this.subject()
-    expect(service).to.be.ok
-  })
-
-  it('adds the auth token to the headers', function() {
-    let service = this.subject()
+  test('adds the auth token to the headers', function(assert) {
+    let service = this.owner.lookup('service:ajax')
 
     service.get('session').set('data', { authenticated: { token: 'test' } })
 
-    expect(service.get('headers.Authorization')).to.equal('Bearer test')
+    assert.equal(service.get('headers.Authorization'), 'Bearer test')
   })
 
-  it('does not add the auth token to the headers if no token is given', function() {
-    let service = this.subject()
+  test('does not add the auth token to the headers if no token is given', function(
+    assert
+  ) {
+    let service = this.owner.lookup('service:ajax')
 
     service.get('session').set('data', { authenticated: { token: null } })
 
-    expect(service.get('headers.Authorization')).to.not.be.ok
+    assert.notOk(service.get('headers.Authorization'))
   })
 })

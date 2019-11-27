@@ -1,13 +1,12 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import {
   serializeParachuteQueryParams,
   underscoreQueryParams,
   filterQueryParams
 } from 'timed/utils/query-params'
 
-describe('Unit | Utility | query params', function() {
-  it('can serialize parachute query params', function() {
+module('Unit | Utility | query params', function() {
+  test('can serialize parachute query params', function(assert) {
     let params = { foo: 10 }
     let qp = {
       queryParams: {
@@ -19,21 +18,21 @@ describe('Unit | Utility | query params', function() {
 
     let result = serializeParachuteQueryParams(params, qp)
 
-    expect(result.foo).to.equal(100)
+    assert.equal(result.foo, 100)
   })
 
-  it('can underline query params', function() {
+  test('can underline query params', function(assert) {
     let params = { fooBar: 10, 'baz-x': 10 }
 
     let result = underscoreQueryParams(params)
 
-    expect(Object.keys(result)).to.deep.equal(['foo_bar', 'baz_x'])
+    assert.deepEqual(Object.keys(result), ['foo_bar', 'baz_x'])
   })
 
-  it('can filter params', function() {
+  test('can filter params', function(assert) {
     let params = { foo: 10, bar: 10, baz: 10 }
     let result = filterQueryParams(params, 'foo', 'bar')
 
-    expect(result).to.deep.equal({ baz: 10 })
+    assert.deepEqual(result, { baz: 10 })
   })
 })

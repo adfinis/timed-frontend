@@ -1,16 +1,16 @@
+import { click, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
 } from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
 import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
 import startApp from '../helpers/start-app'
+import { module, test } from 'qunit'
 
-describe('Acceptance | tour', function() {
+module('Acceptance | tour', function(hooks) {
   let application
 
-  beforeEach(async function() {
+  hooks.beforeEach(async function() {
     application = startApp()
 
     let user = server.create('user', { tourDone: false })
@@ -23,18 +23,20 @@ describe('Acceptance | tour', function() {
     setBreakpoint('xl')
   })
 
-  afterEach(async function() {
+  hooks.afterEach(async function() {
     await invalidateSession(application)
     destroyApp(application)
   })
 
-  it('shows a welcome dialog', async function() {
+  test('shows a welcome dialog', async function(assert) {
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(1)
+    assert.dom('.modal--visible').exists({ count: 1 })
   })
 
-  it('does not show a welcome dialog when tour completed', async function() {
+  test('does not show a welcome dialog when tour completed', async function(
+    assert
+  ) {
     let user = server.create('user', { tourDone: true })
 
     // eslint-disable-next-line camelcase
@@ -42,23 +44,25 @@ describe('Acceptance | tour', function() {
 
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 
-  it('does not show a welcome dialog when later clicked', async function() {
+  test('does not show a welcome dialog when later clicked', async function(
+    assert
+  ) {
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(1)
+    assert.dom('.modal--visible').exists({ count: 1 })
 
     await click('button:contains(Later)')
 
     await visit('/someotherroute')
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 
-  it('can ignore tour permanently', async function() {
+  test('can ignore tour permanently', async function(assert) {
     await visit('/')
 
     await click('button:contains(Never)')
@@ -66,14 +70,14 @@ describe('Acceptance | tour', function() {
     await visit('/someotherroute')
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 
-  it('can start tour', async function() {
+  test('can start tour', async function(assert) {
     await visit('/')
 
     await click('button:contains(Sure)')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 })

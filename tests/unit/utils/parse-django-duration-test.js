@@ -1,14 +1,14 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import parseDjangoDuration from 'timed/utils/parse-django-duration'
 import moment from 'moment'
 
-describe('Unit | Utility | parse django duration', function() {
-  it('works', function() {
-    expect(parseDjangoDuration('')).to.be.null
-    expect(parseDjangoDuration(null)).to.be.null
+module('Unit | Utility | parse django duration', function() {
+  test('works', function(assert) {
+    assert.notOk(parseDjangoDuration(''))
+    assert.notOk(parseDjangoDuration(null))
 
-    expect(parseDjangoDuration('01:02:03').asMilliseconds()).to.equal(
+    assert.equal(
+      parseDjangoDuration('01:02:03').asMilliseconds(),
       moment
         .duration({
           hours: 1,
@@ -18,7 +18,8 @@ describe('Unit | Utility | parse django duration', function() {
         .asMilliseconds()
     )
 
-    expect(parseDjangoDuration('1 02:03:04').asMilliseconds()).to.equal(
+    assert.equal(
+      parseDjangoDuration('1 02:03:04').asMilliseconds(),
       moment
         .duration({
           days: 1,
@@ -29,7 +30,8 @@ describe('Unit | Utility | parse django duration', function() {
         .asMilliseconds()
     )
 
-    expect(parseDjangoDuration('01:02:03.004000').asMilliseconds()).to.equal(
+    assert.equal(
+      parseDjangoDuration('01:02:03.004000').asMilliseconds(),
       moment
         .duration({
           hours: 1,
@@ -40,7 +42,8 @@ describe('Unit | Utility | parse django duration', function() {
         .asMilliseconds()
     )
 
-    expect(parseDjangoDuration('1 02:03:04.005000').asMilliseconds()).to.equal(
+    assert.equal(
+      parseDjangoDuration('1 02:03:04.005000').asMilliseconds(),
       moment
         .duration({
           days: 1,
@@ -52,7 +55,8 @@ describe('Unit | Utility | parse django duration', function() {
         .asMilliseconds()
     )
 
-    expect(parseDjangoDuration('-1 22:57:57').asMilliseconds()).to.equal(
+    assert.equal(
+      parseDjangoDuration('-1 22:57:57').asMilliseconds(),
       moment
         .duration({
           hours: -1,
@@ -62,7 +66,8 @@ describe('Unit | Utility | parse django duration', function() {
         .asMilliseconds()
     )
 
-    expect(parseDjangoDuration('-10 22:57:57').asMilliseconds()).to.equal(
+    assert.equal(
+      parseDjangoDuration('-10 22:57:57').asMilliseconds(),
       moment
         .duration({
           days: -9,

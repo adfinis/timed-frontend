@@ -1,7 +1,6 @@
 /* eslint-env node */
 /* eslint-disable camelcase */
 module.exports = {
-  framework: 'mocha+chai',
   test_page: 'tests/index.html',
   disable_watching: true,
   parallel: -1,

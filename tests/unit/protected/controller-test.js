@@ -1,16 +1,12 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Controller | protected', function() {
-  setupTest('controller:protected', {
-    // Specify the other units that are required for this test.
-    needs: ['model:activity', 'model:task', 'model:user']
-  })
+module('Unit | Controller | protected', function(hooks) {
+  setupTest(hooks)
 
   // Replace this with your real tests.
-  it('exists', function() {
-    let controller = this.subject()
-    expect(controller).to.be.ok
+  test('exists', function(assert) {
+    let controller = this.owner.lookup('controller:protected')
+    assert.ok(controller)
   })
 })

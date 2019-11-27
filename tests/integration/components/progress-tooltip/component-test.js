@@ -1,29 +1,26 @@
-import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
 import wait from 'ember-test-helpers/wait'
 import moment from 'moment'
-import { find } from 'ember-native-dom-helpers'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | progress tooltip', function() {
-  setupComponentTest('progress-tooltip', {
-    integration: true
-  })
+module('Integration | Component | progress tooltip', function(hooks) {
+  setupRenderingTest(hooks)
 
-  beforeEach(function() {
+  hooks.beforeEach(function() {
     this.server = startMirage()
 
     this.server.create('task')
   })
 
-  afterEach(function() {
+  hooks.afterEach(function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set(
       'model',
       EmberObject.create({
@@ -35,30 +32,26 @@ describe('Integration | Component | progress tooltip', function() {
       })
     )
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
-    expect(find('.progress-tooltip')).to.not.be.ok
+    assert.dom('.progress-tooltip').doesNotExist()
 
     return wait().then(() => {
-      expect(find('.progress-tooltip')).to.be.ok
+      assert.dom('.progress-tooltip').exists()
 
-      expect(
-        find(
-          '.progress-tooltip .time-info .time-info-durations p:nth-child(1)'
-        ).innerHTML.trim()
-      ).to.match(/^Spent: \d+h \d+m$/)
+      assert
+        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(1)')
+        .hasText(/^Spent: \d+h \d+m$/)
 
-      expect(
-        find(
-          '.progress-tooltip .time-info .time-info-durations p:nth-child(2)'
-        ).innerHTML.trim()
-      ).to.equal('Estimate: 50h 0m')
+      assert
+        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(2)')
+        .hasText('Estimate: 50h 0m')
     })
   })
 
-  it('renders with tasks', function() {
+  test('renders with tasks', async function(assert) {
     this.set(
       'model',
       EmberObject.create({
@@ -70,30 +63,26 @@ describe('Integration | Component | progress tooltip', function() {
       })
     )
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
-    expect(find('.progress-tooltip')).to.not.be.ok
+    assert.dom('.progress-tooltip').doesNotExist()
 
     return wait().then(() => {
-      expect(find('.progress-tooltip')).to.be.ok
+      assert.dom('.progress-tooltip').exists()
 
-      expect(
-        find(
-          '.progress-tooltip .time-info .time-info-durations p:nth-child(1)'
-        ).innerHTML.trim()
-      ).to.match(/^Spent: \d+h \d+m$/)
+      assert
+        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(1)')
+        .hasText(/^Spent: \d+h \d+m$/)
 
-      expect(
-        find(
-          '.progress-tooltip .time-info .time-info-durations p:nth-child(2)'
-        ).innerHTML.trim()
-      ).to.equal('Estimate: 100h 30m')
+      assert
+        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(2)')
+        .hasText('Estimate: 100h 30m')
     })
   })
 
-  it('toggles correctly', function() {
+  test('toggles correctly', async function(assert) {
     this.set(
       'model',
       EmberObject.create({
@@ -107,20 +96,22 @@ describe('Integration | Component | progress tooltip', function() {
 
     this.set('visible', false)
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=visible}}
     `)
 
-    expect(find('.progress-tooltip')).to.not.be.ok
+    assert.dom('.progress-tooltip').doesNotExist()
 
     this.set('visible', true)
 
     return wait().then(() => {
-      expect(find('.progress-tooltip')).to.be.ok
+      assert.dom('.progress-tooltip').exists()
     })
   })
 
-  it('uses danger color when the factor is more than 1', function() {
+  test('uses danger color when the factor is more than 1', async function(
+    assert
+  ) {
     this.set(
       'model',
       EmberObject.create({
@@ -141,17 +132,19 @@ describe('Integration | Component | progress tooltip', function() {
       }
     })
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
     return wait().then(() => {
-      expect(find('.progress-tooltip .badge--danger')).to.be.ok
-      expect(find('.progress-tooltip .progress-bar.danger')).to.be.ok
+      assert.dom('.progress-tooltip .badge--danger').exists()
+      assert.dom('.progress-tooltip .progress-bar.danger').exists()
     })
   })
 
-  it('uses warning color when the factor is 0.9 or more', function() {
+  test('uses warning color when the factor is 0.9 or more', async function(
+    assert
+  ) {
     this.set(
       'model',
       EmberObject.create({
@@ -172,13 +165,13 @@ describe('Integration | Component | progress tooltip', function() {
       }
     })
 
-    this.render(hbs`
+    await render(hbs`
       <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
     `)
 
     return wait().then(() => {
-      expect(find('.progress-tooltip .badge--warning')).to.be.ok
-      expect(find('.progress-tooltip .progress-bar.warning')).to.be.ok
+      assert.dom('.progress-tooltip .badge--warning').exists()
+      assert.dom('.progress-tooltip .progress-bar.warning').exists()
     })
   })
 })

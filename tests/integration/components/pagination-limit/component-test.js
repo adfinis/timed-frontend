@@ -1,37 +1,35 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | pagination limit', function() {
-  setupComponentTest('pagination-limit', {
-    integration: true
-  })
+module('Integration | Component | pagination limit', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     // Set any properties with this.set('myProperty', 'value');
     // Handle any actions with this.on('myAction', function(val) { ... });
     // Template block usage:
-    // this.render(hbs`
+    // await render(hbs`
     //   {{#pagination-limit}}
     //     template content
     //   {{/pagination-limit}}
     // `);
 
-    this.render(hbs`{{pagination-limit}}`)
-    expect(this.$()).to.have.length(1)
+    await render(hbs`{{pagination-limit}}`)
+    assert.dom(this.$()).exists({ count: 1 })
   })
 
-  it('can change limit', function() {
+  test('can change limit', async function(assert) {
     this.set('limit', 10)
 
-    this.render(hbs`{{pagination-limit pages=5 page_size=limit}}`)
+    await render(hbs`{{pagination-limit pages=5 page_size=limit}}`)
 
-    expect(this.$('span')).to.have.length(4)
-    expect(this.$('a')).to.have.length(3)
+    assert.dom(this.$('span')).exists({ count: 4 })
+    assert.dom(this.$('a')).exists({ count: 3 })
 
     this.$('a:contains(100)').click()
 
-    expect(this.get('limit')).to.equal(100)
+    assert.equal(this.get('limit'), 100)
   })
 })
