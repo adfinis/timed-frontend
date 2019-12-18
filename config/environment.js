@@ -84,12 +84,14 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false
 
     ENV.APP.rootElement = '#ember-testing'
+    ENV.APP.autoboot = false
 
     ENV['ember-tether'] = {
       bodyElementId: 'ember-testing'
     }
   }
 
+  // eslint-disable-next-line no-empty
   if (environment === 'production') {
   }
 
