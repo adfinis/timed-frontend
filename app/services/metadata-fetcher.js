@@ -4,7 +4,7 @@ import DjangoDurationTransform from 'timed/transforms/django-duration'
 import { camelize, capitalize, dasherize } from '@ember/string'
 import { task } from 'ember-concurrency'
 
-const DJANGO_DURATION_TRANSFORM = new DjangoDurationTransform()
+const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create()
 
 const META_MODELS = {
   project: {

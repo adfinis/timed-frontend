@@ -6,7 +6,7 @@
 import JSONAPIAdapter from 'ember-data/adapters/json-api'
 import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin'
 import { reads } from '@ember/object/computed'
-import { isPresent } from '@ember/utils'
+import { computed } from '@ember/object'
 
 /**
  * The application adapter
@@ -27,9 +27,12 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
    */
   namespace: 'api/v1',
 
-  authorize(xhr) {
-    if (isPresent(this.token)) {
-      xhr.setRequestHeader('Authorization', `Bearer ${this.token}`)
+  headers: computed('token', function() {
+    const headers = {}
+    if (this.session.isAuthenticated) {
+      headers['Authorization'] = `Bearer ${this.token}`
     }
-  }
+
+    return headers
+  })
 })

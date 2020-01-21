@@ -30,7 +30,7 @@
   background: transparent;
   border: none;
   font-size: 10px;
-  font-family: var(--font-family-mono);
+  font-family: $font-family-mono;
 }
 
 .noUi-handle-lower .noUi-tooltip,
@@ -39,7 +39,7 @@
 }
 
 .noUi-connect {
-  background: var(--color-primary);
+  background: $color-primary;
 }
 
 .noUi-draggable {
@@ -53,7 +53,7 @@
 
 .slider-label {
   display: flex;
-  font-family: var(--font-family-mono);
+  font-family: $font-family-mono;
   position: absolute;
   font-size: 0.6rem;
   top: 1rem;
@@ -61,7 +61,7 @@
 
   &--sm {
     font-size: 0.5rem;
-    color: color(var(--body-color) l(50%));
+    color: desaturate($body-color, 50%);
   }
 }
 

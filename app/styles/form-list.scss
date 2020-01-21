@@ -14,7 +14,7 @@
   }
 
   .form-list-row {
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid $color-border;
     flex: 1 0 100%;
     flex-wrap: wrap;
     padding: 0.5rem;
@@ -25,7 +25,7 @@
   }
 
   .form-list-body > .form-list-row:nth-of-type(2n+1) {
-    background-color: color(var(--body-background-color) b(5%));
+    background-color: darken($body-background-color, 5%);
   }
 
   /* Form list head, foot and caption are not allowed for mobile devices */
@@ -50,7 +50,7 @@
       font-weight: 500;
       text-align: left;
       vertical-align: bottom;
-      border-bottom: 2px solid var(--color-border);
+      border-bottom: 2px solid $color-border;
     }
   }
 
@@ -74,7 +74,7 @@
     display: table-cell;
     padding: 0.5rem;
     vertical-align: top;
-    border-top: 1px solid var(--color-border);
+    border-top: 1px solid $color-border;
   }
 
   .form-list-caption {
@@ -87,31 +87,31 @@
   @include form-list--inline;
 }
 
-@media (--xs-viewport) {
+@media #{$xs-viewport} {
   .form-list-xs--inline {
     @include form-list--inline;
   }
 }
 
-@media (--sm-viewport) {
+@media #{$sm-viewport} {
   .form-list-sm--inline {
     @include form-list--inline;
   }
 }
 
-@media (--md-viewport) {
+@media #{$md-viewport} {
   .form-list-md--inline {
     @include form-list--inline;
   }
 }
 
-@media (--lg-viewport) {
+@media #{$lg-viewport} {
   .form-list-lg--inline {
     @include form-list--inline;
   }
 }
 
-@media (--xl-viewport) {
+@media #{$xl-viewport} {
   .form-list-xl--inline {
     @include form-list--inline;
   }

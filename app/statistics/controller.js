@@ -174,6 +174,16 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     }
   ),
 
+  missingParams: computed(
+    'requiredParams.[]',
+    `queryParamsState.{observed}.changed`,
+    function() {
+      return this.get('requiredParams').filter(
+        param => !this.get(`queryParamsState.${param}.changed`)
+      )
+    }
+  ),
+
   setup() {
     let observed = Object.keys(TYPES).reduce((set, key) => {
       return [
@@ -181,19 +191,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
         ...get(TYPES, `${key}.requiredParams`).filter(p => !set.includes(p))
       ]
     }, [])
-
-    this.set(
-      'missingParams',
-      computed(
-        'requiredParams.[]',
-        `queryParamsState.{${observed.join(',')}}.changed`,
-        () => {
-          return this.get('requiredParams').filter(
-            param => !this.get(`queryParamsState.${param}.changed`)
-          )
-        }
-      )
-    )
+    this.set('observed', observed.join(','))
 
     this.get('prefetchData').perform()
     this.get('data').perform()

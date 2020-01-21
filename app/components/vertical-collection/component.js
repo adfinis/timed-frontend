@@ -1,4 +1,4 @@
-import VerticalCollectionComponent from 'vertical-collection/components/vertical-collection/component'
+import VerticalCollectionComponent from '@html-next/vertical-collection/components/vertical-collection/component'
 import Ember from 'ember'
 
 export default VerticalCollectionComponent.extend({

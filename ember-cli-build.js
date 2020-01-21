@@ -3,29 +3,12 @@
 'use strict'
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app')
+const Funnel = require('broccoli-funnel')
 
 module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     sassOptions: {
       onlyIncluded: true
-    },
-    postcssOptions: {
-      compile: { enabled: false },
-      filter: {
-        enabled: true,
-        plugins: [
-          {
-            module: require('postcss-cssnext'),
-            options: {
-              features: {
-                customProperties: {
-                  warnings: false
-                }
-              }
-            }
-          }
-        ]
-      }
     },
     babel: {
       plugins: ['@babel/plugin-proposal-object-rest-spread']
@@ -36,6 +19,7 @@ module.exports = function(defaults) {
     }
   })
 
+  app.import('node_modules/typeface-source-sans-pro/index.css')
   app.import('vendor/adcssy.min.css')
 
   app.import('node_modules/downloadjs/download.min.js', {
@@ -44,5 +28,10 @@ module.exports = function(defaults) {
 
   app.import('node_modules/intersection-observer/intersection-observer.js')
 
-  return app.toTree()
+  let fonts = new Funnel('node_modules/typeface-source-sans-pro/files', {
+    include: ['*.woff', '*.woff2'],
+    destDir: '/assets/files/'
+  })
+
+  return app.toTree([fonts])
 }

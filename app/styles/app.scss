@@ -81,11 +81,11 @@ strong {
 }
 
 .worktime-balance.color-danger {
-  border-bottom-color: var(--color-danger);
+  border-bottom-color: $color-danger;
 }
 
 .worktime-balance.color-success {
-  border-bottom-color: var(--color-success);
+  border-bottom-color: $color-success;
 
   &::before {
     display: inline-block;
@@ -97,21 +97,21 @@ strong {
 .error-text {
   font-size: 80%;
   margin: 0;
-  color: var(--color-danger);
+  color: $color-danger;
 }
 
 .form-group.has-error {
   label {
-    color: var(--color-danger);
+    color: $color-danger;
   }
 
   .form-control {
-    border-color: color(var(--color-danger) tint(20%));
+    border-color: lighten($color-danger, 20%);
 
     &:focus {
-      border-color: color(var(--color-danger) tint(20%));
+      border-color: lighten($color-danger, 20%);
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
-        0 0 8px color(var(--color-danger) a(60%));
+        0 0 8px opacify($color-danger, 0.6);
     }
   }
 }
@@ -150,21 +150,21 @@ strong {
   }
 
   .ember-power-calendar-day--selected {
-    background-color: var(--color-primary);
+    background-color: $color-primary;
     color: rgb(255, 255, 255);
 
     &:not(:disabled):hover {
-      background-color: color(var(--color-primary) tint(25%));
+      background-color: lighten($color-primary, 25%);
       color: rgb(255, 255, 255);
     }
   }
 
   .ember-power-calendar-day--focused {
-    box-shadow: inset 0px -2px 0px 0px var(--color-primary);
+    box-shadow: inset 0px -2px 0px 0px $color-primary;
   }
 }
 
-@media (--sm-viewport) {
+@media #{$sm-viewport} {
   .login-form .btn {
     width: 125px;
   }
@@ -246,7 +246,7 @@ strong {
 }
 
 .total {
-  border-bottom: 3px double var(--body-color);
+  border-bottom: 3px double $body-color;
 }
 
 .table--absence-types > thead > tr > th,
@@ -269,7 +269,7 @@ strong {
 }
 
 .empty {
-  color: color(var(--color-border) shade(25%));
+  color: darken($color-border, 25%);
   height: 100%;
   display: flex;
   align-items: center;
@@ -279,11 +279,11 @@ strong {
   .fa {
     margin-bottom: 1rem;
     font-size: 10rem;
-    color: var(--color-border);
+    color: $color-border;
   }
 
   .loading-spinner {
-    --color: color(var(--color-border) shade(25%));
+    --color: darken($color-border, 25%);
   }
 
   h3 {

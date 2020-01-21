@@ -1,0 +1,43 @@
+$xs-viewport: "only screen and (min-width: 480px)";
+$sm-viewport: "only screen and (min-width: 768px)";
+$md-viewport: "only screen and (min-width: 992px)";
+$lg-viewport: "only screen and (min-width: 1200px)";
+$xl-viewport: "only screen and (min-width: 1440px)";
+$nav-top-mobile-width: "only screen and (min-width: 768px)";
+
+$color-primary:   rgb( 91, 142, 219);
+$color-secondary: rgb(162, 155, 150);
+$color-tertiary:  rgb(134, 127, 124);
+$color-border:    rgb(225, 225, 225);
+$color-menu:      rgb(246, 246, 246);
+$color-modal:     rgb(255, 255, 255);
+
+$color-success: rgb( 92, 184,  92);
+$color-info:    rgb( 91, 192, 222);
+$color-warning: rgb(240, 173,  78);
+$color-danger:  rgb(217,  83,  79);
+
+$font-family-sans-serif: 'TheSansLT', 'Open Sans', sans-serif;
+$font-family-serif: 'Merriweather', 'Times New Roman', serif;
+$font-family-mono: Menlo, Monaco, Consolas, 'Courier New', monospace;
+$font-family-base: $font-family-sans-serif;
+$font-weight-base: 300;
+$font-size-base: 16px;
+$font-size-large: 1.25rem;
+$font-size-small: 0.85rem;
+
+$body-background-color: #fff;
+$body-color: rgb(61, 61, 61);
+$body-font-weight: $font-weight-base;
+$body-font-family: $font-family-base;
+$body-min-font-size: $font-size-base - 3px;
+$body-max-font-size: $font-size-base + 2px;
+$body-min-font-size-break: 420px;
+$body-max-font-size-break: 1440px;
+
+$button-border-radius: 4px;
+$input-border-radius: 4px;
+$input-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+
+$page-padding-v: 1em;
+$page-padding-h: 1.5em;

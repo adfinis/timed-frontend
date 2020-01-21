@@ -10,10 +10,10 @@
 
 &.expected {
   hr {
-    background-color: var(--color-primary);
+    background-color: $color-primary;
   }
   span {
-    color: var(--color-primary);
+    color: $color-primary;
   }
 }
 
@@ -22,7 +22,7 @@ hr {
   border: none;
   height: 1px;
   width: 100%;
-  background-color: color(var(--color-primary) a(30%));
+  background-color: transparentize($color-primary, 0.7);
   position: absolute;
   left: 0;
   right: 0;
@@ -30,10 +30,10 @@ hr {
 
 span {
   width: 30px;
-  font-family: var(--font-family-mono);
+  font-family: $font-family-mono;
   font-size: 12px;
   text-align: right;
-  color: color(var(--color-primary) a(30%));
+  color: transparentize($color-primary, 0.7);
   transform: translateY(50%);
   position: absolute;
   left: -35px;

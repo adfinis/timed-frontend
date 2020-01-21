@@ -14,7 +14,7 @@
   display: flex;
 }
 
-@media (--sm-viewport) {
+@media #{$sm-viewport} {
   & {
     justify-content: flex-end;
     padding: 0;
