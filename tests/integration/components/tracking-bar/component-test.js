@@ -1,4 +1,4 @@
-import { find, render } from '@ember/test-helpers'
+import { render } from '@ember/test-helpers'
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import { task } from 'ember-concurrency'
@@ -24,13 +24,12 @@ module('Integration | Component | tracking bar', function(hooks) {
   setupRenderingTest(hooks)
 
   hooks.beforeEach(function() {
-    this.register('service:tracking', trackingStub)
-    this.inject.service('tracking', { as: 'tracking' })
+    this.owner.register('service:tracking', trackingStub)
   })
 
   test('renders', async function(assert) {
     await render(hbs`{{tracking-bar}}`)
 
-    assert.equal(find('input[type=text]').value, 'asdf')
+    assert.dom('input[type=text]').hasValue('asdf')
   })
 })

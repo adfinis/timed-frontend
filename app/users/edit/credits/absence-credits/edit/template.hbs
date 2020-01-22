@@ -8,7 +8,7 @@
       <div class="grid-cell">
         {{#validated-form
           model     = (changeset credit AbsenceCreditValidations)
-          on-submit = save
+          on-submit = (perform save)
         as |f|}}
         <h4 class="text-center">{{if credit.isNew 'New' 'Edit'}} absence credit</h4>
           <div class="card">
@@ -30,7 +30,7 @@
                 {{#unless credit.isNew}}
                   <button type="button" class="btn btn-danger {{if delete.isRunning 'loading'}}" {{action (perform delete) credit}}>Delete</button>
                 {{/unless}}
-                {{f.submit disabled=f.model.isInvalid}}
+                {{f.submit data-test-absence-credit-save disabled=f.model.isInvalid}}
               </div>
             </div>
           </div>

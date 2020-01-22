@@ -227,24 +227,28 @@ module('Acceptance | index activities', function(hooks) {
     await click('[data-test-record-stop]')
 
     // today block should be from 00:00 to now
+    // assert
+    //   .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
+    //   .exists({ count: 1 })
+    assert.dom(`[data-test-activity-row-id="${activity.id}"]`).exists()
+
+    await click(`[data-test-activity-row-id="${activity.id}"]`)
+
     assert
-      .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
-      .exists({ count: 1 })
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
-
-    assert.dom('[data-test-activity-block-row] td:eq(0) input').hasText('00:00')
+      .dom('[data-test-activity-block-row] td:first-child input')
+      .hasValue('00:00')
 
     // yesterday block should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')
 
-    assert
-      .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
-      .exists({ count: 1 })
+    assert.dom(`[data-test-activity-row-id="${activity.id}"]`).exists()
 
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
-    assert.dom('[data-test-activity-block-row] td:eq(2) input').hasText('23:59')
+    await click(`[data-test-activity-row-id="${activity.id}"]`)
+
+    assert
+      .dom('[data-test-activity-block-row] td:nth-child(3) input')
+      .hasValue('23:59')
   })
 
   test("doesn't split >1 days overlapping activities when stopping", async function(
@@ -261,7 +265,7 @@ module('Acceptance | index activities', function(hooks) {
 
     // today block should not exist
     assert
-      .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
+      .dom(`[data-test-activity-row-id="${+activity.id + 1}"]`)
       .doesNotExist()
 
     // yesterday block should not exist
@@ -269,7 +273,7 @@ module('Acceptance | index activities', function(hooks) {
     await click('[data-test-previous]')
 
     assert
-      .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
+      .dom(`[data-test-activity-row-id="${+activity.id + 1}"]`)
       .doesNotExist()
     // day before yesterday block should be from old start time to 23:59
     await visit('/')
@@ -277,11 +281,11 @@ module('Acceptance | index activities', function(hooks) {
     await click('[data-test-previous]')
 
     assert
-      .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
+      .dom(`[data-test-activity-row-id="${activity.id}"]`)
       .exists({ count: 1 })
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+    await click(`[data-test-activity-row-id="${activity.id}"]`)
     assert
-      .dom('[data-test-activity-block-row]:last td:eq(2) input')
+      .dom('[data-test-activity-block-row] td:nth-child(3) input')
       .hasValue('23:59')
   })
 

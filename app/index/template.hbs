@@ -128,8 +128,8 @@
           <f.input @type="textarea" @placeholder="Enter comment..." @name="comment" />
         </modal.body>
         <modal.footer>
-          <button type="button" class="btn btn-danger" {{action 'deleteAbsence' absence}}>Delete</button>
-          <f.submit @label="Save" />
+          <button type="button" class="btn btn-danger" {{action 'deleteAbsence' absence}} data-test-edit-absence-delete>Delete</button>
+          <f.submit @label="Save" data-test-edit-absence-save />
         </modal.footer>
       {{/validated-form}}
     {{/sy-modal}}
@@ -168,7 +168,7 @@
         <f.input @type="textarea" @placeholder="Enter comment..." @name="comment" />
       </modal.body>
       <modal.footer>
-        <f.submit @label="Save" />
+        <f.submit @label="Save" data-test-add-absence-save />
       </modal.footer>
     {{/validated-form}}
   {{/sy-modal}}

@@ -3794,7 +3794,7 @@ browserslist@^2.2.2:
     caniuse-lite "^1.0.30000755"
     electron-to-chromium "^1.3.27"
 
-browserslist@^3.1.1, browserslist@^3.2.6:
+browserslist@^3.2.6:
   version "3.2.8"
   resolved "https://registry.yarnpkg.com/browserslist/-/browserslist-3.2.8.tgz#b0005361d6471f0f5952797a76fc985f1f978fc6"
   integrity sha512-WHVocJYavUwVgVViC0ORikPHQquXwVh939TaelZ4WDqpWgTX/FsGhl/+P4qBUAGcRvtOgDgC+xftNWWp2RUTAQ==
@@ -5320,7 +5320,7 @@ ember-cli-babel-plugin-helpers@^1.0.0, ember-cli-babel-plugin-helpers@^1.1.0:
   resolved "https://registry.yarnpkg.com/ember-cli-babel-plugin-helpers/-/ember-cli-babel-plugin-helpers-1.1.0.tgz#de3baedd093163b6c2461f95964888c1676325ac"
   integrity sha512-Zr4my8Xn+CzO0gIuFNXji0eTRml5AxZUTDQz/wsNJ5AJAtyFWCY4QtKdoELNNbiCVGt1lq5yLiwTm4scGKu6xA==
 
-ember-cli-babel@7.13.2, ember-cli-babel@^7.1.4, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.2.0:
+ember-cli-babel@7.13.2, ember-cli-babel@^7.1.4, ember-cli-babel@^7.13.0, ember-cli-babel@^7.13.2, ember-cli-babel@^7.2.0, ember-cli-babel@^7.4.1:
   version "7.13.2"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.13.2.tgz#6b6f4d508cc3bb300c5711d3d02c59ba80f0f686"
   integrity sha512-VH2tMXaRFkbQEyVJnxUtAyta5bAKjtcLwJ4lStW/iRk/NIlNFNJh1uOd7uL9H9Vm0f4/xR7Mc0Q7ND9ezKOo+A==
@@ -5419,7 +5419,7 @@ ember-cli-babel@^6.9.2:
     ember-cli-version-checker "^2.1.2"
     semver "^5.5.0"
 
-ember-cli-babel@^7.1.0, ember-cli-babel@^7.1.2, ember-cli-babel@^7.1.3, ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.0, ember-cli-babel@^7.11.1, ember-cli-babel@^7.12.0, ember-cli-babel@^7.4.1, ember-cli-babel@^7.5.0, ember-cli-babel@^7.7.0, ember-cli-babel@^7.7.3, ember-cli-babel@^7.8.0:
+ember-cli-babel@^7.1.0, ember-cli-babel@^7.1.2, ember-cli-babel@^7.1.3, ember-cli-babel@^7.10.0, ember-cli-babel@^7.11.0, ember-cli-babel@^7.11.1, ember-cli-babel@^7.12.0, ember-cli-babel@^7.5.0, ember-cli-babel@^7.7.0, ember-cli-babel@^7.7.3, ember-cli-babel@^7.8.0:
   version "7.13.0"
   resolved "https://registry.yarnpkg.com/ember-cli-babel/-/ember-cli-babel-7.13.0.tgz#3f2c2ba7a44d7948ec927d41cf072673330f62cd"
   integrity sha512-VjagtumwQP+3jsjLR64gpca5iq2o0PS1MT0PdC90COtAYqpOqNM9axYEYBamNLIuv+3vJpAoFKu8EMBC1ZlWGQ==
@@ -5774,7 +5774,7 @@ ember-cli-test-loader@^2.1.0, ember-cli-test-loader@^2.2.0:
   dependencies:
     ember-cli-babel "^6.8.1"
 
-ember-cli-typescript@^2.0.2:
+ember-cli-typescript@^2.0.0, ember-cli-typescript@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-2.0.2.tgz#464984131fbdc05655eb61d1c3cdd911d3137f0d"
   integrity sha512-7I5azCTxOgRDN8aSSnJZIKSqr+MGnT+jLTUbBYqF8wu6ojs2DUnTePxUcQMcvNh3Q3B1ySv7Q/uZFSjdU9gSjA==
@@ -5998,10 +5998,19 @@ ember-composable-helpers@^3.0.2:
     ember-cli-babel "^7.1.0"
     resolve "^1.10.0"
 
-"ember-concurrency@^0.8.27 || ^0.9.0 || ^0.10.0 || ^1.0.0", ember-concurrency@^1.0.0, ember-concurrency@^1.1.3:
+"ember-concurrency@^0.8.27 || ^0.9.0 || ^0.10.0 || ^1.0.0", ember-concurrency@^1.1.3:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-1.1.3.tgz#3e0a2c77eb5d2d8b8dc75f0ea91fdb97dfa3e6f1"
   integrity sha512-U/a345q6OjkcRa3ziXHYFD9yB5V8guX68k1EAlLLtbtbswWAawvT/mKiPnhejuENiG6jICEc9AT0IXmVamu1+w==
+  dependencies:
+    ember-cli-babel "^7.7.3"
+    ember-compatibility-helpers "^1.2.0"
+    ember-maybe-import-regenerator "^0.1.6"
+
+ember-concurrency@^1.0.0:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/ember-concurrency/-/ember-concurrency-1.1.5.tgz#d07421617d14a038a2d29c994335866061a8107c"
+  integrity sha512-2YgvPJKULUmEDLxlXiWwmOXKCd6FSp7V/L9t77y07f99+CU5cejCsUUjkYNTqlgb8gjifcuOjBq1Cyim3hhuPg==
   dependencies:
     ember-cli-babel "^7.7.3"
     ember-compatibility-helpers "^1.2.0"
@@ -6155,12 +6164,13 @@ ember-invoke-action@^1.5.0:
   dependencies:
     ember-cli-babel "^6.6.0"
 
-ember-lifeline@^3.0.1:
-  version "3.0.5"
-  resolved "https://registry.yarnpkg.com/ember-lifeline/-/ember-lifeline-3.0.5.tgz#f39841a2fcdc29ececc06ebed80a8f47a41b6b9d"
+ember-lifeline@^4.1.5:
+  version "4.1.5"
+  resolved "https://registry.yarnpkg.com/ember-lifeline/-/ember-lifeline-4.1.5.tgz#a3db0c2357b533c65e1396c1c1d70609c2cd7276"
+  integrity sha512-uPnc577X8grg5/6SLCIkRvLuMRTGPErOl5VbwtzAktjq4Ce0owtTrr4kbAQ1gad9t9CBfCSfAQJ+FY9WNt9iCQ==
   dependencies:
-    ember-cli-babel "^6.8.2"
-    ember-weakmap "^3.1.1"
+    ember-cli-babel "^7.1.3"
+    ember-cli-typescript "^2.0.0"
 
 ember-load-initializers@^2.1.1:
   version "2.1.1"
@@ -6385,17 +6395,16 @@ ember-runtime-enumerable-includes-polyfill@^2.0.0:
     ember-cli-babel "^6.0.0"
     ember-cli-version-checker "^1.1.6"
 
-ember-scrollable@^0.5.3:
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/ember-scrollable/-/ember-scrollable-0.5.3.tgz#502e5f3fe3086ef5a288ae093116247ad195851b"
-  integrity sha512-ULwRNP4C2jr9++u63s08VlNUBIxd9gDuZOLTQJxiY69zJaKk5wu8Mt+/LXTmMvwirLNnDS1g5TpkadzsskjFNg==
+ember-scrollable@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ember-scrollable/-/ember-scrollable-1.0.0.tgz#7a4baae8e16c5d8407a346081bbbc3c4a5551eae"
+  integrity sha512-XEKvI055MKqjCWwHjma2h2kBORbuMJtnmFmAyv6sX3H3DiyvwcLULyopciDiM56eL70vl/rOV8O6VvG6rTDkug==
   dependencies:
-    "@ember/jquery" "^1.1.0"
     ember-cli-babel "^6.8.0"
     ember-cli-htmlbars "^2.0.1"
     ember-component-inbound-actions "^1.3.0"
     ember-element-resize-detector "~0.4.0"
-    ember-lifeline "^3.0.1"
+    ember-lifeline "^4.1.5"
 
 ember-simple-auth@^2.1.1:
   version "2.1.1"
@@ -6522,14 +6531,6 @@ ember-weakmap@^3.0.0:
     browserslist "^2.2.2"
     debug "^3.1.0"
     ember-cli-babel "^6.3.0"
-
-ember-weakmap@^3.1.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/ember-weakmap/-/ember-weakmap-3.3.0.tgz#2842aaf8468cad40f90d4381ca7a7fb1ee7c267b"
-  dependencies:
-    browserslist "^3.1.1"
-    debug "^3.1.0"
-    ember-cli-babel "^6.6.0"
 
 ember-wormhole@^0.5.5:
   version "0.5.5"

@@ -89,7 +89,7 @@ module('Integration | Component | filter sidebar/filter', function(hooks) {
       }}
     `)
 
-    assert.dom('input').hasText(this.get('selected').format('DD.MM.YYYY'))
+    assert.dom('input').hasValue(this.get('selected').format('DD.MM.YYYY'))
 
     await fillIn('input', '10.10.2010')
 
@@ -109,7 +109,7 @@ module('Integration | Component | filter sidebar/filter', function(hooks) {
       }}
     `)
 
-    assert.dom('input').hasText(this.get('selected'))
+    assert.dom('input').hasValue(this.get('selected'))
 
     await fillIn('input', 'foobarbaz')
 

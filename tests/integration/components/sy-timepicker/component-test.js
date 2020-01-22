@@ -1,11 +1,14 @@
-import { fillIn, blur, render } from '@ember/test-helpers'
+import {
+  fillIn,
+  blur,
+  render,
+  triggerKeyEvent,
+  settled
+} from '@ember/test-helpers'
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import $ from 'jquery'
-
-const event = $.Event
 
 module('Integration | Component | sy timepicker', function(hooks) {
   setupRenderingTest(hooks)
@@ -89,7 +92,11 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 12)
     assert.equal(this.get('value').minute(), 30)
@@ -108,7 +115,11 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 40))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 12)
     assert.equal(this.get('value').minute(), 0)
@@ -127,9 +138,14 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(
-      event('keydown', { key: 'ArrowUp', keyCode: 38, shiftKey: true })
-    )
+    this.element
+      .querySelectorAll('input')
+      .forEach(
+        async element =>
+          await triggerKeyEvent(element, 'keydown', 38, { shiftKey: true })
+      )
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 13)
     assert.equal(this.get('value').minute(), 15)
@@ -148,9 +164,14 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(
-      event('keydown', { key: 'ArrowDown', keyCode: 40, shiftKey: true })
-    )
+    this.element
+      .querySelectorAll('input')
+      .forEach(
+        async element =>
+          await triggerKeyEvent(element, 'keydown', 40, { shiftKey: true })
+      )
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 11)
     assert.equal(this.get('value').minute(), 15)
@@ -169,9 +190,14 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(
-      event('keydown', { key: 'ArrowUp', keyCode: 38, ctrlKey: true })
-    )
+    this.element
+      .querySelectorAll('input')
+      .forEach(
+        async element =>
+          await triggerKeyEvent(element, 'keydown', 38, { ctrlKey: true })
+      )
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 13)
     assert.equal(this.get('value').minute(), 15)
@@ -190,9 +216,14 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(
-      event('keydown', { key: 'ArrowDown', keyCode: 40, ctrlKey: true })
-    )
+    this.element
+      .querySelectorAll('input')
+      .forEach(
+        async element =>
+          await triggerKeyEvent(element, 'keydown', 40, { ctrlKey: true })
+      )
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 11)
     assert.equal(this.get('value').minute(), 15)
@@ -211,7 +242,11 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 23)
     assert.equal(this.get('value').minute(), 45)
@@ -246,12 +281,20 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker min=min max=max value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 12)
     assert.equal(this.get('value').minute(), 30)
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 40))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 12)
     assert.equal(this.get('value').minute(), 30)
@@ -270,7 +313,11 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker precision=5 value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 10)
     assert.equal(this.get('value').minute(), 5)
@@ -296,7 +343,11 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 0)
     assert.equal(this.get('value').minute(), 15)
@@ -309,7 +360,11 @@ module('Integration | Component | sy timepicker', function(hooks) {
       hbs`{{sy-timepicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 40 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 40))
+
+    await settled()
 
     assert.equal(this.get('value').hour(), 23)
     assert.equal(this.get('value').minute(), 45)

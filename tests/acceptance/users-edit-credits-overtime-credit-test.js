@@ -30,7 +30,7 @@ module('Acceptance | users edit credits overtime credit', function(hooks) {
     await fillIn('input[name=duration]', '20:00')
     await fillIn('input[name=comment]', 'Comment')
 
-    await click('.btn-primary')
+    await click('[data-test-overtime-credit-save]')
 
     assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
@@ -53,7 +53,7 @@ module('Acceptance | users edit credits overtime credit', function(hooks) {
     await fillIn('input[name=duration]', '20:00')
     await fillIn('input[name=comment]', 'Ding dong')
 
-    await click('.btn-primary')
+    await click('[data-test-overtime-credit-save]')
 
     assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
@@ -83,7 +83,7 @@ module('Acceptance | users edit credits overtime credit', function(hooks) {
 
     await visit(`/users/${this.user.id}/credits/overtime-credits/${id}`)
 
-    await click('.btn-danger')
+    await click('[data-test-overtime-credit-delete]')
 
     assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
@@ -104,7 +104,7 @@ module('Acceptance | users edit credits overtime credit', function(hooks) {
     await fillIn('input[name=duration]', '20:00')
     await fillIn('input[name=comment]', 'Ding dong')
 
-    await click('.btn-primary')
+    await click('[data-test-overtime-credit-save]')
 
     assert.equal(
       currentURL(),

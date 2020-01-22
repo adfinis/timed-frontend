@@ -31,8 +31,7 @@ module('Acceptance | users edit credits absence credit', function(hooks) {
     await fillIn('input[name=date]', moment().format('DD.MM.YYYY'))
     await fillIn('input[name=days]', '5')
     await fillIn('input[name=comment]', 'Comment')
-
-    await click('.btn-primary')
+    await click('[data-test-absence-credit-save]')
 
     assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
@@ -107,7 +106,7 @@ module('Acceptance | users edit credits absence credit', function(hooks) {
     await fillIn('input[name=days]', '5')
     await fillIn('input[name=comment]', 'Comment')
 
-    await click('.btn-primary')
+    await click('[data-test-absence-credit-save]')
 
     assert.equal(
       currentURL(),

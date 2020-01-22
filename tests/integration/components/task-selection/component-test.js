@@ -69,9 +69,9 @@ module('Integration | Component | task selection', function(hooks) {
       assert.dom('.task-select [aria-disabled=true]').exists()
 
       assert.equal(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim(),
+        this.element
+          .querySelector('.customer-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
         CUSTOMER.name
       )
     })
@@ -98,15 +98,15 @@ module('Integration | Component | task selection', function(hooks) {
       assert.dom('.task-select [aria-disabled=true]').doesNotExist()
 
       assert.equal(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim(),
+        this.element
+          .querySelector('.customer-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
         CUSTOMER.name
       )
       assert.equal(
-        this.$('.project-select .ember-power-select-selected-item')
-          .text()
-          .trim(),
+        this.element
+          .querySelector('.project-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
         PROJECT.name
       )
     })
@@ -133,21 +133,21 @@ module('Integration | Component | task selection', function(hooks) {
       assert.dom('.task-select [aria-disabled=true]').doesNotExist()
 
       assert.equal(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim(),
+        this.element
+          .querySelector('.customer-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
         CUSTOMER.name
       )
       assert.equal(
-        this.$('.project-select .ember-power-select-selected-item')
-          .text()
-          .trim(),
+        this.element
+          .querySelector('.project-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
         PROJECT.name
       )
       assert.equal(
-        this.$('.task-select .ember-power-select-selected-item')
-          .text()
-          .trim(),
+        this.element
+          .querySelector('.task-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
         TASK.name
       )
     })

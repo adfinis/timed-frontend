@@ -1,4 +1,4 @@
-import { click, currentURL, visit, find } from '@ember/test-helpers'
+import { click, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -6,12 +6,15 @@ import {
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
+import { setBreakpoint } from 'ember-responsive/test-support'
 
 module('Acceptance | index attendances', function(hooks) {
   setupApplicationTest(hooks)
   setupMirage(hooks)
 
   hooks.beforeEach(async function() {
+    setBreakpoint('xl')
+
     let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
@@ -33,7 +36,6 @@ module('Acceptance | index attendances', function(hooks) {
 
   test('can list attendances', async function(assert) {
     await visit('/attendances')
-
     assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
   })
 
@@ -62,7 +64,7 @@ module('Acceptance | index attendances', function(hooks) {
       '[data-test-attendance-slider-id="1"] [data-test-delete-attendance]'
     )
 
-    assert.equal(find('[data-test-attendance-slider-id]', 1).length, 0)
+    assert.dom('[data-test-attendance-slider-id="1"]').doesNotExist()
 
     assert.dom('[data-test-attendance-slider]').exists({ count: 1 })
   })

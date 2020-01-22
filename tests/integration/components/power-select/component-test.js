@@ -3,9 +3,9 @@ import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import wait from 'ember-test-helpers/wait'
 import {
-  clickTrigger,
-  typeInSearch
-} from 'timed/tests/helpers/ember-power-select'
+  typeInSearch,
+  clickTrigger
+} from 'ember-power-select/test-support/helpers'
 import { triggerKeyEvent, render } from '@ember/test-helpers'
 
 const OPTIONS = [

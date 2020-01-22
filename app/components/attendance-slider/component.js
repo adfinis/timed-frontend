@@ -143,7 +143,7 @@ export default Component.extend({
         .minute(toMin)
     )
 
-    yield this.get('attrs.on-save')(attendance)
+    yield this.get('on-save')(attendance)
   }).drop(),
 
   /**
@@ -153,6 +153,6 @@ export default Component.extend({
    * @public
    */
   delete: task(function*() {
-    yield this.get('attrs.on-delete')(this.get('attendance'))
+    yield this.get('on-delete')(this.get('attendance'))
   }).drop()
 })

@@ -8,6 +8,7 @@ import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
+import taskSelect from '../helpers/task-select'
 
 module('Acceptance | index reports', function(hooks) {
   setupApplicationTest(hooks)
@@ -70,12 +71,12 @@ module('Acceptance | index reports', function(hooks) {
       .dom(
         '[data-test-report-row]:nth-last-child(2) [data-test-report-duration]'
       )
-      .hasText('03:30')
+      .hasValue('03:30')
     assert
       .dom(
         '[data-test-report-row]:nth-last-child(2) [data-test-report-comment]'
       )
-      .hasText('Test comment report')
+      .hasValue('Test comment report')
   })
 
   test('can edit report', async function(assert) {
@@ -84,36 +85,34 @@ module('Acceptance | index reports', function(hooks) {
     await visit('/reports')
 
     assert
-      .dom(`${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`)
+      .dom(`[data-test-report-row-id="${id}"] [data-test-save-report]`)
       .isDisabled()
 
     await fillIn(
-      `${`[data-test-report-row-id="${id}"]`} [data-test-report-duration]`,
+      `[data-test-report-row-id="${id}"] [data-test-report-duration]`,
       '00:15'
     )
     await fillIn(
-      `${`[data-test-report-row-id="${id}"]`} [data-test-report-comment]`,
+      `[data-test-report-row-id="${id}"] [data-test-report-comment]`,
       'Testyy'
     )
 
     assert
-      .dom(`${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`)
+      .dom(`[data-test-report-row-id="${id}"] [data-test-save-report]`)
       .isNotDisabled()
 
-    await click(
-      `${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`
-    )
+    await click(`[data-test-report-row-id="${id}"] [data-test-save-report]`)
 
     assert
-      .dom(`${`[data-test-report-row-id="${id}"]`} [data-test-save-report]`)
+      .dom(`[data-test-report-row-id="${id}"] [data-test-save-report]`)
       .isDisabled()
 
     assert
-      .dom(`${`[data-test-report-row-id="${id}"]`} [data-test-report-duration]`)
-      .hasText('00:15')
+      .dom(`[data-test-report-row-id="${id}"] [data-test-report-duration]`)
+      .hasValue('00:15')
     assert
-      .dom(`${`[data-test-report-row-id="${id}"]`} [data-test-report-comment]`)
-      .hasText('Testyy')
+      .dom(`[data-test-report-row-id="${id}"] [data-test-report-comment]`)
+      .hasValue('Testyy')
   })
 
   test('can delete report', async function(assert) {
@@ -181,9 +180,9 @@ module('Acceptance | index reports', function(hooks) {
     await visit('/reports')
     assert.dom('[data-test-report-row]').exists({ count: 6 })
 
-    await click('button:contains(Reschedule)')
+    await click('[data-test-report-reschedule]')
     await click(`button[data-date="${tomorrow}"]`)
-    await click('button:contains(Save)')
+    await click('[data-test-report-save]')
 
     assert.equal(currentURL(), `/reports?day=${tomorrow}`)
     assert.dom('[data-test-report-row]').exists({ count: 6 })

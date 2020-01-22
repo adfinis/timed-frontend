@@ -18,7 +18,8 @@
         <tbody>
           {{#each attendances as |attendance|}}
             {{#with (changeset attendance AttendanceValidator) as |model|}}
-              <tr>
+              <tr data-test-attendance-slider
+                  data-test-attendance-slider-id={{attendance.id}}>
                 <td>
                   {{sy-timepicker value=model.from on-change=(action (mut model.from))}}
                 </td>

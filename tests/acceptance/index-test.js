@@ -7,6 +7,7 @@ import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
+import taskSelect from '../helpers/task-select'
 
 module('Acceptance | index', function(hooks) {
   setupApplicationTest(hooks)
@@ -45,7 +46,7 @@ module('Acceptance | index', function(hooks) {
 
     await taskSelect('[data-test-tracking-bar]')
 
-    await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
+    await fillIn('[data-test-tracking-comment] input', 'Some Random Comment')
 
     assert.dom('[data-test-record-start]').exists({ count: 1 })
 
@@ -53,13 +54,10 @@ module('Acceptance | index', function(hooks) {
 
     assert.dom('[data-test-record-start]').doesNotExist()
     assert.dom('[data-test-record-stop]').exists({ count: 1 })
+
+    assert.dom('.recording').exists()
     assert
-      .dom('[data-test-record-stop]')
-      .parent()
-      .parent()
-      .hasClass('recording')
-    assert
-      .dom('[data-test-activity-row]:first-child td:eq(1) div')
+      .dom('[data-test-activity-row]:first-child td:nth-child(2) div')
       .containsText(task.name)
   })
 
@@ -70,7 +68,7 @@ module('Acceptance | index', function(hooks) {
 
     await taskSelect('[data-test-tracking-bar]', { fromHistory: true })
 
-    await fillIn('[data-test-tracking-comment]', 'Some Random Comment')
+    await fillIn('[data-test-tracking-comment] input', 'Some Random Comment')
 
     await click('[data-test-record-start]')
 
@@ -78,7 +76,7 @@ module('Acceptance | index', function(hooks) {
     assert.dom('[data-test-record-stop]').exists({ count: 1 })
     assert.dom('.recording [data-test-record-stop]').exists()
     assert
-      .dom('[data-test-activity-row]:first-child td:eq(1) div')
+      .dom('[data-test-activity-row]:first-child td:nth-child(2) div')
       .containsText(task.name)
   })
 
@@ -106,11 +104,10 @@ module('Acceptance | index', function(hooks) {
 
     await visit('/')
 
-    assert.dom(document.title).hasText(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
-
+    assert.ok(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/.test(document.title))
     await click('[data-test-record-stop]')
 
-    assert.notDeepEqual(document.title, /\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/)
+    assert.notOk(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/.test(document.title))
   })
 
   test('can set the document title without task', async function(assert) {
@@ -121,7 +118,7 @@ module('Acceptance | index', function(hooks) {
 
     await visit('/')
 
-    assert.dom(document.title).hasText(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/)
+    assert.ok(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/.test(document.title))
   })
 
   test('can add an absence for multiple days and current day is preselected', async function(
@@ -137,10 +134,10 @@ module('Acceptance | index', function(hooks) {
 
     await click('[data-test-add-absence-form] .btn-group .btn:first-child')
 
-    await click('[data-date=2017-06-28]')
-    await click('[data-date=2017-06-30]')
+    await click('[data-date="2017-06-28"]')
+    await click('[data-date="2017-06-30"]')
 
-    await click('[data-test-add-absence-form] button:contains(Save)')
+    await click('[data-test-add-absence-save]')
 
     assert.dom('[data-test-edit-absence]').isVisible()
 
@@ -167,9 +164,9 @@ module('Acceptance | index', function(hooks) {
 
     await click('[data-test-edit-absence]')
 
-    await click('[data-date=2017-06-30]')
+    await click('[data-date="2017-06-30"]')
 
-    await click('[data-test-edit-absence-form] button:contains(Save)')
+    await click('[data-test-edit-absence-save]')
 
     assert.dom('[data-test-edit-absence]').isNotVisible()
 
@@ -191,7 +188,7 @@ module('Acceptance | index', function(hooks) {
 
     await click('[data-test-edit-absence]')
 
-    await click('[data-test-edit-absence-form] button:contains(Delete)')
+    await click('[data-test-edit-absence-delete]')
 
     assert.dom('[data-test-edit-absence]').isNotVisible()
   })
@@ -202,9 +199,9 @@ module('Acceptance | index', function(hooks) {
     await visit('/?day=2017-06-29')
 
     assert
-      .dom('[data-test-weekly-overview-day=29].holiday')
+      .dom('[data-test-weekly-overview-day="29"].holiday')
       .exists({ count: 1 })
-    assert.dom('[data-test-weekly-overview-day=28].holiday').doesNotExist()
+    assert.dom('[data-test-weekly-overview-day="28"].holiday').doesNotExist()
   })
 
   test('rollbacks the absence modal', async function(assert) {
@@ -213,13 +210,13 @@ module('Acceptance | index', function(hooks) {
     await click('[data-test-add-absence]')
 
     assert
-      .dom('[data-date=2017-06-29].ember-power-calendar-day--selected')
+      .dom('[data-date="2017-06-29"].ember-power-calendar-day--selected')
       .exists({ count: 1 })
 
-    await click('[data-date=2017-06-30]')
+    await click('[data-date="2017-06-30"]')
 
     assert
-      .dom('[data-date=2017-06-30].ember-power-calendar-day--selected')
+      .dom('[data-date="2017-06-30"].ember-power-calendar-day--selected')
       .exists({ count: 1 })
 
     await click('[data-test-add-absence-form] .close')
@@ -227,7 +224,7 @@ module('Acceptance | index', function(hooks) {
     await click('[data-test-add-absence]')
 
     assert
-      .dom('[data-date=2017-06-30].ember-power-calendar-day--selected')
+      .dom('[data-date="2017-06-30"].ember-power-calendar-day--selected')
       .doesNotExist()
   })
 })

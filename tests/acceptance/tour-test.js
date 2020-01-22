@@ -3,9 +3,11 @@ import {
   authenticateSession,
   invalidateSession
 } from 'ember-simple-auth/test-support'
+import { waitForStep } from 'ember-site-tour/test-support/helpers'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
+import { setBreakpoint } from 'ember-responsive/test-support'
 
 module('Acceptance | tour', function(hooks) {
   setupApplicationTest(hooks)
@@ -31,7 +33,8 @@ module('Acceptance | tour', function(hooks) {
   test('shows a welcome dialog', async function(assert) {
     await visit('/')
 
-    assert.dom('.modal--visible').exists({ count: 1 })
+    await waitForStep()
+    assert.dom('.tour-index-activities').exists({ count: 1 })
   })
 
   test('does not show a welcome dialog when tour completed', async function(

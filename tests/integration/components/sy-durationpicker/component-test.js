@@ -1,12 +1,15 @@
-import { fillIn, blur, render } from '@ember/test-helpers'
+import {
+  fillIn,
+  blur,
+  render,
+  triggerKeyEvent,
+  settled
+} from '@ember/test-helpers'
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import $ from 'jquery'
 import formatDuration from 'timed/utils/format-duration'
-
-const event = $.Event
 
 module('Integration | Component | sy durationpicker', function(hooks) {
   setupRenderingTest(hooks)
@@ -99,7 +102,11 @@ module('Integration | Component | sy durationpicker', function(hooks) {
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hours(), 12)
     assert.equal(this.get('value').minutes(), 30)
@@ -118,7 +125,11 @@ module('Integration | Component | sy durationpicker', function(hooks) {
       hbs`{{sy-durationpicker value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 40))
+
+    await settled()
 
     assert.equal(this.get('value').hours(), 12)
     assert.equal(this.get('value').minutes(), 0)
@@ -153,12 +164,20 @@ module('Integration | Component | sy durationpicker', function(hooks) {
       hbs`{{sy-durationpicker min=min max=max value=value on-change=(action (mut value))}}`
     )
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowUp', keyCode: 38 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 38))
+
+    await settled()
 
     assert.equal(this.get('value').hours(), 12)
     assert.equal(this.get('value').minutes(), 30)
 
-    this.$('input').trigger(event('keydown', { key: 'ArrowDown', keyCode: 40 }))
+    this.element
+      .querySelectorAll('input')
+      .forEach(async element => await triggerKeyEvent(element, 'keydown', 40))
+
+    await settled()
 
     assert.equal(this.get('value').hours(), 12)
     assert.equal(this.get('value').minutes(), 30)
