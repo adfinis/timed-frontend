@@ -2,34 +2,32 @@ import { click, fillIn, currentURL, visit, find } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | statistics', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('year-statistic', 5)
-    server.createList('month-statistic', 5)
-    server.createList('customer-statistic', 5)
-    server.createList('project-statistic', 5)
-    server.createList('task-statistic', 5)
-    server.createList('user-statistic', 5)
+    this.server.createList('year-statistic', 5)
+    this.server.createList('month-statistic', 5)
+    this.server.createList('customer-statistic', 5)
+    this.server.createList('project-statistic', 5)
+    this.server.createList('task-statistic', 5)
+    this.server.createList('user-statistic', 5)
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can view statistics by year', async function(assert) {
@@ -122,7 +120,7 @@ module('Acceptance | statistics', function(hooks) {
   })
 
   test('can have initial filters', async function(assert) {
-    await server.createList('billing-type', 3)
+    await this.server.createList('billing-type', 3)
 
     let params = {
       customer: 1,

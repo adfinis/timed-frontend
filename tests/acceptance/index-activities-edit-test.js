@@ -9,30 +9,28 @@ import {
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | index activities edit', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('activity', 5, { userId: user.id })
+    this.server.createList('activity', 5, { userId: user.id })
 
     this.user = user
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can edit an activity', async function(assert) {
@@ -78,7 +76,7 @@ module('Acceptance | index activities edit', function(hooks) {
   })
 
   test("can't delete an active activity", async function(assert) {
-    let { id } = server.create('activity', 'active', { userId: this.user.id })
+    let { id } = this.server.create('activity', 'active', { userId: this.user.id })
 
     await visit(`/edit/${id}`)
 
@@ -107,7 +105,7 @@ module('Acceptance | index activities edit', function(hooks) {
   })
 
   test('validates time on blur', async function(assert) {
-    let { id } = server.create('activity', { userId: this.user.id })
+    let { id } = this.server.create('activity', { userId: this.user.id })
 
     await visit(`/edit/${id}`)
 
@@ -137,7 +135,7 @@ module('Acceptance | index activities edit', function(hooks) {
   })
 
   test('can not edit transferred activities', async function(assert) {
-    let { id } = server.create('activity', {
+    let { id } = this.server.create('activity', {
       userId: this.user.id,
       transferred: true
     })

@@ -2,29 +2,27 @@ import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | analysis edit', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
     this.user = user
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.create('report-intersection', { verified: false })
+    this.server.create('report-intersection', { verified: false })
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can visit /analysis/edit', async function(assert) {
@@ -38,7 +36,7 @@ module('Acceptance | analysis edit', function(hooks) {
 
     let res = {}
 
-    server.post('/reports/bulk', (_, { requestBody }) => {
+    this.server.post('/reports/bulk', (_, { requestBody }) => {
       res = JSON.parse(requestBody)
     })
 

@@ -2,32 +2,30 @@ import { find, click, currentURL, findAll, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | index activities', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    this.activities = server.createList('activity', 5, { userId: user.id })
+    this.activities = this.server.createList('activity', 5, { userId: user.id })
 
     this.user = user
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can visit /', async function(assert) {
@@ -55,7 +53,7 @@ module('Acceptance | index activities', function(hooks) {
   test('can start an activity of a past day', async function(assert) {
     let lastDay = moment().subtract(1, 'day')
 
-    let activity = server.create('activity', {
+    let activity = this.server.create('activity', {
       date: lastDay,
       userId: this.user.id,
       comment: 'Test'
@@ -91,7 +89,7 @@ module('Acceptance | index activities', function(hooks) {
   })
 
   test('can generate reports', async function(assert) {
-    let activity = server.create('activity', {
+    let activity = this.server.create('activity', {
       userId: this.user.id,
       review: true,
       notBillable: true
@@ -148,7 +146,7 @@ module('Acceptance | index activities', function(hooks) {
   test('shows a warning when generating reports from unknown tasks', async function(
     assert
   ) {
-    server.create('activity', 'unknown', { userId: this.user.id })
+    this.server.create('activity', 'unknown', { userId: this.user.id })
 
     await visit('/')
 
@@ -168,7 +166,7 @@ module('Acceptance | index activities', function(hooks) {
   ) {
     let date = moment().subtract(1, 'days')
 
-    server.create('activity', 'active', { userId: this.user.id, date })
+    this.server.create('activity', 'active', { userId: this.user.id, date })
 
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
@@ -186,8 +184,8 @@ module('Acceptance | index activities', function(hooks) {
   test('can handle both warnings', async function(assert) {
     let date = moment().subtract(1, 'days')
 
-    server.create('activity', 'unknown', { userId: this.user.id, date })
-    server.create('activity', 'active', { userId: this.user.id, date })
+    this.server.create('activity', 'unknown', { userId: this.user.id, date })
+    this.server.create('activity', 'active', { userId: this.user.id, date })
 
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
@@ -225,7 +223,7 @@ module('Acceptance | index activities', function(hooks) {
   test('splits 1 day overlapping activities when stopping', async function(
     assert
   ) {
-    let activity = server.create('activity', 'active', {
+    let activity = this.server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(1, 'days')
     })
@@ -258,7 +256,7 @@ module('Acceptance | index activities', function(hooks) {
   test("doesn't split >1 days overlapping activities when stopping", async function(
     assert
   ) {
-    let activity = server.create('activity', 'active', {
+    let activity = this.server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(2, 'days')
     })
@@ -296,7 +294,7 @@ module('Acceptance | index activities', function(hooks) {
   test('can generate active reports which do not overlap', async function(
     assert
   ) {
-    let activity = server.create('activity', 'active', { userId: this.user.id })
+    let activity = this.server.create('activity', 'active', { userId: this.user.id })
     let { id, duration } = activity
 
     duration = moment
@@ -317,8 +315,8 @@ module('Acceptance | index activities', function(hooks) {
   })
 
   test('combines identical activities when generating', async function(assert) {
-    let task = server.create('task')
-    let activities = server.createList('activity', 3, 'defineTask', {
+    let task = this.server.create('task')
+    let activities = this.server.createList('activity', 3, 'defineTask', {
       userId: this.user.id,
       comment: 'Test',
       review: false,

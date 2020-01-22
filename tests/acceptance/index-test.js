@@ -2,29 +2,27 @@ import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
+} from 'ember-simple-auth/test-support'
 import moment from 'moment'
-import startApp from '../helpers/start-app'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | index', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     this.user = user
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can select a day', async function(assert) {
@@ -42,7 +40,7 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can start a new activity', async function(assert) {
-    let task = server.create('task')
+    let task = this.server.create('task')
     await visit('/')
 
     await taskSelect('[data-test-tracking-bar]')
@@ -66,7 +64,7 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can start a new activity from the history', async function(assert) {
-    let task = server.create('task')
+    let task = this.server.create('task')
 
     await visit('/')
 
@@ -89,7 +87,7 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can stop an active activity', async function(assert) {
-    let activity = server.create('activity', 'active', { userId: this.user.id })
+    let activity = this.server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
@@ -116,7 +114,7 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can set the document title', async function(assert) {
-    server.create('activity', 'active', { userId: this.user.id })
+    this.server.create('activity', 'active', { userId: this.user.id })
 
     await visit('/')
 
@@ -128,7 +126,7 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can set the document title without task', async function(assert) {
-    let a = server.create('activity', 'active', { userId: this.user.id })
+    let a = this.server.create('activity', 'active', { userId: this.user.id })
     a.update('task', null)
 
     await visit('/')
@@ -139,7 +137,7 @@ module('Acceptance | index', function(hooks) {
   test('can add an absence for multiple days and current day is preselected', async function(
     assert
   ) {
-    server.loadFixtures('absence-types')
+    this.server.loadFixtures('absence-types')
 
     await visit('/?day=2017-06-29')
 
@@ -167,8 +165,8 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can edit an absence', async function(assert) {
-    server.loadFixtures('absence-types')
-    server.create('absence', {
+    this.server.loadFixtures('absence-types')
+    this.server.create('absence', {
       date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD'),
       userId: this.user.id
     })
@@ -191,8 +189,8 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can delete an absence', async function(assert) {
-    server.loadFixtures('absence-types')
-    server.create('absence', {
+    this.server.loadFixtures('absence-types')
+    this.server.create('absence', {
       date: moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD'),
       userId: this.user.id
     })
@@ -210,7 +208,7 @@ module('Acceptance | index', function(hooks) {
 
   test('highlights holidays', async function(assert) {
     let date = moment({ year: 2017, month: 5, day: 29 }).format('YYYY-MM-DD')
-    server.create('public-holiday', { date })
+    this.server.create('public-holiday', { date })
     await visit('/?day=2017-06-29')
 
     assert

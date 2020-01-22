@@ -2,29 +2,27 @@ import { click, currentURL, visit, find } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | index attendances', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.create('attendance', 'morning', { userId: user.id })
-    server.create('attendance', 'afternoon', { userId: user.id })
+    this.server.create('attendance', 'morning', { userId: user.id })
+    this.server.create('attendance', 'afternoon', { userId: user.id })
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can visit /attendances', async function(assert) {

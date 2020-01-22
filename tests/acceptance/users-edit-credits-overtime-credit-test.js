@@ -2,27 +2,25 @@ import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | users edit credits overtime credit', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    this.user = server.create('user', { isSuperuser: true })
+    this.user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
+    await authenticateSession({ user_id: this.user.id })
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can create an overtime credit', async function(assert) {
@@ -40,7 +38,7 @@ module('Acceptance | users edit credits overtime credit', function(hooks) {
   })
 
   test('can edit an overtime credit', async function(assert) {
-    let { id } = server.create('overtime-credit', { user: this.user })
+    let { id } = this.server.create('overtime-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits`)
 
@@ -81,7 +79,7 @@ module('Acceptance | users edit credits overtime credit', function(hooks) {
   })
 
   test('can delete an overtime credit', async function(assert) {
-    let { id } = server.create('overtime-credit', { user: this.user })
+    let { id } = this.server.create('overtime-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits/overtime-credits/${id}`)
 

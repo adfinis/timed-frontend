@@ -1,24 +1,19 @@
 import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
-import { authenticateSession } from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | auth', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(function() {
-    application = startApp()
-
-    this.user = server.create('user', {
+    this.user = this.server.create('user', {
       firstName: 'John',
       lastName: 'Doe',
       password: '123qwe'
     })
-  })
-
-  hooks.afterEach(function() {
-    destroyApp(application)
   })
 
   test('prevents unauthenticated access', async function(assert) {
@@ -57,7 +52,7 @@ module('Acceptance | auth', function(hooks) {
 
   test('can logout', async function(assert) {
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
+    await authenticateSession({ user_id: this.user.id })
 
     await visit('/')
 

@@ -9,28 +9,27 @@ import {
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
+import userSelect from '../helpers/user-select'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | analysis', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('report', 40, { userId: user.id })
+    this.server.createList('report', 40, { userId: user.id })
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can visit /analysis', async function(assert) {
@@ -70,13 +69,13 @@ module('Acceptance | analysis', function(hooks) {
 
   test('can have initial filters', async function(assert) {
     let params = {
-      customer: server.create('customer').id,
-      project: server.create('project').id,
-      task: server.create('task').id,
-      user: server.create('user').id,
-      reviewer: server.create('user').id,
-      billingType: server.create('billing-type').id,
-      costCenter: server.create('cost-center').id,
+      customer: this.server.create('customer').id,
+      project: this.server.create('project').id,
+      task: this.server.create('task').id,
+      user: this.server.create('user').id,
+      reviewer: this.server.create('user').id,
+      billingType: this.server.create('billing-type').id,
+      costCenter: this.server.create('cost-center').id,
       fromDate: '2016-12-01',
       toDate: '2017-12-01',
       review: '',
@@ -147,7 +146,7 @@ module('Acceptance | analysis', function(hooks) {
   })
 
   test('can edit', async function(assert) {
-    server.create('report-intersection')
+    this.server.create('report-intersection')
 
     await visit('/analysis?editable=1')
 
@@ -157,7 +156,7 @@ module('Acceptance | analysis', function(hooks) {
   })
 
   test('can not edit', async function(assert) {
-    server.create('report-intersection')
+    this.server.create('report-intersection')
 
     await visit('/analysis')
 
@@ -167,7 +166,7 @@ module('Acceptance | analysis', function(hooks) {
   })
 
   test('can edit selected reports', async function(assert) {
-    server.create('report-intersection')
+    this.server.create('report-intersection')
 
     await visit('/analysis')
 

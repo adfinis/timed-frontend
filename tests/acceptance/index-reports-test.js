@@ -2,32 +2,30 @@ import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import destroyApp from '../helpers/destroy-app'
-import startApp from '../helpers/start-app'
+} from 'ember-simple-auth/test-support'
 import { faker } from 'ember-cli-mirage'
 import moment from 'moment'
 import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Acceptance | index reports', function(hooks) {
-  let application
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
   hooks.beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.createList('report', 5, { userId: user.id })
+    this.server.createList('report', 5, { userId: user.id })
 
     this.user = user
   })
 
   hooks.afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
+    await invalidateSession()
   })
 
   test('can visit /reports', async function(assert) {
@@ -81,7 +79,7 @@ module('Acceptance | index reports', function(hooks) {
   })
 
   test('can edit report', async function(assert) {
-    let { id } = server.create('report', { userId: this.user.id })
+    let { id } = this.server.create('report', { userId: this.user.id })
 
     await visit('/reports')
 
@@ -119,7 +117,7 @@ module('Acceptance | index reports', function(hooks) {
   })
 
   test('can delete report', async function(assert) {
-    let { id } = server.create('report', { userId: this.user.id })
+    let { id } = this.server.create('report', { userId: this.user.id })
 
     await visit('/reports')
 
@@ -135,12 +133,12 @@ module('Acceptance | index reports', function(hooks) {
   test('reloads absences after saving or deleting a report', async function(
     assert
   ) {
-    server.loadFixtures('absence-types')
+    this.server.loadFixtures('absence-types')
 
-    let absence = server.create('absence', { userId: this.user.id })
-    let { id } = server.create('report', { userId: this.user.id })
+    let absence = this.server.create('absence', { userId: this.user.id })
+    let { id } = this.server.create('report', { userId: this.user.id })
 
-    server.get('/absences/:id', ({ absences }, { params: { id } }) => {
+    this.server.get('/absences/:id', ({ absences }, { params: { id } }) => {
       let a = absences.find(id)
 
       a.comment = faker.lorem.sentence()
