@@ -98,7 +98,7 @@ module('Acceptance | index activities', function(hooks) {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
     assert.equal(currentURL(), '/reports')
 
@@ -106,17 +106,17 @@ module('Acceptance | index activities', function(hooks) {
 
     assert
       .dom(
-        `[data-test-report-row-id="${id}"] .form-group:eq(0) .ember-power-select-selected-item`
+        `[data-test-report-row-id="${id}"] .form-group:first-child .ember-power-select-selected-item`
       )
       .hasText(activity.task.project.customer.name)
     assert
       .dom(
-        `[data-test-report-row-id="${id}"] .form-group:eq(1) .ember-power-select-selected-item`
+        `[data-test-report-row-id="${id}"] .form-group:nth-child(2) .ember-power-select-selected-item`
       )
       .hasText(activity.task.project.name)
     assert
       .dom(
-        `[data-test-report-row-id="${id}"] .form-group:eq(2) .ember-power-select-selected-item`
+        `[data-test-report-row-id="${id}"] .form-group:nth-child(3) .ember-power-select-selected-item`
       )
       .hasText(activity.task.name)
 
@@ -128,7 +128,7 @@ module('Acceptance | index activities', function(hooks) {
   test('can not generate reports twice', async function(assert) {
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
     assert.equal(currentURL(), '/reports')
 
@@ -136,7 +136,7 @@ module('Acceptance | index activities', function(hooks) {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
     assert.equal(currentURL(), '/reports')
 
@@ -150,12 +150,12 @@ module('Acceptance | index activities', function(hooks) {
 
     await visit('/')
 
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     await click('[data-test-unknown-warning] button:contains(Cancel)')
 
     assert.equal(currentURL(), '/')
 
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     await click('[data-test-unknown-warning] button:contains(fine)')
 
     assert.equal(currentURL(), '/reports')
@@ -170,15 +170,15 @@ module('Acceptance | index activities', function(hooks) {
 
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     await click('[data-test-overlapping-warning] button:contains(Cancel)')
 
-    assert.dom(currentURL()).doesNotContainText('reports')
+    assert.notOk(currentURL().includes('reports'))
 
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     await click('[data-test-overlapping-warning] button:contains(fine)')
 
-    assert.dom(currentURL()).containsText('reports')
+    assert.ok(currentURL().includes('reports'))
   })
 
   test('can handle both warnings', async function(assert) {
@@ -190,34 +190,34 @@ module('Acceptance | index activities', function(hooks) {
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
     // both close if one clicks cancel
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
     await click('[data-test-overlapping-warning] button:contains(Cancel)')
     assert.dom('.modal--visible').exists({ count: 0 })
-    assert.dom(currentURL()).doesNotContainText('reports')
+    assert.notOk(currentURL().includes('reports'))
     // both must be fine if test should continue
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
     await click('[data-test-overlapping-warning] button:contains(fine)')
     assert.dom('.modal--visible').exists({ count: 1 })
     await click('[data-test-unknown-warning] button:contains(Cancel)')
     assert.dom('.modal--visible').exists({ count: 0 })
 
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
     await click('[data-test-unknown-warning] button:contains(fine)')
     assert.dom('.modal--visible').exists({ count: 1 })
     await click('[data-test-overlapping-warning] button:contains(Cancel)')
     assert.dom('.modal--visible').exists({ count: 0 })
-    assert.dom(currentURL()).doesNotContainText('reports')
+    assert.notOk(currentURL().includes('reports'))
     // if both are fine continue
-    await click('button:contains(Generate timesheet)')
+    await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
     await click('[data-test-overlapping-warning] button:contains(fine)')
     assert.dom('.modal--visible').exists({ count: 1 })
     await click('[data-test-unknown-warning] button:contains(fine)')
     assert.dom('.modal--visible').exists({ count: 0 })
-    assert.dom(currentURL()).containsText('reports')
+    assert.ok(currentURL().includes('reports'))
   })
 
   test('splits 1 day overlapping activities when stopping', async function(
@@ -294,7 +294,9 @@ module('Acceptance | index activities', function(hooks) {
   test('can generate active reports which do not overlap', async function(
     assert
   ) {
-    let activity = this.server.create('activity', 'active', { userId: this.user.id })
+    let activity = this.server.create('activity', 'active', {
+      userId: this.user.id
+    })
     let { id, duration } = activity
 
     duration = moment
@@ -303,7 +305,7 @@ module('Acceptance | index activities', function(hooks) {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
     assert.equal(currentURL(), '/reports')
 
@@ -330,7 +332,7 @@ module('Acceptance | index activities', function(hooks) {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
     assert.equal(currentURL(), '/reports')
 

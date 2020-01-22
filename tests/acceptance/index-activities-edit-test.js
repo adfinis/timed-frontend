@@ -6,6 +6,7 @@ import {
   blur,
   visit
 } from '@ember/test-helpers'
+import taskSelect from '../helpers/task-select'
 import {
   authenticateSession,
   invalidateSession
@@ -53,7 +54,7 @@ module('Acceptance | index activities edit', function(hooks) {
 
     await fillIn('[data-test-activity-edit-form] input[name=comment]', 'Test')
 
-    await click(find('button:contains(Save)'))
+    await click('[data-test-activity-edit-form-save]')
 
     assert.equal(currentURL(), '/')
 
@@ -67,7 +68,7 @@ module('Acceptance | index activities edit', function(hooks) {
 
     assert.equal(currentURL(), '/edit/1')
 
-    await click(find('button:contains(Delete)'))
+    await click('[data-test-activity-edit-form-delete]')
 
     assert.equal(currentURL(), '/')
 
@@ -76,13 +77,15 @@ module('Acceptance | index activities edit', function(hooks) {
   })
 
   test("can't delete an active activity", async function(assert) {
-    let { id } = this.server.create('activity', 'active', { userId: this.user.id })
+    let { id } = this.server.create('activity', 'active', {
+      userId: this.user.id
+    })
 
     await visit(`/edit/${id}`)
 
-    await click(find('button:contains(Delete)'))
+    await click('[data-test-activity-edit-form-delete]')
 
-    assert.dom(find('button:contains(Delete)')).isDisabled()
+    assert.dom('[data-test-activity-edit-form-delete]').isDisabled()
     assert.dom(`[data-test-activity-row-id="${id}"]`).exists()
   })
 

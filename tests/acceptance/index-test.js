@@ -87,7 +87,9 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can stop an active activity', async function(assert) {
-    let activity = this.server.create('activity', 'active', { userId: this.user.id })
+    let activity = this.server.create('activity', 'active', {
+      userId: this.user.id
+    })
 
     await visit('/')
 

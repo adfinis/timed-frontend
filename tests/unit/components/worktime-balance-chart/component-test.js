@@ -1,4 +1,3 @@
-import { expect } from 'chai'
 import { module, test } from 'qunit'
 import EmberObject from '@ember/object'
 import moment from 'moment'
@@ -18,9 +17,10 @@ module('Unit | Component | worktime balance chart', function(hooks) {
       worktimeBalances: dates.map(date => WorktimeBalance.create({ date }))
     })
 
-    expect(
-      component.get('data.labels').map(l => l.format('YYYY-MM-DD'))
-    ).to.deep.equal(dates.map(d => d.format('YYYY-MM-DD')))
+    assert.equal(
+      component.get('data.labels').map(l => l.format('YYYY-MM-DD')),
+      dates.map(d => d.format('YYYY-MM-DD'))
+    )
 
     assert.deepEqual(component.get('data.datasets'), [{ data: [10, 10, 10] }])
   })

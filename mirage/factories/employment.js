@@ -1,9 +1,10 @@
-import { Factory, faker, trait } from 'ember-cli-mirage'
+import { Factory, trait } from 'ember-cli-mirage'
+import faker from 'faker'
 import DjangoDurationTransform from 'timed/transforms/django-duration'
 import moment from 'moment'
 
 export default Factory.extend({
-  percentage: faker.list.random(50, 60, 80, 100),
+  percentage: faker.random.arrayElement([50, 60, 80, 100]),
   // location: association(),
   // user: association(),
 

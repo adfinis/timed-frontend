@@ -54,10 +54,12 @@ module('Acceptance | users edit credits', function(hooks) {
         .year()
     )
 
-    assert.dom(currentURL()).includesText(
-      `year=${moment()
-        .add(1, 'year')
-        .year()}`
+    assert.ok(
+      currentURL().includes(
+        `year=${moment()
+          .add(1, 'year')
+          .year()}`
+      )
     )
   })
 

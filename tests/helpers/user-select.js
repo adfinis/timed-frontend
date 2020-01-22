@@ -1,12 +1,9 @@
-import { registerAsyncHelper } from '@ember/test'
+import { selectChoose } from 'ember-power-select/test-support'
 
-export default registerAsyncHelper('userSelect', async function(
-  app,
-  selector = ''
-) {
+export default async function(selector = '') {
   await selectChoose(
     `${selector} .user-select`,
     '.ember-power-select-option',
     0
   )
-})
+}

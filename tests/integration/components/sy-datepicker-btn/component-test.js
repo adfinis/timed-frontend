@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import { find, render } from '@ember/test-helpers'
-import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers'
 
 module('Integration | Component | sy datepicker btn', function(hooks) {
   setupRenderingTest(hooks)

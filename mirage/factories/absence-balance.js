@@ -1,4 +1,5 @@
-import { Factory, trait, faker } from 'ember-cli-mirage'
+import { Factory, trait } from 'ember-cli-mirage'
+import faker from 'faker'
 import moment from 'moment'
 import { randomDuration } from '../helpers/duration'
 

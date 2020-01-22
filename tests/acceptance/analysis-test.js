@@ -56,10 +56,10 @@ module('Acceptance | analysis', function(hooks) {
     await fillIn('[data-test-filter-to-date] input', '01.12.2017')
     await click('thead > tr > th:first-child')
 
-    assert.dom(currentURL()).includesText('user=1')
-    assert.dom(currentURL()).includesText('fromDate=2016-12-01')
-    assert.dom(currentURL()).includesText('toDate=2017-12-01')
-    assert.dom(currentURL()).includesText('ordering=-user__username%2Cid')
+    assert.ok(currentURL().includes('user=1'))
+    assert.ok(currentURL().includes('fromDate=2016-12-01'))
+    assert.ok(currentURL().includes('toDate=2017-12-01'))
+    assert.ok(currentURL().includes('ordering=-user__username%2Cid'))
 
     await click('.filter-sidebar-reset')
 

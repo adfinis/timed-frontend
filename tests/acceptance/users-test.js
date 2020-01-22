@@ -57,9 +57,9 @@ module('Acceptance | users', function(hooks) {
     await selectSearch('[data-test-filter-user] .user-select', user.username)
     await userSelect()
 
-    assert.dom(currentURL()).includesText('search=foobar')
-    assert.dom(currentURL()).includesText('active=')
-    assert.dom(currentURL()).includesText('supervisor=12')
+    assert.ok(currentURL().includes('search=foobar'))
+    assert.ok(currentURL().includes('active='))
+    assert.ok(currentURL().includes('supervisor=12'))
 
     await click('.filter-sidebar-reset')
 

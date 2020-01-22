@@ -28,7 +28,7 @@ module('Acceptance | users edit', function(hooks) {
   test('can visit /users/:id', async function(assert) {
     await visit(`/users/${this.allowed.id}`)
 
-    assert.dom(currentURL()).includesText(this.allowed.id)
+    assert.ok(currentURL().includes(this.allowed.id))
   })
 
   test('shows only supervisees', async function(assert) {
@@ -46,6 +46,6 @@ module('Acceptance | users edit', function(hooks) {
 
     await visit(`/users/${this.notAllowed.id}`)
 
-    assert.dom(currentURL()).includesText(this.notAllowed.id)
+    assert.ok(currentURL().includes(this.notAllowed.id))
   })
 })

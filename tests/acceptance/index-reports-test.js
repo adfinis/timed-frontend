@@ -3,7 +3,7 @@ import {
   authenticateSession,
   invalidateSession
 } from 'ember-simple-auth/test-support'
-import { faker } from 'ember-cli-mirage'
+import faker from 'faker'
 import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'

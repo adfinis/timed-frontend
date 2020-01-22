@@ -90,15 +90,13 @@ module('Acceptance | statistics', function(hooks) {
     )
     await fillIn('[data-test-filter-to-date] input', to.format('DD.MM.YYYY'))
 
-    assert
-      .dom(currentURL())
-      .includesText(`fromDate=${from.format('YYYY-MM-DD')}`)
-    assert.dom(currentURL()).includesText(`toDate=${to.format('YYYY-MM-DD')}`)
+    assert.ok(currentURL().includes(`fromDate=${from.format('YYYY-MM-DD')}`))
+    assert.ok(currentURL().includes(`toDate=${to.format('YYYY-MM-DD')}`))
 
     await click('.filter-sidebar-reset')
 
-    assert.dom(currentURL()).doesNotIncludeText(`fromDate=${from}`)
-    assert.dom(currentURL()).doesNotIncludeText(`toDate=${to}`)
+    assert.notOk(currentURL().includes(`fromDate=${from}`))
+    assert.notOk(currentURL().includes(`toDate=${to}`))
   })
 
   test('shows missing parameters message', async function(assert) {
@@ -114,9 +112,9 @@ module('Acceptance | statistics', function(hooks) {
 
     await click('.nav-tabs li a:first-child')
 
-    assert
-      .dom(currentURL())
-      .doesNotIncludeText('Customer and project are required parameters')
+    assert.notOk(
+      currentURL().includes('Customer and project are required parameters')
+    )
   })
 
   test('can have initial filters', async function(assert) {
