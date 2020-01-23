@@ -6,8 +6,7 @@ module('Unit | Controller | index', function(hooks) {
   setupTest(hooks)
 
   hooks.beforeEach(function() {
-    this.register('service:tracking', trackingStub)
-    this.inject.service('tracking', { as: 'tracking' })
+    this.owner.register('service:tracking', trackingStub)
   })
 
   test('exists', function(assert) {

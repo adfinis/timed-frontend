@@ -1,11 +1,4 @@
-import {
-  click,
-  fillIn,
-  find,
-  currentURL,
-  blur,
-  visit
-} from '@ember/test-helpers'
+import { click, fillIn, currentURL, blur, visit } from '@ember/test-helpers'
 import taskSelect from '../helpers/task-select'
 import {
   authenticateSession,
@@ -37,7 +30,7 @@ module('Acceptance | index activities edit', function(hooks) {
   test('can edit an activity', async function(assert) {
     await visit('/')
 
-    await click(find('[data-test-activity-row-id="1"]'))
+    await click('[data-test-activity-row-id="1"]')
 
     assert.equal(currentURL(), '/edit/1')
 

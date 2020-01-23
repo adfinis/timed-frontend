@@ -8,17 +8,19 @@ module('Integration | Component | sy modal/overlay', function(hooks) {
 
   test('renders', async function(assert) {
     await render(hbs`{{sy-modal/overlay}}`)
-
-    assert.dom(this.$()).exists({ count: 1 })
+    assert.ok(this.element)
   })
 
   test('closes on click', async function(assert) {
     this.set('visible', true)
-    this.on('close', () => this.set('visible', false))
+    this.set('closeAction', () => this.set('visible', false))
 
-    await render(
-      hbs`{{sy-modal/overlay visible=visible on-close=(action 'close')}}`
-    )
+    await render(hbs`
+      {{sy-modal/overlay
+        visible=visible
+        on-close=closeAction
+      }}
+    `)
 
     assert.ok(this.get('visible'))
 
@@ -29,17 +31,17 @@ module('Integration | Component | sy modal/overlay', function(hooks) {
 
   test('does not close on click of a child element', async function(assert) {
     this.set('visible', true)
-    this.on('close', () => this.set('visible', false))
+    this.set('closeAction', () => this.set('visible', false))
 
     await render(hbs`
-      {{#sy-modal/overlay visible=visible on-close=(action 'close')}}
+      {{#sy-modal/overlay visible=visible on-close=closeAction}}
         <div id="some-child">Test</div>
       {{/sy-modal/overlay}}
     `)
 
     assert.ok(this.get('visible'))
 
-    await click('.modal #some-child')
+    await click('#some-child')
 
     assert.ok(this.get('visible'))
   })

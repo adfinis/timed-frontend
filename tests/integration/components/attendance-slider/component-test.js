@@ -26,14 +26,14 @@ module('Integration | Component | attendance slider', function(hooks) {
   test('can delete', async function(assert) {
     this.set('attendance', ATTENDANCE)
 
-    this.on('delete', attendance => {
+    this.set('deleteAction', attendance => {
       assert.ok(attendance)
     })
 
     await render(hbs`
       {{attendance-slider
         attendance = attendance
-        on-delete  = (action 'delete')
+        on-delete  = deleteAction
       }}
     `)
 

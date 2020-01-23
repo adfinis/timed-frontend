@@ -6,7 +6,7 @@ module('Unit | Model | activity', function(hooks) {
 
   test('exists', function(assert) {
     let model = this.owner.lookup('service:store').createRecord('activity')
-    // var store = this.store()
+
     assert.ok(model)
   })
 })

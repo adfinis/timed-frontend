@@ -6,7 +6,7 @@
 import Controller from '@ember/controller'
 import moment from 'moment'
 import { computed } from '@ember/object'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 import Ember from 'ember'
 import { inject as service } from '@ember/service'
 import { task, timeout } from 'ember-concurrency'
@@ -327,7 +327,7 @@ export default Controller.extend({
    * @property {moment.duration} expectedWorktime
    * @public
    */
-  expectedWorktime: oneWay('user.activeEmployment.worktimePerDay'),
+  expectedWorktime: reads('user.activeEmployment.worktimePerDay'),
 
   /**
    * The workdays for the location related to the users active employment
@@ -335,7 +335,7 @@ export default Controller.extend({
    * @property {Number[]} workdays
    * @public
    */
-  workdays: oneWay('user.activeEmployment.location.workdays'),
+  workdays: reads('user.activeEmployment.location.workdays'),
 
   /**
    * The data for the weekly overview

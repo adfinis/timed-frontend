@@ -1,4 +1,4 @@
-import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -76,11 +76,7 @@ module('Acceptance | index', function(hooks) {
 
     assert.dom('[data-test-record-start]').doesNotExist()
     assert.dom('[data-test-record-stop]').exists({ count: 1 })
-    assert
-      .dom('[data-test-record-stop]')
-      .parent()
-      .parent()
-      .hasClass('recording')
+    assert.dom('.recording [data-test-record-stop]').exists()
     assert
       .dom('[data-test-activity-row]:first-child td:eq(1) div')
       .containsText(task.name)
@@ -93,26 +89,16 @@ module('Acceptance | index', function(hooks) {
 
     await visit('/')
 
-    assert
-      .dom('[data-test-record-stop]')
-      .parent()
-      .parent()
-      .hasClass('recording')
+    assert.dom('.recording [data-test-record-stop]').exists()
     assert.dom('[data-test-record-stop]').exists({ count: 1 })
-    assert
-      .dom('[data-test-tracking-comment] input')
-      .containsText(activity.comment)
+    assert.dom('[data-test-tracking-comment] input').hasValue(activity.comment)
 
     await click('[data-test-record-stop]')
 
     assert.dom('[data-test-record-start]').exists({ count: 1 })
     assert.dom('[data-test-record-stop]').doesNotExist()
-    assert
-      .dom('[data-test-record-start]')
-      .parent()
-      .parent()
-      .hasClass('recording')
-    assert.dom('[data-test-tracking-comment] input').hasText('')
+    assert.dom('.recording [data-test-record-start]').doesNotExist()
+    assert.dom('[data-test-tracking-comment] input').hasNoValue()
   })
 
   test('can set the document title', async function(assert) {
@@ -128,8 +114,10 @@ module('Acceptance | index', function(hooks) {
   })
 
   test('can set the document title without task', async function(assert) {
-    let a = this.server.create('activity', 'active', { userId: this.user.id })
-    a.update('task', null)
+    let activity = this.server.create('activity', 'active', {
+      userId: this.user.id
+    })
+    activity.update('task', null)
 
     await visit('/')
 
@@ -149,8 +137,8 @@ module('Acceptance | index', function(hooks) {
 
     await click('[data-test-add-absence-form] .btn-group .btn:first-child')
 
-    await click(find('[data-date=2017-06-28]'))
-    await click(find('[data-date=2017-06-30]'))
+    await click('[data-date=2017-06-28]')
+    await click('[data-date=2017-06-30]')
 
     await click('[data-test-add-absence-form] button:contains(Save)')
 
@@ -179,7 +167,7 @@ module('Acceptance | index', function(hooks) {
 
     await click('[data-test-edit-absence]')
 
-    await click(find('[data-date=2017-06-30]'))
+    await click('[data-date=2017-06-30]')
 
     await click('[data-test-edit-absence-form] button:contains(Save)')
 

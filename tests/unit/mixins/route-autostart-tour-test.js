@@ -3,7 +3,6 @@ import EmberObject from '@ember/object'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
 module('Unit | Mixin | route autostart tour', function() {
-  // Replace this with your real tests.
   test('works', function(assert) {
     let RouteAutostartTourObject = EmberObject.extend(RouteAutostartTourMixin)
     let subject = RouteAutostartTourObject.create()

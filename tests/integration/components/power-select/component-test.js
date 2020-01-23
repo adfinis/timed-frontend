@@ -46,12 +46,7 @@ module('Integration | Component | power select', function(hooks) {
         .dom('.ember-power-select-selected-item')
         .hasText('Selected: Test 1')
       assert
-        .dom(
-          this.$('.ember-power-select-option')
-            .first()
-            .text()
-            .trim()
-        )
+        .dom('.ember-power-select-option:first-of-type')
         .hasText('Option: Test 1')
     })
   })
@@ -85,7 +80,7 @@ module('Integration | Component | power select', function(hooks) {
     await triggerKeyEvent('.ember-power-select-search-input', 'keydown', 9)
 
     return wait().then(() => {
-      assert.equal(this.get('selected'), 2)
+      assert.equal(this.get('selected.id'), 2)
     })
   })
 })

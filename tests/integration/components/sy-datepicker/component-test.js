@@ -15,7 +15,7 @@ module('Integration | Component | sy datepicker', function(hooks) {
       hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
     )
 
-    assert.dom('input').hasText(moment().format('DD.MM.YYYY'))
+    assert.dom('input').hasValue(moment().format('DD.MM.YYYY'))
   })
 
   test('toggles the calendar on click of the input', async function(assert) {

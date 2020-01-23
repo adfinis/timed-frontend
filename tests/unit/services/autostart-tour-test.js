@@ -8,7 +8,6 @@ module('Unit | Service | autostart tour', function(hooks) {
     localStorage.removeItem('timed-tour-test')
   })
 
-  // Replace this with your real tests.
   test('exists', function(assert) {
     let service = this.owner.lookup('service:autostart-tour')
     assert.ok(service)

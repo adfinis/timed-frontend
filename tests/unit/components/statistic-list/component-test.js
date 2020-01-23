@@ -7,15 +7,14 @@ module('Unit | Component | statistic list', function(hooks) {
   setupRenderingTest(hooks)
 
   test('calculates max duration', function(assert) {
-    let component = this.subject({
-      data: {
-        last: {
-          value: [
-            { duration: moment.duration({ h: 3 }) },
-            { duration: moment.duration({ h: 5 }) },
-            { duration: moment.duration({ h: 15 }) }
-          ]
-        }
+    const component = this.owner.lookup('component:statistic-list')
+    component.set('data', {
+      last: {
+        value: [
+          { duration: moment.duration({ h: 3 }) },
+          { duration: moment.duration({ h: 5 }) },
+          { duration: moment.duration({ h: 15 }) }
+        ]
       }
     })
 
@@ -23,15 +22,14 @@ module('Unit | Component | statistic list', function(hooks) {
   })
 
   test('parses total', function(assert) {
-    let component = this.subject({
-      data: {
-        last: {
-          value: EmberObject.create({
-            meta: {
-              'total-time': '1 10:30:00'
-            }
-          })
-        }
+    const component = this.owner.lookup('component:statistic-list')
+    component.set('data', {
+      last: {
+        value: EmberObject.create({
+          meta: {
+            'total-time': '1 10:30:00'
+          }
+        })
       }
     })
 
@@ -48,7 +46,7 @@ module('Unit | Component | statistic list', function(hooks) {
       user: ['User', 'Duration']
     }
 
-    let component = this.subject()
+    const component = this.owner.lookup('component:statistic-list')
 
     Object.keys(expected).forEach(type => {
       component.set('type', type)
@@ -75,7 +73,7 @@ module('Unit | Component | statistic list', function(hooks) {
       }
     ]
 
-    let component = this.subject()
+    const component = this.owner.lookup('component:statistic-list')
 
     expected.forEach(({ params, text }) => {
       component.set('missingParams', params)

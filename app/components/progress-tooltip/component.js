@@ -1,6 +1,6 @@
 import Component from '@ember/component'
 import { computed } from '@ember/object'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 import moment from 'moment'
 import { task, timeout } from 'ember-concurrency'
 import { inject as service } from '@ember/service'
@@ -63,7 +63,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {moment.duration} estimated
    * @public
    */
-  estimated: oneWay('model.estimatedTime'),
+  estimated: reads('model.estimatedTime'),
 
   /**
    * The spent time

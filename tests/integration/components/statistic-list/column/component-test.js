@@ -8,6 +8,6 @@ module('Integration | Component | statistic list/column', function(hooks) {
 
   test('renders', async function(assert) {
     await render(hbs`{{statistic-list/column}}`)
-    assert.equal(find('td'), true)
+    assert.dom('td').exists()
   })
 })

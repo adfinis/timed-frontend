@@ -8,11 +8,11 @@ module('Integration | Component | sy checkmark', function(hooks) {
 
   test('works unchecked', async function(assert) {
     await render(hbs`{{sy-checkmark checked=false}}`)
-    assert.dom(this.$('.fa-square-o')).exists({ count: 1 })
+    assert.dom('.fa-square-o').exists({ count: 1 })
   })
 
   test('works checked', async function(assert) {
     await render(hbs`{{sy-checkmark checked=true}}`)
-    assert.dom(this.$('.fa-check-square-o')).exists({ count: 1 })
+    assert.dom('.fa-check-square-o').exists({ count: 1 })
   })
 })

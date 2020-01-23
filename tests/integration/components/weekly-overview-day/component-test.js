@@ -16,7 +16,7 @@ module('Integration | Component | weekly overview day', function(hooks) {
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
     )
 
-    assert.length(this.$(), 1)
+    assert.ok(this.element)
 
     assert.equal(find('.day').textContent.trim(), '05\n  Th')
   })
@@ -30,7 +30,9 @@ module('Integration | Component | weekly overview day', function(hooks) {
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime prefix='Ferien'}}`
     )
 
-    assert.equal(this.$(':eq(0)').attr('title'), 'Ferien, 8h 30m')
+    assert
+      .dom(this.element.firstElementChild)
+      .hasAttribute('title', 'Ferien, 8h 30m')
   })
 
   test('fires on-click action on click', async function(assert) {

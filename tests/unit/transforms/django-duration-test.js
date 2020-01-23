@@ -6,7 +6,7 @@ module('Unit | Transform | django duration', function(hooks) {
   setupTest(hooks)
 
   test('serializes', function(assert) {
-    let transform = this.owner.lookup('transform:duration')
+    let transform = this.owner.lookup('transform:django-duration')
 
     assert.notOk(transform.serialize(null))
 

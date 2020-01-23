@@ -8,6 +8,6 @@ module('Integration | Component | sy modal target', function(hooks) {
 
   test('renders', async function(assert) {
     await render(hbs`{{sy-modal-target}}`)
-    assert.dom(this.$('#sy-modals')).exists({ count: 1 })
+    assert.dom('#sy-modals').exists({ count: 1 })
   })
 })

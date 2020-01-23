@@ -1,4 +1,4 @@
-import { click, render, find, findAll } from '@ember/test-helpers'
+import { click, render } from '@ember/test-helpers'
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
@@ -21,19 +21,22 @@ module('Integration | Component | report row', function(hooks) {
 
     await render(hbs`{{report-row report}}`)
 
-    assert.dom(this.$('form')).exists({ count: 1 })
-    assert.dom(this.$('.form-group')).exists({ count: 8 })
-    assert.dom(this.$('.btn-danger')).exists({ count: 1 })
-    assert.dom(this.$('.btn-primary')).exists({ count: 1 })
+    assert.dom('form').exists({ count: 1 })
+    assert.dom('.form-group').exists({ count: 8 })
+    assert.dom('.btn-danger').exists({ count: 1 })
+    assert.dom('.btn-primary').exists({ count: 1 })
   })
 
   test('can delete row', async function(assert) {
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
     this.set('didDelete', false)
 
-    await render(
-      hbs`{{report-row report on-delete=(action (mut didDelete) true)}}`
-    )
+    await render(hbs`
+      {{report-row
+        report
+        on-delete=(action (mut didDelete) true)
+      }}
+    `)
 
     await click('.btn-danger')
 
@@ -53,14 +56,14 @@ module('Integration | Component | report row', function(hooks) {
 
     await render(hbs`{{report-row report}}`)
 
-    assert.ok(findAll('input').every(x => x.disabled))
-    assert.dom(find('form').title).includesText('John Doe')
+    assert.dom('input').isDisabled()
+    assert.dom('form').hasAttribute('title', /John Doe/)
     assert.dom('.btn').doesNotExist()
 
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
 
-    assert.notOk(findAll('input').some(x => x.disabled))
-    assert.dom(find('form').title).hasText('')
+    assert.dom('input').isNotDisabled()
+    assert.dom('form').hasAttribute('title', '')
     assert.dom('.btn').exists({ count: 2 })
   })
 })

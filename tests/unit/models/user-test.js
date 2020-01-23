@@ -5,16 +5,21 @@ import moment from 'moment'
 module('Unit | Model | user', function(hooks) {
   setupTest(hooks)
 
+  hooks.beforeEach(async function() {
+    this.set('store', this.owner.lookup('service:store'))
+  })
+
   test('exists', function(assert) {
-    let model = this.owner.lookup('service:store').createRecord('user')
+    let model = this.store.createRecord('user')
 
     assert.ok(model)
   })
 
   test('computes a full name', function(assert) {
-    let model = this.owner
-      .lookup('service:store')
-      .createRecord('user', { firstName: 'Hans', lastName: 'Muster' })
+    let model = this.store.createRecord('user', {
+      firstName: 'Hans',
+      lastName: 'Muster'
+    })
 
     assert.ok(model)
 
@@ -22,7 +27,7 @@ module('Unit | Model | user', function(hooks) {
   })
 
   test('computes a long name with full name', function(assert) {
-    let model = this.owner.lookup('service:store').createRecord('user', {
+    let model = this.store.createRecord('user', {
       username: 'hansm',
       firstName: 'Hans',
       lastName: 'Muster'
@@ -34,9 +39,7 @@ module('Unit | Model | user', function(hooks) {
   })
 
   test('computes a long name without full name', function(assert) {
-    let model = this.owner
-      .lookup('service:store')
-      .createRecord('user', { username: 'hansm' })
+    let model = this.store.createRecord('user', { username: 'hansm' })
 
     assert.ok(model)
 
@@ -44,17 +47,15 @@ module('Unit | Model | user', function(hooks) {
   })
 
   test('computes the active employment', function(assert) {
-    let model = this.owner
-      .lookup('service:store')
-      .createRecord('user', { username: 'hansm' })
+    let model = this.store.createRecord('user', { username: 'hansm' })
 
     assert.ok(model)
 
     assert.notOk(model.get('activeEmployment'))
 
     model.set('employments', [
-      this.store().createRecord('employment', { id: 1, to: null }),
-      this.store().createRecord('employment', { id: 2, to: moment() })
+      this.store.createRecord('employment', { id: 1, to: null }),
+      this.store.createRecord('employment', { id: 2, to: moment() })
     ])
 
     assert.equal(Number(model.get('activeEmployment.id')), 1)

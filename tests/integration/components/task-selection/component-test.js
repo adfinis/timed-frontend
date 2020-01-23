@@ -43,9 +43,9 @@ module('Integration | Component | task selection', function(hooks) {
       {{/task-selection}}
     `)
 
-    assert.length(this.$('.customer-select [aria-disabled=true]'), 0)
-    assert.length(this.$('.project-select [aria-disabled=true]'), 1)
-    assert.length(this.$('.task-select [aria-disabled=true]'), 1)
+    assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+    assert.dom('.project-select [aria-disabled=true]').exists()
+    assert.dom('.task-select [aria-disabled=true]').exists()
   })
 
   test('can set initial customer', async function(assert) {
@@ -64,9 +64,9 @@ module('Integration | Component | task selection', function(hooks) {
     `)
 
     return wait().then(() => {
-      assert.length(this.$('.customer-select [aria-disabled=true]'), 0)
-      assert.length(this.$('.project-select [aria-disabled=true]'), 0)
-      assert.length(this.$('.task-select [aria-disabled=true]'), 1)
+      assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.project-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.task-select [aria-disabled=true]').exists()
 
       assert.equal(
         this.$('.customer-select .ember-power-select-selected-item')
@@ -93,9 +93,9 @@ module('Integration | Component | task selection', function(hooks) {
     `)
 
     return wait().then(() => {
-      assert.length(this.$('.customer-select [aria-disabled=true]'), 0)
-      assert.length(this.$('.project-select [aria-disabled=true]'), 0)
-      assert.length(this.$('.task-select [aria-disabled=true]'), 0)
+      assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.project-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.task-select [aria-disabled=true]').doesNotExist()
 
       assert.equal(
         this.$('.customer-select .ember-power-select-selected-item')
@@ -128,9 +128,9 @@ module('Integration | Component | task selection', function(hooks) {
     `)
 
     return wait().then(() => {
-      assert.length(this.$('.customer-select [aria-disabled=true]'), 0)
-      assert.length(this.$('.project-select [aria-disabled=true]'), 0)
-      assert.length(this.$('.task-select [aria-disabled=true]'), 0)
+      assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.project-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.task-select [aria-disabled=true]').doesNotExist()
 
       assert.equal(
         this.$('.customer-select .ember-power-select-selected-item')
@@ -153,7 +153,9 @@ module('Integration | Component | task selection', function(hooks) {
     })
   })
 
-  test('can clear customer', async function() {
+  test('can clear customer', async function(assert) {
+    assert.expect(0)
+
     this.set('task', TASK)
 
     await render(hbs`
@@ -188,18 +190,15 @@ module('Integration | Component | task selection', function(hooks) {
     await click('button')
 
     return wait().then(() => {
-      assert.length(
-        this.$('.customer-select .ember-power-select-selected-item'),
-        0
-      )
-      assert.length(
-        this.$('.project-select .ember-power-select-selected-item'),
-        0
-      )
-      assert.length(
-        this.$('.project-select .ember-power-select-selected-item'),
-        0
-      )
+      assert
+        .dom('.customer-select .ember-power-select-selected-item')
+        .doesNotExist()
+      assert
+        .dom('.project-select .ember-power-select-selected-item')
+        .doesNotExist()
+      assert
+        .dom('.task-select .ember-power-select-selected-item')
+        .doesNotExist()
     })
   })
 })

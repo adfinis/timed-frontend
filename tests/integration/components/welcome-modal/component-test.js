@@ -8,6 +8,6 @@ module('Integration | Component | welcome modal', function(hooks) {
 
   test('renders', async function(assert) {
     await render(hbs`{{sy-modal-target}}{{welcome-modal visible=true}}`)
-    assert.length(this.$(), 1)
+    assert.ok(this.element)
   })
 })

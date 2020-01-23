@@ -13,10 +13,10 @@ export default PowerCalendarComponent.extend({
   ),
 
   actions: {
-    changeCenter(unit, e) {
+    changeCenter(unit, event) {
       let newCenter = this.get('publicAPI.center')
         .clone()
-        [unit](e.target.value)
+        [unit](event.target.value)
 
       this.onCenterChange({ moment: newCenter })
     }

@@ -11,6 +11,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server --proxy http://localhost:8000",
+    "lint:hbs": "ember-template-lint .",
+    "lint:js": "eslint .",
     "test": "ember test"
   },
   "engines": {

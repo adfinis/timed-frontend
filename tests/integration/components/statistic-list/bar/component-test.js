@@ -1,6 +1,6 @@
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
-import { find, render } from '@ember/test-helpers'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
 module('Integration | Component | statistic list/bar', function(hooks) {
@@ -9,13 +9,13 @@ module('Integration | Component | statistic list/bar', function(hooks) {
   test('renders', async function(assert) {
     await render(hbs`{{statistic-list/bar 0.5}}`)
 
-    let el = find('.statistic-list-bar')
+    let element = this.element.querySelector('.statistic-list-bar')
 
-    assert.dom(el).exists()
+    assert.ok(element)
 
     assert.equal(
       window
-        .getComputedStyle(el)
+        .getComputedStyle(element)
         .getPropertyValue('--value')
         .trim(),
       '0.5'

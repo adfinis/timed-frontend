@@ -1,23 +1,14 @@
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { render } from '@ember/test-helpers'
+import { click, render } from '@ember/test-helpers'
 
 module('Integration | Component | pagination limit', function(hooks) {
   setupRenderingTest(hooks)
 
   test('renders', async function(assert) {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.on('myAction', function(val) { ... });
-    // Template block usage:
-    // await render(hbs`
-    //   {{#pagination-limit}}
-    //     template content
-    //   {{/pagination-limit}}
-    // `);
-
     await render(hbs`{{pagination-limit}}`)
-    assert.dom(this.$()).exists({ count: 1 })
+    assert.ok(this.element)
   })
 
   test('can change limit', async function(assert) {
@@ -25,10 +16,10 @@ module('Integration | Component | pagination limit', function(hooks) {
 
     await render(hbs`{{pagination-limit pages=5 page_size=limit}}`)
 
-    assert.dom(this.$('span')).exists({ count: 4 })
-    assert.dom(this.$('a')).exists({ count: 3 })
+    assert.dom('span').exists({ count: 4 })
+    assert.dom('a').exists({ count: 3 })
 
-    this.$('a:contains(100)').click()
+    await click('span:last-of-type a')
 
     assert.equal(this.get('limit'), 100)
   })

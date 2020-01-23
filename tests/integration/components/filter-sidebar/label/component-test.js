@@ -1,7 +1,7 @@
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { find, render } from '@ember/test-helpers'
+import { render } from '@ember/test-helpers'
 
 module('Integration | Component | filter sidebar/label', function(hooks) {
   setupRenderingTest(hooks)
@@ -14,6 +14,6 @@ module('Integration | Component | filter sidebar/label', function(hooks) {
     `)
 
     assert.dom('label').exists()
-    assert.includes(find('label').innerHTML, 'Some label')
+    assert.dom('label').hasText('Some label')
   })
 })

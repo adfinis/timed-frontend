@@ -9,7 +9,7 @@ module('Integration | Component | sy checkbox', function(hooks) {
   test('works', async function(assert) {
     await render(hbs`{{sy-checkbox label='Test Label'}}`)
 
-    assert.dom(find('label').textContent.trim()).to.equal('Test Label')
+    assert.dom('label').hasText('Test Label')
   })
 
   test('works in block style', async function(assert) {

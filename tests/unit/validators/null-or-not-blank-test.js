@@ -5,6 +5,6 @@ module('Unit | Validator | null or not blank', function() {
   test('works', function(assert) {
     assert.equal(validateNullOrNotBlank()('key', 'test'), true)
     assert.equal(validateNullOrNotBlank()('key', null), true)
-    assert.instanceOf(validateNullOrNotBlank()('key', ''))
+    assert.equal(typeof validateNullOrNotBlank()('key', ''), 'string')
   })
 })

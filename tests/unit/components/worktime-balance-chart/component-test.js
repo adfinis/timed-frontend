@@ -13,11 +13,13 @@ module('Unit | Component | worktime balance chart', function(hooks) {
   test('computes the data correctly', function(assert) {
     let dates = [...new Array(3).keys()].map(i => moment().subtract(i, 'days'))
 
-    let component = this.subject({
-      worktimeBalances: dates.map(date => WorktimeBalance.create({ date }))
-    })
+    const component = this.owner.lookup('component:worktime-balance-chart')
+    component.set(
+      'worktimeBalances',
+      dates.map(date => WorktimeBalance.create({ date }))
+    )
 
-    assert.equal(
+    assert.deepEqual(
       component.get('data.labels').map(l => l.format('YYYY-MM-DD')),
       dates.map(d => d.format('YYYY-MM-DD'))
     )
@@ -26,7 +28,7 @@ module('Unit | Component | worktime balance chart', function(hooks) {
   })
 
   test('computes tooltip correctly', function(assert) {
-    let component = this.subject()
+    const component = this.owner.lookup('component:worktime-balance-chart')
 
     let titleFn = component.get('options.tooltips.callbacks.title')
     let labelFn = component.get('options.tooltips.callbacks.label')

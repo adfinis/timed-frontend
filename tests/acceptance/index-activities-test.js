@@ -1,4 +1,4 @@
-import { find, click, currentURL, findAll, visit } from '@ember/test-helpers'
+import { click, currentURL, findAll, visit } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -43,9 +43,7 @@ module('Acceptance | index activities', function(hooks) {
   test('can start an activity', async function(assert) {
     await visit('/')
 
-    await click(
-      find('[data-test-activity-row-id="1"] [data-test-start-activity]')
-    )
+    await click('[data-test-activity-row-id="1"] [data-test-start-activity]')
 
     assert.dom('[data-test-activity-row-id="6"]').hasClass('primary')
   })
@@ -75,17 +73,13 @@ module('Acceptance | index activities', function(hooks) {
   test('can stop an activity', async function(assert) {
     await visit('/')
 
-    await click(
-      find('[data-test-activity-row-id="1"] [data-test-start-activity]')
-    )
+    await click('[data-test-activity-row-id="1"] [data-test-start-activity]')
 
     assert.dom('[data-test-activity-row-id="6"]').hasClass('primary')
 
-    await click(
-      find('[data-test-activity-row-id="6"] [data-test-stop-activity]')
-    )
+    await click('[data-test-activity-row-id="6"] [data-test-stop-activity]')
 
-    assert.dom('[data-test-activity-row-id="6"]').hasClass('primary')
+    assert.dom('[data-test-activity-row-id="6"]').doesNotHaveClass('primary')
   })
 
   test('can generate reports', async function(assert) {
@@ -151,12 +145,12 @@ module('Acceptance | index activities', function(hooks) {
     await visit('/')
 
     await click('[data-test-activity-generate-timesheet]')
-    await click('[data-test-unknown-warning] button:contains(Cancel)')
+    await click('[data-test-unknown-warning] button.btn-default')
 
     assert.equal(currentURL(), '/')
 
     await click('[data-test-activity-generate-timesheet]')
-    await click('[data-test-unknown-warning] button:contains(fine)')
+    await click('[data-test-unknown-warning] button.btn-primary')
 
     assert.equal(currentURL(), '/reports')
   })
@@ -171,12 +165,12 @@ module('Acceptance | index activities', function(hooks) {
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
     await click('[data-test-activity-generate-timesheet]')
-    await click('[data-test-overlapping-warning] button:contains(Cancel)')
+    await click('[data-test-overlapping-warning] button.btn-default')
 
     assert.notOk(currentURL().includes('reports'))
 
     await click('[data-test-activity-generate-timesheet]')
-    await click('[data-test-overlapping-warning] button:contains(fine)')
+    await click('[data-test-overlapping-warning] button.btn-primary')
 
     assert.ok(currentURL().includes('reports'))
   })
@@ -192,30 +186,30 @@ module('Acceptance | index activities', function(hooks) {
     // both close if one clicks cancel
     await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
-    await click('[data-test-overlapping-warning] button:contains(Cancel)')
+    await click('[data-test-overlapping-warning] button.btn-default')
     assert.dom('.modal--visible').exists({ count: 0 })
     assert.notOk(currentURL().includes('reports'))
     // both must be fine if test should continue
     await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
-    await click('[data-test-overlapping-warning] button:contains(fine)')
+    await click('[data-test-overlapping-warning] button.btn-primary')
     assert.dom('.modal--visible').exists({ count: 1 })
-    await click('[data-test-unknown-warning] button:contains(Cancel)')
+    await click('[data-test-unknown-warning] button.btn-default')
     assert.dom('.modal--visible').exists({ count: 0 })
 
     await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
-    await click('[data-test-unknown-warning] button:contains(fine)')
+    await click('[data-test-unknown-warning] button.btn-primary')
     assert.dom('.modal--visible').exists({ count: 1 })
-    await click('[data-test-overlapping-warning] button:contains(Cancel)')
+    await click('[data-test-overlapping-warning] button.btn-default')
     assert.dom('.modal--visible').exists({ count: 0 })
     assert.notOk(currentURL().includes('reports'))
     // if both are fine continue
     await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
-    await click('[data-test-overlapping-warning] button:contains(fine)')
+    await click('[data-test-overlapping-warning] button.btn-primary')
     assert.dom('.modal--visible').exists({ count: 1 })
-    await click('[data-test-unknown-warning] button:contains(fine)')
+    await click('[data-test-unknown-warning] button.btn-primary')
     assert.dom('.modal--visible').exists({ count: 0 })
     assert.ok(currentURL().includes('reports'))
   })
@@ -288,7 +282,7 @@ module('Acceptance | index activities', function(hooks) {
     await click(`[data-test-activity-row] td:contains(${activity.comment})`)
     assert
       .dom('[data-test-activity-block-row]:last td:eq(2) input')
-      .hasText('23:59')
+      .hasValue('23:59')
   })
 
   test('can generate active reports which do not overlap', async function(
@@ -313,7 +307,7 @@ module('Acceptance | index activities', function(hooks) {
 
     assert
       .dom(`${`[data-test-report-row-id="${id}"]`} [name=duration]`)
-      .hasText(formatDuration(duration, false))
+      .hasValue(formatDuration(duration, false))
   })
 
   test('combines identical activities when generating', async function(assert) {
@@ -340,6 +334,6 @@ module('Acceptance | index activities', function(hooks) {
 
     assert
       .dom(`[data-test-report-row-id="6"] [name=duration]`)
-      .hasText(formatDuration(duration, false))
+      .hasValue(formatDuration(duration, false))
   })
 })

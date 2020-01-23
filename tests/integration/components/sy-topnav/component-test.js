@@ -8,6 +8,6 @@ module('Integration | Component | sy topnav', function(hooks) {
 
   test('renders', async function(assert) {
     await render(hbs`{{sy-topnav}}`)
-    assert.dom(this.$()).exists({ count: 1 })
+    assert.ok(this.element)
   })
 })

@@ -5,8 +5,8 @@ module('Unit | Model | customer', function(hooks) {
   setupTest(hooks)
 
   test('exists', function(assert) {
-    let model = this.owner.lookup('service:store').createRecord('customer')
-    // var store = this.store()
+    let model = this.owner.lookup('service:store').modelFor('customer')
+
     assert.ok(model)
   })
 })

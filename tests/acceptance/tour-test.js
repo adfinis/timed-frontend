@@ -19,7 +19,9 @@ module('Acceptance | tour', function(hooks) {
 
     localStorage.removeItem('timed-tour')
 
-    setBreakpoint('xl')
+    // This functionality seems to have been removed.
+    // I could only find the breakpoint.js file in app/
+    //setBreakpoint('xl')
   })
 
   hooks.afterEach(async function() {
@@ -52,7 +54,7 @@ module('Acceptance | tour', function(hooks) {
 
     assert.dom('.modal--visible').exists({ count: 1 })
 
-    await click('button:contains(Later)')
+    await click('button.btn-default')
 
     await visit('/someotherroute')
     await visit('/')
@@ -63,7 +65,7 @@ module('Acceptance | tour', function(hooks) {
   test('can ignore tour permanently', async function(assert) {
     await visit('/')
 
-    await click('button:contains(Never)')
+    await click('button.btn-never')
 
     await visit('/someotherroute')
     await visit('/')
@@ -74,7 +76,7 @@ module('Acceptance | tour', function(hooks) {
   test('can start tour', async function(assert) {
     await visit('/')
 
-    await click('button:contains(Sure)')
+    await click('button.btn-primary')
 
     assert.dom('.modal--visible').doesNotExist()
   })

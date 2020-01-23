@@ -1,4 +1,4 @@
-import { find, render } from '@ember/test-helpers'
+import { render } from '@ember/test-helpers'
 import { module, test } from 'qunit'
 import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
@@ -20,8 +20,8 @@ module('Integration | Component | duration since', function(hooks) {
 
     await render(hbs`{{duration-since start}}`)
 
-    assert.dom(this.$()).exists({ count: 1 })
-    assert.equal(find('*').textContent.trim(), '00:05:05')
+    assert.ok(this.element)
+    assert.dom(this.element).hasText('00:05:05')
   })
 
   test('computes the duration correctly with elapsed time', async function(
@@ -46,7 +46,7 @@ module('Integration | Component | duration since', function(hooks) {
 
     await render(hbs`{{duration-since start elapsed=elapsed}}`)
 
-    assert.dom(this.$()).exists({ count: 1 })
-    assert.equal(find('*').textContent.trim(), '01:06:06')
+    assert.ok(this.element)
+    assert.dom(this.element).hasText('01:06:06')
   })
 })

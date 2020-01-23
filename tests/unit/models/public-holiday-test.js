@@ -5,10 +5,8 @@ module('Unit | Model | public holiday', function(hooks) {
   setupTest(hooks)
 
   test('exists', function(assert) {
-    let model = this.owner
-      .lookup('service:store')
-      .createRecord('public-holiday')
-    // var store = this.store()
+    let model = this.owner.lookup('service:store').modelFor('public-holiday')
+
     assert.ok(model)
   })
 })

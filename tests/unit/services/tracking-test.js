@@ -1,11 +1,11 @@
 import { module, test } from 'qunit'
 import { setupTest } from 'ember-qunit'
 import Service from '@ember/service'
-import { A as emberA } from '@ember/array'
+import { A } from '@ember/array'
 
 const storeStub = Service.extend({
   query() {
-    return emberA()
+    return A()
   },
 
   createRecord() {
@@ -17,11 +17,9 @@ module('Unit | Service | tracking', function(hooks) {
   setupTest(hooks)
 
   hooks.beforeEach(function() {
-    this.register('service:store', storeStub)
-    this.inject.service('store', { as: 'store' })
+    this.owner.register('service:store', storeStub)
   })
 
-  // Replace this with your real tests.
   test('exists', function(assert) {
     let service = this.owner.lookup('service:tracking')
     assert.ok(service)

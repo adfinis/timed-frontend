@@ -15,7 +15,7 @@ module('Integration | Component | sy timepicker', function(hooks) {
 
     await render(hbs`{{sy-timepicker value=value}}`)
 
-    assert.dom('input').hasText(moment().format('HH:mm'))
+    assert.dom('input').hasValue(moment().format('HH:mm'))
   })
 
   test('can change the value', async function(assert) {

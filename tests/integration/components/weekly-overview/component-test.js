@@ -12,7 +12,7 @@ module('Integration | Component | weekly overview', function(hooks) {
 
     await render(hbs`{{weekly-overview expected=expected}}`)
 
-    assert.length(this.$(), 1)
+    assert.ok(this.element)
   })
 
   test('renders the benchmarks', async function(assert) {
@@ -20,7 +20,8 @@ module('Integration | Component | weekly overview', function(hooks) {
 
     await render(hbs`{{weekly-overview expected=expected}}`)
 
-    assert.length(this.$('hr'), 12) // 11 (evens from 0 to 20) plus the expected
+    // 11 (evens from 0 to 20) plus the expected
+    assert.dom('hr').exists({ count: 12 })
   })
 
   test('renders the days', async function(assert) {
@@ -34,6 +35,6 @@ module('Integration | Component | weekly overview', function(hooks) {
       {{/weekly-overview}}
     `)
 
-    assert.length(this.$('.bar'), 1)
+    assert.dom('.bar').exists()
   })
 })

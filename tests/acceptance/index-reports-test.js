@@ -123,9 +123,7 @@ module('Acceptance | index reports', function(hooks) {
 
     assert.dom(`[data-test-report-row-id="${id}"]`).exists({ count: 1 })
 
-    await click(
-      `${`[data-test-report-row-id="${id}"]`} [data-test-delete-report]`
-    )
+    await click(`[data-test-report-row-id="${id}"] [data-test-delete-report]`)
 
     assert.dom(`[data-test-report-row-id="${id}"]`).doesNotExist()
   })
@@ -139,11 +137,11 @@ module('Acceptance | index reports', function(hooks) {
     let { id } = this.server.create('report', { userId: this.user.id })
 
     this.server.get('/absences/:id', ({ absences }, { params: { id } }) => {
-      let a = absences.find(id)
+      let absence = absences.find(id)
 
-      a.comment = faker.lorem.sentence()
+      absence.comment = faker.lorem.sentence()
 
-      return a
+      return absence
     })
 
     let { comment } = absence
@@ -183,9 +181,9 @@ module('Acceptance | index reports', function(hooks) {
     await visit('/reports')
     assert.dom('[data-test-report-row]').exists({ count: 6 })
 
-    await click(find('button:contains(Reschedule)'))
-    await click(find(`button[data-date="${tomorrow}"]`))
-    await click(find('button:contains(Save)'))
+    await click('button:contains(Reschedule)')
+    await click(`button[data-date="${tomorrow}"]`)
+    await click('button:contains(Save)')
 
     assert.equal(currentURL(), `/reports?day=${tomorrow}`)
     assert.dom('[data-test-report-row]').exists({ count: 6 })

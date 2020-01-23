@@ -33,10 +33,9 @@ module('Integration | Component | progress tooltip', function(hooks) {
     )
 
     await render(hbs`
-      <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
+      <span id='target'></span>
+      {{progress-tooltip target='#target' model=model visible=true}}
     `)
-
-    assert.dom('.progress-tooltip').doesNotExist()
 
     return wait().then(() => {
       assert.dom('.progress-tooltip').exists()
@@ -64,10 +63,9 @@ module('Integration | Component | progress tooltip', function(hooks) {
     )
 
     await render(hbs`
-      <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
+      <span id='target'></span>
+      {{progress-tooltip target='#target' model=model visible=true}}
     `)
-
-    assert.dom('.progress-tooltip').doesNotExist()
 
     return wait().then(() => {
       assert.dom('.progress-tooltip').exists()
@@ -97,7 +95,8 @@ module('Integration | Component | progress tooltip', function(hooks) {
     this.set('visible', false)
 
     await render(hbs`
-      <span id='target'></span>{{progress-tooltip target='#target' model=model visible=visible}}
+      <span id='target'></span>
+      {{progress-tooltip target='#target' model=model visible=visible}}
     `)
 
     assert.dom('.progress-tooltip').doesNotExist()
@@ -133,7 +132,8 @@ module('Integration | Component | progress tooltip', function(hooks) {
     })
 
     await render(hbs`
-      <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
+      <span id='target'></span>
+      {{progress-tooltip target='#target' model=model visible=true}}
     `)
 
     return wait().then(() => {
@@ -166,7 +166,8 @@ module('Integration | Component | progress tooltip', function(hooks) {
     })
 
     await render(hbs`
-      <span id='target'></span>{{progress-tooltip target='#target' model=model visible=true}}
+      <span id='target'></span>
+      {{progress-tooltip target='#target' model=model visible=true}}
     `)
 
     return wait().then(() => {

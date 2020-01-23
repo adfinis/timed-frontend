@@ -110,8 +110,8 @@ module('Acceptance | analysis', function(hooks) {
     )
     assert.equal(find('[data-test-filter-cost-center] select').selectedIndex, 1)
 
-    assert.dom('[data-test-filter-from-date] input').hasText('01.12.2016')
-    assert.dom('[data-test-filter-to-date] input').hasText('01.12.2017')
+    assert.dom('[data-test-filter-from-date] input').hasValue('01.12.2016')
+    assert.dom('[data-test-filter-to-date] input').hasValue('01.12.2017')
 
     assert.equal(
       findAll('[data-test-filter-review] button').indexOf(

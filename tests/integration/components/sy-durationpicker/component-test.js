@@ -16,7 +16,7 @@ module('Integration | Component | sy durationpicker', function(hooks) {
 
     await render(hbs`{{sy-durationpicker value=value}}`)
 
-    assert.dom('input').hasText('01:30')
+    assert.dom('input').hasValue('01:30')
   })
 
   test('renders without value', async function(assert) {
@@ -24,7 +24,7 @@ module('Integration | Component | sy durationpicker', function(hooks) {
 
     await render(hbs`{{sy-durationpicker value=value}}`)
 
-    assert.dom('input').hasNoText()
+    assert.dom('input').hasNoValue()
   })
 
   test('can change the value', async function(assert) {

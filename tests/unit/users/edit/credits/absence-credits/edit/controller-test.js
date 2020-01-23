@@ -6,7 +6,6 @@ module('Unit | Controller | users/edit/credits/absence credits/edit', function(
 ) {
   setupTest(hooks)
 
-  // Replace this with your real tests.
   test('exists', function(assert) {
     let controller = this.owner.lookup(
       'controller:users/edit/credits/absence-credits/edit'

@@ -22,10 +22,9 @@ module('Integration | Component | sy modal', function(hooks) {
       {{/sy-modal}}
     `)
 
-    assert.dom(this.$('#sy-modals').children()).exists({ count: 1 })
+    assert.dom('#sy-modals > *').exists({ count: 1 })
 
-    assert.dom('#sy-modals .modal-header').includesText('Header')
-    assert.dom('#sy-modals .modal-header').includesText('x')
+    assert.dom('#sy-modals .modal-header').hasText('Header ×')
     assert.dom('#sy-modals .modal-body').includesText('Body')
     assert.dom('#sy-modals .modal-footer').includesText('Footer')
   })

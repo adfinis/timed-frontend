@@ -9,7 +9,7 @@ module('Integration | Component | weekly overview benchmark', function(hooks) {
   test('renders', async function(assert) {
     await render(hbs`{{weekly-overview-benchmark hours=20}}`)
 
-    assert.length(this.$(), 1)
+    assert.ok(this.element)
   })
 
   test('computes the position correctly', async function(assert) {

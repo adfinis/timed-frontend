@@ -8,6 +8,6 @@ module('Integration | Component | sy durationpicker day', function(hooks) {
 
   test('renders', async function(assert) {
     await render(hbs`{{sy-durationpicker-day}}`)
-    assert.dom(this.$()).exists({ count: 1 })
+    assert.ok(this.element)
   })
 })

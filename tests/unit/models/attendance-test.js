@@ -6,8 +6,8 @@ module('Unit | Model | attendance', function(hooks) {
   setupTest(hooks)
 
   test('exists', function(assert) {
-    let model = this.subject()
-    // var store = this.store()
+    let model = this.owner.lookup('service:store').modelFor('attendance')
+
     assert.ok(model)
   })
 

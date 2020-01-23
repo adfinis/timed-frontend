@@ -1,5 +1,5 @@
 import { Ability } from 'ember-can'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 
 /**
  * Initializer to inject the session into all abilities and
@@ -12,7 +12,7 @@ export function initialize(application) {
   application.inject('ability', 'session', 'service:session')
 
   Ability.reopen({
-    user: oneWay('session.data.user')
+    user: reads('session.data.user')
   })
 }
 

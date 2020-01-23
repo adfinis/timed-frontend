@@ -76,13 +76,16 @@ module('Acceptance | analysis edit', function(hooks) {
   test('can reset', async function(assert) {
     await visit('/analysis/edit')
 
+    const initialValue = this.element.querySelector('[data-test-comment] input')
+      .value
+
     await fillIn('[data-test-comment] input', 'test')
 
-    assert.dom('[data-test-comment] input').hasText('test')
+    assert.dom('[data-test-comment] input').hasValue('test')
 
     await click('[data-test-reset]')
 
-    assert.dom('[data-test-comment] input').doesNotIncludeText('test')
+    assert.dom('[data-test-comment] input').hasValue(initialValue)
   })
 
   test('can not verify', async function(assert) {

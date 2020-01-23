@@ -2,7 +2,7 @@ import Controller from '@ember/controller'
 import { A } from '@ember/array'
 import { task, hash } from 'ember-concurrency'
 import { computed } from '@ember/object'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
 import config from '../../config/environment'
@@ -187,7 +187,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   can: service('can'),
 
-  jwt: oneWay('session.data.authenticated.token'),
+  jwt: reads('session.data.authenticated.token'),
 
   _scrollOffset: 0,
 
