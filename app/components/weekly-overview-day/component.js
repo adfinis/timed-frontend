@@ -7,8 +7,6 @@ import Component from '@ember/component'
 import { computed } from '@ember/object'
 import { htmlSafe } from '@ember/string'
 
-const { min } = Math
-
 /**
  * Component to display a single day in the weekly overview
  *
@@ -112,7 +110,7 @@ export default Component.extend({
    * @public
    */
   style: computed('max', 'worktime', function() {
-    let height = min(
+    let height = Math.min(
       this.get('worktime').asHours() / this.get('max') * 100,
       100
     )
@@ -122,18 +120,14 @@ export default Component.extend({
 
   /**
    * Click event - fire the on-click action
-   *
-   * @event click
-   * @param {jQuery.Event} e The jquery event
-   * @public
    */
-  click(e) {
-    let action = this.get('attrs.on-click')
+  click(event) {
+    let action = this.get('on-click')
 
     if (action) {
-      e.preventDefault()
+      event.preventDefault()
 
-      this.get('attrs.on-click')(this.get('day'))
+      this.get('on-click')(this.get('day'))
     }
   }
 })

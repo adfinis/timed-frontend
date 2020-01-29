@@ -159,7 +159,7 @@ export default Component.extend({
    * @public
    */
   focusOut() {
-    this.getWithDefault('attrs.on-focus-out', noop)()
+    this.getWithDefault('on-focus-out', noop)()
   },
 
   /**
@@ -277,7 +277,7 @@ export default Component.extend({
    * @private
    */
   _change(value) {
-    this.get('attrs.on-change')(value)
+    this.get('on-change')(value)
   },
 
   /**

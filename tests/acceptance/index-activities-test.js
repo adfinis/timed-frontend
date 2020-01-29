@@ -189,6 +189,7 @@ module('Acceptance | index activities', function(hooks) {
     await click('[data-test-overlapping-warning] button.btn-default')
     assert.dom('.modal--visible').exists({ count: 0 })
     assert.notOk(currentURL().includes('reports'))
+
     // both must be fine if test should continue
     await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
@@ -204,6 +205,7 @@ module('Acceptance | index activities', function(hooks) {
     await click('[data-test-overlapping-warning] button.btn-default')
     assert.dom('.modal--visible').exists({ count: 0 })
     assert.notOk(currentURL().includes('reports'))
+
     // if both are fine continue
     await click('[data-test-activity-generate-timesheet]')
     assert.dom('.modal--visible').exists({ count: 2 })
@@ -222,17 +224,16 @@ module('Acceptance | index activities', function(hooks) {
       date: moment().subtract(1, 'days')
     })
 
+    const nextActivityId = Number(activity.id) + 1
+
     await visit('/')
 
     await click('[data-test-record-stop]')
 
     // today block should be from 00:00 to now
-    // assert
-    //   .dom(`[data-test-activity-row] td:contains(${activity.comment})`)
-    //   .exists({ count: 1 })
-    assert.dom(`[data-test-activity-row-id="${activity.id}"]`).exists()
+    assert.dom(`[data-test-activity-row-id="${nextActivityId}"]`).exists()
 
-    await click(`[data-test-activity-row-id="${activity.id}"]`)
+    await click(`[data-test-activity-row-id="${nextActivityId}"]`)
 
     assert
       .dom('[data-test-activity-block-row] td:first-child input')
@@ -275,6 +276,7 @@ module('Acceptance | index activities', function(hooks) {
     assert
       .dom(`[data-test-activity-row-id="${+activity.id + 1}"]`)
       .doesNotExist()
+
     // day before yesterday block should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')

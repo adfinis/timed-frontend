@@ -21,9 +21,7 @@ module('Acceptance | tour', function(hooks) {
 
     localStorage.removeItem('timed-tour')
 
-    // This functionality seems to have been removed.
-    // I could only find the breakpoint.js file in app/
-    //setBreakpoint('xl')
+    setBreakpoint('xl')
   })
 
   hooks.afterEach(async function() {
@@ -34,7 +32,8 @@ module('Acceptance | tour', function(hooks) {
     await visit('/')
 
     await waitForStep()
-    assert.dom('.tour-index-activities').exists({ count: 1 })
+
+    assert.ok(document.querySelector('.hopscotch-bubble'))
   })
 
   test('does not show a welcome dialog when tour completed', async function(
@@ -47,7 +46,7 @@ module('Acceptance | tour', function(hooks) {
 
     await visit('/')
 
-    assert.dom('.modal--visible').doesNotExist()
+    assert.notOk(document.querySelector('.hopscotch-bubble'))
   })
 
   test('does not show a welcome dialog when later clicked', async function(
@@ -55,14 +54,14 @@ module('Acceptance | tour', function(hooks) {
   ) {
     await visit('/')
 
-    assert.dom('.modal--visible').exists({ count: 1 })
+    assert.ok(document.querySelector('.hopscotch-bubble'))
 
     await click('button.btn-default')
 
     await visit('/someotherroute')
     await visit('/')
 
-    assert.dom('.modal--visible').doesNotExist()
+    assert.notOk(document.querySelector('.hopscotch-bubble'))
   })
 
   test('can ignore tour permanently', async function(assert) {
@@ -73,7 +72,7 @@ module('Acceptance | tour', function(hooks) {
     await visit('/someotherroute')
     await visit('/')
 
-    assert.dom('.modal--visible').doesNotExist()
+    assert.notOk(document.querySelector('.hopscotch-bubble'))
   })
 
   test('can start tour', async function(assert) {
@@ -81,6 +80,6 @@ module('Acceptance | tour', function(hooks) {
 
     await click('button.btn-primary')
 
-    assert.dom('.modal--visible').doesNotExist()
+    assert.notOk(document.querySelector('.hopscotch-bubble'))
   })
 })

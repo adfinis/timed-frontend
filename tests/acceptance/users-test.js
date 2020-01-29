@@ -1,4 +1,4 @@
-import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
+import { click, fillIn, currentURL, visit, settled } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -30,6 +30,8 @@ module('Acceptance | users', function(hooks) {
   test('shows only supervisees', async function(assert) {
     await visit('/users')
 
+    await settled()
+
     // 5 supervisees and the user himself
     assert.dom('table tr').exists({ count: 6 })
   })
@@ -41,6 +43,8 @@ module('Acceptance | users', function(hooks) {
     await authenticateSession({ user_id: user.id })
 
     await visit('/users')
+
+    await settled()
 
     // 12 users and the user himself
     assert.dom('table tr').exists({ count: 13 })

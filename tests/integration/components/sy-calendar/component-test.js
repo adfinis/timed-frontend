@@ -13,7 +13,7 @@ module('Integration | Component | sy calendar', function(hooks) {
 
     await render(hbs`
       {{sy-calendar
-        publicAPI=(hash center=center)
+        center=center
         onCenterChange=(action (mut center) value='moment')
       }}
     `)
@@ -30,7 +30,7 @@ module('Integration | Component | sy calendar', function(hooks) {
 
     await render(hbs`
       {{sy-calendar
-        publicAPI=(hash center=center)
+        center=center
         onCenterChange=(action (mut center) value='moment')
       }}
     `)

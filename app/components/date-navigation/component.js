@@ -38,7 +38,7 @@ export default Component.extend({
     setToday() {
       let date = moment()
 
-      this.get('attrs.on-change')(date)
+      this.get('on-change')(date)
     },
 
     /**
@@ -50,7 +50,7 @@ export default Component.extend({
     setPrevious() {
       let date = moment(this.get('current')).subtract(1, 'days')
 
-      this.get('attrs.on-change')(date)
+      this.get('on-change')(date)
     },
 
     /**
@@ -62,7 +62,7 @@ export default Component.extend({
     setNext() {
       let date = moment(this.get('current')).add(1, 'days')
 
-      this.get('attrs.on-change')(date)
+      this.get('on-change')(date)
     }
   }
 })

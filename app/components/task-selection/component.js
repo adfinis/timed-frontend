@@ -198,7 +198,7 @@ export default Component.extend({
       }
 
       later(this, () => {
-        this.getWithDefault('attrs.on-set-customer', () => {})(value)
+        this.getWithDefault('on-set-customer', () => {})(value)
       })
 
       return value
@@ -236,7 +236,7 @@ export default Component.extend({
       }
 
       later(this, () => {
-        this.getWithDefault('attrs.on-set-project', () => {})(value)
+        this.getWithDefault('on-set-project', () => {})(value)
       })
 
       return value
@@ -263,7 +263,7 @@ export default Component.extend({
       }
 
       later(this, async () => {
-        this.getWithDefault('attrs.on-set-task', () => {})(value)
+        this.getWithDefault('on-set-task', () => {})(value)
       })
 
       return value

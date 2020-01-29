@@ -20,8 +20,8 @@ export default ApplicationSerializer.extend({
    * property name of the model
    *
    * @property {Object} attrs
-   * @property {String} attrs.from
-   * @property {String} attrs.to
+   * @property {String} from
+   * @property {String} to
    * @public
    */
   attrs: {
