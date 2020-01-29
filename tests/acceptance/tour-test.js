@@ -33,7 +33,7 @@ module('Acceptance | tour', function(hooks) {
 
     await waitForStep()
 
-    assert.ok(document.querySelector('.hopscotch-bubble'))
+    assert.dom('.modal--visible').exists()
   })
 
   test('does not show a welcome dialog when tour completed', async function(
@@ -46,7 +46,7 @@ module('Acceptance | tour', function(hooks) {
 
     await visit('/')
 
-    assert.notOk(document.querySelector('.hopscotch-bubble'))
+    assert.dom('.modal--visible').doesNotExist()
   })
 
   test('does not show a welcome dialog when later clicked', async function(
@@ -54,32 +54,32 @@ module('Acceptance | tour', function(hooks) {
   ) {
     await visit('/')
 
-    assert.ok(document.querySelector('.hopscotch-bubble'))
+    assert.dom('.modal--visible').exists()
 
-    await click('button.btn-default')
+    await click('[data-test-tour-later]')
 
     await visit('/someotherroute')
     await visit('/')
 
-    assert.notOk(document.querySelector('.hopscotch-bubble'))
+    assert.dom('.modal--visible').doesNotExist()
   })
 
   test('can ignore tour permanently', async function(assert) {
     await visit('/')
 
-    await click('button.btn-never')
+    await click('[data-test-tour-never]')
 
     await visit('/someotherroute')
     await visit('/')
 
-    assert.notOk(document.querySelector('.hopscotch-bubble'))
+    assert.dom('.modal--visible').doesNotExist()
   })
 
   test('can start tour', async function(assert) {
     await visit('/')
 
-    await click('button.btn-primary')
+    await click('[data-test-tour-start]')
 
-    assert.notOk(document.querySelector('.hopscotch-bubble'))
+    assert.dom('.modal--visible').doesNotExist()
   })
 })

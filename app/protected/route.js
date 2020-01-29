@@ -18,14 +18,11 @@ import moment from 'moment'
  */
 export default Route.extend(AuthenticatedRouteMixin, {
   session: service('session'),
-
   notify: service('notify'),
-
   autostartTour: service('autostart-tour'),
-
   tourManager: service('tour-manager'),
-
   routing: service('-routing'),
+  media: service('media'),
 
   async model() {
     let id = this.get('session.data.authenticated.user_id')
