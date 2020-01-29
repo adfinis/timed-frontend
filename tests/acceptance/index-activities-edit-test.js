@@ -1,4 +1,11 @@
-import { click, fillIn, currentURL, blur, visit } from '@ember/test-helpers'
+import {
+  click,
+  fillIn,
+  currentURL,
+  blur,
+  visit,
+  waitFor
+} from '@ember/test-helpers'
 import taskSelect from '../helpers/task-select'
 import {
   authenticateSession,
@@ -34,6 +41,7 @@ module('Acceptance | index activities edit', function(hooks) {
 
     assert.equal(currentURL(), '/edit/1')
 
+    await waitFor('.customer-select')
     await taskSelect('[data-test-activity-edit-form]')
 
     await fillIn(

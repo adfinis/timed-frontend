@@ -1,4 +1,4 @@
-import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
+import { click, fillIn, currentURL, visit, waitFor } from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -44,6 +44,7 @@ module('Acceptance | index', function(hooks) {
     let task = this.server.create('task')
     await visit('/')
 
+    await waitFor('.customer-select')
     await taskSelect('[data-test-tracking-bar]')
 
     await fillIn('[data-test-tracking-comment] input', 'Some Random Comment')
@@ -66,6 +67,7 @@ module('Acceptance | index', function(hooks) {
 
     await visit('/')
 
+    await waitFor('.customer-select')
     await taskSelect('[data-test-tracking-bar]', { fromHistory: true })
 
     await fillIn('[data-test-tracking-comment] input', 'Some Random Comment')

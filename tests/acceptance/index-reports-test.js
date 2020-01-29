@@ -1,4 +1,11 @@
-import { click, fillIn, find, currentURL, visit } from '@ember/test-helpers'
+import {
+  click,
+  fillIn,
+  find,
+  currentURL,
+  visit,
+  waitFor
+} from '@ember/test-helpers'
 import {
   authenticateSession,
   invalidateSession
@@ -45,6 +52,7 @@ module('Acceptance | index reports', function(hooks) {
   test('can add report', async function(assert) {
     await visit('/reports')
 
+    await waitFor('.customer-select')
     await taskSelect('.form-list--reports .form-list-row:last-child')
 
     await fillIn(
