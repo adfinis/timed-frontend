@@ -118,8 +118,8 @@ export default Mixin.create(RouteTourMixin, {
         let tour = this.get('controller.tour')
 
         /* istanbul ignore next */
-        tour.on('tour.end', async e => {
-          if (e.currentStep + 1 !== e.tour._steps.length) {
+        tour.on('tour.end', async event => {
+          if (event.currentStep + 1 !== event.tour._steps.length) {
             return
           }
 
@@ -137,7 +137,7 @@ export default Mixin.create(RouteTourMixin, {
 
               await user.save()
               this.get('notify').info('Congratulations you completed the tour!')
-            } catch (e) {
+            } catch (error) {
               /* istanbul ignore next */
               this.get('notify').error('Error while saving the user')
             }

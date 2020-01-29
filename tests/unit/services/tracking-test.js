@@ -1,27 +1,15 @@
 import { module, test } from 'qunit'
 import { setupTest } from 'ember-qunit'
-import Service from '@ember/service'
-import { A } from '@ember/array'
-
-const storeStub = Service.extend({
-  query() {
-    return A()
-  },
-
-  createRecord() {
-    return {}
-  }
-})
+import { settled } from '@ember/test-helpers'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
 module('Unit | Service | tracking', function(hooks) {
   setupTest(hooks)
+  setupMirage(hooks)
 
-  hooks.beforeEach(function() {
-    this.owner.register('service:store', storeStub)
-  })
-
-  test('exists', function(assert) {
+  test('exists', async function(assert) {
     let service = this.owner.lookup('service:tracking')
+    await settled()
     assert.ok(service)
   })
 })

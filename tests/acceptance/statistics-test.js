@@ -7,6 +7,7 @@ import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
+import { settled } from '@ember/test-helpers'
 
 module('Acceptance | statistics', function(hooks) {
   setupApplicationTest(hooks)
@@ -33,6 +34,8 @@ module('Acceptance | statistics', function(hooks) {
   test('can view statistics by year', async function(assert) {
     await visit('/statistics')
 
+    await settled()
+
     assert.dom('thead > tr > th').exists({ count: 3 })
     assert.dom('tbody > tr').exists({ count: 5 })
     assert.dom('tfoot').includesText('Total')
@@ -40,6 +43,8 @@ module('Acceptance | statistics', function(hooks) {
 
   test('can view statistics by month', async function(assert) {
     await visit('/statistics?type=month')
+
+    await settled()
 
     assert.dom('thead > tr > th').exists({ count: 4 })
     assert.dom('tbody > tr').exists({ count: 5 })
@@ -49,6 +54,8 @@ module('Acceptance | statistics', function(hooks) {
   test('can view statistics by customer', async function(assert) {
     await visit('/statistics?type=customer')
 
+    await settled()
+
     assert.dom('thead > tr > th').exists({ count: 3 })
     assert.dom('tbody > tr').exists({ count: 5 })
     assert.dom('tfoot').includesText('Total')
@@ -56,6 +63,8 @@ module('Acceptance | statistics', function(hooks) {
 
   test('can view statistics by project', async function(assert) {
     await visit('/statistics?type=project&customer=1')
+
+    await settled()
 
     assert.dom('thead > tr > th').exists({ count: 5 })
     assert.dom('tbody > tr').exists({ count: 5 })
@@ -65,6 +74,8 @@ module('Acceptance | statistics', function(hooks) {
   test('can view statistics by task', async function(assert) {
     await visit('/statistics?type=task&customer=1&project=1')
 
+    await settled()
+
     assert.dom('thead > tr > th').exists({ count: 6 })
     assert.dom('tbody > tr').exists({ count: 5 })
     assert.dom('tfoot').includesText('Total')
@@ -73,6 +84,8 @@ module('Acceptance | statistics', function(hooks) {
   test('can view statistics by user', async function(assert) {
     await visit('/statistics?type=user')
 
+    await settled()
+
     assert.dom('thead > tr > th').exists({ count: 3 })
     assert.dom('tbody > tr').exists({ count: 5 })
     assert.dom('tfoot').includesText('Total')
@@ -80,6 +93,8 @@ module('Acceptance | statistics', function(hooks) {
 
   test('can filter and reset filter', async function(assert) {
     await visit('/statistics')
+
+    await settled()
 
     let from = moment()
     let to = moment().subtract(10, 'days')
@@ -102,6 +117,8 @@ module('Acceptance | statistics', function(hooks) {
   test('shows missing parameters message', async function(assert) {
     await visit('/statistics?type=task')
 
+    await settled()
+
     assert
       .dom('.empty')
       .includesText('Customer and project are required parameters')
@@ -109,6 +126,8 @@ module('Acceptance | statistics', function(hooks) {
 
   test('resets ordering on type change', async function(assert) {
     await visit('/statistics?type=month&ordering=year')
+
+    await settled()
 
     await click('.nav-tabs li a:first-child')
 
@@ -141,6 +160,8 @@ module('Acceptance | statistics', function(hooks) {
         .map(k => `${k}=${params[k]}`)
         .join('&')}`
     )
+
+    await settled()
 
     assert
       .dom('[data-test-filter-customer] .ember-power-select-selected-item')

@@ -143,7 +143,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
         this._closeCurrentTour()
         this.set('controller.visible', false)
-      } catch (e) {
+      } catch (error) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the user')
       }
