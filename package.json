@@ -68,7 +68,7 @@
     "ember-moment": "^7.4.1",
     "ember-native-dom-helpers": "^0.6.1",
     "ember-notify": "^5.2.1",
-    "ember-one-way-controls": "^3.0.1",
+    "ember-one-way-controls": "^3.1.0",
     "ember-pad": "^1.2.2",
     "ember-parachute": "^0.3.5",
     "ember-power-calendar": "^0.7.3",
