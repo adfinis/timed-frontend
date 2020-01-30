@@ -27,7 +27,7 @@ export default function(server) {
   })
 
   server.createList('activity', 3, { userId: user.id })
-  // server.create('activity', 'active', { userId: user.id })
+  server.create('activity', 'active', { userId: user.id })
 
   server.create('attendance', 'morning', { userId: user.id })
   server.create('attendance', 'afternoon', { userId: user.id })

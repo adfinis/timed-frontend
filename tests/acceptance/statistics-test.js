@@ -1,8 +1,5 @@
 import { click, fillIn, currentURL, visit, find } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
@@ -25,10 +22,6 @@ module('Acceptance | statistics', function(hooks) {
     this.server.createList('project-statistic', 5)
     this.server.createList('task-statistic', 5)
     this.server.createList('user-statistic', 5)
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can view statistics by year', async function(assert) {

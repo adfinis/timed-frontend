@@ -1,8 +1,5 @@
 import { click, fillIn, currentURL, visit, waitFor } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
@@ -21,10 +18,6 @@ module('Acceptance | users', function(hooks) {
 
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: user.id })
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('shows only supervisees', async function(assert) {

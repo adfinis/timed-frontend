@@ -1,8 +1,5 @@
 import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
@@ -17,10 +14,6 @@ module('Acceptance | users edit credits', function(hooks) {
 
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: this.user.id })
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /users/:id/credits', async function(assert) {

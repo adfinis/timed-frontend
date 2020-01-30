@@ -1,8 +1,5 @@
 import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
@@ -19,10 +16,6 @@ module('Acceptance | analysis edit', function(hooks) {
     await authenticateSession({ user_id: user.id })
 
     this.server.create('report-intersection', { verified: false })
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /analysis/edit', async function(assert) {

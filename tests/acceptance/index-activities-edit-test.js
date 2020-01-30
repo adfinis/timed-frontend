@@ -7,10 +7,7 @@ import {
   waitFor
 } from '@ember/test-helpers'
 import taskSelect from '../helpers/task-select'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
@@ -28,10 +25,6 @@ module('Acceptance | index activities edit', function(hooks) {
     this.server.createList('activity', 5, { userId: user.id })
 
     this.user = user
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can edit an activity', async function(assert) {

@@ -6,10 +6,7 @@ import {
   visit,
   waitFor
 } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import faker from 'faker'
 import moment from 'moment'
 import { module, test } from 'qunit'
@@ -30,10 +27,6 @@ module('Acceptance | index reports', function(hooks) {
     this.server.createList('report', 5, { userId: user.id })
 
     this.user = user
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /reports', async function(assert) {

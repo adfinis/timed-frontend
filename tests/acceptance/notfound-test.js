@@ -1,8 +1,5 @@
 import { currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
@@ -30,7 +27,5 @@ module('Acceptance | notfound', function(hooks) {
     await visit('/thiswillneverbeavalidrouteurl')
 
     assert.dom('[data-test-notfound]').exists({ count: 1 })
-
-    await invalidateSession()
   })
 })

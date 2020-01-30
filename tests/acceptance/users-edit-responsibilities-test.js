@@ -1,8 +1,5 @@
 import { visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
@@ -16,10 +13,6 @@ module('Acceptance | users edit responsibilities', function(hooks) {
 
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: this.user.id })
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /users/:id/responsibilities', async function(assert) {

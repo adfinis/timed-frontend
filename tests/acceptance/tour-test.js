@@ -1,8 +1,5 @@
 import { click, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { waitForStep } from 'ember-site-tour/test-support/helpers'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
@@ -22,10 +19,6 @@ module('Acceptance | tour', function(hooks) {
     localStorage.removeItem('timed-tour')
 
     setBreakpoint('xl')
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('shows a welcome dialog', async function(assert) {

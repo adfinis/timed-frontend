@@ -19,10 +19,7 @@
     "node": "10.* || >= 12.*"
   },
   "devDependencies": {
-    "@babel/plugin-proposal-decorators": "^7.8.3",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
-    "@babel/plugin-transform-async-to-generator": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
     "@ember/jquery": "^1.1.0",
     "@ember/optional-features": "^1.1.0",
     "@html-next/vertical-collection": "github:html-next/vertical-collection#4c787b2cd92ec6fd548b52c4e22d8e0e0d0b85d3",
@@ -49,7 +46,6 @@
     "ember-cli-nouislider": "^1.1.0",
     "ember-cli-release": "^1.0.0-beta.2",
     "ember-cli-sass": "^10.0.0",
-    "ember-cli-shims": "^1.2.0",
     "ember-cli-sri": "^2.1.1",
     "ember-cli-test-loader": "^2.1.0",
     "ember-cli-uglify-es": "^1.0.4",
@@ -65,9 +61,7 @@
     "ember-math-helpers": "^2.7.0",
     "ember-maybe-import-regenerator": "^0.1.6",
     "ember-moment": "^7.6.0",
-    "ember-native-dom-helpers": "^0.6.1",
     "ember-notify": "^6.0.0",
-    "ember-one-way-controls": "^3.0.1",
     "ember-pad": "^1.2.3",
     "ember-parachute": "^1.0.2",
     "ember-power-calendar": "^0.13.3",
@@ -91,17 +85,11 @@
     "eslint-plugin-node": "^9.0.1",
     "eslint-plugin-prettier": "^2.1.2",
     "faker": "^4.1.0",
-    "intersection-observer": "^0.5.0",
     "loader.js": "^4.7.0",
     "pagination-pager": "^3.2.0",
     "prettier": "^1.7.4",
     "qunit-dom": "^0.8.4",
     "sass": "^1.24.2",
     "typeface-source-sans-pro": "^0.0.75"
-  },
-  "greenkeeper": {
-    "ignore": [
-      "ember-cli-mirage"
-    ]
   }
 }

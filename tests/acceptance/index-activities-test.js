@@ -1,8 +1,5 @@
 import { click, currentURL, findAll, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
 import { module, test } from 'qunit'
@@ -22,10 +19,6 @@ module('Acceptance | index activities', function(hooks) {
     this.activities = this.server.createList('activity', 5, { userId: user.id })
 
     this.user = user
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /', async function(assert) {

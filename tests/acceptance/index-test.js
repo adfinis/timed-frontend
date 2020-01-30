@@ -1,8 +1,5 @@
 import { click, fillIn, currentURL, visit, waitFor } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
@@ -20,10 +17,6 @@ module('Acceptance | index', function(hooks) {
     await authenticateSession({ user_id: user.id })
 
     this.user = user
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can select a day', async function(assert) {

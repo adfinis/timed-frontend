@@ -19,14 +19,11 @@ module.exports = function(defaults) {
     }
   })
 
-  app.import('node_modules/typeface-source-sans-pro/index.css')
   app.import('vendor/adcssy.min.css')
 
   app.import('node_modules/downloadjs/download.min.js', {
     using: [{ transformation: 'amd', as: 'downloadjs' }]
   })
-
-  app.import('node_modules/intersection-observer/intersection-observer.js')
 
   let fonts = new Funnel('node_modules/typeface-source-sans-pro/files', {
     include: ['*.woff', '*.woff2'],

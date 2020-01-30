@@ -6,10 +6,7 @@ import {
   find,
   findAll
 } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import userSelect from '../helpers/user-select'
 import { setupApplicationTest } from 'ember-qunit'
@@ -26,10 +23,6 @@ module('Acceptance | analysis', function(hooks) {
     await authenticateSession({ user_id: user.id })
 
     this.server.createList('report', 40, { userId: user.id })
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /analysis', async function(assert) {

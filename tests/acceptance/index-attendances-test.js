@@ -1,8 +1,5 @@
 import { click, currentURL, visit } from '@ember/test-helpers'
-import {
-  authenticateSession,
-  invalidateSession
-} from 'ember-simple-auth/test-support'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import { module, test } from 'qunit'
 import { setupApplicationTest } from 'ember-qunit'
 import { setupMirage } from 'ember-cli-mirage/test-support'
@@ -22,10 +19,6 @@ module('Acceptance | index attendances', function(hooks) {
 
     this.server.create('attendance', 'morning', { userId: user.id })
     this.server.create('attendance', 'afternoon', { userId: user.id })
-  })
-
-  hooks.afterEach(async function() {
-    await invalidateSession()
   })
 
   test('can visit /attendances', async function(assert) {
