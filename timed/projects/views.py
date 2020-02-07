@@ -1,7 +1,7 @@
 """Viewsets for the projects app."""
 
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework_json_api.views import PrefetchForIncludesHelperMixin
+from rest_framework_json_api.views import PreloadIncludesMixin
 
 from timed.projects import filters, models, serializers
 
@@ -38,7 +38,7 @@ class CostCenterViewSet(ReadOnlyModelViewSet):
         return models.CostCenter.objects.all()
 
 
-class ProjectViewSet(PrefetchForIncludesHelperMixin, ReadOnlyModelViewSet):
+class ProjectViewSet(PreloadIncludesMixin, ReadOnlyModelViewSet):
     """Project view set."""
 
     serializer_class = serializers.ProjectSerializer

@@ -53,8 +53,10 @@ class Command(BaseCommand):
             .values("id")
         )
         # calculate total hours
-        projects = Project.objects.filter(id__in=affected_projects).annotate(
-            total_hours=Sum("tasks__reports__duration")
+        projects = (
+            Project.objects.filter(id__in=affected_projects)
+            .order_by("name")
+            .annotate(total_hours=Sum("tasks__reports__duration"))
         )
 
         for project in projects:
