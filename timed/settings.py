@@ -153,8 +153,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ("rest_framework_json_api.parsers.JSONParser",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_METADATA_CLASS": "rest_framework_json_api.metadata.JSONAPIMetadata",
     "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
@@ -187,11 +186,11 @@ if AUTH_LDAP_ENABLED:
 
 AUTH_USER_MODEL = "employment.User"
 
-JWT_AUTH = {
-    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=2),
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=7),
-    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+SIMPLE_AUTH = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=2),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
+    # TODO check if this is ROTATE_REFRESH_TOKENS
+    # "JWT_ALLOW_REFRESH": True,
 }
 
 AUTH_PASSWORD_VALIDATORS = [
