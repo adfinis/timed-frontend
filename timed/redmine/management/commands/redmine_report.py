@@ -53,13 +53,17 @@ class Command(BaseCommand):
             .values("id")
         )
         # calculate total hours
-        projects = Project.objects.filter(id__in=affected_projects).annotate(
-            total_hours=Sum("tasks__reports__duration")
+        projects = (
+            Project.objects.filter(id__in=affected_projects)
+            .order_by("name")
+            .annotate(total_hours=Sum("tasks__reports__duration"))
         )
 
         for project in projects:
             estimated_hours = (
-                project.estimated_time and project.estimated_time.total_seconds() / 3600
+                project.estimated_time.total_seconds() / 3600
+                if project.estimated_time
+                else 0.0
             )
             total_hours = project.total_hours.total_seconds() / 3600
             try:
