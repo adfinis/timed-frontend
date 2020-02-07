@@ -5,7 +5,6 @@ import json
 from django.urls import reverse
 from rest_framework import exceptions, status
 from rest_framework.test import APIClient
-from rest_framework_jwt.settings import api_settings
 
 
 class JSONAPIClient(APIClient):
@@ -40,7 +39,7 @@ class JSONAPIClient(APIClient):
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **kwargs
+            **kwargs,
         )
 
     def delete(self, path, data=None, **kwargs):
@@ -53,7 +52,7 @@ class JSONAPIClient(APIClient):
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **kwargs
+            **kwargs,
         )
 
     def patch(self, path, data=None, **kwargs):
@@ -66,7 +65,7 @@ class JSONAPIClient(APIClient):
             path=path,
             data=self._parse_data(data),
             content_type=self._content_type,
-            **kwargs
+            **kwargs,
         )
 
     def login(self, username, password):
@@ -79,7 +78,7 @@ class JSONAPIClient(APIClient):
         data = {
             "data": {
                 "attributes": {"username": username, "password": password},
-                "type": "obtain-json-web-tokens",
+                "type": "token-obtain-pair-views",
             }
         }
 
@@ -88,8 +87,4 @@ class JSONAPIClient(APIClient):
         if response.status_code != status.HTTP_200_OK:
             raise exceptions.AuthenticationFailed()
 
-        self.credentials(
-            HTTP_AUTHORIZATION="{0} {1}".format(
-                api_settings.JWT_AUTH_HEADER_PREFIX, response.data["token"]
-            )
-        )
+        self.credentials(HTTP_AUTHORIZATION=f"Bearer {response.data['access']}")
