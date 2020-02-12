@@ -87,7 +87,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
       }
 
       let data = {
-        type: 'obtain-json-web-tokens',
+        type: 'token-obtain-pair-views',
         id: null,
         attributes: { username, password }
       }
