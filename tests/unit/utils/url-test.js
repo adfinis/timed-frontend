@@ -1,34 +1,34 @@
-import { module, test } from 'qunit'
-import { cleanParams, toQueryString } from 'timed/utils/url'
+import { module, test } from "qunit";
+import { cleanParams, toQueryString } from "timed/utils/url";
 
-module('Unit | Utility | url', function() {
-  test('can clean params', function(assert) {
-    let params = {
-      1: '',
+module("Unit | Utility | url", function() {
+  test("can clean params", function(assert) {
+    const params = {
+      1: "",
       2: null,
       3: undefined,
       4: 0,
-      5: 'test'
-    }
+      5: "test"
+    };
 
-    let result = cleanParams(params)
+    const result = cleanParams(params);
 
     assert.deepEqual(result, {
-      1: '',
+      1: "",
       4: 0,
-      5: 'test'
-    })
-  })
+      5: "test"
+    });
+  });
 
-  test('can convert params to a query string', function(assert) {
-    let params = {
-      foo: '',
+  test("can convert params to a query string", function(assert) {
+    const params = {
+      foo: "",
       bar: 0,
-      baz: 'test'
-    }
+      baz: "test"
+    };
 
-    let result = toQueryString(params)
+    const result = toQueryString(params);
 
-    assert.equal(result, 'foo=&bar=0&baz=test')
-  })
-})
+    assert.equal(result, "foo=&bar=0&baz=test");
+  });
+});

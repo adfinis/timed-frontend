@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import moment from 'moment'
+import Component from "@ember/component";
+import moment from "moment";
 
 /**
  * The date navigation component
@@ -20,7 +20,7 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: ['btn-toolbar'],
+  classNames: ["btn-toolbar"],
 
   /**
    * The actions for the date navigation component
@@ -36,9 +36,9 @@ export default Component.extend({
      * @public
      */
     setToday() {
-      let date = moment()
+      const date = moment();
 
-      this.get('on-change')(date)
+      this.get("on-change")(date);
     },
 
     /**
@@ -48,9 +48,9 @@ export default Component.extend({
      * @public
      */
     setPrevious() {
-      let date = moment(this.get('current')).subtract(1, 'days')
+      const date = moment(this.get("current")).subtract(1, "days");
 
-      this.get('on-change')(date)
+      this.get("on-change")(date);
     },
 
     /**
@@ -60,9 +60,9 @@ export default Component.extend({
      * @public
      */
     setNext() {
-      let date = moment(this.get('current')).add(1, 'days')
+      const date = moment(this.get("current")).add(1, "days");
 
-      this.get('on-change')(date)
+      this.get("on-change")(date);
     }
   }
-})
+});

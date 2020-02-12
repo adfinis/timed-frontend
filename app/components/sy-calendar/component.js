@@ -1,9 +1,9 @@
-import PowerCalendarComponent from 'ember-power-calendar/components/power-calendar'
-import moment from 'moment'
+import PowerCalendarComponent from "ember-power-calendar/components/power-calendar";
+import moment from "moment";
 
-const CURRENT_YEAR = moment().year()
+const CURRENT_YEAR = moment().year();
 
-const YEARS_IN_FUTURE = 5
+const YEARS_IN_FUTURE = 5;
 
 export default PowerCalendarComponent.extend({
   months: moment.months(),
@@ -14,10 +14,10 @@ export default PowerCalendarComponent.extend({
 
   actions: {
     changeCenter(unit, event) {
-      let date = this.get('publicAPI.center')
-      let newCenter = moment(date)[unit](event.target.value)
+      const date = this.get("publicAPI.center");
+      const newCenter = moment(date)[unit](event.target.value);
 
-      this.onCenterChange({ moment: newCenter })
+      this.onCenterChange({ moment: newCenter });
     }
   }
-})
+});

@@ -1,10 +1,9 @@
-import Service from '@ember/service'
-import { inject as service } from '@ember/service'
-import DjangoDurationTransform from 'timed/transforms/django-duration'
-import { camelize, capitalize, dasherize } from '@ember/string'
-import { task } from 'ember-concurrency'
+import Service, { inject as service } from "@ember/service";
+import { camelize, capitalize, dasherize } from "@ember/string";
+import { task } from "ember-concurrency";
+import DjangoDurationTransform from "timed/transforms/django-duration";
 
-const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create()
+const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create();
 
 const META_MODELS = {
   project: {
@@ -13,7 +12,7 @@ const META_MODELS = {
   task: {
     spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
   }
-}
+};
 
 /**
  * Service to fetch metadata and transform it if necessary
@@ -29,7 +28,7 @@ export default Service.extend({
    * @property {EmberAjax.AjaxService} ajax
    * @public
    */
-  ajax: service('ajax'),
+  ajax: service("ajax"),
 
   /**
    * Task to fetch a single records metadata
@@ -43,23 +42,24 @@ export default Service.extend({
   fetchSingleRecordMetadata: task(function*(type, id) {
     /* istanbul ignore next */
     if (!id) {
-      throw new Error(`${capitalize(type)} ID is missing`)
+      throw new Error(`${capitalize(type)} ID is missing`);
     }
 
-    let { meta = {} } = yield this.get('ajax').request(
+    const { meta = {} } = yield this.get("ajax").request(
       `/api/v1/${dasherize(type)}s/${id}`
-    )
+    );
 
-    return Object.keys(
-      META_MODELS[camelize(type)]
-    ).reduce((parsedMeta, key) => {
-      let { defaultValue, transform } = META_MODELS[camelize(type)][key]
-      let value = meta[dasherize(key)]
+    return Object.keys(META_MODELS[camelize(type)]).reduce(
+      (parsedMeta, key) => {
+        const { defaultValue, transform } = META_MODELS[camelize(type)][key];
+        const value = meta[dasherize(key)];
 
-      return {
-        ...parsedMeta,
-        [key]: value ? transform.deserialize(value) : defaultValue
-      }
-    }, {})
+        return {
+          ...parsedMeta,
+          [key]: value ? transform.deserialize(value) : defaultValue
+        };
+      },
+      {}
+    );
   }).restartable()
-})
+});

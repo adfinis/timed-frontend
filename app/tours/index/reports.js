@@ -1,8 +1,8 @@
 export default [
   {
-    target: '.table--reports',
-    placement: 'top',
-    title: 'Timesheet',
+    target: ".table--reports",
+    placement: "top",
+    title: "Timesheet",
     content: `
     <p>
       Good job, you created your first timesheet!
@@ -15,9 +15,9 @@ export default [
     `
   },
   {
-    target: '.table--reports input[name=duration]',
-    placement: 'top',
-    title: 'Duration',
+    target: ".table--reports input[name=duration]",
+    placement: "top",
+    title: "Duration",
     content: `
     <p>
       Editing should be easy! That's why the duration can easily be changed by
@@ -28,9 +28,9 @@ export default [
     `
   },
   {
-    target: '.table--reports',
-    placement: 'bottom',
-    title: 'New entry',
+    target: ".table--reports",
+    placement: "bottom",
+    title: "New entry",
     content: `
     <p>
       To add a new entry simply fill out the last row and save it. It will
@@ -39,9 +39,9 @@ export default [
     `
   },
   {
-    target: '.btn-toolbar .btn-success',
-    placement: 'left',
-    title: 'Reschedule',
+    target: ".btn-toolbar .btn-success",
+    placement: "left",
+    title: "Reschedule",
     content: `
     <p>
       If you created your timesheet on the wrong day you can transfer it by
@@ -50,9 +50,9 @@ export default [
     `
   },
   {
-    target: '.nav-tabs li:nth-child(2)',
-    placement: 'top',
-    title: 'Attendance',
+    target: ".nav-tabs li:nth-child(2)",
+    placement: "top",
+    title: "Attendance",
     content: `
     <p>
       Now you know how the timesheet works. Let's continue by managing your
@@ -60,4 +60,4 @@ export default [
     </p>
     `
   }
-]
+];

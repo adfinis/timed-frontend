@@ -3,15 +3,15 @@
  * @submodule timed-components
  * @public
  */
-import SyTimepickerComponent from 'timed/components/sy-timepicker/component'
-import { computed } from '@ember/object'
-import moment from 'moment'
-import formatDuration from 'timed/utils/format-duration'
-import { padStart } from 'ember-pad/utils/pad'
+import { computed } from "@ember/object";
+import { padStart } from "ember-pad/utils/pad";
+import moment from "moment";
+import SyTimepickerComponent from "timed/components/sy-timepicker/component";
+import formatDuration from "timed/utils/format-duration";
 
-const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number
+const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number;
 
-const { abs } = Math
+const { abs } = Math;
 
 /**
  * Duration selector component
@@ -21,7 +21,7 @@ const { abs } = Math
  * @public
  */
 export default SyTimepickerComponent.extend({
-  name: 'duration',
+  name: "duration",
 
   min: MIN_SAFE_INTEGER,
 
@@ -30,7 +30,7 @@ export default SyTimepickerComponent.extend({
   maxlength: null,
 
   sanitize(value) {
-    return value.replace(/[^\d:-]/, '')
+    return value.replace(/[^\d:-]/, "");
   },
 
   /**
@@ -49,24 +49,24 @@ export default SyTimepickerComponent.extend({
    * @property {String} pattern
    * @public
    */
-  pattern: computed('min', 'precision', function() {
-    let count = 60 / this.get('precision')
-    let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
+  pattern: computed("min", "precision", function() {
+    const count = 60 / this.get("precision");
+    const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
-    return `${this.get('min') < 0
-      ? '-?'
-      : ''}\\d+:(${minutes.map(m => padStart(m, 2)).join('|')})`
+    return `${
+      this.get("min") < 0 ? "-?" : ""
+    }\\d+:(${minutes.map(m => padStart(m, 2)).join("|")})`;
   }),
 
   change({ target: { validity, value } }) {
     if (validity.valid) {
-      let negative = /^-/.test(value)
+      const negative = /^-/.test(value);
 
-      let [h = NaN, m = NaN] = this.sanitize(value)
-        .split(':')
-        .map(n => abs(parseInt(n)) * (negative ? -1 : 1))
+      const [h = NaN, m = NaN] = this.sanitize(value)
+        .split(":")
+        .map(n => abs(parseInt(n)) * (negative ? -1 : 1));
 
-      this._change([h, m].some(isNaN) ? null : this._set(h, m))
+      this._change([h, m].some(isNaN) ? null : this._set(h, m));
     }
   },
 
@@ -78,8 +78,8 @@ export default SyTimepickerComponent.extend({
    * @property {String} displayValue
    * @public
    */
-  displayValue: computed('value', function() {
-    return this.get('value') ? formatDuration(this.get('value'), false) : ''
+  displayValue: computed("value", function() {
+    return this.get("value") ? formatDuration(this.get("value"), false) : "";
   }),
 
   /**
@@ -92,7 +92,7 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _set(h, m) {
-    return moment.duration({ h, m })
+    return moment.duration({ h, m });
   },
 
   /**
@@ -105,6 +105,6 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _add(h, m) {
-    return moment.duration(this.get('value')).add({ h, m })
+    return moment.duration(this.get("value")).add({ h, m });
   }
-})
+});

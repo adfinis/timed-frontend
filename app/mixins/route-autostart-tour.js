@@ -1,7 +1,7 @@
-import Mixin from '@ember/object/mixin'
-import RouteTourMixin from 'ember-site-tour/mixins/route-tour'
-import { schedule, later } from '@ember/runloop'
-import { inject as service } from '@ember/service'
+import Mixin from "@ember/object/mixin";
+import { schedule, later } from "@ember/runloop";
+import { inject as service } from "@ember/service";
+import RouteTourMixin from "ember-site-tour/mixins/route-tour";
 
 /**
  * Mixin for a route which has a tour
@@ -15,9 +15,9 @@ import { inject as service } from '@ember/service'
  * @public
  */
 export default Mixin.create(RouteTourMixin, {
-  autostartTour: service('autostart-tour'),
-  notify: service('notify'),
-  media: service('media'),
+  autostartTour: service("autostart-tour"),
+  notify: service("notify"),
+  media: service("media"),
 
   /**
    * Get the route name of the parent route
@@ -27,11 +27,11 @@ export default Mixin.create(RouteTourMixin, {
    * @private
    */
   _getParentRouteName() {
-    let parts = this.get('routeName').split('.')
+    const parts = this.get("routeName").split(".");
 
-    parts.pop()
+    parts.pop();
 
-    return parts.join('.')
+    return parts.join(".");
   },
 
   /**
@@ -50,14 +50,14 @@ export default Mixin.create(RouteTourMixin, {
    */
   _wantsTour(routeName, user) {
     return (
-      !user.get('tourDone') &&
-      !this.get('autostartTour')
-        .get('done')
+      !user.get("tourDone") &&
+      !this.get("autostartTour")
+        .get("done")
         .includes(routeName) &&
-      (this.get('media.isMd') ||
-        this.get('media.isLg') ||
-        this.get('media.isXl'))
-    )
+      (this.get("media.isMd") ||
+        this.get("media.isLg") ||
+        this.get("media.isXl"))
+    );
   },
 
   /**
@@ -67,18 +67,18 @@ export default Mixin.create(RouteTourMixin, {
    * @public
    */
   stopParentTour() {
-    let parentRouteName = this._getParentRouteName()
+    const parentRouteName = this._getParentRouteName();
 
     if (!parentRouteName.length) {
-      return
+      return;
     }
 
-    let tour = this.controllerFor(parentRouteName).get('tour')
+    const tour = this.controllerFor(parentRouteName).get("tour");
 
     if (tour) {
-      schedule('afterRender', this, () => {
-        tour.close()
-      })
+      schedule("afterRender", this, () => {
+        tour.close();
+      });
     }
   },
 
@@ -89,19 +89,19 @@ export default Mixin.create(RouteTourMixin, {
    * @public
    */
   startParentTour() {
-    let parentRouteName = this._getParentRouteName()
+    const parentRouteName = this._getParentRouteName();
 
     if (!parentRouteName.length) {
-      return
+      return;
     }
 
-    if (this._wantsTour(parentRouteName, this.modelFor('protected'))) {
-      let tour = this.controllerFor(parentRouteName).get('tour')
+    if (this._wantsTour(parentRouteName, this.modelFor("protected"))) {
+      const tour = this.controllerFor(parentRouteName).get("tour");
 
       if (tour) {
-        schedule('afterRender', this, () => {
-          tour.start()
-        })
+        schedule("afterRender", this, () => {
+          tour.start();
+        });
       }
     }
   },
@@ -113,41 +113,43 @@ export default Mixin.create(RouteTourMixin, {
    * @public
    */
   startTour() {
-    if (this._wantsTour(this.get('routeName'), this.modelFor('protected'))) {
-      schedule('afterRender', this, () => {
-        let tour = this.get('controller.tour')
+    if (this._wantsTour(this.get("routeName"), this.modelFor("protected"))) {
+      schedule("afterRender", this, () => {
+        const tour = this.get("controller.tour");
 
         /* istanbul ignore next */
-        tour.on('tour.end', async event => {
+        tour.on("tour.end", async event => {
           if (event.currentStep + 1 !== event.tour._steps.length) {
-            return
+            return;
           }
 
-          let done = this.get('autostartTour').get('done')
+          const done = this.get("autostartTour").get("done");
 
-          done.push(this.get('routeName'))
+          done.push(this.get("routeName"));
 
-          this.get('autostartTour').set('done', done)
+          this.get("autostartTour").set("done", done);
 
-          if (this.get('autostartTour').allDone()) {
+          if (this.get("autostartTour").allDone()) {
             try {
-              let user = this.modelFor('protected')
+              const user = this.modelFor("protected");
 
-              user.set('tourDone', true)
+              user.set("tourDone", true);
 
-              await user.save()
-              this.get('notify').info('Congratulations you completed the tour!')
+              await user.save();
+              this.get("notify").info(
+                "Congratulations you completed the tour!"
+              );
             } catch (error) {
               /* istanbul ignore next */
-              this.get('notify').error('Error while saving the user')
+              this.get("notify").error("Error while saving the user");
             }
           }
-        })
+        });
 
         later(this, () => {
-          tour.start()
-        })
-      })
+          tour.start();
+        });
+      });
     }
   },
 
@@ -157,11 +159,11 @@ export default Mixin.create(RouteTourMixin, {
    * @method activate
    * @public
    */
-  activate() {
-    this._super(...arguments)
+  activate(...args) {
+    this._super(...args);
 
-    this.stopParentTour()
-    this.startTour()
+    this.stopParentTour();
+    this.startTour();
   },
 
   /**
@@ -170,9 +172,9 @@ export default Mixin.create(RouteTourMixin, {
    * @method deactivate
    * @public
    */
-  deactivate() {
-    this.startParentTour()
+  deactivate(...args) {
+    this.startParentTour();
 
-    this._super(...arguments)
+    this._super(...args);
   }
-})
+});

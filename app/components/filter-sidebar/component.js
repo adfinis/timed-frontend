@@ -1,13 +1,13 @@
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 export default Component.extend({
-  tagName: '',
+  tagName: "",
 
   visible: false,
 
-  didInsertElement() {
-    this._super(...arguments)
+  didInsertElement(...args) {
+    this._super(...args);
 
-    this.set('destination', document.getElementById('filter-sidebar-target'))
+    this.set("destination", document.getElementById("filter-sidebar-target"));
   }
-})
+});

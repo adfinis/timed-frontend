@@ -3,8 +3,8 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from '@ember/controller'
-import { computed } from '@ember/object'
+import Controller from "@ember/controller";
+import { computed } from "@ember/object";
 
 /**
  * Controller to edit an activity
@@ -23,8 +23,8 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {Boolean} saveEnabled
    * @public
    */
-  saveEnabled: computed('changeset.{isValid,isDirty}', function() {
-    return this.get('changeset.isDirty') && this.get('changeset.isValid')
+  saveEnabled: computed("changeset.{isValid,isDirty}", function() {
+    return this.get("changeset.isDirty") && this.get("changeset.isValid");
   }),
 
   actions: {
@@ -36,9 +36,9 @@ const IndexActivitiesEditController = Controller.extend({
      * @public
      */
     validateChangeset(changeset) {
-      changeset.validate()
+      changeset.validate();
     }
   }
-})
+});
 
-export default IndexActivitiesEditController
+export default IndexActivitiesEditController;

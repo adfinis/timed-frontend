@@ -1,16 +1,16 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
-import moment from 'moment'
+import { setupTest } from "ember-qunit";
+import moment from "moment";
+import { module, test } from "qunit";
 
-module('Unit | Transform | django datetime', function(hooks) {
-  setupTest(hooks)
+module("Unit | Transform | django datetime", function(hooks) {
+  setupTest(hooks);
 
-  test('serializes', function(assert) {
-    let transform = this.owner.lookup('transform:django-datetime')
+  test("serializes", function(assert) {
+    const transform = this.owner.lookup("transform:django-datetime");
 
-    let zone = moment().utcOffset()
+    const zone = moment().utcOffset();
 
-    let datetime = moment({
+    const datetime = moment({
       y: 2017,
       M: 2, // moments months are zerobased
       d: 11,
@@ -18,17 +18,17 @@ module('Unit | Transform | django datetime', function(hooks) {
       m: 30,
       s: 50,
       ms: 11
-    }).utcOffset(zone)
+    }).utcOffset(zone);
 
-    let result = transform.serialize(datetime)
+    const result = transform.serialize(datetime);
 
-    assert.equal(result, datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
-  })
+    assert.equal(result, datetime.format("YYYY-MM-DDTHH:mm:ss.SSSSZ"));
+  });
 
-  test('deserializes', function(assert) {
-    let transform = this.owner.lookup('transform:django-datetime')
+  test("deserializes", function(assert) {
+    const transform = this.owner.lookup("transform:django-datetime");
 
-    let datetime = moment({
+    const datetime = moment({
       y: 2017,
       M: 2, // moments months are zerobased
       d: 11,
@@ -36,15 +36,15 @@ module('Unit | Transform | django datetime', function(hooks) {
       m: 30,
       s: 50,
       ms: 11
-    }).utc()
+    }).utc();
 
-    assert.notOk(transform.deserialize(''))
-    assert.notOk(transform.deserialize(null))
+    assert.notOk(transform.deserialize(""));
+    assert.notOk(transform.deserialize(null));
 
-    let result = transform
-      .deserialize(datetime.format('YYYY-MM-DDTHH:mm:ss.SSSSZ'))
-      .utc()
+    const result = transform
+      .deserialize(datetime.format("YYYY-MM-DDTHH:mm:ss.SSSSZ"))
+      .utc();
 
-    assert.equal(result.toISOString(), datetime.toISOString())
-  })
-})
+    assert.equal(result.toISOString(), datetime.toISOString());
+  });
+});

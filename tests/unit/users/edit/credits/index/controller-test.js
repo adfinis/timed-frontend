@@ -1,11 +1,11 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
+import { setupTest } from "ember-qunit";
+import { module, test } from "qunit";
 
-module('Unit | Controller | users/edit/credits/index', function(hooks) {
-  setupTest(hooks)
+module("Unit | Controller | users/edit/credits/index", function(hooks) {
+  setupTest(hooks);
 
-  test('exists', function(assert) {
-    let controller = this.owner.lookup('controller:users/edit/credits/index')
-    assert.ok(controller)
-  })
-})
+  test("exists", function(assert) {
+    const controller = this.owner.lookup("controller:users/edit/credits/index");
+    assert.ok(controller);
+  });
+});

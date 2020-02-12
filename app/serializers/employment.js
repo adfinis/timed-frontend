@@ -3,7 +3,7 @@
  * @submodule timed-serializers
  * @public
  */
-import ApplicationSerializer from 'timed/serializers/application'
+import ApplicationSerializer from "timed/serializers/application";
 
 /**
  * The employment block serializer
@@ -25,7 +25,7 @@ export default ApplicationSerializer.extend({
    * @public
    */
   attrs: {
-    start: 'start-date',
-    end: 'end-date'
+    start: "start-date",
+    end: "end-date"
   }
-})
+});

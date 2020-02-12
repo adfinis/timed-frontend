@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 /**
  * Target component for the sy modal
@@ -19,5 +19,5 @@ export default Component.extend({
    * @property {String} elementId
    * @public
    */
-  elementId: 'sy-modals'
-})
+  elementId: "sy-modals"
+});

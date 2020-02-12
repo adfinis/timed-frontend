@@ -3,8 +3,8 @@
  * @submodule timed-helpers
  * @public
  */
-import { helper } from '@ember/component/helper'
-import moment from 'moment'
+import { helper } from "@ember/component/helper";
+import moment from "moment";
 
 /**
  * Helper to determine the color of a balance
@@ -18,15 +18,15 @@ import moment from 'moment'
  * @public
  */
 export function balanceHighlightClass([balance]) {
-  let minutes = moment.isDuration(balance) ? balance.asMinutes() : 0
+  const minutes = moment.isDuration(balance) ? balance.asMinutes() : 0;
 
   if (minutes > 0) {
-    return 'color-success'
+    return "color-success";
   } else if (minutes < 0) {
-    return 'color-danger'
+    return "color-danger";
   }
 
-  return ''
+  return "";
 }
 
-export default helper(balanceHighlightClass)
+export default helper(balanceHighlightClass);

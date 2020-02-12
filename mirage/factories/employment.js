@@ -1,7 +1,7 @@
-import { Factory, trait } from 'ember-cli-mirage'
-import faker from 'faker'
-import DjangoDurationTransform from 'timed/transforms/django-duration'
-import moment from 'moment'
+import { Factory, trait } from "ember-cli-mirage";
+import faker from "faker";
+import moment from "moment";
+import DjangoDurationTransform from "timed/transforms/django-duration";
 
 export default Factory.extend({
   percentage: faker.random.arrayElement([50, 60, 80, 100]),
@@ -9,11 +9,11 @@ export default Factory.extend({
   // user: association(),
 
   worktimePerDay() {
-    let worktime = moment.duration(
-      moment.duration({ h: 8, m: 30 }) / 100 * this.percentage
-    )
+    const worktime = moment.duration(
+      (moment.duration({ h: 8, m: 30 }) / 100) * this.percentage
+    );
 
-    return DjangoDurationTransform.create().serialize(worktime)
+    return DjangoDurationTransform.create().serialize(worktime);
   },
 
   start: () => faker.date.past(4),
@@ -25,6 +25,6 @@ export default Factory.extend({
   }),
 
   afterCreate(employment, server) {
-    employment.update({ locationId: server.create('location').id })
+    employment.update({ locationId: server.create("location").id });
   }
-})
+});

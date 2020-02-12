@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 /**
  * Main component for sy modal
@@ -16,10 +16,10 @@ import Component from '@ember/component'
  *   {{/modal.header}}
  *   {{#modal.body}}
  *     Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-  *    eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
-  *    diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
-  *    Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
-  *    dolor sit amet.
+ *    eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed
+ *    diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum.
+ *    Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum
+ *    dolor sit amet.
  *   {{/modal.body}}
  *   {{#modal.footer}}
  *    <button class="btn btn-default" {{action 'close'}}>Close</button>
@@ -53,9 +53,9 @@ export default Component.extend({
      * @public
      */
     close() {
-      this.set('visible', false)
+      this.set("visible", false);
 
-      this.getWithDefault('on-close', () => {})()
+      this.getWithDefault("on-close", () => {})();
     }
   }
-})
+});

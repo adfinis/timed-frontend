@@ -3,9 +3,9 @@
  * @submodule timed-services
  * @public
  */
-import { inject as service } from '@ember/service'
-import { computed } from '@ember/object'
-import AjaxService from 'ember-ajax/services/ajax'
+import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
+import AjaxService from "ember-ajax/services/ajax";
 
 /**
  * The ajax service
@@ -21,7 +21,7 @@ export default AjaxService.extend({
    * @property {EmberSimpleAuth.SessionService} session
    * @public
    */
-  session: service('session'),
+  session: service("session"),
 
   /**
    * The HTTP request headers
@@ -31,20 +31,20 @@ export default AjaxService.extend({
    * @property {Object} headers
    * @public
    */
-  headers: computed('session.data.authenticated.token', function() {
-    let headers = {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json'
-    }
+  headers: computed("session.data.authenticated.token", function() {
+    const headers = {
+      Accept: "application/vnd.api+json",
+      "Content-Type": "application/vnd.api+json"
+    };
 
-    let auth = this.get('session.data.authenticated.token')
+    const auth = this.get("session.data.authenticated.token")
       ? {
           Authorization: `Bearer ${this.get(
-            'session.data.authenticated.token'
+            "session.data.authenticated.token"
           )}`
         }
-      : {}
+      : {};
 
-    return Object.assign(headers, auth)
+    return Object.assign(headers, auth);
   })
-})
+});

@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import { scheduleOnce } from '@ember/runloop'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { scheduleOnce } from "@ember/runloop";
 
 /**
  * Component for an adcssy styled checkbox
@@ -15,20 +15,20 @@ import { scheduleOnce } from '@ember/runloop'
  * @public
  */
 export default Component.extend({
-  checkboxElementId: computed('elementId', function() {
-    return `${this.get('elementId')}-checkbox`
+  checkboxElementId: computed("elementId", function() {
+    return `${this.get("elementId")}-checkbox`;
   }),
 
   didReceiveAttrs() {
-    scheduleOnce('afterRender', () => {
-      if (this.get('checked') === null) {
-        let cb = this.get('element').querySelector(
-          `#${this.get('checkboxElementId')}`
-        )
+    scheduleOnce("afterRender", () => {
+      if (this.get("checked") === null) {
+        const cb = this.get("element").querySelector(
+          `#${this.get("checkboxElementId")}`
+        );
 
-        cb.indeterminate = true
+        cb.indeterminate = true;
       }
-    })
+    });
   },
 
   /**
@@ -37,7 +37,7 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: ['checkbox'],
+  classNames: ["checkbox"],
 
   /**
    * Action to call if the checked state has changed
@@ -45,7 +45,7 @@ export default Component.extend({
    * @method on-change
    * @public
    */
-  'on-change'() {},
+  "on-change"() {},
 
   /**
    * The label of the checkbox
@@ -53,7 +53,7 @@ export default Component.extend({
    * @property {String} label
    * @public
    */
-  label: '',
+  label: "",
 
   /**
    * Whether the checkbox is checked
@@ -70,4 +70,4 @@ export default Component.extend({
    * @public
    */
   disabled: false
-})
+});

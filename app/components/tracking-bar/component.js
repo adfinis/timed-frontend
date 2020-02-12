@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { inject as service } from '@ember/service'
+import Component from "@ember/component";
+import { inject as service } from "@ember/service";
 
 /**
  * The tracking bar component
@@ -14,7 +14,7 @@ import { inject as service } from '@ember/service'
  * @public
  */
 export default Component.extend({
-  tracking: service('tracking'),
+  tracking: service("tracking"),
 
-  classNames: ['tracking-bar']
-})
+  classNames: ["tracking-bar"]
+});

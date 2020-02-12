@@ -3,8 +3,8 @@
  * @submodule timed-helpers
  * @public
  */
-import { helper } from '@ember/component/helper'
-import formatDuration from 'timed/utils/format-duration'
+import { helper } from "@ember/component/helper";
+import formatDuration from "timed/utils/format-duration";
 
 /**
  * The format duration helper
@@ -14,6 +14,6 @@ import formatDuration from 'timed/utils/format-duration'
  * @return {String} The formatted duration
  * @public
  */
-export const formatDurationFn = args => formatDuration(...args)
+export const formatDurationFn = args => formatDuration(...args);
 
-export default helper(formatDurationFn)
+export default helper(formatDurationFn);

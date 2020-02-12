@@ -1,14 +1,14 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
-import moment from 'moment'
+import { setupTest } from "ember-qunit";
+import moment from "moment";
+import { module, test } from "qunit";
 
-module('Unit | Transform | django duration', function(hooks) {
-  setupTest(hooks)
+module("Unit | Transform | django duration", function(hooks) {
+  setupTest(hooks);
 
-  test('serializes', function(assert) {
-    let transform = this.owner.lookup('transform:django-duration')
+  test("serializes", function(assert) {
+    const transform = this.owner.lookup("transform:django-duration");
 
-    assert.notOk(transform.serialize(null))
+    assert.notOk(transform.serialize(null));
 
     assert.equal(
       transform.serialize(
@@ -18,8 +18,8 @@ module('Unit | Transform | django duration', function(hooks) {
           seconds: 3
         })
       ),
-      '01:02:03'
-    )
+      "01:02:03"
+    );
 
     assert.equal(
       transform.serialize(
@@ -30,8 +30,8 @@ module('Unit | Transform | django duration', function(hooks) {
           seconds: 4
         })
       ),
-      '1 02:03:04'
-    )
+      "1 02:03:04"
+    );
 
     assert.equal(
       transform.serialize(
@@ -42,8 +42,8 @@ module('Unit | Transform | django duration', function(hooks) {
           milliseconds: 4
         })
       ),
-      '01:02:03.004000'
-    )
+      "01:02:03.004000"
+    );
 
     assert.equal(
       transform.serialize(
@@ -55,8 +55,8 @@ module('Unit | Transform | django duration', function(hooks) {
           milliseconds: 5
         })
       ),
-      '1 02:03:04.005000'
-    )
+      "1 02:03:04.005000"
+    );
 
     assert.equal(
       transform.serialize(
@@ -66,8 +66,8 @@ module('Unit | Transform | django duration', function(hooks) {
           seconds: -3
         })
       ),
-      '-1 22:57:57'
-    )
+      "-1 22:57:57"
+    );
 
     assert.equal(
       transform.serialize(
@@ -78,13 +78,13 @@ module('Unit | Transform | django duration', function(hooks) {
           seconds: -3
         })
       ),
-      '-10 22:57:57'
-    )
-  })
+      "-10 22:57:57"
+    );
+  });
 
-  test('deserializes', function(assert) {
-    let transform = this.owner.lookup('transform:django-duration')
+  test("deserializes", function(assert) {
+    const transform = this.owner.lookup("transform:django-duration");
 
-    assert.ok(transform.deserialize('00:00:00'))
-  })
-})
+    assert.ok(transform.deserialize("00:00:00"));
+  });
+});

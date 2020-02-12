@@ -3,11 +3,11 @@
  * @submodule timed-utils
  * @public
  */
-import { padStartTpl } from 'ember-pad/utils/pad'
-import moment from 'moment'
+import { padStartTpl } from "ember-pad/utils/pad";
+import moment from "moment";
 
-const { floor, abs } = Math
-const padTpl2 = padStartTpl(2)
+const { floor, abs } = Math;
+const padTpl2 = padStartTpl(2);
 
 /**
  * Converts a moment duration into a string with zeropadded digits
@@ -19,24 +19,24 @@ const padTpl2 = padStartTpl(2)
  * @public
  */
 export default function formatDuration(duration, seconds = true) {
-  if (typeof duration === 'number') {
-    duration = moment.duration(duration)
+  if (typeof duration === "number") {
+    duration = moment.duration(duration);
   }
 
   if (!moment.isDuration(duration)) {
-    return seconds ? '--:--:--' : '--:--'
+    return seconds ? "--:--:--" : "--:--";
   }
 
-  let prefix = duration < 0 ? '-' : ''
+  const prefix = duration < 0 ? "-" : "";
 
-  let hours = floor(abs(duration.asHours()))
-  let minutes = abs(duration.minutes())
+  const hours = floor(abs(duration.asHours()));
+  const minutes = abs(duration.minutes());
 
   if (seconds) {
-    let seconds = abs(duration.seconds())
+    const seconds = abs(duration.seconds());
 
-    return prefix + padTpl2`${hours}:${minutes}:${seconds}`
+    return prefix + padTpl2`${hours}:${minutes}:${seconds}`;
   }
 
-  return prefix + padTpl2`${hours}:${minutes}`
+  return prefix + padTpl2`${hours}:${minutes}`;
 }

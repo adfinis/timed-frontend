@@ -1,5 +1,5 @@
-import SyDurationpickerComponent from 'timed/components/sy-durationpicker/component'
-import moment from 'moment'
+import moment from "moment";
+import SyDurationpickerComponent from "timed/components/sy-durationpicker/component";
 
 export default SyDurationpickerComponent.extend({
   maxlength: 5,
@@ -9,6 +9,6 @@ export default SyDurationpickerComponent.extend({
   min: moment.duration({ h: 0, m: 0 }),
 
   sanitize(value) {
-    return value.replace(/[^\d:]/, '')
+    return value.replace(/[^\d:]/, "");
   }
-})
+});

@@ -3,8 +3,8 @@
   "version": "0.13.0",
   "description": "A time tracking software written in Ember.js",
   "repository": "https://github.com/adfinis-sygroup/timed-frontend",
-  "license": "AGPL-3.0",
   "author": "Adfinis SyGroup AG <info@adfinis-sygroup.ch>",
+  "license": "AGPL-3.0",
   "directories": {
     "test": "tests"
   },
@@ -19,6 +19,7 @@
     "node": "10.* || >= 12.*"
   },
   "devDependencies": {
+    "@adfinis-sygroup/eslint-config": "^1.2.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@ember/jquery": "^1.1.0",
     "@ember/optional-features": "^1.1.0",
@@ -80,14 +81,16 @@
     "ember-truth-helpers": "^2.1.0",
     "ember-validated-form": "^1.4.2",
     "ember-wormhole": "^0.5.5",
+    "eslint": "^6.8.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-ember": "^6.2.0",
+    "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-node": "^9.0.1",
-    "eslint-plugin-prettier": "^2.1.2",
+    "eslint-plugin-prettier": "^3.1.2",
     "faker": "^4.1.0",
     "loader.js": "^4.7.0",
     "pagination-pager": "^3.2.0",
-    "prettier": "^1.7.4",
+    "prettier": "1.19.1",
     "qunit-dom": "^0.8.4",
     "sass": "^1.24.2",
     "typeface-source-sans-pro": "^0.0.75"

@@ -3,9 +3,9 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from '@ember/controller'
-import { inject as service } from '@ember/service'
-import { task } from 'ember-concurrency'
+import Controller from "@ember/controller";
+import { inject as service } from "@ember/service";
+import { task } from "ember-concurrency";
 
 /**
  * Login controller
@@ -21,7 +21,7 @@ export default Controller.extend({
    * @property {EmberSimpleAuth.SessionService} session
    * @public
    */
-  session: service('session'),
+  session: service("session"),
 
   /**
    * The notify service
@@ -29,7 +29,7 @@ export default Controller.extend({
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Authenticate the user
@@ -41,14 +41,14 @@ export default Controller.extend({
    */
   authenticate: task(function*(username, password) {
     try {
-      yield this.get('session').authenticate('authenticator:application', {
+      yield this.get("session").authenticate("authenticator:application", {
         username,
         password
-      })
+      });
 
-      this.store.unloadAll()
+      this.store.unloadAll();
     } catch (e) {
-      this.get('notify').error('Wrong username or password')
+      this.get("notify").error("Wrong username or password");
     }
   }).drop()
-})
+});

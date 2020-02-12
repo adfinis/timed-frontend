@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import { htmlSafe } from '@ember/string'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { htmlSafe } from "@ember/string";
 
 /**
  * The weekly overview
@@ -21,7 +21,7 @@ export default Component.extend({
    * @property {String[]} attributeBindings
    * @public
    */
-  attributeBindings: ['style'],
+  attributeBindings: ["style"],
 
   /**
    * The height of the overview in pixels
@@ -37,8 +37,8 @@ export default Component.extend({
    * @property {Number} hours
    * @public
    */
-  hours: computed('expected', function() {
-    return this.get('expected').asHours()
+  hours: computed("expected", function() {
+    return this.get("expected").asHours();
   }),
 
   /**
@@ -49,7 +49,7 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed('height', function() {
-    return htmlSafe(`height: ${this.get('height')}px;`)
+  style: computed("height", function() {
+    return htmlSafe(`height: ${this.get("height")}px;`);
   })
-})
+});

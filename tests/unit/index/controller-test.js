@@ -1,16 +1,16 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
-import { trackingStub } from 'timed/tests/integration/components/tracking-bar/component-test'
+import { setupTest } from "ember-qunit";
+import { module, test } from "qunit";
+import { trackingStub } from "timed/tests/integration/components/tracking-bar/component-test";
 
-module('Unit | Controller | index', function(hooks) {
-  setupTest(hooks)
+module("Unit | Controller | index", function(hooks) {
+  setupTest(hooks);
 
   hooks.beforeEach(function() {
-    this.owner.register('service:tracking', trackingStub)
-  })
+    this.owner.register("service:tracking", trackingStub);
+  });
 
-  test('exists', function(assert) {
-    let controller = this.owner.lookup('controller:index')
-    assert.ok(controller)
-  })
-})
+  test("exists", function(assert) {
+    const controller = this.owner.lookup("controller:index");
+    assert.ok(controller);
+  });
+});

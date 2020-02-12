@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import SyDatepickerComponent from 'timed/components/sy-datepicker/component'
+import SyDatepickerComponent from "timed/components/sy-datepicker/component";
 
 /**
  * The sy datepicker btn component
@@ -12,4 +12,4 @@ import SyDatepickerComponent from 'timed/components/sy-datepicker/component'
  * @extends SyDatepickerComponent
  * @public
  */
-export default SyDatepickerComponent.extend({})
+export default SyDatepickerComponent.extend({});

@@ -1,34 +1,33 @@
-/* global require, module */
+"use strict";
 
-'use strict'
-
-const EmberApp = require('ember-cli/lib/broccoli/ember-app')
-const Funnel = require('broccoli-funnel')
+// eslint-disable-next-line node/no-extraneous-require
+const Funnel = require("broccoli-funnel");
+const EmberApp = require("ember-cli/lib/broccoli/ember-app");
 
 module.exports = function(defaults) {
-  let app = new EmberApp(defaults, {
+  const app = new EmberApp(defaults, {
     sassOptions: {
       onlyIncluded: true
     },
     babel: {
-      plugins: ['@babel/plugin-proposal-object-rest-spread']
+      plugins: ["@babel/plugin-proposal-object-rest-spread"]
     },
-    'ember-site-tour': {
+    "ember-site-tour": {
       importHopscotchJS: true,
       importHopscotchCSS: true
     }
-  })
+  });
 
-  app.import('vendor/adcssy.min.css')
+  app.import("vendor/adcssy.min.css");
 
-  app.import('node_modules/downloadjs/download.min.js', {
-    using: [{ transformation: 'amd', as: 'downloadjs' }]
-  })
+  app.import("node_modules/downloadjs/download.min.js", {
+    using: [{ transformation: "amd", as: "downloadjs" }]
+  });
 
-  let fonts = new Funnel('node_modules/typeface-source-sans-pro/files', {
-    include: ['*.woff', '*.woff2'],
-    destDir: '/assets/files/'
-  })
+  const fonts = new Funnel("node_modules/typeface-source-sans-pro/files", {
+    include: ["*.woff", "*.woff2"],
+    destDir: "/assets/files/"
+  });
 
-  return app.toTree([fonts])
-}
+  return app.toTree([fonts]);
+};

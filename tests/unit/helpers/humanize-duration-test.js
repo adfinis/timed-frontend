@@ -1,29 +1,29 @@
-import { module, test } from 'qunit'
-import { humanizeDurationFn } from 'timed/helpers/humanize-duration'
-import moment from 'moment'
+import moment from "moment";
+import { module, test } from "qunit";
+import { humanizeDurationFn } from "timed/helpers/humanize-duration";
 
-module('Unit | Helper | humanize duration', function() {
-  test('works', function(assert) {
-    let duration = moment.duration({
+module("Unit | Helper | humanize duration", function() {
+  test("works", function(assert) {
+    const duration = moment.duration({
       hours: 3,
       minutes: 56,
       seconds: 59
-    })
+    });
 
-    let result = humanizeDurationFn([duration])
+    const result = humanizeDurationFn([duration]);
 
-    assert.equal(result, '3h 56m')
-  })
+    assert.equal(result, "3h 56m");
+  });
 
-  test('works with seconds', function(assert) {
-    let duration = moment.duration({
+  test("works with seconds", function(assert) {
+    const duration = moment.duration({
       hours: 3,
       minutes: 56,
       seconds: 59
-    })
+    });
 
-    let result = humanizeDurationFn([duration, true])
+    const result = humanizeDurationFn([duration, true]);
 
-    assert.equal(result, '3h 56m 59s')
-  })
-})
+    assert.equal(result, "3h 56m 59s");
+  });
+});

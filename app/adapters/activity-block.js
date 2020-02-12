@@ -3,7 +3,7 @@
  * @submodule timed-adapters
  * @public
  */
-import ApplicationAdapter from 'timed/adapters/application'
+import ApplicationAdapter from "timed/adapters/application";
 
 /**
  * The activity block adapter
@@ -23,8 +23,8 @@ export default ApplicationAdapter.extend({
    * @return {String} The URL
    * @public
    */
-  urlForUpdateRecord() {
-    return `${this._super(...arguments)}?include=activity`
+  urlForUpdateRecord(...args) {
+    return `${this._super(...args)}?include=activity`;
   },
 
   /**
@@ -37,7 +37,7 @@ export default ApplicationAdapter.extend({
    * @return {String} The URL
    * @public
    */
-  urlForCreateRecord() {
-    return `${this._super(...arguments)}?include=activity`
+  urlForCreateRecord(...args) {
+    return `${this._super(...args)}?include=activity`;
   }
-})
+});

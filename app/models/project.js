@@ -3,10 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-
-import { belongsTo, hasMany } from 'ember-data/relationships'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo, hasMany } from "ember-data/relationships";
 
 /**
  * The project model
@@ -23,7 +22,7 @@ export default Model.extend({
    * @type {String}
    * @public
    */
-  name: attr('string', { defaultValue: '' }),
+  name: attr("string", { defaultValue: "" }),
 
   /**
    * Whether the project is archived
@@ -32,7 +31,7 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  archived: attr('boolean', { defaultValue: false }),
+  archived: attr("boolean", { defaultValue: false }),
 
   /**
    * The estimated time for this project
@@ -40,7 +39,7 @@ export default Model.extend({
    * @property {moment.duration} estimatedTime
    * @public
    */
-  estimatedTime: attr('django-duration'),
+  estimatedTime: attr("django-duration"),
 
   /**
    * The customer
@@ -49,7 +48,7 @@ export default Model.extend({
    * @type {Customer}
    * @public
    */
-  customer: belongsTo('customer'),
+  customer: belongsTo("customer"),
 
   /**
    * The billing
@@ -57,7 +56,7 @@ export default Model.extend({
    * @property {BillingType} billingType
    * @public
    */
-  billingType: belongsTo('billing-type'),
+  billingType: belongsTo("billing-type"),
 
   /**
    * The tasks
@@ -66,7 +65,7 @@ export default Model.extend({
    * @type {Task[]}
    * @public
    */
-  tasks: hasMany('task'),
+  tasks: hasMany("task"),
 
   /**
    * Reviewers of this project
@@ -74,5 +73,5 @@ export default Model.extend({
    * @property {User[]} reviewers
    * @public
    */
-  reviewers: hasMany('user')
-})
+  reviewers: hasMany("user")
+});

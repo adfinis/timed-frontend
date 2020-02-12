@@ -1,9 +1,9 @@
-import { selectChoose } from 'ember-power-select/test-support'
+import { selectChoose } from "ember-power-select/test-support";
 
-export default async function(selector = '') {
+export default async function(selector = "") {
   await selectChoose(
     `${selector} .user-select`,
-    '.ember-power-select-option',
+    ".ember-power-select-option",
     0
-  )
+  );
 }

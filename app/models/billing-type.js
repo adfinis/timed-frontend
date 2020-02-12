@@ -3,8 +3,8 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
 
 /**
  * The billing type model
@@ -20,5 +20,5 @@ export default Model.extend({
    * @property {String} name
    * @public
    */
-  name: attr('string')
-})
+  name: attr("string")
+});

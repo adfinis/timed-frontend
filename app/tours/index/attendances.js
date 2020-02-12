@@ -1,8 +1,8 @@
 export default [
   {
-    target: '.btn-toolbar .btn-success',
-    placement: 'left',
-    title: 'Add attendance',
+    target: ".btn-toolbar .btn-success",
+    placement: "left",
+    title: "Add attendance",
     content: `
     <p>
       Attendances represent time blocks in which you were at the workplace.
@@ -15,9 +15,9 @@ export default [
     `
   },
   {
-    target: '.tab-content .visible-md',
-    placement: 'top',
-    title: 'Edit attendance',
+    target: ".tab-content .visible-md",
+    placement: "top",
+    title: "Edit attendance",
     content: `
     <p>
       Now you can just adjust the time block by grabing and moving it or
@@ -29,4 +29,4 @@ export default [
     </p>
     `
   }
-]
+];

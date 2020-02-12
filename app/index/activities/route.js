@@ -3,11 +3,11 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { inject as service } from '@ember/service'
-import moment from 'moment'
-import RSVP from 'rsvp'
-import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import moment from "moment";
+import { resolve } from "rsvp";
+import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 /**
  * The index activities route
@@ -23,7 +23,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * The tracking service
@@ -31,10 +31,10 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {TrackingService} tracking
    * @public
    */
-  tracking: service('tracking'),
+  tracking: service("tracking"),
 
   model() {
-    return this.modelFor('index')
+    return this.modelFor("index");
   },
 
   /**
@@ -44,10 +44,10 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @param {Ember.Controller} controller The controller
    * @public
    */
-  setupController(controller) {
-    this._super(...arguments)
+  setupController(controller, ...args) {
+    this._super(controller, ...args);
 
-    controller.set('user', this.modelFor('protected'))
+    controller.set("user", this.modelFor("protected"));
   },
 
   /**
@@ -66,13 +66,13 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     editActivity(activity) {
-      if (!activity.get('transferred')) {
-        let { id } = this.paramsFor('index.activities.edit')
+      if (!activity.get("transferred")) {
+        const { id } = this.paramsFor("index.activities.edit");
 
-        if (id === activity.get('id')) {
-          this.transitionTo('index.activities')
+        if (id === activity.get("id")) {
+          this.transitionTo("index.activities");
         } else {
-          this.transitionTo('index.activities.edit', activity.get('id'))
+          this.transitionTo("index.activities.edit", activity.get("id"));
         }
       }
     },
@@ -85,21 +85,21 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     async startActivity(activity) {
-      if (!activity.get('date').isSame(moment(), 'day')) {
-        activity = this.store.createRecord('activity', {
-          ...activity.getProperties('task', 'comment')
-        })
+      if (!activity.get("date").isSame(moment(), "day")) {
+        activity = this.store.createRecord("activity", {
+          ...activity.getProperties("task", "comment")
+        });
       }
 
-      await this.get('tracking.stopActivity').perform()
+      await this.get("tracking.stopActivity").perform();
 
-      this.set('tracking.activity', activity)
+      this.set("tracking.activity", activity);
 
-      await this.get('tracking.startActivity').perform()
+      await this.get("tracking.startActivity").perform();
 
-      await this.transitionTo('index.activities', {
-        queryParams: { day: moment().format('YYYY-MM-DD') }
-      })
+      await this.transitionTo("index.activities", {
+        queryParams: { day: moment().format("YYYY-MM-DD") }
+      });
     },
 
     /**
@@ -110,9 +110,9 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     stopActivity(activity) {
-      this.set('tracking.activity', activity)
+      this.set("tracking.activity", activity);
 
-      this.get('tracking.stopActivity').perform()
+      this.get("tracking.stopActivity").perform();
     },
 
     /**
@@ -122,19 +122,21 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     generateReportsCheck() {
-      let hasUnknown = !!this.get('controller.activities').findBy(
-        'task.id',
+      const hasUnknown = !!this.get("controller.activities").findBy(
+        "task.id",
         undefined
-      )
-      let hasOverlapping = !!this.get('controller.sortedActivities').find(a => {
-        return a.get('active') && !a.get('from').isSame(moment(), 'day')
-      })
+      );
+      const hasOverlapping = !!this.get("controller.sortedActivities").find(
+        a => {
+          return a.get("active") && !a.get("from").isSame(moment(), "day");
+        }
+      );
 
-      this.set('controller.showUnknownWarning', hasUnknown)
-      this.set('controller.showOverlappingWarning', hasOverlapping)
+      this.set("controller.showUnknownWarning", hasUnknown);
+      this.set("controller.showOverlappingWarning", hasOverlapping);
 
       if (!hasUnknown && !hasOverlapping) {
-        this.send('generateReports')
+        this.send("generateReports");
       }
     },
 
@@ -145,70 +147,70 @@ export default Route.extend(RouteAutostartTourMixin, {
      * @public
      */
     async generateReports() {
-      this.set('controller.showUnknownWarning', false)
-      this.set('controller.showOverlappingWarning', false)
+      this.set("controller.showUnknownWarning", false);
+      this.set("controller.showOverlappingWarning", false);
 
       try {
-        await this.get('controller.activities')
+        await this.get("controller.activities")
           .filter(
             a =>
-              a.get('task.id') &&
-              !(a.get('active') && !a.get('from').isSame(moment(), 'day')) &&
-              !a.get('transferred')
+              a.get("task.id") &&
+              !(a.get("active") && !a.get("from").isSame(moment(), "day")) &&
+              !a.get("transferred")
           )
           .reduce(async (reducer, activity) => {
-            let duration = activity.get('duration')
+            const duration = activity.get("duration");
 
-            if (activity.get('active')) {
-              duration.add(moment().diff(activity.get('from')))
+            if (activity.get("active")) {
+              duration.add(moment().diff(activity.get("from")));
 
-              await this.get('tracking.stopActivity').perform()
-              this.set('tracking.activity', activity)
-              await this.get('tracking.startActivity').perform()
+              await this.get("tracking.stopActivity").perform();
+              this.set("tracking.activity", activity);
+              await this.get("tracking.startActivity").perform();
             }
 
-            let data = {
+            const data = {
               duration,
-              date: activity.get('date'),
-              task: activity.get('task'),
-              review: activity.get('review'),
-              notBillable: activity.get('notBillable'),
-              comment: activity.get('comment').trim()
-            }
+              date: activity.get("date"),
+              task: activity.get("task"),
+              review: activity.get("review"),
+              notBillable: activity.get("notBillable"),
+              comment: activity.get("comment").trim()
+            };
 
-            let report = this.store.peekAll('report').find(r => {
+            let report = this.store.peekAll("report").find(r => {
               return (
-                (!r.get('user.id') ||
-                  r.get('user.id') === activity.get('user.id')) &&
-                r.get('date').isSame(data.date, 'day') &&
-                r.get('comment').trim() === data.comment &&
-                r.get('task.id') === data.task.get('id') &&
-                r.get('review') === data.review &&
-                r.get('notBillable') === data.notBillable &&
-                !r.get('verfiedBy') &&
-                !r.get('isDeleted')
-              )
-            })
+                (!r.get("user.id") ||
+                  r.get("user.id") === activity.get("user.id")) &&
+                r.get("date").isSame(data.date, "day") &&
+                r.get("comment").trim() === data.comment &&
+                r.get("task.id") === data.task.get("id") &&
+                r.get("review") === data.review &&
+                r.get("notBillable") === data.notBillable &&
+                !r.get("verfiedBy") &&
+                !r.get("isDeleted")
+              );
+            });
 
             if (report) {
-              data.duration.add(report.get('duration'))
-              report.set('duration', data.duration)
+              data.duration.add(report.get("duration"));
+              report.set("duration", data.duration);
             } else {
-              report = this.store.createRecord('report', data)
+              report = this.store.createRecord("report", data);
             }
 
-            activity.set('transferred', true)
+            activity.set("transferred", true);
 
             return reducer
               .then(activity.save.bind(activity))
-              .then(report.save.bind(report))
-          }, RSVP.resolve())
+              .then(report.save.bind(report));
+          }, resolve());
 
-        await this.transitionTo('index.reports')
+        await this.transitionTo("index.reports");
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while generating reports')
+        this.get("notify").error("Error while generating reports");
       }
     }
   }
-})
+});

@@ -3,17 +3,17 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import { inject as service } from '@ember/service'
-import hbs from 'htmlbars-inline-precompile'
-import { later } from '@ember/runloop'
-import customerOptionTemplate from 'timed/templates/customer-option'
-import projectOptionTemplate from 'timed/templates/project-option'
-import taskOptionTemplate from 'timed/templates/task-option'
-import { resolve } from 'rsvp'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { later } from "@ember/runloop";
+import { inject as service } from "@ember/service";
+import hbs from "htmlbars-inline-precompile";
+import { resolve } from "rsvp";
+import customerOptionTemplate from "timed/templates/customer-option";
+import projectOptionTemplate from "timed/templates/project-option";
+import taskOptionTemplate from "timed/templates/task-option";
 
-const SELECTED_TEMPLATE = hbs`{{selected.name}}`
+const SELECTED_TEMPLATE = hbs`{{selected.name}}`;
 
 /**
  * Component for selecting a task, which consists of selecting a customer and
@@ -24,8 +24,8 @@ const SELECTED_TEMPLATE = hbs`{{selected.name}}`
  * @public
  */
 export default Component.extend({
-  store: service('store'),
-  tracking: service('tracking'),
+  store: service("store"),
+  tracking: service("tracking"),
 
   /**
    * HTML tag name for the component
@@ -36,7 +36,7 @@ export default Component.extend({
    * @property {String} tagName
    * @public
    */
-  tagName: '',
+  tagName: "",
 
   /**
    * Init hook, initially load customers and recent tasks
@@ -44,20 +44,20 @@ export default Component.extend({
    * @method init
    * @public
    */
-  async init() {
-    this._super(...arguments)
+  async init(...args) {
+    this._super(...args);
 
     try {
-      await this.get('tracking.customers').perform()
-      await this.get('tracking.recentTasks').perform()
+      await this.get("tracking.customers").perform();
+      await this.get("tracking.recentTasks").perform();
     } catch (e) {
       /* istanbul ignore next */
       if (e.taskInstance && e.taskInstance.isCanceling) {
-        return
+        return;
       }
 
       /* istanbul ignore next */
-      throw e
+      throw e;
     }
   },
 
@@ -69,28 +69,24 @@ export default Component.extend({
    * @public
    */
   didReceiveAttrs() {
-    this._super(...arguments)
+    this._super();
 
-    this._setInitial()
+    this._setInitial();
   },
 
   _setInitial() {
-    let { customer, project, task } = this.getWithDefault('initial', {
+    const { customer, project, task } = this.getWithDefault("initial", {
       customer: null,
       project: null,
       task: null
-    })
+    });
 
-    if (task && !this.get('task')) {
-      return this.set('task', task)
-    }
-
-    if (project && !this.get('project')) {
-      return this.set('project', project)
-    }
-
-    if (customer && !this.get('customer')) {
-      return this.set('customer', customer)
+    if (task && !this.get("task")) {
+      this.set("task", task);
+    } else if (project && !this.get("project")) {
+      this.set("project", project);
+    } else if (customer && !this.get("customer")) {
+      this.set("customer", customer);
     }
   },
 
@@ -175,33 +171,33 @@ export default Component.extend({
    * @property {Customer} customer
    * @public
    */
-  customer: computed('_customer', {
+  customer: computed("_customer", {
     get() {
-      return this.get('_customer')
+      return this.get("_customer");
     },
     set(key, value) {
       // It is also possible a task was selected from the history.
-      if (value && value.get('constructor.modelName') === 'task') {
-        this.set('task', value)
+      if (value && value.get("constructor.modelName") === "task") {
+        this.set("task", value);
 
-        return value.get('project.customer')
+        return value.get("project.customer");
       }
 
-      this.set('_customer', value)
+      this.set("_customer", value);
 
       /* istanbul ignore else */
       if (
-        this.get('project') &&
-        (!value || value.get('id') !== this.get('project.customer.id'))
+        this.get("project") &&
+        (!value || value.get("id") !== this.get("project.customer.id"))
       ) {
-        this.set('project', null)
+        this.set("project", null);
       }
 
       later(this, () => {
-        this.getWithDefault('on-set-customer', () => {})(value)
-      })
+        this.getWithDefault("on-set-customer", () => {})(value);
+      });
 
-      return value
+      return value;
     }
   }),
 
@@ -214,32 +210,32 @@ export default Component.extend({
    * @property {Project} project
    * @public
    */
-  project: computed('_project', {
+  project: computed("_project", {
     get() {
-      return this.get('_project')
+      return this.get("_project");
     },
     set(key, value) {
-      this.set('_project', value)
+      this.set("_project", value);
 
-      if (value && value.get('customer.id')) {
-        resolve(value.get('customer')).then(c => {
-          this.set('customer', c)
-        })
+      if (value && value.get("customer.id")) {
+        resolve(value.get("customer")).then(c => {
+          this.set("customer", c);
+        });
       }
 
       /* istanbul ignore else */
       if (
-        this.get('task') &&
-        (value === null || value.get('id') !== this.get('task.project.id'))
+        this.get("task") &&
+        (value === null || value.get("id") !== this.get("task.project.id"))
       ) {
-        this.set('task', null)
+        this.set("task", null);
       }
 
       later(this, () => {
-        this.getWithDefault('on-set-project', () => {})(value)
-      })
+        this.getWithDefault("on-set-project", () => {})(value);
+      });
 
-      return value
+      return value;
     }
   }),
 
@@ -249,24 +245,24 @@ export default Component.extend({
    * @property {Task} task
    * @public
    */
-  task: computed('_task', {
+  task: computed("_task", {
     get() {
-      return this.get('_task')
+      return this.get("_task");
     },
     set(key, value) {
-      this.set('_task', value)
+      this.set("_task", value);
 
-      if (value && value.get('project.id')) {
-        resolve(value.get('project')).then(p => {
-          this.set('project', p)
-        })
+      if (value && value.get("project.id")) {
+        resolve(value.get("project")).then(p => {
+          this.set("project", p);
+        });
       }
 
       later(this, async () => {
-        this.getWithDefault('on-set-task', () => {})(value)
-      })
+        this.getWithDefault("on-set-task", () => {})(value);
+      });
 
-      return value
+      return value;
     }
   }),
 
@@ -276,36 +272,36 @@ export default Component.extend({
    * @property {Array} customersAndRecentTasks
    * @public
    */
-  customersAndRecentTasks: computed('history', 'archived', async function() {
-    let ids = []
+  customersAndRecentTasks: computed("history", "archived", async function() {
+    let ids = [];
 
-    await this.get('tracking.customers.last')
+    await this.get("tracking.customers.last");
 
-    if (this.get('history')) {
-      await this.get('tracking.recentTasks.last')
+    if (this.get("history")) {
+      await this.get("tracking.recentTasks.last");
 
-      let last = this.get('tracking.recentTasks.last.value')
+      const last = this.get("tracking.recentTasks.last.value");
 
-      ids = last ? last.mapBy('id') : []
+      ids = last ? last.mapBy("id") : [];
     }
 
-    let customers = this.get('store')
-      .peekAll('customer')
-      .filter(c => {
-        return this.get('archived') ? true : !c.get('archived')
+    const customers = this.get("store")
+      .peekAll("customer")
+      .filter(customer => {
+        return this.get("archived") ? true : !customer.get("archived");
       })
-      .sortBy('name')
+      .sortBy("name");
 
-    let tasks = this.get('store')
-      .peekAll('task')
-      .filter(t => {
+    const tasks = this.get("store")
+      .peekAll("task")
+      .filter(task => {
         return (
-          ids.includes(t.get('id')) &&
-          (this.get('archived') ? true : !t.get('archived'))
-        )
-      })
+          ids.includes(task.get("id")) &&
+          (this.get("archived") ? true : !task.get("archived"))
+        );
+      });
 
-    return [...tasks.toArray(), ...customers.toArray()]
+    return [...tasks.toArray(), ...customers.toArray()];
   }),
 
   /**
@@ -316,20 +312,20 @@ export default Component.extend({
    * @property {Project[]} projects
    * @public
    */
-  projects: computed('customer.id', 'archived', async function() {
-    if (this.get('customer.id')) {
-      await this.get('tracking.projects').perform(this.get('customer.id'))
+  projects: computed("customer.id", "archived", async function() {
+    if (this.get("customer.id")) {
+      await this.get("tracking.projects").perform(this.get("customer.id"));
     }
 
-    return this.get('store')
-      .peekAll('project')
-      .filter(p => {
+    return this.get("store")
+      .peekAll("project")
+      .filter(project => {
         return (
-          p.get('customer.id') === this.get('customer.id') &&
-          (this.get('archived') ? true : !p.get('archived'))
-        )
+          project.get("customer.id") === this.get("customer.id") &&
+          (this.get("archived") ? true : !project.get("archived"))
+        );
       })
-      .sortBy('name')
+      .sortBy("name");
   }),
 
   /**
@@ -340,20 +336,20 @@ export default Component.extend({
    * @property {Task[]} tasks
    * @public
    */
-  tasks: computed('project.id', 'archived', async function() {
-    if (this.get('project.id')) {
-      await this.get('tracking.tasks').perform(this.get('project.id'))
+  tasks: computed("project.id", "archived", async function() {
+    if (this.get("project.id")) {
+      await this.get("tracking.tasks").perform(this.get("project.id"));
     }
 
-    return this.get('store')
-      .peekAll('task')
+    return this.get("store")
+      .peekAll("task")
       .filter(t => {
         return (
-          t.get('project.id') === this.get('project.id') &&
-          (this.get('archived') ? true : !t.get('archived'))
-        )
+          t.get("project.id") === this.get("project.id") &&
+          (this.get("archived") ? true : !t.get("archived"))
+        );
       })
-      .sortBy('name')
+      .sortBy("name");
   }),
 
   actions: {
@@ -368,13 +364,13 @@ export default Component.extend({
         customer: null,
         project: null,
         task: null
-      })
+      });
     },
 
     reset() {
-      this.send('clear')
+      this.send("clear");
 
-      this._setInitial()
+      this._setInitial();
     }
   }
-})
+});

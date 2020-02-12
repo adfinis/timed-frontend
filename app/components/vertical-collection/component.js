@@ -1,9 +1,9 @@
-import VerticalCollectionComponent from '@html-next/vertical-collection/components/vertical-collection/component'
-import Ember from 'ember'
+import VerticalCollectionComponent from "@html-next/vertical-collection/components/vertical-collection/component";
+import Ember from "ember";
 
 export default VerticalCollectionComponent.extend({
-  init() {
-    this._super(...arguments)
-    this.set('renderAll', Ember.testing)
+  init(...args) {
+    this._super(...args);
+    this.set("renderAll", Ember.testing);
   }
-})
+});

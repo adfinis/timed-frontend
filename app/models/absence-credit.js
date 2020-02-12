@@ -3,9 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import { belongsTo } from 'ember-data/relationships'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo } from "ember-data/relationships";
 
 /**
  * The absence credit model
@@ -21,7 +21,7 @@ export default Model.extend({
    * @property {Number} days
    * @public
    */
-  days: attr('number'),
+  days: attr("number"),
 
   /**
    * The date
@@ -29,7 +29,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr('django-date'),
+  date: attr("django-date"),
 
   /**
    * The comment
@@ -37,7 +37,7 @@ export default Model.extend({
    * @property {String} comment
    * @public
    */
-  comment: attr('string', { defaultValue: '' }),
+  comment: attr("string", { defaultValue: "" }),
 
   /**
    * The absence type for which this credit counts
@@ -45,7 +45,7 @@ export default Model.extend({
    * @property {AbsenceType} absenceType
    * @public
    */
-  absenceType: belongsTo('absence-type'),
+  absenceType: belongsTo("absence-type"),
 
   /**
    * The user to which this credit belongs to
@@ -53,5 +53,5 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo('user')
-})
+  user: belongsTo("user")
+});

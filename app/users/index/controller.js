@@ -1,14 +1,14 @@
-import Controller from '@ember/controller'
-import QueryParams from 'ember-parachute'
-import { task, timeout, hash } from 'ember-concurrency'
-import { inject as service } from '@ember/service'
-import moment from 'moment'
-import { computed } from '@ember/object'
-import { reads } from '@ember/object/computed'
+import Controller from "@ember/controller";
+import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
+import { task, timeout, hash } from "ember-concurrency";
+import QueryParams from "ember-parachute";
+import moment from "moment";
 
 const UsersQueryParams = new QueryParams({
   search: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
@@ -18,85 +18,85 @@ const UsersQueryParams = new QueryParams({
     refresh: true
   },
   active: {
-    defaultValue: '1',
+    defaultValue: "1",
     replace: true,
     refresh: true
   },
   ordering: {
-    defaultValue: 'username',
+    defaultValue: "username",
     replace: true,
     refresh: true
   }
-})
+});
 
 const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
-  session: service('session'),
+  session: service("session"),
 
-  currentUser: reads('session.data.user'),
+  currentUser: reads("session.data.user"),
 
   selectedSupervisor: computed(
-    'supervisor',
-    'prefetchData.lastSuccessful.value.supervisor',
+    "supervisor",
+    "prefetchData.lastSuccessful.value.supervisor",
     function() {
       return (
-        this.get('supervisor') &&
-        this.store.peekRecord('user', this.get('supervisor'))
-      )
+        this.get("supervisor") &&
+        this.store.peekRecord("user", this.get("supervisor"))
+      );
     }
   ),
 
   setup() {
-    this.get('prefetchData').perform()
-    this.get('data').perform()
+    this.get("prefetchData").perform();
+    this.get("data").perform();
   },
 
   reset() {
-    this.resetQueryParams()
+    this.resetQueryParams();
   },
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
-      this.get('data').perform()
+      this.get("data").perform();
     }
   },
 
   prefetchData: task(function*() {
-    let supervisorId = this.get('supervisor')
+    const supervisorId = this.get("supervisor");
 
     return yield hash({
-      supervisor: supervisorId && this.store.findRecord('user', supervisorId)
-    })
+      supervisor: supervisorId && this.store.findRecord("user", supervisorId)
+    });
   }).restartable(),
 
   data: task(function*() {
-    let date = moment().format('YYYY-MM-DD')
+    const date = moment().format("YYYY-MM-DD");
 
-    yield this.store.query('employment', { date })
-    yield this.store.query('worktime-balance', { date })
+    yield this.store.query("employment", { date });
+    yield this.store.query("worktime-balance", { date });
 
-    return yield this.store.query('user', {
-      ...this.get('allQueryParams'),
-      ...(this.get('currentUser.isSuperuser')
+    return yield this.store.query("user", {
+      ...this.get("allQueryParams"),
+      ...(this.get("currentUser.isSuperuser")
         ? {}
         : {
-            supervisor: this.get('currentUser.id')
+            supervisor: this.get("currentUser.id")
           })
-    })
+    });
   }).restartable(),
 
   setSearchFilter: task(function*(value) {
-    yield timeout(500)
+    yield timeout(500);
 
-    this.set('search', value)
+    this.set("search", value);
   }).restartable(),
 
   setModelFilter: task(function*(key, value) {
-    yield this.set(key, value && value.id)
+    yield this.set(key, value && value.id);
   }),
 
   resetFilter: task(function*() {
-    yield this.resetQueryParams()
+    yield this.resetQueryParams();
   })
-})
+});
 
-export default UsersIndexController
+export default UsersIndexController;

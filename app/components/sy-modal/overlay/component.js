@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 /**
  * Overlay component for sy modal
@@ -19,7 +19,7 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: ['modal'],
+  classNames: ["modal"],
 
   /**
    * Classes which are bound to a property
@@ -27,7 +27,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: ['visible:modal--visible'],
+  classNameBindings: ["visible:modal--visible"],
 
   /**
    * Close the modal if the user clicks on the overlay, not a child of it
@@ -37,8 +37,8 @@ export default Component.extend({
    * @public
    */
   click(e) {
-    if (e.target === this.get('element')) {
-      this.get('on-close')()
+    if (e.target === this.get("element")) {
+      this.get("on-close")();
     }
   }
-})
+});

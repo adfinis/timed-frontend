@@ -1,66 +1,66 @@
-import Controller from '@ember/controller'
-import { task, all, hash } from 'ember-concurrency'
-import moment from 'moment'
-import QueryParams from 'ember-parachute'
+import Controller from "@ember/controller";
+import { task, all, hash } from "ember-concurrency";
+import QueryParams from "ember-parachute";
+import moment from "moment";
 
-const UsersEditQueryParams = new QueryParams({})
+const UsersEditQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditQueryParams.Mixin, {
   setup() {
-    this.get('data').perform(this.get('model.id'))
+    this.get("data").perform(this.get("model.id"));
   },
 
   data: task(function*(uid) {
     return yield hash({
       worktimeBalanceLastValidTimesheet: this.get(
-        'worktimeBalanceLastValidTimesheet'
+        "worktimeBalanceLastValidTimesheet"
       ).perform(uid),
-      worktimeBalanceToday: this.get('worktimeBalanceToday').perform(uid),
-      worktimeBalances: this.get('worktimeBalances').perform(uid),
-      absenceBalances: this.get('absenceBalances').perform(uid)
-    })
+      worktimeBalanceToday: this.get("worktimeBalanceToday").perform(uid),
+      worktimeBalances: this.get("worktimeBalances").perform(uid),
+      absenceBalances: this.get("absenceBalances").perform(uid)
+    });
   }),
 
   worktimeBalanceLastValidTimesheet: task(function*(user) {
-    let worktimeBalance = yield this.store.query('worktime-balance', {
+    const worktimeBalance = yield this.store.query("worktime-balance", {
       user,
       last_reported_date: 1 // eslint-disable-line camelcase
-    })
+    });
 
-    return worktimeBalance.get('firstObject')
+    return worktimeBalance.get("firstObject");
   }),
 
   worktimeBalanceToday: task(function*(user) {
-    let worktimeBalance = yield this.store.query('worktime-balance', {
+    const worktimeBalance = yield this.store.query("worktime-balance", {
       user,
-      date: moment().format('YYYY-MM-DD')
-    })
+      date: moment().format("YYYY-MM-DD")
+    });
 
-    return worktimeBalance.get('firstObject')
+    return worktimeBalance.get("firstObject");
   }),
 
   absenceBalances: task(function*(user) {
-    return yield this.store.query('absence-balance', {
+    return yield this.store.query("absence-balance", {
       user,
-      date: moment().format('YYYY-MM-DD'),
-      include: 'absence_type'
-    })
+      date: moment().format("YYYY-MM-DD"),
+      include: "absence_type"
+    });
   }),
 
   worktimeBalances: task(function*(user) {
-    let dates = [...Array(10).keys()]
-      .map(i => moment().subtract(i, 'days'))
-      .reverse()
+    const dates = [...Array(10).keys()]
+      .map(i => moment().subtract(i, "days"))
+      .reverse();
 
     return yield all(
       dates.map(async date => {
-        let balance = await this.store.query('worktime-balance', {
+        const balance = await this.store.query("worktime-balance", {
           user,
-          date: date.format('YYYY-MM-DD')
-        })
+          date: date.format("YYYY-MM-DD")
+        });
 
-        return balance.get('firstObject')
+        return balance.get("firstObject");
       })
-    )
+    );
   })
-})
+});

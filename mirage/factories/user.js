@@ -1,6 +1,6 @@
-import { Factory } from 'ember-cli-mirage'
-import faker from 'faker'
-import moment from 'moment'
+import { Factory } from "ember-cli-mirage";
+import faker from "faker";
+import moment from "moment";
 
 export default Factory.extend({
   firstName: () => faker.name.firstName(),
@@ -9,7 +9,7 @@ export default Factory.extend({
   password: () => faker.internet.password(),
 
   username() {
-    return `${this.firstName}${this.lastName.charAt(0)}`.toLowerCase()
+    return `${this.firstName}${this.lastName.charAt(0)}`.toLowerCase();
   },
 
   isStaff: true,
@@ -18,23 +18,23 @@ export default Factory.extend({
   tourDone: true,
 
   afterCreate(user, server) {
-    server.create('employment', { user })
-    server.create('employment', 'active', { user })
+    server.create("employment", { user });
+    server.create("employment", "active", { user });
 
     server.db.absenceTypes.forEach(({ id: absenceTypeId }, i) => {
-      server.create('absence-balance', i % 2 === 0 ? 'days' : 'duration', {
+      server.create("absence-balance", i % 2 === 0 ? "days" : "duration", {
         user,
         absenceTypeId
-      })
-    })
+      });
+    });
 
-    let days = [...new Array(10).keys()]
+    const days = [...new Array(10).keys()];
 
     days.forEach(i => {
-      server.create('worktime-balance', {
+      server.create("worktime-balance", {
         user,
-        date: moment().subtract(i, 'days')
-      })
-    })
+        date: moment().subtract(i, "days")
+      });
+    });
   }
-})
+});

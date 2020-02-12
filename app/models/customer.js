@@ -3,10 +3,10 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import { hasMany } from 'ember-data/relationships'
-import { reads } from '@ember/object/computed'
+import { reads } from "@ember/object/computed";
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { hasMany } from "ember-data/relationships";
 
 /**
  * The customer model
@@ -23,7 +23,7 @@ const Customer = Model.extend({
    * @type {String}
    * @public
    */
-  name: attr('string', { defaultValue: '' }),
+  name: attr("string", { defaultValue: "" }),
 
   /**
    * Whether the project is archived
@@ -32,7 +32,7 @@ const Customer = Model.extend({
    * @type {Boolean}
    * @public
    */
-  archived: attr('boolean', { defaultValue: false }),
+  archived: attr("boolean", { defaultValue: false }),
 
   /**
    * The projects
@@ -41,7 +41,7 @@ const Customer = Model.extend({
    * @type {Project[]}
    * @public
    */
-  projects: hasMany('project'),
+  projects: hasMany("project"),
 
   /**
    * Long name - alias for name, used for filtering in the customer box
@@ -49,7 +49,7 @@ const Customer = Model.extend({
    * @property {String} longName
    * @public
    */
-  longName: reads('name')
-})
+  longName: reads("name")
+});
 
-export default Customer
+export default Customer;

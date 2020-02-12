@@ -3,11 +3,10 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import moment from 'moment'
-
-import { belongsTo } from 'ember-data/relationships'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo } from "ember-data/relationships";
+import moment from "moment";
 
 /**
  * The report model
@@ -23,7 +22,7 @@ export default Model.extend({
    * @property {String} comment
    * @public
    */
-  comment: attr('string', { defaultValue: '' }),
+  comment: attr("string", { defaultValue: "" }),
 
   /**
    * The duration
@@ -31,7 +30,7 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: attr('django-duration', { defaultValue: () => moment.duration() }),
+  duration: attr("django-duration", { defaultValue: () => moment.duration() }),
 
   /**
    * The date
@@ -39,7 +38,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr('django-date'),
+  date: attr("django-date"),
 
   /**
    * The type of the absence
@@ -47,7 +46,7 @@ export default Model.extend({
    * @property {AbsenceType} type
    * @public
    */
-  type: belongsTo('absence-type'),
+  type: belongsTo("absence-type"),
 
   /**
    * The user
@@ -55,5 +54,5 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo('user')
-})
+  user: belongsTo("user")
+});

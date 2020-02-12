@@ -3,12 +3,12 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { inject as service } from '@ember/service'
-import Changeset from 'ember-changeset'
-import lookupValidator from 'ember-changeset-validations'
-import ActivityValidator from 'timed/validations/activity'
-import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import Changeset from "ember-changeset";
+import lookupValidator from "ember-changeset-validations";
+import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
+import ActivityValidator from "timed/validations/activity";
 
 /**
  * Route to edit an activity
@@ -24,7 +24,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Model hook, fetch the activity to edit
@@ -36,12 +36,12 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   model({ id }) {
-    return this.store.findRecord('activity', id)
+    return this.store.findRecord("activity", id);
   },
 
   afterModel(model) {
-    if (model.get('transferred')) {
-      this.transitionTo('index')
+    if (model.get("transferred")) {
+      this.transitionTo("index");
     }
   },
 
@@ -53,18 +53,18 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @param {Activity} model The activity to edit
    * @public
    */
-  setupController(controller, model) {
-    this._super(...arguments)
+  setupController(controller, model, ...args) {
+    this._super(controller, model, ...args);
 
-    let changeset = new Changeset(
+    const changeset = new Changeset(
       model,
       lookupValidator(ActivityValidator),
       ActivityValidator
-    )
+    );
 
-    changeset.validate()
+    changeset.validate();
 
-    controller.setProperties({ changeset })
+    controller.setProperties({ changeset });
   },
 
   /**
@@ -82,20 +82,20 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async save() {
       /* istanbul ignore next */
-      if (!this.get('controller.saveEnabled')) {
+      if (!this.get("controller.saveEnabled")) {
         /* UI prevents this, but could be executed by pressing enter */
-        return
+        return;
       }
 
       try {
-        await this.get('controller.changeset').save()
+        await this.get("controller.changeset").save();
 
-        this.get('notify').success('Activity was saved')
+        this.get("notify").success("Activity was saved");
 
-        await this.transitionTo('index.activities')
+        await this.transitionTo("index.activities");
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while saving the activity')
+        this.get("notify").error("Error while saving the activity");
       }
     },
 
@@ -107,25 +107,25 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async delete() {
       /* istanbul ignore next */
-      if (this.get('currentModel.active')) {
+      if (this.get("currentModel.active")) {
         // We can't test this because the UI already prevents this by disabling
         // the save button..
 
-        this.get('notify').error("You can't delete an active activity")
+        this.get("notify").error("You can't delete an active activity");
 
-        return
+        return;
       }
 
       try {
-        await this.get('currentModel').destroyRecord()
+        await this.get("currentModel").destroyRecord();
 
-        this.get('notify').success('Activity was deleted')
+        this.get("notify").success("Activity was deleted");
 
-        await this.transitionTo('index.activities')
+        await this.transitionTo("index.activities");
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the activity')
+        this.get("notify").error("Error while deleting the activity");
       }
     }
   }
-})
+});

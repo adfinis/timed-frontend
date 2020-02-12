@@ -1,8 +1,8 @@
 export default [
   {
-    target: '.tracking-bar',
-    placement: 'bottom',
-    title: 'Tracking activities',
+    target: ".tracking-bar",
+    placement: "bottom",
+    title: "Tracking activities",
     content: `
     <p>
       Activities do not count as your worktime. They are only a help for you to
@@ -21,9 +21,9 @@ export default [
     `
   },
   {
-    target: '.table--activities',
-    placement: 'top',
-    title: 'Activity list',
+    target: ".table--activities",
+    placement: "top",
+    title: "Activity list",
     content: `
     <p>
       Here you have the list of all tracked activities today. Your started
@@ -36,9 +36,9 @@ export default [
     `
   },
   {
-    target: '.btn-toolbar .btn-success',
-    placement: 'left',
-    title: 'Generating the timesheet',
+    target: ".btn-toolbar .btn-success",
+    placement: "left",
+    title: "Generating the timesheet",
     content: `
     <p>
       Finally, you can generate your timesheet by clicking here.
@@ -56,4 +56,4 @@ export default [
     </p>
     `
   }
-]
+];

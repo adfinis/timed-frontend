@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import { htmlSafe } from '@ember/string'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { htmlSafe } from "@ember/string";
 
 /**
  * Component to display a single day in the weekly overview
@@ -23,7 +23,7 @@ export default Component.extend({
    * @property {String[]} attributeBindings
    * @public
    */
-  attributeBindings: ['style', 'title'],
+  attributeBindings: ["style", "title"],
 
   /**
    * Class name bindings
@@ -31,7 +31,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: ['active', 'workday::weekend', 'absence', 'holiday'],
+  classNameBindings: ["active", "workday::weekend", "absence", "holiday"],
 
   /**
    * Whether there is an absence on this day
@@ -71,7 +71,7 @@ export default Component.extend({
    * @property {String} prefix
    * @public
    */
-  prefix: '',
+  prefix: "",
 
   /**
    * The element title
@@ -81,16 +81,16 @@ export default Component.extend({
    * @property {String} title
    * @public
    */
-  title: computed('worktime', 'prefix', function() {
-    let pre = this.get('prefix.length') ? `${this.get('prefix')}, ` : ''
+  title: computed("worktime", "prefix", function() {
+    const pre = this.get("prefix.length") ? `${this.get("prefix")}, ` : "";
 
-    let title = `${this.get('worktime').hours()}h`
+    let title = `${this.get("worktime").hours()}h`;
 
-    if (this.get('worktime').minutes()) {
-      title += ` ${this.get('worktime').minutes()}m`
+    if (this.get("worktime").minutes()) {
+      title += ` ${this.get("worktime").minutes()}m`;
     }
 
-    return `${pre}${title}`
+    return `${pre}${title}`;
   }),
 
   /**
@@ -109,25 +109,25 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed('max', 'worktime', function() {
-    let height = Math.min(
-      this.get('worktime').asHours() / this.get('max') * 100,
+  style: computed("max", "worktime", function() {
+    const height = Math.min(
+      (this.get("worktime").asHours() / this.get("max")) * 100,
       100
-    )
+    );
 
-    return htmlSafe(`height: ${height}%;`)
+    return htmlSafe(`height: ${height}%;`);
   }),
 
   /**
    * Click event - fire the on-click action
    */
   click(event) {
-    let action = this.get('on-click')
+    const action = this.get("on-click");
 
     if (action) {
-      event.preventDefault()
+      event.preventDefault();
 
-      this.get('on-click')(this.get('day'))
+      this.get("on-click")(this.get("day"));
     }
   }
-})
+});

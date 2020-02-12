@@ -3,7 +3,7 @@
  * @submodule timed-serializers
  * @public
  */
-import JSONAPISerializer from 'ember-data/serializers/json-api'
+import JSONAPISerializer from "ember-data/serializers/json-api";
 
 /**
  * The application serializer
@@ -12,4 +12,4 @@ import JSONAPISerializer from 'ember-data/serializers/json-api'
  * @extends DS.JSONAPISerializer
  * @public
  */
-export default JSONAPISerializer.extend()
+export default JSONAPISerializer.extend();

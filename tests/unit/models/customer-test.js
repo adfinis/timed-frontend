@@ -1,12 +1,12 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
+import { setupTest } from "ember-qunit";
+import { module, test } from "qunit";
 
-module('Unit | Model | customer', function(hooks) {
-  setupTest(hooks)
+module("Unit | Model | customer", function(hooks) {
+  setupTest(hooks);
 
-  test('exists', function(assert) {
-    let model = this.owner.lookup('service:store').modelFor('customer')
+  test("exists", function(assert) {
+    const model = this.owner.lookup("service:store").modelFor("customer");
 
-    assert.ok(model)
-  })
-})
+    assert.ok(model);
+  });
+});

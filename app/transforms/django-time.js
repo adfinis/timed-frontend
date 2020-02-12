@@ -3,7 +3,7 @@
  * @submodule timed-transforms
  * @public
  */
-import MomentTransform from 'timed/transforms/moment'
+import MomentTransform from "timed/transforms/moment";
 
 /**
  * The django time transform
@@ -21,5 +21,5 @@ export default MomentTransform.extend({
    * @property {String} format
    * @public
    */
-  format: 'HH:mm:ss'
-})
+  format: "HH:mm:ss"
+});

@@ -3,7 +3,7 @@
  * @submodule timed-serializers
  * @public
  */
-import ApplicationSerializer from 'timed/serializers/application'
+import ApplicationSerializer from "timed/serializers/application";
 
 /**
  * The attendance serializer
@@ -25,7 +25,7 @@ export default ApplicationSerializer.extend({
    * @public
    */
   attrs: {
-    from: 'from-time',
-    to: 'to-time'
+    from: "from-time",
+    to: "to-time"
   }
-})
+});

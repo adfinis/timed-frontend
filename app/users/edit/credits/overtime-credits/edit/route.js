@@ -1,12 +1,12 @@
-import Route from '@ember/routing/route'
+import Route from "@ember/routing/route";
 
 export default Route.extend({
   model: ({ overtime_credit_id: id }) => id,
 
-  setupController(controller) {
-    this._super(...arguments)
+  setupController(controller, ...args) {
+    this._super(controller, ...args);
 
-    controller.set('user', this.modelFor('users.edit'))
-    controller.get('credit').perform()
+    controller.set("user", this.modelFor("users.edit"));
+    controller.get("credit").perform();
   }
-})
+});

@@ -1,36 +1,37 @@
-import Controller from '@ember/controller'
-import { A } from '@ember/array'
-import { task, hash } from 'ember-concurrency'
-import { computed } from '@ember/object'
-import { reads } from '@ember/object/computed'
-import QueryParams from 'ember-parachute'
-import moment from 'moment'
-import config from '../../config/environment'
-import { inject as service } from '@ember/service'
-import RSVP from 'rsvp'
-import { cleanParams, toQueryString } from 'timed/utils/url'
-import fetch from 'fetch'
-import download from 'downloadjs'
-import Ember from 'ember'
+import { A } from "@ember/array";
+import Controller from "@ember/controller";
+import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
+import download from "downloadjs";
+import Ember from "ember";
+import { task, hash } from "ember-concurrency";
+import QueryParams from "ember-parachute";
+import fetch from "fetch";
+import moment from "moment";
+import { Promise } from "rsvp";
+import parseDjangoDuration from "timed/utils/parse-django-duration";
 import {
   underscoreQueryParams,
   serializeParachuteQueryParams
-} from 'timed/utils/query-params'
-import parseDjangoDuration from 'timed/utils/parse-django-duration'
+} from "timed/utils/query-params";
+import { cleanParams, toQueryString } from "timed/utils/url";
+
+import config from "../../config/environment";
 
 const rAF = () => {
-  return new RSVP.Promise(resolve => {
-    window.requestAnimationFrame(resolve)
-  })
-}
+  return new Promise(resolve => {
+    window.requestAnimationFrame(resolve);
+  });
+};
 
-const DATE_FORMAT = 'YYYY-MM-DD'
+const DATE_FORMAT = "YYYY-MM-DD";
 
 const serializeMoment = momentObject =>
-  (momentObject && momentObject.format(DATE_FORMAT)) || null
+  (momentObject && momentObject.format(DATE_FORMAT)) || null;
 
 const deserializeMoment = momentString =>
-  (momentString && moment(momentString, DATE_FORMAT)) || null
+  (momentString && moment(momentString, DATE_FORMAT)) || null;
 
 export const AnalysisQueryParams = new QueryParams({
   customer: {
@@ -83,132 +84,136 @@ export const AnalysisQueryParams = new QueryParams({
     deserialize: deserializeMoment
   },
   review: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
   notBillable: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
   verified: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
   editable: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
   ordering: {
-    defaultValue: '-date',
+    defaultValue: "-date",
     replace: true,
     refresh: true,
     serialize(val) {
-      return `${val},id`
+      return `${val},id`;
     },
     deserialize(val) {
-      return val.replace(',id', '')
+      return val.replace(",id", "");
     }
   }
-})
+});
 
 const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   billingTypes: computed(
-    'prefetchData.lastSuccessful.value.billingTypes',
+    "prefetchData.lastSuccessful.value.billingTypes",
     function() {
-      return this.store.findAll('billing-type')
+      return this.store.findAll("billing-type");
     }
   ),
 
   costCenters: computed(
-    'prefetchData.lastSuccessful.value.costCenters',
+    "prefetchData.lastSuccessful.value.costCenters",
     function() {
-      return this.store.findAll('cost-center')
+      return this.store.findAll("cost-center");
     }
   ),
 
   selectedCustomer: computed(
-    'customer',
-    'prefetchData.lastSuccessful.value.customer',
+    "customer",
+    "prefetchData.lastSuccessful.value.customer",
     function() {
       return (
-        this.get('customer') &&
-        this.store.peekRecord('customer', this.get('customer'))
-      )
+        this.get("customer") &&
+        this.store.peekRecord("customer", this.get("customer"))
+      );
     }
   ),
 
   selectedProject: computed(
-    'project',
-    'prefetchData.lastSuccessful.value.project',
+    "project",
+    "prefetchData.lastSuccessful.value.project",
     function() {
       return (
-        this.get('project') &&
-        this.store.peekRecord('project', this.get('project'))
-      )
+        this.get("project") &&
+        this.store.peekRecord("project", this.get("project"))
+      );
     }
   ),
 
   selectedTask: computed(
-    'task',
-    'prefetchData.lastSuccessful.value.task',
+    "task",
+    "prefetchData.lastSuccessful.value.task",
     function() {
-      return this.get('task') && this.store.peekRecord('task', this.get('task'))
+      return (
+        this.get("task") && this.store.peekRecord("task", this.get("task"))
+      );
     }
   ),
 
   selectedUser: computed(
-    'user',
-    'prefetchData.lastSuccessful.value.user',
+    "user",
+    "prefetchData.lastSuccessful.value.user",
     function() {
-      return this.get('user') && this.store.peekRecord('user', this.get('user'))
+      return (
+        this.get("user") && this.store.peekRecord("user", this.get("user"))
+      );
     }
   ),
 
   selectedReviewer: computed(
-    'reviewer',
-    'prefetchData.lastSuccessful.value.reviewer',
+    "reviewer",
+    "prefetchData.lastSuccessful.value.reviewer",
     function() {
       return (
-        this.get('reviewer') &&
-        this.store.peekRecord('user', this.get('reviewer'))
-      )
+        this.get("reviewer") &&
+        this.store.peekRecord("user", this.get("reviewer"))
+      );
     }
   ),
 
   exportLinks: config.APP.REPORTEXPORTS,
 
-  session: service('session'),
+  session: service("session"),
 
-  notify: service('notify'),
+  notify: service("notify"),
 
-  can: service('can'),
+  can: service("can"),
 
-  jwt: reads('session.data.authenticated.token'),
+  jwt: reads("session.data.authenticated.token"),
 
   _scrollOffset: 0,
 
-  init() {
-    this._super(...arguments)
+  init(...args) {
+    this._super(...args);
 
-    this.set('_dataCache', A())
-    this.set('selectedReportIds', A())
+    this.set("_dataCache", A());
+    this.set("selectedReportIds", A());
   },
 
   setup() {
-    this.get('prefetchData').perform()
+    this.get("prefetchData").perform();
 
-    if (!this.get('skipResetOnSetup')) {
-      this._reset()
+    if (!this.get("skipResetOnSetup")) {
+      this._reset();
     }
   },
 
   _reset() {
-    this.get('data').cancelAll()
-    this.get('loadNext').cancelAll()
+    this.get("data").cancelAll();
+    this.get("loadNext").cancelAll();
 
     this.setProperties({
       _lastPage: 0,
@@ -216,14 +221,14 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _shouldLoadMore: false,
       _dataCache: A(),
       selectedReportIds: A()
-    })
+    });
 
-    this.get('data').perform()
+    this.get("data").perform();
   },
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
-      this._reset()
+      this._reset();
     }
   },
 
@@ -231,68 +236,68 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   _canLoadMore: true,
   _lastPage: 0,
 
-  appliedFilters: computed('queryParamsState', function() {
-    return Object.keys(this.get('queryParamsState')).filter(key => {
-      return key !== 'ordering' && this.get(`queryParamsState.${key}.changed`)
-    })
+  appliedFilters: computed("queryParamsState", function() {
+    return Object.keys(this.get("queryParamsState")).filter(key => {
+      return key !== "ordering" && this.get(`queryParamsState.${key}.changed`);
+    });
   }),
 
   prefetchData: task(function*() {
-    let {
+    const {
       customer: customerId,
       project: projectId,
       task: taskId,
       user: userId,
       reviewer: reviewerId
-    } = this.get('allQueryParams')
+    } = this.get("allQueryParams");
 
     return yield hash({
-      customer: customerId && this.store.findRecord('customer', customerId),
-      project: projectId && this.store.findRecord('project', projectId),
-      task: taskId && this.store.findRecord('task', taskId),
-      user: userId && this.store.findRecord('user', userId),
-      reviewer: reviewerId && this.store.findRecord('user', reviewerId),
-      billingTypes: this.store.findAll('billing-type'),
-      costCenters: this.store.findAll('cost-center')
-    })
+      customer: customerId && this.store.findRecord("customer", customerId),
+      project: projectId && this.store.findRecord("project", projectId),
+      task: taskId && this.store.findRecord("task", taskId),
+      user: userId && this.store.findRecord("user", userId),
+      reviewer: reviewerId && this.store.findRecord("user", reviewerId),
+      billingTypes: this.store.findAll("billing-type"),
+      costCenters: this.store.findAll("cost-center")
+    });
   }),
 
   data: task(function*() {
-    let params = underscoreQueryParams(
+    const params = underscoreQueryParams(
       serializeParachuteQueryParams(
-        this.get('allQueryParams'),
+        this.get("allQueryParams"),
         AnalysisQueryParams
       )
-    )
+    );
 
-    let data = yield this.store.query('report', {
-      page: this.get('_lastPage') + 1,
+    const data = yield this.store.query("report", {
+      page: this.get("_lastPage") + 1,
       page_size: 20, // eslint-disable-line camelcase
       ...params,
       include:
-        'task,task.project,task.project.customer,task.project.reviewers,user'
-    })
+        "task,task.project,task.project.customer,task.project.reviewers,user"
+    });
 
     this.setProperties({
-      totalTime: parseDjangoDuration(data.get('meta.total-time')),
-      totalItems: parseInt(data.get('meta.pagination.count')),
+      totalTime: parseDjangoDuration(data.get("meta.total-time")),
+      totalItems: parseInt(data.get("meta.pagination.count")),
       _canLoadMore:
-        data.get('meta.pagination.pages') !== data.get('meta.pagination.page'),
-      _lastPage: data.get('meta.pagination.page')
-    })
+        data.get("meta.pagination.pages") !== data.get("meta.pagination.page"),
+      _lastPage: data.get("meta.pagination.page")
+    });
 
-    this.get('_dataCache').pushObjects(data.toArray())
+    this.get("_dataCache").pushObjects(data.toArray());
 
-    return this.get('_dataCache')
+    return this.get("_dataCache");
   }).enqueue(),
 
   loadNext: task(function*() {
-    this.set('_shouldLoadMore', true)
+    this.set("_shouldLoadMore", true);
 
-    while (this.get('_shouldLoadMore') && this.get('_canLoadMore')) {
-      yield this.get('data').perform()
+    while (this.get("_shouldLoadMore") && this.get("_canLoadMore")) {
+      yield this.get("data").perform();
 
-      yield rAF()
+      yield rAF();
     }
   }).drop(),
 
@@ -302,9 +307,9 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     *perform(notify, allQueryParams, jwt, { url, params }) {
       try {
-        this.setProperties({ url, params })
+        this.setProperties({ url, params });
 
-        let queryString = toQueryString(
+        const queryString = toQueryString(
           underscoreQueryParams(
             cleanParams({
               ...params,
@@ -314,20 +319,20 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
               )
             })
           )
-        )
+        );
 
-        let res = yield fetch(`${url}?${queryString}`, {
+        const res = yield fetch(`${url}?${queryString}`, {
           headers: {
             Authorization: `Bearer ${jwt}`
           }
-        })
+        });
 
         /* istanbul ignore next */
         if (!res.ok) {
-          throw new Error(res.statusText)
+          throw new Error(res.statusText);
         }
 
-        let file = yield res.blob()
+        const file = yield res.blob();
 
         // filename      match filename, followed by
         // [^;=\n]*      anything but a ;, a = or a newline
@@ -339,62 +344,62 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
         // |
         //     [^;\n]*   anything but a ; or a newline
         // )
-        let filename =
-          res.headers.map['content-disposition']
+        const filename =
+          res.headers.map["content-disposition"]
             .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
-            .replace('filename=', '') || 'Unknown file'
+            .replace("filename=", "") || "Unknown file";
 
         // ignore since we can't really test this..
         /* istanbul ignore next */
         if (!Ember.testing) {
-          download(file, filename, file.type)
+          download(file, filename, file.type);
         }
 
-        notify.success('File was downloaded')
+        notify.success("File was downloaded");
       } catch (e) {
         /* istanbul ignore next */
         notify.error(
-          'Error while downloading, try again or try reducing results'
-        )
+          "Error while downloading, try again or try reducing results"
+        );
       }
     }
   }),
 
   actions: {
     edit(ids = []) {
-      this.transitionToRoute('analysis.edit', {
+      this.transitionToRoute("analysis.edit", {
         queryParams: {
           id: ids,
-          ...this.get('allQueryParams')
+          ...this.get("allQueryParams")
         }
-      })
+      });
     },
 
     selectRow(report) {
-      if (this.get('can').can('edit report', report)) {
-        let selected = this.get('selectedReportIds')
+      if (this.get("can").can("edit report", report)) {
+        const selected = this.get("selectedReportIds");
 
         if (selected.includes(report.id)) {
           this.set(
-            'selectedReportIds',
+            "selectedReportIds",
             A([...selected.filter(id => id !== report.id)])
-          )
+          );
         } else {
-          this.set('selectedReportIds', A([...selected, report.id]))
+          this.set("selectedReportIds", A([...selected, report.id]));
         }
       }
     },
 
     setModelFilter(key, value) {
-      this.set(key, value && value.id)
+      this.set(key, value && value.id);
     },
 
     reset() {
       this.resetQueryParams(
-        Object.keys(this.get('allQueryParams')).filter(k => k !== 'ordering')
-      )
+        Object.keys(this.get("allQueryParams")).filter(k => k !== "ordering")
+      );
     }
   }
-})
+});
 
-export default AnalysisController
+export default AnalysisController;

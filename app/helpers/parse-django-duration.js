@@ -3,8 +3,8 @@
  * @submodule timed-helpers
  * @public
  */
-import { helper } from '@ember/component/helper'
-import parseDjangoDuration from 'timed/utils/parse-django-duration'
+import { helper } from "@ember/component/helper";
+import parseDjangoDuration from "timed/utils/parse-django-duration";
 
 /**
  * The parse django duration helper
@@ -14,6 +14,6 @@ import parseDjangoDuration from 'timed/utils/parse-django-duration'
  * @return {moment.duration} The moment duration
  * @public
  */
-export const parseDjangoDurationFn = args => parseDjangoDuration(...args)
+export const parseDjangoDurationFn = args => parseDjangoDuration(...args);
 
-export default helper(parseDjangoDurationFn)
+export default helper(parseDjangoDurationFn);

@@ -3,7 +3,7 @@
  * @submodule timed-validations
  * @public
  */
-import validateMoment from 'timed/validators/moment'
+import validateMoment from "timed/validators/moment";
 
 /**
  * Validations for activities
@@ -12,6 +12,6 @@ import validateMoment from 'timed/validators/moment'
  * @public
  */
 export default {
-  from: validateMoment({ lt: 'to' }),
-  to: validateMoment({ gt: 'from' })
-}
+  from: validateMoment({ lt: "to" }),
+  to: validateMoment({ gt: "from" })
+};

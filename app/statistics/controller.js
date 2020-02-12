@@ -1,35 +1,35 @@
-import Controller from '@ember/controller'
-import { get, computed } from '@ember/object'
-import QueryParams from 'ember-parachute'
-import { task, hash } from 'ember-concurrency'
-import moment from 'moment'
+import Controller from "@ember/controller";
+import { get, computed } from "@ember/object";
+import { task, hash } from "ember-concurrency";
+import QueryParams from "ember-parachute";
+import moment from "moment";
 import {
   underscoreQueryParams,
   serializeParachuteQueryParams
-} from 'timed/utils/query-params'
+} from "timed/utils/query-params";
 
-const DATE_FORMAT = 'YYYY-MM-DD'
+const DATE_FORMAT = "YYYY-MM-DD";
 
 const serializeMoment = momentObject =>
-  (momentObject && momentObject.format(DATE_FORMAT)) || null
+  (momentObject && momentObject.format(DATE_FORMAT)) || null;
 
 const deserializeMoment = momentString =>
-  (momentString && moment(momentString, DATE_FORMAT)) || null
+  (momentString && moment(momentString, DATE_FORMAT)) || null;
 
 const TYPES = {
-  year: { include: '', requiredParams: [] },
-  month: { include: '', requiredParams: [] },
-  customer: { include: 'customer', requiredParams: [] },
+  year: { include: "", requiredParams: [] },
+  month: { include: "", requiredParams: [] },
+  customer: { include: "customer", requiredParams: [] },
   project: {
-    include: 'project,project.customer',
-    requiredParams: ['customer']
+    include: "project,project.customer",
+    requiredParams: ["customer"]
   },
   task: {
-    include: 'task,task.project,task.project.customer',
-    requiredParams: ['customer', 'project']
+    include: "task,task.project,task.project.customer",
+    requiredParams: ["customer", "project"]
   },
-  user: { include: 'user', requiredParams: [] }
-}
+  user: { include: "user", requiredParams: [] }
+};
 
 export const StatisticsQueryParams = new QueryParams({
   customer: {
@@ -82,17 +82,17 @@ export const StatisticsQueryParams = new QueryParams({
     deserialize: deserializeMoment
   },
   review: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
   notBillable: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
   verified: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   },
@@ -102,180 +102,184 @@ export const StatisticsQueryParams = new QueryParams({
     refresh: true
   },
   ordering: {
-    defaultValue: '',
+    defaultValue: "",
     replace: true,
     refresh: true
   }
-})
+});
 
 export default Controller.extend(StatisticsQueryParams.Mixin, {
   types: Object.keys(TYPES),
 
   billingTypes: computed(
-    'prefetchData.lastSuccessful.value.billingTypes',
+    "prefetchData.lastSuccessful.value.billingTypes",
     function() {
-      return this.store.findAll('billing-type')
+      return this.store.findAll("billing-type");
     }
   ),
 
   costCenters: computed(
-    'prefetchData.lastSuccessful.value.costCenters',
+    "prefetchData.lastSuccessful.value.costCenters",
     function() {
-      return this.store.findAll('cost-center')
+      return this.store.findAll("cost-center");
     }
   ),
 
   selectedCustomer: computed(
-    'customer',
-    'prefetchData.lastSuccessful.value.customer',
+    "customer",
+    "prefetchData.lastSuccessful.value.customer",
     function() {
       return (
-        this.get('customer') &&
-        this.store.peekRecord('customer', this.get('customer'))
-      )
+        this.get("customer") &&
+        this.store.peekRecord("customer", this.get("customer"))
+      );
     }
   ),
 
   selectedProject: computed(
-    'project',
-    'prefetchData.lastSuccessful.value.project',
+    "project",
+    "prefetchData.lastSuccessful.value.project",
     function() {
       return (
-        this.get('project') &&
-        this.store.peekRecord('project', this.get('project'))
-      )
+        this.get("project") &&
+        this.store.peekRecord("project", this.get("project"))
+      );
     }
   ),
 
   selectedTask: computed(
-    'task',
-    'prefetchData.lastSuccessful.value.task',
+    "task",
+    "prefetchData.lastSuccessful.value.task",
     function() {
-      return this.get('task') && this.store.peekRecord('task', this.get('task'))
+      return (
+        this.get("task") && this.store.peekRecord("task", this.get("task"))
+      );
     }
   ),
 
   selectedUser: computed(
-    'user',
-    'prefetchData.lastSuccessful.value.user',
+    "user",
+    "prefetchData.lastSuccessful.value.user",
     function() {
-      return this.get('user') && this.store.peekRecord('user', this.get('user'))
+      return (
+        this.get("user") && this.store.peekRecord("user", this.get("user"))
+      );
     }
   ),
 
   selectedReviewer: computed(
-    'reviewer',
-    'prefetchData.lastSuccessful.value.reviewer',
+    "reviewer",
+    "prefetchData.lastSuccessful.value.reviewer",
     function() {
       return (
-        this.get('reviewer') &&
-        this.store.peekRecord('user', this.get('reviewer'))
-      )
+        this.get("reviewer") &&
+        this.store.peekRecord("user", this.get("reviewer"))
+      );
     }
   ),
 
   missingParams: computed(
-    'requiredParams.[]',
+    "requiredParams.[]",
     `queryParamsState.{observed}.changed`,
     function() {
-      return this.get('requiredParams').filter(
+      return this.get("requiredParams").filter(
         param => !this.get(`queryParamsState.${param}.changed`)
-      )
+      );
     }
   ),
 
   setup() {
-    let observed = Object.keys(TYPES).reduce((set, key) => {
+    const observed = Object.keys(TYPES).reduce((set, key) => {
       return [
         ...set,
         ...get(TYPES, `${key}.requiredParams`).filter(p => !set.includes(p))
-      ]
-    }, [])
-    this.set('observed', observed.join(','))
+      ];
+    }, []);
+    this.set("observed", observed.join(","));
 
-    this.get('prefetchData').perform()
-    this.get('data').perform()
+    this.get("prefetchData").perform();
+    this.get("data").perform();
   },
 
   reset(_, isExiting) {
     if (isExiting) {
-      this.resetQueryParams()
+      this.resetQueryParams();
     }
   },
 
   queryParamsDidChange({ shouldRefresh, changed }) {
     if (shouldRefresh) {
-      this.get('data').perform()
+      this.get("data").perform();
     }
 
-    if (Object.keys(changed).includes('type')) {
-      this.resetQueryParams('ordering')
+    if (Object.keys(changed).includes("type")) {
+      this.resetQueryParams("ordering");
     }
   },
 
-  appliedFilters: computed('queryParamsState', function() {
-    return Object.keys(this.get('queryParamsState')).filter(key => {
-      return this.get(`queryParamsState.${key}.changed`) && key !== 'type'
-    })
+  appliedFilters: computed("queryParamsState", function() {
+    return Object.keys(this.get("queryParamsState")).filter(key => {
+      return this.get(`queryParamsState.${key}.changed`) && key !== "type";
+    });
   }),
 
-  requiredParams: computed('type', function() {
-    return TYPES[this.get('type')].requiredParams
+  requiredParams: computed("type", function() {
+    return TYPES[this.get("type")].requiredParams;
   }),
 
   prefetchData: task(function*() {
-    let {
+    const {
       customer: customerId,
       project: projectId,
       task: taskId,
       user: userId,
       reviewer: reviewerId
-    } = this.get('allQueryParams')
+    } = this.get("allQueryParams");
 
     return yield hash({
-      customer: customerId && this.store.findRecord('customer', customerId),
-      project: projectId && this.store.findRecord('project', projectId),
-      task: taskId && this.store.findRecord('task', taskId),
-      user: userId && this.store.findRecord('user', userId),
-      reviewer: reviewerId && this.store.findRecord('user', reviewerId),
-      billingTypes: this.store.findAll('billing-type'),
-      costCenters: this.store.findAll('cost-center')
-    })
+      customer: customerId && this.store.findRecord("customer", customerId),
+      project: projectId && this.store.findRecord("project", projectId),
+      task: taskId && this.store.findRecord("task", taskId),
+      user: userId && this.store.findRecord("user", userId),
+      reviewer: reviewerId && this.store.findRecord("user", reviewerId),
+      billingTypes: this.store.findAll("billing-type"),
+      costCenters: this.store.findAll("cost-center")
+    });
   }).restartable(),
 
   data: task(function*() {
-    if (this.get('missingParams.length')) {
-      return null
+    if (this.get("missingParams.length")) {
+      return null;
     }
 
-    let type = this.get('type')
+    const type = this.get("type");
 
     let params = underscoreQueryParams(
       serializeParachuteQueryParams(
-        this.get('allQueryParams'),
+        this.get("allQueryParams"),
         StatisticsQueryParams
       )
-    )
+    );
 
     params = Object.keys(params).reduce((obj, key) => {
-      return key !== 'type' ? { ...obj, [key]: get(params, key) } : obj
-    }, {})
+      return key !== "type" ? { ...obj, [key]: get(params, key) } : obj;
+    }, {});
 
     return yield this.store.query(`${type}-statistic`, {
       include: TYPES[type].include,
       ...params
-    })
+    });
   }).restartable(),
 
   actions: {
     setModelFilter(key, value) {
-      this.set(key, value && value.id)
+      this.set(key, value && value.id);
     },
 
     reset() {
       this.resetQueryParams(
-        Object.keys(this.get('allQueryParams')).filter(qp => qp !== 'type')
-      )
+        Object.keys(this.get("allQueryParams")).filter(qp => qp !== "type")
+      );
     }
   }
-})
+});
