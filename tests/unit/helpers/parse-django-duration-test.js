@@ -1,17 +1,16 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
 import { parseDjangoDurationFn } from 'timed/helpers/parse-django-duration'
 
-describe('Unit | Helper | parse django duration', function() {
-  it('works', function() {
+module('Unit | Helper | parse django duration', function() {
+  test('works', function(assert) {
     let result = parseDjangoDurationFn(['11:30:00'])
 
-    expect(result.asHours()).to.equal(11.5)
+    assert.equal(result.asHours(), 11.5)
   })
 
-  it('works with a negative duration', function() {
+  test('works with a negative duration', function(assert) {
     let result = parseDjangoDurationFn(['-1 11:30:00'])
 
-    expect(result.asHours()).to.equal(-12.5)
+    assert.equal(result.asHours(), -12.5)
   })
 })

@@ -1,30 +1,27 @@
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import moment from 'moment'
 
-describe('Unit | Transform | django duration', function() {
-  setupTest('transform:django-duration', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+module('Unit | Transform | django duration', function(hooks) {
+  setupTest(hooks)
 
-  it('serializes', function() {
-    let transform = this.subject()
+  test('serializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-duration')
 
-    expect(transform.serialize(null)).to.be.null
+    assert.notOk(transform.serialize(null))
 
-    expect(
+    assert.equal(
       transform.serialize(
         moment.duration({
           hours: 1,
           minutes: 2,
           seconds: 3
         })
-      )
-    ).to.equal('01:02:03')
+      ),
+      '01:02:03'
+    )
 
-    expect(
+    assert.equal(
       transform.serialize(
         moment.duration({
           days: 1,
@@ -32,10 +29,11 @@ describe('Unit | Transform | django duration', function() {
           minutes: 3,
           seconds: 4
         })
-      )
-    ).to.equal('1 02:03:04')
+      ),
+      '1 02:03:04'
+    )
 
-    expect(
+    assert.equal(
       transform.serialize(
         moment.duration({
           hours: 1,
@@ -43,10 +41,11 @@ describe('Unit | Transform | django duration', function() {
           seconds: 3,
           milliseconds: 4
         })
-      )
-    ).to.equal('01:02:03.004000')
+      ),
+      '01:02:03.004000'
+    )
 
-    expect(
+    assert.equal(
       transform.serialize(
         moment.duration({
           days: 1,
@@ -55,20 +54,22 @@ describe('Unit | Transform | django duration', function() {
           seconds: 4,
           milliseconds: 5
         })
-      )
-    ).to.equal('1 02:03:04.005000')
+      ),
+      '1 02:03:04.005000'
+    )
 
-    expect(
+    assert.equal(
       transform.serialize(
         moment.duration({
           hours: -1,
           minutes: -2,
           seconds: -3
         })
-      )
-    ).to.equal('-1 22:57:57')
+      ),
+      '-1 22:57:57'
+    )
 
-    expect(
+    assert.equal(
       transform.serialize(
         moment.duration({
           days: -9,
@@ -76,13 +77,14 @@ describe('Unit | Transform | django duration', function() {
           minutes: -2,
           seconds: -3
         })
-      )
-    ).to.equal('-10 22:57:57')
+      ),
+      '-10 22:57:57'
+    )
   })
 
-  it('deserializes', function() {
-    let transform = this.subject()
+  test('deserializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-duration')
 
-    expect(transform.deserialize('00:00:00')).to.be.ok
+    assert.ok(transform.deserialize('00:00:00'))
   })
 })

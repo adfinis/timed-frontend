@@ -6,7 +6,7 @@
 import Model from 'ember-data/model'
 import attr from 'ember-data/attr'
 import { hasMany } from 'ember-data/relationships'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 
 /**
  * The customer model
@@ -49,7 +49,7 @@ const Customer = Model.extend({
    * @property {String} longName
    * @public
    */
-  longName: oneWay('name')
+  longName: reads('name')
 })
 
 export default Customer

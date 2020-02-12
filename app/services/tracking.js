@@ -17,8 +17,6 @@ import { camelize, capitalize } from '@ember/string'
 
 import { task, timeout } from 'ember-concurrency'
 
-const { testing } = Ember
-
 /**
  * Tracking service
  *
@@ -90,6 +88,7 @@ export default Service.extend({
    * @method _triggerTitle
    * @private
    */
+  // eslint-disable-next-line ember/no-observers
   _triggerTitle: observer('activity.active', function() {
     if (this.get('activity.active')) {
       this.get('_computeTitle').perform()
@@ -140,7 +139,7 @@ export default Service.extend({
       this.setTitle(`${formatDuration(duration)} (${task})`)
 
       /* istanbul ignore else */
-      if (testing) {
+      if (Ember.testing) {
         return
       }
 

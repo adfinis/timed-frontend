@@ -3,36 +3,15 @@
 'use strict'
 
 const EmberApp = require('ember-cli/lib/broccoli/ember-app')
+const Funnel = require('broccoli-funnel')
 
-module.exports = function (defaults) {
+module.exports = function(defaults) {
   let app = new EmberApp(defaults, {
     sassOptions: {
       onlyIncluded: true
     },
-    postcssOptions: {
-      compile: { enabled: false },
-      filter: {
-        enabled: true,
-        plugins: [
-          {
-            module: require('postcss-cssnext'),
-            options: {
-              features: {
-                customProperties: {
-                  warnings: false
-                }
-              }
-            }
-          }
-        ]
-      }
-    },
     babel: {
-      plugins: [
-        'transform-async-to-generator',
-        'transform-decorators-legacy',
-        'transform-object-rest-spread'
-      ]
+      plugins: ['@babel/plugin-proposal-object-rest-spread']
     },
     'ember-site-tour': {
       importHopscotchJS: true,
@@ -43,12 +22,13 @@ module.exports = function (defaults) {
   app.import('vendor/adcssy.min.css')
 
   app.import('node_modules/downloadjs/download.min.js', {
-    using: [
-      { transformation: 'amd', as: 'downloadjs' }
-    ]
+    using: [{ transformation: 'amd', as: 'downloadjs' }]
   })
 
-  app.import('node_modules/intersection-observer/intersection-observer.js')
+  let fonts = new Funnel('node_modules/typeface-source-sans-pro/files', {
+    include: ['*.woff', '*.woff2'],
+    destDir: '/assets/files/'
+  })
 
-  return app.toTree()
+  return app.toTree([fonts])
 }

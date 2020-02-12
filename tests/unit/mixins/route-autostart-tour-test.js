@@ -1,28 +1,26 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import EmberObject from '@ember/object'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
 
-describe('Unit | Mixin | route autostart tour', function() {
-  // Replace this with your real tests.
-  it('works', function() {
+module('Unit | Mixin | route autostart tour', function() {
+  test('works', function(assert) {
     let RouteAutostartTourObject = EmberObject.extend(RouteAutostartTourMixin)
     let subject = RouteAutostartTourObject.create()
-    expect(subject).to.be.ok
+    assert.ok(subject)
   })
 
-  it('can get parent route name', function() {
+  test('can get parent route name', function(assert) {
     let RouteAutostartTourObject = EmberObject.extend(RouteAutostartTourMixin)
     let subject = RouteAutostartTourObject.create({ routeName: 'foo.bar.baz' })
 
-    expect(subject._getParentRouteName()).to.equal('foo.bar')
+    assert.equal(subject._getParentRouteName(), 'foo.bar')
 
     subject.set('routeName', 'foo')
 
-    expect(subject._getParentRouteName()).to.equal('')
+    assert.equal(subject._getParentRouteName(), '')
   })
 
-  it('can check if a tour is wanted', function() {
+  test('can check if a tour is wanted', function(assert) {
     let RouteAutostartTourObject = EmberObject.extend(RouteAutostartTourMixin)
     let subject = RouteAutostartTourObject.create({
       routeName: 'foo.bar.baz',
@@ -35,8 +33,9 @@ describe('Unit | Mixin | route autostart tour', function() {
       isXl: false
     })
 
-    expect(subject._wantsTour('test', EmberObject.create({ tourDone: false })))
-      .to.not.be.ok
+    assert.notOk(
+      subject._wantsTour('test', EmberObject.create({ tourDone: false }))
+    )
 
     subject.set('media', {
       isMd: true,
@@ -44,20 +43,24 @@ describe('Unit | Mixin | route autostart tour', function() {
       isXl: false
     })
 
-    expect(subject._wantsTour('test', EmberObject.create({ tourDone: false })))
-      .to.be.ok
+    assert.ok(
+      subject._wantsTour('test', EmberObject.create({ tourDone: false }))
+    )
 
-    expect(subject._wantsTour('test', EmberObject.create({ tourDone: true })))
-      .to.not.be.ok
+    assert.notOk(
+      subject._wantsTour('test', EmberObject.create({ tourDone: true }))
+    )
 
     subject.set('autostartTour.done', [])
 
-    expect(subject._wantsTour('test', EmberObject.create({ tourDone: false })))
-      .to.be.ok
+    assert.ok(
+      subject._wantsTour('test', EmberObject.create({ tourDone: false }))
+    )
 
     subject.set('autostartTour.done', ['test'])
 
-    expect(subject._wantsTour('test', EmberObject.create({ tourDone: false })))
-      .to.not.be.ok
+    assert.notOk(
+      subject._wantsTour('test', EmberObject.create({ tourDone: false }))
+    )
   })
 })

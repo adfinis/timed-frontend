@@ -1,71 +1,64 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
+import { click, currentURL, visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
+import { setBreakpoint } from 'ember-responsive/test-support'
 
-describe('Acceptance | index attendances', function() {
-  let application
+module('Acceptance | index attendances', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
+  hooks.beforeEach(async function() {
+    setBreakpoint('xl')
 
-    let user = server.create('user')
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    server.create('attendance', 'morning', { userId: user.id })
-    server.create('attendance', 'afternoon', { userId: user.id })
+    this.server.create('attendance', 'morning', { userId: user.id })
+    this.server.create('attendance', 'afternoon', { userId: user.id })
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('can visit /attendances', async function() {
+  test('can visit /attendances', async function(assert) {
     await visit('/attendances')
 
-    expect(currentURL()).to.equal('/attendances')
+    assert.equal(currentURL(), '/attendances')
   })
 
-  it('can list attendances', async function() {
+  test('can list attendances', async function(assert) {
     await visit('/attendances')
-
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
   })
 
-  it('can save an attendances', async function() {
+  test('can save an attendances', async function(assert) {
     await visit('/attendances')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
 
     await click('[data-test-attendance-slider-id="1"] .noUi-draggable')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(2)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 2 })
   })
 
-  it('can add an attendance', async function() {
+  test('can add an attendance', async function(assert) {
     await visit('/attendances')
 
     await click('[data-test-add-attendance]')
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(3)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 3 })
   })
 
-  it('can delete an attendance', async function() {
+  test('can delete an attendance', async function(assert) {
     await visit('/attendances')
 
     await click(
       '[data-test-attendance-slider-id="1"] [data-test-delete-attendance]'
     )
 
-    expect(find('[data-test-attendance-slider-id]', 1)).to.have.length(0)
+    assert.dom('[data-test-attendance-slider-id="1"]').doesNotExist()
 
-    expect(find('[data-test-attendance-slider]')).to.have.length(1)
+    assert.dom('[data-test-attendance-slider]').exists({ count: 1 })
   })
 })

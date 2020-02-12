@@ -1,20 +1,14 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | sy modal/body', function() {
-  setupComponentTest('sy-modal/body', {
-    integration: true
-  })
+module('Integration | Component | sy modal/body', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{#sy-modal/body}}Test{{/sy-modal/body}}`)
+  test('renders', async function(assert) {
+    await render(hbs`{{#sy-modal/body}}Test{{/sy-modal/body}}`)
 
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.equal('Test')
+    assert.dom(this.element).hasText('Test')
   })
 })

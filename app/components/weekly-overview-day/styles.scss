@@ -18,32 +18,32 @@
 
 &.absence {
   .bar {
-    background-color: var(--color-warning);
+    background-color: $color-warning;
   }
   .day {
-    color: var(--color-warning);
+    color: $color-warning;
   }
 }
 
 &.active {
   .bar {
-    background-color: var(--color-primary);
+    background-color: $color-primary;
   }
   .day {
-    color: var(--color-primary);
+    color: $color-primary;
     font-weight: bold;
     padding: 0 5px 5px;
     margin-bottom: -5px;
-    border-bottom:  2px solid var(--color-primary);
+    border-bottom:  2px solid $color-primary;
   }
 }
 
 &:hover {
   .bar {
-    background-color: color(var(--color-primary) w(50%));
+    background-color: desaturate($color-primary, 30%);
   }
   .day {
-    color: color(var(--color-primary) w(50%));
+    color: desaturate($color-primary, 30%);
   }
 }
 
@@ -56,7 +56,7 @@
 
 .day {
   position: absolute;
-  font-family: var(--font-family-mono);
+  font-family: $font-family-mono;
   font-size: 12px;
   left: 50%;
   bottom: -35px;

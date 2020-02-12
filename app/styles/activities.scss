@@ -45,7 +45,7 @@
   justify-content: space-around;
 }
 
-@media (--lg-viewport) {
+@media #{$lg-viewport} {
   .activities-edit:not(:empty) + .activities-list {
     flex-basis: 70%;
   }
@@ -60,7 +60,7 @@
   }
 }
 
-@media (--xl-viewport) {
+@media #{$xl-viewport} {
   .activities-edit {
     flex-basis: 30%;
   }

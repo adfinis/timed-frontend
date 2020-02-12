@@ -1,16 +1,13 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { find } from 'ember-native-dom-helpers'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | in viewport', function() {
-  setupComponentTest('in-viewport', {
-    integration: true
-  })
+module('Integration | Component | in viewport', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`
+  test('renders', async function(assert) {
+    await render(hbs`
       <div class="parent" style="heigth: 20px; overflow: scroll;">
         <div class="child" style="heigth: 2000px;">
           {{#in-viewport}}test{{/in-viewport}}
@@ -18,6 +15,6 @@ describe('Integration | Component | in viewport', function() {
       </div>
     `)
 
-    expect(find('.child').innerHTML).to.contain('test')
+    assert.dom('.child').includesText('test')
   })
 })

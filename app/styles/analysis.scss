@@ -8,7 +8,7 @@
 }
 
 .table--analysis > tbody > tr.pointer > td:last-child {
-  box-shadow: inset -2px 0 0 var(--color-primary);
+  box-shadow: inset -2px 0 0 $color-primary;
 }
 
 .table--analysis > tbody > tr:first-of-type td {
@@ -68,10 +68,10 @@
 }
 
 .table--analysis tr.selected {
-  background-color: color(var(--color-primary) tint(50%)) !important;
+  background-color: lighten($color-primary, 20%) !important;
 }
 
 .table--analysis tr.selected + tr td,
 .table--analysis tr.selected td {
-  border-color: color(var(--color-primary) tint(40%)) !important;
+  border-color: lighten($color-primary, 20%) !important;
 }

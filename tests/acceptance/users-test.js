@@ -1,57 +1,51 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import { findAll } from 'ember-native-dom-helpers'
-import startApp from '../helpers/start-app'
+import { click, fillIn, currentURL, visit, waitFor } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
+import userSelect from '../helpers/user-select'
+import { selectSearch } from 'ember-power-select/test-support'
 
-describe('Acceptance | users', function() {
-  let application
+module('Acceptance | users', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
+  hooks.beforeEach(async function() {
+    let user = this.server.create('user')
 
-    let user = server.create('user')
-
-    server.createList('user', 5, { supervisorIds: [user.id] })
-    server.createList('user', 5)
+    this.server.createList('user', 5, { supervisorIds: [user.id] })
+    this.server.createList('user', 5)
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('shows only supervisees', async function() {
+  test('shows only supervisees', async function(assert) {
     await visit('/users')
 
-    // 5 supervisees and the user himself
-    expect(await findAll('table tr')).to.have.length(6)
+    await waitFor('table tbody tr')
+
+    assert.dom('table tbody tr').exists({ count: 5 })
   })
 
-  it('shows all to superuser', async function() {
-    let user = server.create('user', { isSuperuser: true })
+  test('shows all to superuser', async function(assert) {
+    let user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit('/users')
 
-    // 12 users and the user himself
-    expect(findAll('table tr')).to.have.length(13)
+    await waitFor('table tbody tr')
+
+    assert.dom('table tbody tr').exists({ count: 12 })
   })
 
-  it('can filter and reset', async function() {
-    let user = server.create('user', { isSuperuser: true })
+  test('can filter and reset', async function(assert) {
+    let user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit('/users')
 
@@ -60,12 +54,12 @@ describe('Acceptance | users', function() {
     await selectSearch('[data-test-filter-user] .user-select', user.username)
     await userSelect()
 
-    expect(currentURL()).to.contain('search=foobar')
-    expect(currentURL()).to.contain('active=')
-    expect(currentURL()).to.contain('supervisor=12')
+    assert.ok(currentURL().includes('search=foobar'))
+    assert.ok(currentURL().includes('active='))
+    assert.ok(currentURL().includes('supervisor=12'))
 
     await click('.filter-sidebar-reset')
 
-    expect(currentURL()).to.equal('/users')
+    assert.equal(currentURL(), '/users')
   })
 })

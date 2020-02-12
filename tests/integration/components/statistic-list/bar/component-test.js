@@ -1,26 +1,24 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
-import { find } from 'ember-native-dom-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
+import { render } from '@ember/test-helpers'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | statistic list/bar', function() {
-  setupComponentTest('statistic-list/bar', {
-    integration: true
-  })
+module('Integration | Component | statistic list/bar', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    this.render(hbs`{{statistic-list/bar 0.5}}`)
+  test('renders', async function(assert) {
+    await render(hbs`{{statistic-list/bar 0.5}}`)
 
-    let el = find('.statistic-list-bar')
+    let element = this.element.querySelector('.statistic-list-bar')
 
-    expect(el).to.be.ok
+    assert.ok(element)
 
-    expect(
+    assert.equal(
       window
-        .getComputedStyle(el)
+        .getComputedStyle(element)
         .getPropertyValue('--value')
-        .trim()
-    ).to.equal('0.5')
+        .trim(),
+      '0.5'
+    )
   })
 })

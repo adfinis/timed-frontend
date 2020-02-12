@@ -1,49 +1,44 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 import wait from 'ember-test-helpers/wait'
-import { find, triggerEvent } from 'ember-native-dom-helpers'
+import { fillIn, render } from '@ember/test-helpers'
 
-describe('Integration | Component | sy calendar', function() {
-  setupComponentTest('sy-calendar', {
-    integration: true
-  })
+module('Integration | Component | sy calendar', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('can select a year', function() {
+  test('can select a year', async function(assert) {
     this.set('center', moment({ y: 2017, m: 10, d: 7 }))
 
-    this.render(
-      hbs`{{sy-calendar center=center onCenterChange=(action (mut center) value='moment')}}`
-    )
+    await render(hbs`
+      {{sy-calendar
+        center=center
+        onCenterChange=(action (mut center) value='moment')
+      }}
+    `)
 
-    let sel = find('.nav-select-year select')
-
-    sel.value = '2010'
-
-    triggerEvent(sel, 'change')
+    await fillIn('.nav-select-year select', '2010')
 
     return wait().then(() => {
-      expect(this.get('center').year()).to.equal(2010)
+      assert.equal(this.get('center').year(), 2010)
     })
   })
 
-  it('can select a month', function() {
+  test('can select a month', async function(assert) {
     this.set('center', moment({ y: 2017, m: 10, d: 7 }))
 
-    this.render(
-      hbs`{{sy-calendar center=center onCenterChange=(action (mut center) value='moment')}}`
-    )
+    await render(hbs`
+      {{sy-calendar
+        center=center
+        onCenterChange=(action (mut center) value='moment')
+      }}
+    `)
 
-    let sel = find('.nav-select-month select')
-
-    sel.value = 'May'
-
-    triggerEvent(sel, 'change')
+    await fillIn('.nav-select-month select', 'May')
 
     return wait().then(() => {
-      expect(this.get('center').month()).to.equal(4)
+      assert.equal(this.get('center').month(), 4)
     })
   })
 })

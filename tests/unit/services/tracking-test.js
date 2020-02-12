@@ -1,33 +1,15 @@
-import { expect } from 'chai'
-import { describe, it, beforeEach } from 'mocha'
-import { setupTest } from 'ember-mocha'
-import Service from '@ember/service'
-import { A as emberA } from '@ember/array'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
+import { settled } from '@ember/test-helpers'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
-const storeStub = Service.extend({
-  query() {
-    return emberA()
-  },
+module('Unit | Service | tracking', function(hooks) {
+  setupTest(hooks)
+  setupMirage(hooks)
 
-  createRecord() {
-    return {}
-  }
-})
-
-describe('Unit | Service | tracking', function() {
-  setupTest('service:tracking', {
-    // Specify the other units that are required for this test.
-    needs: ['model:activity', 'service:notify']
-  })
-
-  beforeEach(function() {
-    this.register('service:store', storeStub)
-    this.inject.service('store', { as: 'store' })
-  })
-
-  // Replace this with your real tests.
-  it('exists', function() {
-    let service = this.subject()
-    expect(service).to.be.ok
+  test('exists', async function(assert) {
+    let service = this.owner.lookup('service:tracking')
+    await settled()
+    assert.ok(service)
   })
 })

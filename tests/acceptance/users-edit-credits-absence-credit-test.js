@@ -1,55 +1,45 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
-import { findAll, find } from 'ember-native-dom-helpers'
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
-describe('Acceptance | users edit credits absence credit', function() {
-  let application
+module('Acceptance | users edit credits absence credit', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
-
-    this.user = server.create('user', { isSuperuser: true })
-    this.types = server.loadFixtures('absence-types')
+  hooks.beforeEach(async function() {
+    this.user = this.server.create('user', { isSuperuser: true })
+    this.types = this.server.loadFixtures('absence-types')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
+    await authenticateSession({ user_id: this.user.id })
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('can create an absence credit', async function() {
+  test('can create an absence credit', async function(assert) {
     await visit(`/users/${this.user.id}/credits/absence-credits/new`)
 
     await click('.btn-group .btn:first-child')
     await fillIn('input[name=date]', moment().format('DD.MM.YYYY'))
     await fillIn('input[name=days]', '5')
     await fillIn('input[name=comment]', 'Comment')
+    await click('[data-test-absence-credit-save]')
 
-    await click('.btn-primary')
+    assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
-    expect(currentURL()).to.equal(`/users/${this.user.id}/credits`)
-
-    expect(findAll('[data-test-absence-credits] tbody > tr')).to.have.length(1)
+    assert.dom('[data-test-absence-credits] tbody > tr').exists({ count: 1 })
   })
 
-  it('can edit an absence credit', async function() {
-    let { id } = server.create('absence-credit', { user: this.user })
+  test('can edit an absence credit', async function(assert) {
+    let { id } = this.server.create('absence-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits`)
 
     await click('[data-test-absence-credits] tbody > tr:first-child')
 
-    expect(currentURL()).to.equal(
+    assert.equal(
+      currentURL(),
       `/users/${this.user.id}/credits/absence-credits/${id}`
     )
 
@@ -59,42 +49,44 @@ describe('Acceptance | users edit credits absence credit', function() {
 
     await click('.btn-primary')
 
-    expect(currentURL()).to.equal(`/users/${this.user.id}/credits`)
+    assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
-    expect(findAll('[data-test-absence-credits] tbody > tr')).to.have.length(1)
+    assert.dom('[data-test-absence-credits] tbody > tr').exists({ count: 1 })
 
-    expect(
-      find(
+    assert
+      .dom(
         '[data-test-absence-credits] tbody > tr:first-child > td:nth-child(1)'
-      ).innerHTML.trim()
-    ).to.equal(moment().format('DD.MM.YYYY'))
+      )
+      .hasText(moment().format('DD.MM.YYYY'))
 
-    expect(
-      find(
+    assert
+      .dom(
         '[data-test-absence-credits] tbody > tr:first-child > td:nth-child(2)'
-      ).innerHTML.trim()
-    ).to.equal('5')
+      )
+      .hasText('5')
 
-    expect(
-      find(
+    assert
+      .dom(
         '[data-test-absence-credits] tbody > tr:first-child > td:nth-child(4)'
-      ).innerHTML.trim()
-    ).to.equal('Ding dong')
+      )
+      .hasText('Ding dong')
   })
 
-  it('can delete an absence credit', async function() {
-    let { id } = server.create('absence-credit', { user: this.user })
+  test('can delete an absence credit', async function(assert) {
+    let { id } = this.server.create('absence-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits/absence-credits/${id}`)
 
     await click('.btn-danger')
 
-    expect(currentURL()).to.equal(`/users/${this.user.id}/credits`)
+    assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
-    expect(findAll('[data-test-absence-credits] tr')).to.have.length(0)
+    assert.dom('[data-test-absence-credits] tr').doesNotExist()
   })
 
-  it('redirects to the year of the created absence credit', async function() {
+  test('redirects to the year of the created absence credit', async function(
+    assert
+  ) {
     await visit(`/users/${this.user.id}/credits/absence-credits/new`)
 
     await click('.btn-group .btn:first-child')
@@ -107,9 +99,10 @@ describe('Acceptance | users edit credits absence credit', function() {
     await fillIn('input[name=days]', '5')
     await fillIn('input[name=comment]', 'Comment')
 
-    await click('.btn-primary')
+    await click('[data-test-absence-credit-save]')
 
-    expect(currentURL()).to.equal(
+    assert.equal(
+      currentURL(),
       `/users/${this.user.id}/credits?year=${moment().year() + 1}`
     )
   })

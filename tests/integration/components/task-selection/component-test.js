@@ -1,10 +1,10 @@
-import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
 import wait from 'ember-test-helpers/wait'
+import { setupRenderingTest } from 'ember-qunit'
 
 const CUSTOMER = EmberObject.create({
   id: 1,
@@ -23,21 +23,19 @@ const TASK = EmberObject.create({
   project: PROJECT
 })
 
-describe('Integration | Component | task selection', function() {
-  setupComponentTest('task-selection', {
-    integration: true
-  })
+module('Integration | Component | task selection', function(hooks) {
+  setupRenderingTest(hooks)
 
-  beforeEach(function() {
+  hooks.beforeEach(function() {
     this.server = startMirage()
   })
 
-  afterEach(function() {
+  hooks.afterEach(function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
-    this.render(hbs`
+  test('renders', async function(assert) {
+    await render(hbs`
       {{#task-selection as |t|}}
         {{t.customer}}
         {{t.project}}
@@ -45,15 +43,15 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-    expect(this.$('.project-select [aria-disabled=true]')).to.have.length(1)
-    expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
+    assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+    assert.dom('.project-select [aria-disabled=true]').exists()
+    assert.dom('.task-select [aria-disabled=true]').exists()
   })
 
-  it('can set initial customer', function() {
+  test('can set initial customer', async function(assert) {
     this.set('customer', CUSTOMER)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial    = (hash
           customer = customer
@@ -66,22 +64,23 @@ describe('Integration | Component | task selection', function() {
     `)
 
     return wait().then(() => {
-      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(1)
+      assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.project-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.task-select [aria-disabled=true]').exists()
 
-      expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(CUSTOMER.name)
+      assert.equal(
+        this.element
+          .querySelector('.customer-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
+        CUSTOMER.name
+      )
     })
   })
 
-  it('can set initial project', function() {
+  test('can set initial project', async function(assert) {
     this.set('project', PROJECT)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial   = (hash
           project = project
@@ -94,27 +93,29 @@ describe('Integration | Component | task selection', function() {
     `)
 
     return wait().then(() => {
-      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
+      assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.project-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.task-select [aria-disabled=true]').doesNotExist()
 
-      expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(CUSTOMER.name)
-      expect(
-        this.$('.project-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(PROJECT.name)
+      assert.equal(
+        this.element
+          .querySelector('.customer-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
+        CUSTOMER.name
+      )
+      assert.equal(
+        this.element
+          .querySelector('.project-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
+        PROJECT.name
+      )
     })
   })
 
-  it('can set initial task', function() {
+  test('can set initial task', async function(assert) {
     this.set('task', TASK)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial = (hash
           task  = task
@@ -127,32 +128,37 @@ describe('Integration | Component | task selection', function() {
     `)
 
     return wait().then(() => {
-      expect(this.$('.customer-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.project-select [aria-disabled=true]')).to.have.length(0)
-      expect(this.$('.task-select [aria-disabled=true]')).to.have.length(0)
+      assert.dom('.customer-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.project-select [aria-disabled=true]').doesNotExist()
+      assert.dom('.task-select [aria-disabled=true]').doesNotExist()
 
-      expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(CUSTOMER.name)
-      expect(
-        this.$('.project-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(PROJECT.name)
-      expect(
-        this.$('.task-select .ember-power-select-selected-item')
-          .text()
-          .trim()
-      ).to.equal(TASK.name)
+      assert.equal(
+        this.element
+          .querySelector('.customer-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
+        CUSTOMER.name
+      )
+      assert.equal(
+        this.element
+          .querySelector('.project-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
+        PROJECT.name
+      )
+      assert.equal(
+        this.element
+          .querySelector('.task-select .ember-power-select-selected-item')
+          .innerHTML.trim(),
+        TASK.name
+      )
     })
   })
 
-  it('can clear customer', function() {
+  test('can clear customer', async function(assert) {
+    assert.expect(0)
+
     this.set('task', TASK)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial = (hash
           task  = task
@@ -165,10 +171,10 @@ describe('Integration | Component | task selection', function() {
     `)
   })
 
-  it('can clear all filters', function() {
+  test('can clear all filters', async function(assert) {
     this.set('task', TASK)
 
-    this.render(hbs`
+    await render(hbs`
       {{#task-selection
         initial = (hash
           task  = task
@@ -181,18 +187,18 @@ describe('Integration | Component | task selection', function() {
       {{/task-selection}}
     `)
 
-    this.$('button').click()
+    await click('button')
 
     return wait().then(() => {
-      expect(
-        this.$('.customer-select .ember-power-select-selected-item')
-      ).to.have.length(0)
-      expect(
-        this.$('.project-select .ember-power-select-selected-item')
-      ).to.have.length(0)
-      expect(
-        this.$('.project-select .ember-power-select-selected-item')
-      ).to.have.length(0)
+      assert
+        .dom('.customer-select .ember-power-select-selected-item')
+        .doesNotExist()
+      assert
+        .dom('.project-select .ember-power-select-selected-item')
+        .doesNotExist()
+      assert
+        .dom('.task-select .ember-power-select-selected-item')
+        .doesNotExist()
     })
   })
 })

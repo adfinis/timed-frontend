@@ -1,24 +1,13 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | paginated table/body', function() {
-  setupComponentTest('paginated-table/body', {
-    integration: true
-  })
+module('Integration | Component | paginated table/body', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.on('myAction', function(val) { ... });
-    // Template block usage:
-    // this.render(hbs`
-    //   {{#paginated-table/body}}
-    //     template content
-    //   {{/paginated-table/body}}
-    // `);
-
-    this.render(hbs`{{paginated-table/body}}`)
-    expect(this.$()).to.have.length(1)
+  test('renders', async function(assert) {
+    await render(hbs`{{paginated-table/body}}`)
+    assert.ok(this.element)
   })
 })

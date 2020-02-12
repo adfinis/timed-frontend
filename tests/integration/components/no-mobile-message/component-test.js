@@ -1,24 +1,13 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | no mobile message', function() {
-  setupComponentTest('no-mobile-message', {
-    integration: true
-  })
+module('Integration | Component | no mobile message', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
-    // Set any properties with this.set('myProperty', 'value');
-    // Handle any actions with this.on('myAction', function(val) { ... });
-    // Template block usage:
-    // this.render(hbs`
-    //   {{#no-mobile-message}}
-    //     template content
-    //   {{/no-mobile-message}}
-    // `);
-
-    this.render(hbs`{{no-mobile-message}}`)
-    expect(this.$()).to.have.length(1)
+  test('renders', async function(assert) {
+    await render(hbs`{{no-mobile-message}}`)
+    assert.ok(this.element)
   })
 })

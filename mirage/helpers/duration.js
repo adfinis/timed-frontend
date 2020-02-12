@@ -1,4 +1,4 @@
-import { faker } from 'ember-cli-mirage'
+import faker from 'faker'
 import moment from 'moment'
 import DjangoDurationTransform from 'timed/transforms/django-duration'
 

@@ -56,9 +56,9 @@ export default Service.extend({
    * @public
    */
   allDone() {
-    let all = this.get('tours')
+    let tours = this.get('tours')
     let done = this.get('done')
 
-    return !all.filter(i => !done.includes(i)).length
+    return tours.every(tour => done.includes(tour))
   }
 })

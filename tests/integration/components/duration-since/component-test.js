@@ -1,15 +1,13 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
 
-describe('Integration | Component | duration since', function() {
-  setupComponentTest('duration-since', {
-    integration: true
-  })
+module('Integration | Component | duration since', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('computes the duration correctly', function() {
+  test('computes the duration correctly', async function(assert) {
     this.set(
       'start',
       moment()
@@ -20,17 +18,15 @@ describe('Integration | Component | duration since', function() {
         })
     )
 
-    this.render(hbs`{{duration-since start}}`)
+    await render(hbs`{{duration-since start}}`)
 
-    expect(this.$()).to.have.length(1)
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.equal('00:05:05')
+    assert.ok(this.element)
+    assert.dom(this.element).hasText('00:05:05')
   })
 
-  it('computes the duration correctly with elapsed time', function() {
+  test('computes the duration correctly with elapsed time', async function(
+    assert
+  ) {
     this.set(
       'start',
       moment().subtract({
@@ -48,13 +44,9 @@ describe('Integration | Component | duration since', function() {
       })
     )
 
-    this.render(hbs`{{duration-since start elapsed=elapsed}}`)
+    await render(hbs`{{duration-since start elapsed=elapsed}}`)
 
-    expect(this.$()).to.have.length(1)
-    expect(
-      this.$()
-        .text()
-        .trim()
-    ).to.equal('01:06:06')
+    assert.ok(this.element)
+    assert.dom(this.element).hasText('01:06:06')
   })
 })

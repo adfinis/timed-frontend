@@ -23,11 +23,11 @@ export default Component.extend({
 
   actions: {
     handleBlur(dd, e) {
-      if (
-        !document
-          .getElementById(`ember-basic-dropdown-content-${dd.uniqueId}`)
-          .contains(e.relatedTarget)
-      ) {
+      const container = document.getElementById(
+        `ember-basic-dropdown-content-${dd.uniqueId}`
+      )
+
+      if (!container || !container.contains(e.relatedTarget)) {
         dd.actions.close()
       }
     },
@@ -56,9 +56,7 @@ export default Component.extend({
       if (valid) {
         let parsed = parse(value)
 
-        return this.get('attrs.on-change')(
-          parsed && parsed.isValid() ? parsed : null
-        )
+        return this.get('on-change')(parsed && parsed.isValid() ? parsed : null)
       }
     }
   }

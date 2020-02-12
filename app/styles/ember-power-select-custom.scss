@@ -50,12 +50,12 @@
   }
 
   &[aria-selected=true] {
-    background-color: var(--color-primary);
+    background-color: $color-primary;
     color: rgb(255, 255, 255);
   }
 
   &[aria-current=true] {
-    background-color: color(var(--color-primary) a(60%));
+    background-color: opacify($color-primary, 0.6);
   }
 }
 
@@ -86,16 +86,16 @@
   color: rgb(85, 85, 85);
   background-color: rgb(255, 255, 255);
   border: 1px solid rgb(204, 204, 204);
-  border-radius: var(--input-border-radius);
-  box-shadow: var(--input-box-shadow);
+  border-radius: $input-border-radius;
+  box-shadow: $input-box-shadow;
   transition: border-color 0.15s, box-shadow 0.15s;
   padding-right: 2rem;
 
   &:focus {
-    border-color: color(var(--color-primary) tint(20%));
+    border-color: lighten($color-primary, 20%);
     outline: 0;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
-                0 0   8px color(var(--color-primary) a(60%));
+                0 0   8px opacify($color-primary, 0.6);
   }
 
   &[aria-disabled=true] {
@@ -118,8 +118,8 @@
     width: 2rem;
     border: none;
     height: calc(100% - 2px);
-    border-top-right-radius: var(--input-border-radius);
-    border-bottom-right-radius: var(--input-border-radius);
+    border-top-right-radius: $input-border-radius;
+    border-bottom-right-radius: $input-border-radius;
     right: 0;
     top: 1px;
     background-image: url('data:image/svg+xml,<svg height="512" version="1.1" viewBox="0 0 512 512" width="512" xml:space="preserve" xmlns="http://www.w3.org/2000/svg"><path d="M98.9 184.7l1.8 2.1 136 156.5c4.6 5.3 11.5 8.6 19.2 8.6 7.7 0 14.6-3.4 19.2-8.6L411 187.1l2.3-2.6c1.7-2.5 2.7-5.5 2.7-8.7 0-8.7-7.4-15.8-16.6-15.8v0H112.6v0c-9.2 0-16.6 7.1-16.6 15.8C96 179.1 97.1 182.2 98.9 184.7z"/></svg>');
@@ -129,7 +129,7 @@
   }
 }
 
-@media (--sm-viewport) {
+@media #{$sm-viewport} {
   .ember-power-select-trigger {
     font-size: 0.9rem;
     min-height: 2rem;

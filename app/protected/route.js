@@ -18,14 +18,11 @@ import moment from 'moment'
  */
 export default Route.extend(AuthenticatedRouteMixin, {
   session: service('session'),
-
   notify: service('notify'),
-
   autostartTour: service('autostart-tour'),
-
   tourManager: service('tour-manager'),
-
   routing: service('-routing'),
+  media: service('media'),
 
   async model() {
     let id = this.get('session.data.authenticated.user_id')
@@ -146,7 +143,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
         this._closeCurrentTour()
         this.set('controller.visible', false)
-      } catch (e) {
+      } catch (error) {
         /* istanbul ignore next */
         this.get('notify').error('Error while saving the user')
       }

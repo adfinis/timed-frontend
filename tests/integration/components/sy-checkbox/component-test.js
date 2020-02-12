@@ -1,69 +1,58 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
-import { find, click } from 'ember-native-dom-helpers'
+import { click, find, render } from '@ember/test-helpers'
 
-describe('Integration | Component | sy checkbox', function() {
-  setupComponentTest('sy-checkbox', {
-    integration: true
+module('Integration | Component | sy checkbox', function(hooks) {
+  setupRenderingTest(hooks)
+
+  test('works', async function(assert) {
+    await render(hbs`{{sy-checkbox label='Test Label'}}`)
+
+    assert.dom('label').hasText('Test Label')
   })
 
-  it('works', function() {
-    this.render(hbs`{{sy-checkbox label='Test Label'}}`)
+  test('works in block style', async function(assert) {
+    await render(hbs`{{#sy-checkbox}}Test Label{{/sy-checkbox}}`)
 
-    expect(
-      this.$('label')
-        .text()
-        .trim()
-    ).to.equal('Test Label')
+    assert.dom('label').hasText('Test Label')
   })
 
-  it('works in block style', function() {
-    this.render(hbs`{{#sy-checkbox}}Test Label{{/sy-checkbox}}`)
-
-    expect(
-      this.$('label')
-        .text()
-        .trim()
-    ).to.equal('Test Label')
-  })
-
-  it('changes state', function() {
+  test('changes state', async function(assert) {
     this.set('checked', false)
 
-    this.render(
+    await render(
       hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
     )
 
-    expect(find('input').checked).to.be.false
-    expect(this.get('checked')).to.be.false
+    assert.dom('input').isNotChecked()
+    assert.notOk(this.get('checked'))
 
-    click('label')
+    await click('label')
 
-    expect(find('input').checked).to.be.true
-    expect(this.get('checked')).to.be.true
+    assert.dom('input').isChecked()
+    assert.ok(this.get('checked'))
 
-    click('label')
+    await click('label')
 
-    expect(find('input').checked).to.be.false
-    expect(this.get('checked')).to.be.false
+    assert.dom('input').isNotChecked()
+    assert.notOk(this.get('checked'))
   })
 
-  it('can be indeterminate', function() {
+  test('can be indeterminate', async function(assert) {
     this.set('checked', null)
 
-    this.render(
+    await render(
       hbs`{{sy-checkbox checked=checked on-change=(action (mut checked))}}`
     )
 
-    expect(find('input').indeterminate).to.be.true
-    expect(this.get('checked')).to.be.null
+    assert.ok(find('input').indeterminate)
+    assert.equal(this.get('checked'), null)
 
-    click('label')
+    await click('label')
 
-    // clicking on an indeterminate checkbox makes it checked
-    expect(find('input').checked).to.be.true
-    expect(this.get('checked')).to.be.true
+    // clicking on an indeterminate checkbox makes test checked
+    assert.dom('input').isChecked()
+    assert.ok(this.get('checked'))
   })
 })

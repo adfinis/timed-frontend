@@ -1,48 +1,43 @@
-import { expect } from 'chai'
-import { describe, it, afterEach } from 'mocha'
-import { setupTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Service | autostart tour', function() {
-  setupTest('service:autostart-tour', {
-    // Specify the other units that are required for this test.
-    // needs: ['service:foo']
-  })
+module('Unit | Service | autostart tour', function(hooks) {
+  setupTest(hooks)
 
-  afterEach(function() {
+  hooks.afterEach(function() {
     localStorage.removeItem('timed-tour-test')
   })
 
-  // Replace this with your real tests.
-  it('exists', function() {
-    let service = this.subject()
-    expect(service).to.be.ok
+  test('exists', function(assert) {
+    let service = this.owner.lookup('service:autostart-tour')
+    assert.ok(service)
   })
 
-  it('can set and get the done tours', function() {
-    let service = this.subject()
+  test('can set and get the done tours', function(assert) {
+    let service = this.owner.lookup('service:autostart-tour')
 
     service.setProperties({ doneKey: 'timed-tour-test' })
 
-    expect(service.get('done')).to.deep.equal([])
+    assert.deepEqual(service.get('done'), [])
 
     service.set('done', ['test'])
 
-    expect(service.get('done')).to.deep.equal(['test'])
+    assert.deepEqual(service.get('done'), ['test'])
   })
 
-  it('can check if all tours are done', function() {
-    let service = this.subject()
+  test('can check if all tours are done', function(assert) {
+    let service = this.owner.lookup('service:autostart-tour')
 
     service.setProperties({ doneKey: 'timed-tour-test', tours: ['test'] })
 
-    expect(service.allDone()).to.not.be.ok
+    assert.notOk(service.allDone())
 
     service.set('done', ['test'])
 
-    expect(service.allDone()).to.be.ok
+    assert.ok(service.allDone())
 
     service.set('done', ['test', 'test2'])
 
-    expect(service.allDone()).to.be.ok
+    assert.ok(service.allDone())
   })
 })

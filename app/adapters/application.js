@@ -5,6 +5,8 @@
  */
 import JSONAPIAdapter from 'ember-data/adapters/json-api'
 import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin'
+import { reads } from '@ember/object/computed'
+import { computed } from '@ember/object'
 
 /**
  * The application adapter
@@ -15,13 +17,7 @@ import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin'
  * @public
  */
 export default JSONAPIAdapter.extend(DataAdapterMixin, {
-  /**
-   * The authorizer
-   *
-   * @property {String} authorizer
-   * @public
-   */
-  authorizer: 'authorizer:application',
+  token: reads('session.data.authenticated.token'),
 
   /**
    * The API namespace
@@ -29,5 +25,14 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
    * @property {String} namespace
    * @public
    */
-  namespace: 'api/v1'
+  namespace: 'api/v1',
+
+  headers: computed('token', function() {
+    const headers = {}
+    if (this.session.isAuthenticated) {
+      headers['Authorization'] = `Bearer ${this.token}`
+    }
+
+    return headers
+  })
 })

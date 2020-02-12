@@ -1,30 +1,31 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import { balanceHighlightClass } from 'timed/helpers/balance-highlight-class'
 import moment from 'moment'
 
-describe('Unit | Helper | balance highlight class', function() {
-  it('returns an empty string on neutral durations', function() {
+module('Unit | Helper | balance highlight class', function() {
+  test('returns an empty string on neutral durations', function(assert) {
     let result = balanceHighlightClass([moment.duration({ h: 0, m: 0 })])
 
-    expect(result).to.equal('')
+    assert.equal(result, '')
   })
 
-  it('returns an empty string on anything other than a duration', function() {
+  test('returns an empty string on anything other than a duration', function(
+    assert
+  ) {
     let result = balanceHighlightClass([1337])
 
-    expect(result).to.equal('')
+    assert.equal(result, '')
   })
 
-  it('returns `color-success` on positive durations', function() {
+  test('returns `color-success` on positive durations', function(assert) {
     let result = balanceHighlightClass([moment.duration({ h: 1, m: 30 })])
 
-    expect(result).to.equal('color-success')
+    assert.equal(result, 'color-success')
   })
 
-  it('returns `color-danger` on negative durations', function() {
+  test('returns `color-danger` on negative durations', function(assert) {
     let result = balanceHighlightClass([moment.duration({ h: -1, m: 30 })])
 
-    expect(result).to.equal('color-danger')
+    assert.equal(result, 'color-danger')
   })
 })

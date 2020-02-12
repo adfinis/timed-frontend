@@ -1,10 +1,9 @@
-import { describe, it } from 'mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
 import { formatDurationFn } from 'timed/helpers/format-duration'
 import moment from 'moment'
 
-describe('Unit | Helper | format duration', function() {
-  it('works', function() {
+module('Unit | Helper | format duration', function() {
+  test('works', function(assert) {
     let duration = moment.duration({
       hours: 3,
       minutes: 56,
@@ -13,10 +12,10 @@ describe('Unit | Helper | format duration', function() {
 
     let result = formatDurationFn([duration])
 
-    expect(result).to.equal('03:56:59')
+    assert.equal(result, '03:56:59')
   })
 
-  it('works without seconds', function() {
+  test('works without seconds', function(assert) {
     let duration = moment.duration({
       hours: 3,
       minutes: 56,
@@ -25,6 +24,6 @@ describe('Unit | Helper | format duration', function() {
 
     let result = formatDurationFn([duration, false])
 
-    expect(result).to.equal('03:56')
+    assert.equal(result, '03:56')
   })
 })

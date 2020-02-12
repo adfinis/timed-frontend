@@ -4,7 +4,7 @@ import { task, timeout, hash } from 'ember-concurrency'
 import { inject as service } from '@ember/service'
 import moment from 'moment'
 import { computed } from '@ember/object'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 
 const UsersQueryParams = new QueryParams({
   search: {
@@ -32,7 +32,7 @@ const UsersQueryParams = new QueryParams({
 const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   session: service('session'),
 
-  currentUser: oneWay('session.data.user'),
+  currentUser: reads('session.data.user'),
 
   selectedSupervisor: computed(
     'supervisor',

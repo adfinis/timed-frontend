@@ -1,28 +1,26 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 
-describe('Integration | Component | sort header', function() {
-  setupComponentTest('sort-header', {
-    integration: true
+module('Integration | Component | sort header', function(hooks) {
+  setupRenderingTest(hooks)
+
+  test('renders', async function(assert) {
+    await render(hbs`{{sort-header current='-test' by='foo'}}`)
+    assert.dom('.fa-sort').exists({ count: 1 })
   })
 
-  it('renders', function() {
-    this.render(hbs`{{sort-header current='-test' by='foo'}}`)
-    expect(this.$('.fa-sort')).to.have.length(1)
-  })
-
-  it('renders active state', function() {
+  test('renders active state', async function(assert) {
     this.set('current', '-test')
     this.set('update', sort => {
       this.set('current', sort)
     })
 
-    this.render(hbs`{{sort-header current=current by='test' update=update}}`)
-    expect(this.$('.fa-sort-desc')).to.have.length(1)
+    await render(hbs`{{sort-header current=current by='test' update=update}}`)
+    assert.dom('.fa-sort-desc').exists({ count: 1 })
 
-    this.$('i').click()
-    expect(this.$('.fa-sort-asc')).to.have.length(1)
+    await click('i')
+    assert.dom('.fa-sort-asc').exists({ count: 1 })
   })
 })

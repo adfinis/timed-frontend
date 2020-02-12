@@ -1,11 +1,10 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import validateNullOrNotBlank from 'timed/validators/null-or-not-blank'
 
-describe('Unit | Validator | null or not blank', function() {
-  it('works', function() {
-    expect(validateNullOrNotBlank()('key', 'test')).to.be.true
-    expect(validateNullOrNotBlank()('key', null)).to.be.true
-    expect(validateNullOrNotBlank()('key', '')).to.be.a('string')
+module('Unit | Validator | null or not blank', function() {
+  test('works', function(assert) {
+    assert.equal(validateNullOrNotBlank()('key', 'test'), true)
+    assert.equal(validateNullOrNotBlank()('key', null), true)
+    assert.equal(typeof validateNullOrNotBlank()('key', ''), 'string')
   })
 })

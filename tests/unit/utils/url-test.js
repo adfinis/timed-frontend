@@ -1,10 +1,8 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
+import { module, test } from 'qunit'
 import { cleanParams, toQueryString } from 'timed/utils/url'
 
-describe('Unit | Utility | url', function() {
-  // Replace this with your real tests.
-  it('can clean params', function() {
+module('Unit | Utility | url', function() {
+  test('can clean params', function(assert) {
     let params = {
       1: '',
       2: null,
@@ -15,14 +13,14 @@ describe('Unit | Utility | url', function() {
 
     let result = cleanParams(params)
 
-    expect(result).to.deep.equal({
+    assert.deepEqual(result, {
       1: '',
       4: 0,
       5: 'test'
     })
   })
 
-  it('can convert params to a query string', function() {
+  test('can convert params to a query string', function(assert) {
     let params = {
       foo: '',
       bar: 0,
@@ -31,6 +29,6 @@ describe('Unit | Utility | url', function() {
 
     let result = toQueryString(params)
 
-    expect(result).to.equal('foo=&bar=0&baz=test')
+    assert.equal(result, 'foo=&bar=0&baz=test')
   })
 })

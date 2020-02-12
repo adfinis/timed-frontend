@@ -5,7 +5,7 @@
   margin-bottom: 1.5rem;
 }
 
-@media (--lg-viewport) {
+@media #{$lg-viewport} {
   form {
     display: flex;
     flex-direction: row;

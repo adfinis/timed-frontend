@@ -2,7 +2,7 @@ import Controller from '@ember/controller'
 import { A } from '@ember/array'
 import { task, hash } from 'ember-concurrency'
 import { computed } from '@ember/object'
-import { oneWay } from '@ember/object/computed'
+import { reads } from '@ember/object/computed'
 import QueryParams from 'ember-parachute'
 import moment from 'moment'
 import config from '../../config/environment'
@@ -17,8 +17,6 @@ import {
   serializeParachuteQueryParams
 } from 'timed/utils/query-params'
 import parseDjangoDuration from 'timed/utils/parse-django-duration'
-
-const { testing } = Ember
 
 const rAF = () => {
   return new RSVP.Promise(resolve => {
@@ -189,7 +187,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   can: service('can'),
 
-  jwt: oneWay('session.data.authenticated.token'),
+  jwt: reads('session.data.authenticated.token'),
 
   _scrollOffset: 0,
 
@@ -348,7 +346,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
         // ignore since we can't really test this..
         /* istanbul ignore next */
-        if (!testing) {
+        if (!Ember.testing) {
           download(file, filename, file.type)
         }
 

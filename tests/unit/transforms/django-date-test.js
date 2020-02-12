@@ -1,16 +1,12 @@
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 import moment from 'moment'
 
-describe('Unit | Transform | django date', function() {
-  setupTest('transform:django-date', {
-    // Specify the other units that are required for this test.
-    // needs: ['transform:foo']
-  })
+module('Unit | Transform | django date', function(hooks) {
+  setupTest(hooks)
 
-  it('serializes', function() {
-    let transform = this.subject()
+  test('serializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-date')
 
     let result = transform.serialize(
       moment({
@@ -20,19 +16,19 @@ describe('Unit | Transform | django date', function() {
       })
     )
 
-    expect(result).to.equal('2017-03-11')
+    assert.equal(result, '2017-03-11')
   })
 
-  it('deserializes', function() {
-    let transform = this.subject()
+  test('deserializes', function(assert) {
+    let transform = this.owner.lookup('transform:django-date')
 
-    expect(transform.deserialize('')).to.be.null
-    expect(transform.deserialize(null)).to.be.null
+    assert.notOk(transform.deserialize(''))
+    assert.notOk(transform.deserialize(null))
 
     let result = transform.deserialize('2017-03-11')
 
-    expect(result.year()).to.equal(2017)
-    expect(result.month()).to.equal(2) // moments months are zerobased
-    expect(result.date()).to.equal(11)
+    assert.equal(result.year(), 2017)
+    assert.equal(result.month(), 2) // moments months are zerobased
+    assert.equal(result.date(), 11)
   })
 })

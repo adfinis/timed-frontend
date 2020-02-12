@@ -1,49 +1,49 @@
-import { expect } from 'chai'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { click, render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import { startMirage } from 'timed/initializers/ember-cli-mirage'
 import EmberObject from '@ember/object'
-import { find, findAll } from 'ember-native-dom-helpers'
 
-describe('Integration | Component | report row', function() {
-  setupComponentTest('report-row', {
-    integration: true
-  })
+module('Integration | Component | report row', function(hooks) {
+  setupRenderingTest(hooks)
 
-  beforeEach(function() {
+  hooks.beforeEach(function() {
     this.server = startMirage()
   })
 
-  afterEach(function() {
+  hooks.afterEach(function() {
     this.server.shutdown()
   })
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
 
-    this.render(hbs`{{report-row report}}`)
+    await render(hbs`{{report-row report}}`)
 
-    expect(this.$('form')).to.have.length(1)
-    expect(this.$('.form-group')).to.have.length(8)
-    expect(this.$('.btn-danger')).to.have.length(1)
-    expect(this.$('.btn-primary')).to.have.length(1)
+    assert.dom('form').exists({ count: 1 })
+    assert.dom('.form-group').exists({ count: 8 })
+    assert.dom('.btn-danger').exists({ count: 1 })
+    assert.dom('.btn-primary').exists({ count: 1 })
   })
 
-  it('can delete row', function() {
+  test('can delete row', async function(assert) {
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
     this.set('didDelete', false)
 
-    this.render(
-      hbs`{{report-row report on-delete=(action (mut didDelete) true)}}`
-    )
+    await render(hbs`
+      {{report-row
+        report
+        on-delete=(action (mut didDelete) true)
+      }}
+    `)
 
-    this.$('.btn-danger').click()
+    await click('.btn-danger')
 
-    expect(this.get('didDelete')).to.be.ok
+    assert.ok(this.get('didDelete'))
   })
 
-  it('can be read-only', function() {
+  test('can be read-only', async function(assert) {
     this.set(
       'report',
       EmberObject.create({
@@ -54,16 +54,16 @@ describe('Integration | Component | report row', function() {
       })
     )
 
-    this.render(hbs`{{report-row report}}`)
+    await render(hbs`{{report-row report}}`)
 
-    expect(findAll('input').every(x => x.disabled)).to.be.true
-    expect(find('form').title).to.contain('John Doe')
-    expect(findAll('.btn')).to.have.length(0)
+    assert.dom('input').isDisabled()
+    assert.dom('form').hasAttribute('title', /John Doe/)
+    assert.dom('.btn').doesNotExist()
 
     this.set('report', EmberObject.create({ verifiedBy: EmberObject.create() }))
 
-    expect(findAll('input').some(x => x.disabled)).to.be.false
-    expect(find('form').title).to.equal('')
-    expect(findAll('.btn')).to.have.length(2)
+    assert.dom('input').isNotDisabled()
+    assert.dom('form').hasAttribute('title', '')
+    assert.dom('.btn').exists({ count: 2 })
   })
 })

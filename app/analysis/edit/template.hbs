@@ -18,7 +18,7 @@
           {{#with intersection.lastSuccessful.value.model as |model|}}
             {{#validated-form
               model     = (changeset model IntersectionValidations)
-              on-submit = save
+              on-submit = (perform save)
             as |f|}}
               {{#task-selection
                 on-set-customer = (action (queue (action (mut f.model.customer)) (action 'validate' f.model)))

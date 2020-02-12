@@ -1,4 +1,4 @@
-import MediaService from 'ember-responsive/media'
+import MediaService from 'ember-responsive/services/media'
 import { getOwner } from '@ember/application'
 import { computed } from '@ember/object'
 import { A } from '@ember/array'

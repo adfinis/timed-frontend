@@ -1,15 +1,12 @@
-import { describe, it } from 'mocha'
-import { setupModelTest } from 'ember-mocha'
-import { expect } from 'chai'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Model | customer', function() {
-  setupModelTest('customer', {
-    needs: ['model:project']
-  })
+module('Unit | Model | customer', function(hooks) {
+  setupTest(hooks)
 
-  it('exists', function() {
-    let model = this.subject()
-    // var store = this.store()
-    expect(model).to.be.ok
+  test('exists', function(assert) {
+    let model = this.owner.lookup('service:store').modelFor('customer')
+
+    assert.ok(model)
   })
 })

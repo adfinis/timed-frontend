@@ -9,7 +9,7 @@
 
 &.filter-sidebar-group--expanded .filter-sidebar-group-label,
 .filter-sidebar-group-label:hover {
-  color: var(--body-color);
+  color: $body-color;
 }
 
 &.filter-sidebar-group--expanded .filter-sidebar-group-body {
@@ -22,8 +22,8 @@
   align-items: center;
   cursor: pointer;
   padding: 1rem;
-  color: color(var(--body-color) tint(50%));
-  border-top: 1px solid var(--color-border);
+  color: lighten($body-color, 50%);
+  border-top: 1px solid $color-border;
   transition: color .3s ease;
 }
 

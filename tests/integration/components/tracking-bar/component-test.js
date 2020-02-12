@@ -1,6 +1,6 @@
-import { expect } from 'chai'
-import { describe, it, beforeEach } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { render } from '@ember/test-helpers'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import { task } from 'ember-concurrency'
 import hbs from 'htmlbars-inline-precompile'
 import Service from '@ember/service'
@@ -20,19 +20,16 @@ export const trackingStub = Service.extend({
   })
 })
 
-describe('Integration | Component | tracking bar', function() {
-  setupComponentTest('tracking-bar', {
-    integration: true
+module('Integration | Component | tracking bar', function(hooks) {
+  setupRenderingTest(hooks)
+
+  hooks.beforeEach(function() {
+    this.owner.register('service:tracking', trackingStub)
   })
 
-  beforeEach(function() {
-    this.register('service:tracking', trackingStub)
-    this.inject.service('tracking', { as: 'tracking' })
-  })
+  test('renders', async function(assert) {
+    await render(hbs`{{tracking-bar}}`)
 
-  it('renders', function() {
-    this.render(hbs`{{tracking-bar}}`)
-
-    expect(this.$('input[type=text]').val()).to.equal('asdf')
+    assert.dom('input[type=text]').hasValue('asdf')
   })
 })

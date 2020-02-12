@@ -1,8 +1,7 @@
 /* eslint-env node */
 /* eslint-disable camelcase */
 module.exports = {
-  framework: 'mocha+chai',
-  test_page: 'tests/index.html',
+  test_page: 'tests/index.html?hidepassed',
   disable_watching: true,
   parallel: -1,
   launch_in_dev: [],
@@ -10,7 +9,6 @@ module.exports = {
   browser_args: {
     chrome: [
       process.env.TRAVIS ? '--no-sandbox' : null,
-
       '--headless',
       '--disable-gpu',
       '--remote-debugging-port=9222',

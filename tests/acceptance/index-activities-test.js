@@ -1,61 +1,50 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
+import { click, currentURL, findAll, visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
 import formatDuration from 'timed/utils/format-duration'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
-describe('Acceptance | index activities', function() {
-  let application
+module('Acceptance | index activities', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user')
+  hooks.beforeEach(async function() {
+    let user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
-    this.activities = server.createList('activity', 5, { userId: user.id })
+    this.activities = this.server.createList('activity', 5, { userId: user.id })
 
     this.user = user
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('can visit /', async function() {
+  test('can visit /', async function(assert) {
     await visit('/')
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
   })
 
-  it('can list activities', async function() {
+  test('can list activities', async function(assert) {
     await visit('/')
 
-    expect(find('[data-test-activity-row]')).to.have.length(5)
+    assert.dom('[data-test-activity-row]').exists({ count: 5 })
   })
 
-  it('can start an activity', async function() {
+  test('can start an activity', async function(assert) {
     await visit('/')
 
-    await click(
-      find('[data-test-activity-row-id="1"] [data-test-start-activity]')
-    )
+    await click('[data-test-activity-row-id="1"] [data-test-start-activity]')
 
-    expect(find('[data-test-activity-row-id="6"]').hasClass('primary')).to.be.ok
+    assert.dom('[data-test-activity-row-id="6"]').hasClass('primary')
   })
 
-  it('can start an activity of a past day', async function() {
+  test('can start an activity of a past day', async function(assert) {
     let lastDay = moment().subtract(1, 'day')
 
-    let activity = server.create('activity', {
+    let activity = this.server.create('activity', {
       date: lastDay,
       userId: this.user.id,
       comment: 'Test'
@@ -67,32 +56,27 @@ describe('Acceptance | index activities', function() {
       `[data-test-activity-row-id="${activity.id}"] [data-test-start-activity]`
     )
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
 
-    expect(find('[data-test-activity-row-id="7"] td:eq(2)').text()).to.equals(
-      activity.comment
-    )
+    assert
+      .dom(findAll('[data-test-activity-row-id="7"] td')[2])
+      .hasText(activity.comment)
   })
 
-  it('can stop an activity', async function() {
+  test('can stop an activity', async function(assert) {
     await visit('/')
 
-    await click(
-      find('[data-test-activity-row-id="1"] [data-test-start-activity]')
-    )
+    await click('[data-test-activity-row-id="1"] [data-test-start-activity]')
 
-    expect(find('[data-test-activity-row-id="6"]').hasClass('primary')).to.be.ok
+    assert.dom('[data-test-activity-row-id="6"]').hasClass('primary')
 
-    await click(
-      find('[data-test-activity-row-id="6"] [data-test-stop-activity]')
-    )
+    await click('[data-test-activity-row-id="6"] [data-test-stop-activity]')
 
-    expect(find('[data-test-activity-row-id="6"]').hasClass('primary')).to.not
-      .be.ok
+    assert.dom('[data-test-activity-row-id="6"]').doesNotHaveClass('primary')
   })
 
-  it('can generate reports', async function() {
-    let activity = server.create('activity', {
+  test('can generate reports', async function(assert) {
+    let activity = this.server.create('activity', {
       userId: this.user.id,
       review: true,
       notBillable: true
@@ -101,172 +85,170 @@ describe('Acceptance | index activities', function() {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
-    expect(currentURL()).to.equal('/reports')
+    assert.equal(currentURL(), '/reports')
 
-    expect(find('[data-test-report-row]')).to.have.length(7)
+    assert.dom('[data-test-report-row]').exists({ count: 7 })
 
-    expect(
-      find(
-        `[data-test-report-row-id="${id}"] .form-group:eq(0) .ember-power-select-selected-item`
+    assert
+      .dom(
+        `[data-test-report-row-id="${id}"] .form-group:first-child .ember-power-select-selected-item`
       )
-        .text()
-        .trim()
-    ).to.equal(activity.task.project.customer.name)
-    expect(
-      find(
-        `[data-test-report-row-id="${id}"] .form-group:eq(1) .ember-power-select-selected-item`
+      .hasText(activity.task.project.customer.name)
+    assert
+      .dom(
+        `[data-test-report-row-id="${id}"] .form-group:nth-child(2) .ember-power-select-selected-item`
       )
-        .text()
-        .trim()
-    ).to.equal(activity.task.project.name)
-    expect(
-      find(
-        `[data-test-report-row-id="${id}"] .form-group:eq(2) .ember-power-select-selected-item`
+      .hasText(activity.task.project.name)
+    assert
+      .dom(
+        `[data-test-report-row-id="${id}"] .form-group:nth-child(3) .ember-power-select-selected-item`
       )
-        .text()
-        .trim()
-    ).to.equal(activity.task.name)
+      .hasText(activity.task.name)
 
     await visit('/')
 
-    expect(find('[data-test-activity-row-id="1"]').attr('class')).to.include(
-      'transferred'
-    )
+    assert.dom('[data-test-activity-row-id="1"]').hasClass('transferred')
   })
 
-  it('can not generate reports twice', async function() {
+  test('can not generate reports twice', async function(assert) {
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
-    expect(currentURL()).to.equal('/reports')
+    assert.equal(currentURL(), '/reports')
 
-    expect(find('[data-test-report-row]')).to.have.length(6)
+    assert.dom('[data-test-report-row]').exists({ count: 6 })
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
-    expect(currentURL()).to.equal('/reports')
+    assert.equal(currentURL(), '/reports')
 
-    expect(find('[data-test-report-row]')).to.have.length(6)
+    assert.dom('[data-test-report-row]').exists({ count: 6 })
   })
 
-  it('shows a warning when generating reports from unknown tasks', async function() {
-    server.create('activity', 'unknown', { userId: this.user.id })
+  test('shows a warning when generating reports from unknown tasks', async function(
+    assert
+  ) {
+    this.server.create('activity', 'unknown', { userId: this.user.id })
 
     await visit('/')
 
-    await click('button:contains(Generate timesheet)')
-    await click('[data-test-unknown-warning] button:contains(Cancel)')
+    await click('[data-test-activity-generate-timesheet]')
+    await click('[data-test-unknown-warning] button.btn-default')
 
-    expect(currentURL()).to.equal('/')
+    assert.equal(currentURL(), '/')
 
-    await click('button:contains(Generate timesheet)')
-    await click('[data-test-unknown-warning] button:contains(fine)')
+    await click('[data-test-activity-generate-timesheet]')
+    await click('[data-test-unknown-warning] button.btn-primary')
 
-    expect(currentURL()).to.equal('/reports')
+    assert.equal(currentURL(), '/reports')
   })
 
-  it('shows a warning when generating reports from day overlapping activities', async function() {
+  test('shows a warning when generating reports from day overlapping activities', async function(
+    assert
+  ) {
     let date = moment().subtract(1, 'days')
 
-    server.create('activity', 'active', { userId: this.user.id, date })
+    this.server.create('activity', 'active', { userId: this.user.id, date })
 
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
-    await click('button:contains(Generate timesheet)')
-    await click('[data-test-overlapping-warning] button:contains(Cancel)')
+    await click('[data-test-activity-generate-timesheet]')
+    await click('[data-test-overlapping-warning] button.btn-default')
 
-    expect(currentURL()).to.not.contain('reports')
+    assert.notOk(currentURL().includes('reports'))
 
-    await click('button:contains(Generate timesheet)')
-    await click('[data-test-overlapping-warning] button:contains(fine)')
+    await click('[data-test-activity-generate-timesheet]')
+    await click('[data-test-overlapping-warning] button.btn-primary')
 
-    expect(currentURL()).to.contain('reports')
+    assert.ok(currentURL().includes('reports'))
   })
 
-  it('can handle both warnings', async function() {
+  test('can handle both warnings', async function(assert) {
     let date = moment().subtract(1, 'days')
 
-    server.create('activity', 'unknown', { userId: this.user.id, date })
-    server.create('activity', 'active', { userId: this.user.id, date })
+    this.server.create('activity', 'unknown', { userId: this.user.id, date })
+    this.server.create('activity', 'active', { userId: this.user.id, date })
 
     await visit(`/?day=${date.format('YYYY-MM-DD')}`)
 
     // both close if one clicks cancel
-    await click('button:contains(Generate timesheet)')
-    expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-overlapping-warning] button:contains(Cancel)')
-    expect(find('.modal--visible')).to.have.length(0)
-    expect(currentURL()).to.not.contain('reports')
+    await click('[data-test-activity-generate-timesheet]')
+    assert.dom('.modal--visible').exists({ count: 2 })
+    await click('[data-test-overlapping-warning] button.btn-default')
+    assert.dom('.modal--visible').exists({ count: 0 })
+    assert.notOk(currentURL().includes('reports'))
 
-    // both must be fine if it should continue
-    await click('button:contains(Generate timesheet)')
-    expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-overlapping-warning] button:contains(fine)')
-    expect(find('.modal--visible')).to.have.length(1)
-    await click('[data-test-unknown-warning] button:contains(Cancel)')
-    expect(find('.modal--visible')).to.have.length(0)
+    // both must be fine if test should continue
+    await click('[data-test-activity-generate-timesheet]')
+    assert.dom('.modal--visible').exists({ count: 2 })
+    await click('[data-test-overlapping-warning] button.btn-primary')
+    assert.dom('.modal--visible').exists({ count: 1 })
+    await click('[data-test-unknown-warning] button.btn-default')
+    assert.dom('.modal--visible').exists({ count: 0 })
 
-    await click('button:contains(Generate timesheet)')
-    expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-unknown-warning] button:contains(fine)')
-    expect(find('.modal--visible')).to.have.length(1)
-    await click('[data-test-overlapping-warning] button:contains(Cancel)')
-    expect(find('.modal--visible')).to.have.length(0)
-    expect(currentURL()).to.not.contain('reports')
+    await click('[data-test-activity-generate-timesheet]')
+    assert.dom('.modal--visible').exists({ count: 2 })
+    await click('[data-test-unknown-warning] button.btn-primary')
+    assert.dom('.modal--visible').exists({ count: 1 })
+    await click('[data-test-overlapping-warning] button.btn-default')
+    assert.dom('.modal--visible').exists({ count: 0 })
+    assert.notOk(currentURL().includes('reports'))
 
     // if both are fine continue
-    await click('button:contains(Generate timesheet)')
-    expect(find('.modal--visible')).to.have.length(2)
-    await click('[data-test-overlapping-warning] button:contains(fine)')
-    expect(find('.modal--visible')).to.have.length(1)
-    await click('[data-test-unknown-warning] button:contains(fine)')
-    expect(find('.modal--visible')).to.have.length(0)
-    expect(currentURL()).to.contain('reports')
+    await click('[data-test-activity-generate-timesheet]')
+    assert.dom('.modal--visible').exists({ count: 2 })
+    await click('[data-test-overlapping-warning] button.btn-primary')
+    assert.dom('.modal--visible').exists({ count: 1 })
+    await click('[data-test-unknown-warning] button.btn-primary')
+    assert.dom('.modal--visible').exists({ count: 0 })
+    assert.ok(currentURL().includes('reports'))
   })
 
-  it('splits 1 day overlapping activities when stopping', async function() {
-    let activity = server.create('activity', 'active', {
+  test('splits 1 day overlapping activities when stopping', async function(
+    assert
+  ) {
+    let activity = this.server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(1, 'days')
     })
+
+    const nextActivityId = Number(activity.id) + 1
 
     await visit('/')
 
     await click('[data-test-record-stop]')
 
     // today block should be from 00:00 to now
-    expect(
-      find(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(1)
+    assert.dom(`[data-test-activity-row-id="${nextActivityId}"]`).exists()
 
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+    await click(`[data-test-activity-row-id="${nextActivityId}"]`)
 
-    expect(
-      find('[data-test-activity-block-row] td:eq(0) input').val()
-    ).to.equal('00:00')
+    assert
+      .dom('[data-test-activity-block-row] td:first-child input')
+      .hasValue('00:00')
 
     // yesterday block should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')
 
-    expect(
-      find(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(1)
+    assert.dom(`[data-test-activity-row-id="${activity.id}"]`).exists()
 
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
+    await click(`[data-test-activity-row-id="${activity.id}"]`)
 
-    expect(
-      find('[data-test-activity-block-row] td:eq(2) input').val()
-    ).to.equal('23:59')
+    assert
+      .dom('[data-test-activity-block-row] td:nth-child(3) input')
+      .hasValue('23:59')
   })
 
-  it("doesn't split >1 days overlapping activities when stopping", async function() {
-    let activity = server.create('activity', 'active', {
+  test("doesn't split >1 days overlapping activities when stopping", async function(
+    assert
+  ) {
+    let activity = this.server.create('activity', 'active', {
       userId: this.user.id,
       date: moment().subtract(2, 'days')
     })
@@ -276,36 +258,38 @@ describe('Acceptance | index activities', function() {
     await click('[data-test-record-stop]')
 
     // today block should not exist
-    expect(
-      find(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(0)
+    assert
+      .dom(`[data-test-activity-row-id="${+activity.id + 1}"]`)
+      .doesNotExist()
 
     // yesterday block should not exist
     await visit('/')
     await click('[data-test-previous]')
 
-    expect(
-      find(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(0)
+    assert
+      .dom(`[data-test-activity-row-id="${+activity.id + 1}"]`)
+      .doesNotExist()
 
     // day before yesterday block should be from old start time to 23:59
     await visit('/')
     await click('[data-test-previous]')
     await click('[data-test-previous]')
 
-    expect(
-      find(`[data-test-activity-row] td:contains(${activity.comment})`)
-    ).to.have.length(1)
-
-    await click(`[data-test-activity-row] td:contains(${activity.comment})`)
-
-    expect(
-      find('[data-test-activity-block-row]:last td:eq(2) input').val()
-    ).to.equal('23:59')
+    assert
+      .dom(`[data-test-activity-row-id="${activity.id}"]`)
+      .exists({ count: 1 })
+    await click(`[data-test-activity-row-id="${activity.id}"]`)
+    assert
+      .dom('[data-test-activity-block-row] td:nth-child(3) input')
+      .hasValue('23:59')
   })
 
-  it('can generate active reports which do not overlap', async function() {
-    let activity = server.create('activity', 'active', { userId: this.user.id })
+  test('can generate active reports which do not overlap', async function(
+    assert
+  ) {
+    let activity = this.server.create('activity', 'active', {
+      userId: this.user.id
+    })
     let { id, duration } = activity
 
     duration = moment
@@ -314,20 +298,20 @@ describe('Acceptance | index activities', function() {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
-    expect(currentURL()).to.equal('/reports')
+    assert.equal(currentURL(), '/reports')
 
-    expect(find('[data-test-report-row]')).to.have.length(7)
+    assert.dom('[data-test-report-row]').exists({ count: 7 })
 
-    expect(
-      find(`${`[data-test-report-row-id="${id}"]`} [name=duration]`).val()
-    ).to.equal(formatDuration(duration, false))
+    assert
+      .dom(`${`[data-test-report-row-id="${id}"]`} [name=duration]`)
+      .hasValue(formatDuration(duration, false))
   })
 
-  it('combines identical activities when generating', async function() {
-    let task = server.create('task')
-    let activities = server.createList('activity', 3, 'defineTask', {
+  test('combines identical activities when generating', async function(assert) {
+    let task = this.server.create('task')
+    let activities = this.server.createList('activity', 3, 'defineTask', {
       userId: this.user.id,
       comment: 'Test',
       review: false,
@@ -341,14 +325,14 @@ describe('Acceptance | index activities', function() {
 
     await visit('/')
 
-    await click(find('button:contains(Generate timesheet)'))
+    await click('[data-test-activity-generate-timesheet]')
 
-    expect(currentURL()).to.equal('/reports')
+    assert.equal(currentURL(), '/reports')
 
-    expect(find('[data-test-report-row]')).to.have.length(7)
+    assert.dom('[data-test-report-row]').exists({ count: 7 })
 
-    expect(
-      find(`[data-test-report-row-id="6"] [name=duration]`).val()
-    ).to.equal(formatDuration(duration, false))
+    assert
+      .dom(`[data-test-report-row-id="6"] [name=duration]`)
+      .hasValue(formatDuration(duration, false))
   })
 })

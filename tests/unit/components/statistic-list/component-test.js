@@ -1,49 +1,42 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
 import EmberObject from '@ember/object'
 import moment from 'moment'
+import { setupRenderingTest } from 'ember-qunit'
 
-describe('Unit | Component | statistic list', function() {
-  setupComponentTest('statistic-list', {
-    // Specify the other units that are required for this test
-    // needs: ['component:foo', 'helper:bar'],
-    unit: true
-  })
+module('Unit | Component | statistic list', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('calculates max duration', function() {
-    let component = this.subject({
-      data: {
-        last: {
-          value: [
-            { duration: moment.duration({ h: 3 }) },
-            { duration: moment.duration({ h: 5 }) },
-            { duration: moment.duration({ h: 15 }) }
-          ]
-        }
+  test('calculates max duration', function(assert) {
+    const component = this.owner.lookup('component:statistic-list')
+    component.set('data', {
+      last: {
+        value: [
+          { duration: moment.duration({ h: 3 }) },
+          { duration: moment.duration({ h: 5 }) },
+          { duration: moment.duration({ h: 15 }) }
+        ]
       }
     })
 
-    expect(component.get('maxDuration').hours()).to.equal(15)
+    assert.equal(component.get('maxDuration').hours(), 15)
   })
 
-  it('parses total', function() {
-    let component = this.subject({
-      data: {
-        last: {
-          value: EmberObject.create({
-            meta: {
-              'total-time': '1 10:30:00'
-            }
-          })
-        }
+  test('parses total', function(assert) {
+    const component = this.owner.lookup('component:statistic-list')
+    component.set('data', {
+      last: {
+        value: EmberObject.create({
+          meta: {
+            'total-time': '1 10:30:00'
+          }
+        })
       }
     })
 
-    expect(component.get('total').asHours()).to.equal(34.5)
+    assert.equal(component.get('total').asHours(), 34.5)
   })
 
-  it('computes columns', function() {
+  test('computes columns', function(assert) {
     let expected = {
       year: ['Year', 'Duration'],
       month: ['Year', 'Month', 'Duration'],
@@ -53,18 +46,16 @@ describe('Unit | Component | statistic list', function() {
       user: ['User', 'Duration']
     }
 
-    let component = this.subject()
+    const component = this.owner.lookup('component:statistic-list')
 
     Object.keys(expected).forEach(type => {
       component.set('type', type)
 
-      expect(component.get('columns').mapBy('title')).to.deep.equal(
-        expected[type]
-      )
+      assert.deepEqual(component.get('columns').mapBy('title'), expected[type])
     })
   })
 
-  it('computes correct missing params message', function() {
+  test('computes correct missing params message', function(assert) {
     let expected = [
       { params: [], text: '' },
       {
@@ -82,12 +73,12 @@ describe('Unit | Component | statistic list', function() {
       }
     ]
 
-    let component = this.subject()
+    const component = this.owner.lookup('component:statistic-list')
 
     expected.forEach(({ params, text }) => {
       component.set('missingParams', params)
 
-      expect(component.get('missingParamsMessage')).to.equal(text)
+      assert.equal(component.get('missingParamsMessage'), text)
     })
   })
 })

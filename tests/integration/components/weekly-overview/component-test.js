@@ -1,41 +1,40 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
+import { render } from '@ember/test-helpers'
 
-describe('Integration | Component | weekly overview', function() {
-  setupComponentTest('weekly-overview', {
-    integration: true
-  })
+module('Integration | Component | weekly overview', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('renders', function() {
+  test('renders', async function(assert) {
     this.set('expected', moment.duration({ h: 8 }))
 
-    this.render(hbs`{{weekly-overview expected=expected}}`)
+    await render(hbs`{{weekly-overview expected=expected}}`)
 
-    expect(this.$()).to.have.length(1)
+    assert.ok(this.element)
   })
 
-  it('renders the benchmarks', function() {
+  test('renders the benchmarks', async function(assert) {
     this.set('expected', moment.duration({ h: 8 }))
 
-    this.render(hbs`{{weekly-overview expected=expected}}`)
+    await render(hbs`{{weekly-overview expected=expected}}`)
 
-    expect(this.$('hr')).to.have.length(12) // 11 (evens from 0 to 20) plus the expected
+    // 11 (evens from 0 to 20) plus the expected
+    assert.dom('hr').exists({ count: 12 })
   })
 
-  it('renders the days', function() {
+  test('renders the days', async function(assert) {
     this.set('day', moment())
     this.set('expected', moment.duration({ h: 8 }))
     this.set('worktime', moment.duration({ h: 8 }))
 
-    this.render(hbs`
+    await render(hbs`
       {{#weekly-overview expected=expected}}
         {{weekly-overview-day day=day expected=expected worktime=worktime}}
       {{/weekly-overview}}
     `)
 
-    expect(this.$('.bar')).to.have.length(1)
+    assert.dom('.bar').exists()
   })
 })

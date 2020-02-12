@@ -4,7 +4,7 @@
  * @public
  */
 import Route from '@ember/routing/route'
-import RSVP from 'rsvp'
+import { all } from 'rsvp'
 import moment from 'moment'
 import { inject as service } from '@ember/service'
 import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
@@ -81,7 +81,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       .peekRecord('user', user)
       .get('activeEmployment.location.id')
 
-    return RSVP.all([
+    return all([
       this.store.query('activity', {
         include: 'task,task.project,task.project.customer',
         day

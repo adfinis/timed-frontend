@@ -10,7 +10,7 @@
   height: 3rem;
   width:  3rem;
   transition: width 500ms ease;
-  font-family: var(--font-family-mono);
+  font-family: $font-family-mono;
   font-size: 14px;
 }
 
@@ -37,7 +37,7 @@
   top:  50%;
   font-family: FontAwesome;
   font-size: 16px;
-  color: var(--color-danger);
+  color: $color-danger;
   z-index: 1;
 }
 
@@ -74,7 +74,7 @@
   transition: opacity 200ms ease 300ms;
 }
 
-@media (--lg-viewport) {
+@media #{$lg-viewport} {
   & {
     width: 7rem;
     justify-content: flex-start;

@@ -1,53 +1,44 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
-import { findAll, find } from 'ember-native-dom-helpers'
+import { click, fillIn, currentURL, visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
 import moment from 'moment'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
-describe('Acceptance | users edit credits overtime credit', function() {
-  let application
+module('Acceptance | users edit credits overtime credit', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
-
-    this.user = server.create('user', { isSuperuser: true })
+  hooks.beforeEach(async function() {
+    this.user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
+    await authenticateSession({ user_id: this.user.id })
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('can create an overtime credit', async function() {
+  test('can create an overtime credit', async function(assert) {
     await visit(`/users/${this.user.id}/credits/overtime-credits/new`)
 
     await fillIn('input[name=date]', moment().format('DD.MM.YYYY'))
     await fillIn('input[name=duration]', '20:00')
     await fillIn('input[name=comment]', 'Comment')
 
-    await click('.btn-primary')
+    await click('[data-test-overtime-credit-save]')
 
-    expect(currentURL()).to.equal(`/users/${this.user.id}/credits`)
+    assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
-    expect(findAll('[data-test-overtime-credits] tbody > tr')).to.have.length(1)
+    assert.dom('[data-test-overtime-credits] tbody > tr').exists({ count: 1 })
   })
 
-  it('can edit an overtime credit', async function() {
-    let { id } = server.create('overtime-credit', { user: this.user })
+  test('can edit an overtime credit', async function(assert) {
+    let { id } = this.server.create('overtime-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits`)
 
     await click('[data-test-overtime-credits] tbody > tr:first-child')
 
-    expect(currentURL()).to.equal(
+    assert.equal(
+      currentURL(),
       `/users/${this.user.id}/credits/overtime-credits/${id}`
     )
 
@@ -55,44 +46,46 @@ describe('Acceptance | users edit credits overtime credit', function() {
     await fillIn('input[name=duration]', '20:00')
     await fillIn('input[name=comment]', 'Ding dong')
 
-    await click('.btn-primary')
+    await click('[data-test-overtime-credit-save]')
 
-    expect(currentURL()).to.equal(`/users/${this.user.id}/credits`)
+    assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
-    expect(findAll('[data-test-overtime-credits] tbody > tr')).to.have.length(1)
+    assert.dom('[data-test-overtime-credits] tbody > tr').exists({ count: 1 })
 
-    expect(
-      find(
+    assert
+      .dom(
         '[data-test-overtime-credits] tbody > tr:first-child > td:nth-child(1)'
-      ).innerHTML.trim()
-    ).to.equal(moment().format('DD.MM.YYYY'))
+      )
+      .hasText(moment().format('DD.MM.YYYY'))
 
-    expect(
-      find(
+    assert
+      .dom(
         '[data-test-overtime-credits] tbody > tr:first-child > td:nth-child(2)'
-      ).innerHTML.trim()
-    ).to.equal('20h 0m')
+      )
+      .hasText('20h 0m')
 
-    expect(
-      find(
+    assert
+      .dom(
         '[data-test-overtime-credits] tbody > tr:first-child > td:nth-child(3)'
-      ).innerHTML.trim()
-    ).to.equal('Ding dong')
+      )
+      .hasText('Ding dong')
   })
 
-  it('can delete an overtime credit', async function() {
-    let { id } = server.create('overtime-credit', { user: this.user })
+  test('can delete an overtime credit', async function(assert) {
+    let { id } = this.server.create('overtime-credit', { user: this.user })
 
     await visit(`/users/${this.user.id}/credits/overtime-credits/${id}`)
 
-    await click('.btn-danger')
+    await click('[data-test-overtime-credit-delete]')
 
-    expect(currentURL()).to.equal(`/users/${this.user.id}/credits`)
+    assert.equal(currentURL(), `/users/${this.user.id}/credits`)
 
-    expect(findAll('[data-test-overtime-credits] tr')).to.have.length(0)
+    assert.dom('[data-test-overtime-credits] tr').doesNotExist()
   })
 
-  it('redirects to the year of the created overtime credit', async function() {
+  test('redirects to the year of the created overtime credit', async function(
+    assert
+  ) {
     await visit(`/users/${this.user.id}/credits/overtime-credits/new`)
 
     await fillIn(
@@ -104,9 +97,10 @@ describe('Acceptance | users edit credits overtime credit', function() {
     await fillIn('input[name=duration]', '20:00')
     await fillIn('input[name=comment]', 'Ding dong')
 
-    await click('.btn-primary')
+    await click('[data-test-overtime-credit-save]')
 
-    expect(currentURL()).to.equal(
+    assert.equal(
+      currentURL(),
       `/users/${this.user.id}/credits?year=${moment().year() + 1}`
     )
   })

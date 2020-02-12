@@ -1,11 +1,11 @@
 {{#if (eq type 'button')}}
   <div class="btn-group btn-group--auto">
-    {{#each options as |option|}}
+    {{#each options as |opt|}}
       <button
-        class="btn {{if (eq (get option valuePath) selected) 'active'}}"
-        {{action (optional on-change) (get option valuePath)}}
+        class="btn {{if (eq (get opt valuePath) selected) 'active'}}"
+        {{action (optional on-change) (get opt valuePath)}}
       >
-        {{get option labelPath}}
+        {{get opt labelPath}}
       </button>
       {{yield}}
     {{/each}}
@@ -32,12 +32,12 @@
     {{#if prompt}}
       <option value="">{{prompt}}</option>
     {{/if}}
-    {{#each options as |option|}}
+    {{#each options as |opt|}}
       <option
-        value={{get option valuePath}}
-        selected={{if (eq selected (get option valuePath)) 'selected'}}
+        value={{get opt valuePath}}
+        selected={{if (eq selected (get opt valuePath)) 'selected'}}
       >
-        {{get option labelPath}}
+        {{get opt labelPath}}
       </option>
     {{/each}}
     {{yield}}

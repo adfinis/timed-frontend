@@ -1,5 +1,5 @@
 /* eslint-env node */
 
 module.exports = {
-  browsers: ['>1%']
+  browsers: ['last 2 Firefox versions', 'last 2 Chrome versions']
 }

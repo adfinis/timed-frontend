@@ -1,79 +1,78 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
+import { click, visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { waitForStep } from 'ember-site-tour/test-support/helpers'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
+import { setBreakpoint } from 'ember-responsive/test-support'
 
-describe('Acceptance | tour', function() {
-  let application
+module('Acceptance | tour', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
-
-    let user = server.create('user', { tourDone: false })
+  hooks.beforeEach(async function() {
+    let user = this.server.create('user', { tourDone: false })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     localStorage.removeItem('timed-tour')
 
     setBreakpoint('xl')
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('shows a welcome dialog', async function() {
+  test('shows a welcome dialog', async function(assert) {
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(1)
+    await waitForStep()
+
+    assert.dom('.modal--visible').exists()
   })
 
-  it('does not show a welcome dialog when tour completed', async function() {
-    let user = server.create('user', { tourDone: true })
+  test('does not show a welcome dialog when tour completed', async function(
+    assert
+  ) {
+    let user = this.server.create('user', { tourDone: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 
-  it('does not show a welcome dialog when later clicked', async function() {
+  test('does not show a welcome dialog when later clicked', async function(
+    assert
+  ) {
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(1)
+    assert.dom('.modal--visible').exists()
 
-    await click('button:contains(Later)')
+    await click('[data-test-tour-later]')
 
     await visit('/someotherroute')
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 
-  it('can ignore tour permanently', async function() {
+  test('can ignore tour permanently', async function(assert) {
     await visit('/')
 
-    await click('button:contains(Never)')
+    await click('[data-test-tour-never]')
 
     await visit('/someotherroute')
     await visit('/')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 
-  it('can start tour', async function() {
+  test('can start tour', async function(assert) {
     await visit('/')
 
-    await click('button:contains(Sure)')
+    await click('[data-test-tour-start]')
 
-    expect(find('.modal--visible')).to.have.length(0)
+    assert.dom('.modal--visible').doesNotExist()
   })
 })

@@ -1,54 +1,44 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
-import { find } from 'ember-native-dom-helpers'
+import { currentURL, visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
-describe('Acceptance | users edit', function() {
-  let application
+module('Acceptance | users edit', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
+  hooks.beforeEach(async function() {
+    let user = this.server.create('user')
 
-    let user = server.create('user')
-
-    this.allowed = server.create('user', { supervisorIds: [user.id] })
-    this.notAllowed = server.create('user')
+    this.allowed = this.server.create('user', { supervisorIds: [user.id] })
+    this.notAllowed = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('can visit /users/:id', async function() {
+  test('can visit /users/:id', async function(assert) {
     await visit(`/users/${this.allowed.id}`)
 
-    expect(currentURL()).to.contain(this.allowed.id)
+    assert.ok(currentURL().includes(this.allowed.id))
   })
 
-  it('shows only supervisees', async function() {
+  test('shows only supervisees', async function(assert) {
     await visit(`/users/${this.notAllowed.id}`)
 
-    expect(find('.empty')).to.be.ok
-    expect(find('.empty').innerHTML).to.contain('Halt')
+    assert.dom('.empty').exists()
+    assert.dom('.empty').includesText('Halt')
   })
 
-  it('allows all to superuser', async function() {
-    let user = server.create('user', { isSuperuser: true })
+  test('allows all to superuser', async function(assert) {
+    let user = this.server.create('user', { isSuperuser: true })
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: user.id })
+    await authenticateSession({ user_id: user.id })
 
     await visit(`/users/${this.notAllowed.id}`)
 
-    expect(currentURL()).to.contain(this.notAllowed.id)
+    assert.ok(currentURL().includes(this.notAllowed.id))
   })
 })

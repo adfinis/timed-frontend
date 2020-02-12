@@ -1,38 +1,35 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupComponentTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupRenderingTest } from 'ember-qunit'
 import hbs from 'htmlbars-inline-precompile'
 import moment from 'moment'
-import { find } from 'ember-native-dom-helpers'
-import { clickTrigger } from 'timed/tests/helpers/ember-basic-dropdown'
+import { find, render } from '@ember/test-helpers'
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers'
 
-describe('Integration | Component | sy datepicker btn', function() {
-  setupComponentTest('sy-datepicker-btn', {
-    integration: true
-  })
+module('Integration | Component | sy datepicker btn', function(hooks) {
+  setupRenderingTest(hooks)
 
-  it('toggles the calendar on click of the button', function() {
+  test('toggles the calendar on click of the button', async function(assert) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
     )
 
-    expect(find('.sy-datepicker')).to.not.be.ok
+    assert.dom('.sy-datepicker').doesNotExist()
 
-    clickTrigger()
+    await clickTrigger()
 
-    expect(find('.sy-datepicker')).to.be.ok
+    assert.dom('.sy-datepicker').exists()
   })
 
-  it('changes value on selection', function() {
+  test('changes value on selection', async function(assert) {
     this.set('value', moment())
 
-    this.render(
+    await render(
       hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
     )
 
-    clickTrigger()
+    await clickTrigger()
 
     let target = find(
       '.ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child'
@@ -44,6 +41,6 @@ describe('Integration | Component | sy datepicker btn', function() {
       .endOf('month')
       .endOf('week')
 
-    expect(this.get('value').isSame(expected, 'day')).to.be.ok
+    assert.ok(this.get('value').isSame(expected, 'day'))
   })
 })

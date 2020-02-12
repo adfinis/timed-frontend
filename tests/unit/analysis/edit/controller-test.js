@@ -1,23 +1,11 @@
-import { expect } from 'chai'
-import { describe, it } from 'mocha'
-import { setupTest } from 'ember-mocha'
+import { module, test } from 'qunit'
+import { setupTest } from 'ember-qunit'
 
-describe('Unit | Controller | analysis/edit', function() {
-  setupTest('controller:analysis/edit', {
-    // Specify the other units that are required for this test.
-    needs: [
-      'service:ajax',
-      'service:session',
-      'service:notify',
-      'service:can',
-      'ability:report',
-      'controller:analysis/index'
-    ]
-  })
+module('Unit | Controller | analysis/edit', function(hooks) {
+  setupTest(hooks)
 
-  // Replace this with your real tests.
-  it('exists', function() {
-    let controller = this.subject()
-    expect(controller).to.be.ok
+  test('exists', function(assert) {
+    let controller = this.owner.lookup('controller:analysis/index')
+    assert.ok(controller)
   })
 })

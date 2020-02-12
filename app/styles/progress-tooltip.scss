@@ -1,11 +1,9 @@
-:root {
-  --progress-tooltip-arrow-size: 0.5rem;
-  --progress-tooltip-color: rgb(87,87,87);
-}
+$progress-tooltip-arrow-size: 0.5rem;
+$progress-tooltip-color: rgb(87,87,87);
 
 .progress-tooltip {
   z-index: 1000;
-  background: var(--progress-tooltip-color);
+  background: $progress-tooltip-color;
   box-shadow: 0 1px 5px rgba(23,23,23,0.5);
   max-width: initial;
   color: rgb(255,255,255);
@@ -44,9 +42,9 @@
     right: 0;
     top: 50%;
     transform: translate(100%, -50%);
-    border-top: var(--progress-tooltip-arrow-size) solid transparent;
-    border-bottom: var(--progress-tooltip-arrow-size) solid transparent;
-    border-left: var(--progress-tooltip-arrow-size) solid var(--progress-tooltip-color);
+    border-top: $progress-tooltip-arrow-size solid transparent;
+    border-bottom: $progress-tooltip-arrow-size solid transparent;
+    border-left: $progress-tooltip-arrow-size solid $progress-tooltip-color;
   }
 }
 

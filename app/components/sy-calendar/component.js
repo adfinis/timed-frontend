@@ -13,10 +13,9 @@ export default PowerCalendarComponent.extend({
   ),
 
   actions: {
-    changeCenter(unit, e) {
-      let newCenter = this.get('publicAPI.center')
-        .clone()
-        [unit](e.target.value)
+    changeCenter(unit, event) {
+      let date = this.get('publicAPI.center')
+      let newCenter = moment(date)[unit](event.target.value)
 
       this.onCenterChange({ moment: newCenter })
     }

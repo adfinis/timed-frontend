@@ -1,33 +1,23 @@
-import {
-  authenticateSession,
-  invalidateSession
-} from 'timed/tests/helpers/ember-simple-auth'
-import { describe, it, beforeEach, afterEach } from 'mocha'
-import destroyApp from '../helpers/destroy-app'
-import { expect } from 'chai'
-import startApp from '../helpers/start-app'
-import { findAll } from 'ember-native-dom-helpers'
+import { visit } from '@ember/test-helpers'
+import { authenticateSession } from 'ember-simple-auth/test-support'
+import { module, test } from 'qunit'
+import { setupApplicationTest } from 'ember-qunit'
+import { setupMirage } from 'ember-cli-mirage/test-support'
 
-describe('Acceptance | users edit responsibilities', function() {
-  let application
+module('Acceptance | users edit responsibilities', function(hooks) {
+  setupApplicationTest(hooks)
+  setupMirage(hooks)
 
-  beforeEach(async function() {
-    application = startApp()
-
-    this.user = server.create('user')
+  hooks.beforeEach(async function() {
+    this.user = this.server.create('user')
 
     // eslint-disable-next-line camelcase
-    await authenticateSession(application, { user_id: this.user.id })
+    await authenticateSession({ user_id: this.user.id })
   })
 
-  afterEach(async function() {
-    await invalidateSession(application)
-    destroyApp(application)
-  })
-
-  it('can visit /users/:id/responsibilities', async function() {
+  test('can visit /users/:id/responsibilities', async function(assert) {
     await visit(`/users/1/responsibilities`)
 
-    expect(findAll('.card')).to.have.length(2)
+    assert.dom('.card').exists({ count: 2 })
   })
 })
