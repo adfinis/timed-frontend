@@ -86,7 +86,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
       }
 
       const data = {
-        type: "token-obtain-pair-views",
+        type: "obtain-json-web-tokens",
         id: null,
         attributes: { username, password }
       };
@@ -179,7 +179,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * Schedule a token refresh
    *
    * @method _scheduleTokenRefresh
-   * @param {Date} exp The expire date of the token
+   * @param {Date} exp The expiration date of the token
    * @param {String} token The token to refresh
    * @private
    */
