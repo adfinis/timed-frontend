@@ -1,9 +1,9 @@
-import Component from '@ember/component'
-import hbs from 'htmlbars-inline-precompile'
-import { inject as service } from '@ember/service'
-import { computed } from '@ember/object'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
+import hbs from "htmlbars-inline-precompile";
 
-const SELECTED_TEMPLATE = hbs`{{selected.longName}}`
+const SELECTED_TEMPLATE = hbs`{{selected.longName}}`;
 
 const OPTION_TEMPLATE = hbs`
   <div class="{{unless option.isActive 'inactive'}}" title="{{option.longName}}{{unless option.isActive ' (inactive)'}}">
@@ -12,13 +12,13 @@ const OPTION_TEMPLATE = hbs`
       <i class="fa fa-ban"></i>
     {{/unless}}
   </div>
-`
+`;
 
 export default Component.extend({
-  tracking: service('tracking'),
-  store: service('store'),
+  tracking: service("tracking"),
+  store: service("store"),
 
-  tagName: '',
+  tagName: "",
 
   selectedTemplate: SELECTED_TEMPLATE,
 
@@ -26,27 +26,27 @@ export default Component.extend({
 
   queryOptions: null,
 
-  async init() {
-    this._super(...arguments)
+  async init(...args) {
+    this._super(...args);
 
     try {
-      await this.get('tracking.users').perform()
+      await this.get("tracking.users").perform();
     } catch (e) {
       /* istanbul ignore next */
       if (e.taskInstance && e.taskInstance.isCanceling) {
-        return
+        return;
       }
 
       /* istanbul ignore next */
-      throw e
+      throw e;
     }
   },
 
-  users: computed('queryOptions', async function() {
-    await this.get('tracking.users.last')
-    let queryOptions = this.get('queryOptions') || {}
+  users: computed("queryOptions", async function() {
+    await this.get("tracking.users.last");
+    const queryOptions = this.get("queryOptions") || {};
 
-    queryOptions['ordering'] = 'username'
-    return this.get('store').query('user', queryOptions)
+    queryOptions.ordering = "username";
+    return this.get("store").query("user", queryOptions);
   })
-})
+});

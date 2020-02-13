@@ -1,6 +1,6 @@
-import { Factory, trait } from 'ember-cli-mirage'
-import faker from 'faker'
-import moment from 'moment'
+import { Factory, trait } from "ember-cli-mirage";
+import faker from "faker";
+import moment from "moment";
 
 export default Factory.extend({
   comment: () => faker.lorem.sentence(),
@@ -12,27 +12,27 @@ export default Factory.extend({
   date: () => moment(),
 
   fromTime() {
-    return this.date.clone().format('HH:mm:ss')
+    return this.date.clone().format("HH:mm:ss");
   },
 
   toTime() {
-    let start = moment(this.fromTime, 'HH:mm:ss')
+    const start = moment(this.fromTime, "HH:mm:ss");
 
     return start
-      .add(faker.random.number({ min: 15, max: 60 }), 'minutes')
-      .add(faker.random.number({ min: 0, max: 59 }), 'seconds')
-      .format('HH:mm:ss')
+      .add(faker.random.number({ min: 15, max: 60 }), "minutes")
+      .add(faker.random.number({ min: 0, max: 59 }), "seconds")
+      .format("HH:mm:ss");
   },
 
   afterCreate(activity, server) {
-    activity.update({ taskId: server.create('task').id })
+    activity.update({ taskId: server.create("task").id });
     activity.update({
       duration: moment.duration(
-        (activity.toTime ? moment(activity.toTime, 'HH:mm:ss') : moment()).diff(
-          moment(activity.fromTime, 'HH:mm:ss')
+        (activity.toTime ? moment(activity.toTime, "HH:mm:ss") : moment()).diff(
+          moment(activity.fromTime, "HH:mm:ss")
         )
       )
-    })
+    });
   },
 
   active: trait({
@@ -41,13 +41,13 @@ export default Factory.extend({
 
   unknown: trait({
     afterCreate(activity) {
-      activity.task.destroy()
+      activity.task.destroy();
     }
   }),
 
   defineTask: trait({
     afterCreate(activity) {
-      activity.update({ taskId: activity.definedTask })
+      activity.update({ taskId: activity.definedTask });
     }
   })
-})
+});

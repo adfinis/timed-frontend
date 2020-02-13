@@ -3,15 +3,15 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import moment from 'moment'
-import formatDuration from 'timed/utils/format-duration'
-import { padStartTpl } from 'ember-pad/utils/pad'
-import { htmlSafe } from '@ember/string'
-import { task } from 'ember-concurrency'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { htmlSafe } from "@ember/string";
+import { task } from "ember-concurrency";
+import { padStartTpl } from "ember-pad/utils/pad";
+import moment from "moment";
+import formatDuration from "timed/utils/format-duration";
 
-const padTpl2 = padStartTpl(2)
+const padTpl2 = padStartTpl(2);
 
 /**
  * The formatter for the slider tooltips
@@ -32,9 +32,9 @@ const Formatter = {
   to(value) {
     return moment({ hour: 0 })
       .minute(value)
-      .format('HH:mm')
+      .format("HH:mm");
   }
-}
+};
 
 /**
  * The attendance slider component
@@ -58,11 +58,11 @@ export default Component.extend({
    * @method init
    * @public
    */
-  init() {
-    this._super(...arguments)
+  init(...args) {
+    this._super(...args);
 
-    this.set('tooltips', [Formatter, Formatter])
-    this.set('values', this.get('start'))
+    this.set("tooltips", [Formatter, Formatter]);
+    this.set("values", this.get("start"));
   },
 
   /**
@@ -71,15 +71,15 @@ export default Component.extend({
    * @property {Number[]} start
    * @public
    */
-  start: computed('attendance.{from,to}', function() {
+  start: computed("attendance.{from,to}", function() {
     return [
-      this.get('attendance.from').hour() * 60 +
-        this.get('attendance.from').minute(),
+      this.get("attendance.from").hour() * 60 +
+        this.get("attendance.from").minute(),
       // If the end time is 00:00 we need to clarify that this would be 00:00
       // of the next day
-      this.get('attendance.to').hour() * 60 +
-        this.get('attendance.to').minute() || 24 * 60
-    ]
+      this.get("attendance.to").hour() * 60 +
+        this.get("attendance.to").minute() || 24 * 60
+    ];
   }),
 
   /**
@@ -88,11 +88,11 @@ export default Component.extend({
    * @property {String} duration
    * @public
    */
-  duration: computed('values', function() {
-    let from = moment({ hour: 0 }).minute(this.get('values')[0])
-    let to = moment({ hour: 0 }).minute(this.get('values')[1])
+  duration: computed("values", function() {
+    const from = moment({ hour: 0 }).minute(this.get("values")[0]);
+    const to = moment({ hour: 0 }).minute(this.get("values")[1]);
 
-    return formatDuration(moment.duration(to.diff(from)), false)
+    return formatDuration(moment.duration(to.diff(from)), false);
   }),
 
   /**
@@ -102,22 +102,22 @@ export default Component.extend({
    * @public
    */
   labels: computed(function() {
-    let labels = []
+    const labels = [];
 
     for (let h = 0; h <= 24; h++) {
       for (let m = 0; m <= 30 && !(h === 24 && m === 30); m += 30) {
-        let offsetH = 100 / 24 * h
-        let offsetM = 100 / 24 / 60 * m
+        const offsetH = (100 / 24) * h;
+        const offsetM = (100 / 24 / 60) * m;
 
         labels.push({
           value: padTpl2`${h}:${m}`,
-          size: m === 0 ? 'lg' : 'sm',
+          size: m === 0 ? "lg" : "sm",
           style: htmlSafe(`left: ${offsetH + offsetM}%;`)
-        })
+        });
       }
     }
 
-    return labels
+    return labels;
   }),
 
   /**
@@ -128,22 +128,22 @@ export default Component.extend({
    * @public
    */
   save: task(function*([fromMin, toMin]) {
-    let attendance = this.get('attendance')
+    const attendance = this.get("attendance");
 
     attendance.set(
-      'from',
-      moment(attendance.get('from'))
+      "from",
+      moment(attendance.get("from"))
         .hour(0)
         .minute(fromMin)
-    )
+    );
     attendance.set(
-      'to',
-      moment(attendance.get('to'))
+      "to",
+      moment(attendance.get("to"))
         .hour(0)
         .minute(toMin)
-    )
+    );
 
-    yield this.get('on-save')(attendance)
+    yield this.get("on-save")(attendance);
   }).drop(),
 
   /**
@@ -153,6 +153,6 @@ export default Component.extend({
    * @public
    */
   delete: task(function*() {
-    yield this.get('on-delete')(this.get('attendance'))
+    yield this.get("on-delete")(this.get("attendance"));
   }).drop()
-})
+});

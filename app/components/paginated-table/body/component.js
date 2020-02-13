@@ -1,4 +1,4 @@
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 /**
  * Paginated table head component
@@ -14,5 +14,5 @@ export default Component.extend({
    * @property {string} tagName
    * @public
    */
-  tagName: 'tbody'
-})
+  tagName: "tbody"
+});

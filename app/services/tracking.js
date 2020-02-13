@@ -3,19 +3,15 @@
  * @submodule timed-services
  * @public
  */
-import Ember from 'ember'
-import Service from '@ember/service'
-import { inject as service } from '@ember/service'
-import moment from 'moment'
-import formatDuration from 'timed/utils/format-duration'
-import { getOwner } from '@ember/application'
-import { scheduleOnce } from '@ember/runloop'
-
-import { computed, observer } from '@ember/object'
-
-import { camelize, capitalize } from '@ember/string'
-
-import { task, timeout } from 'ember-concurrency'
+import { getOwner } from "@ember/application";
+import { computed, observer } from "@ember/object";
+import { scheduleOnce } from "@ember/runloop";
+import Service, { inject as service } from "@ember/service";
+import { camelize, capitalize } from "@ember/string";
+import Ember from "ember";
+import { task, timeout } from "ember-concurrency";
+import moment from "moment";
+import formatDuration from "timed/utils/format-duration";
 
 /**
  * Tracking service
@@ -33,7 +29,7 @@ export default Service.extend({
    * @property {Ember.Store} store
    * @public
    */
-  store: service('store'),
+  store: service("store"),
 
   /**
    * The notify service
@@ -41,7 +37,7 @@ export default Service.extend({
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Init hook, get the current activity
@@ -50,16 +46,16 @@ export default Service.extend({
    * @public
    */
   async init() {
-    this._super()
+    this._super();
 
-    let actives = await this.get('store').query('activity', {
-      include: 'task,task.project,task.project.customer',
+    const actives = await this.get("store").query("activity", {
+      include: "task,task.project,task.project.customer",
       active: true
-    })
+    });
 
-    this.set('activity', actives.getWithDefault('firstObject', null))
+    this.set("activity", actives.getWithDefault("firstObject", null));
 
-    this.get('_computeTitle').perform()
+    this.get("_computeTitle").perform();
   },
 
   /**
@@ -69,7 +65,7 @@ export default Service.extend({
    * @public
    */
   application: computed(function() {
-    return getOwner(this).lookup('application:main')
+    return getOwner(this).lookup("application:main");
   }),
 
   /**
@@ -78,8 +74,8 @@ export default Service.extend({
    * @property {String} title
    * @public
    */
-  title: computed('application.name', function() {
-    return capitalize(camelize(this.get('application.name') || 'Timed'))
+  title: computed("application.name", function() {
+    return capitalize(camelize(this.get("application.name") || "Timed"));
   }),
 
   /**
@@ -89,11 +85,11 @@ export default Service.extend({
    * @private
    */
   // eslint-disable-next-line ember/no-observers
-  _triggerTitle: observer('activity.active', function() {
-    if (this.get('activity.active')) {
-      this.get('_computeTitle').perform()
+  _triggerTitle: observer("activity.active", function() {
+    if (this.get("activity.active")) {
+      this.get("_computeTitle").perform();
     } else {
-      this.setTitle(this.get('title'))
+      this.setTitle(this.get("title"));
     }
   }),
 
@@ -106,13 +102,13 @@ export default Service.extend({
    */
   setTitle(title) {
     scheduleOnce(
-      'afterRender',
+      "afterRender",
       this,
       t => {
-        document.title = t
+        document.title = t;
       },
       title
-    )
+    );
   },
 
   /**
@@ -123,28 +119,30 @@ export default Service.extend({
    * @private
    */
   _computeTitle: task(function*() {
-    while (this.get('activity.active')) {
-      let duration = moment.duration(moment().diff(this.get('activity.from')))
+    while (this.get("activity.active")) {
+      const duration = moment.duration(
+        moment().diff(this.get("activity.from"))
+      );
 
-      let task = 'Unknown Task'
+      let task = "Unknown Task";
 
-      if (this.get('activity.task.content')) {
-        let c = this.get('activity.task.project.customer.name')
-        let p = this.get('activity.task.project.name')
-        let t = this.get('activity.task.name')
+      if (this.get("activity.task.content")) {
+        const c = this.get("activity.task.project.customer.name");
+        const p = this.get("activity.task.project.name");
+        const t = this.get("activity.task.name");
 
-        task = `${c} > ${p} > ${t}`
+        task = `${c} > ${p} > ${t}`;
       }
 
-      this.setTitle(`${formatDuration(duration)} (${task})`)
+      this.setTitle(`${formatDuration(duration)} (${task})`);
 
       /* istanbul ignore else */
       if (Ember.testing) {
-        return
+        return;
       }
 
       /* istanbul ignore next */
-      yield timeout(1000)
+      yield timeout(1000);
     }
   }),
 
@@ -162,16 +160,16 @@ export default Service.extend({
    * @property {Activity} activity
    * @public
    */
-  activity: computed('_activity', {
+  activity: computed("_activity", {
     get() {
-      return this.get('_activity')
+      return this.get("_activity");
     },
     set(key, value) {
-      let newActivity = value || this.get('store').createRecord('activity')
+      const newActivity = value || this.get("store").createRecord("activity");
 
-      this.set('_activity', newActivity)
+      this.set("_activity", newActivity);
 
-      return newActivity
+      return newActivity;
     }
   }),
 
@@ -183,13 +181,13 @@ export default Service.extend({
    */
   startActivity: task(function*() {
     try {
-      let activity = yield this.get('activity').start()
-      this.set('activity', activity)
+      const activity = yield this.get("activity").start();
+      this.set("activity", activity);
 
-      this.get('notify').success('Activity was started')
+      this.get("notify").success("Activity was started");
     } catch (e) {
       /* istanbul ignore next */
-      this.get('notify').error('Error while starting the activity')
+      this.get("notify").error("Error while starting the activity");
     }
   }).drop(),
 
@@ -201,16 +199,16 @@ export default Service.extend({
    */
   stopActivity: task(function*() {
     try {
-      if (!this.get('activity.isNew')) {
-        yield this.get('activity').stop()
+      if (!this.get("activity.isNew")) {
+        yield this.get("activity").stop();
 
-        this.get('notify').success('Activity was stopped')
+        this.get("notify").success("Activity was stopped");
       }
 
-      this.set('activity', null)
+      this.set("activity", null);
     } catch (e) {
       /* istanbul ignore next */
-      this.get('notify').error('Error while stopping the activity')
+      this.get("notify").error("Error while stopping the activity");
     }
   }).drop(),
 
@@ -221,10 +219,10 @@ export default Service.extend({
    * @public
    */
   recentTasks: task(function*() {
-    return yield this.get('store').query('task', {
+    return yield this.get("store").query("task", {
       my_most_frequent: 10, // eslint-disable-line camelcase
-      include: 'project,project.customer'
-    })
+      include: "project,project.customer"
+    });
   }),
 
   /**
@@ -234,7 +232,7 @@ export default Service.extend({
    * @public
    */
   users: task(function*() {
-    return yield this.get('store').query('user', {})
+    return yield this.get("store").query("user", {});
   }),
 
   /**
@@ -244,7 +242,7 @@ export default Service.extend({
    * @public
    */
   customers: task(function*() {
-    return yield this.get('store').query('customer', {})
+    return yield this.get("store").query("customer", {});
   }),
 
   /**
@@ -258,10 +256,10 @@ export default Service.extend({
     /* istanbul ignore next */
     if (!customer) {
       // We can't test this because the UI prevents it
-      throw new Error('No customer selected')
+      throw new Error("No customer selected");
     }
 
-    return yield this.get('store').query('project', { customer })
+    return yield this.get("store").query("project", { customer });
   }),
 
   /**
@@ -275,9 +273,9 @@ export default Service.extend({
     /* istanbul ignore next */
     if (!project) {
       // We can't test this because the UI prevents it
-      throw new Error('No project selected')
+      throw new Error("No project selected");
     }
 
-    return yield this.get('store').query('task', { project })
+    return yield this.get("store").query("task", { project });
   })
-})
+});

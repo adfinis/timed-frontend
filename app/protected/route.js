@@ -3,10 +3,10 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { inject as service } from '@ember/service'
-import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin'
-import moment from 'moment'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import AuthenticatedRouteMixin from "ember-simple-auth/mixins/authenticated-route-mixin";
+import moment from "moment";
 
 /**
  * The protected route
@@ -17,30 +17,30 @@ import moment from 'moment'
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
-  session: service('session'),
-  notify: service('notify'),
-  autostartTour: service('autostart-tour'),
-  tourManager: service('tour-manager'),
-  routing: service('-routing'),
-  media: service('media'),
+  session: service("session"),
+  notify: service("notify"),
+  autostartTour: service("autostart-tour"),
+  tourManager: service("tour-manager"),
+  routing: service("-routing"),
+  media: service("media"),
 
   async model() {
-    let id = this.get('session.data.authenticated.user_id')
+    const id = this.get("session.data.authenticated.user_id");
 
-    let user = await this.store.findRecord('user', id, {
-      include: 'supervisors,supervisees'
-    })
+    const user = await this.store.findRecord("user", id, {
+      include: "supervisors,supervisees"
+    });
 
     // Fetch current employment
-    await this.store.query('employment', {
+    await this.store.query("employment", {
       user: id,
-      date: moment().format('YYYY-MM-DD'),
-      include: 'location'
-    })
+      date: moment().format("YYYY-MM-DD"),
+      include: "location"
+    });
 
-    this.set('session.data.user', user)
+    this.set("session.data.user", user);
 
-    return user
+    return user;
   },
 
   /**
@@ -51,17 +51,17 @@ export default Route.extend(AuthenticatedRouteMixin, {
    * @param {User} model The current user
    * @public
    */
-  setupController(controller, model) {
-    this._super(...arguments)
+  setupController(controller, model, ...args) {
+    this._super(controller, model, ...args);
 
-    let visible =
-      !this.get('autostartTour').allDone() &&
-      !model.get('tourDone') &&
-      (this.get('media.isMd') ||
-        this.get('media.isLg') ||
-        this.get('media.isXl'))
+    const visible =
+      !this.get("autostartTour").allDone() &&
+      !model.get("tourDone") &&
+      (this.get("media.isMd") ||
+        this.get("media.isLg") ||
+        this.get("media.isXl"));
 
-    controller.set('visible', visible)
+    controller.set("visible", visible);
   },
 
   /**
@@ -71,15 +71,15 @@ export default Route.extend(AuthenticatedRouteMixin, {
    * @private
    */
   _closeCurrentTour() {
-    let currentRoute = this.get('routing.router.currentRouteName').replace(
+    const currentRoute = this.get("routing.router.currentRouteName").replace(
       /\.index$/,
-      ''
-    )
+      ""
+    );
 
-    if (this.get('autostartTour.tours').includes(currentRoute)) {
+    if (this.get("autostartTour.tours").includes(currentRoute)) {
       this.controllerFor(currentRoute)
-        .get('tour')
-        .close()
+        .get("tour")
+        .close();
     }
   },
 
@@ -100,16 +100,16 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @public
      */
     loading(transition) {
-      let controller = this.get('controller')
+      const controller = this.get("controller");
 
       if (controller) {
-        controller.set('loading', true)
+        controller.set("loading", true);
       }
 
       if (transition) {
         transition.promise.finally(() => {
-          transition.send('finished')
-        })
+          transition.send("finished");
+        });
       }
     },
 
@@ -120,10 +120,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @public
      */
     finished() {
-      let controller = this.get('controller')
+      const controller = this.get("controller");
 
       if (controller) {
-        controller.set('loading', false)
+        controller.set("loading", false);
       }
     },
 
@@ -135,17 +135,17 @@ export default Route.extend(AuthenticatedRouteMixin, {
      */
     async neverTour() {
       try {
-        let user = this.get('currentModel')
+        const user = this.get("currentModel");
 
-        user.set('tourDone', true)
+        user.set("tourDone", true);
 
-        await user.save()
+        await user.save();
 
-        this._closeCurrentTour()
-        this.set('controller.visible', false)
+        this._closeCurrentTour();
+        this.set("controller.visible", false);
       } catch (error) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while saving the user')
+        this.get("notify").error("Error while saving the user");
       }
     },
 
@@ -156,11 +156,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @public
      */
     laterTour() {
-      this._closeCurrentTour()
-      this.set('autostartTour.done', this.get('autostartTour.tours'))
-      this.set('controller.visible', false)
+      this._closeCurrentTour();
+      this.set("autostartTour.done", this.get("autostartTour.tours"));
+      this.set("controller.visible", false);
 
-      this.transitionTo('index.activities')
+      this.transitionTo("index.activities");
     },
 
     /**
@@ -170,10 +170,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @public
      */
     startTour() {
-      this.set('autostartTour.done', [])
-      this.set('controller.visible', false)
+      this.set("autostartTour.done", []);
+      this.set("controller.visible", false);
 
-      this.transitionTo('index.activities')
+      this.transitionTo("index.activities");
     }
   }
-})
+});

@@ -1,138 +1,144 @@
-import { click, fillIn, currentURL, visit, find } from '@ember/test-helpers'
-import { authenticateSession } from 'ember-simple-auth/test-support'
-import moment from 'moment'
-import { module, test } from 'qunit'
-import { setupApplicationTest } from 'ember-qunit'
-import { setupMirage } from 'ember-cli-mirage/test-support'
-import { settled } from '@ember/test-helpers'
+import {
+  click,
+  fillIn,
+  currentURL,
+  visit,
+  find,
+  settled
+} from "@ember/test-helpers";
+import { setupMirage } from "ember-cli-mirage/test-support";
+import { setupApplicationTest } from "ember-qunit";
+import { authenticateSession } from "ember-simple-auth/test-support";
+import moment from "moment";
+import { module, test } from "qunit";
 
-module('Acceptance | statistics', function(hooks) {
-  setupApplicationTest(hooks)
-  setupMirage(hooks)
+module("Acceptance | statistics", function(hooks) {
+  setupApplicationTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    let user = this.server.create('user')
+    const user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: user.id })
+    await authenticateSession({ user_id: user.id });
 
-    this.server.createList('year-statistic', 5)
-    this.server.createList('month-statistic', 5)
-    this.server.createList('customer-statistic', 5)
-    this.server.createList('project-statistic', 5)
-    this.server.createList('task-statistic', 5)
-    this.server.createList('user-statistic', 5)
-  })
+    this.server.createList("year-statistic", 5);
+    this.server.createList("month-statistic", 5);
+    this.server.createList("customer-statistic", 5);
+    this.server.createList("project-statistic", 5);
+    this.server.createList("task-statistic", 5);
+    this.server.createList("user-statistic", 5);
+  });
 
-  test('can view statistics by year', async function(assert) {
-    await visit('/statistics')
+  test("can view statistics by year", async function(assert) {
+    await visit("/statistics");
 
-    await settled()
+    await settled();
 
-    assert.dom('thead > tr > th').exists({ count: 3 })
-    assert.dom('tbody > tr').exists({ count: 5 })
-    assert.dom('tfoot').includesText('Total')
-  })
+    assert.dom("thead > tr > th").exists({ count: 3 });
+    assert.dom("tbody > tr").exists({ count: 5 });
+    assert.dom("tfoot").includesText("Total");
+  });
 
-  test('can view statistics by month', async function(assert) {
-    await visit('/statistics?type=month')
+  test("can view statistics by month", async function(assert) {
+    await visit("/statistics?type=month");
 
-    await settled()
+    await settled();
 
-    assert.dom('thead > tr > th').exists({ count: 4 })
-    assert.dom('tbody > tr').exists({ count: 5 })
-    assert.dom('tfoot').includesText('Total')
-  })
+    assert.dom("thead > tr > th").exists({ count: 4 });
+    assert.dom("tbody > tr").exists({ count: 5 });
+    assert.dom("tfoot").includesText("Total");
+  });
 
-  test('can view statistics by customer', async function(assert) {
-    await visit('/statistics?type=customer')
+  test("can view statistics by customer", async function(assert) {
+    await visit("/statistics?type=customer");
 
-    await settled()
+    await settled();
 
-    assert.dom('thead > tr > th').exists({ count: 3 })
-    assert.dom('tbody > tr').exists({ count: 5 })
-    assert.dom('tfoot').includesText('Total')
-  })
+    assert.dom("thead > tr > th").exists({ count: 3 });
+    assert.dom("tbody > tr").exists({ count: 5 });
+    assert.dom("tfoot").includesText("Total");
+  });
 
-  test('can view statistics by project', async function(assert) {
-    await visit('/statistics?type=project&customer=1')
+  test("can view statistics by project", async function(assert) {
+    await visit("/statistics?type=project&customer=1");
 
-    await settled()
+    await settled();
 
-    assert.dom('thead > tr > th').exists({ count: 5 })
-    assert.dom('tbody > tr').exists({ count: 5 })
-    assert.dom('tfoot').includesText('Total')
-  })
+    assert.dom("thead > tr > th").exists({ count: 5 });
+    assert.dom("tbody > tr").exists({ count: 5 });
+    assert.dom("tfoot").includesText("Total");
+  });
 
-  test('can view statistics by task', async function(assert) {
-    await visit('/statistics?type=task&customer=1&project=1')
+  test("can view statistics by task", async function(assert) {
+    await visit("/statistics?type=task&customer=1&project=1");
 
-    await settled()
+    await settled();
 
-    assert.dom('thead > tr > th').exists({ count: 6 })
-    assert.dom('tbody > tr').exists({ count: 5 })
-    assert.dom('tfoot').includesText('Total')
-  })
+    assert.dom("thead > tr > th").exists({ count: 6 });
+    assert.dom("tbody > tr").exists({ count: 5 });
+    assert.dom("tfoot").includesText("Total");
+  });
 
-  test('can view statistics by user', async function(assert) {
-    await visit('/statistics?type=user')
+  test("can view statistics by user", async function(assert) {
+    await visit("/statistics?type=user");
 
-    await settled()
+    await settled();
 
-    assert.dom('thead > tr > th').exists({ count: 3 })
-    assert.dom('tbody > tr').exists({ count: 5 })
-    assert.dom('tfoot').includesText('Total')
-  })
+    assert.dom("thead > tr > th").exists({ count: 3 });
+    assert.dom("tbody > tr").exists({ count: 5 });
+    assert.dom("tfoot").includesText("Total");
+  });
 
-  test('can filter and reset filter', async function(assert) {
-    await visit('/statistics')
+  test("can filter and reset filter", async function(assert) {
+    await visit("/statistics");
 
-    await settled()
+    await settled();
 
-    let from = moment()
-    let to = moment().subtract(10, 'days')
+    const from = moment();
+    const to = moment().subtract(10, "days");
 
     await fillIn(
-      '[data-test-filter-from-date] input',
-      from.format('DD.MM.YYYY')
-    )
-    await fillIn('[data-test-filter-to-date] input', to.format('DD.MM.YYYY'))
+      "[data-test-filter-from-date] input",
+      from.format("DD.MM.YYYY")
+    );
+    await fillIn("[data-test-filter-to-date] input", to.format("DD.MM.YYYY"));
 
-    assert.ok(currentURL().includes(`fromDate=${from.format('YYYY-MM-DD')}`))
-    assert.ok(currentURL().includes(`toDate=${to.format('YYYY-MM-DD')}`))
+    assert.ok(currentURL().includes(`fromDate=${from.format("YYYY-MM-DD")}`));
+    assert.ok(currentURL().includes(`toDate=${to.format("YYYY-MM-DD")}`));
 
-    await click('.filter-sidebar-reset')
+    await click(".filter-sidebar-reset");
 
-    assert.notOk(currentURL().includes(`fromDate=${from}`))
-    assert.notOk(currentURL().includes(`toDate=${to}`))
-  })
+    assert.notOk(currentURL().includes(`fromDate=${from}`));
+    assert.notOk(currentURL().includes(`toDate=${to}`));
+  });
 
-  test('shows missing parameters message', async function(assert) {
-    await visit('/statistics?type=task')
+  test("shows missing parameters message", async function(assert) {
+    await visit("/statistics?type=task");
 
-    await settled()
+    await settled();
 
     assert
-      .dom('.empty')
-      .includesText('Customer and project are required parameters')
-  })
+      .dom(".empty")
+      .includesText("Customer and project are required parameters");
+  });
 
-  test('resets ordering on type change', async function(assert) {
-    await visit('/statistics?type=month&ordering=year')
+  test("resets ordering on type change", async function(assert) {
+    await visit("/statistics?type=month&ordering=year");
 
-    await settled()
+    await settled();
 
-    await click('.nav-tabs li a:first-child')
+    await click(".nav-tabs li a:first-child");
 
     assert.notOk(
-      currentURL().includes('Customer and project are required parameters')
-    )
-  })
+      currentURL().includes("Customer and project are required parameters")
+    );
+  });
 
-  test('can have initial filters', async function(assert) {
-    await this.server.createList('billing-type', 3)
+  test("can have initial filters", async function(assert) {
+    await this.server.createList("billing-type", 3);
 
-    let params = {
+    const params = {
       customer: 1,
       project: 1,
       task: 1,
@@ -140,53 +146,53 @@ module('Acceptance | statistics', function(hooks) {
       reviewer: 1,
       billingType: 1,
       fromDate: moment()
-        .subtract(10, 'days')
-        .format('YYYY-MM-DD'),
-      toDate: moment().format('YYYY-MM-DD'),
+        .subtract(10, "days")
+        .format("YYYY-MM-DD"),
+      toDate: moment().format("YYYY-MM-DD"),
       review: 1,
       notBillable: 0,
       verified: 0
-    }
+    };
 
     await visit(
       `/statistics?${Object.keys(params)
         .map(k => `${k}=${params[k]}`)
-        .join('&')}`
-    )
+        .join("&")}`
+    );
 
-    await settled()
-
-    assert
-      .dom('[data-test-filter-customer] .ember-power-select-selected-item')
-      .exists()
+    await settled();
 
     assert
-      .dom('[data-test-filter-project] .ember-power-select-selected-item')
-      .exists()
+      .dom("[data-test-filter-customer] .ember-power-select-selected-item")
+      .exists();
 
     assert
-      .dom('[data-test-filter-task] .ember-power-select-selected-item')
-      .exists()
+      .dom("[data-test-filter-project] .ember-power-select-selected-item")
+      .exists();
 
     assert
-      .dom('[data-test-filter-user] .ember-power-select-selected-item')
-      .exists()
+      .dom("[data-test-filter-task] .ember-power-select-selected-item")
+      .exists();
 
     assert
-      .dom('[data-test-filter-reviewer] .ember-power-select-selected-item')
-      .exists()
+      .dom("[data-test-filter-user] .ember-power-select-selected-item")
+      .exists();
+
+    assert
+      .dom("[data-test-filter-reviewer] .ember-power-select-selected-item")
+      .exists();
 
     assert.equal(
-      find('[data-test-filter-billing-type] select').options.selectedIndex,
+      find("[data-test-filter-billing-type] select").options.selectedIndex,
       1
-    )
+    );
 
-    assert.dom('[data-test-filter-from-date] input').exists()
+    assert.dom("[data-test-filter-from-date] input").exists();
 
-    assert.dom('[data-test-filter-to-date] input').exists()
+    assert.dom("[data-test-filter-to-date] input").exists();
 
-    assert.dom('[data-test-filter-review] .btn.active').exists()
-    assert.dom('[data-test-filter-not-billable] .btn.active').exists()
-    assert.dom('[data-test-filter-verified] .btn.active').exists()
-  })
-})
+    assert.dom("[data-test-filter-review] .btn.active").exists();
+    assert.dom("[data-test-filter-not-billable] .btn.active").exists();
+    assert.dom("[data-test-filter-verified] .btn.active").exists();
+  });
+});

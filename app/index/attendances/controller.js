@@ -3,9 +3,9 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from '@ember/controller'
-import { computed } from '@ember/object'
-import AttendanceValidator from 'timed/validations/attendance'
+import Controller from "@ember/controller";
+import { computed } from "@ember/object";
+import AttendanceValidator from "timed/validations/attendance";
 
 /**
  * The index attendances controller
@@ -24,7 +24,7 @@ export default Controller.extend({
    * @private
    */
   _allAttendances: computed(function() {
-    return this.store.peekAll('attendance')
+    return this.store.peekAll("attendance");
   }),
 
   /**
@@ -34,17 +34,17 @@ export default Controller.extend({
    * @public
    */
   attendances: computed(
-    '_allAttendances.@each.{date,user,isDeleted}',
-    'model',
-    'user',
+    "_allAttendances.@each.{date,user,isDeleted}",
+    "model",
+    "user",
     function() {
-      return this.get('_allAttendances').filter(a => {
+      return this.get("_allAttendances").filter(a => {
         return (
-          a.get('date').isSame(this.get('model'), 'day') &&
-          a.get('user.id') === this.get('user.id') &&
-          !a.get('isDeleted')
-        )
-      })
+          a.get("date").isSame(this.get("model"), "day") &&
+          a.get("user.id") === this.get("user.id") &&
+          !a.get("isDeleted")
+        );
+      });
     }
   )
-})
+});

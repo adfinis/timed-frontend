@@ -1,5 +1,5 @@
 module.exports = {
   rules: {
-    'ember/avoid-leaking-state-in-ember-objects': 'off'
+    "ember/avoid-leaking-state-in-ember-objects": "off"
   }
-}
+};

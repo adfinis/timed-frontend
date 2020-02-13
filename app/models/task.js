@@ -3,10 +3,10 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import { belongsTo } from 'ember-data/relationships'
-import { computed } from '@ember/object'
+import { computed } from "@ember/object";
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo } from "ember-data/relationships";
 
 /**
  * The task model
@@ -23,7 +23,7 @@ export default Model.extend({
    * @type {String}
    * @public
    */
-  name: attr('string', { defaultValue: '' }),
+  name: attr("string", { defaultValue: "" }),
 
   /**
    * The estimated time
@@ -31,7 +31,7 @@ export default Model.extend({
    * @property {moment.duration} estimatedTime
    * @public
    */
-  estimatedTime: attr('django-duration'),
+  estimatedTime: attr("django-duration"),
 
   /**
    * Whether the task is archived
@@ -40,7 +40,7 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  archived: attr('boolean', { defaultValue: false }),
+  archived: attr("boolean", { defaultValue: false }),
 
   /**
    * The project
@@ -49,7 +49,7 @@ export default Model.extend({
    * @type {Project}
    * @public
    */
-  project: belongsTo('project'),
+  project: belongsTo("project"),
 
   /**
    * Flag saying that this is a task.
@@ -63,11 +63,11 @@ export default Model.extend({
    */
   isTask: true,
 
-  longName: computed('project', function() {
-    let taskName = this.get('name')
-    let projectName = this.get('project.name')
-    let customerName = this.get('project.customer.name')
+  longName: computed("project", function() {
+    const taskName = this.get("name");
+    const projectName = this.get("project.name");
+    const customerName = this.get("project.customer.name");
 
-    return `${customerName} > ${projectName} > ${taskName}`
+    return `${customerName} > ${projectName} > ${taskName}`;
   })
-})
+});

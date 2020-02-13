@@ -1,13 +1,13 @@
 /* jshint node: true */
 
 module.exports = function(environment) {
-  let ENV = {
-    modulePrefix: 'timed',
+  const ENV = {
+    modulePrefix: "timed",
     environment,
-    rootURL: '/',
-    locationType: 'auto',
+    rootURL: "/",
+    locationType: "auto",
     moment: {
-      includeTimezone: 'all'
+      includeTimezone: "all"
     },
     EmberENV: {
       FEATURES: {
@@ -19,55 +19,55 @@ module.exports = function(environment) {
     APP: {
       REPORTEXPORTS: [
         {
-          label: 'CSV',
-          url: '/api/v1/reports/export',
+          label: "CSV",
+          url: "/api/v1/reports/export",
           params: {
-            file_type: 'csv'
+            file_type: "csv"
           }
         },
         {
-          label: 'ODS',
-          url: '/api/v1/reports/export',
+          label: "ODS",
+          url: "/api/v1/reports/export",
           params: {
-            file_type: 'ods'
+            file_type: "ods"
           }
         },
         {
-          label: 'XLSX',
-          url: '/api/v1/reports/export',
+          label: "XLSX",
+          url: "/api/v1/reports/export",
           params: {
-            file_type: 'xlsx'
+            file_type: "xlsx"
           }
         },
         {
-          label: 'Work report',
-          url: '/api/v1/work-reports',
+          label: "Work report",
+          url: "/api/v1/work-reports",
           params: {}
         }
       ]
     },
 
-    'ember-simple-auth': {
-      authorizer: 'authorizer:token'
+    "ember-simple-auth": {
+      authorizer: "authorizer:token"
     },
 
-    'ember-validated-form': {
+    "ember-validated-form": {
       css: {
         // adcssy classes
-        group: 'form-group',
-        control: 'form-control',
-        label: 'form-label',
-        checkbox: 'checkbox',
-        radio: 'radio',
-        help: 'error-text',
-        button: 'btn btn-default',
-        submit: 'btn btn-primary',
-        loading: 'loading'
+        group: "form-group",
+        control: "form-control",
+        label: "form-label",
+        checkbox: "checkbox",
+        radio: "radio",
+        help: "error-text",
+        button: "btn btn-default",
+        submit: "btn btn-primary",
+        loading: "loading"
       }
     }
-  }
+  };
 
-  if (environment === 'development') {
+  if (environment === "development") {
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -75,25 +75,25 @@ module.exports = function(environment) {
     // ENV.APP.LOG_VIEW_LOOKUPS = true;
   }
 
-  if (environment === 'test') {
+  if (environment === "test") {
     // Testem prefers this...
-    ENV.locationType = 'none'
+    ENV.locationType = "none";
 
     // keep test console output quieter
-    ENV.APP.LOG_ACTIVE_GENERATION = false
-    ENV.APP.LOG_VIEW_LOOKUPS = false
+    ENV.APP.LOG_ACTIVE_GENERATION = false;
+    ENV.APP.LOG_VIEW_LOOKUPS = false;
 
-    ENV.APP.rootElement = '#ember-testing'
-    ENV.APP.autoboot = false
+    ENV.APP.rootElement = "#ember-testing";
+    ENV.APP.autoboot = false;
 
-    ENV['ember-tether'] = {
-      bodyElementId: 'ember-testing'
-    }
+    ENV["ember-tether"] = {
+      bodyElementId: "ember-testing"
+    };
   }
 
   // eslint-disable-next-line no-empty
-  if (environment === 'production') {
+  if (environment === "production") {
   }
 
-  return ENV
-}
+  return ENV;
+};

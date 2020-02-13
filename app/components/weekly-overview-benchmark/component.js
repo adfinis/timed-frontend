@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import { htmlSafe } from '@ember/string'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { htmlSafe } from "@ember/string";
 
 /**
  * Component to show a benchmark (reached worktime) in the weekly overview
@@ -21,7 +21,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: ['expected'],
+  classNameBindings: ["expected"],
 
   /**
    * Maximum worktime
@@ -63,9 +63,9 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed('max', 'hours', function() {
+  style: computed("max", "hours", function() {
     return htmlSafe(
-      `bottom: calc(100% / ${this.get('max')} * ${this.get('hours')})`
-    )
+      `bottom: calc(100% / ${this.get("max")} * ${this.get("hours")})`
+    );
   })
-})
+});

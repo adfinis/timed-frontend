@@ -3,13 +3,13 @@
  * @submodule timed-transforms
  * @public
  */
-import Transform from 'ember-data/transform'
-import moment from 'moment'
-import parseDjangoDuration from 'timed/utils/parse-django-duration'
-import { padTpl, padStart } from 'ember-pad/utils/pad'
+import Transform from "ember-data/transform";
+import { padTpl, padStart } from "ember-pad/utils/pad";
+import moment from "moment";
+import parseDjangoDuration from "timed/utils/parse-django-duration";
 
-const padTpl2 = padTpl(2)
-const { round } = Math
+const padTpl2 = padTpl(2);
+const { round } = Math;
 
 /**
  * The django duration transform
@@ -36,7 +36,7 @@ export default Transform.extend({
    * @public
    */
   deserialize(serialized) {
-    return parseDjangoDuration(serialized)
+    return parseDjangoDuration(serialized);
   },
 
   /**
@@ -53,10 +53,10 @@ export default Transform.extend({
    * @private
    */
   _getDurationComponentsTimedeltaLike(duration) {
-    let days = Math.floor(duration.asDays())
-    let milliseconds = Math.abs(moment.duration({ days }) - duration)
+    const days = Math.floor(duration.asDays());
+    const milliseconds = Math.abs(moment.duration({ days }) - duration);
 
-    let positiveDuration = moment.duration(milliseconds)
+    const positiveDuration = moment.duration(milliseconds);
 
     return {
       days,
@@ -64,7 +64,7 @@ export default Transform.extend({
       minutes: positiveDuration.minutes(),
       seconds: positiveDuration.seconds(),
       microseconds: round(positiveDuration.milliseconds() * 1000)
-    }
+    };
   },
 
   /**
@@ -77,27 +77,27 @@ export default Transform.extend({
    */
   serialize(deserialized) {
     if (!moment.isDuration(deserialized)) {
-      return null
+      return null;
     }
 
-    let {
+    const {
       days,
       hours,
       minutes,
       seconds,
       microseconds
-    } = this._getDurationComponentsTimedeltaLike(deserialized)
+    } = this._getDurationComponentsTimedeltaLike(deserialized);
 
-    let string = padTpl2`${hours}:${minutes}:${seconds}`
+    let string = padTpl2`${hours}:${minutes}:${seconds}`;
 
     if (days) {
-      string = `${days} ${string}`
+      string = `${days} ${string}`;
     }
 
     if (microseconds) {
-      string = `${string}.${padStart(microseconds, 6)}`
+      string = `${string}.${padStart(microseconds, 6)}`;
     }
 
-    return string
+    return string;
   }
-})
+});

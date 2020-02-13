@@ -1,10 +1,10 @@
-import Controller, { inject as controller } from '@ember/controller'
-import { inject as service } from '@ember/service'
-import { task } from 'ember-concurrency'
-import { computed } from '@ember/object'
-import QueryParams from 'ember-parachute'
-import moment from 'moment'
-import { ability } from 'ember-can/computed'
+import Controller, { inject as controller } from "@ember/controller";
+import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
+import { ability } from "ember-can/computed";
+import { task } from "ember-concurrency";
+import QueryParams from "ember-parachute";
+import moment from "moment";
 
 const UsersEditCreditsQueryParams = new QueryParams({
   year: {
@@ -12,121 +12,121 @@ const UsersEditCreditsQueryParams = new QueryParams({
     replace: true,
     refresh: true
   }
-})
+});
 
 export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
-  notify: service('notify'),
+  notify: service("notify"),
 
-  ajax: service('ajax'),
+  ajax: service("ajax"),
 
-  can: service('can'),
+  can: service("can"),
 
-  userController: controller('users.edit'),
+  userController: controller("users.edit"),
 
   years: task(function*() {
-    let employments = yield this.store.query('employment', {
-      user: this.get('model.id'),
-      ordering: 'start_date'
-    })
+    const employments = yield this.store.query("employment", {
+      user: this.get("model.id"),
+      ordering: "start_date"
+    });
 
-    let from = (employments.get('firstObject.start') || moment()).year()
-    let to = moment()
-      .add(1, 'year')
-      .year()
+    const from = (employments.get("firstObject.start") || moment()).year();
+    const to = moment()
+      .add(1, "year")
+      .year();
 
-    return [...new Array(to + 1 - from).keys()].map(i => `${from + i}`)
+    return [...new Array(to + 1 - from).keys()].map(i => `${from + i}`);
   }),
 
-  overtimeCreditAbility: ability('overtime-credit'),
-  absenceCreditAbility: ability('absence-credit'),
+  overtimeCreditAbility: ability("overtime-credit"),
+  absenceCreditAbility: ability("absence-credit"),
 
   allowTransfer: computed(
-    'year',
-    'overtimeCreditAbility.canCreate',
-    'absenceCreditAbility.canCreate',
+    "year",
+    "overtimeCreditAbility.canCreate",
+    "absenceCreditAbility.canCreate",
     function() {
       return (
-        parseInt(this.get('year')) === moment().year() - 1 &&
-        this.get('overtimeCreditAbility.canCreate') &&
-        this.get('absenceCreditAbility.canCreate')
-      )
+        parseInt(this.get("year")) === moment().year() - 1 &&
+        this.get("overtimeCreditAbility.canCreate") &&
+        this.get("absenceCreditAbility.canCreate")
+      );
     }
   ),
 
   setup() {
-    this.get('years').perform()
-    this.get('absenceCredits').perform()
-    this.get('overtimeCredits').perform()
+    this.get("years").perform();
+    this.get("absenceCredits").perform();
+    this.get("overtimeCredits").perform();
   },
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
-      this.get('absenceCredits').perform()
-      this.get('overtimeCredits').perform()
+      this.get("absenceCredits").perform();
+      this.get("overtimeCredits").perform();
     }
   },
 
   absenceCredits: task(function*() {
-    let year = this.get('year')
+    const year = this.get("year");
 
-    return yield this.store.query('absence-credit', {
-      user: this.get('model.id'),
-      include: 'absence_type',
-      ordering: '-date',
+    return yield this.store.query("absence-credit", {
+      user: this.get("model.id"),
+      include: "absence_type",
+      ordering: "-date",
       ...(year ? { year } : {})
-    })
+    });
   }),
 
   overtimeCredits: task(function*() {
-    let year = this.get('year')
+    const year = this.get("year");
 
-    return yield this.store.query('overtime-credit', {
-      user: this.get('model.id'),
-      ordering: '-date',
+    return yield this.store.query("overtime-credit", {
+      user: this.get("model.id"),
+      ordering: "-date",
       ...(year ? { year } : {})
-    })
+    });
   }),
 
   transfer: task(function*() {
     /* istanbul ignore next */
-    if (!this.get('allowTransfer')) {
-      return
+    if (!this.get("allowTransfer")) {
+      return;
     }
 
     try {
-      yield this.get('ajax').request(
-        `/api/v1/users/${this.get('model.id')}/transfer`,
+      yield this.get("ajax").request(
+        `/api/v1/users/${this.get("model.id")}/transfer`,
         {
-          method: 'POST'
+          method: "POST"
         }
-      )
+      );
 
-      this.get('notify').success('Transfer was successful')
+      this.get("notify").success("Transfer was successful");
 
-      this.get('userController.data').perform(this.get('model.id'))
+      this.get("userController.data").perform(this.get("model.id"));
 
-      this.resetQueryParams('year')
+      this.resetQueryParams("year");
     } catch (e) {
       /* istanbul ignore next */
-      this.get('notify').error('Error while transfering')
+      this.get("notify").error("Error while transfering");
     }
   }).drop(),
 
   editAbsenceCredit: task(function*(id) {
-    if (this.get('can').can('edit absence-credit')) {
+    if (this.get("can").can("edit absence-credit")) {
       yield this.transitionToRoute(
-        'users.edit.credits.absence-credits.edit',
+        "users.edit.credits.absence-credits.edit",
         id
-      )
+      );
     }
   }).drop(),
 
   editOvertimeCredit: task(function*(id) {
-    if (this.get('can').can('edit overtime-credit')) {
+    if (this.get("can").can("edit overtime-credit")) {
       yield this.transitionToRoute(
-        'users.edit.credits.overtime-credits.edit',
+        "users.edit.credits.overtime-credits.edit",
         id
-      )
+      );
     }
   }).drop()
-})
+});

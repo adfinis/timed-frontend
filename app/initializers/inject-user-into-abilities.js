@@ -1,5 +1,5 @@
-import { Ability } from 'ember-can'
-import { reads } from '@ember/object/computed'
+import { reads } from "@ember/object/computed";
+import { Ability } from "ember-can";
 
 /**
  * Initializer to inject the session into all abilities and
@@ -9,13 +9,13 @@ import { reads } from '@ember/object/computed'
  * @param {*} application The ember application
  */
 export function initialize(application) {
-  application.inject('ability', 'session', 'service:session')
+  application.inject("ability", "session", "service:session");
 
   Ability.reopen({
-    user: reads('session.data.user')
-  })
+    user: reads("session.data.user")
+  });
 }
 
 export default {
   initialize
-}
+};

@@ -1,4 +1,4 @@
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 /**
  * Paginated table component
@@ -14,7 +14,7 @@ export default Component.extend({
    * @property {string} tagName
    * @public
    */
-  tagName: 'table',
+  tagName: "table",
 
   /**
    * Classes of the component
@@ -22,5 +22,5 @@ export default Component.extend({
    * @property {string[]} classNames
    * @public
    */
-  classNames: ['table', 'table--striped', 'table--hover']
-})
+  classNames: ["table", "table--striped", "table--hover"]
+});

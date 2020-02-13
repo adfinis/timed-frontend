@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import moment from 'moment'
-import { computed } from '@ember/object'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import moment from "moment";
 
 /**
  * The record button component
@@ -21,7 +21,7 @@ export default Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: ['active:recording'],
+  classNameBindings: ["active:recording"],
 
   /**
    * The start time
@@ -39,8 +39,8 @@ export default Component.extend({
    */
   recording: false,
 
-  active: computed('recording', 'activity.id', function() {
-    return this.get('recording') && this.get('activity.id')
+  active: computed("recording", "activity.id", function() {
+    return this.get("recording") && this.get("activity.id");
   }),
 
   /**
@@ -57,7 +57,7 @@ export default Component.extend({
      * @public
      */
     start() {
-      this.get('on-start')()
+      this.get("on-start")();
     },
 
     /**
@@ -67,7 +67,7 @@ export default Component.extend({
      * @public
      */
     stop() {
-      this.get('on-stop')()
+      this.get("on-stop")();
     }
   }
-})
+});

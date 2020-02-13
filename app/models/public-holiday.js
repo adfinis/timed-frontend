@@ -3,9 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import { belongsTo } from 'ember-data/relationships'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo } from "ember-data/relationships";
 
 /**
  * The public holiday model
@@ -21,7 +21,7 @@ export default Model.extend({
    * @property {String} name
    * @public
    */
-  name: attr('string'),
+  name: attr("string"),
 
   /**
    * The date
@@ -29,7 +29,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr('django-date'),
+  date: attr("django-date"),
 
   /**
    * The location
@@ -37,5 +37,5 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo('location')
-})
+  location: belongsTo("location")
+});

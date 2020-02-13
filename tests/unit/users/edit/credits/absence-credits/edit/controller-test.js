@@ -1,15 +1,15 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
+import { setupTest } from "ember-qunit";
+import { module, test } from "qunit";
 
-module('Unit | Controller | users/edit/credits/absence credits/edit', function(
+module("Unit | Controller | users/edit/credits/absence credits/edit", function(
   hooks
 ) {
-  setupTest(hooks)
+  setupTest(hooks);
 
-  test('exists', function(assert) {
-    let controller = this.owner.lookup(
-      'controller:users/edit/credits/absence-credits/edit'
-    )
-    assert.ok(controller)
-  })
-})
+  test("exists", function(assert) {
+    const controller = this.owner.lookup(
+      "controller:users/edit/credits/absence-credits/edit"
+    );
+    assert.ok(controller);
+  });
+});

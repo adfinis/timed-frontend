@@ -3,7 +3,7 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
+import Route from "@ember/routing/route";
 
 /**
  * The notfound route
@@ -12,4 +12,4 @@ import Route from '@ember/routing/route'
  * @extends Ember.Route
  * @public
  */
-export default Route.extend({})
+export default Route.extend({});

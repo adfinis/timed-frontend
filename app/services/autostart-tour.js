@@ -1,5 +1,5 @@
-import Service from '@ember/service'
-import { computed } from '@ember/object'
+import { computed } from "@ember/object";
+import Service from "@ember/service";
 
 /**
  * Autostart tour service
@@ -11,14 +11,14 @@ import { computed } from '@ember/object'
  * @public
  */
 export default Service.extend({
-  init() {
-    this._super(...arguments)
+  init(...args) {
+    this._super(...args);
 
-    this.set('tours', [
-      'index.activities',
-      'index.attendances',
-      'index.reports'
-    ])
+    this.set("tours", [
+      "index.activities",
+      "index.attendances",
+      "index.reports"
+    ]);
   },
 
   /**
@@ -27,7 +27,7 @@ export default Service.extend({
    * @property {String} doneKey
    * @public
    */
-  doneKey: 'timed-tour',
+  doneKey: "timed-tour",
 
   /**
    * All done tours
@@ -38,13 +38,13 @@ export default Service.extend({
   done: computed({
     get() {
       return Array.from(
-        JSON.parse(localStorage.getItem(this.get('doneKey'))) || []
-      )
+        JSON.parse(localStorage.getItem(this.get("doneKey"))) || []
+      );
     },
     set(key, value = []) {
-      localStorage.setItem(this.get('doneKey'), JSON.stringify(value))
+      localStorage.setItem(this.get("doneKey"), JSON.stringify(value));
 
-      return value
+      return value;
     }
   }),
 
@@ -56,9 +56,9 @@ export default Service.extend({
    * @public
    */
   allDone() {
-    let tours = this.get('tours')
-    let done = this.get('done')
+    const tours = this.get("tours");
+    const done = this.get("done");
 
-    return tours.every(tour => done.includes(tour))
+    return tours.every(tour => done.includes(tour));
   }
-})
+});

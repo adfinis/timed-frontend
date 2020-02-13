@@ -13,7 +13,7 @@ module.exports = {
     clearSelected: true
   },
   rules: {
-    'no-magic-numbers': 'off',
-    'require-jsdoc': 'off'
+    "no-magic-numbers": "off",
+    "require-jsdoc": "off"
   }
-}
+};

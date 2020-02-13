@@ -3,10 +3,10 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { inject as service } from '@ember/service'
-import RSVP from 'rsvp'
-import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import { all } from "rsvp";
+import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 /**
  * The index reports route
@@ -22,7 +22,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Before model hook, fetch all absence types
@@ -31,17 +31,17 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @return {AbsenceType[]} All absence types
    * @public
    */
-  beforeModel() {
-    this._super(...arguments)
+  beforeModel(...args) {
+    this._super(...args);
 
-    return this.store.findAll('absence-type')
+    return this.store.findAll("absence-type");
   },
 
-  setupController(controller, model) {
-    this._super(...arguments)
+  setupController(controller, model, ...args) {
+    this._super(controller, model, ...args);
 
-    controller.set('user', this.modelFor('protected'))
-    controller.set('rescheduleDate', model)
+    controller.set("user", this.modelFor("protected"));
+    controller.set("rescheduleDate", model);
   },
 
   /**
@@ -60,20 +60,20 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async saveReport(report) {
       try {
-        this.send('loading')
+        this.send("loading");
 
-        await report.save()
+        await report.save();
 
-        let absence = this.controllerFor('index').get('absence')
+        const absence = this.controllerFor("index").get("absence");
 
         if (absence) {
-          await absence.reload()
+          await absence.reload();
         }
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while saving the report')
+        this.get("notify").error("Error while saving the report");
       } finally {
-        this.send('finished')
+        this.send("finished");
       }
     },
 
@@ -86,40 +86,40 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async deleteReport(report) {
       try {
-        this.send('loading')
+        this.send("loading");
 
-        await report.destroyRecord()
+        await report.destroyRecord();
 
-        if (!report.get('isNew')) {
-          let absence = this.controllerFor('index').get('absence')
+        if (!report.get("isNew")) {
+          const absence = this.controllerFor("index").get("absence");
 
           if (absence) {
-            await absence.reload()
+            await absence.reload();
           }
         }
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the report')
+        this.get("notify").error("Error while deleting the report");
       } finally {
-        this.send('finished')
+        this.send("finished");
       }
     },
 
     async reschedule(date) {
       try {
-        let reports = this.get('controller.reports').filterBy('isNew', false)
-        await RSVP.Promise.all(
+        const reports = this.get("controller.reports").filterBy("isNew", false);
+        await all(
           reports.map(async report => {
-            report.set('date', date)
-            return await report.save()
+            report.set("date", date);
+            return await report.save();
           })
-        )
-        this.set('controller.showReschedule', false)
-        this.controllerFor('index').set('date', date)
+        );
+        this.set("controller.showReschedule", false);
+        this.controllerFor("index").set("date", date);
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while rescheduling the timesheet')
+        this.get("notify").error("Error while rescheduling the timesheet");
       }
     }
   }
-})
+});

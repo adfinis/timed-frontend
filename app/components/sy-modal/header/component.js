@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
+import Component from "@ember/component";
 
 /**
  * Header component for sy modal
@@ -19,5 +19,5 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: ['modal-header']
-})
+  classNames: ["modal-header"]
+});

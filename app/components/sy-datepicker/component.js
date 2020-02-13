@@ -1,63 +1,70 @@
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import moment from 'moment'
-import { scheduleOnce } from '@ember/runloop'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { scheduleOnce } from "@ember/runloop";
+import moment from "moment";
 
-const DISPLAY_FORMAT = 'DD.MM.YYYY'
+const DISPLAY_FORMAT = "DD.MM.YYYY";
 
-const PARSE_FORMAT = 'D.M.YYYY'
+const PARSE_FORMAT = "D.M.YYYY";
 
-const parse = value => (value ? moment(value, PARSE_FORMAT) : null)
+const parse = value => (value ? moment(value, PARSE_FORMAT) : null);
 
 export default Component.extend({
   value: null,
 
   placeholder: DISPLAY_FORMAT,
 
-  displayValue: computed('value', function() {
-    let value = this.get('value')
-    return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null
+  displayValue: computed("value", function() {
+    const value = this.get("value");
+    return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null;
   }),
 
-  name: 'date',
+  name: "date",
 
   actions: {
     handleBlur(dd, e) {
       const container = document.getElementById(
         `ember-basic-dropdown-content-${dd.uniqueId}`
-      )
+      );
 
       if (!container || !container.contains(e.relatedTarget)) {
-        dd.actions.close()
+        dd.actions.close();
       }
     },
 
     handleFocus(dd) {
-      dd.actions.open()
+      dd.actions.open();
     },
 
     checkValidity() {
-      scheduleOnce('afterRender', this, () => {
-        let target = this.get('element').querySelector(
-          '.ember-basic-dropdown-trigger input'
-        )
+      scheduleOnce("afterRender", this, () => {
+        const target = this.get("element").querySelector(
+          ".ember-basic-dropdown-trigger input"
+        );
 
-        let parsed = parse(target.value)
+        const parsed = parse(target.value);
 
         if (parsed && !parsed.isValid()) {
-          return target.setCustomValidity('Invalid date')
+          return target.setCustomValidity("Invalid date");
         }
 
-        return target.setCustomValidity('')
-      })
+        return target.setCustomValidity("");
+      });
     },
 
-    handleChange({ target: { value, validity: { valid } } }) {
+    handleChange({
+      target: {
+        value,
+        validity: { valid }
+      }
+    }) {
       if (valid) {
-        let parsed = parse(value)
+        const parsed = parse(value);
 
-        return this.get('on-change')(parsed && parsed.isValid() ? parsed : null)
+        return this.get("on-change")(
+          parsed && parsed.isValid() ? parsed : null
+        );
       }
     }
   }
-})
+});

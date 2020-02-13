@@ -3,13 +3,13 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { all } from 'rsvp'
-import moment from 'moment'
-import { inject as service } from '@ember/service'
-import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import moment from "moment";
+import { all } from "rsvp";
+import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
-const DATE_FORMAT = 'YYYY-MM-DD'
+const DATE_FORMAT = "YYYY-MM-DD";
 
 /**
  * The index route
@@ -36,7 +36,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberSimpleAuth.SessionService} session
    * @public
    */
-  session: service('session'),
+  session: service("session"),
 
   /**
    * The notify service
@@ -44,7 +44,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Model hook, return the selected day as moment object
@@ -56,7 +56,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   model({ day }) {
-    return moment(day, DATE_FORMAT)
+    return moment(day, DATE_FORMAT);
   },
 
   /**
@@ -69,53 +69,53 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   afterModel(model) {
-    let user = this.get('session.data.authenticated.user_id')
-    let day = model.format(DATE_FORMAT)
-    let from = moment(model)
-      .subtract(20, 'days')
-      .format(DATE_FORMAT)
-    let to = moment(model)
-      .add(10, 'days')
-      .format(DATE_FORMAT)
-    let location = this.store
-      .peekRecord('user', user)
-      .get('activeEmployment.location.id')
+    const user = this.get("session.data.authenticated.user_id");
+    const day = model.format(DATE_FORMAT);
+    const from = moment(model)
+      .subtract(20, "days")
+      .format(DATE_FORMAT);
+    const to = moment(model)
+      .add(10, "days")
+      .format(DATE_FORMAT);
+    const location = this.store
+      .peekRecord("user", user)
+      .get("activeEmployment.location.id");
 
     return all([
-      this.store.query('activity', {
-        include: 'task,task.project,task.project.customer',
+      this.store.query("activity", {
+        include: "task,task.project,task.project.customer",
         day
       }),
-      this.store.query('attendance', { date: day }),
-      this.store.query('absence-type', {}),
-      this.store.query('report', {
-        include: 'task,task.project,task.project.customer',
+      this.store.query("attendance", { date: day }),
+      this.store.query("absence-type", {}),
+      this.store.query("report", {
+        include: "task,task.project,task.project.customer",
         date: day,
         user
       }),
       /* eslint-disable camelcase */
-      this.store.query('report', { from_date: from, to_date: to, user }),
-      this.store.query('absence', { from_date: from, to_date: to, user }),
-      this.store.query('public-holiday', {
+      this.store.query("report", { from_date: from, to_date: to, user }),
+      this.store.query("absence", { from_date: from, to_date: to, user }),
+      this.store.query("public-holiday", {
         from_date: from,
         to_date: to,
         location
       })
       /* eslint-enable camelcase */
-    ])
+    ]);
   },
 
-  setupController(controller, model) {
-    this._super(...arguments)
+  setupController(controller, model, ...args) {
+    this._super(controller, model, ...args);
 
-    controller.set('user', this.modelFor('protected'))
-    controller.get('setCenter').perform({ moment: model })
+    controller.set("user", this.modelFor("protected"));
+    controller.get("setCenter").perform({ moment: model });
 
-    controller.set('newAbsence', {
+    controller.set("newAbsence", {
       dates: [model],
-      comment: '',
+      comment: "",
       type: null
-    })
+    });
   },
 
   actions: {
@@ -128,16 +128,16 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async saveAbsence(changeset) {
       try {
-        this.send('loading')
+        this.send("loading");
 
-        await changeset.save()
+        await changeset.save();
 
-        this.set('controller.showEditModal', false)
+        this.set("controller.showEditModal", false);
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while saving the absence')
+        this.get("notify").error("Error while saving the absence");
       } finally {
-        this.send('finished')
+        this.send("finished");
       }
     },
 
@@ -150,14 +150,14 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async deleteAbsence(absence) {
       try {
-        this.send('loading')
+        this.send("loading");
 
-        await absence.destroyRecord()
+        await absence.destroyRecord();
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the absence')
+        this.get("notify").error("Error while deleting the absence");
       } finally {
-        this.send('finished')
+        this.send("finished");
       }
     },
 
@@ -170,28 +170,28 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async addAbsence(changeset) {
       try {
-        let type = changeset.get('type')
-        let comment = changeset.get('comment')
+        const type = changeset.get("type");
+        const comment = changeset.get("comment");
 
-        changeset.get('dates').forEach(async date => {
-          let absence = this.store.createRecord('absence', {
+        changeset.get("dates").forEach(async date => {
+          const absence = this.store.createRecord("absence", {
             type,
             date,
             comment
-          })
+          });
 
-          await absence.save()
-        })
+          await absence.save();
+        });
 
-        changeset.rollback()
+        changeset.rollback();
 
-        this.set('controller.showAddModal', false)
+        this.set("controller.showAddModal", false);
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while adding the absence')
+        this.get("notify").error("Error while adding the absence");
       } finally {
-        this.send('finished')
+        this.send("finished");
       }
     }
   }
-})
+});

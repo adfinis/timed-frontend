@@ -1,5 +1,5 @@
-import { get } from '@ember/object'
-import moment from 'moment'
+import { get } from "@ember/object";
+import moment from "moment";
 
 /**
  * Validator to determine if a value is a valid moment object and if it is
@@ -14,32 +14,32 @@ import moment from 'moment'
  */
 export default function validateMoment(options = { gt: null, lt: null }) {
   return (key, newValue, oldValue, changes, content) => {
-    if (!newValue && get(content, 'active')) {
-      newValue = moment()
+    if (!newValue && get(content, "active")) {
+      newValue = moment();
     }
-    let valid = !!newValue && newValue.isValid()
+    let valid = !!newValue && newValue.isValid();
 
     if (!valid) {
-      return valid
+      return valid;
     }
 
     if (options.gt) {
-      let gtVal =
-        get(changes, options.gt) || get(content, options.gt) || moment()
+      const gtVal =
+        get(changes, options.gt) || get(content, options.gt) || moment();
 
       if (newValue <= gtVal) {
-        valid = false
+        valid = false;
       }
     }
     if (options.lt) {
-      let ltVal =
-        get(changes, options.lt) || get(content, options.lt) || moment()
+      const ltVal =
+        get(changes, options.lt) || get(content, options.lt) || moment();
 
       if (newValue >= ltVal) {
-        valid = false
+        valid = false;
       }
     }
 
-    return valid
-  }
+    return valid;
+  };
 }

@@ -1,20 +1,15 @@
-import Application from '@ember/application'
-import Resolver from './resolver'
-import loadInitializers from 'ember-load-initializers'
-import config from './config/environment'
-import RSVP from 'rsvp'
+import Application from "@ember/application";
+import loadInitializers from "ember-load-initializers";
 
-const { Promise } = RSVP
+import config from "./config/environment";
+import Resolver from "./resolver";
 
-window.NativePromise = window.Promise
-window.Promise = Promise
-
-let App = Application.extend({
+const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver
-})
+});
 
-loadInitializers(App, config.modulePrefix)
+loadInitializers(App, config.modulePrefix);
 
-export default App
+export default App;

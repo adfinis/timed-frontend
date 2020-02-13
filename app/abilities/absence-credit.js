@@ -1,9 +1,9 @@
-import { Ability } from 'ember-can'
-import { reads } from '@ember/object/computed'
+import { reads } from "@ember/object/computed";
+import { Ability } from "ember-can";
 
 const AbsenceCreditAbility = Ability.extend({
-  canEdit: reads('user.isSuperuser'),
-  canCreate: reads('user.isSuperuser')
-})
+  canEdit: reads("user.isSuperuser"),
+  canCreate: reads("user.isSuperuser")
+});
 
-export default AbsenceCreditAbility
+export default AbsenceCreditAbility;

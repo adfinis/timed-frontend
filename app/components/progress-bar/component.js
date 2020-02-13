@@ -1,7 +1,7 @@
-import Component from '@ember/component'
-import { computed } from '@ember/object'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
 
-const { round } = Math
+const { round } = Math;
 
 /**
  * Component to display a progress bar
@@ -18,7 +18,7 @@ const ProgressBarComponent = Component.extend({
    * @property {String} tagName
    * @public
    */
-  tagName: 'progress',
+  tagName: "progress",
 
   /**
    * Attribute bindings, Bind value and max to the element
@@ -26,7 +26,7 @@ const ProgressBarComponent = Component.extend({
    * @property {String[]} attributeBindings
    * @public
    */
-  attributeBindings: ['value', 'max'],
+  attributeBindings: ["value", "max"],
 
   /**
    * CSS class names
@@ -34,7 +34,7 @@ const ProgressBarComponent = Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: ['progress-bar'],
+  classNames: ["progress-bar"],
 
   /**
    * CSS class name bindings, bind a certain color if given
@@ -42,7 +42,7 @@ const ProgressBarComponent = Component.extend({
    * @property {String[]} classNameBindings
    * @public
    */
-  classNameBindings: ['color'],
+  classNameBindings: ["color"],
 
   /**
    * The current progress as a factor
@@ -66,8 +66,8 @@ const ProgressBarComponent = Component.extend({
    * @property {Number} value
    * @public
    */
-  value: computed('progress', function() {
-    return round(this.get('progress') * 100)
+  value: computed("progress", function() {
+    return round(this.get("progress") * 100);
   }),
 
   /**
@@ -78,10 +78,10 @@ const ProgressBarComponent = Component.extend({
    * @public
    */
   max: 100
-})
+});
 
 ProgressBarComponent.reopenClass({
-  positionalParams: ['progress']
-})
+  positionalParams: ["progress"]
+});
 
-export default ProgressBarComponent
+export default ProgressBarComponent;

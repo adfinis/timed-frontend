@@ -3,7 +3,7 @@
  * @submodule timed-utils
  * @public
  */
-import moment from 'moment'
+import moment from "moment";
 
 /**
  * Converts a django duration string to a moment duration
@@ -15,14 +15,14 @@ import moment from 'moment'
  */
 export default function parseDjangoDuration(str) {
   if (!str) {
-    return null
+    return null;
   }
 
-  let re = new RegExp(/^(-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/)
+  const re = new RegExp(/^(-?\d+)?\s?(\d{2}):(\d{2}):(\d{2})(\.\d{6})?$/);
 
-  let [, days, hours, minutes, seconds, microseconds] = str
+  const [, days, hours, minutes, seconds, microseconds] = str
     .match(re)
-    .map(m => Number(m) || 0)
+    .map(m => Number(m) || 0);
 
   return moment.duration({
     days,
@@ -30,5 +30,5 @@ export default function parseDjangoDuration(str) {
     minutes,
     seconds,
     milliseconds: microseconds * 1000
-  })
+  });
 }

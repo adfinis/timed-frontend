@@ -3,16 +3,13 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import moment from 'moment'
-import { computed } from '@ember/object'
-import RSVP from 'rsvp'
-import { inject as service } from '@ember/service'
-
-import { belongsTo } from 'ember-data/relationships'
-
-const { min } = Math
+import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo } from "ember-data/relationships";
+import moment from "moment";
+import { all } from "rsvp";
 
 /**
  * The activity model
@@ -28,7 +25,7 @@ export default Model.extend({
    * @property {moment} fromTime
    * @public
    */
-  fromTime: attr('django-time'),
+  fromTime: attr("django-time"),
 
   /**
    * The end time
@@ -36,7 +33,7 @@ export default Model.extend({
    * @property {moment} toTime
    * @public
    */
-  toTime: attr('django-time'),
+  toTime: attr("django-time"),
 
   /**
    * The comment
@@ -45,7 +42,7 @@ export default Model.extend({
    * @type {String}
    * @public
    */
-  comment: attr('string', { defaultValue: '' }),
+  comment: attr("string", { defaultValue: "" }),
 
   /**
    * The date
@@ -53,13 +50,13 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr('django-date'),
+  date: attr("django-date"),
 
-  transferred: attr('boolean', { defaultValue: false }),
+  transferred: attr("boolean", { defaultValue: false }),
 
-  review: attr('boolean', { defaultValue: false }),
+  review: attr("boolean", { defaultValue: false }),
 
-  notBillable: attr('boolean', { defaultValue: false }),
+  notBillable: attr("boolean", { defaultValue: false }),
 
   /**
    * The task
@@ -68,7 +65,7 @@ export default Model.extend({
    * @type {Task}
    * @public
    */
-  task: belongsTo('task'),
+  task: belongsTo("task"),
 
   /**
    * The user
@@ -77,7 +74,7 @@ export default Model.extend({
    * @type {User}
    * @public
    */
-  user: belongsTo('user'),
+  user: belongsTo("user"),
 
   /**
    * The notify service
@@ -85,7 +82,7 @@ export default Model.extend({
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Whether the activity is active
@@ -94,51 +91,51 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  active: computed('toTime', function() {
-    return !this.get('toTime') && !!this.get('id')
+  active: computed("toTime", function() {
+    return !this.get("toTime") && !!this.get("id");
   }),
 
-  duration: computed('fromTime', 'toTime', function() {
+  duration: computed("fromTime", "toTime", function() {
     return moment.duration(
-      (this.get('to') ? this.get('to') : moment()).diff(this.get('from'))
-    )
+      (this.get("to") ? this.get("to") : moment()).diff(this.get("from"))
+    );
   }),
 
-  from: computed('date', 'fromTime', {
+  from: computed("date", "fromTime", {
     get() {
-      let time = this.get('fromTime')
+      const time = this.get("fromTime");
       return (
         time &&
-        moment(this.get('date')).set({
+        moment(this.get("date")).set({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
           ms: time.milliseconds()
         })
-      )
+      );
     },
     set(key, val) {
-      this.set('fromTime', val)
-      return val
+      this.set("fromTime", val);
+      return val;
     }
   }),
 
-  to: computed('date', 'toTime', {
+  to: computed("date", "toTime", {
     get() {
-      let time = this.get('toTime')
+      const time = this.get("toTime");
       return (
         time &&
-        moment(this.get('date')).set({
+        moment(this.get("date")).set({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
           ms: time.milliseconds()
         })
-      )
+      );
     },
     set(key, val) {
-      this.set('toTime', val)
-      return val
+      this.set("toTime", val);
+      return val;
     }
   }),
 
@@ -149,18 +146,18 @@ export default Model.extend({
    * @public
    */
   async start() {
-    let activity = this.get('store').createRecord('activity', {
+    const activity = this.get("store").createRecord("activity", {
       date: moment(),
       fromTime: moment(),
-      task: this.get('task'),
-      comment: this.get('comment'),
-      review: this.get('review'),
-      notBillable: this.get('notBillable')
-    })
+      task: this.get("task"),
+      comment: this.get("comment"),
+      review: this.get("review"),
+      notBillable: this.get("notBillable")
+    });
 
-    await activity.save()
+    await activity.save();
 
-    return activity
+    return activity;
   },
 
   /**
@@ -177,37 +174,37 @@ export default Model.extend({
    */
   async stop() {
     /* istanbul ignore next */
-    if (!this.get('active')) {
-      return
+    if (!this.get("active")) {
+      return;
     }
 
-    let activities = [this]
+    const activities = [this];
 
-    if (moment().diff(this.get('date'), 'days') === 1) {
+    if (moment().diff(this.get("date"), "days") === 1) {
       activities.push(
-        this.get('store').createRecord('activity', {
-          task: this.get('task'),
-          comment: this.get('comment'),
-          user: this.get('user'),
-          date: moment(this.get('date')).add(1, 'days'),
-          review: this.get('review'),
-          notBillable: this.get('notBillable'),
+        this.get("store").createRecord("activity", {
+          task: this.get("task"),
+          comment: this.get("comment"),
+          user: this.get("user"),
+          date: moment(this.get("date")).add(1, "days"),
+          review: this.get("review"),
+          notBillable: this.get("notBillable"),
           fromTime: moment({ h: 0, m: 0, s: 0 })
         })
-      )
+      );
     }
 
-    await RSVP.all(
+    await all(
       activities.map(async activity => {
-        if (activity.get('isNew')) {
-          await activity.save()
+        if (activity.get("isNew")) {
+          await activity.save();
         }
 
         activity.set(
-          'toTime',
+          "toTime",
           moment(
-            min(
-              moment(activity.get('date')).set({
+            Math.min(
+              moment(activity.get("date")).set({
                 h: 23,
                 m: 59,
                 s: 59
@@ -215,19 +212,19 @@ export default Model.extend({
               moment()
             )
           )
-        )
+        );
 
-        await activity.save()
+        await activity.save();
       })
-    )
+    );
 
-    if (moment().diff(this.get('date'), 'days') > 1) {
+    if (moment().diff(this.get("date"), "days") > 1) {
       this.get(
-        'notify'
+        "notify"
       ).info(
-        'The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.',
+        "The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.",
         { closeAfter: 5000 }
-      )
+      );
     }
   }
-})
+});

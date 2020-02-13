@@ -3,9 +3,9 @@
  * @submodule timed-controllers
  * @public
  */
-import Controller from '@ember/controller'
-import { computed } from '@ember/object'
-import ReportValidations from 'timed/validations/report'
+import Controller from "@ember/controller";
+import { computed } from "@ember/object";
+import ReportValidations from "timed/validations/report";
 
 /**
  * The index reports controller
@@ -26,7 +26,7 @@ export default Controller.extend({
    * @private
    */
   _allReports: computed(function() {
-    return this.store.peekAll('report')
+    return this.store.peekAll("report");
   }),
 
   /**
@@ -38,23 +38,23 @@ export default Controller.extend({
    * @public
    */
   reports: computed(
-    '_allReports.@each.{user,date,isNew,isDeleted}',
-    'model',
-    'user',
+    "_allReports.@each.{user,date,isNew,isDeleted}",
+    "model",
+    "user",
     function() {
-      let reportsToday = this.get('_allReports').filter(r => {
+      const reportsToday = this.get("_allReports").filter(r => {
         return (
-          (!r.get('user.id') || r.get('user.id') === this.get('user.id')) &&
-          r.get('date').isSame(this.get('model'), 'day') &&
-          !r.get('isDeleted')
-        )
-      })
+          (!r.get("user.id") || r.get("user.id") === this.get("user.id")) &&
+          r.get("date").isSame(this.get("model"), "day") &&
+          !r.get("isDeleted")
+        );
+      });
 
-      if (!reportsToday.filterBy('isNew', true).get('length')) {
-        this.store.createRecord('report', { date: this.get('model') })
+      if (!reportsToday.filterBy("isNew", true).get("length")) {
+        this.store.createRecord("report", { date: this.get("model") });
       }
 
-      return reportsToday.sort(a => (a.get('isNew') ? 1 : 0))
+      return reportsToday.sort(a => (a.get("isNew") ? 1 : 0));
     }
   )
-})
+});

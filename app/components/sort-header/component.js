@@ -1,32 +1,33 @@
-import Component from '@ember/component'
-import { computed } from '@ember/object'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
 
 const getDirection = state => {
-  return state.startsWith('-') ? 'desc' : 'asc'
-}
+  return state.startsWith("-") ? "desc" : "asc";
+};
 
-const getColname = state => (state.startsWith('-') ? state.substring(1) : state)
+const getColname = state =>
+  state.startsWith("-") ? state.substring(1) : state;
 
 export default Component.extend({
-  tagName: 'th',
+  tagName: "th",
 
-  direction: computed('current', function() {
-    return getDirection(this.get('current'))
+  direction: computed("current", function() {
+    return getDirection(this.get("current"));
   }).readOnly(),
 
-  active: computed('current', function() {
-    let by = this.get('by')
-    let current = this.get('current')
+  active: computed("current", function() {
+    const by = this.get("by");
+    const current = this.get("current");
 
-    return getColname(current) === by
+    return getColname(current) === by;
   }).readOnly(),
 
   click() {
-    let current = this.get('current')
-    let by = this.get('by')
-    let sort =
-      this.get('active') && getDirection(current) === 'desc' ? by : `-${by}`
+    const current = this.get("current");
+    const by = this.get("by");
+    const sort =
+      this.get("active") && getDirection(current) === "desc" ? by : `-${by}`;
 
-    this.get('update')(sort)
+    this.get("update")(sort);
   }
-})
+});

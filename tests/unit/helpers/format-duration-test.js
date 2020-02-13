@@ -1,29 +1,29 @@
-import { module, test } from 'qunit'
-import { formatDurationFn } from 'timed/helpers/format-duration'
-import moment from 'moment'
+import moment from "moment";
+import { module, test } from "qunit";
+import { formatDurationFn } from "timed/helpers/format-duration";
 
-module('Unit | Helper | format duration', function() {
-  test('works', function(assert) {
-    let duration = moment.duration({
+module("Unit | Helper | format duration", function() {
+  test("works", function(assert) {
+    const duration = moment.duration({
       hours: 3,
       minutes: 56,
       seconds: 59
-    })
+    });
 
-    let result = formatDurationFn([duration])
+    const result = formatDurationFn([duration]);
 
-    assert.equal(result, '03:56:59')
-  })
+    assert.equal(result, "03:56:59");
+  });
 
-  test('works without seconds', function(assert) {
-    let duration = moment.duration({
+  test("works without seconds", function(assert) {
+    const duration = moment.duration({
       hours: 3,
       minutes: 56,
       seconds: 59
-    })
+    });
 
-    let result = formatDurationFn([duration, false])
+    const result = formatDurationFn([duration, false]);
 
-    assert.equal(result, '03:56')
-  })
-})
+    assert.equal(result, "03:56");
+  });
+});

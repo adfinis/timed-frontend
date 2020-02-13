@@ -1,68 +1,68 @@
-import PowerSelectComponent from 'ember-power-select/components/power-select'
-import Ember from 'ember'
-import { isBlank } from '@ember/utils'
+import { isBlank } from "@ember/utils";
+import Ember from "ember";
+import PowerSelectComponent from "ember-power-select/components/power-select";
 
 /* istanbul ignore next */
 const PowerSelectCustomComponent = PowerSelectComponent.extend({
-  init() {
-    this._super(...arguments)
+  init(...args) {
+    this._super(...args);
 
-    this.set('extra.testing', Ember.testing)
+    this.set("extra.testing", Ember.testing);
   },
 
-  _handleKeyTab() {
-    this._handleKeyEnter(...arguments)
+  _handleKeyTab(...args) {
+    this._handleKeyEnter(...args);
   },
 
   _focusComesFromOutside(e) {
-    let blurredEl = e.relatedTarget
+    const blurredEl = e.relatedTarget;
 
     if (isBlank(blurredEl) || Ember.testing) {
-      return false
+      return false;
     }
 
-    return !blurredEl.classList.contains('ember-power-select-search-input')
+    return !blurredEl.classList.contains("ember-power-select-search-input");
   },
 
   actions: {
-    onTriggerFocus(_, e) {
-      this._super(...arguments)
+    onTriggerFocus(_, e, ...args) {
+      this._super(_, e, ...args);
 
       if (this._focusComesFromOutside(e)) {
-        this.get('publicAPI.actions').open(e)
+        this.get("publicAPI.actions").open(e);
       }
     },
 
-    onBlur(e) {
-      this._super(...arguments)
+    onBlur(e, ...args) {
+      this._super(e, ...args);
 
       if (this._focusComesFromOutside(e)) {
-        this.get('publicAPI.actions').close(e)
+        this.get("publicAPI.actions").close(e);
       }
     },
 
     scrollTo() {
-      let options = document.querySelector(
-        `#ember-power-select-options-${this.get('publicAPI').uniqueId}`
-      )
+      const options = document.querySelector(
+        `#ember-power-select-options-${this.get("publicAPI").uniqueId}`
+      );
 
-      let current = options.querySelector('[aria-current=true]')
+      const current = options.querySelector("[aria-current=true]");
 
       if (!current) {
-        return
+        return;
       }
 
-      let currentScrollY = options.scrollTop
-      let top = current.offsetTop
-      let bottomOfOption = top + current.offsetHeight
+      const currentScrollY = options.scrollTop;
+      const top = current.offsetTop;
+      const bottomOfOption = top + current.offsetHeight;
 
       if (bottomOfOption > currentScrollY + options.offsetHeight) {
-        options.scrollTop = bottomOfOption - options.offsetHeight
+        options.scrollTop = bottomOfOption - options.offsetHeight;
       } else if (top < currentScrollY) {
-        options.scrollTop = top
+        options.scrollTop = top;
       }
     }
   }
-})
+});
 
-export default PowerSelectCustomComponent
+export default PowerSelectCustomComponent;

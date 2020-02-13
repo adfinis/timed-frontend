@@ -1,7 +1,8 @@
-import { Factory, trait } from 'ember-cli-mirage'
-import faker from 'faker'
-import moment from 'moment'
-import { randomDuration } from '../helpers/duration'
+import { Factory, trait } from "ember-cli-mirage";
+import faker from "faker";
+import moment from "moment";
+
+import { randomDuration } from "../helpers/duration";
 
 export default Factory.extend({
   date: () => moment(),
@@ -15,4 +16,4 @@ export default Factory.extend({
   duration: trait({
     usedDuration: () => randomDuration()
   })
-})
+});

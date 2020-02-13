@@ -1,14 +1,16 @@
-import { module, test } from 'qunit'
-import { setupTest } from 'ember-qunit'
+import { setupTest } from "ember-qunit";
+import { module, test } from "qunit";
 
-module('Unit | Serializer | employment', function(hooks) {
-  setupTest(hooks)
+module("Unit | Serializer | employment", function(hooks) {
+  setupTest(hooks);
 
-  test('serializes records', function(assert) {
-    let record = this.owner.lookup('service:store').createRecord('employment')
+  test("serializes records", function(assert) {
+    const record = this.owner
+      .lookup("service:store")
+      .createRecord("employment");
 
-    let serializedRecord = record.serialize()
+    const serializedRecord = record.serialize();
 
-    assert.ok(serializedRecord)
-  })
-})
+    assert.ok(serializedRecord);
+  });
+});

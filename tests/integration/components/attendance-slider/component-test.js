@@ -1,58 +1,58 @@
-import { click, render } from '@ember/test-helpers'
-import { module, test } from 'qunit'
-import { setupRenderingTest } from 'ember-qunit'
-import hbs from 'htmlbars-inline-precompile'
-import EmberObject from '@ember/object'
-import moment from 'moment'
+import EmberObject from "@ember/object";
+import { click, render } from "@ember/test-helpers";
+import { setupRenderingTest } from "ember-qunit";
+import hbs from "htmlbars-inline-precompile";
+import moment from "moment";
+import { module, test } from "qunit";
 
 const ATTENDANCE = EmberObject.create({
   from: moment({ h: 8, m: 0, s: 0, ms: 0 }),
   to: moment({ h: 8, m: 0, s: 0, ms: 0 })
-})
+});
 
-module('Integration | Component | attendance slider', function(hooks) {
-  setupRenderingTest(hooks)
+module("Integration | Component | attendance slider", function(hooks) {
+  setupRenderingTest(hooks);
 
-  test('renders', async function(assert) {
-    this.set('attendance', ATTENDANCE)
+  test("renders", async function(assert) {
+    this.set("attendance", ATTENDANCE);
 
     await render(hbs`
       {{attendance-slider attendance=attendance}}
-    `)
+    `);
 
-    assert.dom('.noUi-connect').exists()
-  })
+    assert.dom(".noUi-connect").exists();
+  });
 
-  test('can delete', async function(assert) {
-    this.set('attendance', ATTENDANCE)
+  test("can delete", async function(assert) {
+    this.set("attendance", ATTENDANCE);
 
-    this.set('deleteAction', attendance => {
-      assert.ok(attendance)
-    })
+    this.set("deleteAction", attendance => {
+      assert.ok(attendance);
+    });
 
     await render(hbs`
       {{attendance-slider
         attendance = attendance
         on-delete  = deleteAction
       }}
-    `)
+    `);
 
-    await click('.fa-trash')
-  })
+    await click(".fa-trash");
+  });
 
-  test('can handle attendances until 00:00', async function(assert) {
+  test("can handle attendances until 00:00", async function(assert) {
     this.set(
-      'attendance',
+      "attendance",
       EmberObject.create({
         from: moment({ h: 0, m: 0, s: 0 }),
         to: moment({ h: 0, m: 0, s: 0 })
       })
-    )
+    );
 
     await render(hbs`
       {{attendance-slider attendance=attendance}}
-    `)
+    `);
 
-    assert.dom('span').hasText('24:00')
-  })
-})
+    assert.dom("span").hasText("24:00");
+  });
+});

@@ -1,6 +1,7 @@
-import { Factory } from 'ember-cli-mirage'
-import faker from 'faker'
-import { randomDuration } from '../helpers/duration'
+import { Factory } from "ember-cli-mirage";
+import faker from "faker";
+
+import { randomDuration } from "../helpers/duration";
 
 export default Factory.extend({
   name: () => faker.commerce.productName(),
@@ -8,6 +9,6 @@ export default Factory.extend({
   // customer: association()
 
   afterCreate(project, server) {
-    project.update({ customerId: server.create('customer').id })
+    project.update({ customerId: server.create("customer").id });
   }
-})
+});

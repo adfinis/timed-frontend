@@ -3,12 +3,12 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import moment from 'moment'
-import { padStart } from 'ember-pad/utils/pad'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { padStart } from "ember-pad/utils/pad";
+import moment from "moment";
 
-const noop = () => {}
+const noop = () => {};
 
 /**
  * Timepicker component
@@ -19,7 +19,7 @@ const noop = () => {}
  */
 export default Component.extend({
   sanitize(value) {
-    return value.replace(/[^\d:]/, '')
+    return value.replace(/[^\d:]/, "");
   },
 
   /**
@@ -28,7 +28,7 @@ export default Component.extend({
    * @property {String} tagName
    * @public
    */
-  tagName: 'input',
+  tagName: "input",
 
   /**
    * CSS class names
@@ -36,7 +36,7 @@ export default Component.extend({
    * @property {String[]} classNames
    * @public
    */
-  classNames: ['form-control'],
+  classNames: ["form-control"],
 
   /**
    * Attribute bindings
@@ -45,14 +45,14 @@ export default Component.extend({
    * @public
    */
   attributeBindings: [
-    'pattern',
-    'displayValue:value',
-    'name',
-    'maxlength',
-    'placeholder',
-    'type',
-    'disabled',
-    'autocomplete'
+    "pattern",
+    "displayValue:value",
+    "name",
+    "maxlength",
+    "placeholder",
+    "type",
+    "disabled",
+    "autocomplete"
   ],
 
   /**
@@ -61,7 +61,7 @@ export default Component.extend({
    * @property {String} placeholder
    * @public
    */
-  placeholder: '00:00',
+  placeholder: "00:00",
 
   /**
    * The input type
@@ -69,7 +69,7 @@ export default Component.extend({
    * @property {String} type
    * @public
    */
-  type: 'text',
+  type: "text",
 
   /**
    * The maximal length of the value
@@ -103,7 +103,7 @@ export default Component.extend({
    * @property {String} autocomplete
    * @public
    */
-  autocomplete: 'off',
+  autocomplete: "off",
 
   /**
    * The regex for the input
@@ -111,11 +111,13 @@ export default Component.extend({
    * @property {String} pattern
    * @public
    */
-  pattern: computed('precision', function() {
-    let count = 60 / this.get('precision')
-    let minutes = Array.from({ length: count }, (v, i) => 60 / count * i)
+  pattern: computed("precision", function() {
+    const count = 60 / this.get("precision");
+    const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
-    return `([01]?[0-9]|2[0-3]):(${minutes.map(m => padStart(m, 2)).join('|')})`
+    return `([01]?[0-9]|2[0-3]):(${minutes
+      .map(m => padStart(m, 2))
+      .join("|")})`;
   }),
 
   /**
@@ -126,9 +128,9 @@ export default Component.extend({
    * @property {String} displayValue
    * @public
    */
-  displayValue: computed('value', function() {
-    let value = this.get('value')
-    return value && value.isValid() ? value.format('HH:mm') : ''
+  displayValue: computed("value", function() {
+    const value = this.get("value");
+    return value && value.isValid() ? value.format("HH:mm") : "";
   }),
 
   /**
@@ -137,18 +139,18 @@ export default Component.extend({
    * @method init
    * @public
    */
-  init() {
-    let value = this.get('value') || moment()
+  init(...args) {
+    const value = this.get("value") || moment();
 
-    if (!this.get('min')) {
-      this.set('min', moment(value).set({ h: 0, m: 0 }))
+    if (!this.get("min")) {
+      this.set("min", moment(value).set({ h: 0, m: 0 }));
     }
 
-    if (!this.get('max')) {
-      this.set('max', moment(value).set({ h: 23, m: 59 }))
+    if (!this.get("max")) {
+      this.set("max", moment(value).set({ h: 23, m: 59 }));
     }
 
-    this._super(...arguments)
+    this._super(...args);
   },
 
   /**
@@ -159,7 +161,7 @@ export default Component.extend({
    * @public
    */
   focusOut() {
-    this.getWithDefault('on-focus-out', noop)()
+    this.getWithDefault("on-focus-out", noop)();
   },
 
   /**
@@ -171,11 +173,11 @@ export default Component.extend({
    */
   change(e) {
     if (e.target.validity.valid) {
-      let [h = NaN, m = NaN] = this.sanitize(e.target.value)
-        .split(':')
-        .map(n => parseInt(n))
+      const [h = NaN, m = NaN] = this.sanitize(e.target.value)
+        .split(":")
+        .map(n => parseInt(n));
 
-      this._change([h, m].some(isNaN) ? null : this._set(h, m))
+      this._change([h, m].some(isNaN) ? null : this._set(h, m));
     }
   },
 
@@ -188,9 +190,9 @@ export default Component.extend({
    * @public
    */
   keyDown(e) {
-    this._handleArrows(e)
+    this._handleArrows(e);
 
-    return true
+    return true;
   },
 
   /**
@@ -203,7 +205,7 @@ export default Component.extend({
    * @private
    */
   _set(h, m) {
-    return moment(this.get('value') || this.get('min')).set({ h, m })
+    return moment(this.get("value") || this.get("min")).set({ h, m });
   },
 
   /**
@@ -216,15 +218,15 @@ export default Component.extend({
    * @private
    */
   _add(h, m) {
-    let base = this.get('value')
+    let base = this.get("value");
 
     if (!base) {
       base = [h, m].any(n => n < 0)
-        ? this.get('max').add(1, 'minute')
-        : this.get('min')
+        ? this.get("max").add(1, "minute")
+        : this.get("min");
     }
 
-    return moment(base).add({ h, m })
+    return moment(base).add({ h, m });
   },
 
   /**
@@ -236,7 +238,7 @@ export default Component.extend({
    * @private
    */
   _isValid(value) {
-    return value < this.get('max') && value > this.get('min')
+    return value < this.get("max") && value > this.get("min");
   },
 
   /**
@@ -247,10 +249,10 @@ export default Component.extend({
    * @private
    */
   _addMinutes(value) {
-    let newValue = this._add(0, value)
+    const newValue = this._add(0, value);
 
     if (this._isValid(newValue)) {
-      this._change(newValue)
+      this._change(newValue);
     }
   },
 
@@ -262,10 +264,10 @@ export default Component.extend({
    * @private
    */
   _addHours(value) {
-    let newValue = this._add(value, 0)
+    const newValue = this._add(value, 0);
 
     if (this._isValid(newValue)) {
-      this._change(newValue)
+      this._change(newValue);
     }
   },
 
@@ -277,7 +279,7 @@ export default Component.extend({
    * @private
    */
   _change(value) {
-    this.get('on-change')(value)
+    this.get("on-change")(value);
   },
 
   /**
@@ -294,18 +296,18 @@ export default Component.extend({
     switch (e.keyCode) {
       case 38:
         if (e.ctrlKey || e.shiftKey) {
-          this._addHours(1)
+          this._addHours(1);
         } else {
-          this._addMinutes(this.get('precision'))
+          this._addMinutes(this.get("precision"));
         }
-        break
+        break;
       case 40:
         if (e.ctrlKey || e.shiftKey) {
-          this._addHours(-1)
+          this._addHours(-1);
         } else {
-          this._addMinutes(-this.get('precision'))
+          this._addMinutes(-this.get("precision"));
         }
-        break
+        break;
     }
   }
-})
+});

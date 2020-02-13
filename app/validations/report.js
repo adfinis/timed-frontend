@@ -3,7 +3,7 @@
  * @submodule timed-validations
  * @public
  */
-import { validatePresence } from 'ember-changeset-validations/validators'
+import { validatePresence } from "ember-changeset-validations/validators";
 
 /**
  * Validations for reports
@@ -27,4 +27,4 @@ export default {
    * @public
    */
   duration: validatePresence(true)
-}
+};

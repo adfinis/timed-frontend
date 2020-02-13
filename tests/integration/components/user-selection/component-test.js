@@ -1,46 +1,46 @@
-import { find, render } from '@ember/test-helpers'
-import { module, test } from 'qunit'
-import { setupRenderingTest } from 'ember-qunit'
-import hbs from 'htmlbars-inline-precompile'
-import { startMirage } from 'timed/initializers/ember-cli-mirage'
-import wait from 'ember-test-helpers/wait'
-import EmberObject from '@ember/object'
+import EmberObject from "@ember/object";
+import { find, render } from "@ember/test-helpers";
+import { setupRenderingTest } from "ember-qunit";
+import wait from "ember-test-helpers/wait";
+import hbs from "htmlbars-inline-precompile";
+import { module, test } from "qunit";
+import { startMirage } from "timed/initializers/ember-cli-mirage";
 
 const USER = EmberObject.create({
   id: 1,
-  firstName: 'Hans',
-  lastName: 'Muster',
-  username: 'hansm',
-  longName: 'Hans Muster (hansm)'
-})
+  firstName: "Hans",
+  lastName: "Muster",
+  username: "hansm",
+  longName: "Hans Muster (hansm)"
+});
 
-module('Integration | Component | user selection', function(hooks) {
-  setupRenderingTest(hooks)
+module("Integration | Component | user selection", function(hooks) {
+  setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    this.server = startMirage()
-  })
+    this.server = startMirage();
+  });
 
   hooks.afterEach(function() {
-    this.server.shutdown()
-  })
+    this.server.shutdown();
+  });
 
-  test('renders', async function(assert) {
-    this.set('user', USER)
+  test("renders", async function(assert) {
+    this.set("user", USER);
 
     await render(hbs`
       {{#user-selection user=user on-change=(action (mut user)) as |u|}}
         {{u.user}}
       {{/user-selection}}
-    `)
+    `);
 
     return wait().then(() => {
       assert.equal(
         find(
-          '.user-select .ember-power-select-selected-item'
+          ".user-select .ember-power-select-selected-item"
         ).textContent.trim(),
         USER.longName
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});

@@ -3,10 +3,10 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { inject as service } from '@ember/service'
-import Ember from 'ember'
-import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import Ember from "ember";
+import ApplicationRouteMixin from "ember-simple-auth/mixins/application-route-mixin";
 
 /**
  * The application route
@@ -23,9 +23,9 @@ export default Route.extend(ApplicationRouteMixin, {
    * @property {EmberSimpleAuth.SessionService} session
    * @public
    */
-  session: service('session'),
+  session: service("session"),
 
-  autostartTour: service('autostart-tour'),
+  autostartTour: service("autostart-tour"),
 
   /**
    * Transition to login after logout
@@ -34,12 +34,12 @@ export default Route.extend(ApplicationRouteMixin, {
    * @public
    */
   sessionInvalidated() {
-    this.transitionTo('login').then(() => {
+    this.transitionTo("login").then(() => {
       if (!Ember.testing) {
         /* istanbul ignore next */
-        location.reload()
+        location.reload();
       }
-    })
+    });
   },
 
   /**
@@ -56,9 +56,9 @@ export default Route.extend(ApplicationRouteMixin, {
      * @public
      */
     invalidateSession() {
-      this.set('autostartTour.done', [])
+      this.set("autostartTour.done", []);
 
-      this.get('session').invalidate()
+      this.get("session").invalidate();
     }
   }
-})
+});

@@ -3,10 +3,10 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import moment from 'moment'
-import Ember from 'ember'
-import { task, timeout } from 'ember-concurrency'
+import Component from "@ember/component";
+import Ember from "ember";
+import { task, timeout } from "ember-concurrency";
+import moment from "moment";
 
 /**
  * The duration since component
@@ -31,7 +31,7 @@ const DurationSinceComponent = Component.extend({
    * @property {String} tagName
    * @public
    */
-  tagName: 'span',
+  tagName: "span",
 
   /**
    * The moment from which the duration is computed
@@ -57,9 +57,9 @@ const DurationSinceComponent = Component.extend({
    */
   duration: moment.duration(),
 
-  init() {
-    this._super(...arguments)
-    this._compute()
+  init(...args) {
+    this._super(...args);
+    this._compute();
   },
 
   /**
@@ -70,9 +70,9 @@ const DurationSinceComponent = Component.extend({
    */
   _compute() {
     this.set(
-      'duration',
-      moment.duration(moment().diff(this.get('from'))).add(this.get('elapsed'))
-    )
+      "duration",
+      moment.duration(moment().diff(this.get("from"))).add(this.get("elapsed"))
+    );
   },
 
   /**
@@ -83,21 +83,21 @@ const DurationSinceComponent = Component.extend({
    */
   timer: task(function*() {
     for (;;) {
-      this._compute()
+      this._compute();
 
       /* istanbul ignore else */
       if (Ember.testing) {
-        return
+        return;
       }
 
       /* istanbul ignore next */
-      yield timeout(1000)
+      yield timeout(1000);
     }
-  }).on('init')
-})
+  }).on("init")
+});
 
 DurationSinceComponent.reopenClass({
-  positionalParams: ['from']
-})
+  positionalParams: ["from"]
+});
 
-export default DurationSinceComponent
+export default DurationSinceComponent;

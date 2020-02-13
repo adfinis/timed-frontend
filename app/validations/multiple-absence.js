@@ -6,7 +6,7 @@
 import {
   validateLength,
   validatePresence
-} from 'ember-changeset-validations/validators'
+} from "ember-changeset-validations/validators";
 
 /**
  * Validations for multiple absences
@@ -31,6 +31,6 @@ export default {
    */
   dates: validateLength({
     min: 1,
-    message: 'At least one date must be selected'
+    message: "At least one date must be selected"
   })
-}
+};

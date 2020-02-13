@@ -3,9 +3,9 @@
  * @submodule timed-routes
  * @public
  */
-import Route from '@ember/routing/route'
-import { inject as service } from '@ember/service'
-import RouteAutostartTourMixin from 'timed/mixins/route-autostart-tour'
+import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
+import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 /**
  * The index attendances route
@@ -21,7 +21,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service('notify'),
+  notify: service("notify"),
 
   /**
    * Setup controller hook, set the current user
@@ -30,10 +30,10 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @param {Ember.Controller} controller The controller
    * @public
    */
-  setupController(controller) {
-    this._super(...arguments)
+  setupController(controller, ...args) {
+    this._super(controller, ...args);
 
-    controller.set('user', this.modelFor('protected'))
+    controller.set("user", this.modelFor("protected"));
   },
 
   /**
@@ -52,12 +52,12 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async saveAttendance(attendance) {
       try {
-        await attendance.save()
+        await attendance.save();
 
-        this.get('notify').success('Attendance was saved')
+        this.get("notify").success("Attendance was saved");
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while saving the attendance')
+        this.get("notify").error("Error while saving the attendance");
       }
     },
 
@@ -71,13 +71,13 @@ export default Route.extend(RouteAutostartTourMixin, {
     async deleteAttendance(attendance) {
       try {
         await this.store
-          .peekRecord('attendance', attendance.get('id'))
-          .destroyRecord()
+          .peekRecord("attendance", attendance.get("id"))
+          .destroyRecord();
 
-        this.get('notify').success('Attendance was deleted')
+        this.get("notify").success("Attendance was deleted");
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while deleting the attendance')
+        this.get("notify").error("Error while deleting the attendance");
       }
     },
 
@@ -89,26 +89,26 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async addAttendance() {
       try {
-        let date = this.controllerFor('index')
-          .get('date')
-          .clone()
+        const date = this.controllerFor("index")
+          .get("date")
+          .clone();
 
-        let from = date.clone().set({ h: 8, m: 0, s: 0, ms: 0 })
-        let to = date.clone().set({ h: 11, m: 30, s: 0, ms: 0 })
+        const from = date.clone().set({ h: 8, m: 0, s: 0, ms: 0 });
+        const to = date.clone().set({ h: 11, m: 30, s: 0, ms: 0 });
 
-        let attendance = this.store.createRecord('attendance', {
+        const attendance = this.store.createRecord("attendance", {
           date,
           from,
           to
-        })
+        });
 
-        await attendance.save()
+        await attendance.save();
 
-        this.get('notify').success('Attendance was added')
+        this.get("notify").success("Attendance was added");
       } catch (e) {
         /* istanbul ignore next */
-        this.get('notify').error('Error while adding the attendance')
+        this.get("notify").error("Error while adding the attendance");
       }
     }
   }
-})
+});

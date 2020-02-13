@@ -3,9 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
-import { belongsTo } from 'ember-data/relationships'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
+import { belongsTo } from "ember-data/relationships";
 
 /**
  * The employment model
@@ -21,7 +21,7 @@ export default Model.extend({
    * @property {Number} percentage
    * @public
    */
-  percentage: attr('number'),
+  percentage: attr("number"),
 
   /**
    * The time the user has to work every day
@@ -29,7 +29,7 @@ export default Model.extend({
    * @property {moment.duration} worktimePerDay
    * @public
    */
-  worktimePerDay: attr('django-duration'),
+  worktimePerDay: attr("django-duration"),
 
   /**
    * The start date
@@ -37,7 +37,7 @@ export default Model.extend({
    * @property {moment} start
    * @public
    */
-  start: attr('django-date'),
+  start: attr("django-date"),
 
   /**
    * The end date
@@ -45,7 +45,7 @@ export default Model.extend({
    * @property {moment} end
    * @public
    */
-  end: attr('django-date'),
+  end: attr("django-date"),
 
   /**
    * The employed user
@@ -53,7 +53,7 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo('user'),
+  user: belongsTo("user"),
 
   /**
    * The work location
@@ -61,5 +61,5 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo('location')
-})
+  location: belongsTo("location")
+});

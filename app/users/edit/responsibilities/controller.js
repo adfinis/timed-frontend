@@ -1,33 +1,33 @@
-import Controller from '@ember/controller'
-import { task } from 'ember-concurrency'
-import QueryParams from 'ember-parachute'
-import moment from 'moment'
+import Controller from "@ember/controller";
+import { task } from "ember-concurrency";
+import QueryParams from "ember-parachute";
+import moment from "moment";
 
-const UsersEditResponsibilitiesQueryParams = new QueryParams({})
+const UsersEditResponsibilitiesQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
   setup() {
-    this.get('projects').perform()
-    this.get('supervisees').perform()
+    this.get("projects").perform();
+    this.get("supervisees").perform();
   },
 
   projects: task(function*() {
-    return yield this.store.query('project', {
-      reviewer: this.get('model.id'),
-      include: 'customer',
-      ordering: 'customer__name,name'
-    })
+    return yield this.store.query("project", {
+      reviewer: this.get("model.id"),
+      include: "customer",
+      ordering: "customer__name,name"
+    });
   }),
 
   supervisees: task(function*() {
-    let supervisor = this.get('model.id')
+    const supervisor = this.get("model.id");
 
-    let balances = yield this.store.query('worktime-balance', {
+    const balances = yield this.store.query("worktime-balance", {
       supervisor,
-      date: moment().format('YYYY-MM-DD'),
-      include: 'user'
-    })
+      date: moment().format("YYYY-MM-DD"),
+      include: "user"
+    });
 
-    return balances.mapBy('user')
+    return balances.mapBy("user");
   })
-})
+});

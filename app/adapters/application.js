@@ -3,10 +3,10 @@
  * @submodule timed-adapters
  * @public
  */
-import JSONAPIAdapter from 'ember-data/adapters/json-api'
-import DataAdapterMixin from 'ember-simple-auth/mixins/data-adapter-mixin'
-import { reads } from '@ember/object/computed'
-import { computed } from '@ember/object'
+import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
+import JSONAPIAdapter from "ember-data/adapters/json-api";
+import DataAdapterMixin from "ember-simple-auth/mixins/data-adapter-mixin";
 
 /**
  * The application adapter
@@ -17,7 +17,7 @@ import { computed } from '@ember/object'
  * @public
  */
 export default JSONAPIAdapter.extend(DataAdapterMixin, {
-  token: reads('session.data.authenticated.token'),
+  token: reads("session.data.authenticated.token"),
 
   /**
    * The API namespace
@@ -25,14 +25,14 @@ export default JSONAPIAdapter.extend(DataAdapterMixin, {
    * @property {String} namespace
    * @public
    */
-  namespace: 'api/v1',
+  namespace: "api/v1",
 
-  headers: computed('token', function() {
-    const headers = {}
+  headers: computed("token", function() {
+    const headers = {};
     if (this.session.isAuthenticated) {
-      headers['Authorization'] = `Bearer ${this.token}`
+      headers.Authorization = `Bearer ${this.token}`;
     }
 
-    return headers
+    return headers;
   })
-})
+});

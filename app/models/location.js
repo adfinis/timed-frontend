@@ -3,8 +3,8 @@
  * @submodule timed-models
  * @public
  */
-import Model from 'ember-data/model'
-import attr from 'ember-data/attr'
+import attr from "ember-data/attr";
+import Model from "ember-data/model";
 
 /**
  * The location model
@@ -20,7 +20,7 @@ export default Model.extend({
    * @property {String} name
    * @public
    */
-  name: attr('string'),
+  name: attr("string"),
 
   /**
    * The days on which users in this location need to work
@@ -28,5 +28,5 @@ export default Model.extend({
    * @property {Number[]} workdays
    * @public
    */
-  workdays: attr('django-workdays')
-})
+  workdays: attr("django-workdays")
+});

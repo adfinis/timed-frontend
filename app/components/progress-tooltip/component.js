@@ -1,9 +1,9 @@
-import Component from '@ember/component'
-import { computed } from '@ember/object'
-import { reads } from '@ember/object/computed'
-import moment from 'moment'
-import { task, timeout } from 'ember-concurrency'
-import { inject as service } from '@ember/service'
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
+import { task, timeout } from "ember-concurrency";
+import moment from "moment";
 
 /**
  * Component for a tooltip showing the progress of a task or project
@@ -19,7 +19,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {String} tagName
    * @public
    */
-  tagName: '',
+  tagName: "",
 
   /**
    * Init hook, check the required params
@@ -27,17 +27,17 @@ const ProgressTooltipComponent = Component.extend({
    * @method init
    * @public
    */
-  init() {
-    this._super(...arguments)
+  init(...args) {
+    this._super(...args);
 
     /* istanbul ignore next */
-    if (!this.get('model')) {
-      throw new Error('A model must be given')
+    if (!this.get("model")) {
+      throw new Error("A model must be given");
     }
 
     /* istanbul ignore next */
-    if (!this.get('target')) {
-      throw new Error('A target for the tooltip must be given')
+    if (!this.get("target")) {
+      throw new Error("A target for the tooltip must be given");
     }
   },
 
@@ -55,7 +55,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {MetadataFetcherService} metadataFetcher
    * @public
    */
-  metadataFetcher: service('metadata-fetcher'),
+  metadataFetcher: service("metadata-fetcher"),
 
   /**
    * The estimated time
@@ -63,7 +63,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {moment.duration} estimated
    * @public
    */
-  estimated: reads('model.estimatedTime'),
+  estimated: reads("model.estimatedTime"),
 
   /**
    * The spent time
@@ -79,10 +79,10 @@ const ProgressTooltipComponent = Component.extend({
    * @property {Number} progress
    * @public
    */
-  progress: computed('estimated', 'spent', function() {
-    return this.get('estimated') && this.get('estimated').asHours()
-      ? this.get('spent') / this.get('estimated')
-      : 0
+  progress: computed("estimated", "spent", function() {
+    return this.get("estimated") && this.get("estimated").asHours()
+      ? this.get("spent") / this.get("estimated")
+      : 0;
   }),
 
   /**
@@ -91,14 +91,14 @@ const ProgressTooltipComponent = Component.extend({
    * @property {String} color
    * @public
    */
-  color: computed('progress', function() {
-    if (this.get('progress') > 1) {
-      return 'danger'
-    } else if (this.get('progress') >= 0.9) {
-      return 'warning'
+  color: computed("progress", function() {
+    if (this.get("progress") > 1) {
+      return "danger";
+    } else if (this.get("progress") >= 0.9) {
+      return "warning";
     }
 
-    return 'success'
+    return "success";
   }),
 
   /**
@@ -107,12 +107,12 @@ const ProgressTooltipComponent = Component.extend({
    * @property {EmberConcurrency.Task} tooltipVisible
    * @public
    */
-  tooltipVisible: computed('visible', function() {
-    let task = this.get('_computeTooltipVisible')
+  tooltipVisible: computed("visible", function() {
+    const task = this.get("_computeTooltipVisible");
 
-    task.perform(this.get('visible'))
+    task.perform(this.get("visible"));
 
-    return task
+    return task;
   }),
 
   /**
@@ -125,19 +125,19 @@ const ProgressTooltipComponent = Component.extend({
    */
   _computeTooltipVisible: task(function*(visible) {
     if (visible) {
-      yield timeout(this.get('delay'))
+      yield timeout(this.get("delay"));
 
-      let { spentTime } = yield this.get(
-        'metadataFetcher.fetchSingleRecordMetadata'
+      const { spentTime } = yield this.get(
+        "metadataFetcher.fetchSingleRecordMetadata"
       )
         .linked()
-        .perform(this.get('model.constructor.modelName'), this.get('model.id'))
+        .perform(this.get("model.constructor.modelName"), this.get("model.id"));
 
-      this.set('spent', spentTime)
+      this.set("spent", spentTime);
     }
 
-    return visible
+    return visible;
   }).restartable()
-})
+});
 
-export default ProgressTooltipComponent
+export default ProgressTooltipComponent;

@@ -1,178 +1,174 @@
-import { module, test } from 'qunit'
-import { setupRenderingTest } from 'ember-qunit'
-import hbs from 'htmlbars-inline-precompile'
-import { startMirage } from 'timed/initializers/ember-cli-mirage'
-import EmberObject from '@ember/object'
-import wait from 'ember-test-helpers/wait'
-import moment from 'moment'
-import { render } from '@ember/test-helpers'
+import EmberObject from "@ember/object";
+import { render } from "@ember/test-helpers";
+import { setupRenderingTest } from "ember-qunit";
+import wait from "ember-test-helpers/wait";
+import hbs from "htmlbars-inline-precompile";
+import moment from "moment";
+import { module, test } from "qunit";
+import { startMirage } from "timed/initializers/ember-cli-mirage";
 
-module('Integration | Component | progress tooltip', function(hooks) {
-  setupRenderingTest(hooks)
+module("Integration | Component | progress tooltip", function(hooks) {
+  setupRenderingTest(hooks);
 
   hooks.beforeEach(function() {
-    this.server = startMirage()
+    this.server = startMirage();
 
-    this.server.create('task')
-  })
+    this.server.create("task");
+  });
 
   hooks.afterEach(function() {
-    this.server.shutdown()
-  })
+    this.server.shutdown();
+  });
 
-  test('renders', async function(assert) {
+  test("renders", async function(assert) {
     this.set(
-      'model',
+      "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 50 }),
         constructor: EmberObject.create({
-          modelName: 'project'
+          modelName: "project"
         })
       })
-    )
+    );
 
     await render(hbs`
       <span id='target'></span>
       {{progress-tooltip target='#target' model=model visible=true}}
-    `)
+    `);
 
     return wait().then(() => {
-      assert.dom('.progress-tooltip').exists()
+      assert.dom(".progress-tooltip").exists();
 
       assert
-        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(1)')
-        .hasText(/^Spent: \d+h \d+m$/)
+        .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(1)")
+        .hasText(/^Spent: \d+h \d+m$/);
 
       assert
-        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(2)')
-        .hasText('Estimate: 50h 0m')
-    })
-  })
+        .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(2)")
+        .hasText("Estimate: 50h 0m");
+    });
+  });
 
-  test('renders with tasks', async function(assert) {
+  test("renders with tasks", async function(assert) {
     this.set(
-      'model',
+      "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100, m: 30 }),
         constructor: EmberObject.create({
-          modelName: 'task'
+          modelName: "task"
         })
       })
-    )
+    );
 
     await render(hbs`
       <span id='target'></span>
       {{progress-tooltip target='#target' model=model visible=true}}
-    `)
+    `);
 
     return wait().then(() => {
-      assert.dom('.progress-tooltip').exists()
+      assert.dom(".progress-tooltip").exists();
 
       assert
-        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(1)')
-        .hasText(/^Spent: \d+h \d+m$/)
+        .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(1)")
+        .hasText(/^Spent: \d+h \d+m$/);
 
       assert
-        .dom('.progress-tooltip .time-info .time-info-durations p:nth-child(2)')
-        .hasText('Estimate: 100h 30m')
-    })
-  })
+        .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(2)")
+        .hasText("Estimate: 100h 30m");
+    });
+  });
 
-  test('toggles correctly', async function(assert) {
+  test("toggles correctly", async function(assert) {
     this.set(
-      'model',
+      "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100, m: 30 }),
         constructor: EmberObject.create({
-          modelName: 'task'
+          modelName: "task"
         })
       })
-    )
+    );
 
-    this.set('visible', false)
+    this.set("visible", false);
 
     await render(hbs`
       <span id='target'></span>
       {{progress-tooltip target='#target' model=model visible=visible}}
-    `)
+    `);
 
-    assert.dom('.progress-tooltip').doesNotExist()
+    assert.dom(".progress-tooltip").doesNotExist();
 
-    this.set('visible', true)
+    this.set("visible", true);
 
     return wait().then(() => {
-      assert.dom('.progress-tooltip').exists()
-    })
-  })
+      assert.dom(".progress-tooltip").exists();
+    });
+  });
 
-  test('uses danger color when the factor is more than 1', async function(
-    assert
-  ) {
+  test("uses danger color when the factor is more than 1", async function(assert) {
     this.set(
-      'model',
+      "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100 }),
         constructor: EmberObject.create({
-          modelName: 'project'
+          modelName: "project"
         })
       })
-    )
+    );
 
-    this.server.get('/projects/:id', function({ projects }, request) {
+    this.server.get("/projects/:id", function({ projects }, request) {
       return {
         ...this.serialize(projects.find(request.params.id)),
         meta: {
-          'spent-time': '4 05:00:00' // 101 hours
+          "spent-time": "4 05:00:00" // 101 hours
         }
-      }
-    })
+      };
+    });
 
     await render(hbs`
       <span id='target'></span>
       {{progress-tooltip target='#target' model=model visible=true}}
-    `)
+    `);
 
     return wait().then(() => {
-      assert.dom('.progress-tooltip .badge--danger').exists()
-      assert.dom('.progress-tooltip .progress-bar.danger').exists()
-    })
-  })
+      assert.dom(".progress-tooltip .badge--danger").exists();
+      assert.dom(".progress-tooltip .progress-bar.danger").exists();
+    });
+  });
 
-  test('uses warning color when the factor is 0.9 or more', async function(
-    assert
-  ) {
+  test("uses warning color when the factor is 0.9 or more", async function(assert) {
     this.set(
-      'model',
+      "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100 }),
         constructor: EmberObject.create({
-          modelName: 'project'
+          modelName: "project"
         })
       })
-    )
+    );
 
-    this.server.get('/projects/:id', function({ projects }, request) {
+    this.server.get("/projects/:id", function({ projects }, request) {
       return {
         ...this.serialize(projects.find(request.params.id)),
         meta: {
-          'spent-time': '3 18:00:00' // 90 hours
+          "spent-time": "3 18:00:00" // 90 hours
         }
-      }
-    })
+      };
+    });
 
     await render(hbs`
       <span id='target'></span>
       {{progress-tooltip target='#target' model=model visible=true}}
-    `)
+    `);
 
     return wait().then(() => {
-      assert.dom('.progress-tooltip .badge--warning').exists()
-      assert.dom('.progress-tooltip .progress-bar.warning').exists()
-    })
-  })
-})
+      assert.dom(".progress-tooltip .badge--warning").exists();
+      assert.dom(".progress-tooltip .progress-bar.warning").exists();
+    });
+  });
+});

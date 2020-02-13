@@ -3,13 +3,12 @@
  * @submodule timed-auth
  * @public
  */
-import BaseAuthenticator from 'ember-simple-auth/authenticators/base'
-import { isEmpty } from '@ember/utils'
-import { inject as service } from '@ember/service'
-import RSVP from 'rsvp'
-import Ember from 'ember'
-
-import { later, cancel } from '@ember/runloop'
+import { later, cancel } from "@ember/runloop";
+import { inject as service } from "@ember/service";
+import { isEmpty } from "@ember/utils";
+import Ember from "ember";
+import BaseAuthenticator from "ember-simple-auth/authenticators/base";
+import { Promise } from "rsvp";
 
 /**
  * The application authorizer
@@ -29,7 +28,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @property {AjaxService} ajax
    * @public
    */
-  ajax: service('ajax'),
+  ajax: service("ajax"),
 
   /**
    * The timeout for refreshing the token
@@ -48,13 +47,13 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _parseToken(token) {
-    let [, payload] = token.split('.')
-    let tokenData = decodeURIComponent(window.escape(atob(payload)))
+    const [, payload] = token.split(".");
+    const tokenData = decodeURIComponent(window.escape(atob(payload)));
 
     try {
-      return JSON.parse(tokenData)
+      return JSON.parse(tokenData);
     } catch (e) {
-      return tokenData
+      return tokenData;
     }
   },
 
@@ -67,7 +66,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _parseExp(exp) {
-    return new Date(exp * 1000).getTime()
+    return new Date(exp * 1000).getTime();
   },
 
   /**
@@ -77,32 +76,32 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @param {Object} data The credentials
    * @param {String} data.username The username
    * @param {String} data.password The password
-   * @return {RSVP.Promise} A promise which resolves if the login request succeeds
+   * @return {Promise} A promise which resolves if the login request succeeds
    * @public
    */
   authenticate({ username, password }) {
-    return new RSVP.Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (isEmpty(username) || isEmpty(password)) {
-        reject(new Error('Missing credentials'))
+        reject(new Error("Missing credentials"));
       }
 
-      let data = {
-        type: 'token-obtain-pair-views',
+      const data = {
+        type: "token-obtain-pair-views",
         id: null,
         attributes: { username, password }
-      }
+      };
 
-      this.get('ajax')
-        .post('/api/v1/auth/login', { data: { data } })
+      this.get("ajax")
+        .post("/api/v1/auth/login", { data: { data } })
         .then(res => {
-          let result = this._handleAuthResponse(res.data)
+          const result = this._handleAuthResponse(res.data);
 
-          resolve(result)
+          resolve(result);
         })
         .catch(res => {
-          reject(res)
-        })
-    })
+          reject(res);
+        });
+    });
   },
 
   /**
@@ -112,27 +111,27 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @param {Object} data The session data
    * @param {String} data.token The token
    * @param {Number} data.exp The expire timestamp of the token
-   * @return {RSVP.Promise} A promise which resolves if the session is restored
+   * @return {Promise} A promise which resolves if the session is restored
    * @public
    */
   restore(data) {
-    return new RSVP.Promise((resolve, reject) => {
-      let { token } = data
-      let exp = this._parseExp(data.exp)
-      let now = new Date().getTime()
+    return new Promise((resolve, reject) => {
+      const { token } = data;
+      const exp = this._parseExp(data.exp);
+      const now = new Date().getTime();
 
       if (isEmpty(token)) {
-        reject(new Error('Token is empty'))
+        reject(new Error("Token is empty"));
       }
 
       if (exp > now) {
-        this._scheduleTokenRefresh(exp, token)
+        this._scheduleTokenRefresh(exp, token);
 
-        resolve(data)
+        resolve(data);
       } else {
-        reject(new Error('Token is expired'))
+        reject(new Error("Token is expired"));
       }
-    })
+    });
   },
 
   /**
@@ -140,11 +139,11 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    *
    * @method invalidate
    * @param {Object} data The session data
-   * @return {RSVP.Promise} A promise which resolves if the session is invalidated
+   * @return {Promise} A promise which resolves if the session is invalidated
    * @public
    */
   invalidate(data) {
-    return new RSVP.Promise(resolve => resolve(data))
+    return new Promise(resolve => resolve(data));
   },
 
   /**
@@ -152,28 +151,28 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    *
    * @method _refreshToken
    * @param {String} token The token to refresh
-   * @return {RSVP.Promise} A promise which resolves if the token is refreshed
+   * @return {Promise} A promise which resolves if the token is refreshed
    * @private
    */
   _refreshToken(token) {
-    let data = {
-      type: 'refresh-json-web-tokens',
+    const data = {
+      type: "refresh-json-web-tokens",
       id: null,
       attributes: { token }
-    }
+    };
 
-    return new RSVP.Promise((resolve, reject) => {
-      this.get('ajax')
-        .post('/api/v1/auth/refresh', { data: { data } })
+    return new Promise((resolve, reject) => {
+      this.get("ajax")
+        .post("/api/v1/auth/refresh", { data: { data } })
         .then(res => {
-          let result = this._handleAuthResponse(res.data)
+          const result = this._handleAuthResponse(res.data);
 
-          this.trigger('sessionDataUpdated', result)
+          this.trigger("sessionDataUpdated", result);
 
-          resolve(result)
+          resolve(result);
         })
-        .catch(reject)
-    })
+        .catch(reject);
+    });
   },
 
   /**
@@ -185,15 +184,15 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _scheduleTokenRefresh(exp, token) {
-    let now = new Date().getTime()
-    let wait = exp - now
+    const now = new Date().getTime();
+    const wait = exp - now;
 
-    cancel(this._refreshTokenTimeout)
+    cancel(this._refreshTokenTimeout);
 
-    Reflect.deleteProperty(this, '_refreshTokenTimeout')
+    Reflect.deleteProperty(this, "_refreshTokenTimeout");
 
     if (!Ember.testing) {
-      this._refreshTokenTimeout = later(this, this._refreshToken, token, wait)
+      this._refreshTokenTimeout = later(this, this._refreshToken, token, wait);
     }
   },
 
@@ -206,19 +205,19 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _handleAuthResponse(response) {
-    let { token } = response
+    const { token } = response;
 
     if (isEmpty(token)) {
-      throw new Error('Token is empty')
+      throw new Error("Token is empty");
     }
 
-    let data = this._parseToken(token)
-    let exp = this._parseExp(data.exp)
+    const data = this._parseToken(token);
+    const exp = this._parseExp(data.exp);
 
-    this._scheduleTokenRefresh(exp, token)
+    this._scheduleTokenRefresh(exp, token);
 
-    return { ...data, token }
+    return { ...data, token };
   }
-})
+});
 
-export default ApplicationAuthenticator
+export default ApplicationAuthenticator;

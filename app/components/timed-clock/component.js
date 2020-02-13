@@ -3,39 +3,39 @@
  * @submodule timed-components
  * @public
  */
-import Component from '@ember/component'
-import moment from 'moment'
-import Ember from 'ember'
-import { task, timeout } from 'ember-concurrency'
+import Component from "@ember/component";
+import Ember from "ember";
+import { task, timeout } from "ember-concurrency";
+import moment from "moment";
 
 export default Component.extend({
-  classNames: ['timed-clock'],
+  classNames: ["timed-clock"],
 
   hour: 0,
   minute: 0,
   second: 0,
 
   _update() {
-    let now = moment()
+    const now = moment();
 
-    let second = now.seconds() * 6
-    let minute = now.minutes() * 6 + second / 60
-    let hour = (now.hours() % 12) / 12 * 360 + minute / 12
+    const second = now.seconds() * 6;
+    const minute = now.minutes() * 6 + second / 60;
+    const hour = ((now.hours() % 12) / 12) * 360 + minute / 12;
 
-    this.setProperties({ second, minute, hour })
+    this.setProperties({ second, minute, hour });
   },
 
   timer: task(function*() {
     for (;;) {
-      this._update()
+      this._update();
 
       /* istanbul ignore else */
       if (Ember.testing) {
-        return
+        return;
       }
 
       /* istanbul ignore next */
-      yield timeout(1000)
+      yield timeout(1000);
     }
-  }).on('didInsertElement')
-})
+  }).on("didInsertElement")
+});
