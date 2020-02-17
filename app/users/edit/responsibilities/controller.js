@@ -28,6 +28,6 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
       include: "user"
     });
 
-    return balances.mapBy("user");
+    return balances.mapBy("user").filterBy("isActive");
   })
 });
