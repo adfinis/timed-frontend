@@ -5,7 +5,8 @@
  */
 import Controller from "@ember/controller";
 import { computed } from "@ember/object";
-import { sort } from "@ember/object/computed";
+import { reads, sort } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
 
 /**
  * The index activities controller
@@ -15,6 +16,8 @@ import { sort } from "@ember/object/computed";
  * @public
  */
 export default Controller.extend({
+  router: service(),
+
   /**
    * All activities currently in the store
    *
@@ -24,6 +27,15 @@ export default Controller.extend({
   _allActivities: computed(function() {
     return this.store.peekAll("activity");
   }),
+
+  /**
+   * The ID of the currently selected activity.
+   * This is used to add a CSS class for styling.
+   *
+   * @property {String} editId
+   * @public
+   */
+  editId: reads("router.currentRoute.params.id"),
 
   /**
    * The activities filtered by the selected day
@@ -36,13 +48,13 @@ export default Controller.extend({
     "model",
     "user",
     function() {
-      return this.get("_allActivities").filter(a => {
+      return this.get("_allActivities").filter(activity => {
         return (
-          a.get("date") &&
-          a.get("date").isSame(this.get("model"), "day") &&
-          a.get("user.id") === this.get("user.id") &&
-          !a.get("isNew") &&
-          !a.get("isDeleted")
+          activity.get("date") &&
+          activity.get("date").isSame(this.get("model"), "day") &&
+          activity.get("user.id") === this.get("user.id") &&
+          !activity.get("isNew") &&
+          !activity.get("isDeleted")
         );
       });
     }
