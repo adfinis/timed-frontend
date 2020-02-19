@@ -6,18 +6,23 @@
 .activities-list {
   flex: 1 1 auto;
   overflow: hidden;
+
+  tr.selected td {
+    background-color: #1e87f0;
+    color: #fff;
+  }
 }
 
 .activities-edit {
   flex: 0 1 100%;
-}
 
-.activities-edit:empty {
-  flex-basis: 0%;
-}
+  &:empty {
+    flex-basis: 0%;
+  }
 
-.activities-edit:not(:empty) + .activities-list {
-  flex-basis: 0%;
+  &:not(:empty) + .activities-list {
+    flex-basis: 0%;
+  }
 }
 
 .table--activity-edit > tbody > tr > td {
