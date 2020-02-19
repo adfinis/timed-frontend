@@ -24,6 +24,10 @@
         {{#link-to 'analysis'}}
           {{fa-icon 'line-chart'}} Analysis
         {{/link-to}}
+
+        {{#link-to "analysis.index" (query-params fromDate=analysisFromDate verified="0")}}
+          Lorem ipsum
+        {{/link-to}}
       </li>
       <li class="nav-top-list-item">
         {{#link-to 'statistics'}}
@@ -47,7 +51,7 @@
     </li>
     <li class="nav-top-list-item">
       <a href="#" data-test-logout {{action (optional on-logout)}}>
-        <i class="fa fa-power-off"></i>
+        {{fa-icon 'power-off'}}
         Logout
       </a>
     </li>

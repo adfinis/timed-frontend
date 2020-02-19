@@ -28,7 +28,7 @@ const rAF = () => {
 const DATE_FORMAT = "YYYY-MM-DD";
 
 const serializeMoment = momentObject =>
-  (momentObject && momentObject.format(DATE_FORMAT)) || null;
+  (moment.isMoment(momentObject) && momentObject.format(DATE_FORMAT)) || null;
 
 const deserializeMoment = momentString =>
   (momentString && moment(momentString, DATE_FORMAT)) || null;
