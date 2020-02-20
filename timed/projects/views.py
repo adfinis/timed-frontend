@@ -1,8 +1,9 @@
 """Viewsets for the projects app."""
 
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_json_api.views import PreloadIncludesMixin
 
+from timed.permissions import IsAuthenticated, IsReadOnly, IsReviewer, IsSuperUser
 from timed.projects import filters, models, serializers
 
 
@@ -57,20 +58,21 @@ class ProjectViewSet(PreloadIncludesMixin, ReadOnlyModelViewSet):
         return queryset.select_related("customer", "billing_type", "cost_center")
 
 
-class TaskViewSet(ReadOnlyModelViewSet):
+class TaskViewSet(ModelViewSet):
     """Task view set."""
 
     serializer_class = serializers.TaskSerializer
     filterset_class = filters.TaskFilterSet
+    queryset = models.Task.objects.select_related("project", "cost_center")
+    permission_classes = [
+        # superuser may edit all tasks
+        IsSuperUser
+        # reviewer may edit all tasks
+        | IsReviewer
+        # all authenticated users may read all tasks
+        | IsAuthenticated & IsReadOnly
+    ]
     ordering = "name"
-
-    def get_queryset(self):
-        """Prefetch related data.
-
-        :return: The tasks
-        :rtype:  QuerySet
-        """
-        return models.Task.objects.select_related("project", "cost_center")
 
     def filter_queryset(self, queryset):
         """Specific filter queryset options."""
