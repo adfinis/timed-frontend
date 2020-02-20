@@ -1,0 +1,15 @@
+{{#if unverifiedReports.hasReports}}
+  <li class="nav-top-list-item" title="You have reports to verify">
+    {{#link-to "analysis.index"
+               (query-params
+                 toDate=unverifiedReports.reportsToDate
+                 reviewer=session.data.user.id
+                 editable=1
+                 verified=0
+               )
+    }}
+      {{fa-icon "exclamation-triangle"}}
+      {{unverifiedReports.amountReports}}
+    {{/link-to}}
+  </li>
+{{/if}}

@@ -54,6 +54,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   notify: service("notify"),
   ajax: service("ajax"),
   session: service("session"),
+  unverifiedReports: service(),
 
   analysisIndexController: controller("analysis.index"),
 
@@ -154,6 +155,8 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       /* istanbul ignore next */
       this.get("notify").error("Error while saving the reports");
     }
+
+    this.unverifiedReports.pollReports();
   }),
 
   actions: {
