@@ -82,24 +82,10 @@ ROOT_URLCONF = "timed.urls"
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [django_root("timed", "templates")],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ]
-        },
-    },
     # template backend for plain text (no escaping)
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [django_root("timed", "templates")],
-        "NAME": "text",
         "APP_DIRS": True,
         "OPTIONS": {
             "autoescape": False,
@@ -110,7 +96,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
             ],
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "timed.wsgi.application"
@@ -251,5 +237,5 @@ REDMINE_SPENTHOURS_FIELD = env.int("DJANGO_REDMINE_SPENTHOURS_FIELD", default=0)
 
 WORK_REPORT_PATH = env.str(
     "DJANGO_WORK_REPORT_PATH",
-    default=resource_filename("timed.reports", "workreport.ots"),
+    default=resource_filename("timed.reports", "templates/workreport.ots"),
 )

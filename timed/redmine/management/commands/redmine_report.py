@@ -5,11 +5,13 @@ import redminelib
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import Count, Sum
-from django.template.loader import render_to_string
+from django.template.loader import get_template
 from django.utils import timezone
 
 from timed.projects.models import Project
 from timed.tracking.models import Report
+
+template = get_template("redmine/weekly_report.txt")
 
 
 class Command(BaseCommand):
@@ -73,8 +75,7 @@ class Command(BaseCommand):
                 ).order_by("date")
                 hours = reports.aggregate(hours=Sum("duration"))["hours"]
 
-                issue.notes = render_to_string(
-                    "redmine/weekly_report.txt",
+                issue.notes = template.render(
                     {
                         "project": project,
                         "hours": hours.total_seconds() / 3600,
@@ -82,8 +83,7 @@ class Command(BaseCommand):
                         "total_hours": total_hours,
                         "estimated_hours": estimated_hours,
                         "reports": reports,
-                    },
-                    using="text",
+                    }
                 )
                 issue.custom_fields = [
                     {"id": settings.REDMINE_SPENTHOURS_FIELD, "value": total_hours}

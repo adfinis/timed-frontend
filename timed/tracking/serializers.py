@@ -100,25 +100,22 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         "verified_by": "timed.employment.serializers.UserSerializer",
     }
 
-    def validate_date(self, value):
-        """Only owner is allowed to change date."""
+    def _validate_owner_only(self, value, field):
         if self.instance is not None:
             user = self.context["request"].user
             owner = self.instance.user
-            if self.instance.date != value and user != owner:
-                raise ValidationError(_("Only owner may change date"))
+            if getattr(self.instance, field) != value and user != owner:
+                raise ValidationError(_(f"Only owner may change {field}"))
 
         return value
+
+    def validate_date(self, value):
+        """Only owner is allowed to change date."""
+        return self._validate_owner_only(value, "date")
 
     def validate_duration(self, value):
         """Only owner is allowed to change duration."""
-        if self.instance is not None:
-            user = self.context["request"].user
-            owner = self.instance.user
-            if self.instance.duration != value and user != owner:
-                raise ValidationError(_("Only owner may change duration"))
-
-        return value
+        return self._validate_owner_only(value, "duration")
 
     def validate(self, data):
         """Validate that verified by is only set by reviewer or superuser."""
