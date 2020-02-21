@@ -1,0 +1,16 @@
+{% load tracking_extras %}
+Some of your reports have been changed.
+
+Reviewer: {{reviewer.first_name }} {{ reviewer.last_name }}
+{% for changeset in user_changes %}
+
+Date: {{ changeset.report.date|date:"SHORT_DATE_FORMAT" }}
+Duration: {{ changeset.report.duration|duration }}
+{% if "task" not in changeset.changes %}Task: {{ changeset.report.task }}{% endif %}
+{% if "comment" not in changeset.changes %}Comment: {{ changeset.report.comment }}{% endif %}
+{% for key, change in changeset.changes.items %}
+* {{ key|title}}
+  [old] {{ change.old }}
+  [new] {{ change.new }}
+{% endfor %}
+---{% endfor %}

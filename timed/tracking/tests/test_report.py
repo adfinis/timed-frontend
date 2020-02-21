@@ -737,3 +737,162 @@ def test_report_export(auth_client, file_type, django_assert_num_queries):
     # bookdict is a dict of tuples(name, content)
     sheet = book.bookdict.popitem()[1]
     assert len(sheet) == len(reports) + 1
+
+
+def test_report_update_bulk_verify_reviewer_multiple_notify(
+    auth_client, task, task_factory, project, report_factory, user_factory, mailoutbox
+):
+    reviewer = auth_client.user
+    project.reviewers.add(reviewer)
+
+    user1, user2, user3 = user_factory.create_batch(3)
+    report1_1 = report_factory(user=user1, task=task)
+    report1_2 = report_factory(user=user1, task=task)
+    report2 = report_factory(user=user2, task=task)
+    report3 = report_factory(user=user3, task=task)
+
+    other_task = task_factory()
+
+    url = reverse("report-bulk")
+
+    data = {
+        "data": {
+            "type": "report-bulks",
+            "id": None,
+            "attributes": {"verified": True, "comment": "some comment"},
+            "relationships": {"task": {"data": {"type": "tasks", "id": other_task.id}}},
+        }
+    }
+
+    query_params = (
+        "?editable=1"
+        f"&reviewer={reviewer.id}"
+        "&id=" + ",".join(str(r.id) for r in [report1_1, report1_2, report2, report3])
+    )
+    response = auth_client.post(url + query_params, data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    for report in [report1_1, report1_2, report2, report3]:
+        report.refresh_from_db()
+        assert report.verified_by == reviewer
+        assert report.comment == "some comment"
+        assert report.task == other_task
+
+    # every user received one mail
+    assert len(mailoutbox) == 3
+    assert all(True for mail in mailoutbox if len(mail.to) == 1)
+    assert set(mail.to[0] for mail in mailoutbox) == set(
+        user.email for user in [user1, user2, user3]
+    )
+
+
+@pytest.mark.parametrize("own_report", [True, False])
+@pytest.mark.parametrize(
+    "has_attributes,different_attributes,has_verified_by,expected",
+    [
+        (True, True, True, True),
+        (True, True, False, True),
+        (True, False, True, False),
+        (False, None, True, False),
+        (False, None, False, False),
+    ],
+)
+def test_report_update_reviewer_notify(
+    auth_client,
+    user_factory,
+    report_factory,
+    task_factory,
+    mailoutbox,
+    own_report,
+    has_attributes,
+    different_attributes,
+    has_verified_by,
+    expected,
+):
+    reviewer = auth_client.user
+    user = user_factory()
+
+    if own_report:
+        report = report_factory(user=reviewer, review=True)
+    else:
+        report = report_factory(user=user, review=True)
+    report.task.project.reviewers.set([reviewer, user])
+    new_task = task_factory(project=report.task.project)
+
+    data = {"data": {"type": "reports", "id": report.id, "relationships": {}}}
+    if has_attributes:
+        if different_attributes:
+            data["data"]["attributes"] = {"comment": "foobar", "review": False}
+            data["data"]["relationships"]["task"] = {
+                "data": {"id": new_task.id, "type": "tasks"}
+            }
+        else:
+            data["data"]["attributes"] = {"comment": report.comment}
+
+    if has_verified_by:
+        data["data"]["relationships"]["verified-by"] = {
+            "data": {"id": reviewer.id, "type": "users"}
+        }
+
+    url = reverse("report-detail", args=[report.id])
+
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    mail_count = 1 if not own_report and expected else 0
+    assert len(mailoutbox) == mail_count
+
+    if mail_count:
+        mail = mailoutbox[0]
+        assert len(mail.to) == 1
+        assert mail.to[0] == user.email
+
+
+def test_report_notify_rendering(
+    auth_client,
+    user_factory,
+    project,
+    report_factory,
+    task_factory,
+    mailoutbox,
+    snapshot,
+):
+    reviewer = auth_client.user
+    user = user_factory()
+    project.reviewers.add(reviewer)
+    task1, task2, task3 = task_factory.create_batch(3, project=project)
+
+    report1 = report_factory(
+        user=user, task=task1, comment="original comment", not_billable=False
+    )
+    report2 = report_factory(
+        user=user, task=task2, comment="some other comment", not_billable=False
+    )
+    report3 = report_factory(user=user, task=task3, comment="foo", not_billable=False)
+    report4 = report_factory(
+        user=user, task=task1, comment=report2.comment, not_billable=True
+    )
+
+    data = {
+        "data": {
+            "type": "report-bulks",
+            "id": None,
+            "attributes": {"comment": report2.comment, "not-billable": False},
+            "relationships": {
+                "task": {"data": {"id": report1.task.id, "type": "tasks"}}
+            },
+        }
+    }
+
+    url = reverse("report-bulk")
+
+    query_params = (
+        "?editable=1"
+        f"&reviewer={reviewer.id}"
+        "&id=" + ",".join(str(r.id) for r in [report1, report2, report3, report4])
+    )
+    response = auth_client.post(url + query_params, data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    assert len(mailoutbox) == 1
+    snapshot.assert_match(mailoutbox[0].body)
