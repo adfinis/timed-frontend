@@ -3,10 +3,12 @@ from datetime import timedelta
 from django.conf import settings
 from django.core.mail import EmailMessage
 from django.core.management.base import BaseCommand
-from django.template.loader import render_to_string
+from django.template.loader import get_template
 from django.utils import timezone
 
 from timed.employment.models import Employment
+
+template = get_template("mail/notify_changed_employments.txt")
 
 
 class Command(BaseCommand):
@@ -46,11 +48,7 @@ class Command(BaseCommand):
         if employments.exists():
             from_email = settings.DEFAULT_FROM_EMAIL
             subject = "[Timed] Employments changed in last {0} days".format(last_days)
-            body = render_to_string(
-                "mail/notify_changed_employments.txt",
-                {"employments": employments},
-                using="text",
-            )
+            body = template.render({"employments": employments},)
             message = EmailMessage(
                 subject=subject, body=body, from_email=from_email, to=[email]
             )
