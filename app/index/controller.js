@@ -103,7 +103,7 @@ export default Controller.extend({
 
       if (activitiesThen.get("length")) {
         scheduleOnce("afterRender", this, () => {
-          this.get("_activitySum").perform();
+          this.get("_activitySumTask").perform();
         });
       }
 
@@ -121,6 +121,8 @@ export default Controller.extend({
     "_activities.@each.{fromTime,duration}",
     "_activeActivityDuration",
     function() {
+      this._activitySum();
+
       return this.get("_activities").reduce((total, current) => {
         return total.add(current.get("duration"));
       }, this.get("_activeActivityDuration"));
@@ -133,15 +135,25 @@ export default Controller.extend({
    * @method _activitySum
    * @private
    */
-  _activitySum: task(function*() {
-    for (;;) {
-      const duration = this.get("_activities")
-        .filterBy("active")
+  _activitySum() {
+    const duration = this.get("_activities")
+      .filterBy("active")
       .reduce((total, current) => {
         return total.add(moment().diff(current.get("from")));
       }, moment.duration());
 
-      this.set("_activeActivityDuration", duration);
+    this.set("_activeActivityDuration", duration);
+  },
+
+  /**
+   * Run _activitySum every second.
+   *
+   * @method _activitySumTask
+   * @private
+   */
+  _activitySumTask: task(function*() {
+    while (true) {
+      this._activitySum();
 
       /* istanbul ignore else */
       if (Ember.testing) {
