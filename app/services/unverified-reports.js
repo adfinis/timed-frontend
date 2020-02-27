@@ -18,6 +18,7 @@ export default Service.extend({
   store: service(),
   session: service(),
   notify: service(),
+  amountReports: 0,
 
   hasReports: computed("amountReports", function() {
     return this.get("amountReports") > 0;
