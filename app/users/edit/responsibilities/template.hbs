@@ -28,7 +28,7 @@
           {{^}}
             <div class="card-block empty">
               <div>
-                {{fa-icon 'folder-open-o'}}
+                {{fa-icon "folder-open-o"}}
                 <p>
                   No projects found...
                 </p>
@@ -55,17 +55,24 @@
                 <tr>
                   <th>Name</th>
                   <th>Current worktime balance</th>
+                  <th>Remaining vacation days</th>
                 </tr>
               </thead>
               <tbody>
                 {{#each supervisees as |supervisee|}}
-                  {{#link-to 'users.edit' supervisee.id tagName='tr' class='pointer'}}
+                  {{#link-to "users.edit" supervisee.id tagName="tr" class="pointer"}}
                     <td>{{supervisee.fullName}}</td>
                     <td>
                       <span class="worktime-balance {{balance-highlight-class supervisee.currentWorktimeBalance.balance}}">
                         {{format-duration supervisee.currentWorktimeBalance.balance false}}
                       </span>
                     </td>
+
+                    {{!--
+                      absenceBalances has to be an array but will always only
+                      contain one element. This is why we use firstObject here.
+                    --}}
+                    <td>{{supervisee.absenceBalances.firstObject.balance}}</td>
                   {{/link-to}}
                 {{/each}}
               </tbody>
@@ -73,10 +80,8 @@
           {{^}}
             <div class="card-block empty">
               <div>
-                {{fa-icon 'users'}}
-                <p>
-                  No supervisees found...
-                </p>
+                {{fa-icon "users"}}
+                <p>No supervisees found...</p>
               </div>
             </div>
           {{/with}}

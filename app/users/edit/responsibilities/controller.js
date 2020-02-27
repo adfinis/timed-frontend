@@ -2,6 +2,7 @@ import Controller from "@ember/controller";
 import { task } from "ember-concurrency";
 import QueryParams from "ember-parachute";
 import moment from "moment";
+import { all } from "rsvp";
 
 const UsersEditResponsibilitiesQueryParams = new QueryParams({});
 
@@ -28,6 +29,21 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
       include: "user"
     });
 
-    return balances.mapBy("user").filterBy("isActive");
+    return yield all(
+      balances
+        .mapBy("user")
+        .filterBy("isActive")
+        .map(async user => {
+          const absenceBalances = await this.store.query("absence-balance", {
+            date: moment().format("YYYY-MM-DD"),
+            user: user.get("id"),
+            absence_type: 2
+          });
+
+          user.set("absenceBalances", absenceBalances);
+
+          return user;
+        })
+    );
   })
 });
