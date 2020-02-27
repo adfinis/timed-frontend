@@ -103,7 +103,7 @@ export default Controller.extend({
 
       if (activitiesThen.get("length")) {
         scheduleOnce("afterRender", this, () => {
-          this.get("_activitySum").perform();
+          this.get("_activitySumTask").perform();
         });
       }
 
@@ -121,8 +121,10 @@ export default Controller.extend({
     "_activities.@each.{fromTime,duration}",
     "_activeActivityDuration",
     function() {
-      return this.get("_activities").reduce((dur, cur) => {
-        return dur.add(cur.get("duration"));
+      this._activitySum();
+
+      return this.get("_activities").reduce((total, current) => {
+        return total.add(current.get("duration"));
       }, this.get("_activeActivityDuration"));
     }
   ),
@@ -133,15 +135,25 @@ export default Controller.extend({
    * @method _activitySum
    * @private
    */
-  _activitySum: task(function*() {
-    for (;;) {
-      const duration = this.get("_activities")
-        .filterBy("active")
-        .reduce((dur, cur) => {
-          return dur.add(moment().diff(cur.get("from")));
-        }, moment.duration());
+  _activitySum() {
+    const duration = this.get("_activities")
+      .filterBy("active")
+      .reduce((total, current) => {
+        return total.add(moment().diff(current.get("from")));
+      }, moment.duration());
 
-      this.set("_activeActivityDuration", duration);
+    this.set("_activeActivityDuration", duration);
+  },
+
+  /**
+   * Run _activitySum every second.
+   *
+   * @method _activitySumTask
+   * @private
+   */
+  _activitySumTask: task(function*() {
+    while (true) {
+      this._activitySum();
 
       /* istanbul ignore else */
       if (Ember.testing) {
@@ -174,12 +186,12 @@ export default Controller.extend({
     "_allAttendances.@each.{date,user,isDeleted}",
     "user",
     function() {
-      return this.get("_allAttendances").filter(a => {
+      return this.get("_allAttendances").filter(attendance => {
         return (
-          a.get("date") &&
-          a.get("date").isSame(this.get("date"), "day") &&
-          a.get("user.id") === this.get("user.id") &&
-          !a.get("isDeleted")
+          attendance.get("date") &&
+          attendance.get("date").isSame(this.get("date"), "day") &&
+          attendance.get("user.id") === this.get("user.id") &&
+          !attendance.get("isDeleted")
         );
       });
     }
@@ -192,8 +204,8 @@ export default Controller.extend({
    * @public
    */
   attendanceSum: computed("_attendances.@each.{from,to}", function() {
-    return this.get("_attendances").reduce((dur, cur) => {
-      return dur.add(cur.get("duration"));
+    return this.get("_attendances").reduce((total, current) => {
+      return total.add(current.get("duration"));
     }, moment.duration());
   }),
 
@@ -228,12 +240,12 @@ export default Controller.extend({
     "_allReports.@each.{date,user,isNew,isDeleted}",
     "user",
     function() {
-      return this.get("_allReports").filter(r => {
+      return this.get("_allReports").filter(report => {
         return (
-          r.get("date").isSame(this.get("date"), "day") &&
-          r.get("user.id") === this.get("user.id") &&
-          !r.get("isNew") &&
-          !r.get("isDeleted")
+          report.get("date").isSame(this.get("date"), "day") &&
+          report.get("user.id") === this.get("user.id") &&
+          !report.get("isNew") &&
+          !report.get("isDeleted")
         );
       });
     }
@@ -250,12 +262,12 @@ export default Controller.extend({
     "_allAbsences.@each.{date,user,isNew,isDeleted}",
     "user",
     function() {
-      return this.get("_allAbsences").filter(a => {
+      return this.get("_allAbsences").filter(absence => {
         return (
-          a.get("date").isSame(this.get("date"), "day") &&
-          a.get("user.id") === this.get("user.id") &&
-          !a.get("isNew") &&
-          !a.get("isDeleted")
+          absence.get("date").isSame(this.get("date"), "day") &&
+          absence.get("user.id") === this.get("user.id") &&
+          !absence.get("isNew") &&
+          !absence.get("isDeleted")
         );
       });
     }
@@ -372,17 +384,17 @@ export default Controller.extend({
     yield timeout(200);
 
     allReports = allReports.filter(
-      r =>
-        r.get("user.id") === user.get("id") &&
-        !r.get("isDeleted") &&
-        !r.get("isNew")
+      report =>
+        report.get("user.id") === user.get("id") &&
+        !report.get("isDeleted") &&
+        !report.get("isNew")
     );
 
     allAbsences = allAbsences.filter(
-      a =>
-        a.get("user.id") === user.get("id") &&
-        !a.get("isDeleted") &&
-        !a.get("isNew")
+      absence =>
+        absence.get("user.id") === user.get("id") &&
+        !absence.get("isDeleted") &&
+        !absence.get("isNew")
     );
 
     const allHolidays = this.store.peekAll("public-holiday");
@@ -410,11 +422,11 @@ export default Controller.extend({
       return obj;
     }, {});
 
-    return Array.from({ length: 31 }, (v, k) =>
-      moment(date).add(k - 20, "days")
-    ).map(d => {
+    return Array.from({ length: 31 }, (value, index) =>
+      moment(date).add(index - 20, "days")
+    ).map(date => {
       const { reports = [], absences = [], publicHolidays = [] } =
-        container[d.format("YYYY-MM-DD")] || {};
+        container[date.format("YYYY-MM-DD")] || {};
 
       let prefix = "";
 
@@ -425,10 +437,10 @@ export default Controller.extend({
       }
 
       return {
-        day: d,
-        active: d.isSame(date, "day"),
+        day: date,
+        active: date.isSame(date, "day"),
         absence: !!absences.length,
-        workday: this.get("workdays").includes(d.isoWeekday()),
+        workday: this.get("workdays").includes(date.isoWeekday()),
         worktime: [
           ...reports.mapBy("duration"),
           ...absences.mapBy("duration")
@@ -504,7 +516,7 @@ export default Controller.extend({
     "disabledDates.[]",
     function() {
       return this.get("disabledDates").filter(
-        d => !d.isSame(this.get("absence.date"), "day")
+        date => !date.isSame(this.get("absence.date"), "day")
       );
     }
   ),
