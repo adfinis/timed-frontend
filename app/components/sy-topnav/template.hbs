@@ -40,6 +40,7 @@
     {{/if}}
   </ul>
   <ul class="nav-top-list nav-top-list--right">
+    {{report-review-warning}}
     <li class="nav-top-list-item">
       {{#link-to 'users.edit' session.data.user.id}}
         {{fa-icon 'user'}} {{session.data.user.fullName}}
@@ -47,7 +48,7 @@
     </li>
     <li class="nav-top-list-item">
       <a href="#" data-test-logout {{action (optional on-logout)}}>
-        <i class="fa fa-power-off"></i>
+        {{fa-icon 'power-off'}}
         Logout
       </a>
     </li>
