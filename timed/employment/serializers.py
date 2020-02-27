@@ -41,6 +41,7 @@ class UserSerializer(ModelSerializer):
             "supervisors",
             "tour_done",
             "username",
+            "is_reviewer",
         ]
         read_only_fields = [
             "first_name",
@@ -51,6 +52,7 @@ class UserSerializer(ModelSerializer):
             "supervisees",
             "supervisors",
             "username",
+            "is_reviewer",
         ]
 
 
