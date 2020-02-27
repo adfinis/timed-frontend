@@ -66,6 +66,14 @@ export default Model.extend({
   isActive: attr("boolean"),
 
   /**
+   * Whether the user is a reviewer in a project
+   *
+   * @property {Boolean} isReviewer
+   * @public
+   */
+  isReviewer: attr("boolean"),
+
+  /**
    * Whether the user completed the app tour
    *
    * @property {Boolean} tourDone

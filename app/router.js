@@ -25,6 +25,7 @@ ApplicationRouter.map(function() {
       this.route("edit");
     });
     this.route("statistics", { resetNamespace });
+    this.route("projects", { resetNamespace });
     this.route("users", { resetNamespace }, function() {
       this.route("edit", { path: "/:user_id" }, function() {
         this.route("credits", function() {

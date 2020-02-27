@@ -30,6 +30,11 @@
           {{fa-icon 'bar-chart'}} Statistics
         {{/link-to}}
       </li>
+      <li class="nav-top-list-item">
+        {{#link-to 'projects'}}
+          {{fa-icon 'briefcase'}} Projects
+        {{/link-to}}
+      </li>
     {{/unless}}
     {{#if session.data.user.isSuperuser}}
       <li class="nav-top-list-item">

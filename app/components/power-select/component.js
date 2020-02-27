@@ -7,6 +7,7 @@ const PowerSelectCustomComponent = PowerSelectComponent.extend({
   init(...args) {
     this._super(...args);
 
+    this.set("extra", this.getWithDefault("extra", {}));
     this.set("extra.testing", Ember.testing);
   },
 

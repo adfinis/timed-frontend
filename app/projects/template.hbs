@@ -1,0 +1,15 @@
+{{#if (not hasAccess)}}
+  <div class="text-center">
+    <h1>Access forbidden</h1>
+    <h4>You do not have the permission to access this page</h4>
+  </div>
+{{else}}
+  <h1>Projects</h1>
+    {{#power-select
+      options=projects
+      onchange=(action (mut selectedProject))
+      as |project|
+    }}
+      {{project.name}}
+    {{/power-select}}
+{{/if}}
