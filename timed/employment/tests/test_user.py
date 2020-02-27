@@ -40,7 +40,7 @@ def test_user_list(auth_client, django_assert_num_queries):
 
     url = reverse("user-list")
 
-    with django_assert_num_queries(5):
+    with django_assert_num_queries(8):
         response = auth_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
@@ -215,3 +215,17 @@ def test_user_is_supervisor_filter(auth_client, value, expected):
 
     res = auth_client.get(reverse("user-list"), {"is_supervisor": value})
     assert len(res.json()["data"]) == expected
+
+
+def test_user_attributes(auth_client, project):
+    """Should filter users if they are a reviewer."""
+    user = UserFactory.create()
+
+    url = reverse("user-detail", args=[user.id])
+
+    res = auth_client.get(url)
+    assert not res.json()["data"]["attributes"]["is-reviewer"]
+
+    project.reviewers.add(user)
+    res = auth_client.get(url)
+    assert res.json()["data"]["attributes"]["is-reviewer"]
