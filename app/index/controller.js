@@ -424,9 +424,9 @@ export default Controller.extend({
 
     return Array.from({ length: 31 }, (value, index) =>
       moment(date).add(index - 20, "days")
-    ).map(date => {
+    ).map(d => {
       const { reports = [], absences = [], publicHolidays = [] } =
-        container[date.format("YYYY-MM-DD")] || {};
+        container[d.format("YYYY-MM-DD")] || {};
 
       let prefix = "";
 
@@ -437,10 +437,10 @@ export default Controller.extend({
       }
 
       return {
-        day: date,
-        active: date.isSame(date, "day"),
+        day: d,
+        active: d.isSame(date, "day"),
         absence: !!absences.length,
-        workday: this.get("workdays").includes(date.isoWeekday()),
+        workday: this.get("workdays").includes(d.isoWeekday()),
         worktime: [
           ...reports.mapBy("duration"),
           ...absences.mapBy("duration")
