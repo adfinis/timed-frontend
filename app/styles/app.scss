@@ -1,29 +1,30 @@
 /* AdCSSy variables */
-@import 'variables';
+@import "variables";
 
 /* Plugin customizations */
-@import 'ember-power-calendar';
-@import 'ember-basic-dropdown';
-@import 'ember-power-select-custom';
+@import "ember-power-calendar";
+@import "ember-basic-dropdown";
+@import "ember-power-select-custom";
 
 /* Component styles */
-@import 'pod-styles';
+@import "pod-styles";
 
 /* Custom styles */
-@import 'activities';
-@import 'analysis';
-@import 'attendances';
-@import 'badge';
-@import 'filter-sidebar';
-@import 'form-list';
-@import 'loader';
-@import 'progress-tooltip';
-@import 'reports';
-@import 'statistics';
-@import 'toolbar';
-@import 'tour';
-@import 'users-navigation';
-@import 'users';
+@import "activities";
+@import "analysis";
+@import "attendances";
+@import "badge";
+@import "filter-sidebar";
+@import "form-list";
+@import "loader";
+@import "progress-tooltip";
+@import "projects";
+@import "reports";
+@import "statistics";
+@import "toolbar";
+@import "tour";
+@import "users-navigation";
+@import "users";
 
 html {
   hyphens: auto;
@@ -90,7 +91,7 @@ strong {
   &::before {
     display: inline-block;
     margin-right: -0.2em;
-    content: '+';
+    content: "+";
   }
 }
 

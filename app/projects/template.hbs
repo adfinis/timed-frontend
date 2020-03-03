@@ -7,9 +7,73 @@
   <h1>Projects</h1>
     {{#power-select
       options=projects
-      onchange=(action (mut selectedProject))
+      onchange=(action (queue (action (mut selectedProject)) (perform fetchTasksOfProject)))
+      selected=selectedProject
       as |project|
     }}
       {{project.name}}
     {{/power-select}}
+  <br>
+  {{#if selectedProject}}
+    <h2>Tasks</h2>
+    <table class="table table--striped table--analysis">
+      <colgroup>
+        <col>
+        <col>
+        <col>
+        <col>
+      </colgroup>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Reference</th>
+        <th>Estimated time</th>
+        <th>Archived</th>
+      </tr>
+      </thead>
+      <tbody>
+      {{#each fetchTasksOfProject.lastSuccessful.value as |task|}}
+        <tr class="pointer" {{action "onSelectTask" task}}>
+          <td>{{task.name}}</td>
+          <td>{{task.reference}}</td>
+          <td>{{if task.estimatedTime (moment-duration task.estimatedTime "hours") "-"}}</td>
+          <td>{{sy-checkmark checked=task.archived}}</td>
+        </tr>
+      {{/each}}
+      </tbody>
+    </table>
+    <br>
+    {{#if selectedTask}}
+      <h3>Edit {{selectedTask.name}}</h3>
+      {{#validated-form
+        model     = (changeset selectedTask)
+        on-submit = (perform saveTask)
+        as |f|}}
+        <div class="row">
+          <div class="column">
+            {{f.input label="Name" name="name" required=true}}
+            {{f.input label="Reference" name="reference" required=false}}
+          </div>
+          <div class="column">
+            {{#f.input name='estimatedTime' as |fi|}}
+              <label>
+                Estimated time
+              </label>
+              {{sy-durationpicker value=fi.value on-change=fi.update}}
+            {{/f.input}}
+
+            {{#f.input name='archived' as |fi|}}
+              <label>
+                Archived
+              </label>
+              {{sy-checkbox value=fi.value on-change=fi.update}}
+            {{/f.input}}
+          </div>
+        </div>
+        {{f.submit label="Save"}}
+      {{/validated-form}}
+    {{/if}}
+  {{else}}
+    <p class="center">{{fa-icon "search"}} Please select a project</p>
+  {{/if}}
 {{/if}}
