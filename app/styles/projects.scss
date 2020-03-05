@@ -9,3 +9,98 @@
 .column:first-child {
   margin-right: 20px;
 }
+
+.header {
+  border-bottom: 1px solid rgb(220, 220, 220);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.header-left {
+  float: left;
+}
+
+.header-right {
+  float: right;
+}
+
+// Scroll container
+.projects-scrollable-container::after,
+.projects-scrollable-container::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  height: 7px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0));
+}
+
+.projects-scrollable-container::before {
+  top: 0;
+}
+
+.projects-scrollable-container::after {
+  bottom: 0;
+  transform: rotate(180deg);
+}
+
+.table--projects tr.selected {
+  background-color: lighten($color-primary, 20%) !important;
+}
+
+.table--projects tr.selected + tr td,
+.table--projects tr.selected td {
+  border-color: lighten($color-primary, 20%) !important;
+}
+
+// Table
+.table--projects {
+  margin-bottom: 0;
+  table-layout: fixed;
+}
+
+.table--projects > tbody > tr.pointer {
+  color: rgb(0, 0, 0);
+}
+
+.table--projects > tbody > tr.pointer > td:last-child {
+  box-shadow: inset -2px 0 0 $color-primary;
+}
+
+.table--projects > tbody > tr:first-of-type td {
+  border-top: none;
+}
+
+.table--projects th {
+  position: sticky;
+  background-color: white;
+  top: 0;
+}
+
+.table--projects > colgroup > col {
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3) {
+    width: 8%;
+  }
+
+  &:nth-child(4),
+  &:nth-child(5),
+  &:nth-child(6) {
+    width: 11%;
+  }
+
+  &:nth-child(8) {
+    width: 8%;
+  }
+
+  &:nth-child(9),
+  &:nth-child(10) {
+    width: 7%;
+  }
+
+  &:nth-child(7) {
+    width: 20%;
+  }
+}

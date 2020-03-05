@@ -7,6 +7,7 @@ export default Controller.extend({
   session: service(),
   user: reads("session.data.user"),
   projects: reads("fetchProjectsOfUser.lastSuccessful.value"),
+  tasks: reads("fetchTasksOfProject.lastSuccessful.value"),
   ordering: 1,
 
   fetchProjectsOfUser: task(function*() {
@@ -16,18 +17,23 @@ export default Controller.extend({
   }),
 
   fetchTasksOfProject: task(function*(project) {
-    return yield this.store
-      .query("task", {
-        project: project.id
-      })
-      .toArray();
+    return yield this.store.query("task", {
+      project: project.id
+    });
   }).drop(),
 
-  saveTask: task(function*() {}),
+  saveTask: task(function*(changeset) {
+    yield changeset.save();
 
-  actions: {
-    onSelectTask(task) {
-      this.set("selectedTask", task);
-    }
-  }
+    this.fetchTasksOfProject.perform(this.get("selectedProject"));
+  }).drop(),
+
+  createTask: task(function*() {
+    this.set(
+      "selectedTask",
+      yield this.store.createRecord("task", {
+        project: this.get("selectedProject")
+      })
+    );
+  }).drop()
 });
