@@ -12,7 +12,7 @@ module("Unit | Service | ajax", function(hooks) {
   test("adds the auth token to the headers", function(assert) {
     const service = this.owner.lookup("service:ajax");
 
-    service.get("session").set("data", { authenticated: { token: "test" } });
+    service.get("session").set("data", { authenticated: { access: "test" } });
 
     assert.equal(service.get("headers.Authorization"), "Bearer test");
   });
@@ -20,7 +20,7 @@ module("Unit | Service | ajax", function(hooks) {
   test("does not add the auth token to the headers if no token is given", function(assert) {
     const service = this.owner.lookup("service:ajax");
 
-    service.get("session").set("data", { authenticated: { token: null } });
+    service.get("session").set("data", { authenticated: { access: null } });
 
     assert.notOk(service.get("headers.Authorization"));
   });
