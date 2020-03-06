@@ -75,16 +75,17 @@ export default function() {
       {},
       {
         data: {
-          token: `${btoa("foo")}.${btoa(payload)}.${btoa("pony")}`
+          access: `${btoa("access")}.${btoa(payload)}.${btoa("pony")}`,
+          refresh: `${btoa("refresh")}.${btoa(payload)}.${btoa("pony")}`
         }
       }
     );
   });
 
   this.post("/auth/refresh", (db, req) => {
-    const { token } = parse(req.requestBody);
+    const { refresh } = parse(req.requestBody);
 
-    return new Response(200, {}, { data: { token } });
+    return new Response(200, {}, { data: { access: refresh } });
   });
 
   this.get("/attendances", function(

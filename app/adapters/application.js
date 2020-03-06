@@ -17,7 +17,7 @@ import DataAdapterMixin from "ember-simple-auth/mixins/data-adapter-mixin";
  * @public
  */
 export default JSONAPIAdapter.extend(DataAdapterMixin, {
-  token: reads("session.data.authenticated.token"),
+  token: reads("session.data.authenticated.access"),
 
   /**
    * The API namespace

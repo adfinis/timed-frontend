@@ -28,7 +28,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @property {AjaxService} ajax
    * @public
    */
-  ajax: service("ajax"),
+  ajax: service(),
 
   /**
    * The timeout for refreshing the token
@@ -52,7 +52,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
 
     try {
       return JSON.parse(tokenData);
-    } catch (e) {
+    } catch (error) {
       return tokenData;
     }
   },
@@ -86,7 +86,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
       }
 
       const data = {
-        type: "obtain-json-web-tokens",
+        type: "token-obtain-pair-views",
         id: null,
         attributes: { username, password }
       };
@@ -98,9 +98,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
 
           resolve(result);
         })
-        .catch(res => {
-          reject(res);
-        });
+        .catch(reject);
     });
   },
 
@@ -116,16 +114,16 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    */
   restore(data) {
     return new Promise((resolve, reject) => {
-      const { token } = data;
+      const { refresh } = data;
       const exp = this._parseExp(data.exp);
       const now = new Date().getTime();
 
-      if (isEmpty(token)) {
+      if (isEmpty(refresh)) {
         reject(new Error("Token is empty"));
       }
 
       if (exp > now) {
-        this._scheduleTokenRefresh(exp, token);
+        this._scheduleTokenRefresh(exp, refresh);
 
         resolve(data);
       } else {
@@ -150,15 +148,15 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * Refresh the token
    *
    * @method _refreshToken
-   * @param {String} token The token to refresh
+   * @param {String} refresh The token to refresh
    * @return {Promise} A promise which resolves if the token is refreshed
    * @private
    */
-  _refreshToken(token) {
+  _refreshToken(refresh) {
     const data = {
-      type: "refresh-json-web-tokens",
+      type: "token-refresh-views",
       id: null,
-      attributes: { token }
+      attributes: { refresh }
     };
 
     return new Promise((resolve, reject) => {
@@ -205,18 +203,20 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    * @private
    */
   _handleAuthResponse(response) {
-    const { token } = response;
+    const { access, refresh } = response;
 
-    if (isEmpty(token)) {
-      throw new Error("Token is empty");
+    if (isEmpty(access)) {
+      throw new Error("Access token is empty");
+    } else if (isEmpty(refresh)) {
+      throw new Error("Refresh token is empty");
     }
 
-    const data = this._parseToken(token);
+    const data = this._parseToken(access);
     const exp = this._parseExp(data.exp);
 
-    this._scheduleTokenRefresh(exp, token);
+    this._scheduleTokenRefresh(exp, refresh);
 
-    return { ...data, token };
+    return { ...data, access, refresh };
   }
 });
 

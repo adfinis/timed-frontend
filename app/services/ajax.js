@@ -4,6 +4,7 @@
  * @public
  */
 import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import AjaxService from "ember-ajax/services/ajax";
 
@@ -24,6 +25,14 @@ export default AjaxService.extend({
   session: service("session"),
 
   /**
+   * The JWT access token.
+   *
+   * @property {String} token
+   * @public
+   */
+  token: reads("session.data.authenticated.access"),
+
+  /**
    * The HTTP request headers
    *
    * This contains the content type and the authorization information
@@ -31,18 +40,14 @@ export default AjaxService.extend({
    * @property {Object} headers
    * @public
    */
-  headers: computed("session.data.authenticated.token", function() {
+  headers: computed("token", function() {
     const headers = {
       Accept: "application/vnd.api+json",
       "Content-Type": "application/vnd.api+json"
     };
 
-    const auth = this.get("session.data.authenticated.token")
-      ? {
-          Authorization: `Bearer ${this.get(
-            "session.data.authenticated.token"
-          )}`
-        }
+    const auth = this.get("token")
+      ? { Authorization: `Bearer ${this.get("token")}` }
       : {};
 
     return Object.assign(headers, auth);
