@@ -212,6 +212,15 @@ class ReportViewSet(ModelViewSet):
 
             fields["verified_by"] = verified and user or None
 
+            if (
+                "review" in fields
+                and fields["review"]
+                or any(queryset.values_list("review", flat=True))
+            ):
+                raise exceptions.ParseError(
+                    _("Reports can't both be set as `review` and `verified`.")
+                )
+
         if fields:
             tasks.notify_user_changed_reports(queryset, fields, user)
             queryset.update(**fields)

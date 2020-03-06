@@ -551,6 +551,28 @@ def test_report_update_by_user(auth_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
+def test_report_update_verified_and_review_reviewer(auth_client):
+    user = auth_client.user
+    report = ReportFactory.create(duration=timedelta(hours=2))
+    report.task.project.reviewers.add(user)
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {"review": True},
+            "relationships": {
+                "verified-by": {"data": {"id": user.pk, "type": "users"}}
+            },
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+
+    res = auth_client.patch(url, data)
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
+
+
 def test_report_set_verified_by_user(auth_client):
     """Test that normal user may not verify report."""
     user = auth_client.user
@@ -788,7 +810,7 @@ def test_report_update_bulk_verify_reviewer_multiple_notify(
 
 @pytest.mark.parametrize("own_report", [True, False])
 @pytest.mark.parametrize(
-    "has_attributes,different_attributes,has_verified_by,expected",
+    "has_attributes,different_attributes,verified,expected",
     [
         (True, True, True, True),
         (True, True, False, True),
@@ -806,7 +828,7 @@ def test_report_update_reviewer_notify(
     own_report,
     has_attributes,
     different_attributes,
-    has_verified_by,
+    verified,
     expected,
 ):
     reviewer = auth_client.user
@@ -819,7 +841,14 @@ def test_report_update_reviewer_notify(
     report.task.project.reviewers.set([reviewer, user])
     new_task = task_factory(project=report.task.project)
 
-    data = {"data": {"type": "reports", "id": report.id, "relationships": {}}}
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {},
+            "relationships": {},
+        }
+    }
     if has_attributes:
         if different_attributes:
             data["data"]["attributes"] = {"comment": "foobar", "review": False}
@@ -829,10 +858,8 @@ def test_report_update_reviewer_notify(
         else:
             data["data"]["attributes"] = {"comment": report.comment}
 
-    if has_verified_by:
-        data["data"]["relationships"]["verified-by"] = {
-            "data": {"id": reviewer.id, "type": "users"}
-        }
+    if verified:
+        data["data"]["attributes"]["verified"] = verified
 
     url = reverse("report-detail", args=[report.id])
 
@@ -896,3 +923,23 @@ def test_report_notify_rendering(
 
     assert len(mailoutbox) == 1
     snapshot.assert_match(mailoutbox[0].body)
+
+
+@pytest.mark.parametrize(
+    "report__review,needs_review", [(True, False), (False, True), (True, True)]
+)
+def test_report_update_bulk_review_and_verified(
+    superadmin_client, project, task, report, user_factory, needs_review
+):
+    data = {
+        "data": {"type": "report-bulks", "id": None, "attributes": {"verified": True}}
+    }
+
+    if needs_review:
+        data["data"]["attributes"]["review"] = True
+
+    url = reverse("report-bulk")
+
+    query_params = f"?id={report.id}"
+    response = superadmin_client.post(url + query_params, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
