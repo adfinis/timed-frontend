@@ -10,7 +10,7 @@ from django.template.loader import get_template
 
 from timed.tracking.models import Report
 
-template = get_template("mail/notify_reviewers_unverified.txt")
+template = get_template("mail/notify_reviewers_unverified.txt", using="text")
 
 
 class Command(BaseCommand):

@@ -82,10 +82,23 @@ ROOT_URLCONF = "timed.urls"
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 TEMPLATES = [
+    # default: needed for django-admin
+    {
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
+        },
+    },
     # template backend for plain text (no escaping)
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [django_root("timed", "templates")],
+        "NAME": "text",
         "APP_DIRS": True,
         "OPTIONS": {
             "autoescape": False,
@@ -96,7 +109,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
             ],
         },
-    }
+    },
 ]
 
 WSGI_APPLICATION = "timed.wsgi.application"

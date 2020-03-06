@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from timed.employment.models import Employment
 
-template = get_template("mail/notify_changed_employments.txt")
+template = get_template("mail/notify_changed_employments.txt", using="text")
 
 
 class Command(BaseCommand):

@@ -11,7 +11,7 @@ from django.utils import timezone
 from timed.projects.models import Project
 from timed.tracking.models import Report
 
-template = get_template("redmine/weekly_report.txt")
+template = get_template("redmine/weekly_report.txt", using="text")
 
 
 class Command(BaseCommand):
