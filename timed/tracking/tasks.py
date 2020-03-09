@@ -31,6 +31,7 @@ def _send_notification_emails(changes, reviewer):
             from_email=from_email,
             to=[user.email],
             connection=connection,
+            headers=settings.EMAIL_EXTRA_HEADERS,
         )
 
         messages.append(message)

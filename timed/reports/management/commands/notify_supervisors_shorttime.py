@@ -2,7 +2,7 @@ from datetime import date, timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.core.mail import send_mass_mail
+from django.core.mail import EmailMessage, get_connection
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 
@@ -132,7 +132,16 @@ class Command(BaseCommand):
                         "suspects": suspects_shorttime,
                     }
                 )
-                mails.append((subject, body, from_email, [supervisor.email]))
+                mails.append(
+                    EmailMessage(
+                        subject=subject,
+                        body=body,
+                        from_email=from_email,
+                        to=[supervisor.email],
+                        headers=settings.EMAIL_EXTRA_HEADERS,
+                    )
+                )
 
         if len(mails) > 0:
-            send_mass_mail(mails)
+            connection = get_connection()
+            connection.send_messages(mails)
