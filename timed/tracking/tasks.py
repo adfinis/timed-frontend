@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage, get_connection
 from django.template.loader import get_template
 
-template = get_template("mail/notify_user_changed_reports.tmpl")
+template = get_template("mail/notify_user_changed_reports.tmpl", using="text")
 
 
 def _send_notification_emails(changes, reviewer):

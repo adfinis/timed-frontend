@@ -6,7 +6,7 @@ from django.core.mail import EmailMessage, get_connection
 from django.core.management.base import BaseCommand
 from django.template.loader import get_template
 
-template = get_template("mail/notify_supervisor_shorttime.txt")
+template = get_template("mail/notify_supervisor_shorttime.txt", using="text")
 
 
 class Command(BaseCommand):
