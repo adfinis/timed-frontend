@@ -11,6 +11,7 @@
       searchField="name"
       onchange=(action (queue (action (mut selectedProject)) (perform fetchTasksOfProject)))
       selected=selectedProject
+      allowClear=true
       as |project|
     }}
       {{project.name}}
@@ -19,7 +20,7 @@
   {{#if selectedProject}}
     <h3>
       <span class="header-left">
-        Tasks
+        {{selectedProject.name}} Tasks
       </span>
       <span class="header-right">
         <button class="btn btn-primary" {{action (perform createTask)}}>New</button>
@@ -56,9 +57,9 @@
       {{/ember-scrollable}}
     </div>
     {{#if selectedTask}}
-      <h2>{{if selectedTask.isNew "Add task" (concat "Edit " selectedTask.name)}}</h2>
+      <h2>{{if selectedTask.isNew "Add task" selectedTask.name}}</h2>
         {{#validated-form
-          model     = (changeset selectedTask)
+          model     = (changeset selectedTask TaskValidations)
           on-submit = (perform saveTask)
         as |f|}}
           <div class="row">
@@ -84,7 +85,7 @@
           </div>
           <div class="btn-toolbar btn-toolbar--right">
             <button class="btn btn-primary" {{action (mut selectedTask) null}}>Cancel</button>
-            {{f.submit label="Save"}}
+            {{f.submit label="Save" disabled=f.model.isInvalid}}
           </div>
         {{/validated-form}}
     {{/if}}
