@@ -26,6 +26,14 @@ You can now access the API at http://localhost:8000/api/v1 and the admin interfa
 
 For end user interface have a look at our [Timed Frontend](https://github.com/adfinis-sygroup/timed-frontend) project.
 
+## Development
+
+To get the application working locally for development, make sure to create a file `.env` with the following content:
+
+```
+ENV=dev
+```
+
 ## Configuration
 
 Following options can be set as environment variables to configure Timed backend in documented [format](https://github.com/joke2k/django-environ#supported-types)

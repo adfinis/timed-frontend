@@ -18,12 +18,12 @@ def test_month_statistic_list(auth_client):
     expected_json = [
         {
             "type": "month-statistics",
-            "id": "2015-12",
+            "id": "201512",
             "attributes": {"year": 2015, "month": 12, "duration": "03:00:00"},
         },
         {
             "type": "month-statistics",
-            "id": "2016-1",
+            "id": "201601",
             "attributes": {"year": 2016, "month": 1, "duration": "01:00:00"},
         },
     ]

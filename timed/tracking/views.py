@@ -23,6 +23,8 @@ from timed.permissions import (
 from timed.serializers import AggregateObject
 from timed.tracking import filters, models, serializers
 
+from . import tasks
+
 
 class ActivityViewSet(ModelViewSet):
     """Activity view set."""
@@ -66,6 +68,9 @@ class AttendanceViewSet(ModelViewSet):
 class ReportViewSet(ModelViewSet):
     """Report view set."""
 
+    queryset = models.Report.objects.select_related(
+        "task", "user", "task__project", "task__project__customer"
+    )
     serializer_class = serializers.ReportSerializer
     filterset_class = filters.ReportFilterSet
     permission_classes = [
@@ -120,6 +125,25 @@ class ReportViewSet(ModelViewSet):
 
         return name
 
+    def update(self, request, *args, **kwargs):
+        """Override so we can issue emails on update."""
+
+        partial = kwargs.get("partial", False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+
+        fields = {
+            key: value
+            for key, value in serializer.validated_data.items()
+            # value equal None means do not touch
+            if value is not None
+        }
+        if fields and request.user != instance.user:
+            tasks.notify_user_changed_report(instance, fields, request.user)
+
+        return super().update(request, *args, **kwargs)
+
     @action(
         detail=False,
         methods=["get"],
@@ -162,12 +186,13 @@ class ReportViewSet(ModelViewSet):
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        verified = serializer.validated_data.pop("verified", None)
         fields = {
             key: value
             for key, value in serializer.validated_data.items()
-            # value equal None means do not touch whereas verified
-            # is handled separately
-            if value is not None and key != "verified"
+            # value equal None means do not touch
+            if value is not None
         }
 
         editable = request.query_params.get("editable")
@@ -176,7 +201,6 @@ class ReportViewSet(ModelViewSet):
                 _("Editable filter needs to be set for bulk update")
             )
 
-        verified = serializer.validated_data.get("verified")
         if verified is not None:
             # only reviewer or superuser may verify reports
             # this is enforced when reviewer filter is set to current user
@@ -186,10 +210,10 @@ class ReportViewSet(ModelViewSet):
                     _("Reviewer filter needs to be set to verifying user")
                 )
 
-            verified_by = verified and user or None
-            fields["verified_by"] = verified_by
+            fields["verified_by"] = verified and user or None
 
         if fields:
+            tasks.notify_user_changed_reports(queryset, fields, user)
             queryset.update(**fields)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -236,16 +260,6 @@ class ReportViewSet(ModelViewSet):
         sheet = django_excel.pe.Sheet(content, name="Report", colnames=colnames)
         return django_excel.make_response(
             sheet, file_type=file_type, file_name="report.%s" % file_type
-        )
-
-    def get_queryset(self):
-        """Select related to reduce queries.
-
-        :return: The filtered reports
-        :rtype:  QuerySet
-        """
-        return models.Report.objects.select_related("task", "user").select_related(
-            "task__project", "task__project__customer"
         )
 
 

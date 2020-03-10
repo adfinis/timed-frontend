@@ -5,8 +5,8 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.db.models import F, Sum, Value
-from django.db.models.functions import Concat, ExtractMonth, ExtractYear
+from django.db.models import F, Sum
+from django.db.models.functions import ExtractMonth, ExtractYear
 from django.http import HttpResponse, HttpResponseBadRequest
 from ezodf import Cell, opendoc
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
@@ -49,7 +49,7 @@ class MonthStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         )
         queryset = queryset.values("year", "month")
         queryset = queryset.annotate(duration=Sum("duration"))
-        queryset = queryset.annotate(pk=Concat("year", Value("-"), "month"))
+        queryset = queryset.annotate(pk=F("year") * 100 + F("month"))
         return queryset
 
 

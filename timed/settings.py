@@ -82,24 +82,10 @@ ROOT_URLCONF = "timed.urls"
 
 FORM_RENDERER = "django.forms.renderers.TemplatesSetting"
 TEMPLATES = [
-    {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [django_root("timed", "templates")],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
-            ]
-        },
-    },
     # template backend for plain text (no escaping)
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [django_root("timed", "templates")],
-        "NAME": "text",
         "APP_DIRS": True,
         "OPTIONS": {
             "autoescape": False,
@@ -110,7 +96,7 @@ TEMPLATES = [
                 "django.contrib.messages.context_processors.messages",
             ],
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = "timed.wsgi.application"
@@ -153,8 +139,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ("rest_framework_json_api.parsers.JSONParser",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_jwt.authentication.JSONWebTokenAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
     "DEFAULT_METADATA_CLASS": "rest_framework_json_api.metadata.JSONAPIMetadata",
     "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
@@ -187,11 +172,11 @@ if AUTH_LDAP_ENABLED:
 
 AUTH_USER_MODEL = "employment.User"
 
-JWT_AUTH = {
-    "JWT_EXPIRATION_DELTA": datetime.timedelta(days=2),
-    "JWT_ALLOW_REFRESH": True,
-    "JWT_REFRESH_EXPIRATION_DELTA": datetime.timedelta(days=7),
-    "JWT_AUTH_HEADER_PREFIX": "Bearer",
+SIMPLE_AUTH = {
+    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=2),
+    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
+    # TODO check if this is ROTATE_REFRESH_TOKENS
+    # "JWT_ALLOW_REFRESH": True,
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -215,6 +200,7 @@ DEFAULT_FROM_EMAIL = env.str(
 )
 
 SERVER_EMAIL = env.str("DJANGO_SERVER_EMAIL", default("root@localhost"))
+EMAIL_EXTRA_HEADERS = {"Auto-Submitted": "auto-generated"}
 
 
 def parse_admins(admins):
@@ -252,5 +238,5 @@ REDMINE_SPENTHOURS_FIELD = env.int("DJANGO_REDMINE_SPENTHOURS_FIELD", default=0)
 
 WORK_REPORT_PATH = env.str(
     "DJANGO_WORK_REPORT_PATH",
-    default=resource_filename("timed.reports", "workreport.ots"),
+    default=resource_filename("timed.reports", "templates/workreport.ots"),
 )

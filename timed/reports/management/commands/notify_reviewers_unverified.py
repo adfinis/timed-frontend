@@ -6,9 +6,11 @@ from django.contrib.auth import get_user_model
 from django.core.mail import EmailMessage, get_connection
 from django.core.management.base import BaseCommand
 from django.db.models import Count
-from django.template.loader import render_to_string
+from django.template.loader import get_template
 
 from timed.tracking.models import Report
+
+template = get_template("mail/notify_reviewers_unverified.txt")
 
 
 class Command(BaseCommand):
@@ -103,8 +105,7 @@ class Command(BaseCommand):
 
         for reviewer in reviewers:
             if reports.filter(task__project__reviewers=reviewer).exists():
-                body = render_to_string(
-                    "mail/notify_reviewers_unverified.txt",
+                body = template.render(
                     {
                         # we need start and end date in system format
                         "start": str(start),
@@ -113,8 +114,7 @@ class Command(BaseCommand):
                         "reviewer": reviewer,
                         "protocol": settings.HOST_PROTOCOL,
                         "domain": settings.HOST_DOMAIN,
-                    },
-                    using="text",
+                    }
                 )
 
                 message = EmailMessage(
@@ -124,6 +124,7 @@ class Command(BaseCommand):
                     to=[reviewer.email],
                     cc=cc,
                     connection=connection,
+                    headers=settings.EMAIL_EXTRA_HEADERS,
                 )
 
                 messages.append(message)

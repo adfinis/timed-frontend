@@ -1,8 +1,28 @@
+import inspect
+
 import mockldap
 import pytest
 from django.contrib.auth import get_user_model
+from factory.base import FactoryMetaClass
+from pytest_factoryboy import register
 
+from timed.employment import factories as employment_factories
+from timed.projects import factories as projects_factories
+from timed.subscription import factories as subscription_factories
 from timed.tests.client import JSONAPIClient
+from timed.tracking import factories as tracking_factories
+
+
+def register_module(module):
+    for name, obj in inspect.getmembers(module):
+        if isinstance(obj, FactoryMetaClass) and not obj._meta.abstract:
+            register(obj)
+
+
+register_module(employment_factories)
+register_module(projects_factories)
+register_module(subscription_factories)
+register_module(tracking_factories)
 
 
 @pytest.fixture(autouse=True, scope="session")

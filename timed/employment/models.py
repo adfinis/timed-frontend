@@ -353,6 +353,10 @@ class User(AbstractUser):
     objects = UserManager()
 
     @property
+    def is_reviewer(self):
+        return self.reviews.exists()
+
+    @property
     def user_id(self):
         """Map to id to be able to use generic permissions."""
         return self.id

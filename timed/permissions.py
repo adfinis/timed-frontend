@@ -1,5 +1,7 @@
 from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticated
 
+from timed.projects import models as projects_models
+
 
 class IsUnverified(BasePermission):
     """Allows access only to verified objects."""
@@ -87,8 +89,17 @@ class IsSupervisor(IsAuthenticated):
 class IsReviewer(IsAuthenticated):
     """Allows access to object only to reviewers."""
 
+    def has_permission(self, request, view):
+        if request.method not in SAFE_METHODS:
+            return request.user.reviews.exists()
+        return True
+
     def has_object_permission(self, request, view, obj):
         user = request.user
+
+        if isinstance(obj, projects_models.Task):
+            return obj.project.reviewers.filter(id=user.id).exists()
+
         return obj.task.project.reviewers.filter(id=user.id).exists()
 
 
