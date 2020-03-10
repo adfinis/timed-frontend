@@ -118,11 +118,18 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         return self._validate_owner_only(value, "duration")
 
     def validate(self, data):
-        """Validate that verified by is only set by reviewer or superuser."""
+        """
+        Validate that verified by is only set by reviewer or superuser.
+
+        Additionally make sure a report is cannot be verified_by if is still
+        needs review.
+        """
+
         user = self.context["request"].user
         current_verified_by = self.instance and self.instance.verified_by
         new_verified_by = data.get("verified_by")
         task = data.get("task") or self.instance.task
+        review = data.get("review")
 
         if new_verified_by != current_verified_by:
             is_reviewer = (
@@ -135,6 +142,10 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
             if new_verified_by is not None and new_verified_by != user:
                 raise ValidationError(_("You may only verifiy with your own user"))
 
+            if new_verified_by and review:
+                raise ValidationError(
+                    _("Report can't both be set as `review` and `verified`.")
+                )
         return data
 
     class Meta:
