@@ -124,6 +124,7 @@ class Command(BaseCommand):
                     to=[reviewer.email],
                     cc=cc,
                     connection=connection,
+                    headers=settings.EMAIL_EXTRA_HEADERS,
                 )
 
                 messages.append(message)

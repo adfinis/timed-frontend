@@ -200,6 +200,7 @@ DEFAULT_FROM_EMAIL = env.str(
 )
 
 SERVER_EMAIL = env.str("DJANGO_SERVER_EMAIL", default("root@localhost"))
+EMAIL_EXTRA_HEADERS = {"Auto-Submitted": "auto-generated"}
 
 
 def parse_admins(admins):

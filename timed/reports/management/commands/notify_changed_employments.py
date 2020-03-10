@@ -48,8 +48,12 @@ class Command(BaseCommand):
         if employments.exists():
             from_email = settings.DEFAULT_FROM_EMAIL
             subject = "[Timed] Employments changed in last {0} days".format(last_days)
-            body = template.render({"employments": employments},)
+            body = template.render({"employments": employments})
             message = EmailMessage(
-                subject=subject, body=body, from_email=from_email, to=[email]
+                subject=subject,
+                body=body,
+                from_email=from_email,
+                to=[email],
+                headers=settings.EMAIL_EXTRA_HEADERS,
             )
             message.send()
