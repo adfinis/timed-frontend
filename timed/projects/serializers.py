@@ -50,6 +50,13 @@ class ProjectSerializer(ModelSerializer):
             queryset = Report.objects.filter(task__project=self.instance)
             data = queryset.aggregate(spent_time=Sum("duration"))
             data["spent_time"] = duration_string(data["spent_time"] or timedelta(0))
+
+            billable_data = queryset.filter(not_billable=False, review=False).aggregate(
+                spent_billable=Sum("duration")
+            )
+            data["spent_billable"] = duration_string(
+                billable_data["spent_billable"] or timedelta(0)
+            )
             return data
 
         return {}

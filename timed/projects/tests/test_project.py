@@ -5,9 +5,8 @@ from django.urls import reverse
 from rest_framework import status
 
 from timed.employment.factories import UserFactory
-from timed.projects.factories import ProjectFactory, TaskFactory
+from timed.projects.factories import ProjectFactory
 from timed.projects.serializers import ProjectSerializer
-from timed.tracking.factories import ReportFactory
 
 
 def test_project_list_not_archived(auth_client):
@@ -24,8 +23,7 @@ def test_project_list_not_archived(auth_client):
     assert json["data"][0]["id"] == str(project.id)
 
 
-def test_project_list_include(auth_client, django_assert_num_queries):
-    project = ProjectFactory.create()
+def test_project_list_include(auth_client, django_assert_num_queries, project):
     users = UserFactory.create_batch(2)
     project.reviewers.add(*users)
 
@@ -43,18 +41,14 @@ def test_project_list_include(auth_client, django_assert_num_queries):
     assert json["data"][0]["id"] == str(project.id)
 
 
-def test_project_detail_no_auth(client):
-    project = ProjectFactory.create()
-
+def test_project_detail_no_auth(client, project):
     url = reverse("project-detail", args=[project.id])
 
     res = client.get(url)
     assert res.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_project_detail_no_reports(auth_client):
-    project = ProjectFactory.create()
-
+def test_project_detail_no_reports(auth_client, project):
     url = reverse("project-detail", args=[project.id])
 
     res = auth_client.get(url)
@@ -63,12 +57,20 @@ def test_project_detail_no_reports(auth_client):
     json = res.json()
 
     assert json["meta"]["spent-time"] == "00:00:00"
+    assert json["meta"]["spent-billable"] == "00:00:00"
 
 
-def test_project_detail_with_reports(auth_client):
-    project = ProjectFactory.create()
-    task = TaskFactory.create(project=project)
-    ReportFactory.create_batch(10, task=task, duration=timedelta(hours=1))
+def test_project_detail_with_reports(auth_client, project, task, report_factory):
+    rep1, rep2, rep3, *_ = report_factory.create_batch(
+        10, task=task, duration=timedelta(hours=1)
+    )
+    rep1.not_billable = True
+    rep1.save()
+    rep2.review = True
+    rep2.save()
+    rep3.not_billable = True
+    rep3.review = True
+    rep3.save()
 
     url = reverse("project-detail", args=[project.id])
 
@@ -78,6 +80,7 @@ def test_project_detail_with_reports(auth_client):
     json = res.json()
 
     assert json["meta"]["spent-time"] == "10:00:00"
+    assert json["meta"]["spent-billable"] == "07:00:00"
 
 
 def test_project_create(auth_client):
@@ -87,18 +90,14 @@ def test_project_create(auth_client):
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_project_update(auth_client):
-    project = ProjectFactory.create()
-
+def test_project_update(auth_client, project):
     url = reverse("project-detail", args=[project.id])
 
     response = auth_client.patch(url)
     assert response.status_code == status.HTTP_405_METHOD_NOT_ALLOWED
 
 
-def test_project_delete(auth_client):
-    project = ProjectFactory.create()
-
+def test_project_delete(auth_client, project):
     url = reverse("project-detail", args=[project.id])
 
     response = auth_client.delete(url)
