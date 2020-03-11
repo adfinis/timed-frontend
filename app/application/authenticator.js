@@ -31,6 +31,14 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
   ajax: service(),
 
   /**
+   * The session service
+   *
+   * @property {SessionService} session
+   * @public
+   */
+  session: service(),
+
+  /**
    * The timeout for refreshing the token
    *
    * @property {Object} The timer to use for cancelling
@@ -163,7 +171,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
       this.get("ajax")
         .post("/api/v1/auth/refresh", { data: { data } })
         .then(res => {
-          const result = this._handleAuthResponse(res.data);
+          const result = this._handleRefreshResponse(res.data);
 
           this.trigger("sessionDataUpdated", result);
 
@@ -217,6 +225,22 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
     this._scheduleTokenRefresh(exp, refresh);
 
     return { ...data, access, refresh };
+  },
+
+  /**
+   * Prepare the access and refresh tokens
+   * for the _handleAuthResponse method.
+   *
+   * @method _handleRefreshResponse
+   * @param {Object} response The HTTP response
+   * @return {Object} The parsed response data
+   * @private
+   */
+  _handleRefreshResponse(response) {
+    const { access } = response;
+    const { refresh } = this.session.data.authenticated;
+
+    return this._handleAuthResponse({ access, refresh });
   }
 });
 
