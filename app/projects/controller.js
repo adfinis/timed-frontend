@@ -12,15 +12,14 @@ export default Controller.extend({
   user: reads("session.data.user"),
   projects: reads("fetchProjectsOfUser.lastSuccessful.value"),
   tasks: reads("fetchTasksOfProject.lastSuccessful.value"),
-  ordering: 1,
 
   fetchProjectsOfUser: task(function*() {
     try {
       return yield this.store.query("project", {
-        reviewer: this.user.id
+        reviewer: this.get("user.id")
       });
-    } catch (exception) {
-      this.notify.error("Could not fetch projects");
+    } catch (error) {
+      this.notify.error("Error while fetching projects");
     }
   }),
 
@@ -29,8 +28,8 @@ export default Controller.extend({
       return yield this.store.query("task", {
         project: this.get("selectedProject.id")
       });
-    } catch (exception) {
-      this.notify.error("Could not fetch tasks");
+    } catch (error) {
+      this.notify.error("Error while fetching tasks");
     }
   }).drop(),
 
@@ -39,8 +38,8 @@ export default Controller.extend({
       yield changeset.save();
 
       this.notify.success("Task was saved");
-    } catch (exception) {
-      this.notify.error("Could not save task");
+    } catch (error) {
+      this.notify.error("Error while saving task");
     }
 
     this.fetchTasksOfProject.perform(this.get("selectedProject"));
@@ -54,14 +53,8 @@ export default Controller.extend({
           project: this.get("selectedProject")
         })
       );
-    } catch (exception) {
-      this.notify.error("Could not add task");
+    } catch (error) {
+      this.notify.error("Error while adding task");
     }
-  }).drop(),
-
-  actions: {
-    clearProjectSelection() {
-      this.set("selectedProject", null);
-    }
-  }
+  }).drop()
 });

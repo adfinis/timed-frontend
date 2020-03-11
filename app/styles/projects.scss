@@ -1,15 +1,3 @@
-.row {
-  display: flex;
-}
-
-.column {
-  flex: 50%;
-}
-
-.column:first-child {
-  margin-right: 20px;
-}
-
 .header {
   border-bottom: 1px solid rgb(220, 220, 220);
   padding-bottom: 1.5rem;
@@ -22,6 +10,27 @@
 
 .header-right {
   float: right;
+}
+
+.task-form-container {
+  margin-top: 20px;
+}
+
+.task-form-container-row {
+  display: flex;
+}
+
+.task-form-container-column {
+  flex: 50%;
+}
+
+.task-form-container-column:first-child {
+  margin-right: 20px;
+}
+
+.task-table-container {
+  height: 400px;
+  margin-bottom: 20px;
 }
 
 // Scroll container
