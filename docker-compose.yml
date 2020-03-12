@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  db:
+    image: postgres:9.4
+    ports:
+      - 5432:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=timed
+      - POSTGRES_PASSWORD=timed
+
+  frontend:
+    build:
+      context: .
+    ports:
+      - 4200:80
+
+  backend:
+    image: adfinissygroup/timed-backend:latest
+    ports:
+      - 8000:80
+    depends_on:
+      - db
+    environment:
+      - DJANGO_DATABASE_HOST=db
+      - ENV=docker
+      - STATIC_ROOT=/var/www/static
+      - EMAIL_URL=smtp://mailhog:1025
+    command: /bin/sh -c "wait-for-it.sh db:5432 -- ./manage.py migrate && ./manage.py runserver 0.0.0.0:80"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+    environment:
+      - MH_UI_WEB_PATH=mailhog
+
+volumes:
+  dbdata:

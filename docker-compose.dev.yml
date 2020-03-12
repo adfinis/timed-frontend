@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  frontend:
+    image: danlynn/ember-cli:3.12.0
+    volumes:
+      - .:/myapp
+      - ./node_modules:/myapp/node_modules
+    tmpfs:
+      - /myapp/tmp
+    ports:
+      - 4200:4200
+      - 7020:7020
+      - 7357:7357
+    command: ember server --proxy=http://backend
+
+volumes:
+  node_modules:
