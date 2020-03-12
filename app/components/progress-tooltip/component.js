@@ -127,13 +127,13 @@ const ProgressTooltipComponent = Component.extend({
     if (visible) {
       yield timeout(this.get("delay"));
 
-      const { spentTime } = yield this.get(
+      const { spentTime, spentBillable } = yield this.get(
         "metadataFetcher.fetchSingleRecordMetadata"
       )
         .linked()
         .perform(this.get("model.constructor.modelName"), this.get("model.id"));
 
-      this.set("spent", spentTime);
+      this.setProperties({ spent: spentTime, billable: spentBillable });
     }
 
     return visible;

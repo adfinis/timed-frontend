@@ -42,10 +42,14 @@ module("Integration | Component | progress tooltip", function(hooks) {
 
       assert
         .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(1)")
-        .hasText(/^Spent: \d+h \d+m$/);
+        .hasText(/^Spent \(Total\): \d+h \d+m$/);
 
       assert
         .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(2)")
+        .hasText(/^Spent \(Billable\): \d+h \d+m$/);
+
+      assert
+        .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(3)")
         .hasText("Estimate: 50h 0m");
     });
   });
@@ -72,10 +76,14 @@ module("Integration | Component | progress tooltip", function(hooks) {
 
       assert
         .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(1)")
-        .hasText(/^Spent: \d+h \d+m$/);
+        .hasText(/^Spent \(Total\): \d+h \d+m$/);
 
       assert
         .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(2)")
+        .hasText(/^Spent \(Billable\): \d+h \d+m$/);
+
+      assert
+        .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(3)")
         .hasText("Estimate: 100h 30m");
     });
   });
