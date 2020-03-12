@@ -1,25 +1,38 @@
 version: "3"
 
-volumes:
-  dbdata:
-
 services:
   db:
     image: postgres:9.4
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - dbdata:/var/lib/postgresql/data
     environment:
       - POSTGRES_USER=timed
       - POSTGRES_PASSWORD=timed
+
+  frontend:
+    image: adfinissygroup/timed-frontend:latest
+    ports:
+      - 4200:80
+
   backend:
     build: .
     ports:
-      - "8000:80"
+      - 8000:80
     depends_on:
       - db
     environment:
       - DJANGO_DATABASE_HOST=db
       - ENV=docker
       - STATIC_ROOT=/var/www/static
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+    environment:
+      - MH_UI_WEB_PATH=mailhog
+
+volumes:
+  dbdata:
