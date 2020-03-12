@@ -174,6 +174,8 @@ export default function() {
   });
 
   this.get("/tasks");
+  this.post("/tasks");
+  this.patch("/tasks/:id");
   this.get("/tasks/:id", function({ tasks }, request) {
     return {
       ...this.serialize(tasks.find(request.params.id)),

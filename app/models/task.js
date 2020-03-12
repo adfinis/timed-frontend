@@ -42,6 +42,8 @@ export default Model.extend({
    */
   archived: attr("boolean", { defaultValue: false }),
 
+  reference: attr("string", { defaultValue: "" }),
+
   /**
    * The project
    *
