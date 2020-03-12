@@ -2,7 +2,8 @@
   {{#ember-tether class='progress-tooltip' target=target targetAttachment='middle left' attachment='middle right' offset='0 20px'}}
     <div class="time-info">
       <div class="time-info-durations">
-        <p>Spent: {{humanize-duration spent}}</p>
+        <p>Spent (Total): {{humanize-duration spent}}</p>
+        <p>Spent (Billable): {{humanize-duration billable}}</p>
         <p>Estimate: {{if estimated (humanize-duration estimated) 'None'}}</p>
       </div>
       {{#if progress}}

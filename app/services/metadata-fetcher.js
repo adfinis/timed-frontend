@@ -7,10 +7,12 @@ const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create();
 
 const META_MODELS = {
   project: {
-    spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
+    spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
+    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
   },
   task: {
-    spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
+    spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
+    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
   }
 };
 
