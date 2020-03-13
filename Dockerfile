@@ -16,6 +16,7 @@ ARG REQUIREMENTS=requirements.txt
 ENV DJANGO_SETTINGS_MODULE timed.settings
 ENV STATIC_ROOT /var/www/static
 ENV UWSGI_INI /app/uwsgi.ini
+ENV WAITFORIT_TIMEOUT 0
 
 COPY requirements.txt requirements-dev.txt /app/
 RUN pip install --upgrade --no-cache-dir --requirement $REQUIREMENTS --disable-pip-version-check
@@ -26,4 +27,4 @@ RUN mkdir -p /var/www/static \
 && ENV=docker ./manage.py collectstatic --noinput
 
 EXPOSE 80
-CMD /bin/sh -c "wait-for-it.sh $DJANGO_DATABASE_HOST:$DJANGO_DATABASE_PORT -- ./manage.py migrate && uwsgi"
+CMD /bin/sh -c "wait-for-it.sh $DJANGO_DATABASE_HOST:$DJANGO_DATABASE_PORT -t $WAITFORIT_TIMEOUT -- ./manage.py migrate && uwsgi"
