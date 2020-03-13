@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: postgres:9.4
+    image: postgres:9.6
     ports:
       - 5432:5432
     volumes:
@@ -15,7 +15,7 @@ services:
     build:
       context: .
     ports:
-      - 4200:80
+      - 4000:80
 
   backend:
     image: adfinissygroup/timed-backend:latest
@@ -25,17 +25,9 @@ services:
       - db
     environment:
       - DJANGO_DATABASE_HOST=db
+      - DJANGO_DATABASE_PORT=5432
       - ENV=docker
       - STATIC_ROOT=/var/www/static
-      - EMAIL_URL=smtp://mailhog:1025
-    command: /bin/sh -c "wait-for-it.sh db:5432 -- ./manage.py migrate && ./manage.py runserver 0.0.0.0:80"
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - 8025:8025
-    environment:
-      - MH_UI_WEB_PATH=mailhog
 
 volumes:
   dbdata:

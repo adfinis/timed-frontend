@@ -9,40 +9,51 @@
 
 You will need the following things properly installed on your computer.
 
-* [Git](https://git-scm.com/)
-* [Node.js](https://nodejs.org/)
-* [Yarn](https://yarnpkg.com/)
-* [Ember CLI](https://ember-cli.com/)
-* [Chrome](https://www.google.com/chrome/)
-* [Firefox](https://www.mozilla.org/firefox/)
+- [Git](https://git-scm.com/)
+- [Node.js](https://nodejs.org/)
+- [Yarn](https://yarnpkg.com/)
+- [Ember CLI](https://ember-cli.com/)
+- [Chrome](https://www.google.com/chrome/)
+- [Firefox](https://www.mozilla.org/firefox/)
+
+Optional:
+
+- Docker
+- docker-compose
 
 ## Installation
 
-* `git clone git@github.com/adfinis-sygroup/timed-frontend`
-* `cd timed-frontend`
-* `yarn`
+- `git clone git@github.com/adfinis-sygroup/timed-frontend`
+- `cd timed-frontend`
+- `yarn`
 
 ## Running / Development
 
-* `ember server`
-* Visit your app at [http://localhost:4200](http://localhost:4200).
+- `ember server`
+- Visit your app at [http://localhost:4200](http://localhost:4200).
 
 If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend) you need to run
 
-* `ember server --proxy=http://localhost:8000`
-or
-* `yarn start`
+- `ember server --proxy=http://localhost:8000`
+  or
+- `yarn start`
+
+If you are using docker-compose you can start the frontend and backend by running
+
+```
+docker-compose up
+```
 
 ### Running Tests
 
-* `COVERAGE=true ember test`
-* `COVERAGE=true ember test --server`
+- `COVERAGE=true ember test`
+- `COVERAGE=true ember test --server`
 
 ### Building
 
-* `ember build` (development)
-* `ember build --environment production` (production)
+- `ember build` (development)
+- `ember build --environment production` (production)
 
 ## License
-Code released under the [GNU Affero General Public License v3.0](LICENSE).
 
+Code released under the [GNU Affero General Public License v3.0](LICENSE).
