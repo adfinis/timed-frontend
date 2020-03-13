@@ -1,0 +1,23 @@
+version: "3"
+
+services:
+  backend:
+    build:
+      context: .
+      args:
+        REQUIREMENTS: requirements-dev.txt
+    depends_on:
+      - mailhog
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - EMAIL_URL=smtp://mailhog:1025
+    volumes:
+      - ./:/app
+    command: /bin/sh -c "wait-for-it.sh -t 60 db:5432 -- ./manage.py migrate && ./manage.py runserver 0.0.0.0:80"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+    environment:
+      - MH_UI_WEB_PATH=mailhog

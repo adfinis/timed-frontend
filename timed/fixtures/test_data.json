@@ -1,0 +1,282 @@
+[
+  {
+    "model": "employment.location",
+    "pk": 1,
+    "fields": { "name": "Location 1", "workdays": "1,2,3,4,5" }
+  },
+  {
+    "model": "employment.absencetype",
+    "pk": 1,
+    "fields": { "name": "Holidays", "fill_worktime": true }
+  },
+  {
+    "model": "employment.absencetype",
+    "pk": 2,
+    "fields": { "name": "Sickness", "fill_worktime": false }
+  },
+  {
+    "model": "projects.customer",
+    "pk": 1,
+    "fields": {
+      "name": "Customer",
+      "reference": null,
+      "email": "customer@customer.customer",
+      "website": "",
+      "comment": "",
+      "archived": false
+    }
+  },
+  {
+    "model": "projects.customer",
+    "pk": 2,
+    "fields": {
+      "name": "Bob",
+      "reference": null,
+      "email": "",
+      "website": "",
+      "comment": "",
+      "archived": false
+    }
+  },
+  {
+    "model": "projects.costcenter",
+    "pk": 1,
+    "fields": { "name": "Cash", "reference": null }
+  },
+  {
+    "model": "projects.billingtype",
+    "pk": 1,
+    "fields": { "name": "Cash", "reference": null }
+  },
+  {
+    "model": "projects.task",
+    "pk": 1,
+    "fields": {
+      "name": "Work",
+      "reference": null,
+      "estimated_time": "2 02:00:00",
+      "archived": false,
+      "project": 1,
+      "cost_center": 1
+    }
+  },
+  {
+    "model": "projects.task",
+    "pk": 2,
+    "fields": {
+      "name": "Special Work",
+      "reference": null,
+      "estimated_time": "4 04:00:00",
+      "archived": false,
+      "project": 1,
+      "cost_center": null
+    }
+  },
+  {
+    "model": "projects.task",
+    "pk": 3,
+    "fields": {
+      "name": "No Work",
+      "reference": null,
+      "estimated_time": null,
+      "archived": false,
+      "project": 1,
+      "cost_center": null
+    }
+  },
+  {
+    "model": "projects.task",
+    "pk": 4,
+    "fields": {
+      "name": "Some Work",
+      "reference": null,
+      "estimated_time": "05:00:00",
+      "archived": false,
+      "project": 2,
+      "cost_center": 1
+    }
+  },
+  {
+    "model": "projects.task",
+    "pk": 5,
+    "fields": {
+      "name": "Build",
+      "reference": null,
+      "estimated_time": null,
+      "archived": false,
+      "project": 3,
+      "cost_center": null
+    }
+  },
+  {
+    "model": "employment.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$Ea7gV4CajWpZ$CWkosh5fs+Q13a6h7X976Zp9Cg1s5eaWInWVMG9sY7M=",
+      "last_login": "2020-03-12T09:24:33.471Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "email": "admin@admin.admin",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2020-03-12T09:24:27.469Z",
+      "tour_done": false,
+      "last_name": "",
+      "groups": [],
+      "user_permissions": [],
+      "supervisors": []
+    }
+  },
+  {
+    "model": "employment.user",
+    "pk": 2,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$pK2Jl6xl4iYO$NvhTs+T85I5Z9RTzTm/QNXbk20iM384gst9Nj0nWWrI=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "user",
+      "first_name": "John",
+      "email": "john@john.john",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-03-12T09:27:21Z",
+      "tour_done": true,
+      "last_name": "Doe",
+      "groups": [],
+      "user_permissions": [],
+      "supervisors": [3]
+    }
+  },
+  {
+    "model": "employment.user",
+    "pk": 3,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$R6spIXkVyNm7$Qg2vsL0klTpgTqRwXm9bu0efHtYM8aAVYsgcXqVJsF0=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "supervisor",
+      "first_name": "Johnson",
+      "email": "johnson@johnson.johnson",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-03-12T09:28:55Z",
+      "tour_done": true,
+      "last_name": "Doeson",
+      "groups": [],
+      "user_permissions": [],
+      "supervisors": []
+    }
+  },
+  {
+    "model": "projects.project",
+    "pk": 1,
+    "fields": {
+      "name": "Big Project",
+      "reference": null,
+      "comment": "A very big project",
+      "archived": false,
+      "estimated_time": "20 20:00:00",
+      "customer": 1,
+      "billing_type": 1,
+      "cost_center": 1,
+      "customer_visible": false,
+      "reviewers": [3]
+    }
+  },
+  {
+    "model": "projects.project",
+    "pk": 2,
+    "fields": {
+      "name": "Small Project",
+      "reference": null,
+      "comment": "A small project",
+      "archived": false,
+      "estimated_time": "1 06:00:00",
+      "customer": 1,
+      "billing_type": 1,
+      "cost_center": 1,
+      "customer_visible": false,
+      "reviewers": []
+    }
+  },
+  {
+    "model": "projects.project",
+    "pk": 3,
+    "fields": {
+      "name": "Building",
+      "reference": null,
+      "comment": "",
+      "archived": false,
+      "estimated_time": "4 04:00:00",
+      "customer": 2,
+      "billing_type": null,
+      "cost_center": null,
+      "customer_visible": false,
+      "reviewers": []
+    }
+  },
+  {
+    "model": "employment.employment",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "location": 1,
+      "percentage": 100,
+      "worktime_per_day": "08:00:00",
+      "start_date": "2020-01-01",
+      "end_date": null,
+      "added": "2020-03-12T09:27:21.761Z",
+      "updated": "2020-03-12T09:27:21.761Z"
+    }
+  },
+  {
+    "model": "employment.employment",
+    "pk": 2,
+    "fields": {
+      "user": 3,
+      "location": 1,
+      "percentage": 80,
+      "worktime_per_day": "06:00:00",
+      "start_date": "2020-01-01",
+      "end_date": null,
+      "added": "2020-03-12T09:28:55.640Z",
+      "updated": "2020-03-12T09:28:55.640Z"
+    }
+  },
+  {
+    "model": "employment.overtimecredit",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "comment": "Overtime",
+      "date": "2020-01-01",
+      "duration": "20:00:00",
+      "transfer": false
+    }
+  },
+  {
+    "model": "employment.absencecredit",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "comment": "Absence",
+      "absence_type": 1,
+      "date": "2020-01-01",
+      "days": 20,
+      "transfer": false
+    }
+  },
+  {
+    "model": "employment.absencecredit",
+    "pk": 2,
+    "fields": {
+      "user": 2,
+      "comment": "Sickness",
+      "absence_type": 2,
+      "date": "2020-01-01",
+      "days": 5,
+      "transfer": false
+    }
+  }
+]

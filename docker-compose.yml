@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: postgres:9.4
+    image: postgres:9.6
     ports:
       - 5432:5432
     volumes:
@@ -13,6 +13,8 @@ services:
 
   frontend:
     image: adfinissygroup/timed-frontend:latest
+    depends_on:
+      - backend
     ports:
       - 4200:80
 
@@ -24,15 +26,9 @@ services:
       - db
     environment:
       - DJANGO_DATABASE_HOST=db
+      - DJANGO_DATABASE_PORT=5432
       - ENV=docker
       - STATIC_ROOT=/var/www/static
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - 8025:8025
-    environment:
-      - MH_UI_WEB_PATH=mailhog
 
 volumes:
   dbdata:
