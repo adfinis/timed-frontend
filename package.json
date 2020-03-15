@@ -50,7 +50,7 @@
     "ember-cli-sri": "^2.1.1",
     "ember-cli-test-loader": "^2.1.0",
     "ember-cli-uglify-es": "^1.0.4",
-    "ember-cli-update": "^0.47.1",
+    "ember-cli-update": "^0.53.0",
     "ember-component-css": "^0.6.9",
     "ember-composable-helpers": "^3.0.2",
     "ember-concurrency": "^1.1.3",
