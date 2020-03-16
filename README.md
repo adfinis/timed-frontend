@@ -41,8 +41,10 @@ If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend
 If you are using docker-compose you can start the frontend and backend by running
 
 ```
-docker-compose up
+docker-compose up -d --build
 ```
+
+The frontend will be under [http://localhost:4200](http://localhost:4200) and the backend [http://localhost:8000](http://localhost:8000)
 
 ### Running Tests
 

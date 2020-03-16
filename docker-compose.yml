@@ -15,7 +15,7 @@ services:
     build:
       context: .
     ports:
-      - 4000:80
+      - 4200:80
 
   backend:
     image: adfinissygroup/timed-backend:latest
@@ -23,11 +23,21 @@ services:
       - 8000:80
     depends_on:
       - db
+      - mailhog
     environment:
       - DJANGO_DATABASE_HOST=db
       - DJANGO_DATABASE_PORT=5432
       - ENV=docker
       - STATIC_ROOT=/var/www/static
+      - EMAIL_URL=smtp://mailhog:1025
+    command: /bin/sh -c "wait-for-it.sh -t 60 db:5432 -- ./manage.py migrate && ./manage.py loaddata timed/fixtures/test_data.json && uwsgi"
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+    environment:
+      - MH_UI_WEB_PATH=mailhog
 
 volumes:
   dbdata:
