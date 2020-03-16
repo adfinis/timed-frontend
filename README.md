@@ -26,6 +26,8 @@ You can now access the API at http://localhost:8000/api/v1 and the admin interfa
 
 For end user interface have a look at our [Timed Frontend](https://github.com/adfinis-sygroup/timed-frontend) project.
 
+The end user interface is included and is running under http://localhost:4200
+
 ## Development
 
 To get the application working locally for development, make sure to create a file `.env` with the following content:
