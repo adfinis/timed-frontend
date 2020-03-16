@@ -1,21 +1,17 @@
-FROM node:8
+FROM danlynn/ember-cli:latest as build
 
-RUN apt-get update \
- && apt-get install -y --no-install-recommends \
-      nginx \
- && rm -rf /var/lib/apt/lists/* \
- && rm /var/www/html/index.nginx-debian.html \
- && ln -sf /dev/stdout /var/log/nginx/access.log \
- && ln -sf /dev/stderr /var/log/nginx/error.log
+COPY package.json yarn.lock /myapp/
 
-COPY . /usr/src/app
+RUN yarn install
 
-WORKDIR /usr/src/app
+COPY . /myapp/
 
-RUN yarn \
- && yarn build -- --environment=production \
- && cp -r /usr/src/app/dist/* /var/www/html/ \
- && mv contrib/nginx.conf /etc/nginx/sites-enabled/default
+RUN yarn build --environment=production
+
+FROM nginx:alpine
+
+COPY --from=build /myapp/dist /var/www/html
+COPY ./contrib/nginx.conf /etc/nginx/conf.d/default.conf
 
 WORKDIR /var/www/html
 
