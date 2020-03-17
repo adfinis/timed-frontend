@@ -51,8 +51,7 @@ const filterUnchanged = (attributes, changes) => {
 
 const TOOLTIP_CANNOT_VERIFY =
   "Please select yourself as 'reviewer' to verify reports.";
-const TOOLTIP_NEEDS_REVIEW =
-  "Please review selected reports first in order to verify.";
+const TOOLTIP_NEEDS_REVIEW = "Please review selected reports before verifying.";
 
 export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   IntersectionValidations,
@@ -119,7 +118,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   needsReview: computed("intersectionModel", function() {
     return (
       this.get("intersectionModel.review") === null ||
-      this.get("intersectionModel.review")
+      this.get("intersectionModel.review") === true
     );
   }),
 
