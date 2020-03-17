@@ -4,7 +4,7 @@
       <div class="time-info-durations">
         <p>Spent (Total): {{humanize-duration spent}}</p>
         <p>Spent (Billable): {{humanize-duration billable}}</p>
-        <p>Estimate: {{if estimated (humanize-duration estimated) 'None'}}</p>
+        <p>Budget: {{if estimated (humanize-duration estimated) 'None'}}</p>
       </div>
       {{#if progress}}
         <div class="time-info-percentage">
