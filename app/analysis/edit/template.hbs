@@ -86,8 +86,8 @@
                   {{#sy-checkbox
                     checked=fi.value
                     on-change=fi.update
-                    title=(unless canVerify 'Please select yourself as "reviewer" to verify reports.')
-                    disabled=(unless canVerify 'true')
+                    title=toolTipText
+                    disabled=(or (not canVerify) needsReview)
                   }}
                     Verified
                     {{#if (eq model.verified null)}}{{not-identical-warning}}{{/if}}
