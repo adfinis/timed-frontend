@@ -1,5 +1,6 @@
 import Controller, { inject as controller } from "@ember/controller";
 import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
@@ -48,8 +49,14 @@ const filterUnchanged = (attributes, changes) => {
   }, {});
 };
 
+const TOOLTIP_CANNOT_VERIFY =
+  "Please select yourself as 'reviewer' to verify reports.";
+const TOOLTIP_NEEDS_REVIEW = "Please review selected reports before verifying.";
+
 export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   IntersectionValidations,
+  TOOLTIP_CANNOT_VERIFY,
+  TOOLTIP_NEEDS_REVIEW,
 
   notify: service("notify"),
   ajax: service("ajax"),
@@ -57,6 +64,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   unverifiedReports: service(),
 
   analysisIndexController: controller("analysis.index"),
+  intersectionModel: reads("intersection.lastSuccessful.value.model"),
 
   setup() {
     this.get("intersection").perform();
@@ -80,31 +88,20 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     };
   }),
 
-  _customer: computed(
-    "intersection.lastSuccessful.value.model.customer.id",
-    function() {
-      const id = this.get(
-        "intersection.lastSuccessful.value.model.customer.id"
-      );
-      return id && this.store.peekRecord("customer", id);
-    }
-  ),
+  _customer: computed("intersectionModel.customer.id", function() {
+    const id = this.get("intersectionModel.customer.id");
+    return id && this.store.peekRecord("customer", id);
+  }),
 
-  _project: computed(
-    "intersection.lastSuccessful.value.model.project.id",
-    function() {
-      const id = this.get("intersection.lastSuccessful.value.model.project.id");
-      return id && this.store.peekRecord("project", id);
-    }
-  ),
+  _project: computed("intersectionModel.project.id", function() {
+    const id = this.get("intersectionModel.project.id");
+    return id && this.store.peekRecord("project", id);
+  }),
 
-  _task: computed(
-    "intersection.lastSuccessful.value.model.task.id",
-    function() {
-      const id = this.get("intersection.lastSuccessful.value.model.task.id");
-      return id && this.store.peekRecord("task", id);
-    }
-  ),
+  _task: computed("intersectionModel.task.id", function() {
+    const id = this.get("intersectionModel.task.id");
+    return id && this.store.peekRecord("task", id);
+  }),
 
   canVerify: computed(
     "allQueryParams.reviewer",
@@ -118,6 +115,25 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     }
   ),
 
+  needsReview: computed("intersectionModel", function() {
+    return (
+      this.get("intersectionModel.review") === null ||
+      this.get("intersectionModel.review") === true
+    );
+  }),
+
+  toolTipText: computed("canVerify", "needsReview", function() {
+    let result = "";
+    if (this.get("needsReview") && this.get("canVerify")) {
+      result = TOOLTIP_NEEDS_REVIEW;
+    } else if (!this.get("needsReview") && !this.get("canVerify")) {
+      result = TOOLTIP_CANNOT_VERIFY;
+    } else if (this.get("needsReview") && !this.get("canVerify")) {
+      result = `${TOOLTIP_CANNOT_VERIFY} ${TOOLTIP_NEEDS_REVIEW}`;
+    }
+    return result;
+  }),
+
   save: task(function*(changeset) {
     try {
       const params = prepareParams(this.get("allQueryParams"));
@@ -128,7 +144,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
       const {
         data: { attributes, relationships }
-      } = this.get("intersection.lastSuccessful.value.model").serialize();
+      } = this.get("intersectionModel").serialize();
 
       const data = {
         type: "report-bulks",

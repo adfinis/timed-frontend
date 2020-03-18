@@ -9,13 +9,16 @@ module("Acceptance | analysis edit", function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    const user = this.server.create("user");
+    const user = this.server.create("user", { isSuperuser: true });
     this.user = user;
 
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: user.id });
 
-    this.server.create("report-intersection", { verified: false });
+    this.reportIntersection = this.server.create("report-intersection", {
+      verified: false,
+      review: true
+    });
   });
 
   test("can visit /analysis/edit", async function(assert) {
@@ -87,5 +90,25 @@ module("Acceptance | analysis edit", function(hooks) {
     await visit("/analysis/edit");
 
     assert.dom("[data-test-verified] input").isDisabled();
+  });
+
+  test("can not verify unreviewed reports", async function(assert) {
+    await visit("/analysis/edit?id=1,2,3");
+
+    assert.dom("[data-test-verified] input").isDisabled();
+    assert
+      .dom("[data-test-verified] label")
+      .hasAttribute(
+        "title",
+        "Please review selected reports before verifying."
+      );
+  });
+
+  test("can verify reviewed reports", async function(assert) {
+    this.reportIntersection.update({ review: false });
+    await visit("/analysis/edit?id=1,2,3");
+
+    assert.dom("[data-test-verified] input").isNotDisabled();
+    assert.dom("[data-test-verified] label").hasAttribute("title", "");
   });
 });
