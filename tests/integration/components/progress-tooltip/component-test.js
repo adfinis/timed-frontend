@@ -50,7 +50,7 @@ module("Integration | Component | progress tooltip", function(hooks) {
 
       assert
         .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(3)")
-        .hasText("Estimate: 50h 0m");
+        .hasText("Budget: 50h 0m");
     });
   });
 
@@ -84,7 +84,7 @@ module("Integration | Component | progress tooltip", function(hooks) {
 
       assert
         .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(3)")
-        .hasText("Estimate: 100h 30m");
+        .hasText("Budget: 100h 30m");
     });
   });
 
