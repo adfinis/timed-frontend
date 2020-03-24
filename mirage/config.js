@@ -128,7 +128,7 @@ export default function() {
 
   this.get("/reports", function(
     { reports },
-    { queryParams: { page, page_size: limit } }
+    { queryParams: { "page[number]": page, "page[size]": limit } }
   ) {
     let data = reports.all();
     let meta = {
