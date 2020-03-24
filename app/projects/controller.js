@@ -15,6 +15,9 @@ export default Controller.extend({
 
   fetchProjectsOfUser: task(function*() {
     try {
+      if (this.get("user.isSuperuser")) {
+        return yield this.store.findAll("project");
+      }
       return yield this.store.query("project", {
         reviewer: this.get("user.id")
       });

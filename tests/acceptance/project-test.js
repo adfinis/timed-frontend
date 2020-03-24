@@ -126,4 +126,18 @@ module("Acceptance | projects", function(hooks) {
     assert.dom("[data-test-table-estimated-time]").hasText("-");
     assert.dom("[data-test-table-archived]").hasClass("fa-check-square-o");
   });
+
+  test("shows all projects to superuser", async function(assert) {
+    const user = this.server.create("user", { isSuperuser: true });
+    this.server.create("project");
+
+    // eslint-disable-next-line camelcase
+    await authenticateSession({ user_id: user.id });
+
+    await visit("/projects");
+    assert.equal(currentURL(), "/projects");
+
+    await click("[data-test-project-selection] div");
+    assert.dom(".ember-power-select-option").exists({ count: 2 });
+  });
 });
