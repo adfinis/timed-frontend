@@ -7,12 +7,17 @@
   {
     "model": "employment.absencetype",
     "pk": 1,
-    "fields": { "name": "Holidays", "fill_worktime": true }
+    "fields": { "name": "EO", "fill_worktime": false }
   },
   {
     "model": "employment.absencetype",
     "pk": 2,
-    "fields": { "name": "Sickness", "fill_worktime": false }
+    "fields": { "name": "Ferien", "fill_worktime": false }
+  },
+  {
+    "model": "employment.absencetype",
+    "pk": 3,
+    "fields": { "name": "Krankheit", "fill_worktime": true }
   },
   {
     "model": "projects.customer",
@@ -116,13 +121,13 @@
       "last_login": "2020-03-12T09:24:33.471Z",
       "is_superuser": true,
       "username": "admin",
-      "first_name": "",
+      "first_name": "Admin",
       "email": "admin@admin.admin",
       "is_staff": true,
       "is_active": true,
       "date_joined": "2020-03-12T09:24:27.469Z",
       "tour_done": false,
-      "last_name": "",
+      "last_name": "Strator",
       "groups": [],
       "user_permissions": [],
       "supervisors": []
