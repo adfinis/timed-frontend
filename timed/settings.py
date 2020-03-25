@@ -253,3 +253,10 @@ WORK_REPORT_PATH = env.str(
     "DJANGO_WORK_REPORT_PATH",
     default=resource_filename("timed.reports", "templates/workreport.ots"),
 )
+
+# Tracking: fields which should be included in email (when report was changed
+# during verification)
+TRACKING_REPORT_VERIFIED_CHANGES = env.list(
+    "DJANGO_TRACKING_REPORT_VERIFIED_CHANGES",
+    default=default(["task", "comment", "not_billable"]),
+)

@@ -47,7 +47,7 @@ def _get_report_changeset(report, fields):
             for key in fields.keys()
             # skip if field is not changed or just a reviewer field
             if getattr(report, key) != fields[key]
-            and key not in ["review", "verified_by"]
+            and key in settings.TRACKING_REPORT_VERIFIED_CHANGES
         },
     }
     if not changeset["changes"]:
