@@ -223,7 +223,7 @@ export default Service.extend({
       my_most_frequent: 10, // eslint-disable-line camelcase
       include: "project,project.customer"
     });
-  }),
+  }).drop(),
 
   /**
    * All users
