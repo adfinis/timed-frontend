@@ -271,8 +271,10 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     );
 
     const data = yield this.store.query("report", {
-      page: this.get("_lastPage") + 1,
-      page_size: 20, // eslint-disable-line camelcase
+      page: {
+        number: this.get("_lastPage") + 1,
+        size: 20
+      },
       ...params,
       include:
         "task,task.project,task.project.customer,task.project.reviewers,user"
