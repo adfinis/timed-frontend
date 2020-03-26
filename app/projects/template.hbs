@@ -17,7 +17,7 @@
         options=customers
         placeholder="Select customer..."
         searchField="name"
-        onchange=(action (queue (action (mut selectedCustomer)) (perform filterProjects)))
+        onchange=(action (queue (action (mut selectedCustomer)) (action (mut selectedProject) null) (perform filterProjects)))
         selected=selectedCustomer
         allowClear=true
       as |customer|
