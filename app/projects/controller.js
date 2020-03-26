@@ -1,7 +1,8 @@
 import Controller from "@ember/controller";
-import { reads } from "@ember/object/computed";
+import { or, reads, uniqBy } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
+import { all } from "rsvp";
 import TaskValidations from "timed/validations/task";
 
 export default Controller.extend({
@@ -11,19 +12,44 @@ export default Controller.extend({
   notify: service(),
   user: reads("session.data.user"),
   projects: reads("fetchProjectsOfUser.lastSuccessful.value"),
+  filteredProjects: reads("filterProjects.lastSuccessful.value"),
   tasks: reads("fetchTasksOfProject.lastSuccessful.value"),
+  customers: uniqBy("fetchCustomersOfProject.lastSuccessful.value", "id"),
+  loading: or(
+    "fetchTasksOfProject.isRunning",
+    "fetchCustomersOfProject.isRunning"
+  ),
 
   fetchProjectsOfUser: task(function*() {
     try {
+      let projects;
       if (this.get("user.isSuperuser")) {
-        return yield this.store.findAll("project");
+        projects = yield this.store.findAll("project");
+      } else {
+        projects = yield this.store.query("project", {
+          reviewer: this.get("user.id")
+        });
       }
-      return yield this.store.query("project", {
-        reviewer: this.get("user.id")
-      });
+
+      this.fetchCustomersOfProject.perform(projects);
+      return projects;
     } catch (error) {
       this.notify.error("Error while fetching projects");
     }
+  }),
+
+  fetchCustomersOfProject: task(function*(projects) {
+    return yield all(
+      projects.map(async project => {
+        return await project.get("customer");
+      })
+    );
+  }),
+
+  filterProjects: task(function*() {
+    return yield this.get("projects").filter(
+      project => project.get("customer.id") === this.get("selectedCustomer.id")
+    );
   }),
 
   fetchTasksOfProject: task(function*() {

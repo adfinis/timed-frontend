@@ -21,22 +21,28 @@ module("Acceptance | projects", function(hooks) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
+    assert.dom("[data-test-customer-selection]").exists();
     assert.dom("[data-test-project-selection]").exists();
-    assert.dom("[data-test-no-project-selected]").exists();
+    assert.dom("[data-test-none-selected]").exists();
   });
 
   test("can select project", async function(assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
-    assert.dom("[data-test-project-selection]").exists();
+    await selectChoose(
+      "[data-test-customer-selection]",
+      ".ember-power-select-option",
+      0
+    );
+
     await selectChoose(
       "[data-test-project-selection]",
       ".ember-power-select-option",
       0
     );
 
-    assert.dom("[data-test-no-project-selected]").doesNotExist();
+    assert.dom("[data-test-none-selected]").doesNotExist();
     assert.dom("[data-test-tasks-table]").exists();
     assert.dom("[data-test-add-task]").exists();
     assert.dom("[data-test-task-table-row]").doesNotExist();
@@ -45,6 +51,12 @@ module("Acceptance | projects", function(hooks) {
   test("can add task", async function(assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
+
+    await selectChoose(
+      "[data-test-customer-selection]",
+      ".ember-power-select-option",
+      0
+    );
 
     await selectChoose(
       "[data-test-project-selection]",
@@ -78,6 +90,12 @@ module("Acceptance | projects", function(hooks) {
   test("can edit task", async function(assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
+
+    await selectChoose(
+      "[data-test-customer-selection]",
+      ".ember-power-select-option",
+      0
+    );
 
     await selectChoose(
       "[data-test-project-selection]",
@@ -127,7 +145,7 @@ module("Acceptance | projects", function(hooks) {
     assert.dom("[data-test-table-archived]").hasClass("fa-check-square-o");
   });
 
-  test("shows all projects to superuser", async function(assert) {
+  test("shows all customers to superuser", async function(assert) {
     const user = this.server.create("user", { isSuperuser: true });
     this.server.create("project");
 
@@ -137,7 +155,7 @@ module("Acceptance | projects", function(hooks) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
-    await click("[data-test-project-selection] div");
+    await click("[data-test-customer-selection] div");
     assert.dom(".ember-power-select-option").exists({ count: 2 });
   });
 });
