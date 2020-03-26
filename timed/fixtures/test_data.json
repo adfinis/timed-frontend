@@ -117,7 +117,7 @@
     "model": "employment.user",
     "pk": 1,
     "fields": {
-      "password": "pbkdf2_sha256$150000$Ea7gV4CajWpZ$CWkosh5fs+Q13a6h7X976Zp9Cg1s5eaWInWVMG9sY7M=",
+      "password": "pbkdf2_sha256$150000$lgPMtNRsmi6E$l+HWaKslNGUOpRniI2AqeMxJpn8nDBCIfK4cMO/WcRo=",
       "last_login": "2020-03-12T09:24:33.471Z",
       "is_superuser": true,
       "username": "admin",
