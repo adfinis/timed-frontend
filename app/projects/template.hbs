@@ -22,7 +22,7 @@
         allowClear=true
       as |customer|
       }}
-        {{customer.name}}
+        <div>{{customer.name}}</div>
       {{/power-select}}
       {{#power-select
         data-test-project-selection
@@ -37,7 +37,7 @@
         disabled=(not selectedCustomer)
       as |project|
       }}
-        {{project.name}}
+        <div>{{project.name}}</div>
       {{/power-select}}
     </div>
     {{#if selectedProject}}
