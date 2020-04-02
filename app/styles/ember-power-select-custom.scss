@@ -10,12 +10,11 @@
 }
 
 .ember-power-select-option:not(
-  .ember-power-select-option--no-matches-message,
+  .ember-power-select-option--no-matches-message):not(
   .ember-power-select-option--loading-message
 ) {
   padding: 0;
   line-height: 1;
-
   div {
     padding: 0 8px;
     line-height: 1.6;
