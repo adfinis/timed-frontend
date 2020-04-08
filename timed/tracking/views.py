@@ -1,7 +1,8 @@
 """Viewsets for the tracking app."""
 
 import django_excel
-from django.db.models import Q
+from django.conf import settings
+from django.db.models import Case, CharField, F, Q, Value, When
 from django.http import HttpResponseBadRequest
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import exceptions, status
@@ -98,32 +99,6 @@ class ReportViewSet(ModelViewSet):
         "review",
         "not_billable",
     )
-
-    def _extract_cost_center(self, report):
-        """
-        Extract cost center from given report.
-
-        Cost center of task is prioritized higher than of
-        project.
-        """
-        name = ""
-
-        if report.task.project.cost_center:
-            name = report.task.project.cost_center.name
-
-        if report.task.cost_center:
-            name = report.task.project.name
-
-        return name
-
-    def _extract_billing_type(self, report):
-        """Extract billing type from given report."""
-        name = ""
-
-        if report.task.project.billing_type:
-            name = report.task.project.billing_type.name
-
-        return name
 
     def update(self, request, *args, **kwargs):
         """Override so we can issue emails on update."""
@@ -236,6 +211,43 @@ class ReportViewSet(ModelViewSet):
             "task__project__cost_center",
         )
         queryset = self.filter_queryset(queryset)
+        queryset = queryset.annotate(
+            cost_center=Case(
+                # Task cost center has precedence over project cost center
+                When(
+                    task__cost_center__isnull=False, then=F("task__cost_center__name")
+                ),
+                When(
+                    task__project__cost_center__isnull=False,
+                    then=F("task__project__cost_center__name"),
+                ),
+                default=Value(""),
+                output_field=CharField(),
+            )
+        )
+        queryset = queryset.annotate(
+            billing_type=Case(
+                When(
+                    task__project__billing_type__isnull=False,
+                    then=F("task__project__billing_type__name"),
+                ),
+                default=Value(""),
+                output_field=CharField(),
+            )
+        )
+        if (
+            settings.REPORTS_EXPORT_MAX_COUNT > 0
+            and queryset.count() > settings.REPORTS_EXPORT_MAX_COUNT
+        ):
+            return Response(
+                _(
+                    "Your request exceeds the maximum allowed entries ({0} > {1})".format(
+                        queryset.count(), settings.REPORTS_EXPORT_MAX_COUNT
+                    )
+                ),
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         colnames = [
             "Date",
             "Duration",
@@ -247,20 +259,18 @@ class ReportViewSet(ModelViewSet):
             "Billing Type",
             "Cost Center",
         ]
-        content = [
-            [
-                report.date,
-                report.duration,
-                report.task.project.customer.name,
-                report.task.project.name,
-                report.task.name,
-                report.user.username,
-                report.comment,
-                self._extract_billing_type(report),
-                self._extract_cost_center(report),
-            ]
-            for report in queryset
-        ]
+
+        content = queryset.values_list(
+            "date",
+            "duration",
+            "task__project__customer__name",
+            "task__project__name",
+            "task__name",
+            "user__username",
+            "comment",
+            "billing_type",
+            "cost_center",
+        )
 
         file_type = request.query_params.get("file_type")
         if file_type not in ["csv", "xlsx", "ods"]:
