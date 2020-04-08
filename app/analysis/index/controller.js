@@ -184,7 +184,17 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     }
   ),
 
+  exportLimitExceeded: computed("totalItems", function() {
+    return this.totalItems > this.exportLimit;
+  }),
+
+  exportLimitMessage: computed("exportLimit", function() {
+    return `The export limit is ${this.exportLimit}. Please use filters to reduce the amount of reports.`;
+  }),
+
   exportLinks: config.APP.REPORTEXPORTS,
+
+  exportLimit: config.APP.EXPORT_LIMIT,
 
   session: service("session"),
 

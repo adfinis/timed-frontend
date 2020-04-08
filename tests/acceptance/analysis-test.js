@@ -11,6 +11,7 @@ import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test } from "qunit";
 
+import config from "../../config/environment";
 import userSelect from "../helpers/user-select";
 
 module("Acceptance | analysis", function(hooks) {
@@ -40,6 +41,19 @@ module("Acceptance | analysis", function(hooks) {
     await click(".export-buttons .btn:first-child");
 
     assert.dom('[data-download-count="1"]').exists();
+  });
+
+  test("disables buttons if export limit exceeded", async function(assert) {
+    this.server.get("/reports", function({ reports }) {
+      return {
+        ...this.serialize(reports.all()),
+        meta: { pagination: { count: config.APP.EXPORT_LIMIT + 1 } }
+      };
+    });
+
+    await visit("/analysis");
+
+    assert.dom(".export-buttons .btn:first-child").isDisabled();
   });
 
   test("can filter and reset filter", async function(assert) {

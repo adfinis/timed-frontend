@@ -44,7 +44,8 @@ module.exports = function(environment) {
           url: "/api/v1/work-reports",
           params: {}
         }
-      ]
+      ],
+      EXPORT_LIMIT: 100000
     },
 
     "ember-simple-auth": {
