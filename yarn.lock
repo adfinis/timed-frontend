@@ -5349,7 +5349,7 @@ ember-changeset@2.2.4, ember-changeset@^2.2.4:
     ember-cli-babel "^7.1.2"
     ember-deep-set "^0.2.0"
 
-ember-cli-app-version@^3.2.0:
+ember-cli-app-version@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/ember-cli-app-version/-/ember-cli-app-version-3.2.0.tgz#7b9ad0e1b63ae0518648356ee24c703e922bc26e"
   integrity sha512-fHWOJElSw8JL03FNCHrT0RdWhGpWEQ4VQ10unEwwhVZ+OANNcOLz8O2dA3D5iuB4bb0fMLwjEwYZGM62+TBs1Q==
