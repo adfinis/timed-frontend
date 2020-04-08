@@ -3,7 +3,7 @@ import EmberChartComponent from "ember-cli-chart/components/ember-chart";
 import moment from "moment";
 import humanizeDuration from "timed/utils/humanize-duration";
 
-const FONT_FAMILY = "TheSansLT";
+const FONT_FAMILY = "Source Sans Pro";
 
 export default EmberChartComponent.extend({
   type: "line",
