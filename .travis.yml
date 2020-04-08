@@ -22,6 +22,7 @@ before_script:
 script:
   - black --check .
   - flake8
+  - ./manage.py makemigrations --check --dry-run --no-input
   - pytest --no-cov-on-fail --cov --create-db
 
 after_success:
