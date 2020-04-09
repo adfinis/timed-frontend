@@ -8,6 +8,7 @@ RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for
 RUN apt-get update && apt-get install -y --no-install-recommends \
   libldap2-dev \
   libsasl2-dev \
+  libpq-dev \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /app
 
