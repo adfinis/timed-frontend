@@ -6401,9 +6401,9 @@ ember-router-generator@^1.2.3:
     recast "^0.11.3"
 
 ember-scrollable@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/ember-scrollable/-/ember-scrollable-1.0.0.tgz#7a4baae8e16c5d8407a346081bbbc3c4a5551eae"
-  integrity sha512-XEKvI055MKqjCWwHjma2h2kBORbuMJtnmFmAyv6sX3H3DiyvwcLULyopciDiM56eL70vl/rOV8O6VvG6rTDkug==
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/ember-scrollable/-/ember-scrollable-1.0.2.tgz#f8f110287ce19a508f292b3b7be3ec5ab3cea0c0"
+  integrity sha512-Szx9R4VgwH949PGX+vI8iEKeuwUcFXGhSuFwekqGaz1IrWpO3TLVNnH2FMt+wYVXRLpXzss65sLWYjd6WHI7Ig==
   dependencies:
     ember-cli-babel "^6.8.0"
     ember-cli-htmlbars "^2.0.1"
