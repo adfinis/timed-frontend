@@ -7,8 +7,10 @@ from zipfile import ZipFile
 from django.conf import settings
 from django.db.models import F, Sum
 from django.db.models.functions import ExtractMonth, ExtractYear
-from django.http import HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse
 from ezodf import Cell, opendoc
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from timed.mixins import AggregateQuerysetMixin
@@ -268,11 +270,27 @@ class WorkReportViewSet(GenericViewSet):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
+
+        if queryset.count() == 0:
+            return Response(
+                "No entries were selected. Make sure to clear unneeded filters.",
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         # needed as we add items in reverse order to work report
         queryset = queryset.reverse()
-        count = queryset.count()
-        if count == 0:
-            return HttpResponseBadRequest()
+
+        if (
+            settings.WORK_REPORTS_EXPORT_MAX_COUNT > 0
+            and queryset.count() > settings.WORK_REPORTS_EXPORT_MAX_COUNT
+        ):
+            return Response(
+                "Your request exceeds the maximum allowed entries ({0})".format(
+                    settings.WORK_REPORTS_EXPORT_MAX_COUNT
+                ),
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         params = self._parse_query_params(queryset, request)
 
         from_date = params.get("from_date")
