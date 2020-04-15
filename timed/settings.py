@@ -254,6 +254,10 @@ WORK_REPORT_PATH = env.str(
     default=resource_filename("timed.reports", "templates/workreport.ots"),
 )
 
+WORK_REPORTS_EXPORT_MAX_COUNT = env.int(
+    "DJANGO_WORK_REPORTS_EXPORT_MAX_COUNT", default=0
+)
+
 # Tracking: Report fields which should be included in email (when report was
 # changed during verification)
 TRACKING_REPORT_VERIFIED_CHANGES = env.list(

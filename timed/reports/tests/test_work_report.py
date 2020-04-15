@@ -5,7 +5,7 @@ from zipfile import ZipFile
 import ezodf
 import pytest
 from django.urls import reverse
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework import status
 
 from timed.projects.factories import CustomerFactory, ProjectFactory, TaskFactory
 from timed.reports.views import WorkReportViewSet
@@ -35,7 +35,7 @@ def test_work_report_single_project(auth_client, django_assert_num_queries):
                 "verified": 1,
             },
         )
-    assert res.status_code == HTTP_200_OK
+    assert res.status_code == status.HTTP_200_OK
     assert "1708-20170901-Customer_Name-Project.ods" in (res["Content-Disposition"])
 
     content = io.BytesIO(res.content)
@@ -62,7 +62,7 @@ def test_work_report_multiple_projects(auth_client, django_assert_num_queries):
     url = reverse("work-report-list")
     with django_assert_num_queries(4):
         res = auth_client.get(url, data={"user": auth_client.user.id, "verified": 0})
-    assert res.status_code == HTTP_200_OK
+    assert res.status_code == status.HTTP_200_OK
     assert "20170901-WorkReports.zip" in (res["Content-Disposition"])
 
     content = io.BytesIO(res.content)
@@ -80,7 +80,7 @@ def test_work_report_multiple_projects(auth_client, django_assert_num_queries):
 def test_work_report_empty(auth_client):
     url = reverse("work-report-list")
     res = auth_client.get(url, data={"user": auth_client.user.id})
-    assert res.status_code == HTTP_400_BAD_REQUEST
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.parametrize(
@@ -102,3 +102,32 @@ def test_generate_work_report_name(db, customer_name, project_name, expected):
 
     name = view._generate_workreport_name(test_date, test_date, project)
     assert name == expected
+
+
+@pytest.mark.freeze_time("2017-09-01")
+@pytest.mark.parametrize(
+    "settings_count,given_count,expected_status",
+    [
+        (-1, 9, status.HTTP_200_OK),
+        (0, 9, status.HTTP_200_OK),
+        (10, 9, status.HTTP_200_OK),
+        (9, 10, status.HTTP_400_BAD_REQUEST),
+    ],
+)
+def test_work_report_count(
+    auth_client, settings, settings_count, given_count, expected_status
+):
+    user = auth_client.user
+    customer = CustomerFactory.create(name="Customer")
+    report_date = date(2017, 8, 17)
+
+    settings.WORK_REPORTS_EXPORT_MAX_COUNT = settings_count
+
+    project = ProjectFactory.create(customer=customer)
+    task = TaskFactory.create(project=project)
+    ReportFactory.create_batch(given_count, user=user, task=task, date=report_date)
+
+    url = reverse("work-report-list")
+    res = auth_client.get(url, data={"user": auth_client.user.id, "verified": 0})
+
+    assert res.status_code == expected_status
