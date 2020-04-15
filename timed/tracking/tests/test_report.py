@@ -746,8 +746,52 @@ def test_report_list_filter_cost_center(auth_client):
 
 
 @pytest.mark.parametrize("file_type", ["csv", "xlsx", "ods"])
-def test_report_export(auth_client, file_type, django_assert_num_queries):
-    reports = ReportFactory.create_batch(2)
+@pytest.mark.parametrize(
+    "project_cs_name,task_cs_name,project_bt_name",
+    [("Project cost center", "Task cost center", "Some billing type")],
+)
+@pytest.mark.parametrize(
+    "project_cs,task_cs,expected_cs_name",
+    [
+        (True, True, "Task cost center"),
+        (True, False, "Project cost center"),
+        (False, True, "Task cost center"),
+        (False, False, ""),
+    ],
+)
+@pytest.mark.parametrize(
+    "project_bt,expected_bt_name", [(True, "Some billing type"), (False, "")]
+)
+def test_report_export(
+    auth_client,
+    django_assert_num_queries,
+    report,
+    task,
+    project,
+    cost_center_factory,
+    file_type,
+    project_cs,
+    task_cs,
+    expected_cs_name,
+    project_bt,
+    expected_bt_name,
+    project_cs_name,
+    task_cs_name,
+    project_bt_name,
+):
+    report.task.project.cost_center = cost_center_factory(name=project_cs_name)
+    report.task.cost_center = cost_center_factory(name=task_cs_name)
+    report.task.project.billing_type.name = project_bt_name
+    report.task.project.billing_type.save()
+
+    if not project_cs:
+        project.cost_center = None
+    if not task_cs:
+        task.cost_center = None
+    if not project_bt:
+        project.billing_type = None
+    project.save()
+    task.save()
 
     url = reverse("report-export")
 
@@ -755,10 +799,42 @@ def test_report_export(auth_client, file_type, django_assert_num_queries):
         response = auth_client.get(url, data={"file_type": file_type})
 
     assert response.status_code == status.HTTP_200_OK
+
     book = pyexcel.get_book(file_content=response.content, file_type=file_type)
     # bookdict is a dict of tuples(name, content)
     sheet = book.bookdict.popitem()[1]
-    assert len(sheet) == len(reports) + 1
+
+    assert len(sheet) == 2
+    assert sheet[1][-2:] == [expected_bt_name, expected_cs_name]
+
+
+@pytest.mark.parametrize(
+    "settings_count,given_count,expected_status",
+    [
+        (-1, 9, status.HTTP_200_OK),
+        (0, 9, status.HTTP_200_OK),
+        (10, 9, status.HTTP_200_OK),
+        (9, 10, status.HTTP_400_BAD_REQUEST),
+    ],
+)
+def test_report_export_max_count(
+    auth_client,
+    django_assert_num_queries,
+    report_factory,
+    task,
+    settings,
+    settings_count,
+    given_count,
+    expected_status,
+):
+    settings.REPORTS_EXPORT_MAX_COUNT = settings_count
+    report_factory.create_batch(given_count, task=task)
+
+    url = reverse("report-export")
+
+    response = auth_client.get(url, data={"file_type": "csv"})
+
+    assert response.status_code == expected_status
 
 
 def test_report_update_bulk_verify_reviewer_multiple_notify(
