@@ -305,6 +305,8 @@
             type="button"
             data-download-count="{{download.performCount}}"
             class="btn btn-primary {{if (and (eq download.last.url link.url) (eq download.last.params link.params) download.isRunning) 'loading'}}"
+            disabled={{exportLimitExceeded}}
+            title={{if exportLimitExceeded exportLimitMessage}}
           >
             {{fa-icon 'download'}}&nbsp;{{link.label}}
           </button>
