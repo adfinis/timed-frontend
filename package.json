@@ -1,6 +1,6 @@
 {
   "name": "timed",
-  "version": "0.13.0",
+  "version": "0.13.1",
   "description": "A time tracking software written in Ember.js",
   "repository": "https://github.com/adfinis-sygroup/timed-frontend",
   "author": "Adfinis SyGroup AG <info@adfinis-sygroup.ch>",
