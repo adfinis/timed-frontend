@@ -243,7 +243,7 @@ export default Service.extend({
    */
   customers: task(function*() {
     return yield this.get("store").query("customer", {});
-  }),
+  }).drop(),
 
   /**
    * Projects filtered by customer
