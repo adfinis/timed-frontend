@@ -46,10 +46,11 @@ export default Service.extend({
         to_date: this.get("reportsToDate").format("YYYY-MM-DD"),
         reviewer: this.get("session.data.user.id"),
         editable: 1,
-        verified: 0
+        verified: 0,
+        page: { number: 1, size: 1 }
       });
 
-      this.set("amountReports", reports.length);
+      this.set("amountReports", reports.meta.pagination.count);
     } catch (e) {
       this.notify.error("Error while polling reports");
     }
