@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "django_filters",
+    "djmoney",
     "timed.employment",
     "timed.projects",
     "timed.tracking",
