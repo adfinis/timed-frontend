@@ -123,9 +123,11 @@ export default Controller.extend({
     function() {
       this._activitySum();
 
-      return this.get("_activities").reduce((total, current) => {
-        return total.add(current.get("duration"));
-      }, this.get("_activeActivityDuration"));
+      return this.get("_activities")
+        .rejectBy("active")
+        .reduce((total, current) => {
+          return total.add(current.get("duration"));
+        }, this.get("_activeActivityDuration"));
     }
   ),
 
