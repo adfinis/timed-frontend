@@ -2,10 +2,19 @@
   <li class="nav-top-list-item" title="You have reports to verify">
     {{#link-to "analysis.index"
                (query-params
+                 fromDate=null
                  toDate=unverifiedReports.reportsToDate
                  reviewer=session.data.user.id
                  editable=1
                  verified=0
+                 customer=null
+                 project=null
+                 task=null
+                 user=null
+                 billingType=null
+                 costCenter=null
+                 review=""
+                 notBillable=""
                )
     }}
       {{fa-icon "exclamation-triangle"}}
