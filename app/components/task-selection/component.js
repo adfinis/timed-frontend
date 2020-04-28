@@ -24,8 +24,8 @@ const SELECTED_TEMPLATE = hbs`{{selected.name}}`;
  * @public
  */
 export default Component.extend({
-  store: service("store"),
-  tracking: service("tracking"),
+  store: service(),
+  tracking: service(),
 
   /**
    * HTML tag name for the component
@@ -48,8 +48,8 @@ export default Component.extend({
     this._super(...args);
 
     try {
-      await this.get("tracking.customers").perform();
-      await this.get("tracking.recentTasks").perform();
+      await this.tracking.customers.perform();
+      await this.tracking.recentTasks.perform();
     } catch (e) {
       /* istanbul ignore next */
       if (e.taskInstance && e.taskInstance.isCanceling) {
@@ -314,7 +314,7 @@ export default Component.extend({
    */
   projects: computed("customer.id", "archived", async function() {
     if (this.get("customer.id")) {
-      await this.get("tracking.projects").perform(this.get("customer.id"));
+      await this.tracking.projects.perform(this.customer.id);
     }
 
     return this.get("store")
@@ -338,7 +338,7 @@ export default Component.extend({
    */
   tasks: computed("project.id", "archived", async function() {
     if (this.get("project.id")) {
-      await this.get("tracking.tasks").perform(this.get("project.id"));
+      await this.tracking.tasks.perform(this.project.id);
     }
 
     return this.get("store")
