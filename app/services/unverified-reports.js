@@ -1,5 +1,6 @@
 import { computed } from "@ember/object";
 import Service, { inject as service } from "@ember/service";
+import Ember from "ember";
 import moment from "moment";
 
 const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
@@ -36,7 +37,9 @@ export default Service.extend({
 
     this.set(
       "intervalId",
-      setInterval(this.pollReports.bind(this), INTERVAL_DELAY)
+      Ember.testing
+        ? null
+        : setInterval(this.pollReports.bind(this), INTERVAL_DELAY)
     );
   },
 
