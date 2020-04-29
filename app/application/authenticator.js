@@ -10,6 +10,13 @@ import Ember from "ember";
 import BaseAuthenticator from "ember-simple-auth/authenticators/base";
 import { Promise } from "rsvp";
 
+/*
+ * If we don't have this buffer, the refresh is triggered too close to token's
+ * expiration time or even after it's expired, which can result into unexpected
+ * session invalidation.
+ */
+const TIME_BUFFER = 3 * 60000; // 3 Minutes
+
 /**
  * The application authorizer
  *
@@ -191,7 +198,7 @@ const ApplicationAuthenticator = BaseAuthenticator.extend({
    */
   _scheduleTokenRefresh(exp, token) {
     const now = new Date().getTime();
-    const wait = exp - now;
+    const wait = exp - now - TIME_BUFFER;
 
     cancel(this._refreshTokenTimeout);
 
