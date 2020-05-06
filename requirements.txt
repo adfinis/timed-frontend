@@ -8,7 +8,7 @@ djangorestframework==3.11.0
 djangorestframework-simplejwt==4.4.0
 djangorestframework-jsonapi[django-filter]==3.1.0
 psycopg2==2.8.5
-pytz==2019.3
+pytz==2020.1
 pyexcel-webio==0.1.4
 pyexcel-io==0.5.20
 django-excel==0.0.10
