@@ -1,4 +1,3 @@
-import datetime
 import os
 import re
 
@@ -159,6 +158,12 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
     "DEFAULT_PAGINATION_CLASS": "rest_framework_json_api.pagination.JsonApiPageNumberPagination",
     "DEFAULT_RENDERER_CLASSES": ("rest_framework_json_api.renderers.JSONRenderer",),
+    "TEST_REQUEST_RENDERER_CLASSES": (
+        "rest_framework_json_api.renderers.JSONRenderer",
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.MultiPartRenderer",
+    ),
+    "TEST_REQUEST_DEFAULT_FORMAT": "vnd.api+json",
 }
 
 JSON_API_FORMAT_FIELD_NAMES = "dasherize"
@@ -167,31 +172,10 @@ JSON_API_PLURALIZE_TYPES = True
 
 APPEND_SLASH = False
 
-# Authentication definition
+# Authentication
 
-AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
-
-AUTH_LDAP_ENABLED = env.bool("DJANGO_AUTH_LDAP_ENABLED", default=False)
-if AUTH_LDAP_ENABLED:
-    AUTH_LDAP_USER_ATTR_MAP = env.dict(
-        "DJANGO_AUTH_LDAP_USER_ATTR_MAP",
-        default={"first_name": "givenName", "last_name": "sn", "email": "mail"},
-    )
-
-    AUTH_LDAP_SERVER_URI = env.str("DJANGO_AUTH_LDAP_SERVER_URI")
-    AUTH_LDAP_BIND_DN = env.str("DJANGO_AUTH_LDAP_BIND_DN", default="")
-    AUTH_LDAP_BIND_PASSWORD = env.str("DJANGO_AUTH_LDAP_BIND_PASSWORD", default="")
-    AUTH_LDAP_USER_DN_TEMPLATE = env.str("DJANGO_AUTH_LDAP_USER_DN_TEMPLATE")
-    AUTHENTICATION_BACKENDS.insert(0, "django_auth_ldap.backend.LDAPBackend")
-
+# AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 AUTH_USER_MODEL = "employment.User"
-
-SIMPLE_AUTH = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=2),
-    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
-    # TODO check if this is ROTATE_REFRESH_TOKENS
-    # "JWT_ALLOW_REFRESH": True,
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

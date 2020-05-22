@@ -1,15 +1,14 @@
 import inspect
 
-import mockldap
 import pytest
 from django.contrib.auth import get_user_model
 from factory.base import FactoryMetaClass
 from pytest_factoryboy import register
+from rest_framework.test import APIClient
 
 from timed.employment import factories as employment_factories
 from timed.projects import factories as projects_factories
 from timed.subscription import factories as subscription_factories
-from timed.tests.client import JSONAPIClient
 from timed.tracking import factories as tracking_factories
 
 
@@ -25,48 +24,9 @@ register_module(subscription_factories)
 register_module(tracking_factories)
 
 
-@pytest.fixture(autouse=True, scope="session")
-def ldap_directory():
-    top = ("o=test", {"o": "test"})
-    people = ("ou=people,o=test", {"ou": "people"})
-    groups = ("ou=groups,o=test", {"ou": "groups"})
-    ldapuser = (
-        "uid=ldapuser,ou=people,o=test",
-        {
-            "uid": ["ldapuser"],
-            "objectClass": [
-                "person",
-                "organizationalPerson",
-                "inetOrgPerson",
-                "posixAccount",
-            ],
-            "userPassword": ["Test1234!"],
-            "uidNumber": ["1000"],
-            "gidNumber": ["1000"],
-            "givenName": ["givenName"],
-            "mail": ["ldapuser@example.net"],
-            "sn": ["LdapUser"],
-        },
-    )
-
-    directory = dict([top, people, groups, ldapuser])
-    mock = mockldap.MockLdap(directory)
-    mock.start()
-
-    yield
-
-    mock.stop()
-
-
 @pytest.fixture
-def client(db):
-    return JSONAPIClient()
-
-
-@pytest.fixture
-def auth_client(db):
-    """Return instance of a JSONAPIClient that is logged in as test user."""
-    user = get_user_model().objects.create_user(
+def auth_user(db):
+    return get_user_model().objects.create_user(
         username="user",
         password="123qweasd",
         first_name="Test",
@@ -75,43 +35,58 @@ def auth_client(db):
         is_staff=False,
     )
 
-    client = JSONAPIClient()
-    client.user = user
-    client.login("user", "123qweasd")
-    return client
-
 
 @pytest.fixture
-def admin_client(db):
-    """Return instance of a JSONAPIClient that is logged in as a staff user."""
-    user = get_user_model().objects.create_user(
-        username="user",
+def admin_user(db):
+    return get_user_model().objects.create_user(
+        username="admin",
         password="123qweasd",
-        first_name="Test",
+        first_name="Admin",
         last_name="User",
         is_superuser=False,
         is_staff=True,
     )
 
-    client = JSONAPIClient()
-    client.user = user
-    client.login("user", "123qweasd")
+
+@pytest.fixture
+def superadmin_user(db):
+    return get_user_model().objects.create_user(
+        username="superadmin",
+        password="123qweasd",
+        first_name="Superadmin",
+        last_name="User",
+        is_superuser=True,
+        is_staff=True,
+    )
+
+
+@pytest.fixture
+def client():
+    return APIClient()
+
+
+@pytest.fixture
+def auth_client(auth_user):
+    """Return instance of a APIClient that is logged in as test user."""
+    client = APIClient()
+    client.force_authenticate(user=auth_user)
+    client.user = auth_user
     return client
 
 
 @pytest.fixture
-def superadmin_client(db):
-    """Return instance of a JSONAPIClient that is logged in as superuser."""
-    user = get_user_model().objects.create_user(
-        username="user",
-        password="123qweasd",
-        first_name="Test",
-        last_name="User",
-        is_staff=True,
-        is_superuser=True,
-    )
+def admin_client(admin_user):
+    """Return instance of a APIClient that is logged in as a staff user."""
+    client = APIClient()
+    client.force_authenticate(user=admin_user)
+    client.user = admin_user
+    return client
 
-    client = JSONAPIClient()
-    client.user = user
-    client.login("user", "123qweasd")
+
+@pytest.fixture
+def superadmin_client(superadmin_user):
+    """Return instance of a APIClient that is logged in as superuser."""
+    client = APIClient()
+    client.force_authenticate(user=superadmin_user)
+    client.user = superadmin_user
     return client

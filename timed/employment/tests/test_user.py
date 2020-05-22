@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 import pytest
-from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework import status
 
@@ -20,27 +19,19 @@ def test_user_list_unauthenticated(client):
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_user_update_unauthenticated(client):
+def test_user_update_unauthenticated(client, db):
     user = UserFactory.create()
     url = reverse("user-detail", args=[user.id])
     response = client.patch(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
-def test_user_login_ldap(client):
-    client.login("ldapuser", "Test1234!")
-    user = get_user_model().objects.get(username="ldapuser")
-    assert user.first_name == "givenName"
-    assert user.last_name == "LdapUser"
-    assert user.email == "ldapuser@example.net"
-
-
-def test_user_list(auth_client, django_assert_num_queries):
+def test_user_list(db, auth_client, django_assert_num_queries):
     UserFactory.create_batch(2)
 
     url = reverse("user-list")
 
-    with django_assert_num_queries(8):
+    with django_assert_num_queries(7):
         response = auth_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
@@ -135,7 +126,7 @@ def test_user_delete_superuser(superadmin_client):
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
-def test_user_delete_with_reports_superuser(superadmin_client):
+def test_user_delete_with_reports_superuser(superadmin_client, db):
     """Test that user with reports may not be deleted."""
     user = UserFactory.create()
     ReportFactory.create(user=user)
