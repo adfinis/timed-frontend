@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "djmoney",
+    "mozilla_django_oidc",
     "timed.employment",
     "timed.projects",
     "timed.tracking",
@@ -141,6 +142,17 @@ USE_TZ = True
 STATIC_URL = env.str("STATIC_URL", "/static/")
 STATIC_ROOT = env.str("STATIC_ROOT", None)
 
+# Cache
+
+CACHES = {
+    "default": {
+        "BACKEND": env.str(
+            "CACHE_BACKEND", default="django.core.cache.backends.locmem.LocMemCache"
+        ),
+        "LOCATION": env.str("CACHE_LOCATION", ""),
+    }
+}
+
 # Rest framework definition
 
 REST_FRAMEWORK = {
@@ -152,7 +164,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ("rest_framework_json_api.parsers.JSONParser",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "mozilla_django_oidc.contrib.drf.OIDCAuthentication",
     ),
     "DEFAULT_METADATA_CLASS": "rest_framework_json_api.metadata.JSONAPIMetadata",
     "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
@@ -174,8 +186,11 @@ APPEND_SLASH = False
 
 # Authentication
 
-# AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 AUTH_USER_MODEL = "employment.User"
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "timed.authentication.TimedOIDCAuthenticationBackend",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -187,6 +202,39 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"  # noqa
     },
 ]
+
+# OIDC
+
+OIDC_DEFAULT_BASE_URL = "http://timed.local/auth/realms/timed/protocol/openid-connect"
+
+OIDC_OP_USER_ENDPOINT = env.str(
+    "OIDC_USERINFO_ENDPOINT", default=default(f"{OIDC_DEFAULT_BASE_URL}/userinfo")
+)
+OIDC_OP_TOKEN_ENDPOINT = env.str(
+    "OIDC_TOKEN_ENDPOINT", default=default(f"{OIDC_DEFAULT_BASE_URL}/token")
+)
+OIDC_RP_CLIENT_ID = env.str("OIDC_CLIENT_ID", default=None)
+OIDC_RP_CLIENT_SECRET = env.str("OIDC_CLIENT_SECRET", default=None)
+OIDC_VERIFY_SSL = env.bool("OIDC_VERIFY_SSL", default=default(False, True))
+OIDC_CREATE_USER = env.bool("OIDC_CREATE_USER", default=False)
+
+OIDC_USERNAME_CLAIM = env.str("OIDC_USERNAME_CLAIM", default="preferred_username")
+OIDC_EMAIL_CLAIM = env.str("OIDC_EMAIL_CLAIM", default="email")
+OIDC_FIRSTNAME_CLAIM = env.str("OIDC_FIRSTNAME_CLAIM", default="given_name")
+OIDC_LASTNAME_CLAIM = env.str("OIDC_LASTNAME_CLAIM", default="family_name")
+# time in seconds
+OIDC_BEARER_TOKEN_REVALIDATION_TIME = env.int(
+    "OIDC_BEARER_TOKEN_REVALIDATION_TIME", default=60
+)
+OIDC_CHECK_INTROSPECT = env.bool("OIDC_CHECK_INTROSPECT", default=True)
+OIDC_OP_INTROSPECT_ENDPOINT = env.str(
+    "OIDC_INTROSPECT_ENDPOINT",
+    default=default(f"{OIDC_DEFAULT_BASE_URL}/token/introspect"),
+)
+OIDC_OP_INTROSPECT_CLIENT_ID = env.str("OIDC_INTROSPECT_CLIENT_ID", default=None)
+OIDC_OP_INTROSPECT_CLIENT_SECRET = env.str(
+    "OIDC_INTROSPECT_CLIENT_SECRET", default=None
+)
 
 # Email definition
 

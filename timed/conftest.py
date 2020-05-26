@@ -2,6 +2,7 @@ import inspect
 
 import pytest
 from django.contrib.auth import get_user_model
+from django.core.cache import cache
 from factory.base import FactoryMetaClass
 from pytest_factoryboy import register
 from rest_framework.test import APIClient
@@ -90,3 +91,8 @@ def superadmin_client(superadmin_user):
     client.force_authenticate(user=superadmin_user)
     client.user = superadmin_user
     return client
+
+
+@pytest.fixture(scope="function", autouse=True)
+def _autoclear_cache():
+    cache.clear()

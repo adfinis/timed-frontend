@@ -1,4 +1,4 @@
-version: "3"
+version: "3.7"
 
 services:
   backend:
@@ -14,6 +14,8 @@ services:
     volumes:
       - ./:/app
     command: /bin/sh -c "wait-for-it.sh -t 60 db:5432 -- ./manage.py migrate && ./manage.py runserver 0.0.0.0:80"
+    networks:
+      - timed.local
 
   mailhog:
     image: mailhog/mailhog
@@ -21,3 +23,5 @@ services:
       - 8025:8025
     environment:
       - MH_UI_WEB_PATH=mailhog
+    networks:
+      - timed.local
