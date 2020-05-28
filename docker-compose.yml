@@ -30,5 +30,30 @@ services:
       - ENV=docker
       - STATIC_ROOT=/var/www/static
 
+  keycloak:
+    image: jboss/keycloak:10.0.1
+    volumes:
+      - ./timed-realm.json:/etc/keycloak/keycloak-config.json:ro
+    depends_on:
+      - db
+    environment:
+      - DB_VENDOR=postgres
+      - DB_ADDR=db
+      - DB_USER=timed
+      - DB_DATABASE=timed
+      - DB_PASSWORD=timed
+      - PROXY_ADDRESS_FORWARDING=true
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - KEYCLOAK_IMPORT=/etc/keycloak/keycloak-config.json
+
+  proxy:
+    image: nginx:1.17.10-alpine
+    ports:
+      - 80:80
+    volumes:
+      - ./dev-config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+
 volumes:
   dbdata:
+  kcdata:

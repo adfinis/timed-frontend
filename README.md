@@ -18,15 +18,21 @@ Timed timetracking software REST API built with Django
 After installing and configuring those requirements, you should be able to run the following
 commands to complete the installation:
 
+Add the `timed.local` entries to your hosts file:
+```bash
+echo "127.0.0.1 timed.local" | sudo tee -a /etc/hosts
+```
+
+Then just start the docker-compose setup:
 ```bash
 make start
 ```
 
-You can now access the API at http://localhost:8000/api/v1 and the admin interface at http://localhost:8000/admin/
+This brings up complete local installation, including our [Timed Frontend](https://github.com/adfinis-sygroup/timed-frontend) project.
 
-For end user interface have a look at our [Timed Frontend](https://github.com/adfinis-sygroup/timed-frontend) project.
+You can visit it at [http://timed.local](http://timed.local).
 
-The end user interface is included and is running under http://localhost:4200
+The API can be accessed at [http://timed.local/api/v1](http://timed.local/api/v1) and the admin interface at [http://timed.local/admin/](http://timed.local/admin/).
 
 ## Development
 
