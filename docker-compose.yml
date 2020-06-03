@@ -33,7 +33,7 @@ services:
   keycloak:
     image: jboss/keycloak:10.0.1
     volumes:
-      - ./timed-realm.json:/etc/keycloak/keycloak-config.json:ro
+      - ./dev-config/keycloak-config.json:/etc/keycloak/keycloak-config.json:ro
     depends_on:
       - db
     environment:
@@ -43,9 +43,7 @@ services:
       - DB_DATABASE=timed
       - DB_PASSWORD=timed
       - PROXY_ADDRESS_FORWARDING=true
-      - KEYCLOAK_USER=admin
-      - KEYCLOAK_PASSWORD=admin
-      - KEYCLOAK_IMPORT=/etc/keycloak/keycloak-config.json
+    command: ["-Dkeycloak.migration.action=import", "-Dkeycloak.migration.provider=singleFile", "-Dkeycloak.migration.file=/etc/keycloak/keycloak-config.json", "-b", "0.0.0.0"]
 
   proxy:
     image: nginx:1.17.10-alpine
@@ -56,4 +54,3 @@ services:
 
 volumes:
   dbdata:
-  kcdata:
