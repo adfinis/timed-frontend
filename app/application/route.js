@@ -5,8 +5,7 @@
  */
 import Route from "@ember/routing/route";
 import { inject as service } from "@ember/service";
-import Ember from "ember";
-import ApplicationRouteMixin from "ember-simple-auth/mixins/application-route-mixin";
+import OIDCApplicationRouteMixin from "ember-simple-auth-oidc/mixins/oidc-application-route-mixin";
 
 /**
  * The application route
@@ -16,31 +15,8 @@ import ApplicationRouteMixin from "ember-simple-auth/mixins/application-route-mi
  * @uses EmberSimpleAuth.ApplicationRouteMixin
  * @public
  */
-export default Route.extend(ApplicationRouteMixin, {
-  /**
-   * The session service
-   *
-   * @property {EmberSimpleAuth.SessionService} session
-   * @public
-   */
-  session: service("session"),
-
-  autostartTour: service("autostart-tour"),
-
-  /**
-   * Transition to login after logout
-   *
-   * @event sessionInvalidated
-   * @public
-   */
-  sessionInvalidated() {
-    this.transitionTo("login").then(() => {
-      if (!Ember.testing) {
-        /* istanbul ignore next */
-        location.reload();
-      }
-    });
-  },
+export default Route.extend(OIDCApplicationRouteMixin, {
+  autostartTour: service(),
 
   /**
    * The actions for the application route
@@ -58,7 +34,7 @@ export default Route.extend(ApplicationRouteMixin, {
     invalidateSession() {
       this.set("autostartTour.done", []);
 
-      this.get("session").invalidate();
+      this.session.invalidate();
     }
   }
 });

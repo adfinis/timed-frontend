@@ -283,6 +283,9 @@ export default function() {
   this.get("/user-statistics", statisticEndpoint("user"));
 
   this.post("/users/:id/transfer", () => new Response(201, {}));
+  this.get("/users/me", function({ users }) {
+    return users.first();
+  });
 
   this.get("/reports/export", function(
     _,

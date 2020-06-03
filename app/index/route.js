@@ -36,7 +36,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberSimpleAuth.SessionService} session
    * @public
    */
-  session: service("session"),
+  session: service(),
 
   /**
    * The notify service
@@ -69,7 +69,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   afterModel(model) {
-    const user = this.get("session.data.authenticated.user_id");
+    const userId = this.get("session.data.user.id");
     const day = model.format(DATE_FORMAT);
     const from = moment(model)
       .subtract(20, "days")
@@ -78,7 +78,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       .add(10, "days")
       .format(DATE_FORMAT);
     const location = this.store
-      .peekRecord("user", user)
+      .peekRecord("user", userId)
       .get("activeEmployment.location.id");
 
     return all([
@@ -91,11 +91,19 @@ export default Route.extend(RouteAutostartTourMixin, {
       this.store.query("report", {
         include: "task,task.project,task.project.customer",
         date: day,
-        user
+        user: userId
       }),
       /* eslint-disable camelcase */
-      this.store.query("report", { from_date: from, to_date: to, user }),
-      this.store.query("absence", { from_date: from, to_date: to, user }),
+      this.store.query("report", {
+        from_date: from,
+        to_date: to,
+        user: userId
+      }),
+      this.store.query("absence", {
+        from_date: from,
+        to_date: to,
+        user: userId
+      }),
       this.store.query("public-holiday", {
         from_date: from,
         to_date: to,

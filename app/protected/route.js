@@ -23,24 +23,31 @@ export default Route.extend(AuthenticatedRouteMixin, {
   tourManager: service("tour-manager"),
   routing: service("-routing"),
   media: service("media"),
+  store: service(),
+  ajax: service(),
 
   async model() {
-    const id = this.get("session.data.authenticated.user_id");
-
-    const user = await this.store.findRecord("user", id, {
-      include: "supervisors,supervisees"
+    const user = await this.ajax.request("/api/v1/users/me", {
+      method: "GET",
+      data: {
+        include: "supervisors,supervisees"
+      }
     });
+
+    await this.store.pushPayload("user", user);
+
+    const usermodel = await this.store.peekRecord("user", user.data.id);
 
     // Fetch current employment
     await this.store.query("employment", {
-      user: id,
+      user: usermodel.id,
       date: moment().format("YYYY-MM-DD"),
       include: "location"
     });
 
-    this.set("session.data.user", user);
+    this.set("session.data.user", usermodel);
 
-    return user;
+    return usermodel;
   },
 
   /**

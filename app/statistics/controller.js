@@ -202,6 +202,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   },
 
   reset(_, isExiting) {
+    /* istanbul ignore next */
     if (isExiting) {
       this.resetQueryParams();
     }

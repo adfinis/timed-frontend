@@ -47,7 +47,7 @@ export default Service.extend({
     try {
       const reports = await this.get("store").query("report", {
         to_date: this.get("reportsToDate").format("YYYY-MM-DD"),
-        reviewer: this.get("session.data.user.id"),
+        reviewer: this.session.data.user.id,
         editable: 1,
         verified: 0,
         page: { number: 1, size: 1 }

@@ -30,7 +30,7 @@ export default AjaxService.extend({
    * @property {String} token
    * @public
    */
-  token: reads("session.data.authenticated.access"),
+  token: reads("session.data.authenticated.access_token"),
 
   /**
    * The HTTP request headers

@@ -32,8 +32,12 @@ module("Acceptance | tour", function(hooks) {
   test("does not show a welcome dialog when tour completed", async function(assert) {
     const user = this.server.create("user", { tourDone: true });
 
+    this.server.get("users/me", function() {
+      return user;
+    });
+
     // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: user.id });
+    await authenticateSession();
 
     await visit("/");
 

@@ -48,8 +48,14 @@ module.exports = function(environment) {
       EXPORT_LIMIT: 100000
     },
 
-    "ember-simple-auth": {
-      authorizer: "authorizer:token"
+    "ember-simple-auth-oidc": {
+      host: "/auth/realms/timed/protocol/openid-connect",
+      clientId: "timed-public",
+      authEndpoint: "/auth",
+      tokenEndpoint: "/token",
+      endSessionEndpoint: "/logout",
+      userinfoEndpoint: "/userinfo",
+      afterLogoutUri: "/"
     },
 
     "ember-validated-form": {
@@ -69,6 +75,8 @@ module.exports = function(environment) {
   };
 
   if (environment === "development") {
+    ENV["ember-simple-auth-oidc"].host =
+      "http://timed.local/auth/realms/timed/protocol/openid-connect";
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -94,6 +102,8 @@ module.exports = function(environment) {
 
   // eslint-disable-next-line no-empty
   if (environment === "production") {
+    ENV["ember-simple-auth-oidc"].host =
+      "https://sso.adfinis-sygroup.ch/auth/realms/adsy/protocol/openid-connect/";
   }
 
   return ENV;
