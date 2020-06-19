@@ -25,7 +25,7 @@ def test_work_report_single_project(auth_client, django_assert_num_queries):
     )
 
     url = reverse("work-report-list")
-    with django_assert_num_queries(4):
+    with django_assert_num_queries(3):
         res = auth_client.get(
             url,
             data={
@@ -60,7 +60,7 @@ def test_work_report_multiple_projects(auth_client, django_assert_num_queries):
         ReportFactory.create_batch(10, user=user, task=task, date=report_date)
 
     url = reverse("work-report-list")
-    with django_assert_num_queries(4):
+    with django_assert_num_queries(3):
         res = auth_client.get(url, data={"user": auth_client.user.id, "verified": 0})
     assert res.status_code == status.HTTP_200_OK
     assert "20170901-WorkReports.zip" in (res["Content-Disposition"])

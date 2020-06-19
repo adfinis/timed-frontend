@@ -795,7 +795,7 @@ def test_report_export(
 
     url = reverse("report-export")
 
-    with django_assert_num_queries(2):
+    with django_assert_num_queries(1):
         response = auth_client.get(url, data={"file_type": file_type})
 
     assert response.status_code == status.HTTP_200_OK

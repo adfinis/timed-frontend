@@ -1,4 +1,3 @@
-import datetime
 import os
 import re
 
@@ -61,6 +60,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "django_filters",
     "djmoney",
+    "mozilla_django_oidc",
     "timed.employment",
     "timed.projects",
     "timed.tracking",
@@ -142,6 +142,17 @@ USE_TZ = True
 STATIC_URL = env.str("STATIC_URL", "/static/")
 STATIC_ROOT = env.str("STATIC_ROOT", None)
 
+# Cache
+
+CACHES = {
+    "default": {
+        "BACKEND": env.str(
+            "CACHE_BACKEND", default="django.core.cache.backends.locmem.LocMemCache"
+        ),
+        "LOCATION": env.str("CACHE_LOCATION", ""),
+    }
+}
+
 # Rest framework definition
 
 REST_FRAMEWORK = {
@@ -153,12 +164,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": ("rest_framework_json_api.parsers.JSONParser",),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "mozilla_django_oidc.contrib.drf.OIDCAuthentication",
     ),
     "DEFAULT_METADATA_CLASS": "rest_framework_json_api.metadata.JSONAPIMetadata",
     "EXCEPTION_HANDLER": "rest_framework_json_api.exceptions.exception_handler",
     "DEFAULT_PAGINATION_CLASS": "rest_framework_json_api.pagination.JsonApiPageNumberPagination",
     "DEFAULT_RENDERER_CLASSES": ("rest_framework_json_api.renderers.JSONRenderer",),
+    "TEST_REQUEST_RENDERER_CLASSES": (
+        "rest_framework_json_api.renderers.JSONRenderer",
+        "rest_framework.renderers.JSONRenderer",
+        "rest_framework.renderers.MultiPartRenderer",
+    ),
+    "TEST_REQUEST_DEFAULT_FORMAT": "vnd.api+json",
 }
 
 JSON_API_FORMAT_FIELD_NAMES = "dasherize"
@@ -167,31 +184,13 @@ JSON_API_PLURALIZE_TYPES = True
 
 APPEND_SLASH = False
 
-# Authentication definition
-
-AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
-
-AUTH_LDAP_ENABLED = env.bool("DJANGO_AUTH_LDAP_ENABLED", default=False)
-if AUTH_LDAP_ENABLED:
-    AUTH_LDAP_USER_ATTR_MAP = env.dict(
-        "DJANGO_AUTH_LDAP_USER_ATTR_MAP",
-        default={"first_name": "givenName", "last_name": "sn", "email": "mail"},
-    )
-
-    AUTH_LDAP_SERVER_URI = env.str("DJANGO_AUTH_LDAP_SERVER_URI")
-    AUTH_LDAP_BIND_DN = env.str("DJANGO_AUTH_LDAP_BIND_DN", default="")
-    AUTH_LDAP_BIND_PASSWORD = env.str("DJANGO_AUTH_LDAP_BIND_PASSWORD", default="")
-    AUTH_LDAP_USER_DN_TEMPLATE = env.str("DJANGO_AUTH_LDAP_USER_DN_TEMPLATE")
-    AUTHENTICATION_BACKENDS.insert(0, "django_auth_ldap.backend.LDAPBackend")
+# Authentication
 
 AUTH_USER_MODEL = "employment.User"
-
-SIMPLE_AUTH = {
-    "ACCESS_TOKEN_LIFETIME": datetime.timedelta(days=2),
-    "REFRESH_TOKEN_LIFETIME": datetime.timedelta(days=7),
-    # TODO check if this is ROTATE_REFRESH_TOKENS
-    # "JWT_ALLOW_REFRESH": True,
-}
+AUTHENTICATION_BACKENDS = [
+    "django.contrib.auth.backends.ModelBackend",
+    "timed.authentication.TimedOIDCAuthenticationBackend",
+]
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -203,6 +202,39 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"  # noqa
     },
 ]
+
+# OIDC
+
+OIDC_DEFAULT_BASE_URL = "http://timed.local/auth/realms/timed/protocol/openid-connect"
+
+OIDC_OP_USER_ENDPOINT = env.str(
+    "OIDC_USERINFO_ENDPOINT", default=default(f"{OIDC_DEFAULT_BASE_URL}/userinfo")
+)
+OIDC_OP_TOKEN_ENDPOINT = env.str(
+    "OIDC_TOKEN_ENDPOINT", default=default(f"{OIDC_DEFAULT_BASE_URL}/token")
+)
+OIDC_RP_CLIENT_ID = env.str("OIDC_CLIENT_ID", default=None)
+OIDC_RP_CLIENT_SECRET = env.str("OIDC_CLIENT_SECRET", default=None)
+OIDC_VERIFY_SSL = env.bool("OIDC_VERIFY_SSL", default=default(False, True))
+OIDC_CREATE_USER = env.bool("OIDC_CREATE_USER", default=False)
+
+OIDC_USERNAME_CLAIM = env.str("OIDC_USERNAME_CLAIM", default="preferred_username")
+OIDC_EMAIL_CLAIM = env.str("OIDC_EMAIL_CLAIM", default="email")
+OIDC_FIRSTNAME_CLAIM = env.str("OIDC_FIRSTNAME_CLAIM", default="given_name")
+OIDC_LASTNAME_CLAIM = env.str("OIDC_LASTNAME_CLAIM", default="family_name")
+# time in seconds
+OIDC_BEARER_TOKEN_REVALIDATION_TIME = env.int(
+    "OIDC_BEARER_TOKEN_REVALIDATION_TIME", default=60
+)
+OIDC_CHECK_INTROSPECT = env.bool("OIDC_CHECK_INTROSPECT", default=True)
+OIDC_OP_INTROSPECT_ENDPOINT = env.str(
+    "OIDC_INTROSPECT_ENDPOINT",
+    default=default(f"{OIDC_DEFAULT_BASE_URL}/token/introspect"),
+)
+OIDC_OP_INTROSPECT_CLIENT_ID = env.str("OIDC_INTROSPECT_CLIENT_ID", default=None)
+OIDC_OP_INTROSPECT_CLIENT_SECRET = env.str(
+    "OIDC_INTROSPECT_CLIENT_SECRET", default=None
+)
 
 # Email definition
 

@@ -24,7 +24,7 @@ def test_worktime_balance_create(auth_client):
 def test_worktime_balance_no_employment(auth_client, django_assert_num_queries):
     url = reverse("worktime-balance-list")
 
-    with django_assert_num_queries(4):
+    with django_assert_num_queries(3):
         result = auth_client.get(
             url, data={"user": auth_client.user.id, "date": "2017-01-01"}
         )
@@ -89,7 +89,7 @@ def test_worktime_balance_with_employments(auth_client, django_assert_num_querie
         args=["{0}_{1}".format(auth_client.user.id, end_date.strftime("%Y-%m-%d"))],
     )
 
-    with django_assert_num_queries(12):
+    with django_assert_num_queries(11):
         result = auth_client.get(url)
     assert result.status_code == status.HTTP_200_OK
 
@@ -180,7 +180,7 @@ def test_worktime_balance_list_last_reported_date_no_reports(
 
     url = reverse("worktime-balance-list")
 
-    with django_assert_num_queries(2):
+    with django_assert_num_queries(1):
         result = auth_client.get(url, data={"last_reported_date": 1})
 
     assert result.status_code == status.HTTP_200_OK
@@ -215,7 +215,7 @@ def test_worktime_balance_list_last_reported_date(
 
     url = reverse("worktime-balance-list")
 
-    with django_assert_num_queries(10):
+    with django_assert_num_queries(9):
         result = auth_client.get(url, data={"last_reported_date": 1})
 
     assert result.status_code == status.HTTP_200_OK

@@ -29,7 +29,7 @@ def test_project_list_include(auth_client, django_assert_num_queries, project):
 
     url = reverse("project-list")
 
-    with django_assert_num_queries(8):
+    with django_assert_num_queries(7):
         response = auth_client.get(
             url,
             data={"include": ",".join(ProjectSerializer.included_serializers.keys())},
@@ -41,7 +41,7 @@ def test_project_list_include(auth_client, django_assert_num_queries, project):
     assert json["data"][0]["id"] == str(project.id)
 
 
-def test_project_detail_no_auth(client, project):
+def test_project_detail_no_auth(db, client, project):
     url = reverse("project-detail", args=[project.id])
 
     res = client.get(url)

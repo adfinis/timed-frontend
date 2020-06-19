@@ -30,7 +30,7 @@ def test_absence_balance_full_day(auth_client, django_assert_num_queries):
 
     url = reverse("absence-balance-list")
 
-    with django_assert_num_queries(7):
+    with django_assert_num_queries(6):
         result = auth_client.get(
             url,
             data={
@@ -73,7 +73,7 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
     AbsenceFactory.create(date=day, user=user, type=absence_type)
 
     url = reverse("absence-balance-list")
-    with django_assert_num_queries(12):
+    with django_assert_num_queries(11):
         result = auth_client.get(
             url,
             data={
