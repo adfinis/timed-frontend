@@ -220,3 +220,30 @@ def test_user_attributes(auth_client, project):
     project.reviewers.add(user)
     res = auth_client.get(url)
     assert res.json()["data"]["attributes"]["is-reviewer"]
+
+
+def test_user_me_auth(auth_client):
+    """Should return the auth_client user."""
+    user = auth_client.user
+
+    url = reverse("user-me")
+
+    response = auth_client.get(url)
+    assert response.status_code == status.HTTP_200_OK
+
+    me_data = response.json()["data"]
+    assert me_data["id"] == str(user.id)
+
+    # should be the same as user-detail
+    url = reverse("user-detail", args=[user.id])
+
+    response = auth_client.get(url)
+    assert me_data == response.json()["data"]
+
+
+def test_user_me_anonymous(client):
+    """Non-authenticated client doesn't do anything."""
+    url = reverse("user-me")
+
+    response = client.get(url)
+    assert response.status_code == status.HTTP_401_UNAUTHORIZED
