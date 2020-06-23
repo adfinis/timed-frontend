@@ -4,6 +4,7 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.db.models import CharField, DateField, IntegerField, Q, Value
 from django.db.models.functions import Concat
+from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
 from rest_framework import exceptions, status
 from rest_framework.decorators import action
@@ -53,6 +54,14 @@ class UserViewSet(ModelViewSet):
         return get_user_model().objects.prefetch_related(
             "employments", "supervisees", "supervisors"
         )
+
+    @action(methods=["get"], detail=False)
+    def me(self, request, pk=None):
+        User = get_user_model()
+        self.object = get_object_or_404(User, pk=request.user.id)
+        serializer = self.get_serializer(self.object)
+
+        return Response(serializer.data)
 
     @action(methods=["post"], detail=True)
     def transfer(self, request, pk=None):
