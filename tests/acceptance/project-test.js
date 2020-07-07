@@ -1,3 +1,4 @@
+import Service from "@ember/service";
 import { click, fillIn, visit, currentURL } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { selectChoose } from "ember-power-select/test-support";
@@ -149,6 +150,10 @@ module("Acceptance | projects", function(hooks) {
     const user = this.server.create("user", { isSuperuser: true });
     this.server.create("project");
 
+    this.server.get("users/me", function() {
+      return user;
+    });
+
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: user.id });
 
@@ -157,5 +162,58 @@ module("Acceptance | projects", function(hooks) {
 
     await click("[data-test-customer-selection] div");
     assert.dom(".ember-power-select-option").exists({ count: 2 });
+  });
+
+  test("shows error while fetching projects", async function(assert) {
+    this.server.get("projects", function() {
+      return new Error();
+    });
+
+    this.owner.register(
+      "service:notify",
+      Service.extend({
+        error() {
+          assert.step("error");
+        },
+        // Needed for mocking, throws error otherwise
+        setTarget() {}
+      })
+    );
+
+    await visit("/projects");
+    assert.verifySteps(["error"]);
+  });
+
+  test("shows error while fetching tasks", async function(assert) {
+    this.server.get("tasks", function() {
+      return new Error();
+    });
+
+    this.owner.register(
+      "service:notify",
+      Service.extend({
+        error() {
+          assert.step("error");
+        },
+        // Needed for mocking, throws error otherwise
+        setTarget() {}
+      })
+    );
+
+    await visit("/projects");
+
+    await selectChoose(
+      "[data-test-customer-selection]",
+      ".ember-power-select-option",
+      0
+    );
+
+    await selectChoose(
+      "[data-test-project-selection]",
+      ".ember-power-select-option",
+      0
+    );
+
+    assert.verifySteps(["error"]);
   });
 });

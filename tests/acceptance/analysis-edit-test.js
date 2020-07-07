@@ -116,8 +116,9 @@ module("Acceptance | analysis edit", function(hooks) {
     this.reportIntersection.update({ review: false });
     const user = this.server.create("user");
 
-    // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: user.id });
+    this.server.get("users/me", function() {
+      return user;
+    });
 
     await visit("/analysis/edit?id=1,2,3");
 
@@ -127,6 +128,25 @@ module("Acceptance | analysis edit", function(hooks) {
       .hasAttribute(
         "title",
         "Please select yourself as 'reviewer' to verify reports."
+      );
+  });
+
+  test("cannot verify report if user is not reviewer or superuser and report needs review", async function(assert) {
+    this.reportIntersection.update({ review: true });
+    const user = this.server.create("user");
+
+    this.server.get("users/me", function() {
+      return user;
+    });
+
+    await visit("/analysis/edit?id=1,2,3");
+
+    assert.dom("[data-test-verified] input").isDisabled();
+    assert
+      .dom("[data-test-verified] label")
+      .hasAttribute(
+        "title",
+        "Please select yourself as 'reviewer' to verify reports. Please review selected reports before verifying."
       );
   });
 });

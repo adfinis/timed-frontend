@@ -51,6 +51,7 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   },
 
   reset() {
+    /* istanbul ignore next */
     this.resetQueryParams();
   },
 

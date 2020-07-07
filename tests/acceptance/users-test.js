@@ -32,8 +32,12 @@ module("Acceptance | users", function(hooks) {
   test("shows all to superuser", async function(assert) {
     const user = this.server.create("user", { isSuperuser: true });
 
+    this.server.get("users/me", function() {
+      return user;
+    });
+
     // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: user.id });
+    await authenticateSession();
 
     await visit("/users");
 
@@ -45,8 +49,12 @@ module("Acceptance | users", function(hooks) {
   test("can filter and reset", async function(assert) {
     const user = this.server.create("user", { isSuperuser: true });
 
+    this.server.get("users/me", function() {
+      return user;
+    });
+
     // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: user.id });
+    await authenticateSession();
 
     await visit("/users");
 

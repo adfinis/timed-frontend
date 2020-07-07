@@ -202,7 +202,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   can: service("can"),
 
-  jwt: reads("session.data.authenticated.access"),
+  jwt: reads("session.data.authenticated.access_token"),
 
   _scrollOffset: 0,
 

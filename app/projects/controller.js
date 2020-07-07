@@ -68,6 +68,7 @@ export default Controller.extend({
 
       this.notify.success("Task was saved");
     } catch (error) {
+      /* istanbul ignore next */
       this.notify.error("Error while saving task");
     }
 
@@ -75,15 +76,11 @@ export default Controller.extend({
   }).drop(),
 
   createTask: task(function*() {
-    try {
-      this.set(
-        "selectedTask",
-        yield this.store.createRecord("task", {
-          project: this.get("selectedProject")
-        })
-      );
-    } catch (error) {
-      this.notify.error("Error while adding task");
-    }
+    this.set(
+      "selectedTask",
+      yield this.store.createRecord("task", {
+        project: this.get("selectedProject")
+      })
+    );
   }).drop()
 });
