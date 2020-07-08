@@ -103,7 +103,7 @@ module.exports = function(environment) {
   // eslint-disable-next-line no-empty
   if (environment === "production") {
     ENV["ember-simple-auth-oidc"].host =
-      "https://sso.adfinis-sygroup.ch/auth/realms/adsy/protocol/openid-connect/";
+      "https://sso.adfinis-sygroup.ch/auth/realms/adsy/protocol/openid-connect";
   }
 
   return ENV;
