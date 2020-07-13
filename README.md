@@ -69,6 +69,10 @@ according to type.
 | `DJANGO_SERVER_EMAIL`               | Email address error messages are sent from            | root@localhost      |
 | `DJANGO_ADMINS`                     | List of people who get error notifications            | not set             |
 | `DJANGO_WORK_REPORT_PATH`           | Path of custom work report template                   | not set             |
+| `UWSGI_INI`                         | Path to uwsgi.ini configuration                       | /app/uwsgi.ini      |
+| `UWSGI_MAX_REQUESTS`                | uWSGI max requests                                    | 2000                |
+| `UWSGI_HARAKIRI`                    | uWSGI harakiri (request timeout)                      | 5                   |
+| `UWSGI_PROCESSES`                   | uWSGI number of processes                             | 4                   |
 
 ## Contributing
 
