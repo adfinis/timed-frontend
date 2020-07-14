@@ -1,0 +1,7 @@
+#!/bin/sh
+
+sed -i 's/max-requests = .*/max-requests = '"${UWSGI_MAX_REQUESTS}"'/g' \
+    -i 's/harakiri = .*/harakiri = '"${UWSGI_HARAKIRI}"'/g' \
+    -i 's/processes = .*/processes = '"${UWSGI_PROCESSES}"'/g' "${UWSGI_INI}"
+
+wait-for-it.sh "${DJANGO_DATABASE_HOST}":"${DJANGO_DATABASE_PORT}" -t "${WAITFORIT_TIMEOUT}" -- ./manage.py migrate && uwsgi
