@@ -205,36 +205,36 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # OIDC
 
-OIDC_DEFAULT_BASE_URL = "http://timed.local/auth/realms/timed/protocol/openid-connect"
+OIDC_DEFAULT_BASE_URL = env.str(
+    "DJANGO_OIDC_DEFAULT_BASE_URL",
+    default="http://timed.local/auth/realms/timed/protocol/openid-connect",
+)
+
+# not needed in timed-backend
+OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_DEFAULT_BASE_URL}/token"
 
 OIDC_OP_USER_ENDPOINT = env.str(
-    "OIDC_USERINFO_ENDPOINT", default=default(f"{OIDC_DEFAULT_BASE_URL}/userinfo")
+    "DJANGO_OIDC_USERINFO_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/userinfo"
 )
-OIDC_OP_TOKEN_ENDPOINT = env.str(
-    "OIDC_TOKEN_ENDPOINT", default=default(f"{OIDC_DEFAULT_BASE_URL}/token")
-)
-OIDC_RP_CLIENT_ID = env.str("OIDC_CLIENT_ID", default=None)
-OIDC_RP_CLIENT_SECRET = env.str("OIDC_CLIENT_SECRET", default=None)
-OIDC_VERIFY_SSL = env.bool("OIDC_VERIFY_SSL", default=default(False, True))
-OIDC_CREATE_USER = env.bool("OIDC_CREATE_USER", default=False)
+OIDC_VERIFY_SSL = env.bool("DJANGO_OIDC_VERIFY_SSL", default=default(False, True))
+OIDC_CREATE_USER = env.bool("DJANGO_OIDC_CREATE_USER", default=False)
 
-OIDC_USERNAME_CLAIM = env.str("OIDC_USERNAME_CLAIM", default="preferred_username")
-OIDC_EMAIL_CLAIM = env.str("OIDC_EMAIL_CLAIM", default="email")
-OIDC_FIRSTNAME_CLAIM = env.str("OIDC_FIRSTNAME_CLAIM", default="given_name")
-OIDC_LASTNAME_CLAIM = env.str("OIDC_LASTNAME_CLAIM", default="family_name")
+OIDC_USERNAME_CLAIM = env.str("DJANGO_OIDC_USERNAME_CLAIM", default="sub")
+OIDC_EMAIL_CLAIM = env.str("DJANGO_OIDC_EMAIL_CLAIM", default="email")
+OIDC_FIRSTNAME_CLAIM = env.str("DJANGO_OIDC_FIRSTNAME_CLAIM", default="given_name")
+OIDC_LASTNAME_CLAIM = env.str("DJANGO_OIDC_LASTNAME_CLAIM", default="family_name")
 # time in seconds
 OIDC_BEARER_TOKEN_REVALIDATION_TIME = env.int(
-    "OIDC_BEARER_TOKEN_REVALIDATION_TIME", default=60
+    "DJANGO_OIDC_BEARER_TOKEN_REVALIDATION_TIME", default=60
 )
-OIDC_CHECK_INTROSPECT = env.bool("OIDC_CHECK_INTROSPECT", default=True)
+# for checking confidential client authentication
+OIDC_CHECK_INTROSPECT = env.bool("DJANGO_OIDC_CHECK_INTROSPECT", default=True)
 OIDC_OP_INTROSPECT_ENDPOINT = env.str(
-    "OIDC_INTROSPECT_ENDPOINT",
-    default=default(f"{OIDC_DEFAULT_BASE_URL}/token/introspect"),
+    "DJANGO_OIDC_INTROSPECT_ENDPOINT",
+    default=f"{OIDC_DEFAULT_BASE_URL}/token/introspect",
 )
-OIDC_OP_INTROSPECT_CLIENT_ID = env.str("OIDC_INTROSPECT_CLIENT_ID", default=None)
-OIDC_OP_INTROSPECT_CLIENT_SECRET = env.str(
-    "OIDC_INTROSPECT_CLIENT_SECRET", default=None
-)
+OIDC_RP_CLIENT_ID = env.str("DJANGO_OIDC_CLIENT_ID", default=None)
+OIDC_RP_CLIENT_SECRET = env.str("DJANGO_OIDC_CLIENT_SECRET", default=None)
 
 # Email definition
 

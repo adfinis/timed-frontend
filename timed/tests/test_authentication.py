@@ -33,11 +33,11 @@ def test_authentication(
     requests_mock,
     settings,
 ):
-    userinfo = {"preferred_username": "1"}
+    userinfo = {"sub": "1"}
     requests_mock.get(settings.OIDC_OP_USER_ENDPOINT, text=json.dumps(userinfo))
 
     if not is_id_token:
-        userinfo = {"client_id": "test_client", "preferred_username": "1"}
+        userinfo = {"client_id": "test_client", "sub": "1"}
         requests_mock.get(
             settings.OIDC_OP_USER_ENDPOINT, status_code=status.HTTP_401_UNAUTHORIZED
         )
@@ -72,7 +72,7 @@ def test_authentication_new_user(
     user_model = get_user_model()
     assert user_model.objects.filter(username=username).count() == 0
 
-    userinfo = {"preferred_username": username}
+    userinfo = {"sub": username}
     requests_mock.get(settings.OIDC_OP_USER_ENDPOINT, text=json.dumps(userinfo))
 
     request = rf.get("/openid", HTTP_AUTHORIZATION="Bearer Token")

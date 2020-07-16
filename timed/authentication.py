@@ -15,7 +15,7 @@ class TimedOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         """Return user details dictionary."""
 
         basic = base64.b64encode(
-            f"{settings.OIDC_OP_INTROSPECT_CLIENT_ID}:{settings.OIDC_OP_INTROSPECT_CLIENT_SECRET}".encode(
+            f"{settings.OIDC_RP_CLIENT_ID}:{settings.OIDC_RP_CLIENT_SECRET}".encode(
                 "utf-8"
             )
         ).decode()
