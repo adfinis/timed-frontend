@@ -88,10 +88,12 @@ class TimedOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
     def create_user(self, claims):
         """Return object for a newly created user account."""
+
         username = self.get_username(claims)
         email = claims.get(settings.OIDC_EMAIL_CLAIM, "")
         first_name = claims.get(settings.OIDC_FIRSTNAME_CLAIM, "")
         last_name = claims.get(settings.OIDC_LASTNAME_CLAIM, "")
+
         return self.UserModel.objects.create(
             username=username, email=email, first_name=first_name, last_name=last_name
         )
