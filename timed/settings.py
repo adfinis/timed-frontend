@@ -221,8 +221,12 @@ OIDC_OP_USER_ENDPOINT = env.str(
     "DJANGO_OIDC_USERINFO_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/userinfo"
 )
 OIDC_OP_JWKS_ENDPOINT = env.str(
-    "DJANGO_OP_JWKS_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/certs"
+    "DJANGO_OIDC_OP_JWKS_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/certs"
 )
+
+OIDC_RP_CLIENT_ID = env.str("DJANGO_OIDC_RP_CLIENT_ID", default="timed-public")
+OIDC_RP_CLIENT_SECRET = env.str("DJANGO_OIDC_RP_CLIENT_SECRET", default=None)
+
 OIDC_VERIFY_SSL = env.bool("DJANGO_OIDC_VERIFY_SSL", default=default(False, True))
 OIDC_RP_SIGN_ALGO = env.str("DJANGO_OIDC_RP_SIGN_ALGO", default="RS256")
 
@@ -241,16 +245,19 @@ OIDC_BEARER_TOKEN_REVALIDATION_TIME = env.int(
 # introspection endpoint for checking confidential client authentication
 OIDC_CHECK_INTROSPECT = env.bool("DJANGO_OIDC_CHECK_INTROSPECT", default=True)
 OIDC_OP_INTROSPECT_ENDPOINT = env.str(
-    "DJANGO_OIDC_INTROSPECT_ENDPOINT",
+    "DJANGO_OIDC_OP_INTROSPECT_ENDPOINT",
     default=f"{OIDC_DEFAULT_BASE_URL}/token/introspect",
 )
-OIDC_RP_CLIENT_ID = env.str("DJANGO_OIDC_CLIENT_ID", default="timed-public")
-OIDC_RP_CLIENT_SECRET = env.str("DJANGO_OIDC_CLIENT_SECRET", default=None)
-
+OIDC_RP_INTROSPECT_CLIENT_ID = env.str(
+    "DJANGO_OIDC_RP_INTROSPECT_CLIENT_ID", default="timed-confidential"
+)
+OIDC_RP_INTROSPECT_CLIENT_SECRET = env.str(
+    "DJANGO_OIDC_RP_INTROSPECT_CLIENT_SECRET", default=None
+)
 
 # admin page after completing server-side authentication flow
 LOGIN_REDIRECT_URL = env.str(
-    "DJANGO_ADMIN_LOGIN_REDIRECT_URL", default=default("http://timed.local/admin/")
+    "DJANGO_OIDC_ADMIN_LOGIN_REDIRECT_URL", default=default("http://timed.local/admin/")
 )
 
 # Email definition
