@@ -11,9 +11,17 @@ services:
     environment:
       - PYTHONDONTWRITEBYTECODE=1
       - EMAIL_URL=smtp://mailhog:1025
+      - DJANGO_OIDC_USERNAME_CLAIM=preferred_username
     volumes:
       - ./:/app
     command: /bin/sh -c "wait-for-it.sh -t 60 db:5432 -- ./manage.py migrate && ./manage.py runserver 0.0.0.0:80"
+    networks:
+      - timed.local
+
+  frontend:
+    environment:
+      - TIMED_SSO_CLIENT_HOST=http://timed.local/auth/realms/timed/protocol/openid-connect
+      - TIMED_SSO_CLIENT_ID=timed-public
     networks:
       - timed.local
 

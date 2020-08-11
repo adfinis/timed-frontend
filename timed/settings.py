@@ -48,7 +48,7 @@ HOST_DOMAIN = env.str("DJANGO_HOST_DOMAIN", default=default("localhost:4200"))
 
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "timed.apps.TimedAdminConfig",
     "django.contrib.humanize",
     "multiselectfield",
     "django.forms",
@@ -86,6 +86,7 @@ TEMPLATES = [
     # default: needed for django-admin
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [django_root("timed", "templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -209,17 +210,30 @@ OIDC_DEFAULT_BASE_URL = env.str(
     "DJANGO_OIDC_DEFAULT_BASE_URL",
     default="http://timed.local/auth/realms/timed/protocol/openid-connect",
 )
+OIDC_OP_AUTHORIZATION_ENDPOINT = env.str(
+    "DJANGO_OIDC_OP_AUTHORIZATION_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/auth"
+)
 
-# not needed in timed-backend
-OIDC_OP_TOKEN_ENDPOINT = f"{OIDC_DEFAULT_BASE_URL}/token"
-
+OIDC_OP_TOKEN_ENDPOINT = env.str(
+    "DJANGO_OIDC_OP_TOKEN_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/token"
+)
 OIDC_OP_USER_ENDPOINT = env.str(
     "DJANGO_OIDC_USERINFO_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/userinfo"
 )
-OIDC_VERIFY_SSL = env.bool("DJANGO_OIDC_VERIFY_SSL", default=default(False, True))
-OIDC_CREATE_USER = env.bool("DJANGO_OIDC_CREATE_USER", default=False)
+OIDC_OP_JWKS_ENDPOINT = env.str(
+    "DJANGO_OIDC_OP_JWKS_ENDPOINT", default=f"{OIDC_DEFAULT_BASE_URL}/certs"
+)
 
-OIDC_USERNAME_CLAIM = env.str("DJANGO_OIDC_USERNAME_CLAIM", default="sub")
+OIDC_RP_CLIENT_ID = env.str("DJANGO_OIDC_RP_CLIENT_ID", default="timed-public")
+OIDC_RP_CLIENT_SECRET = env.str("DJANGO_OIDC_RP_CLIENT_SECRET", default=None)
+
+OIDC_VERIFY_SSL = env.bool("DJANGO_OIDC_VERIFY_SSL", default=default(False, True))
+OIDC_RP_SIGN_ALGO = env.str("DJANGO_OIDC_RP_SIGN_ALGO", default="RS256")
+
+OIDC_CREATE_USER = env.bool("DJANGO_OIDC_CREATE_USER", default=True)
+OIDC_USERNAME_CLAIM = env.str(
+    "DJANGO_OIDC_USERNAME_CLAIM", default=default("preferred_username", "sub")
+)
 OIDC_EMAIL_CLAIM = env.str("DJANGO_OIDC_EMAIL_CLAIM", default="email")
 OIDC_FIRSTNAME_CLAIM = env.str("DJANGO_OIDC_FIRSTNAME_CLAIM", default="given_name")
 OIDC_LASTNAME_CLAIM = env.str("DJANGO_OIDC_LASTNAME_CLAIM", default="family_name")
@@ -227,14 +241,30 @@ OIDC_LASTNAME_CLAIM = env.str("DJANGO_OIDC_LASTNAME_CLAIM", default="family_name
 OIDC_BEARER_TOKEN_REVALIDATION_TIME = env.int(
     "DJANGO_OIDC_BEARER_TOKEN_REVALIDATION_TIME", default=60
 )
-# for checking confidential client authentication
+
+# introspection endpoint for checking confidential client authentication
 OIDC_CHECK_INTROSPECT = env.bool("DJANGO_OIDC_CHECK_INTROSPECT", default=True)
 OIDC_OP_INTROSPECT_ENDPOINT = env.str(
-    "DJANGO_OIDC_INTROSPECT_ENDPOINT",
+    "DJANGO_OIDC_OP_INTROSPECT_ENDPOINT",
     default=f"{OIDC_DEFAULT_BASE_URL}/token/introspect",
 )
-OIDC_RP_CLIENT_ID = env.str("DJANGO_OIDC_CLIENT_ID", default=None)
-OIDC_RP_CLIENT_SECRET = env.str("DJANGO_OIDC_CLIENT_SECRET", default=None)
+OIDC_RP_INTROSPECT_CLIENT_ID = env.str(
+    "DJANGO_OIDC_RP_INTROSPECT_CLIENT_ID", default="timed-confidential"
+)
+OIDC_RP_INTROSPECT_CLIENT_SECRET = env.str(
+    "DJANGO_OIDC_RP_INTROSPECT_CLIENT_SECRET", default=None
+)
+
+# admin page after completing server-side authentication flow
+LOGIN_REDIRECT_URL = env.str(
+    "DJANGO_OIDC_ADMIN_LOGIN_REDIRECT_URL", default=default("http://timed.local/admin/")
+)
+
+# allow / disallow login with local user / password
+ALLOW_LOCAL_LOGIN = env.bool("DJANGO_ALLOW_LOCAL_LOGIN", default=True)
+
+if not ALLOW_LOCAL_LOGIN:  # pragma: no cover
+    APPLICATION_BACKENDS = ["timed.authentication.TimedOIDCAuthenticationBackend"]
 
 # Email definition
 

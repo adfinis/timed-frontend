@@ -10,4 +10,5 @@ urlpatterns = [
     url(r"^api/v1/", include("timed.tracking.urls")),
     url(r"^api/v1/", include("timed.reports.urls")),
     url(r"^api/v1/", include("timed.subscription.urls")),
+    url(r"^oidc/", include("mozilla_django_oidc.urls")),
 ]

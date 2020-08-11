@@ -15,8 +15,6 @@ services:
 
   frontend:
     image: adfinissygroup/timed-frontend:latest
-    depends_on:
-      - backend
     ports:
       - 4200:80
     networks:
