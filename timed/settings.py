@@ -260,6 +260,12 @@ LOGIN_REDIRECT_URL = env.str(
     "DJANGO_OIDC_ADMIN_LOGIN_REDIRECT_URL", default=default("http://timed.local/admin/")
 )
 
+# allow / disallow login with local user / password
+ALLOW_LOCAL_LOGIN = env.bool("DJANGO_ALLOW_LOCAL_LOGIN", default=True)
+
+if not ALLOW_LOCAL_LOGIN:  # pragma: no cover
+    APPLICATION_BACKENDS = ["timed.authentication.TimedOIDCAuthenticationBackend"]
+
 # Email definition
 
 EMAIL_CONFIG = env.email_url("EMAIL_URL", default="smtp://localhost:25")

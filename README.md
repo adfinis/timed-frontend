@@ -85,6 +85,7 @@ according to type.
 | `DJANGO_OIDC_RP_INTROSPECT_CLIENT_ID`        | OIDC client id (if `DJANGO_OIDC_CHECK_INTROSPECT` is enabled) of confidential client     | timed-public                                                 |
 | `DJANGO_OIDC_RP_INTROSPECT_CLIENT_SECRET`    | OIDC client secret (if `DJANGO_OIDC_CHECK_INTROSPECT` is enabled) of confidential client | not set                                                      |
 | `DJANGO_OIDC_ADMIN_LOGIN_REDIRECT_URL`       | URL of the django-admin, to which the user is redirected after successful admin login    | dev: http://timed.local/admin/, prod: not set                |
+| `DJANGO_ALLOW_LOCAL_LOGIN`                   | Enable / Disable login with local user/password (in admin)                               | True                                                         |
 | `EMAIL_URL`                                  | Uri of email server                                                                      | smtp://localhost:25                                          |
 | `DJANGO_DEFAULT_FROM_EMAIL`                  | Default email address to use for various responses                                       | webmaster@localhost                                          |
 | `DJANGO_SERVER_EMAIL`                        | Email address error messages are sent from                                               | root@localhost                                               |
