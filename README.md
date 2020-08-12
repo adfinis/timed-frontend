@@ -82,7 +82,7 @@ according to type.
 | `DJANGO_OIDC_BEARER_TOKEN_REVALIDATION_TIME` | Time (in seconds) to cache a bearer token before revalidation is needed                  | 60                                                           |
 | `DJANGO_OIDC_CHECK_INTROSPECT`               | Use token introspection for confidential clients                                         | True                                                         |
 | `DJANGO_OIDC_OP_INTROSPECT_ENDPOINT`         | OIDC token introspection endpoint (if `DJANGO_OIDC_CHECK_INTROSPECT` is enabled)         | {`DJANGO_OIDC_DEFAULT_BASE_URL`}/token/introspect            |
-| `DJANGO_OIDC_RP_INTROSPECT_CLIENT_ID`        | OIDC client id (if `DJANGO_OIDC_CHECK_INTROSPECT` is enabled) of confidential client     | timed-public                                                 |
+| `DJANGO_OIDC_RP_INTROSPECT_CLIENT_ID`        | OIDC client id (if `DJANGO_OIDC_CHECK_INTROSPECT` is enabled) of confidential client     | timed-confidential                                           |
 | `DJANGO_OIDC_RP_INTROSPECT_CLIENT_SECRET`    | OIDC client secret (if `DJANGO_OIDC_CHECK_INTROSPECT` is enabled) of confidential client | not set                                                      |
 | `DJANGO_OIDC_ADMIN_LOGIN_REDIRECT_URL`       | URL of the django-admin, to which the user is redirected after successful admin login    | dev: http://timed.local/admin/, prod: not set                |
 | `DJANGO_ALLOW_LOCAL_LOGIN`                   | Enable / Disable login with local user/password (in admin)                               | True                                                         |
