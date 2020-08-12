@@ -82,7 +82,7 @@
     "ember-truth-helpers": "^2.1.0",
     "ember-validated-form": "^1.4.2",
     "ember-wormhole": "^0.5.5",
-    "eslint": "^6.8.0",
+    "eslint": "^7.6.0",
     "eslint-config-prettier": "^3.3.0",
     "eslint-plugin-ember": "^6.2.0",
     "eslint-plugin-import": "^2.20.1",
