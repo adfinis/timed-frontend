@@ -1,3 +1,9 @@
+# v1.1.1 (14 August 2020)
+
+### Fix
+* increase uwsgi buffer-size for big query strings
+
+
 # v1.1.0 (11 August 2020)
 
 ### Feature
