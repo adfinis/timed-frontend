@@ -25,20 +25,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
   media: service("media"),
   store: service(),
   ajax: service(),
-  router: service(),
 
   async model() {
-    let user;
-    try {
-      user = await this.ajax.request("/api/v1/users/me", {
-        method: "GET",
-        data: {
-          include: "supervisors,supervisees"
-        }
-      });
-    } catch (error) {
-      this.router.transitionTo("login");
-    }
+    const user = await this.ajax.request("/api/v1/users/me", {
+      method: "GET",
+      data: {
+        include: "supervisors,supervisees"
+      }
+    });
 
     await this.store.pushPayload("user", user);
 
