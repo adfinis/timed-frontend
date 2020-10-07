@@ -5,7 +5,7 @@ django-filter==2.4.0
 django-multiselectfield==0.1.12
 djangorestframework==3.11.1
 djangorestframework-jsonapi[django-filter]==3.1.0
-mozilla-django-oidc==1.2.3
+mozilla-django-oidc==1.2.4
 psycopg2==2.8.6
 pytz==2020.1
 pyexcel-webio==0.1.4
