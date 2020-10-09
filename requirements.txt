@@ -11,7 +11,7 @@ pytz==2020.1
 pyexcel-webio==0.1.4
 pyexcel-io==0.6.2
 django-excel==0.0.10
-pyexcel-ods3==0.5.3
+pyexcel-ods3==0.6.0
 pyexcel-xlsx==0.5.8
 pyexcel-ezodf==0.3.4
 django-environ==0.4.5
