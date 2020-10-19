@@ -244,7 +244,7 @@ class Employment(models.Model):
         3. The expected worktime consists of following elements:
             * Workdays
             * Subtracted by holidays
-            * Multiplicated with the worktime per day of the employment
+            * Multiplied with the worktime per day of the employment
         4. Determine the overtime credit duration within time frame
         5. The reported worktime is the sum of the durations of all reports
            for this user within time frame
