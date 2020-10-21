@@ -2,4 +2,4 @@ There are unverified reports which need your attention.
 
 {{message}}
 
-Go to <{{protocol}}://{{domain}}/analysis?fromDate={{start}}&toDate={{end}}&reviewer={{reviewer.id}}&editable=1>
+Go to <{{protocol}}://{{domain}}/analysis?fromDate={{start}}&toDate={{end}}&reviewer={{reviewer.id}}&editable=1&verified=0>
