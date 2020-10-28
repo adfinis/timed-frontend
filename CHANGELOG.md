@@ -1,3 +1,9 @@
+# v1.1.2 (28 October 2020)
+
+### Fix
+* fix user based permissions to use the IS_AUTHENTICATED permission properly (#654)
+
+
 # v1.1.1 (14 August 2020)
 
 ### Fix
