@@ -271,7 +271,7 @@ class EmploymentViewSet(ModelViewSet):
     filterset_class = filters.EmploymentFilterSet
     permission_classes = [
         # super user can add/read overtime credits
-        IsAuthenticated & IsSuperUser
+        IsSuperUser
         # user may only read filtered results
         | IsAuthenticated & IsReadOnly
     ]
@@ -335,7 +335,7 @@ class AbsenceCreditViewSet(ModelViewSet):
     serializer_class = serializers.AbsenceCreditSerializer
     permission_classes = [
         # super user can add/read absence credits
-        IsAuthenticated & IsSuperUser
+        IsSuperUser
         # user may only read filtered results
         | IsAuthenticated & IsReadOnly
     ]
@@ -366,7 +366,7 @@ class OvertimeCreditViewSet(ModelViewSet):
     serializer_class = serializers.OvertimeCreditSerializer
     permission_classes = [
         # super user can add/read overtime credits
-        IsAuthenticated & IsSuperUser
+        IsSuperUser
         # user may only read filtered results
         | IsAuthenticated & IsReadOnly
     ]

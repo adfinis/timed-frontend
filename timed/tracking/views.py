@@ -81,7 +81,7 @@ class ReportViewSet(ModelViewSet):
         # but not delete them
         | (IsReviewer | IsSupervisor) & IsUnverified & IsNotDelete
         # owner may only change its own unverified reports
-        | IsAuthenticated & IsOwner & IsUnverified
+        | IsOwner & IsUnverified
         # all authenticated users may read all reports
         | IsAuthenticated & IsReadOnly
     ]

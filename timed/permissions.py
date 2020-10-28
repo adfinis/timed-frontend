@@ -76,6 +76,9 @@ class IsOwner(IsAuthenticated):
     """Allows access to object only to owners."""
 
     def has_object_permission(self, request, view, obj):
+        if not super().has_object_permission(request, view, obj):  # pragma: no cover
+            return False
+
         return obj.user_id == request.user.id
 
 
@@ -83,6 +86,9 @@ class IsSupervisor(IsAuthenticated):
     """Allows access to object only to supervisors."""
 
     def has_object_permission(self, request, view, obj):
+        if not super().has_object_permission(request, view, obj):  # pragma: no cover
+            return False
+
         return request.user.supervisees.filter(id=obj.user_id).exists()
 
 
@@ -90,11 +96,18 @@ class IsReviewer(IsAuthenticated):
     """Allows access to object only to reviewers."""
 
     def has_permission(self, request, view):
+        if not super().has_permission(request, view):  # pragma: no cover
+            return False
+
         if request.method not in SAFE_METHODS:
             return request.user.reviews.exists()
+
         return True
 
     def has_object_permission(self, request, view, obj):
+        if not super().has_object_permission(request, view, obj):  # pragma: no cover
+            return False
+
         user = request.user
 
         if isinstance(obj, projects_models.Task):
@@ -103,11 +116,14 @@ class IsReviewer(IsAuthenticated):
         return obj.task.project.reviewers.filter(id=user.id).exists()
 
 
-class IsSuperUser(BasePermission):
+class IsSuperUser(IsAuthenticated):
     """Allows access only to superuser."""
 
     def has_permission(self, request, view):
-        return request.user and request.user.is_superuser
+        if not super().has_permission(request, view):  # pragma: no cover
+            return False
+
+        return request.user.is_superuser
 
     def has_object_permission(self, request, view, obj):
         return self.has_permission(request, view)
