@@ -14594,10 +14594,10 @@ sane@^4.0.0, sane@^4.1.0:
     minimist "^1.1.1"
     walker "~1.0.5"
 
-sass@^1.24.2:
-  version "1.24.2"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.24.2.tgz#0a0e0f00368be6808b2e94470172266ac45498fe"
-  integrity sha512-0JxdMMRd0fOmGFQFRI91vh4n0Ed766ib9JwPUa+1C37zn3VaqlHxbknUn/6LqP/MSfvNPxRYoCrYf5g8vu4OHw==
+sass@^1.27.1:
+  version "1.27.1"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.27.1.tgz#fe4c730f2abfe1502ecff047798b35a7b792dc03"
+  integrity sha512-Co5i3s4kN0AgXe8ZFfIl4pfjHjPgotT81O68m3buwdj7v3oHjYiWNqp0oXTKXnEqyKU30KAYC5u8uUF4x+BKfw==
   dependencies:
     chokidar ">=2.0.0 <4.0.0"
 
