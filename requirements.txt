@@ -9,7 +9,7 @@ mozilla-django-oidc==1.2.4
 psycopg2==2.8.6
 pytz==2020.1
 pyexcel-webio==0.1.4
-pyexcel-io==0.6.3
+pyexcel-io==0.6.4
 django-excel==0.0.10
 pyexcel-ods3==0.6.0
 pyexcel-xlsx==0.6.0
