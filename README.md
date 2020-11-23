@@ -69,7 +69,12 @@ Then you'll be able to login in the Django admin interface [http://timed.local/a
 
 ### Adding a user
 
-If you want to add other users with different roles, add them in the Keycloak interface (as they would be coming from your LDAP directory). You will also have to correct their location in the Django admin interface as it is not correctly set for the moment. Head to [http://timed.local/admin/](http://timed.local/admin/) to after having perform 1 login with the uuser. You should see that new user in the `Employment -> Users`. Click on the user and scroll down to the `Employments` section to set a `Location`. Save the user and you should now see the _Timed_ interface correctly under that account.
+If you want to add other users with different roles, add them in the Keycloak interface (as they would be coming from your LDAP directory).
+You will also have to correct their employment in the Django admin interface as it is not correctly set for the moment.
+Head to [http://timed.local/admin/](http://timed.local/admin/) after having perform a first login with the user.
+You should see that new user in the `Employment -> Users`.
+Click on the user and scroll down to the `Employments` section to set a `Location`.
+Save the user and you should now see the _Timed_ interface correctly under that account.
 
 ## Configuration
 
