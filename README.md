@@ -40,6 +40,7 @@ To get the application working locally for development, make sure to create a fi
 
 ```
 ENV=dev
+DJANGO_OIDC_CREATE_USER=True
 ```
 
 If you have existing users from the previous LDAP authentication, you want to add this line as well:
@@ -47,6 +48,33 @@ If you have existing users from the previous LDAP authentication, you want to ad
 ```
 DJANGO_OIDC_USERNAME_CLAIM=preferred_username
 ```
+
+Keycloak is integrated in the containers bundle. The admin interface is available at [http://http://timed.local/auth/admin](http://http://timed.local/auth/admin) with the account `admin` and password `admin`.
+You will have to match the current `admin` user of the Django application by creating an entry in Keycloak. Don't forget to go in the user's page `Credentials` to set a password.
+Since the user is mapped in Keycloak, you should be able to see the _Timed_ interface for that user.
+
+To access the Django admin interface you will have to change the admin password in Django directly:
+
+```console
+$ make shell
+root@0a036a10f3c4:/app# python manage.py changepassword admin
+Changing password for user 'admin'
+Password: 
+Password (again): 
+Password changed successfully for user 'admin'
+```
+
+Then you'll be able to login in the Django admin interface [http://timed.local/admin/](http://timed.local/admin/).
+
+
+### Adding a user
+
+If you want to add other users with different roles, add them in the Keycloak interface (as they would be coming from your LDAP directory).
+You will also have to correct their employment in the Django admin interface as it is not correctly set for the moment.
+Head to [http://timed.local/admin/](http://timed.local/admin/) after having perform a first login with the user.
+You should see that new user in the `Employment -> Users`.
+Click on the user and scroll down to the `Employments` section to set a `Location`.
+Save the user and you should now see the _Timed_ interface correctly under that account.
 
 ## Configuration
 
