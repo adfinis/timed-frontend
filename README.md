@@ -34,6 +34,8 @@ You can visit it at [http://timed.local](http://timed.local).
 
 The API can be accessed at [http://timed.local/api/v1](http://timed.local/api/v1) and the admin interface at [http://timed.local/admin/](http://timed.local/admin/).
 
+The Keycloak admin interface can be accessed at [http://timed.local/auth/admin](http://timed.local/auth/admin) with the account `admin` and password `admin`
+
 ## Development
 
 To get the application working locally for development, make sure to create a file `.env` with the following content:
@@ -49,9 +51,9 @@ If you have existing users from the previous LDAP authentication, you want to ad
 DJANGO_OIDC_USERNAME_CLAIM=preferred_username
 ```
 
-Keycloak is integrated in the containers bundle. The admin interface is available at [http://http://timed.local/auth/admin](http://http://timed.local/auth/admin) with the account `admin` and password `admin`.
-You will have to match the current `admin` user of the Django application by creating an entry in Keycloak. Don't forget to go in the user's page `Credentials` to set a password.
-Since the user is mapped in Keycloak, you should be able to see the _Timed_ interface for that user.
+The test data includes 3 users admin, fritzm and alexs with you can log into [http://timed.local](http://timed.local)
+
+The username and password are identical.
 
 To access the Django admin interface you will have to change the admin password in Django directly:
 
