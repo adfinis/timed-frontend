@@ -88,6 +88,7 @@ class ReportFilterSet(FilterSet):
     review = NumberFilter(field_name="review")
     editable = NumberFilter(method="filter_editable")
     not_billable = NumberFilter(field_name="not_billable")
+    billed = NumberFilter(field_name="billed")
     verified = NumberFilter(
         field_name="verified_by_id", lookup_expr="isnull", exclude=True
     )
@@ -111,7 +112,7 @@ class ReportFilterSet(FilterSet):
                 Q(user__in=user.supervisees.values("id"))
                 | Q(task__project__in=user.reviews.values("id"))
                 | Q(user=user)
-            ) & Q(verified_by__isnull=True)
+            ) & ~(Q(verified_by__isnull=False) & Q(billed=True))
 
         if value:  # editable
             if user.is_superuser:

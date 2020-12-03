@@ -71,6 +71,7 @@ class ProjectSerializer(ModelSerializer):
             "comment",
             "estimated_time",
             "archived",
+            "billed",
             "customer",
             "billing_type",
             "cost_center",

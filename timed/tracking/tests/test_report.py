@@ -8,15 +8,14 @@ from django.urls import reverse
 from django.utils.duration import duration_string
 from rest_framework import status
 
-from timed.employment.factories import UserFactory
-from timed.projects.factories import CostCenterFactory, ProjectFactory, TaskFactory
-from timed.tracking.factories import ReportFactory
 
-
-def test_report_list(auth_client):
+def test_report_list(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    ReportFactory.create(user=user)
-    report = ReportFactory.create(user=user, duration=timedelta(hours=1))
+    report_factory.create(user=user)
+    report = report_factory.create(user=user, duration=timedelta(hours=1))
     url = reverse("report-list")
 
     response = auth_client.get(
@@ -39,8 +38,11 @@ def test_report_list(auth_client):
     assert json["meta"]["total-time"] == "01:00:00"
 
 
-def test_report_intersection_full(auth_client):
-    report = ReportFactory.create()
+def test_report_intersection_full(
+    auth_client,
+    report_factory,
+):
+    report = report_factory.create()
 
     url = reverse("report-intersection")
     response = auth_client.get(
@@ -72,6 +74,7 @@ def test_report_intersection_full(auth_client):
                 "not-billable": False,
                 "verified": False,
                 "review": False,
+                "billed": False,
             },
             "relationships": {
                 "customer": {
@@ -91,10 +94,16 @@ def test_report_intersection_full(auth_client):
     assert json == expected
 
 
-def test_report_intersection_partial(auth_client):
+def test_report_intersection_partial(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    ReportFactory.create(review=True, not_billable=True, comment="test")
-    ReportFactory.create(verified_by=user, comment="test")
+    report = report_factory.create(review=True, not_billable=True, comment="test")
+    report_factory.create(verified_by=user, comment="test")
+    # Billed is not set on create because the factory doesnt seem to work with that
+    report.billed = True
+    report.save()
 
     url = reverse("report-intersection")
     response = auth_client.get(url)
@@ -110,6 +119,7 @@ def test_report_intersection_partial(auth_client):
                 "not-billable": None,
                 "verified": None,
                 "review": None,
+                "billed": None,
             },
             "relationships": {
                 "customer": {"data": None},
@@ -122,10 +132,13 @@ def test_report_intersection_partial(auth_client):
     assert json == expected
 
 
-def test_report_list_filter_id(auth_client):
-    report_1 = ReportFactory.create(date="2017-01-01")
-    report_2 = ReportFactory.create(date="2017-02-01")
-    ReportFactory.create()
+def test_report_list_filter_id(
+    auth_client,
+    report_factory,
+):
+    report_1 = report_factory.create(date="2017-01-01")
+    report_2 = report_factory.create(date="2017-02-01")
+    report_factory.create()
 
     url = reverse("report-list")
 
@@ -139,9 +152,12 @@ def test_report_list_filter_id(auth_client):
     assert json["data"][1]["id"] == str(report_2.id)
 
 
-def test_report_list_filter_id_empty(auth_client):
+def test_report_list_filter_id_empty(
+    auth_client,
+    report_factory,
+):
     """Test that empty id filter is ignored."""
-    ReportFactory.create()
+    report_factory.create()
 
     url = reverse("report-list")
 
@@ -151,9 +167,12 @@ def test_report_list_filter_id_empty(auth_client):
     assert len(json["data"]) == 1
 
 
-def test_report_list_filter_reviewer(auth_client):
+def test_report_list_filter_reviewer(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
     report.task.project.reviewers.add(user)
 
     url = reverse("report-list")
@@ -165,10 +184,13 @@ def test_report_list_filter_reviewer(auth_client):
     assert json["data"][0]["id"] == str(report.id)
 
 
-def test_report_list_filter_verifier(auth_client):
+def test_report_list_filter_verifier(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(verified_by=user)
-    ReportFactory.create()
+    report = report_factory.create(verified_by=user)
+    report_factory.create()
 
     url = reverse("report-list")
 
@@ -179,10 +201,13 @@ def test_report_list_filter_verifier(auth_client):
     assert json["data"][0]["id"] == str(report.id)
 
 
-def test_report_list_filter_editable_owner(auth_client):
+def test_report_list_filter_editable_owner(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
-    ReportFactory.create()
+    report = report_factory.create(user=user)
+    report_factory.create()
 
     url = reverse("report-list")
 
@@ -193,10 +218,13 @@ def test_report_list_filter_editable_owner(auth_client):
     assert json["data"][0]["id"] == str(report.id)
 
 
-def test_report_list_filter_not_editable_owner(auth_client):
+def test_report_list_filter_not_editable_owner(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    ReportFactory.create(user=user)
-    report = ReportFactory.create()
+    report_factory.create(user=user)
+    report = report_factory.create()
 
     url = reverse("report-list")
 
@@ -207,23 +235,25 @@ def test_report_list_filter_not_editable_owner(auth_client):
     assert json["data"][0]["id"] == str(report.id)
 
 
-def test_report_list_filter_editable_reviewer(auth_client):
+def test_report_list_filter_editable_reviewer(
+    auth_client, report_factory, user_factory
+):
     user = auth_client.user
     # not editable report
-    ReportFactory.create()
+    report_factory.create()
 
     # editable reports
     # 1st report of current user
-    ReportFactory.create(user=user)
+    report_factory.create(user=user)
     # 2nd case: report of a project which has several
     # reviewers and report is created by current user
-    report = ReportFactory.create(user=user)
-    other_user = UserFactory.create()
+    report = report_factory.create(user=user)
+    other_user = user_factory.create()
     report.task.project.reviewers.add(user)
     report.task.project.reviewers.add(other_user)
     # 3rd case: report by other user and current user
     # is the reviewer
-    reviewer_report = ReportFactory.create()
+    reviewer_report = report_factory.create()
     reviewer_report.task.project.reviewers.add(user)
 
     url = reverse("report-list")
@@ -234,8 +264,8 @@ def test_report_list_filter_editable_reviewer(auth_client):
     assert len(json["data"]) == 3
 
 
-def test_report_list_filter_editable_superuser(superadmin_client):
-    report = ReportFactory.create()
+def test_report_list_filter_editable_superuser(superadmin_client, report_factory):
+    report = report_factory.create()
 
     url = reverse("report-list")
 
@@ -246,8 +276,8 @@ def test_report_list_filter_editable_superuser(superadmin_client):
     assert json["data"][0]["id"] == str(report.id)
 
 
-def test_report_list_filter_not_editable_superuser(superadmin_client):
-    ReportFactory.create()
+def test_report_list_filter_not_editable_superuser(superadmin_client, report_factory):
+    report_factory.create()
 
     url = reverse("report-list")
 
@@ -257,21 +287,25 @@ def test_report_list_filter_not_editable_superuser(superadmin_client):
     assert len(json["data"]) == 0
 
 
-def test_report_list_filter_editable_supervisor(auth_client):
+def test_report_list_filter_editable_supervisor(
+    auth_client,
+    report_factory,
+    user_factory,
+):
     user = auth_client.user
     # not editable report
-    ReportFactory.create()
+    report_factory.create()
 
     # editable reports
     # 1st case: report by current user
-    ReportFactory.create(user=user)
+    report_factory.create(user=user)
     # 2nd case: report by current user with several supervisors
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
     report.user.supervisors.add(user)
-    other_user = UserFactory.create()
+    other_user = user_factory.create()
     report.user.supervisors.add(other_user)
     # 3rd case: report by different user with current user as supervisor
-    supervisor_report = ReportFactory.create()
+    supervisor_report = report_factory.create()
     supervisor_report.user.supervisors.add(user)
 
     url = reverse("report-list")
@@ -282,7 +316,28 @@ def test_report_list_filter_editable_supervisor(auth_client):
     assert len(json["data"]) == 3
 
 
-def test_report_export_missing_type(auth_client):
+def test_report_list_filter_billed(
+    auth_client,
+    report_factory,
+):
+    report = report_factory.create()
+    # Billed is not set on create because the factory doesnt seem to work with that
+    report.billed = True
+    report.save()
+
+    url = reverse("report-list")
+
+    response = auth_client.get(url, data={"billed": 1})
+    assert response.status_code == status.HTTP_200_OK
+    json = response.json()
+    assert len(json["data"]) == 1
+    assert json["data"][0]["id"] == str(report.id)
+
+
+def test_report_export_missing_type(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
     url = reverse("report-export")
 
@@ -291,9 +346,12 @@ def test_report_export_missing_type(auth_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_detail(auth_client):
+def test_report_detail(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
 
     url = reverse("report-detail", args=[report.id])
     response = auth_client.get(url)
@@ -301,10 +359,10 @@ def test_report_detail(auth_client):
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_report_create(auth_client):
+def test_report_create(auth_client, report_factory, task_factory):
     """Should create a new report and automatically set the user."""
     user = auth_client.user
-    task = TaskFactory.create()
+    task = task_factory.create()
 
     data = {
         "data": {
@@ -333,9 +391,50 @@ def test_report_create(auth_client):
     assert json["data"]["relationships"]["task"]["data"]["id"] == str(task.id)
 
 
-def test_report_update_bulk(auth_client):
-    task = TaskFactory.create()
-    report = ReportFactory.create(user=auth_client.user)
+def test_report_create_billed(
+    auth_client, report_factory, project_factory, task_factory
+):
+    """Should create a new report and automatically set the user."""
+    user = auth_client.user
+    project = project_factory.create(billed=True)
+    task = task_factory.create(project=project)
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": None,
+            "attributes": {
+                "comment": "foo",
+                "duration": "00:50:00",
+                "date": "2017-02-01",
+            },
+            "relationships": {
+                "task": {"data": {"type": "tasks", "id": task.id}},
+                "verified-by": {"data": None},
+            },
+        }
+    }
+
+    url = reverse("report-list")
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
+
+    json = response.json()
+    assert json["data"]["relationships"]["user"]["data"]["id"] == str(user.id)
+
+    assert json["data"]["relationships"]["task"]["data"]["id"] == str(task.id)
+
+    assert json["data"]["attributes"]["billed"]
+
+
+def test_report_update_bulk(
+    auth_client,
+    report_factory,
+    task_factory,
+):
+    task = task_factory.create()
+    report = report_factory.create(user=auth_client.user)
 
     url = reverse("report-bulk")
 
@@ -354,8 +453,11 @@ def test_report_update_bulk(auth_client):
     assert report.task == task
 
 
-def test_report_update_bulk_verify_non_reviewer(auth_client):
-    ReportFactory.create(user=auth_client.user)
+def test_report_update_bulk_verify_non_reviewer(
+    auth_client,
+    report_factory,
+):
+    report_factory.create(user=auth_client.user)
 
     url = reverse("report-bulk")
 
@@ -367,9 +469,9 @@ def test_report_update_bulk_verify_non_reviewer(auth_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_bulk_verify_superuser(superadmin_client):
+def test_report_update_bulk_verify_superuser(superadmin_client, report_factory):
     user = superadmin_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
 
     url = reverse("report-bulk")
 
@@ -384,9 +486,12 @@ def test_report_update_bulk_verify_superuser(superadmin_client):
     assert report.verified_by == user
 
 
-def test_report_update_bulk_verify_reviewer(auth_client):
+def test_report_update_bulk_verify_reviewer(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
     report.task.project.reviewers.add(user)
 
     url = reverse("report-bulk")
@@ -407,9 +512,9 @@ def test_report_update_bulk_verify_reviewer(auth_client):
     assert report.comment == "some comment"
 
 
-def test_report_update_bulk_reset_verify(superadmin_client):
+def test_report_update_bulk_reset_verify(superadmin_client, report_factory):
     user = superadmin_client.user
-    report = ReportFactory.create(verified_by=user)
+    report = report_factory.create(verified_by=user)
 
     url = reverse("report-bulk")
 
@@ -424,7 +529,10 @@ def test_report_update_bulk_reset_verify(superadmin_client):
     assert report.verified_by_id is None
 
 
-def test_report_update_bulk_not_editable(auth_client):
+def test_report_update_bulk_not_editable(
+    auth_client,
+    report_factory,
+):
     url = reverse("report-bulk")
 
     data = {
@@ -439,10 +547,13 @@ def test_report_update_bulk_not_editable(auth_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_verified_as_non_staff_but_owner(auth_client):
+def test_report_update_verified_as_non_staff_but_owner(
+    auth_client,
+    report_factory,
+):
     """Test that an owner (not staff) may not change a verified report."""
     user = auth_client.user
-    report = ReportFactory.create(
+    report = report_factory.create(
         user=user, verified_by=user, duration=timedelta(hours=2)
     )
 
@@ -460,11 +571,11 @@ def test_report_update_verified_as_non_staff_but_owner(auth_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_report_update_owner(auth_client):
+def test_report_update_owner(auth_client, report_factory, task_factory):
     """Should update an existing report."""
     user = auth_client.user
-    report = ReportFactory.create(user=user)
-    task = TaskFactory.create()
+    report = report_factory.create(user=user)
+    task = task_factory.create()
 
     data = {
         "data": {
@@ -497,9 +608,12 @@ def test_report_update_owner(auth_client):
     )
 
 
-def test_report_update_date_reviewer(auth_client):
+def test_report_update_date_reviewer(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create()
+    report = report_factory.create()
     report.task.project.reviewers.add(user)
 
     data = {
@@ -516,9 +630,12 @@ def test_report_update_date_reviewer(auth_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_duration_reviewer(auth_client):
+def test_report_update_duration_reviewer(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(duration=timedelta(hours=2))
+    report = report_factory.create(duration=timedelta(hours=2))
     report.task.project.reviewers.add(user)
 
     data = {
@@ -535,9 +652,12 @@ def test_report_update_duration_reviewer(auth_client):
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_by_user(auth_client):
+def test_report_update_by_user(
+    auth_client,
+    report_factory,
+):
     """Updating of report belonging to different user is not allowed."""
-    report = ReportFactory.create()
+    report = report_factory.create()
     data = {
         "data": {
             "type": "reports",
@@ -551,9 +671,12 @@ def test_report_update_by_user(auth_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_report_update_verified_and_review_reviewer(auth_client):
+def test_report_update_verified_and_review_reviewer(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(duration=timedelta(hours=2))
+    report = report_factory.create(duration=timedelta(hours=2))
     report.task.project.reviewers.add(user)
 
     data = {
@@ -573,10 +696,13 @@ def test_report_update_verified_and_review_reviewer(auth_client):
     assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_set_verified_by_user(auth_client):
+def test_report_set_verified_by_user(
+    auth_client,
+    report_factory,
+):
     """Test that normal user may not verify report."""
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
     data = {
         "data": {
             "type": "reports",
@@ -592,9 +718,12 @@ def test_report_set_verified_by_user(auth_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_update_reviewer(auth_client):
+def test_report_update_reviewer(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
     report.task.project.reviewers.add(user)
 
     data = {
@@ -614,9 +743,12 @@ def test_report_update_reviewer(auth_client):
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_report_update_supervisor(auth_client):
+def test_report_update_supervisor(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
     report.user.supervisors.add(user)
 
     data = {
@@ -633,10 +765,10 @@ def test_report_update_supervisor(auth_client):
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_report_verify_other_user(superadmin_client):
+def test_report_verify_other_user(superadmin_client, report_factory, user_factory):
     """Verify that superuser may not verify to other user."""
-    user = UserFactory.create()
-    report = ReportFactory.create()
+    user = user_factory.create()
+    report = report_factory.create()
 
     data = {
         "data": {
@@ -653,11 +785,43 @@ def test_report_verify_other_user(superadmin_client):
     assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
-def test_report_reset_verified_by_reviewer(auth_client):
-    """Test that reviewer may not change verified report."""
+def test_report_reset_verified_by_reviewer(
+    auth_client,
+    report_factory,
+):
+    """Test that reviewer may change verified report."""
     user = auth_client.user
-    report = ReportFactory.create(user=user, verified_by=user)
+    report = report_factory.create(user=user, verified_by=user)
     report.task.project.reviewers.add(user)
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {"comment": "foobar"},
+            "relationships": {"verified-by": {"data": None}},
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    report.refresh_from_db()
+    report.verified_by = None
+
+
+def test_report_reset_verified_and_billed_by_reviewer(
+    auth_client,
+    report_factory,
+):
+    """Test that reviewer may not change verified and billed report."""
+    user = auth_client.user
+    report = report_factory.create(user=user, verified_by=user)
+    report.task.project.reviewers.add(user)
+    # Billed is not set on create because the factory doesnt seem to work with that
+    report.billed = True
+    report.save()
 
     data = {
         "data": {
@@ -673,18 +837,21 @@ def test_report_reset_verified_by_reviewer(auth_client):
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_report_delete(auth_client):
+def test_report_delete(
+    auth_client,
+    report_factory,
+):
     user = auth_client.user
-    report = ReportFactory.create(user=user)
+    report = report_factory.create(user=user)
 
     url = reverse("report-detail", args=[report.id])
     response = auth_client.delete(url)
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
 
-def test_report_round_duration(db):
+def test_report_round_duration(db, report_factory):
     """Should round the duration of a report to 15 minutes."""
-    report = ReportFactory.create()
+    report = report_factory.create()
 
     report.duration = timedelta(hours=1, minutes=7)
     report.save()
@@ -711,29 +878,31 @@ def test_report_list_no_result(admin_client):
     assert json["meta"]["total-time"] == "00:00:00"
 
 
-def test_report_delete_superuser(superadmin_client):
+def test_report_delete_superuser(superadmin_client, report_factory):
     """Test that superuser may not delete reports of other users."""
-    report = ReportFactory.create()
+    report = report_factory.create()
     url = reverse("report-detail", args=[report.id])
 
     response = superadmin_client.delete(url)
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_report_list_filter_cost_center(auth_client):
-    cost_center = CostCenterFactory.create()
+def test_report_list_filter_cost_center(
+    auth_client, report_factory, cost_center_factory, project_factory, task_factory
+):
+    cost_center = cost_center_factory.create()
     # 1st valid case: report with task of given cost center
     # but different project cost center
-    task = TaskFactory.create(cost_center=cost_center)
-    report_task = ReportFactory.create(task=task)
+    task = task_factory.create(cost_center=cost_center)
+    report_task = report_factory.create(task=task)
     # 2nd valid case: report with project of given cost center
-    project = ProjectFactory.create(cost_center=cost_center)
-    task = TaskFactory.create(cost_center=None, project=project)
-    report_project = ReportFactory.create(task=task)
+    project = project_factory.create(cost_center=cost_center)
+    task = task_factory.create(cost_center=None, project=project)
+    report_project = report_factory.create(task=task)
     # Invalid case: report without cost center
-    project = ProjectFactory.create(cost_center=None)
-    task = TaskFactory.create(cost_center=None, project=project)
-    ReportFactory.create(task=task)
+    project = project_factory.create(cost_center=None)
+    task = task_factory.create(cost_center=None, project=project)
+    report_factory.create(task=task)
 
     url = reverse("report-list")
 
@@ -1018,4 +1187,83 @@ def test_report_update_bulk_review_and_verified(
 
     query_params = f"?id={report.id}"
     response = superadmin_client.post(url + query_params, data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_report_update_bulk_bill_non_reviewer(
+    auth_client,
+    report_factory,
+):
+    report_factory.create(user=auth_client.user)
+
+    url = reverse("report-bulk")
+
+    data = {"data": {"type": "report-bulks", "id": None, "attributes": {"billed": 1}}}
+
+    response = auth_client.post(url + "?editable=1", data)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_report_update_bulk_bill_reviewer(
+    auth_client,
+    report_factory,
+):
+    user = auth_client.user
+    report = report_factory.create(user=user)
+    report.task.project.reviewers.add(user)
+
+    url = reverse("report-bulk")
+
+    data = {
+        "data": {
+            "type": "report-bulks",
+            "id": None,
+            "attributes": {"billed": True},
+        }
+    }
+
+    response = auth_client.post(url + "?editable=1&reviewer={0}".format(user.id), data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert report.billed
+
+
+def test_report_update_billed_user(
+    auth_client,
+    report_factory,
+):
+    report = report_factory.create()
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {"billed": 1},
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_403_FORBIDDEN
+
+
+def test_report_set_billed_by_user(
+    auth_client,
+    report_factory,
+):
+    """Test that normal user may not bill report."""
+    user = auth_client.user
+    report = report_factory.create(user=user)
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {"billed": 1},
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+    response = auth_client.patch(url, data)
     assert response.status_code == status.HTTP_400_BAD_REQUEST

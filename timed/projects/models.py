@@ -70,6 +70,7 @@ class Project(models.Model):
     reference = models.CharField(max_length=255, db_index=True, blank=True, null=True)
     comment = models.TextField(blank=True)
     archived = models.BooleanField(default=False)
+    billed = models.BooleanField(default=False)
     estimated_time = models.DurationField(blank=True, null=True)
     customer = models.ForeignKey(
         "projects.Customer", on_delete=models.CASCADE, related_name="projects"

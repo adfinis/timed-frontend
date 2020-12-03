@@ -130,12 +130,12 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         new_verified_by = data.get("verified_by")
         task = data.get("task") or self.instance.task
         review = data.get("review")
+        billed = data.get("billed")
+        is_reviewer = (
+            user.is_superuser or task.project.reviewers.filter(id=user.id).exists()
+        )
 
         if new_verified_by != current_verified_by:
-            is_reviewer = (
-                user.is_superuser or task.project.reviewers.filter(id=user.id).exists()
-            )
-
             if not is_reviewer:
                 raise ValidationError(_("Only reviewer may verify reports."))
 
@@ -146,6 +146,10 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
                 raise ValidationError(
                     _("Report can't both be set as `review` and `verified`.")
                 )
+
+        if not is_reviewer and billed:
+            raise ValidationError(_("Only reviewers may bill reports."))
+
         return data
 
     class Meta:
@@ -156,6 +160,7 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
             "duration",
             "review",
             "not_billable",
+            "billed",
             "task",
             "activity",
             "user",
@@ -172,6 +177,7 @@ class ReportBulkSerializer(Serializer):
     comment = serializers.CharField(allow_null=True, required=False)
     review = serializers.NullBooleanField(required=False)
     not_billable = serializers.NullBooleanField(required=False)
+    billed = serializers.NullBooleanField(required=False)
     verified = serializers.NullBooleanField(required=False)
 
     class Meta:
@@ -201,6 +207,7 @@ class ReportIntersectionSerializer(Serializer):
     comment = SerializerMethodField()
     review = SerializerMethodField()
     not_billable = SerializerMethodField()
+    billed = SerializerMethodField()
     verified = SerializerMethodField()
 
     def _intersection(self, instance, field, model=None):
@@ -236,6 +243,9 @@ class ReportIntersectionSerializer(Serializer):
 
     def get_not_billable(self, instance):
         return self._intersection(instance, "not_billable")
+
+    def get_billed(self, instance):
+        return self._intersection(instance, "billed")
 
     def get_verified(self, instance):
         queryset = instance["queryset"]
