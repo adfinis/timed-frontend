@@ -6,6 +6,7 @@ export default Model.extend({
   comment: attr("string"),
   notBillable: attr("boolean", { allowNull: true, defaultValue: null }),
   review: attr("boolean", { allowNull: true, defaultValue: null }),
+  billed: attr("boolean", { allowNull: true, defaultValue: null }),
   verified: attr("boolean", { allowNull: true, defaultValue: null }),
 
   customer: belongsTo("customer"),

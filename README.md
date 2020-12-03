@@ -37,13 +37,7 @@ If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend
   or
 - `yarn start`
 
-If you are using docker-compose you can start the frontend and backend by running the following in the backend project
-
-```
-docker-compose up -d --build
-```
-
-The frontend will be under [http://timed.local](http://timed.local) and the backend [http://timed.local/admin/](http://timed.local/admin/)
+If you are using docker-compose you can start a static frontend and the backend by following the instructions in the [backend](https://github.com/adfinis-sygroup/timed-backend)
 
 ### Running Tests
 
