@@ -82,6 +82,19 @@
                   {{/sy-checkbox}}
                 {{/f.input}}
 
+                {{#f.input data-test-billed name='billed' as |fi|}}
+                  {{#sy-checkbox
+                    checked=fi.value
+                    on-change=fi.update
+                    title=toolTipText
+                    disabled=(not canBill)
+                  }}
+                    Billed
+                    {{#if (eq model.billed null)}}{{not-identical-warning}}{{/if}}
+                    {{#unless (eq f.model.billed model.billed)}}{{changed-warning}}{{/unless}}
+                  {{/sy-checkbox}}
+                {{/f.input}}
+
                 {{#f.input data-test-verified name='verified' as |fi|}}
                   {{#sy-checkbox
                     checked=fi.value

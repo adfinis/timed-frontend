@@ -159,6 +159,21 @@
           }}
         {{/fs.label}}
         {{#fs.label}}
+          Billed
+          {{fs.filter 'button'
+            data-test-filter-billed
+            selected  = billed
+            valuePath = 'value'
+            labelPath = 'label'
+            options = (array
+              (hash label='All' value='')
+              (hash label='Billed' value='1')
+              (hash label='Not Billed' value='0')
+            )
+            on-change = (action (mut billed))
+          }}
+        {{/fs.label}}
+        {{#fs.label}}
           Editable
           {{fs.filter 'button'
             data-test-filter-editable

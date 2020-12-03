@@ -115,6 +115,14 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     }
   ),
 
+  canBill: computed("allQueryParams.reviewer", "session.data.user", function() {
+    return (
+      this.get("allQueryParams.reviewer") ===
+        this.get("session.data.user.id") ||
+      this.get("session.data.user.isSuperuser")
+    );
+  }),
+
   needsReview: computed("intersectionModel", function() {
     return (
       this.get("intersectionModel.review") === null ||

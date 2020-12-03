@@ -103,6 +103,11 @@ export const AnalysisQueryParams = new QueryParams({
     replace: true,
     refresh: true
   },
+  billed: {
+    defaultValue: "",
+    replace: true,
+    refresh: true
+  },
   ordering: {
     defaultValue: "-date",
     replace: true,
