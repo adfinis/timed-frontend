@@ -1,4 +1,4 @@
-{{#task-selection disabled=(not editable) task=changeset.task as |t|}}
+{{#task-selection disabled=(cannot 'edit report' report) task=changeset.task as |t|}}
   <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</div>
   <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</div>
   <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
@@ -11,7 +11,7 @@
     placeholder="Comment"
     name="comment"
     value={{changeset.comment}}
-    disabled={{not editable}}
+    disabled={{cannot 'edit report' report}}
     onchange={{action (mut changeset.comment) value='target.value'}}
     data-test-report-comment
   >

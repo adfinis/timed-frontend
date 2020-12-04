@@ -5,7 +5,7 @@
  */
 import Component from "@ember/component";
 import { computed } from "@ember/object";
-import { not } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
 import ReportValidations from "timed/validations/report";
@@ -18,6 +18,8 @@ import ReportValidations from "timed/validations/report";
  * @public
  */
 const ReportRowComponent = Component.extend({
+  can: service(),
+
   /**
    * The element tag name
    *
@@ -36,7 +38,9 @@ const ReportRowComponent = Component.extend({
 
   attributeBindings: ["title"],
 
-  editable: not("report.verifiedBy.id"),
+  editable() {
+    return this.cannot.can("edit report", this.get("report"));
+  },
 
   title: computed("report.verifiedBy", function() {
     return this.get("report.verifiedBy.id")

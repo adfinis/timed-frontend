@@ -54,13 +54,14 @@ module("Unit | Ability | report", function(hooks) {
     assert.equal(ability.get("canEdit"), false);
   });
 
-  test("can not edit when report is verified", function(assert) {
+  test("can not edit when report is verified and billed", function(assert) {
     const ability = this.owner.lookup("ability:report");
     ability.set("user", { id: 1, isSuperuser: false });
     ability.set("model", {
       user: { id: 1, supervisors: [{ id: 1 }] },
       task: { project: { reviewers: [{ id: 1 }] } },
-      verifiedBy: { id: 1 }
+      verifiedBy: { id: 1 },
+      billed: true
     });
 
     assert.equal(ability.get("canEdit"), false);
