@@ -2,6 +2,7 @@
 
 from django.conf import settings
 from django.db import models
+from djmoney.models.fields import MoneyField
 
 
 class Customer(models.Model):
@@ -89,6 +90,12 @@ class Project(models.Model):
     )
     reviewers = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="reviews")
     customer_visible = models.BooleanField(default=False)
+    amount_offered = MoneyField(
+        max_digits=10, decimal_places=2, default_currency="CHF", blank=True, null=True
+    )
+    amount_invoiced = MoneyField(
+        max_digits=10, decimal_places=2, default_currency="CHF", blank=True, null=True
+    )
 
     def __str__(self):
         """Represent the model as a string.
@@ -122,6 +129,12 @@ class Task(models.Model):
         blank=True,
         null=True,
         related_name="tasks",
+    )
+    amount_offered = MoneyField(
+        max_digits=10, decimal_places=2, default_currency="CHF", blank=True, null=True
+    )
+    amount_invoiced = MoneyField(
+        max_digits=10, decimal_places=2, default_currency="CHF", blank=True, null=True
     )
 
     def __str__(self):
