@@ -51,7 +51,10 @@ export default Controller.extend({
       });
 
       if (!reportsToday.filterBy("isNew", true).get("length")) {
-        this.store.createRecord("report", { date: this.get("model") });
+        this.store.createRecord("report", {
+          date: this.get("model"),
+          user: this.get("user")
+        });
       }
 
       return reportsToday.sort(a => (a.get("isNew") ? 1 : 0));

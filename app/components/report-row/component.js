@@ -38,16 +38,18 @@ const ReportRowComponent = Component.extend({
 
   attributeBindings: ["title"],
 
-  editable() {
-    return this.cannot.can("edit report", this.get("report"));
-  },
+  editable: computed("report.{verifiedBy,billed}", {
+    get() {
+      return this.can.can("edit report", this.get("report"));
+    }
+  }),
 
-  title: computed("report.verifiedBy", function() {
-    return this.get("report.verifiedBy.id")
-      ? `This entry was already verified by ${this.get(
+  title: computed("editable", function() {
+    return this.editable
+      ? ""
+      : `This entry was already verified by ${this.get(
           "report.verifiedBy.fullName"
-        )} and therefore not editable anymore`
-      : "";
+        )} and therefore not editable anymore`;
   }),
 
   /**

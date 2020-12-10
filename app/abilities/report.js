@@ -8,11 +8,7 @@ export default Ability.extend({
     function() {
       return (
         this.get("user.isSuperuser") ||
-        (!(
-          this.get("model.verifiedBy") &&
-          this.get("model.verifiedBy.id") &&
-          this.get("model.billed")
-        ) &&
+        (!(this.get("model.verifiedBy.id") && this.get("model.billed")) &&
           (this.get("model.user.id") === this.get("user.id") ||
             this.getWithDefault("model.user.supervisors", [])
               .mapBy("id")
