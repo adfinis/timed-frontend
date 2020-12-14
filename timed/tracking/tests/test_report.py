@@ -1305,3 +1305,30 @@ def test_report_update_billed(auth_client, report_factory, task):
 
     report.refresh_from_db()
     assert not report.billed
+
+
+def test_report_update_bulk_billed(auth_client, report_factory, task):
+    user = auth_client.user
+    report = report_factory.create(user=user)
+    report.task.project.reviewers.add(user)
+    task.project.billed = True
+    task.project.save()
+
+    url = reverse("report-bulk")
+
+    data = {
+        "data": {
+            "type": "report-bulks",
+            "id": None,
+            "relationships": {
+                "project": {"data": {"type": "projects", "id": task.project.id}},
+                "task": {"data": {"type": "tasks", "id": task.id}},
+            },
+        }
+    }
+
+    response = auth_client.post(url + "?editable=1&reviewer={0}".format(user.id), data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert report.billed

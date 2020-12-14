@@ -106,15 +106,10 @@ class Report(models.Model):
 
         This rounds the duration of the report to the nearest 15 minutes.
         However, the duration must at least be 15 minutes long.
-
-        Sets the billed state to the billed state of the project.
         """
         self.duration = timedelta(
             seconds=max(15 * 60, round(self.duration.seconds / (15 * 60)) * (15 * 60))
         )
-
-        if not self.pk:
-            self.billed = self.task.project.billed
 
         super().save(*args, **kwargs)
 

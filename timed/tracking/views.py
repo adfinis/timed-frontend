@@ -206,6 +206,9 @@ class ReportViewSet(ModelViewSet):
                 _("Reviewer filter needs to be set to verifying user")
             )
 
+        if "task" in fields:
+            fields["billed"] = fields["task"].project.billed
+
         if fields:
             tasks.notify_user_changed_reports(queryset, fields, user)
             queryset.update(**fields)
