@@ -150,6 +150,9 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         if not is_reviewer and billed:
             raise ValidationError(_("Only reviewers may bill reports."))
 
+        if billed is None:
+            data["billed"] = task.project.billed
+
         return data
 
     class Meta:

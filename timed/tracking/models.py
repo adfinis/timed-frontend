@@ -113,7 +113,7 @@ class Report(models.Model):
             seconds=max(15 * 60, round(self.duration.seconds / (15 * 60)) * (15 * 60))
         )
 
-        if not self.pk or not self.billed:
+        if not self.pk:
             self.billed = self.task.project.billed
 
         super().save(*args, **kwargs)

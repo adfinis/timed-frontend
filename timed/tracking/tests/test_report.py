@@ -318,9 +318,8 @@ def test_report_list_filter_editable_supervisor(
 
 def test_report_list_filter_billed(
     auth_client,
-    report_factory,
+    report,
 ):
-    report = report_factory.create()
     # Billed is not set on create because the factory doesnt seem to work with that
     report.billed = True
     report.save()
@@ -1267,3 +1266,42 @@ def test_report_set_billed_by_user(
     url = reverse("report-detail", args=[report.id])
     response = auth_client.patch(url, data)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+def test_report_update_billed(auth_client, report_factory, task):
+    user = auth_client.user
+    report = report_factory.create(user=user)
+    report.task.project.billed = True
+    report.task.project.save()
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {"comment": "foobar"},
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    report.refresh_from_db()
+    assert report.billed
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "relationships": {
+                "project": {"data": {"type": "projects", "id": task.project.id}},
+                "task": {"data": {"type": "tasks", "id": task.id}},
+            },
+        }
+    }
+
+    response = auth_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    report.refresh_from_db()
+    assert not report.billed
