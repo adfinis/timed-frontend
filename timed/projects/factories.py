@@ -43,6 +43,7 @@ class ProjectFactory(DjangoModelFactory):
     name = Faker("catch_phrase")
     estimated_time = Faker("time_delta")
     archived = False
+    billed = False
     comment = Faker("sentence")
     customer = SubFactory("timed.projects.factories.CustomerFactory")
     cost_center = SubFactory("timed.projects.factories.CostCenterFactory")

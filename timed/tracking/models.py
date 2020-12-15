@@ -88,6 +88,7 @@ class Report(models.Model):
     duration = models.DurationField()
     review = models.BooleanField(default=False)
     not_billable = models.BooleanField(default=False)
+    billed = models.BooleanField(default=False)
     task = models.ForeignKey(
         "projects.Task", on_delete=models.PROTECT, related_name="reports"
     )

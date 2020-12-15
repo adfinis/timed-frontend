@@ -134,3 +134,10 @@ class IsNotTransferred(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         return not obj.transferred
+
+
+class IsNotBilledAndVerfied(BasePermission):
+    """Allows access only to not billed and not verfied objects."""
+
+    def has_object_permission(self, request, view, obj):
+        return not obj.billed or obj.verified_by_id is None

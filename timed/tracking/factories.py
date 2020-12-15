@@ -30,6 +30,7 @@ class ReportFactory(DjangoModelFactory):
     date = Faker("date")
     review = False
     not_billable = False
+    billed = False
     task = SubFactory("timed.projects.factories.TaskFactory")
     user = SubFactory("timed.employment.factories.UserFactory")
 

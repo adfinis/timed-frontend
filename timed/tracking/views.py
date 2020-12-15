@@ -12,6 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from timed.permissions import (
     IsAuthenticated,
+    IsNotBilledAndVerfied,
     IsNotDelete,
     IsNotTransferred,
     IsOwner,
@@ -77,9 +78,9 @@ class ReportViewSet(ModelViewSet):
     permission_classes = [
         # superuser may edit all reports but not delete
         IsSuperUser & IsNotDelete
-        # reviewer and supervisor may change unverified reports
+        # reviewer and supervisor may not change reports which are verfied and billed
         # but not delete them
-        | (IsReviewer | IsSupervisor) & IsUnverified & IsNotDelete
+        | (IsReviewer | IsSupervisor) & IsNotBilledAndVerfied & IsNotDelete
         # owner may only change its own unverified reports
         | IsOwner & IsUnverified
         # all authenticated users may read all reports
@@ -195,6 +196,18 @@ class ReportViewSet(ModelViewSet):
                 raise exceptions.ParseError(
                     _("Reports can't both be set as `review` and `verified`.")
                 )
+
+        if (
+            serializer.validated_data.get("billed", None) is not None
+            and not user.is_superuser
+            and str(request.query_params.get("reviewer")) != str(user.id)
+        ):
+            raise exceptions.ParseError(
+                _("Reviewer filter needs to be set to verifying user")
+            )
+
+        if "task" in fields:
+            fields["billed"] = fields["task"].project.billed
 
         if fields:
             tasks.notify_user_changed_reports(queryset, fields, user)
