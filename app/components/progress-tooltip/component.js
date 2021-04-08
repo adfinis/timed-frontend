@@ -74,27 +74,55 @@ const ProgressTooltipComponent = Component.extend({
   spent: moment.duration(),
 
   /**
-   * The current progress
+   * The current total progress
    *
-   * @property {Number} progress
+   * @property {Number} progressTotal
    * @public
    */
-  progress: computed("estimated", "spent", function() {
+  progressTotal: computed("estimated", "spent", function() {
     return this.get("estimated") && this.get("estimated").asHours()
       ? this.get("spent") / this.get("estimated")
       : 0;
   }),
 
   /**
-   * The color of the badge and progress bar
+   * The color of the badge and progress bar for total time spent
    *
-   * @property {String} color
+   * @property {String} colorTotal
    * @public
    */
-  color: computed("progress", function() {
-    if (this.get("progress") > 1) {
+  colorTotal: computed("progressTotal", function() {
+    if (this.get("progressTotal") > 1) {
       return "danger";
-    } else if (this.get("progress") >= 0.9) {
+    } else if (this.get("progressTotal") >= 0.9) {
+      return "warning";
+    }
+
+    return "success";
+  }),
+
+  /**
+   * The current billable progress
+   *
+   * @property {Number} progressBillable
+   * @public
+   */
+  progressBillable: computed("estimated", "billable", function() {
+    return this.get("estimated") && this.get("estimated").asHours()
+      ? this.get("billable") / this.get("estimated")
+      : 0;
+  }),
+
+  /**
+   * The color of the badge and progress bar for billable time spent
+   *
+   * @property {String} colorBillable
+   * @public
+   */
+  colorBillable: computed("progressBillable", function() {
+    if (this.get("progressBillable") > 1) {
+      return "danger";
+    } else if (this.get("progressBillable") >= 0.9) {
       return "warning";
     }
 
