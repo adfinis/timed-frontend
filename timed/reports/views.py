@@ -227,9 +227,9 @@ class WorkReportViewSet(GenericViewSet):
             hours = report.duration.total_seconds() / 60 / 60
             table["B13"] = Cell(hours, style_name=float_style)
             if report.not_billable:
-                table["C13"] = Cell("nein", style_name=text_style)
+                table["C13"] = Cell("no", style_name=text_style)
             else:
-                table["C13"] = Cell("ja", style_name=text_style)
+                table["C13"] = Cell("yes", style_name=text_style)
             table["D13"] = Cell(report.user.get_full_name(), style_name=text_style)
             table["E13"] = Cell(report.task.name, style_name=text_style)
             table["F13"] = Cell(report.comment, style_name=text_style)
@@ -271,7 +271,7 @@ class WorkReportViewSet(GenericViewSet):
         # calculate location of total not billable hours as insert rows moved it
         table[
             13 + len(reports) + len(tasks) + 1, 2
-        ].formula = 'of:=SUMIF(C13:C{0};"nein";B13:B{0})'.format(
+        ].formula = 'of:=SUMIF(C13:C{0};"no";B13:B{0})'.format(
             str(13 + len(reports) - 1)
         )
 
