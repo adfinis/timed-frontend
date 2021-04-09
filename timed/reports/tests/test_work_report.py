@@ -21,7 +21,20 @@ def test_work_report_single_project(auth_client, django_assert_num_queries):
     project = ProjectFactory.create(customer=customer, name="Project/")
     task = TaskFactory.create(project=project)
     ReportFactory.create_batch(
-        10, user=user, verified_by=user, task=task, date=date(2017, 8, 17)
+        5,
+        user=user,
+        verified_by=user,
+        task=task,
+        date=date(2017, 8, 17),
+        not_billable=True,
+    )
+    ReportFactory.create_batch(
+        5,
+        user=user,
+        verified_by=user,
+        task=task,
+        date=date(2017, 8, 17),
+        not_billable=False,
     )
 
     url = reverse("work-report-list")
