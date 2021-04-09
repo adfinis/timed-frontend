@@ -28,8 +28,20 @@ $progress-tooltip-color: rgb(87,87,87);
 
     .time-info-percentage {
       display: flex;
-      align-items: flex-start;
-      padding-left: 1rem;
+      flex-direction: column;
+
+      .time-info-percentage-total {
+        display: flex;
+        align-items: flex-start;
+        padding-left: 1rem;
+      }
+
+      .time-info-percentage-billable {
+        display: flex;
+        align-items: center;
+        padding-left: 1rem;
+        margin-top: 0.4rem;
+      }
     }
   }
 

@@ -6,17 +6,24 @@
         <p>Spent (Billable): {{humanize-duration billable}}</p>
         <p>Budget: {{if estimated (humanize-duration estimated) 'None'}}</p>
       </div>
-      {{#if progress}}
-        <div class="time-info-percentage">
-          <span class="badge badge--{{color}}">
-            {{#if (gt progress 1)}}{{fa-icon 'warning'}} {{/if}}
-            {{round (mult 100 progress)}}%
+      <div class="time-info-percentage">
+      {{#if progressTotal}}
+        <div class="time-info-percentage-total">
+          <span class="badge badge--{{colorTotal}}">
+            {{#if (gt progressTotal 1)}}{{fa-icon 'warning'}} {{/if}}
+            {{round (mult 100 progressTotal)}}%
           </span>
         </div>
       {{/if}}
+      {{#if progressBillable}}
+        <div class="time-info-percentage-billable">
+          <span class="badge badge--{{colorBillable}}">
+            {{#if (gt progressBillable 1)}}{{fa-icon 'warning'}} {{/if}}
+            {{round (mult 100 progressBillable)}}%
+          </span>
+        </div>
+      {{/if}}
+      </div>
     </div>
-    {{#if progress}}
-      {{progress-bar progress color=color}}
-    {{/if}}
   {{/ember-tether}}
 {{/if}}
