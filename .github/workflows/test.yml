@@ -19,7 +19,8 @@ jobs:
 
     strategy:
       matrix:
-        target: [js, hbs]
+        # TODO add hbs
+        target: [js]
 
     steps:
       - uses: actions/checkout@v2
@@ -68,7 +69,9 @@ jobs:
         env:
           COVERAGE: true
 
-      - name: Upload coverage report to Codecov
-        uses: codecov/codecov-action@v1
-        with:
-          file: ./coverage/lcov.info
+
+        # TODO enable this again after flaky tests are added back
+#       - name: Upload coverage report to Codecov
+#         uses: codecov/codecov-action@v1
+#         with:
+#           file: ./coverage/lcov.info
