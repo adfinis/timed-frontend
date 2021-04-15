@@ -56,7 +56,8 @@ module("Integration | Component | report row", function(hooks) {
         verifiedBy: EmberObject.create({
           id: 1,
           fullName: "John Doe"
-        })
+        }),
+        billed: true
       })
     );
 

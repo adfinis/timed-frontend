@@ -96,6 +96,11 @@ export const StatisticsQueryParams = new QueryParams({
     replace: true,
     refresh: true
   },
+  billed: {
+    defaultValue: "",
+    replace: true,
+    refresh: true
+  },
   type: {
     defaultValue: Object.keys(TYPES)[0],
     replace: true,

@@ -57,6 +57,14 @@ export default Model.extend({
   notBillable: attr("boolean", { defaultValue: false }),
 
   /**
+   * Whether the report has been marked as billed
+   *
+   * @property {Boolean} billed
+   * @public
+   */
+  billed: attr("boolean", { defaultValue: false }),
+
+  /**
    * The task
    *
    * @property {Task} task
