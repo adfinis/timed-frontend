@@ -5,6 +5,7 @@
   "repository": "https://github.com/adfinis-sygroup/timed-frontend",
   "author": "Adfinis AG <info@adfinis.com>",
   "license": "AGPL-3.0",
+  "private": true,
   "directories": {
     "test": "tests"
   },
