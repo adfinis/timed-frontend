@@ -125,6 +125,9 @@ according to type.
 | `UWSGI_MAX_REQUESTS`                         | uWSGI max requests                                                                       | 2000                                                         |
 | `UWSGI_HARAKIRI`                             | uWSGI harakiri (request timeout)                                                         | 5                                                            |
 | `UWSGI_PROCESSES`                            | uWSGI number of processes                                                                | 4                                                            |
+| `DJANGO_SENTRY_DSN`                          | Sentry DSN for error reporting                                                           | not set, set to enable Sentry integration                    |
+| `DJANGO_SENTRY_TRACES_SAMPLE_RATE`           | Sentry trace sample rate, Set 1.0 to capture 100% of transactions                        | 1.0                                                          |
+| `DJANGO_SENTRY_SEND_DEFAULT_PII`             | Associate users to errors in Sentry                                                      | True                                                         |
 
 
 ## Contributing
