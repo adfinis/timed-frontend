@@ -41,6 +41,8 @@ services:
       - DB_DATABASE=timed
       - DB_PASSWORD=timed
       - PROXY_ADDRESS_FORWARDING=true
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
     command: ["-Dkeycloak.migration.action=import", "-Dkeycloak.migration.provider=singleFile", "-Dkeycloak.migration.file=/etc/keycloak/keycloak-config.json", "-b", "0.0.0.0"]
     networks:
       - timed.local
