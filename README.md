@@ -121,11 +121,13 @@ according to type.
 | `DJANGO_SERVER_EMAIL`                        | Email address error messages are sent from                                               | root@localhost                                               |
 | `DJANGO_ADMINS`                              | List of people who get error notifications                                               | not set                                                      |
 | `DJANGO_WORK_REPORT_PATH`                    | Path of custom work report template                                                      | not set                                                      |
+| `DJANGO_SENTRY_DSN`                          | Sentry DSN for error reporting                                                           | not set, set to enable Sentry integration                    |
+| `DJANGO_SENTRY_TRACES_SAMPLE_RATE`           | Sentry trace sample rate, Set 1.0 to capture 100% of transactions                        | 1.0                                                          |
+| `DJANGO_SENTRY_SEND_DEFAULT_PII`             | Associate users to errors in Sentry                                                      | True                                                         |
 | `GUNICORN_WORKERS`                           | Number of worker processes to use                                                        | 8                                                            |
 | `GUNICORN_CMD_ARGS`                          | [Additional args for gunicorn](https://docs.gunicorn.org/en/latest/configure.html)       | not set                                                      |
 | `STATIC_ROOT`                                | Path to the static files. In prod, you may want to mount a docker volume here, so it can be served by nginx | `/app/static`                             |
 | `STATIC_URL`                                 | URL path to the static files on the web server. Configure nginx to point this to `$STATIC_ROOT`   | `/static`                                                    |
-
 
 ## Contributing
 
