@@ -1,0 +1,22 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: friday
+    time: "12:00"
+    timezone: "Europe/Zurich"
+  commit-message:
+    prefix: chore
+    include: scope
+- package-ecosystem: docker
+  directory: "/"
+  schedule:
+    interval: weekly
+    day: friday
+    time: "12:00"
+    timezone: "Europe/Zurich"
+  commit-message:
+    prefix: chore
+    include: scope
