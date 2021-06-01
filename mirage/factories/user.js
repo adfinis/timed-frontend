@@ -19,7 +19,7 @@ export default Factory.extend({
 
   afterCreate(user, server) {
     server.create("employment", { user });
-    server.create("employment", "active", { user });
+    server.create("employment", "active", { user, isExternal: false });
 
     server.db.absenceTypes.forEach(({ id: absenceTypeId }, i) => {
       server.create("absence-balance", i % 2 === 0 ? "days" : "duration", {

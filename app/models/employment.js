@@ -45,7 +45,7 @@ export default Model.extend({
    * @property {Boolean} isExternal
    * @public
    */
-  isExternal: attr("boolean"),
+  isExternal: attr("boolean", { defaultValue: false }),
 
   /**
    * The end date
