@@ -14,14 +14,14 @@
           <h2 class="user-header-worktime-balance-title">Worktime balance</h2>
 
           <div class="user-header-worktime-balance-last-valid-timesheet">
-            {{#with data.lastSuccessful.value.worktimeBalanceLastValidTimesheet as |balance|}}
+            {{#let data.lastSuccessful.value.worktimeBalanceLastValidTimesheet as |balance|}}
               <h2 title="Last day with timesheet entries or absences">
                 {{moment-format balance.date 'DD.MM.YYYY'}}
               </h2>
               <div class="{{balance-highlight-class balance.balance}}">
                 {{format-duration balance.balance false}}
               </div>
-            {{/with}}
+            {{/let}}
           </div>
 
           <div class="user-header-worktime-balance">
@@ -29,17 +29,17 @@
           </div>
 
           <div class="user-header-worktime-balance-today">
-            {{#with data.lastSuccessful.value.worktimeBalanceToday as |balance|}}
+            {{#let data.lastSuccessful.value.worktimeBalanceToday as |balance|}}
               <h2>Today</h2>
               <div class="{{balance-highlight-class balance.balance}}">
                 {{format-duration balance.balance false}}
               </div>
-            {{/with}}
+            {{/let}}
           </div>
         </div>
 
         <div class="user-header-absence-balance-container">
-          {{#with data.lastSuccessful.value.absenceBalances as |balances|}}
+          {{#let data.lastSuccessful.value.absenceBalances as |balances|}}
             {{#each balances as |balance index|}}
               {{balance-donut balance
                 class = 'user-header-absence-balance'
@@ -48,7 +48,7 @@
                 count = balances.length
               }}
             {{/each}}
-          {{/with}}
+          {{/let}}
         </div>
       {{/unless}}
     {{/if}}

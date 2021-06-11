@@ -1,131 +1,126 @@
-{{#if (cannot "access page")}}
-  <div class="text-center" data-test-access-forbidden>
-    <h1>Access forbidden</h1>
-    <h4>You do not have the permission to access this page</h4>
-  </div>
-{{else}}
-<div class="grid grid--12of12 grid-md--4of12">
-  <div class="grid-cell"></div>
-  <div class="grid-cell">
-    {{#if intersection.isRunning}}
-      <div class="empty">
-        {{loading-icon}}
-      </div>
-    {{else}}
-      <h1 class="text-center">
-        {{#unless (eq intersection.lastSuccessful.value.meta.count 1)}}
-          Bulk edit {{intersection.lastSuccessful.value.meta.count}} reports
-        {{else}}
-          Edit report
-        {{/unless}}
-      </h1>
-      <div class="card">
-        <div class="card-block">
-          {{#with intersection.lastSuccessful.value.model as |model|}}
-            {{#validated-form
-              model     = (changeset model IntersectionValidations)
-              on-submit = (perform save)
-            as |f|}}
-              {{#task-selection
-                on-set-customer = (action (queue (action (mut f.model.customer)) (action 'validate' f.model)))
-                on-set-project  = (action (queue (action (mut f.model.project)) (action 'validate' f.model)))
-                on-set-task     = (action (queue (action (mut f.model.task)) (action 'validate' f.model)))
-                initial         = (hash
-                  customer      = _customer
-                  project       = _project
-                  task          = _task
-                )
-              as |t|}}
-                {{#f.input name='task' as |fi|}}
-                  <div class="form-group" data-test-customer>
-                    <label>
-                      Customer
-                      {{#unless model.customer}}{{not-identical-warning}}{{/unless}}
-                      {{#unless (eq f.model.change.customer.id model.customer.id)}}{{changed-warning}}{{/unless}}
-                    </label>
-                    {{t.customer}}
-                  </div>
-                  <div class="form-group" data-test-project>
-                    <label>
-                      Project
-                      {{#unless model.project}}{{not-identical-warning}}{{/unless}}
-                      {{#unless (eq f.model.change.project.id model.project.id)}}{{changed-warning}}{{/unless}}
-                    </label>
-                    {{t.project}}
-                  </div>
-                  <div class="form-group" data-test-task>
-                    <label>
-                      Task
-                      {{#unless model.task}}{{not-identical-warning}}{{/unless}}
-                      {{#unless (eq f.model.change.task.id model.task.id)}}{{changed-warning}}{{/unless}}
-                    </label>
-                    {{t.task}}
-                  </div>
-                {{/f.input}}
-
-                {{#f.input data-test-comment name='comment' as |fi|}}
-                  <label>
-                    Comment
-                    {{#if (eq model.comment null)}}{{not-identical-warning}}{{/if}}
-                    {{#unless (eq f.model.comment model.comment)}}{{changed-warning}}{{/unless}}
-                  </label>
-                  <input type="text" placeholder="Enter comment..." class="form-control" onchange={{action fi.update value='target.value'}} value={{fi.value}}>
-                {{/f.input}}
-
-                {{#f.input data-test-not-billable name='notBillable' as |fi|}}
-                  {{#sy-checkbox checked=fi.value on-change=fi.update}}
-                    Not billable
-                    {{#if (eq model.notBillable null)}}{{not-identical-warning}}{{/if}}
-                    {{#unless (eq f.model.notBillable model.notBillable)}}{{changed-warning}}{{/unless}}
-                  {{/sy-checkbox}}
-                {{/f.input}}
-
-                {{#f.input data-test-review name='review' as |fi|}}
-                  {{#sy-checkbox checked=fi.value on-change=fi.update}}
-                    Needs Review
-                    {{#if (eq model.review null)}}{{not-identical-warning}}{{/if}}
-                    {{#unless (eq f.model.review model.review)}}{{changed-warning}}{{/unless}}
-                  {{/sy-checkbox}}
-                {{/f.input}}
-
-                {{#f.input data-test-billed name='billed' as |fi|}}
-                  {{#sy-checkbox
-                    checked=fi.value
-                    on-change=fi.update
-                    title=toolTipText
-                    disabled=(not canBill)
-                  }}
-                    Billed
-                    {{#if (eq model.billed null)}}{{not-identical-warning}}{{/if}}
-                    {{#unless (eq f.model.billed model.billed)}}{{changed-warning}}{{/unless}}
-                  {{/sy-checkbox}}
-                {{/f.input}}
-
-                {{#f.input data-test-verified name='verified' as |fi|}}
-                  {{#sy-checkbox
-                    checked=fi.value
-                    on-change=fi.update
-                    title=toolTipText
-                    disabled=(or (not canVerify) needsReview)
-                  }}
-                    Verified
-                    {{#if (eq model.verified null)}}{{not-identical-warning}}{{/if}}
-                    {{#unless (eq f.model.verified model.verified)}}{{changed-warning}}{{/unless}}
-                  {{/sy-checkbox}}
-                {{/f.input}}
-
-                <div class="text-right">
-                  <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
-                  <button data-test-reset type="button" class="btn" {{action (queue t.reset (action 'reset' f.model))}}>Reset</button>
-                  {{f.submit}}
-                </div>
-              {{/task-selection}}
-            {{/validated-form}}
-          {{/with}}
+<PagePermission>
+  <div class="grid grid--12of12 grid-md--4of12">
+    <div class="grid-cell"></div>
+    <div class="grid-cell">
+      {{#if intersection.isRunning}}
+        <div class="empty">
+          {{loading-icon}}
         </div>
-      </div>
-    {{/if}}
+      {{else}}
+        <h1 class="text-center">
+          {{#unless (eq intersection.lastSuccessful.value.meta.count 1)}}
+            Bulk edit {{intersection.lastSuccessful.value.meta.count}} reports
+          {{else}}
+            Edit report
+          {{/unless}}
+        </h1>
+        <div class="card">
+          <div class="card-block">
+            {{#with intersection.lastSuccessful.value.model as |model|}}
+              {{#validated-form
+                model     = (changeset model IntersectionValidations)
+                on-submit = (perform save)
+              as |f|}}
+                {{#task-selection
+                  on-set-customer = (action (queue (action (mut f.model.customer)) (action 'validate' f.model)))
+                  on-set-project  = (action (queue (action (mut f.model.project)) (action 'validate' f.model)))
+                  on-set-task     = (action (queue (action (mut f.model.task)) (action 'validate' f.model)))
+                  initial         = (hash
+                    customer      = _customer
+                    project       = _project
+                    task          = _task
+                  )
+                as |t|}}
+                  {{#f.input name='task' as |fi|}}
+                    <div class="form-group" data-test-customer>
+                      <label>
+                        Customer
+                        {{#unless model.customer}}{{not-identical-warning}}{{/unless}}
+                        {{#unless (eq f.model.change.customer.id model.customer.id)}}{{changed-warning}}{{/unless}}
+                      </label>
+                      {{t.customer}}
+                    </div>
+                    <div class="form-group" data-test-project>
+                      <label>
+                        Project
+                        {{#unless model.project}}{{not-identical-warning}}{{/unless}}
+                        {{#unless (eq f.model.change.project.id model.project.id)}}{{changed-warning}}{{/unless}}
+                      </label>
+                      {{t.project}}
+                    </div>
+                    <div class="form-group" data-test-task>
+                      <label>
+                        Task
+                        {{#unless model.task}}{{not-identical-warning}}{{/unless}}
+                        {{#unless (eq f.model.change.task.id model.task.id)}}{{changed-warning}}{{/unless}}
+                      </label>
+                      {{t.task}}
+                    </div>
+                  {{/f.input}}
+
+                  {{#f.input data-test-comment name='comment' as |fi|}}
+                    <label>
+                      Comment
+                      {{#if (eq model.comment null)}}{{not-identical-warning}}{{/if}}
+                      {{#unless (eq f.model.comment model.comment)}}{{changed-warning}}{{/unless}}
+                    </label>
+                    <input type="text" placeholder="Enter comment..." class="form-control" onchange={{action fi.update value='target.value'}} value={{fi.value}}>
+                  {{/f.input}}
+
+                  {{#f.input data-test-not-billable name='notBillable' as |fi|}}
+                    {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                      Not billable
+                      {{#if (eq model.notBillable null)}}{{not-identical-warning}}{{/if}}
+                      {{#unless (eq f.model.notBillable model.notBillable)}}{{changed-warning}}{{/unless}}
+                    {{/sy-checkbox}}
+                  {{/f.input}}
+
+                  {{#f.input data-test-review name='review' as |fi|}}
+                    {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                      Needs Review
+                      {{#if (eq model.review null)}}{{not-identical-warning}}{{/if}}
+                      {{#unless (eq f.model.review model.review)}}{{changed-warning}}{{/unless}}
+                    {{/sy-checkbox}}
+                  {{/f.input}}
+
+                  {{#f.input data-test-billed name='billed' as |fi|}}
+                    {{#sy-checkbox
+                      checked=fi.value
+                      on-change=fi.update
+                      title=toolTipText
+                      disabled=(not canBill)
+                    }}
+                      Billed
+                      {{#if (eq model.billed null)}}{{not-identical-warning}}{{/if}}
+                      {{#unless (eq f.model.billed model.billed)}}{{changed-warning}}{{/unless}}
+                    {{/sy-checkbox}}
+                  {{/f.input}}
+
+                  {{#f.input data-test-verified name='verified' as |fi|}}
+                    {{#sy-checkbox
+                      checked=fi.value
+                      on-change=fi.update
+                      title=toolTipText
+                      disabled=(or (not canVerify) needsReview)
+                    }}
+                      Verified
+                      {{#if (eq model.verified null)}}{{not-identical-warning}}{{/if}}
+                      {{#unless (eq f.model.verified model.verified)}}{{changed-warning}}{{/unless}}
+                    {{/sy-checkbox}}
+                  {{/f.input}}
+
+                  <div class="text-right">
+                    <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
+                    <button data-test-reset type="button" class="btn" {{action (queue t.reset (action 'reset' f.model))}}>Reset</button>
+                    {{f.submit}}
+                  </div>
+                {{/task-selection}}
+              {{/validated-form}}
+            {{/with}}
+          </div>
+        </div>
+      {{/if}}
+    </div>
+    <div class="grid-cell"></div>
   </div>
-  <div class="grid-cell"></div>
-</div>
-{{/if}}
+</PagePermission>
