@@ -291,8 +291,40 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
         size: 20
       },
       ...params,
-      include:
-        "task,task.project,task.project.customer,task.project.reviewers,user"
+      include: "task,task.project,task.project.customer,user"
+    });
+
+    const projectAssignees = (yield this.store.findAll(
+      "project-assignee"
+    )).toArray();
+    const taskAssignees = (yield this.store.findAll("task-assignee")).toArray();
+    const customerAssignees = (yield this.store.findAll(
+      "customer-assignee"
+    )).toArray();
+
+    const mappedReports = data.map(report => {
+      report.set(
+        "taskAssignees",
+        taskAssignees.filter(
+          taskAssignee => report.get("task.id") === taskAssignee.get("task.id")
+        )
+      );
+      report.set(
+        "projectAssignees",
+        projectAssignees.filter(
+          projectAssignee =>
+            report.get("task.project.id") === projectAssignee.get("project.id")
+        )
+      );
+      report.set(
+        "customerAssignees",
+        customerAssignees.filter(
+          customerAssignee =>
+            report.get("task.project.customer.id") ===
+            customerAssignee.get("customer.id")
+        )
+      );
+      return report;
     });
 
     this.setProperties({
@@ -303,7 +335,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _lastPage: data.get("meta.pagination.page")
     });
 
-    this.get("_dataCache").pushObjects(data.toArray());
+    this.get("_dataCache").pushObjects(mappedReports.toArray());
 
     return this.get("_dataCache");
   }).enqueue(),
