@@ -27,7 +27,7 @@ export default Controller.extend({
         projects = yield this.store.findAll("project");
       } else {
         projects = yield this.store.query("project", {
-          reviewer: this.get("user.id")
+          has_reviewer: this.get("user.id")
         });
       }
 

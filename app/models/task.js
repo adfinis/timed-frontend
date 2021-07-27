@@ -6,7 +6,7 @@
 import { computed } from "@ember/object";
 import attr from "ember-data/attr";
 import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
+import { belongsTo, hasMany } from "ember-data/relationships";
 
 /**
  * The task model
@@ -52,6 +52,15 @@ export default Model.extend({
    * @public
    */
   project: belongsTo("project"),
+
+  /**
+   * Assigned users to this task
+   *
+   * @property assignees
+   * @type {TaskAssignee[]}
+   * @public
+   */
+  assignees: hasMany("task-assignee"),
 
   /**
    * Flag saying that this is a task.
