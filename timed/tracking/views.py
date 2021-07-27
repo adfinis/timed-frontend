@@ -103,6 +103,8 @@ class ReportViewSet(ModelViewSet):
         | IsOwner & IsUnverified & (IsInternal | (IsExternal & IsResource))
         # all authenticated users may read all reports
         | IsAuthenticated & IsReadOnly
+        # external employees with resource or reviewer role may edit own unverified reports
+        | IsExternal & (IsResource | IsReviewer) & IsOwner & IsUnverified
     ]
     ordering = ("date", "id")
     ordering_fields = (
@@ -350,7 +352,7 @@ class AbsenceViewSet(ModelViewSet):
         # owner may change all its absences
         | IsAuthenticated & IsOwner & IsInternal
         # all authenticated users may read filtered result
-        | IsAuthenticated & IsReadOnly
+        | IsAuthenticated & IsReadOnly & IsInternal
     ]
 
     def get_queryset(self):
