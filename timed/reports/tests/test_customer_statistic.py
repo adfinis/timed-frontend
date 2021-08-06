@@ -11,7 +11,7 @@ def test_customer_statistic_list(internal_employee_client, django_assert_num_que
     report2 = ReportFactory.create(duration=timedelta(hours=4))
 
     url = reverse("customer-statistic-list")
-    with django_assert_num_queries(6):
+    with django_assert_num_queries(4):
         result = internal_employee_client.get(
             url, data={"ordering": "duration", "include": "customer"}
         )
@@ -56,7 +56,7 @@ def test_customer_statistic_detail(internal_employee_client, django_assert_num_q
     report = ReportFactory.create(duration=timedelta(hours=1))
 
     url = reverse("customer-statistic-detail", args=[report.task.project.customer.id])
-    with django_assert_num_queries(6):
+    with django_assert_num_queries(5):
         result = internal_employee_client.get(
             url, data={"ordering": "duration", "include": "customer"}
         )

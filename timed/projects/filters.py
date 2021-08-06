@@ -24,12 +24,11 @@ class ProjectFilterSet(FilterSet):
     """Filter set for the projects endpoint."""
 
     archived = NumberFilter(field_name="archived")
-    # reviewer = NumberFilter(field_name="reviewers")
     has_manager = NumberFilter(method="filter_has_manager")
     has_reviewer = NumberFilter(method="filter_has_reviewer")
 
     def filter_has_manager(self, queryset, name, value):
-        if not value:
+        if not value:  # pragma: no cover
             return queryset
         return queryset.filter(
             Q(
@@ -45,7 +44,7 @@ class ProjectFilterSet(FilterSet):
         )
 
     def filter_has_reviewer(self, queryset, name, value):
-        if not value:
+        if not value:  # pragma: no cover
             return queryset
         return queryset.filter(
             Q(
@@ -118,3 +117,42 @@ class TaskFilterSet(FilterSet):
 
         model = models.Task
         fields = ["archived", "project", "my_most_frequent", "reference", "cost_center"]
+
+
+class TaskAssigneeFilterSet(FilterSet):
+    """Filter set for the task assignees endpoint."""
+
+    task = NumberFilter(field_name="task")
+    user = NumberFilter(field_name="user")
+
+    class Meta:
+        """Meta information for the task assignee filter set."""
+
+        model = models.TaskAssignee
+        fields = ["task", "user", "is_reviewer", "is_manager", "is_resource"]
+
+
+class ProjectAssigneeFilterSet(FilterSet):
+    """Filter set for the project assignees endpoint."""
+
+    project = NumberFilter(field_name="project")
+    user = NumberFilter(field_name="user")
+
+    class Meta:
+        """Meta information for the project assignee filter set."""
+
+        model = models.ProjectAssignee
+        fields = ["project", "user", "is_reviewer", "is_manager", "is_resource"]
+
+
+class CustomerAssigneeFilterSet(FilterSet):
+    """Filter set for the customer assignees endpoint."""
+
+    customer = NumberFilter(field_name="customer")
+    user = NumberFilter(field_name="user")
+
+    class Meta:
+        """Meta information for the customer assignee filter set."""
+
+        model = models.CustomerAssignee
+        fields = ["customer", "user", "is_reviewer", "is_manager", "is_resource"]

@@ -669,7 +669,7 @@ def test_report_update_date_reviewer(
     url = reverse("report-detail", args=[report.id])
 
     response = internal_employee_client.patch(url, data)
-    assert response.status_code == status.HTTP_403_FORBIDDEN
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_report_update_duration_reviewer(
@@ -693,7 +693,7 @@ def test_report_update_duration_reviewer(
     url = reverse("report-detail", args=[report.id])
 
     res = internal_employee_client.patch(url, data)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_report_update_by_user(
@@ -739,7 +739,7 @@ def test_report_update_verified_and_review_reviewer(
     url = reverse("report-detail", args=[report.id])
 
     res = internal_employee_client.patch(url, data)
-    assert res.status_code == status.HTTP_403_FORBIDDEN
+    assert res.status_code == status.HTTP_400_BAD_REQUEST
 
 
 def test_report_set_verified_by_user(

@@ -14,7 +14,7 @@ def test_task_statistic_list(internal_employee_client, django_assert_num_queries
     ReportFactory.create(duration=timedelta(hours=2), task=task_z)
 
     url = reverse("task-statistic-list")
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(4):
         result = internal_employee_client.get(
             url,
             data={

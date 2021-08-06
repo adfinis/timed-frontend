@@ -146,23 +146,23 @@ class TaskViewSet(ModelViewSet):
 
 class TaskAsssigneeViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.TaskAssigneeSerializer
+    filterset_class = filters.TaskAssigneeFilterSet
 
     def get_queryset(self):
-        # return models.TaskAssignee.objects.prefetch_related("task", "user")
-        return models.TaskAssignee.objects.all()
+        return models.TaskAssignee.objects.select_related("task", "user")
 
 
 class ProjectAsssigneeViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.ProjectAssigneeSerializer
+    filterset_class = filters.ProjectAssigneeFilterSet
 
     def get_queryset(self):
-        # return models.ProjectAssignee.objects.prefetch_related("project", "user")
-        return models.ProjectAssignee.objects.all()
+        return models.ProjectAssignee.objects.select_related("project", "user")
 
 
 class CustomerAsssigneeViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.CustomerAssigneeSerializer
+    filterset_class = filters.CustomerAssigneeFilterSet
 
     def get_queryset(self):
-        # return models.CustomerAssignee.objects.prefetch_related("customer", "user")
-        return models.CustomerAssignee.objects.all()
+        return models.CustomerAssignee.objects.select_related("customer", "user")

@@ -125,3 +125,24 @@ def test_project_list_external_employee(
 
     json = response.json()
     assert len(json["data"]) == expected
+
+
+def test_project_filter(internal_employee_client):
+    user = internal_employee_client.user
+    proj1, proj2, *_ = ProjectFactory.create_batch(4)
+    ProjectAssigneeFactory.create(project=proj1, user=user, is_reviewer=True)
+    ProjectAssigneeFactory.create(project=proj1, user=user, is_manager=True)
+
+    url = reverse("project-list")
+
+    response = internal_employee_client.get(url, data={"has_manager": user.id})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json["data"]) == 1
+
+    response = internal_employee_client.get(url, data={"has_reviewer": user.id})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json["data"]) == 1

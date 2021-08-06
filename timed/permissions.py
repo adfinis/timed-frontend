@@ -287,23 +287,23 @@ class IsResource(IsAuthenticated):
         if isinstance(obj, tracking_models.Activity) or isinstance(
             obj, tracking_models.Report
         ):
-            task = obj.task
-            task = obj.task
+            if obj.task:
+                return (
+                    projects_models.Task.objects.filter(pk=obj.task.pk)
+                    .filter(
+                        Q(task_assignees__user=user, task_assignees__is_resource=True)
+                        | Q(
+                            project__project_assignees__user=user,
+                            project__project_assignees__is_resource=True,
+                        )
+                        | Q(
+                            project__customer__customer_assignees__user=user,
+                            project__customer__customer_assignees__is_resource=True,
+                        )
+                    )
+                    .exists()
+                )
+            else:  # pragma: no cover
+                return True
         else:  # pragma: no cover
             raise RuntimeError("IsResource permission called on unsupported model")
-
-        return (
-            projects_models.Task.objects.filter(pk=task.pk)
-            .filter(
-                Q(task_assignees__user=user, task_assignees__is_resource=True)
-                | Q(
-                    project__project_assignees__user=user,
-                    project__project_assignees__is_resource=True,
-                )
-                | Q(
-                    project__customer__customer_assignees__user=user,
-                    project__customer__customer_assignees__is_resource=True,
-                )
-            )
-            .exists()
-        )

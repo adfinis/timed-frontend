@@ -100,7 +100,7 @@ class ReportFilterSet(FilterSet):
     cost_center = NumberFilter(method="filter_cost_center")
 
     def filter_has_reviewer(self, queryset, name, value):
-        if not value:
+        if not value:  # pragma: no cover
             return queryset
         return queryset.filter(
             Q(

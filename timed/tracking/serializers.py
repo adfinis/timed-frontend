@@ -104,9 +104,7 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         if self.instance is not None:
             user = self.context["request"].user
             owner = self.instance.user
-            if (
-                getattr(self.instance, field) != value and user != owner
-            ):  # rpragma: no cover
+            if getattr(self.instance, field) != value and user != owner:
                 raise ValidationError(_(f"Only owner may change {field}"))
 
         return value

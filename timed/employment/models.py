@@ -324,12 +324,17 @@ class UserManager(UserManager):
         return objects.filter(supervisees_count__gt=0)
 
     def all_reviewers(self):
-        all_users = self.all()
-        all_reviewers = []
-        for user in all_users:
-            if user.is_reviewer:
-                all_reviewers.append(user.id)
-        return all_users.filter(id__in=all_reviewers)
+        return self.all().filter(
+            models.Q(
+                pk__in=TaskAssignee.objects.filter(is_reviewer=True).values("user")
+            )
+            | models.Q(
+                pk__in=ProjectAssignee.objects.filter(is_reviewer=True).values("user")
+            )
+            | models.Q(
+                pk__in=CustomerAssignee.objects.filter(is_reviewer=True).values("user")
+            )
+        )
 
     def all_supervisees(self):
         objects = self.model.objects.annotate(
