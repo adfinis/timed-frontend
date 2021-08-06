@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "djmoney",
     "mozilla_django_oidc",
     "django_prometheus",
+    "nested_inline",
     "timed.employment",
     "timed.projects",
     "timed.tracking",

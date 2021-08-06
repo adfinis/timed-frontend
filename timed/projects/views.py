@@ -1,9 +1,19 @@
 """Viewsets for the projects app."""
 
+from datetime import date
+
+from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework_json_api.views import PreloadIncludesMixin
 
-from timed.permissions import IsAuthenticated, IsReadOnly, IsReviewer, IsSuperUser
+from timed.employment.models import Employment
+from timed.permissions import (
+    IsAuthenticated,
+    IsInternal,
+    IsManager,
+    IsReadOnly,
+    IsSuperUser,
+)
 from timed.projects import filters, models, serializers
 
 
@@ -17,15 +27,34 @@ class CustomerViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         """Prefetch related data.
 
+        If an employee is external, get only assigned customers.
+
         :return: The customers
         :rtype:  QuerySet
         """
-        return models.Customer.objects.prefetch_related("projects")
+        user = self.request.user
+        current_employment = Employment.objects.get_at(user=user, date=date.today())
+        queryset = models.Customer.objects.prefetch_related("projects")
+
+        if not current_employment.is_external:  # pragma: no cover
+            return queryset
+        else:
+            return queryset.filter(
+                Q(assignees=user)
+                | Q(projects__assignees=user)
+                | Q(projects__tasks__assignees=user)
+            )
 
 
 class BillingTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.BillingTypeSerializer
     ordering = "name"
+    permission_classes = [
+        # superuser may edit all billing types
+        IsSuperUser
+        # internal employees may read all billing types
+        | IsAuthenticated & IsInternal & IsReadOnly
+    ]
 
     def get_queryset(self):
         return models.BillingType.objects.all()
@@ -34,6 +63,12 @@ class BillingTypeViewSet(ReadOnlyModelViewSet):
 class CostCenterViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.CostCenterSerializer
     ordering = "name"
+    permission_classes = [
+        # superuser may edit all cost centers
+        IsSuperUser
+        # internal employees may read all cost centers
+        | IsAuthenticated & IsInternal & IsReadOnly
+    ]
 
     def get_queryset(self):
         return models.CostCenter.objects.all()
@@ -54,8 +89,23 @@ class ProjectViewSet(PreloadIncludesMixin, ReadOnlyModelViewSet):
     }
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        return queryset.select_related("customer", "billing_type", "cost_center")
+        """Get only assigned projects, if an employee is external."""
+        user = self.request.user
+        current_employment = Employment.objects.get_at(user=user, date=date.today())
+        queryset = (
+            super()
+            .get_queryset()
+            .select_related("customer", "billing_type", "cost_center")
+        )
+
+        if not current_employment.is_external:  # pragma: no cover
+            return queryset
+        else:
+            return queryset.filter(
+                Q(assignees=user)
+                | Q(tasks__assignees=user)
+                | Q(customer__assignees=user)
+            )
 
 
 class TaskViewSet(ModelViewSet):
@@ -67,8 +117,8 @@ class TaskViewSet(ModelViewSet):
     permission_classes = [
         # superuser may edit all tasks
         IsSuperUser
-        # reviewer may edit all tasks
-        | IsReviewer
+        # managers may edit all tasks
+        | IsManager
         # all authenticated users may read all tasks
         | IsAuthenticated & IsReadOnly
     ]
@@ -83,3 +133,18 @@ class TaskViewSet(ModelViewSet):
             self.ordering = None
 
         return super().filter_queryset(queryset)
+
+    def get_queryset(self):
+        """Get only assigned tasks, if an employee is external."""
+        user = self.request.user
+        current_employment = Employment.objects.get_at(user=user, date=date.today())
+        queryset = super().get_queryset().select_related("project", "cost_center")
+
+        if not current_employment.is_external:  # pragma: no cover
+            return queryset
+        else:
+            return queryset.filter(
+                Q(assignees=user)
+                | Q(project__assignees=user)
+                | Q(project__customer__assignees=user)
+            )

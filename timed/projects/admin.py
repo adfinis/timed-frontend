@@ -4,11 +4,27 @@ from django import forms
 from django.contrib import admin
 from django.forms.models import BaseInlineFormSet
 from django.utils.translation import gettext_lazy as _
+from nested_inline.admin import NestedModelAdmin, NestedStackedInline
 
 from timed.forms import DurationInHoursField
 from timed.projects import models
 from timed.redmine.admin import RedmineProjectInline
 from timed.subscription.admin import CustomerPasswordInline
+
+
+class CustomerAssigneeInline(admin.TabularInline):
+    model = models.CustomerAssignee
+    extra = 0
+
+
+class ProjectAssigneeInline(NestedStackedInline):
+    model = models.ProjectAssignee
+    extra = 0
+
+
+class TaskAssigneeInline(NestedStackedInline):
+    model = models.TaskAssignee
+    extra = 1
 
 
 @admin.register(models.Customer)
@@ -17,7 +33,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
     list_display = ["name"]
     search_fields = ["name"]
-    inlines = [CustomerPasswordInline]
+    inlines = [CustomerPasswordInline, CustomerAssigneeInline]
 
     def has_delete_permission(self, request, obj=None):
         return obj and not obj.projects.exists()
@@ -68,24 +84,18 @@ class TaskInlineFormset(BaseInlineFormSet):
             self.extra += len(self.initial)
 
 
-class TaskInline(admin.TabularInline):
+class TaskInline(NestedStackedInline):
     formset = TaskInlineFormset
     form = TaskForm
     model = models.Task
     extra = 0
+    inlines = [TaskAssigneeInline]
 
     def has_delete_permission(self, request, obj=None):
         # for some reason obj is parent object and not task
         # so this doesn't work
         # return obj and not obj.reports.exists()
         return False
-
-
-class ReviewerInline(admin.TabularInline):
-    model = models.Project.reviewers.through
-    extra = 0
-    verbose_name = _("Reviewer")
-    verbose_name_plural = _("Reviewers")
 
 
 class ProjectForm(forms.ModelForm):
@@ -96,7 +106,7 @@ class ProjectForm(forms.ModelForm):
 
 
 @admin.register(models.Project)
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(NestedModelAdmin):
     """Project admin view."""
 
     form = ProjectForm
@@ -104,7 +114,7 @@ class ProjectAdmin(admin.ModelAdmin):
     list_filter = ["customer"]
     search_fields = ["name", "customer__name"]
 
-    inlines = [TaskInline, ReviewerInline, RedmineProjectInline]
+    inlines = [TaskInline, RedmineProjectInline, ProjectAssigneeInline]
     exclude = ("reviewers",)
 
     def has_delete_permission(self, request, obj=None):
