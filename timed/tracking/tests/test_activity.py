@@ -74,6 +74,33 @@ def test_activity_create(auth_client, is_external, task_assignee, expected):
         assert int(json["data"]["relationships"]["user"]["data"]["id"]) == int(user.id)
 
 
+def test_activity_create_no_task_external_employee(auth_client, task_assignee):
+    user = auth_client.user
+    EmploymentFactory(user=user)
+    task_assignee.user = user
+    task_assignee.save()
+
+    data = {
+        "data": {
+            "type": "activities",
+            "id": None,
+            "attributes": {
+                "from-time": "08:00",
+                "date": "2017-01-01",
+                "comment": "Test activity",
+            },
+        }
+    }
+
+    url = reverse("activity-list")
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status.HTTP_201_CREATED
+
+    json = response.json()
+    assert int(json["data"]["relationships"]["user"]["data"]["id"]) == int(user.id)
+
+
 @pytest.mark.parametrize(
     "task_assignee__is_resource, task_assignee__is_reviewer, is_external, expected",
     [

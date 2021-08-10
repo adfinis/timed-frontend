@@ -11,6 +11,7 @@ from django.db.models import Sum, functions
 from django.utils.translation import gettext_lazy as _
 
 from timed.models import WeekdaysField
+from timed.projects.models import CustomerAssignee, ProjectAssignee, TaskAssignee
 from timed.tracking.models import Absence
 
 
@@ -323,8 +324,17 @@ class UserManager(UserManager):
         return objects.filter(supervisees_count__gt=0)
 
     def all_reviewers(self):
-        objects = self.model.objects.annotate(reviews_count=models.Count("reviews"))
-        return objects.filter(reviews__gt=0)
+        return self.all().filter(
+            models.Q(
+                pk__in=TaskAssignee.objects.filter(is_reviewer=True).values("user")
+            )
+            | models.Q(
+                pk__in=ProjectAssignee.objects.filter(is_reviewer=True).values("user")
+            )
+            | models.Q(
+                pk__in=CustomerAssignee.objects.filter(is_reviewer=True).values("user")
+            )
+        )
 
     def all_supervisees(self):
         objects = self.model.objects.annotate(
@@ -355,7 +365,11 @@ class User(AbstractUser):
 
     @property
     def is_reviewer(self):
-        return self.reviews.exists()
+        return (
+            TaskAssignee.objects.filter(user=self, is_reviewer=True).exists()
+            or ProjectAssignee.objects.filter(user=self, is_reviewer=True).exists()
+            or CustomerAssignee.objects.filter(user=self, is_reviewer=True).exists()
+        )
 
     @property
     def user_id(self):

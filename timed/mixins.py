@@ -62,7 +62,7 @@ class AggregateQuerysetMixin(object):
 
                 qs = value.model.objects.filter(id__in=obj_ids)
                 qs = qs.select_related()
-                if hasattr(self, "prefetch_related_for_field"):
+                if hasattr(self, "prefetch_related_for_field"):  # pragma: no cover
                     qs = qs.prefetch_related(
                         *self.prefetch_related_for_field.get(source, [])
                     )

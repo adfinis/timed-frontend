@@ -6,7 +6,7 @@ from django.urls import reverse
 from rest_framework import status
 
 from timed.employment.factories import UserFactory
-from timed.projects.factories import ProjectFactory
+from timed.projects.factories import ProjectAssigneeFactory, ProjectFactory
 from timed.projects.serializers import ProjectSerializer
 
 
@@ -27,12 +27,12 @@ def test_project_list_not_archived(internal_employee_client):
 def test_project_list_include(
     internal_employee_client, django_assert_num_queries, project
 ):
-    users = UserFactory.create_batch(2)
-    project.reviewers.add(*users)
+    user = UserFactory.create()
+    ProjectAssigneeFactory.create(user=user, project=project, is_reviewer=True)
 
     url = reverse("project-list")
 
-    with django_assert_num_queries(11):
+    with django_assert_num_queries(2):
         response = internal_employee_client.get(
             url,
             data={"include": ",".join(ProjectSerializer.included_serializers.keys())},
@@ -125,3 +125,24 @@ def test_project_list_external_employee(
 
     json = response.json()
     assert len(json["data"]) == expected
+
+
+def test_project_filter(internal_employee_client):
+    user = internal_employee_client.user
+    proj1, proj2, *_ = ProjectFactory.create_batch(4)
+    ProjectAssigneeFactory.create(project=proj1, user=user, is_reviewer=True)
+    ProjectAssigneeFactory.create(project=proj1, user=user, is_manager=True)
+
+    url = reverse("project-list")
+
+    response = internal_employee_client.get(url, data={"has_manager": user.id})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json["data"]) == 1
+
+    response = internal_employee_client.get(url, data={"has_reviewer": user.id})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json["data"]) == 1

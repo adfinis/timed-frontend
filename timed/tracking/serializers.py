@@ -104,9 +104,7 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         if self.instance is not None:
             user = self.context["request"].user
             owner = self.instance.user
-            if (
-                getattr(self.instance, field) != value and user != owner
-            ):  # rpragma: no cover
+            if getattr(self.instance, field) != value and user != owner:
                 raise ValidationError(_(f"Only owner may change {field}"))
 
         return value
@@ -136,7 +134,24 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         review = data.get("review")
         billed = data.get("billed")
         is_reviewer = (
-            user.is_superuser or task.project.reviewers.filter(id=user.id).exists()
+            user.is_superuser
+            or Task.objects.filter(
+                Q(
+                    task_assignees__user=user,
+                    task_assignees__is_reviewer=True,
+                    task_assignees__task=task,
+                )
+                | Q(
+                    project__project_assignees__user=user,
+                    project__project_assignees__is_reviewer=True,
+                    project__project_assignees__project=task.project,
+                )
+                | Q(
+                    project__customer__customer_assignees__user=user,
+                    project__customer__customer_assignees__is_reviewer=True,
+                    project__customer__customer_assignees__customer=task.project.customer,
+                )
+            ).exists()
         )
 
         if new_verified_by != current_verified_by:
