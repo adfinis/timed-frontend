@@ -40,19 +40,21 @@
             type="button"
             data-test-edit-absence
             class="btn btn-warning"
+            disabled={{cannot "access page"}}
             {{action (toggle 'showEditModal' this)}}
           >
             {{absence.type.name}}
           </button>
         {{/if}}
-        <button
-          type="button"
-          data-test-add-absence
-          class="btn btn-default"
-          {{action (toggle 'showAddModal' this)}}
-        >
-          Add absence
-        </button>
+          <button
+            type="button"
+            data-test-add-absence
+            class="btn btn-default"
+            disabled={{cannot "access page"}}
+            {{action (toggle 'showAddModal' this)}}
+          >
+            Add absence
+          </button>
       </div>
     </div>
     <div class="grid-cell visible-sm">
@@ -83,14 +85,15 @@
               {{absence.type.name}}
             </button>
           {{/if}}
-          <button
-            type="button"
-            data-test-add-absence
-            class="btn btn-default"
-            {{action (toggle 'showAddModal' this)}}
-          >
-            Add absence
-          </button>
+            <button
+              type="button"
+              data-test-add-absence
+              class="btn btn-default"
+              disabled={{cannot "access page"}}
+              {{action (toggle 'showAddModal' this)}}
+            >
+              Add absence
+            </button>
         </li>
       </ul>
     </div>

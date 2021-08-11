@@ -1,9 +1,4 @@
-{{#if (not hasAccess)}}
-  <div class="text-center" data-test-access-forbidden>
-    <h1>Access forbidden</h1>
-    <h4>You do not have the permission to access this page</h4>
-  </div>
-{{else}}
+<PagePermission>
   {{#if loading}}
     <div class="empty">
       {{loading-icon}}
@@ -135,4 +130,4 @@
       </div>
     {{/if}}
   {{/if}}
-{{/if}}
+</PagePermission>
