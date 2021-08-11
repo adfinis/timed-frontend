@@ -40,8 +40,8 @@ def test_redmine_report(db, freezer, mocker, report_factory, not_billable, revie
     assert "Estimated hours: {0}".format(estimated_hours) in issue.notes
     assert "Hours in last 7 days: {0}\n".format(report_hours) in issue.notes
     assert report.comment in issue.notes
-    assert "Not Billable" in issue.notes or not not_billable
-    assert "Needs Review" in issue.notes or not review
+    assert "[NB]" in issue.notes or not not_billable
+    assert "[Rev]" in issue.notes or not review
 
     assert other.comment not in issue.notes, "Only one new line after report line"
     issue.save.assert_called_once_with()
