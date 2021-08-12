@@ -1,3 +1,11 @@
+# v1.3.0 (12 August 2021)
+
+### Feature
+* Refactor reviewers to use assignees with reviewer role ([`0de9e48`](https://github.com/adfinis-sygroup/timed-frontend/commit/0de9e4835800dd2ffd30c2d9dc6fbbda21a62870))
+* Disable items for external employees ([`ecc2407`](https://github.com/adfinis-sygroup/timed-frontend/commit/ecc2407aec76fd3f3d5b96c27c68cb0ffdcbfc27))
+* Add a customer visible icon in the comments ([`186fff0`](https://github.com/adfinis-sygroup/timed-frontend/commit/186fff0d76b161f48a4c40dec627a1c8fac6e94a))
+
+
 # v1.2.0 (16 April 2021)
 
 ### Feature
