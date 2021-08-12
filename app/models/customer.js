@@ -49,7 +49,16 @@ const Customer = Model.extend({
    * @property {String} longName
    * @public
    */
-  longName: reads("name")
+  longName: reads("name"),
+
+  /**
+   * Assigned users to this customer
+   *
+   * @property assignees
+   * @type {CustomerAssignee[]}
+   * @public
+   */
+  assignees: hasMany("customer-assignee")
 });
 
 export default Customer;

@@ -12,10 +12,11 @@ module("Acceptance | projects", function(hooks) {
 
   hooks.beforeEach(async function() {
     const user = this.server.create("user", { isReviewer: true });
+    this.server.create("project-assignee", {
+      user
+    });
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: user.id });
-
-    this.server.create("project", { reviewers: [user] });
   });
 
   test("can visit /projects", async function(assert) {

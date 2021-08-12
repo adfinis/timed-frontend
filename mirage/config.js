@@ -185,6 +185,10 @@ export default function() {
     };
   });
 
+  this.get("/task-assignees");
+  this.get("/project-assignees");
+  this.get("/customer-assignees");
+
   this.get("/users", function({ users }, { queryParams: { supervisor } }) {
     if (supervisor) {
       return users.where(user => {

@@ -77,10 +77,11 @@ export default Model.extend({
   tasks: hasMany("task"),
 
   /**
-   * Reviewers of this project
+   * Assigned users to this project
    *
-   * @property {User[]} reviewers
+   * @property assignees
+   * @type {ProjectAssignee[]}
    * @public
    */
-  reviewers: hasMany("user")
+  assignees: hasMany("project-assignee")
 });
