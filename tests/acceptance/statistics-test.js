@@ -10,7 +10,7 @@ import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import moment from "moment";
-import { module, test } from "qunit";
+import { module, test, skip } from "qunit";
 
 module("Acceptance | statistics", function(hooks) {
   setupApplicationTest(hooks);
@@ -70,7 +70,7 @@ module("Acceptance | statistics", function(hooks) {
     assert.dom("tfoot").includesText("Total");
   });
 
-  test("can view statistics by task", async function(assert) {
+  skip("can view statistics by task", async function(assert) {
     await visit("/statistics?type=task&customer=1&project=1");
 
     await settled();
