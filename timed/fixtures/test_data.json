@@ -185,8 +185,7 @@
       "customer": 1,
       "billing_type": 1,
       "cost_center": 1,
-      "customer_visible": false,
-      "reviewers": [3]
+      "customer_visible": false
     }
   },
   {
@@ -201,8 +200,7 @@
       "customer": 1,
       "billing_type": 1,
       "cost_center": 1,
-      "customer_visible": false,
-      "reviewers": []
+      "customer_visible": false
     }
   },
   {
@@ -217,8 +215,7 @@
       "customer": 2,
       "billing_type": null,
       "cost_center": null,
-      "customer_visible": false,
-      "reviewers": []
+      "customer_visible": false
     }
   },
   {
@@ -296,6 +293,28 @@
       "date": "2020-01-01",
       "days": 5,
       "transfer": false
+    }
+  },
+  {
+    "model": "projects.customerassignee",
+    "pk": 1,
+    "fields": {
+      "user": 2,
+      "customer": 1,
+      "is_resource": false,
+      "is_reviewer": true,
+      "is_manager": false
+    }
+  },
+  {
+    "model": "projects.taskassignee",
+    "pk": 1,
+    "fields": {
+      "user": 3,
+      "task": 5,
+      "is_resource": false,
+      "is_reviewer": true,
+      "is_manager": true
     }
   }
 ]
