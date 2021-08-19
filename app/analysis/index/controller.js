@@ -295,13 +295,16 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     });
 
     const projectAssignees = yield this.store.query("project-assignee", {
-      is_reviewer: 1
+      is_reviewer: 1,
+      include: "project,user"
     });
     const taskAssignees = yield this.store.query("task-assignee", {
-      is_reviewer: 1
+      is_reviewer: 1,
+      include: "task,user"
     });
     const customerAssignees = yield this.store.query("customer-assignee", {
-      is_reviewer: 1
+      is_reviewer: 1,
+      include: "customer,user"
     });
 
     const mappedReports = data.map(report => {
