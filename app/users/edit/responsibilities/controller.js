@@ -14,7 +14,7 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
 
   projects: task(function*() {
     return yield this.store.query("project", {
-      reviewer: this.get("model.id"),
+      has_reviewer: this.get("model.id"),
       include: "customer",
       ordering: "customer__name,name"
     });
