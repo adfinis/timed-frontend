@@ -82,5 +82,24 @@ export default Controller.extend({
         project: this.get("selectedProject")
       })
     );
-  }).drop()
+  }).drop(),
+
+  actions: {
+    handleCustomerChange(customer) {
+      this.set("selectedCustomer", customer);
+      this.set("selectedProject", null);
+      this.set("selectedTask", null);
+
+      this.filterProjects.perform();
+    },
+
+    handleProjectChange(project) {
+      this.set("selectedProject", project);
+      this.set("selectedTask", null);
+
+      if (this.get("selectedProject") !== null) {
+        this.fetchTasksOfProject.perform();
+      }
+    }
+  }
 });
