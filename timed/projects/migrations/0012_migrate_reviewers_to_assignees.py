@@ -10,7 +10,7 @@ def migrate_reviewers(apps, schema_editor):
     for project in projects:
         for reviewer in project.reviewers.all():
             project_assignee = ProjectAssignee(
-                user=reviewer, project=project, is_reviewer=True
+                user=reviewer, project=project, is_reviewer=True, is_manager=True
             )
             project_assignee.save()
 
