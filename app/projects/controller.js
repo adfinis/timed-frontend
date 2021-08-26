@@ -1,8 +1,8 @@
 import Controller from "@ember/controller";
-import { or, reads, uniqBy } from "@ember/object/computed";
+import { computed } from "@ember/object";
+import { reads } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
-import { all } from "rsvp";
 import TaskValidations from "timed/validations/task";
 
 export default Controller.extend({
@@ -11,39 +11,36 @@ export default Controller.extend({
   session: service(),
   notify: service(),
   user: reads("session.data.user"),
-  projects: reads("fetchProjectsOfUser.lastSuccessful.value"),
+  projects: reads("fetchProjectsByUser.lastSuccessful.value"),
   filteredProjects: reads("filterProjects.lastSuccessful.value"),
-  tasks: reads("fetchTasksOfProject.lastSuccessful.value"),
-  customers: uniqBy("fetchCustomersOfProject.lastSuccessful.value", "id"),
-  loading: or(
-    "fetchTasksOfProject.isRunning",
-    "fetchCustomersOfProject.isRunning"
-  ),
+  tasks: reads("fetchTasksByProject.lastSuccessful.value"),
+  loading: reads("fetchTasksByProject.isRunning"),
 
-  fetchProjectsOfUser: task(function*() {
+  customers: computed("projects", function() {
+    return (
+      this.get("projects")
+        ?.map(project => project.get("customer"))
+        .uniqBy("id")
+        .sortBy("name") ?? []
+    );
+  }),
+
+  fetchProjectsByUser: task(function*() {
     try {
       let projects;
       if (this.get("user.isSuperuser")) {
         projects = yield this.store.findAll("project");
       } else {
         projects = yield this.store.query("project", {
-          has_reviewer: this.get("user.id")
+          has_manager: this.get("user.id"),
+          include: "customer"
         });
       }
 
-      this.fetchCustomersOfProject.perform(projects);
-      return projects;
+      return projects.sortBy("name");
     } catch (error) {
       this.notify.error("Error while fetching projects");
     }
-  }),
-
-  fetchCustomersOfProject: task(function*(projects) {
-    return yield all(
-      projects.map(async project => {
-        return await project.get("customer");
-      })
-    );
   }),
 
   filterProjects: task(function*() {
@@ -52,7 +49,7 @@ export default Controller.extend({
     );
   }),
 
-  fetchTasksOfProject: task(function*() {
+  fetchTasksByProject: task(function*() {
     try {
       return yield this.store.query("task", {
         project: this.get("selectedProject.id")
@@ -72,7 +69,7 @@ export default Controller.extend({
       this.notify.error("Error while saving task");
     }
 
-    this.fetchTasksOfProject.perform(this.get("selectedProject"));
+    this.fetchTasksByProject.perform(this.get("selectedProject"));
   }).drop(),
 
   createTask: task(function*() {
@@ -98,7 +95,7 @@ export default Controller.extend({
       this.set("selectedTask", null);
 
       if (this.get("selectedProject") !== null) {
-        this.fetchTasksOfProject.perform();
+        this.fetchTasksByProject.perform();
       }
     }
   }
