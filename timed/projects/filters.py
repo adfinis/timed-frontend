@@ -3,9 +3,13 @@ from datetime import date, timedelta
 
 from django.db.models import Count, Q
 from django_filters.constants import EMPTY_VALUES
-from django_filters.rest_framework import Filter, FilterSet, NumberFilter
+from django_filters.rest_framework import BaseInFilter, Filter, FilterSet, NumberFilter
 
 from timed.projects import models
+
+
+class NumberInFilter(BaseInFilter, NumberFilter):
+    pass
 
 
 class CustomerFilterSet(FilterSet):
@@ -123,6 +127,7 @@ class TaskAssigneeFilterSet(FilterSet):
     """Filter set for the task assignees endpoint."""
 
     task = NumberFilter(field_name="task")
+    tasks = NumberInFilter(field_name="task")
     user = NumberFilter(field_name="user")
 
     class Meta:
@@ -136,6 +141,7 @@ class ProjectAssigneeFilterSet(FilterSet):
     """Filter set for the project assignees endpoint."""
 
     project = NumberFilter(field_name="project")
+    projects = NumberInFilter(field_name="project")
     user = NumberFilter(field_name="user")
 
     class Meta:
@@ -149,6 +155,7 @@ class CustomerAssigneeFilterSet(FilterSet):
     """Filter set for the customer assignees endpoint."""
 
     customer = NumberFilter(field_name="customer")
+    customers = NumberInFilter(field_name="customer")
     user = NumberFilter(field_name="user")
 
     class Meta:
