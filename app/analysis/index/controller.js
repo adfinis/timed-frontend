@@ -278,58 +278,63 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   }),
 
   data: task(function*() {
-    const params = underscoreQueryParams(
-      serializeParachuteQueryParams(
-        this.get("allQueryParams"),
-        AnalysisQueryParams
-      )
-    );
-
-    const data = yield this.store.query("report", {
-      page: {
-        number: this.get("_lastPage") + 1,
-        size: 20
-      },
-      ...params,
-      include: "task,task.project,task.project.customer,user"
-    });
-
-    const assignees = yield this.fetchAssignees.perform(data);
-
-    const mappedReports = data.map(report => {
-      report.set(
-        "taskAssignees",
-        assignees.taskAssignees.filter(
-          taskAssignee => report.get("task.id") === taskAssignee.get("task.id")
+    if (this.appliedFilters.length) {
+      const params = underscoreQueryParams(
+        serializeParachuteQueryParams(
+          this.get("allQueryParams"),
+          AnalysisQueryParams
         )
       );
-      report.set(
-        "projectAssignees",
-        assignees.projectAssignees.filter(
-          projectAssignee =>
-            report.get("task.project.id") === projectAssignee.get("project.id")
-        )
-      );
-      report.set(
-        "customerAssignees",
-        assignees.customerAssignees.filter(
-          customerAssignee =>
-            report.get("task.project.customer.id") ===
-            customerAssignee.get("customer.id")
-        )
-      );
-      return report;
-    });
 
-    this.setProperties({
-      totalTime: parseDjangoDuration(data.get("meta.total-time")),
-      totalItems: parseInt(data.get("meta.pagination.count")),
-      _canLoadMore:
-        data.get("meta.pagination.pages") !== data.get("meta.pagination.page"),
-      _lastPage: data.get("meta.pagination.page")
-    });
+      const data = yield this.store.query("report", {
+        page: {
+          number: this.get("_lastPage") + 1,
+          size: 20
+        },
+        ...params,
+        include: "task,task.project,task.project.customer,user"
+      });
 
-    this.get("_dataCache").pushObjects(mappedReports.toArray());
+      const assignees = yield this.fetchAssignees.perform(data);
+
+      const mappedReports = data.map(report => {
+        report.set(
+          "taskAssignees",
+          assignees.taskAssignees.filter(
+            taskAssignee =>
+              report.get("task.id") === taskAssignee.get("task.id")
+          )
+        );
+        report.set(
+          "projectAssignees",
+          assignees.projectAssignees.filter(
+            projectAssignee =>
+              report.get("task.project.id") ===
+              projectAssignee.get("project.id")
+          )
+        );
+        report.set(
+          "customerAssignees",
+          assignees.customerAssignees.filter(
+            customerAssignee =>
+              report.get("task.project.customer.id") ===
+              customerAssignee.get("customer.id")
+          )
+        );
+        return report;
+      });
+
+      this.setProperties({
+        totalTime: parseDjangoDuration(data.get("meta.total-time")),
+        totalItems: parseInt(data.get("meta.pagination.count")),
+        _canLoadMore:
+          data.get("meta.pagination.pages") !==
+          data.get("meta.pagination.page"),
+        _lastPage: data.get("meta.pagination.page")
+      });
+
+      this.get("_dataCache").pushObjects(mappedReports.toArray());
+    }
 
     return this.get("_dataCache");
   }).enqueue(),
