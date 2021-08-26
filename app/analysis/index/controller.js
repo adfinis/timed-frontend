@@ -294,36 +294,25 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       include: "task,task.project,task.project.customer,user"
     });
 
-    const projectAssignees = yield this.store.query("project-assignee", {
-      is_reviewer: 1,
-      include: "project,user"
-    });
-    const taskAssignees = yield this.store.query("task-assignee", {
-      is_reviewer: 1,
-      include: "task,user"
-    });
-    const customerAssignees = yield this.store.query("customer-assignee", {
-      is_reviewer: 1,
-      include: "customer,user"
-    });
+    const assignees = yield this.fetchAssignees.perform(data);
 
     const mappedReports = data.map(report => {
       report.set(
         "taskAssignees",
-        taskAssignees.filter(
+        assignees.taskAssignees.filter(
           taskAssignee => report.get("task.id") === taskAssignee.get("task.id")
         )
       );
       report.set(
         "projectAssignees",
-        projectAssignees.filter(
+        assignees.projectAssignees.filter(
           projectAssignee =>
             report.get("task.project.id") === projectAssignee.get("project.id")
         )
       );
       report.set(
         "customerAssignees",
-        customerAssignees.filter(
+        assignees.customerAssignees.filter(
           customerAssignee =>
             report.get("task.project.customer.id") ===
             customerAssignee.get("customer.id")
@@ -344,6 +333,39 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     return this.get("_dataCache");
   }).enqueue(),
+
+  fetchAssignees: task(function*(data) {
+    const projectIds = data
+      .map(report => report.get("task.project.id"))
+      .uniq()
+      .join(",");
+    const taskIds = data
+      .map(report => report.get("task.id"))
+      .uniq()
+      .join(",");
+    const customersIds = data
+      .map(report => report.get("task.project.customer.id"))
+      .uniq()
+      .join(",");
+
+    const projectAssignees = yield this.store.query("project-assignee", {
+      is_reviewer: 1,
+      projects: projectIds,
+      include: "project,user"
+    });
+    const taskAssignees = yield this.store.query("task-assignee", {
+      is_reviewer: 1,
+      tasks: taskIds,
+      include: "task,user"
+    });
+    const customerAssignees = yield this.store.query("customer-assignee", {
+      is_reviewer: 1,
+      customers: customersIds,
+      include: "customer,user"
+    });
+
+    return { projectAssignees, taskAssignees, customerAssignees };
+  }),
 
   loadNext: task(function*() {
     this.set("_shouldLoadMore", true);
