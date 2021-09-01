@@ -166,8 +166,8 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
                     _("Report can't both be set as `review` and `verified`.")
                 )
 
-        if not is_reviewer and billed:
-            raise ValidationError(_("Only reviewers may bill reports."))
+        if not user.is_accountant and billed:
+            raise ValidationError(_("Only accountants may bill reports."))
 
         if not self.instance or billed is None:
             data["billed"] = task.project.billed

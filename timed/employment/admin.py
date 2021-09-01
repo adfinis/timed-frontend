@@ -153,7 +153,9 @@ class UserAdmin(UserAdmin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fieldsets += ((_("Extra fields"), {"fields": ["tour_done"]}),)
+        self.fieldsets += (
+            (_("Extra fields"), {"fields": ["tour_done", "is_accountant"]}),
+        )
 
     def disable_users(self, request, queryset):
         queryset.update(is_active=False)

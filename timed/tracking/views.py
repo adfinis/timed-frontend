@@ -14,6 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from timed.employment.models import Employment
 from timed.permissions import (
+    IsAccountant,
     IsAuthenticated,
     IsExternal,
     IsInternal,
@@ -93,8 +94,8 @@ class ReportViewSet(ModelViewSet):
         "task", "user", "task__project", "task__project__customer"
     )
     permission_classes = [
-        # superuser may edit all reports but not delete
-        IsSuperUser & IsNotDelete
+        # superuser and accountants may edit all reports but not delete
+        (IsSuperUser | IsAccountant) & IsNotDelete
         # reviewer and supervisor may change reports which are not verfied and billed
         # but not delete them
         | (IsReviewer | IsSupervisor) & IsNotBilledAndVerfied & IsNotDelete
@@ -241,13 +242,11 @@ class ReportViewSet(ModelViewSet):
                     _("Reports can't both be set as `review` and `verified`.")
                 )
 
-        if (
-            serializer.validated_data.get("billed", None) is not None
-            and not user.is_superuser
-            and str(request.query_params.get("reviewer")) != str(user.id)
+        if serializer.validated_data.get("billed", None) is not None and not (
+            user.is_superuser or user.is_accountant
         ):
             raise exceptions.ParseError(
-                _("Reviewer filter needs to be set to verifying user")
+                _("Only superuser and accountants may bill reports")
             )
 
         if "task" in fields:
