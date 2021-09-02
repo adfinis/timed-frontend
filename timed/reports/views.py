@@ -290,14 +290,14 @@ class WorkReportViewSet(GenericViewSet):
             )
 
         # calculate location of total hours as insert rows moved it
-        table[13 + len(reports) + len(tasks), 2].formula = "of:=SUM(B13:B{0})".format(
+        table[13 + len(reports) + len(tasks), 2].formula = "of:=SUM(C13:C{0})".format(
             str(13 + len(reports) - 1)
         )
 
         # calculate location of total not billable hours as insert rows moved it
         table[
             13 + len(reports) + len(tasks) + 1, 2
-        ].formula = 'of:=SUMIF(C13:C{0};"no";B13:B{0})'.format(
+        ].formula = 'of:=SUMIF(F13:F{0};"no";C13:C{0})'.format(
             str(13 + len(reports) - 1)
         )
 
