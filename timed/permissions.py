@@ -307,3 +307,13 @@ class IsResource(IsAuthenticated):
                 return True
         else:  # pragma: no cover
             raise RuntimeError("IsResource permission called on unsupported model")
+
+
+class IsAccountant(IsAuthenticated):
+    """Allows access only to accountants."""
+
+    def has_object_permission(self, request, view, obj):
+        if not super().has_object_permission(request, view, obj):  # pragma: no cover
+            return False
+
+        return request.user.is_accountant

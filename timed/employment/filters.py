@@ -48,6 +48,7 @@ class UserFilterSet(FilterSet):
     supervisor = NumberFilter(field_name="supervisors")
     is_reviewer = NumberFilter(method="filter_is_reviewer")
     is_supervisor = NumberFilter(method="filter_is_supervisor")
+    is_accountant = NumberFilter(field_name="is_accountant")
 
     def filter_is_reviewer(self, queryset, name, value):
         if value:
@@ -61,7 +62,13 @@ class UserFilterSet(FilterSet):
 
     class Meta:
         model = models.User
-        fields = ["active", "supervisor", "is_reviewer", "is_supervisor"]
+        fields = [
+            "active",
+            "supervisor",
+            "is_reviewer",
+            "is_supervisor",
+            "is_accountant",
+        ]
 
 
 class EmploymentFilterSet(FilterSet):

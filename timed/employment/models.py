@@ -361,6 +361,8 @@ class User(AbstractUser):
     May also be name of organization if need to.
     """
 
+    is_accountant = models.BooleanField(default=False)
+
     objects = UserManager()
 
     @property

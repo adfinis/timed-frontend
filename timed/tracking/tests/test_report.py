@@ -1375,6 +1375,31 @@ def test_report_update_bulk_bill_reviewer(
     response = internal_employee_client.post(
         url + "?editable=1&reviewer={0}".format(user.id), data
     )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    report.refresh_from_db()
+    assert not report.billed
+
+
+def test_report_update_bulk_bill_accountant(
+    internal_employee_client,
+    report_factory,
+):
+    user = internal_employee_client.user
+    user.is_accountant = True
+    user.save()
+    report = report_factory.create(user=user)
+    url = reverse("report-bulk")
+
+    data = {
+        "data": {
+            "type": "report-bulks",
+            "id": None,
+            "attributes": {"billed": True},
+        }
+    }
+
+    response = internal_employee_client.post(url + "?editable=1", data)
     assert response.status_code == status.HTTP_204_NO_CONTENT
 
     report.refresh_from_db()
