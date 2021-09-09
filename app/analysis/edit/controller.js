@@ -115,10 +115,9 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     }
   ),
 
-  canBill: computed("allQueryParams.reviewer", "session.data.user", function() {
+  canBill: computed("session.data.user", function() {
     return (
-      this.get("allQueryParams.reviewer") ===
-        this.get("session.data.user.id") ||
+      this.get("session.data.user.isAccountant") ||
       this.get("session.data.user.isSuperuser")
     );
   }),

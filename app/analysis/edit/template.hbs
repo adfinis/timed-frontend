@@ -4,7 +4,7 @@
     <div class="grid-cell">
       {{#if intersection.isRunning}}
         <div class="empty">
-          {{loading-icon}}
+          <LoadingIcon />
         </div>
       {{else}}
         <h1 class="text-center">
@@ -16,107 +16,173 @@
         </h1>
         <div class="card">
           <div class="card-block">
-            {{#with intersection.lastSuccessful.value.model as |model|}}
-              {{#validated-form
-                model     = (changeset model IntersectionValidations)
-                on-submit = (perform save)
-              as |f|}}
-                {{#task-selection
-                  on-set-customer = (action (queue (action (mut f.model.customer)) (action 'validate' f.model)))
-                  on-set-project  = (action (queue (action (mut f.model.project)) (action 'validate' f.model)))
-                  on-set-task     = (action (queue (action (mut f.model.task)) (action 'validate' f.model)))
-                  initial         = (hash
-                    customer      = _customer
-                    project       = _project
-                    task          = _task
-                  )
-                as |t|}}
-                  {{#f.input name='task' as |fi|}}
+            {{#let intersection.lastSuccessful.value.model as |model|}}
+              <ValidatedForm
+                @model={{changeset model IntersectionValidations}}
+                @on-submit={{perform save}}
+                as |f|
+              >
+                <TaskSelection
+                  @on-set-customer={{action (queue (action (mut f.model.customer)) (action 'validate' f.model))}}
+                  @on-set-project={{action (queue (action (mut f.model.project)) (action 'validate' f.model))}}
+                  @on-set-task={{action (queue (action (mut f.model.task)) (action 'validate' f.model))}}
+                  @initial={{hash
+                    customer=_customer
+                    project=_project
+                    task=_task
+                  }}
+                  as |t|
+                >
+                  <f.input @name='task' as |fi|>
                     <div class="form-group" data-test-customer>
                       <label>
                         Customer
-                        {{#unless model.customer}}{{not-identical-warning}}{{/unless}}
-                        {{#unless (eq f.model.change.customer.id model.customer.id)}}{{changed-warning}}{{/unless}}
+                        {{#unless model.customer}}
+                          <NotIdenticalWarning />
+                        {{/unless}}
+                        {{#unless (eq f.model.change.customer.id model.customer.id)}}
+                          <ChangedWarning />
+                        {{/unless}}
                       </label>
-                      {{t.customer}}
+                      <t.customer />
                     </div>
                     <div class="form-group" data-test-project>
                       <label>
                         Project
-                        {{#unless model.project}}{{not-identical-warning}}{{/unless}}
-                        {{#unless (eq f.model.change.project.id model.project.id)}}{{changed-warning}}{{/unless}}
+                        {{#unless model.project}}
+                          <NotIdenticalWarning />
+                        {{/unless}}
+                        {{#unless (eq f.model.change.project.id model.project.id)}}
+                          <ChangedWarning />
+                        {{/unless}}
                       </label>
-                      {{t.project}}
+                      <t.project />
                     </div>
                     <div class="form-group" data-test-task>
                       <label>
                         Task
-                        {{#unless model.task}}{{not-identical-warning}}{{/unless}}
-                        {{#unless (eq f.model.change.task.id model.task.id)}}{{changed-warning}}{{/unless}}
+                        {{#unless model.task}}
+                          <NotIdenticalWarning />
+                        {{/unless}}
+                        {{#unless (eq f.model.change.task.id model.task.id)}}
+                          <ChangedWarning />
+                        {{/unless}}
                       </label>
-                      {{t.task}}
+                      <t.task />
                     </div>
-                  {{/f.input}}
+                  </f.input>>
 
-                  {{#f.input data-test-comment name='comment' as |fi|}}
+                  <f.input
+                    data-test-comment
+                    @name='comment'
+                    as |fi|
+                  >
                     <label>
                       Comment
-                      {{#if (eq model.comment null)}}{{not-identical-warning}}{{/if}}
-                      {{#unless (eq f.model.comment model.comment)}}{{changed-warning}}{{/unless}}
+                      {{#if (eq model.comment null)}}
+                        <NotIdenticalWarning />
+                      {{/if}}
+                      {{#unless (eq f.model.comment model.comment)}}
+                        <ChangedWarning />
+                      {{/unless}}
                     </label>
-                    <input type="text" placeholder="Enter comment..." class="form-control" onchange={{action fi.update value='target.value'}} value={{fi.value}}>
-                  {{/f.input}}
+                    <input
+                      type="text"
+                      placeholder="Enter comment..."
+                      class="form-control"
+                      onchange={{action fi.update value='target.value'}}
+                      value={{fi.value}}
+                    >
+                  </f.input>>
 
-                  {{#f.input data-test-not-billable name='notBillable' as |fi|}}
-                    {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                  <f.input
+                    data-test-not-billable
+                    @name='notBillable'
+                    as |fi|
+                  >
+                    <SyCheckbox
+                      @checked={{fi.value}}
+                      @on-change={{fi.update}}
+                    >
                       Not billable
-                      {{#if (eq model.notBillable null)}}{{not-identical-warning}}{{/if}}
-                      {{#unless (eq f.model.notBillable model.notBillable)}}{{changed-warning}}{{/unless}}
-                    {{/sy-checkbox}}
-                  {{/f.input}}
+                      {{#if (eq model.notBillable null)}}
+                        <NotIdenticalWarning />
+                      {{/if}}
+                      {{#unless (eq f.model.notBillable model.notBillable)}}
+                        <ChangedWarning />
+                      {{/unless}}
+                    </SyCheckbox>>
+                  </f.input>>
 
-                  {{#f.input data-test-review name='review' as |fi|}}
-                    {{#sy-checkbox checked=fi.value on-change=fi.update}}
+                  <f.input
+                    data-test-review
+                    @name='review'
+                    as |fi|
+                  >
+                    <SyCheckbox
+                      @checked={{fi.value}}
+                      @on-change={{fi.update}}
+                    >
                       Needs Review
-                      {{#if (eq model.review null)}}{{not-identical-warning}}{{/if}}
-                      {{#unless (eq f.model.review model.review)}}{{changed-warning}}{{/unless}}
-                    {{/sy-checkbox}}
-                  {{/f.input}}
+                      {{#if (eq model.review null)}}
+                        <NotIdenticalWarning />
+                      {{/if}}
+                      {{#unless (eq f.model.review model.review)}}
+                        <ChangedWarning />
+                      {{/unless}}
+                    </SyCheckbox>>
+                  </f.input>>
 
-                  {{#f.input data-test-billed name='billed' as |fi|}}
-                    {{#sy-checkbox
-                      checked=fi.value
-                      on-change=fi.update
-                      title=toolTipText
-                      disabled=(not canBill)
-                    }}
+                  <f.input
+                    data-test-billed
+                    @name='billed'
+                    as |fi|
+                  >
+                    <SyCheckbox
+                      @checked={{fi.value}}
+                      @on-change={{fi.update}}
+                      @title="You do not have appropriate roles for this action."
+                      @disabled={{not canBill}}
+                    >
                       Billed
-                      {{#if (eq model.billed null)}}{{not-identical-warning}}{{/if}}
-                      {{#unless (eq f.model.billed model.billed)}}{{changed-warning}}{{/unless}}
-                    {{/sy-checkbox}}
-                  {{/f.input}}
+                      {{#if (eq model.billed null)}}
+                        <NotIdenticalWarning />
+                      {{/if}}
+                      {{#unless (eq f.model.billed model.billed)}}
+                        <ChangedWarning />
+                      {{/unless}}
+                    </SyCheckbox>>
+                  </f.input>>
 
-                  {{#f.input data-test-verified name='verified' as |fi|}}
-                    {{#sy-checkbox
-                      checked=fi.value
-                      on-change=fi.update
-                      title=toolTipText
-                      disabled=(or (not canVerify) needsReview)
-                    }}
+                  <f.input
+                    data-test-verified
+                    @name='verified'
+                    as |fi|
+                  >
+                    <SyCheckbox
+                      @checked={{fi.value}}
+                      @on-change={{fi.update}}
+                      @title={{toolTipText}}
+                      @disabled={{or (not canVerify) needsReview}}
+                    >
                       Verified
-                      {{#if (eq model.verified null)}}{{not-identical-warning}}{{/if}}
-                      {{#unless (eq f.model.verified model.verified)}}{{changed-warning}}{{/unless}}
-                    {{/sy-checkbox}}
-                  {{/f.input}}
+                      {{#if (eq model.verified null)}}
+                        <NotIdenticalWarning />
+                      {{/if}}
+                      {{#unless (eq f.model.verified model.verified)}}
+                        <ChangedWarning />
+                      {{/unless}}
+                    </SyCheckbox>>
+                  </f.input>>
 
                   <div class="text-right">
                     <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
                     <button data-test-reset type="button" class="btn" {{action (queue t.reset (action 'reset' f.model))}}>Reset</button>
-                    {{f.submit}}
+                    <f.submit />
                   </div>
-                {{/task-selection}}
-              {{/validated-form}}
-            {{/with}}
+                </TaskSelection>>
+              </ValidatedForm>
+            {{/let}}
           </div>
         </div>
       {{/if}}
