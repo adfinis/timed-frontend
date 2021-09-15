@@ -40,7 +40,7 @@ export default Model.extend({
   start: attr("django-date"),
 
   /**
-   * Whether the user is an external employee
+   * Whether the employment is of an external employee
    *
    * @property {Boolean} isExternal
    * @public
@@ -69,5 +69,10 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo("location")
+  location: belongsTo("location"),
+
+  /**
+   * Whether the employment is of an accountant.
+   */
+  isAccountant: attr("boolean", { defaultValue: false })
 });
