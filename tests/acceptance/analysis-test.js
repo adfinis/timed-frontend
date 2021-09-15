@@ -7,6 +7,7 @@ import {
   findAll
 } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
+import { selectChoose } from "ember-power-select/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, skip, test } from "qunit";
@@ -39,6 +40,12 @@ module("Acceptance | analysis", function(hooks) {
   test("can download a file", async function(assert) {
     await visit("/analysis");
 
+    await selectChoose(
+      "[data-test-filter-customer]",
+      ".ember-power-select-option",
+      0
+    );
+
     await click(".export-buttons .btn:first-child");
 
     assert.dom('[data-download-count="1"]').exists();
@@ -53,6 +60,12 @@ module("Acceptance | analysis", function(hooks) {
     });
 
     await visit("/analysis");
+
+    await selectChoose(
+      "[data-test-filter-customer]",
+      ".ember-power-select-option",
+      0
+    );
 
     assert.dom(".export-buttons .btn:first-child").isDisabled();
   });
@@ -148,6 +161,12 @@ module("Acceptance | analysis", function(hooks) {
   test("can select a report", async function(assert) {
     await visit("/analysis");
 
+    await selectChoose(
+      "[data-test-filter-customer]",
+      ".ember-power-select-option",
+      0
+    );
+
     await click("tbody > tr:first-child");
 
     assert.ok(find("tbody > tr:first-child.selected"));
@@ -167,26 +186,22 @@ module("Acceptance | analysis", function(hooks) {
     assert.equal(currentURL(), "/analysis/edit?editable=1");
   });
 
-  test("can not edit", async function(assert) {
-    this.server.create("report-intersection");
-
-    await visit("/analysis");
-
-    await click("[data-test-edit-all]");
-
-    assert.equal(currentURL(), "/analysis");
-  });
-
   test("can edit selected reports", async function(assert) {
     this.server.create("report-intersection");
 
     await visit("/analysis");
+
+    await selectChoose(
+      "[data-test-filter-customer]",
+      ".ember-power-select-option",
+      0
+    );
 
     await click("tbody > tr:nth-child(1)");
     await click("tbody > tr:nth-child(2)");
 
     await click("[data-test-edit-selected]");
 
-    assert.equal(currentURL(), "/analysis/edit?id=1%2C2");
+    assert.ok(currentURL().includes("id=1%2C2"));
   });
 });

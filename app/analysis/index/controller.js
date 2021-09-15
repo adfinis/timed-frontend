@@ -278,72 +278,99 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   }),
 
   data: task(function*() {
-    const params = underscoreQueryParams(
-      serializeParachuteQueryParams(
-        this.get("allQueryParams"),
-        AnalysisQueryParams
-      )
-    );
+    if (this.appliedFilters.length) {
+      const params = underscoreQueryParams(
+        serializeParachuteQueryParams(
+          this.get("allQueryParams"),
+          AnalysisQueryParams
+        )
+      );
 
-    const data = yield this.store.query("report", {
-      page: {
-        number: this.get("_lastPage") + 1,
-        size: 20
-      },
-      ...params,
-      include: "task,task.project,task.project.customer,user"
-    });
+      const data = yield this.store.query("report", {
+        page: {
+          number: this.get("_lastPage") + 1,
+          size: 20
+        },
+        ...params,
+        include: "task,task.project,task.project.customer,user"
+      });
+
+      const assignees = yield this.fetchAssignees.perform(data);
+
+      const mappedReports = data.map(report => {
+        report.set(
+          "taskAssignees",
+          assignees.taskAssignees.filter(
+            taskAssignee =>
+              report.get("task.id") === taskAssignee.get("task.id")
+          )
+        );
+        report.set(
+          "projectAssignees",
+          assignees.projectAssignees.filter(
+            projectAssignee =>
+              report.get("task.project.id") ===
+              projectAssignee.get("project.id")
+          )
+        );
+        report.set(
+          "customerAssignees",
+          assignees.customerAssignees.filter(
+            customerAssignee =>
+              report.get("task.project.customer.id") ===
+              customerAssignee.get("customer.id")
+          )
+        );
+        return report;
+      });
+
+      this.setProperties({
+        totalTime: parseDjangoDuration(data.get("meta.total-time")),
+        totalItems: parseInt(data.get("meta.pagination.count")),
+        _canLoadMore:
+          data.get("meta.pagination.pages") !==
+          data.get("meta.pagination.page"),
+        _lastPage: data.get("meta.pagination.page")
+      });
+
+      this.get("_dataCache").pushObjects(mappedReports.toArray());
+    }
+
+    return this.get("_dataCache");
+  }).enqueue(),
+
+  fetchAssignees: task(function*(data) {
+    const projectIds = data
+      .map(report => report.get("task.project.id"))
+      .uniq()
+      .join(",");
+    const taskIds = data
+      .map(report => report.get("task.id"))
+      .uniq()
+      .join(",");
+    const customersIds = data
+      .map(report => report.get("task.project.customer.id"))
+      .uniq()
+      .join(",");
 
     const projectAssignees = yield this.store.query("project-assignee", {
       is_reviewer: 1,
+      projects: projectIds,
       include: "project,user"
     });
     const taskAssignees = yield this.store.query("task-assignee", {
       is_reviewer: 1,
+      tasks: taskIds,
       include: "task,user"
     });
     const customerAssignees = yield this.store.query("customer-assignee", {
       is_reviewer: 1,
+      customers: customersIds,
       include: "customer,user"
     });
 
-    const mappedReports = data.map(report => {
-      report.set(
-        "taskAssignees",
-        taskAssignees.filter(
-          taskAssignee => report.get("task.id") === taskAssignee.get("task.id")
-        )
-      );
-      report.set(
-        "projectAssignees",
-        projectAssignees.filter(
-          projectAssignee =>
-            report.get("task.project.id") === projectAssignee.get("project.id")
-        )
-      );
-      report.set(
-        "customerAssignees",
-        customerAssignees.filter(
-          customerAssignee =>
-            report.get("task.project.customer.id") ===
-            customerAssignee.get("customer.id")
-        )
-      );
-      return report;
-    });
-
-    this.setProperties({
-      totalTime: parseDjangoDuration(data.get("meta.total-time")),
-      totalItems: parseInt(data.get("meta.pagination.count")),
-      _canLoadMore:
-        data.get("meta.pagination.pages") !== data.get("meta.pagination.page"),
-      _lastPage: data.get("meta.pagination.page")
-    });
-
-    this.get("_dataCache").pushObjects(mappedReports.toArray());
-
-    return this.get("_dataCache");
-  }).enqueue(),
+    return { projectAssignees, taskAssignees, customerAssignees };
+  }),
 
   loadNext: task(function*() {
     this.set("_shouldLoadMore", true);
