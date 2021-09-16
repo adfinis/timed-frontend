@@ -70,7 +70,7 @@
                       </label>
                       <t.task />
                     </div>
-                  </f.input>>
+                  </f.input>
 
                   <f.input
                     data-test-comment
@@ -93,7 +93,7 @@
                       onchange={{action fi.update value='target.value'}}
                       value={{fi.value}}
                     >
-                  </f.input>>
+                  </f.input>
 
                   <f.input
                     data-test-not-billable
@@ -111,8 +111,8 @@
                       {{#unless (eq f.model.notBillable model.notBillable)}}
                         <ChangedWarning />
                       {{/unless}}
-                    </SyCheckbox>>
-                  </f.input>>
+                    </SyCheckbox>
+                  </f.input>
 
                   <f.input
                     data-test-review
@@ -130,8 +130,8 @@
                       {{#unless (eq f.model.review model.review)}}
                         <ChangedWarning />
                       {{/unless}}
-                    </SyCheckbox>>
-                  </f.input>>
+                    </SyCheckbox>
+                  </f.input>
 
                   <f.input
                     data-test-billed
@@ -151,8 +151,8 @@
                       {{#unless (eq f.model.billed model.billed)}}
                         <ChangedWarning />
                       {{/unless}}
-                    </SyCheckbox>>
-                  </f.input>>
+                    </SyCheckbox>
+                  </f.input>
 
                   <f.input
                     data-test-verified
@@ -172,15 +172,15 @@
                       {{#unless (eq f.model.verified model.verified)}}
                         <ChangedWarning />
                       {{/unless}}
-                    </SyCheckbox>>
-                  </f.input>>
+                    </SyCheckbox>
+                  </f.input>
 
                   <div class="text-right">
                     <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
                     <button data-test-reset type="button" class="btn" {{action (queue t.reset (action 'reset' f.model))}}>Reset</button>
                     <f.submit />
                   </div>
-                </TaskSelection>>
+                </TaskSelection>
               </ValidatedForm>
             {{/let}}
           </div>
