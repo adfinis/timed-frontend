@@ -1,7 +1,5 @@
 """Root URL mapping."""
 
-from django.conf import settings
-from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, re_path
 
@@ -14,4 +12,4 @@ urlpatterns = [
     re_path(r"^api/v1/", include("timed.subscription.urls")),
     re_path(r"^oidc/", include("mozilla_django_oidc.urls")),
     re_path(r"^prometheus/", include("django_prometheus.urls")),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+]
