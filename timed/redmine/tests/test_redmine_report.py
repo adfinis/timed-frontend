@@ -83,3 +83,38 @@ def test_redmine_report_invalid_issue(db, freezer, mocker, capsys, report_factor
 
     _, err = capsys.readouterr()
     assert "issue 1000 assigned" in err
+
+
+def test_redmine_report_calculate_total_hours(
+    db, freezer, mocker, task, report_factory
+):
+    redmine_instance = mocker.MagicMock()
+    issue = mocker.MagicMock()
+    redmine_instance.issue.get.return_value = issue
+    redmine_class = mocker.patch("redminelib.Redmine")
+    redmine_class.return_value = redmine_instance
+
+    freezer.move_to("2017-07-15")
+    reports = report_factory.create_batch(10, task=task)
+
+    freezer.move_to("2017-07-24")
+    reports_last_seven_days = report_factory.create_batch(10, task=task)
+
+    total_hours_last_seven_days = 0
+    for report in reports_last_seven_days:
+        total_hours_last_seven_days += report.duration.total_seconds() / 3600
+
+    total_hours = 0
+    for report in reports + reports_last_seven_days:
+        total_hours += report.duration.total_seconds() / 3600
+
+    RedmineProject.objects.create(project=task.project, issue_id=1000)
+
+    freezer.move_to("2017-07-31")
+    call_command("redmine_report", last_days=7)
+
+    redmine_instance.issue.get.assert_called_once_with(1000)
+    assert "Total hours: {0}".format(total_hours) in issue.notes
+    assert (
+        "Hours in last 7 days: {0}\n".format(total_hours_last_seven_days) in issue.notes
+    )

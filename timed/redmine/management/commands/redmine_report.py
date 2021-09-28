@@ -38,7 +38,7 @@ class Command(BaseCommand):
         start = end - timedelta(days=last_days)
 
         # get projects with reports in given last days
-        projects = (
+        affected_projects = (
             Project.objects.filter(
                 archived=False,
                 redmine_project__isnull=False,
@@ -46,8 +46,13 @@ class Command(BaseCommand):
             )
             .annotate(count_reports=Count("tasks__reports"))
             .filter(count_reports__gt=0)
-            .annotate(total_hours=Sum("tasks__reports__duration"))
+            .values("id")
+        )
+        # calculate total hours
+        projects = (
+            Project.objects.filter(id__in=affected_projects)
             .order_by("name")
+            .annotate(total_hours=Sum("tasks__reports__duration"))
         )
 
         for project in projects:
