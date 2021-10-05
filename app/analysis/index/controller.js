@@ -348,26 +348,32 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       .map(report => report.get("task.id"))
       .uniq()
       .join(",");
-    const customersIds = data
+    const customerIds = data
       .map(report => report.get("task.project.customer.id"))
       .uniq()
       .join(",");
 
-    const projectAssignees = yield this.store.query("project-assignee", {
-      is_reviewer: 1,
-      projects: projectIds,
-      include: "project,user"
-    });
-    const taskAssignees = yield this.store.query("task-assignee", {
-      is_reviewer: 1,
-      tasks: taskIds,
-      include: "task,user"
-    });
-    const customerAssignees = yield this.store.query("customer-assignee", {
-      is_reviewer: 1,
-      customers: customersIds,
-      include: "customer,user"
-    });
+    const projectAssignees = projectIds.length
+      ? yield this.store.query("project-assignee", {
+          is_reviewer: 1,
+          projects: projectIds,
+          include: "project,user"
+        })
+      : [];
+    const taskAssignees = taskIds.length
+      ? yield this.store.query("task-assignee", {
+          is_reviewer: 1,
+          tasks: taskIds,
+          include: "task,user"
+        })
+      : [];
+    const customerAssignees = customerIds.length
+      ? yield this.store.query("customer-assignee", {
+          is_reviewer: 1,
+          customers: customerIds,
+          include: "customer,user"
+        })
+      : [];
 
     return { projectAssignees, taskAssignees, customerAssignees };
   }),
