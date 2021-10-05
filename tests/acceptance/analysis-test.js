@@ -20,12 +20,12 @@ module("Acceptance | analysis", function(hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function() {
-    const user = this.server.create("user");
+    this.user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: user.id });
+    await authenticateSession({ user_id: this.user.id });
 
-    this.server.createList("report", 40, { userId: user.id });
+    this.server.createList("report", 40, { userId: this.user.id });
   });
 
   // TODO enable this
@@ -203,5 +203,22 @@ module("Acceptance | analysis", function(hooks) {
     await click("[data-test-edit-selected]");
 
     assert.ok(currentURL().includes("id=1%2C2"));
+  });
+
+  test("cannot edit verified reports", async function(assert) {
+    const verifier = this.server.create("user");
+
+    this.server.create("report", {
+      userId: this.user.id,
+      verifiedBy: verifier
+    });
+
+    await visit(`/analysis?user=${this.user.id}`);
+
+    await find(".table--analysis tbody tr:last-child").scrollIntoView();
+    await click("tbody > tr:last-child");
+
+    assert.notOk(find("tbody > tr:last-child.selected"));
+    assert.dom("[data-test-edit-selected]").doesNotExist();
   });
 });
