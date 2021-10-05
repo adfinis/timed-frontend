@@ -18,7 +18,7 @@ from timed.permissions import (
     IsAuthenticated,
     IsExternal,
     IsInternal,
-    IsNotBilledAndVerfied,
+    IsNotBilledOrVerified,
     IsNotDelete,
     IsNotTransferred,
     IsOwner,
@@ -96,9 +96,9 @@ class ReportViewSet(ModelViewSet):
     permission_classes = [
         # superuser and accountants may edit all reports but not delete
         (IsSuperUser | IsAccountant) & IsNotDelete
-        # reviewer and supervisor may change reports which are not verfied and billed
+        # reviewer and supervisor may change reports which aren't verfied or billed
         # but not delete them
-        | (IsReviewer | IsSupervisor) & IsNotBilledAndVerfied & IsNotDelete
+        | (IsReviewer | IsSupervisor) & IsNotBilledOrVerified & IsNotDelete
         # internal employees may only change its own unverified reports
         # only external employees with resource role may only change its own unverified reports
         | IsOwner & IsUnverified & (IsInternal | (IsExternal & IsResource))
