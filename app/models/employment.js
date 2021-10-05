@@ -69,10 +69,5 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo("location"),
-
-  /**
-   * Whether the employment is of an accountant.
-   */
-  isAccountant: attr("boolean", { defaultValue: false })
+  location: belongsTo("location")
 });

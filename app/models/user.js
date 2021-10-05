@@ -74,6 +74,11 @@ export default Model.extend({
   isReviewer: attr("boolean"),
 
   /**
+   * Whether the user is an accountant
+   */
+  isAccountant: attr("boolean"),
+
+  /**
    * Whether the user completed the app tour
    *
    * @property {Boolean} tourDone
