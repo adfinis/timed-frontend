@@ -246,12 +246,14 @@
               {{#sort-header update=(action (mut ordering)) current=ordering by='verified_by__username'}}Verified by{{/sort-header}}
               <th>Review</th>
               <th>Not billable</th>
+              <th>Billed</th>
             </tr>
           </thead>
         </table>
         {{#ember-scrollable class='analysis-scrollable-container'}}
           <table class="table table--striped table--analysis">
             <colgroup>
+              <col>
               <col>
               <col>
               <col>
@@ -276,6 +278,7 @@
                   <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
                   <td>{{sy-checkmark checked=report.review}}</td>
                   <td>{{sy-checkmark checked=report.notBillable}}</td>
+                  <td>{{sy-checkmark checked=report.billed}}</td>
                 </tr>
               {{/each}}
               {{#if _canLoadMore}}
