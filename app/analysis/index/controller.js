@@ -300,16 +300,14 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       report.set(
         "taskAssignees",
         assignees.taskAssignees.filter(
-          taskAssignee =>
-            report.get("task.id") === taskAssignee.get("task.id")
+          taskAssignee => report.get("task.id") === taskAssignee.get("task.id")
         )
       );
       report.set(
         "projectAssignees",
         assignees.projectAssignees.filter(
           projectAssignee =>
-            report.get("task.project.id") ===
-            projectAssignee.get("project.id")
+            report.get("task.project.id") === projectAssignee.get("project.id")
         )
       );
       report.set(
@@ -327,8 +325,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       totalTime: parseDjangoDuration(data.get("meta.total-time")),
       totalItems: parseInt(data.get("meta.pagination.count")),
       _canLoadMore:
-        data.get("meta.pagination.pages") !==
-        data.get("meta.pagination.page"),
+        data.get("meta.pagination.pages") !== data.get("meta.pagination.page"),
       _lastPage: data.get("meta.pagination.page")
     });
 
