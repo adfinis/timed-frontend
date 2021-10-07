@@ -10,7 +10,7 @@ import { setupMirage } from "ember-cli-mirage/test-support";
 import { selectChoose } from "ember-power-select/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
-import { module, skip, test } from "qunit";
+import { module, test } from "qunit";
 
 import config from "../../config/environment";
 import userSelect from "../helpers/user-select";
@@ -28,13 +28,11 @@ module("Acceptance | analysis", function(hooks) {
     this.server.createList("report", 40, { userId: this.user.id });
   });
 
-  // TODO enable this
-  skip("can visit /analysis", async function(assert) {
+  test("can visit /analysis", async function(assert) {
     await visit("/analysis");
 
-    assert.dom(".table--analysis tbody tr").exists({ count: 21 });
-
-    await find(".table--analysis tbody tr:last-child").scrollIntoView();
+    assert.dom("[data-test-apply-filters]").exists();
+    assert.dom("[data-test-widen-filters]").doesNotExist();
   });
 
   test("can download a file", async function(assert) {
