@@ -1,3 +1,12 @@
+## [2.0.3](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.0.2...v2.0.3) (2021-10-19)
+
+
+### Bug Fixes
+
+* **analysis:** rewrite to angle brackets ([e32e0ec](https://github.com/adfinis-sygroup/timed-frontend/commit/e32e0ec8120dd861b9f3c260039371e8b54627ae))
+* **analysis:** show sensible messages ([7a548eb](https://github.com/adfinis-sygroup/timed-frontend/commit/7a548eba368805a4aef8068c033377a27f85799f))
+* **tests:** enable previously skipped test ([b592aa8](https://github.com/adfinis-sygroup/timed-frontend/commit/b592aa83f6b0326dea3f285c31fda16aa7cff633))
+
 # v1.3.0 (12 August 2021)
 
 ### Feature
