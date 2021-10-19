@@ -26,7 +26,7 @@
     "@adfinis-sygroup/eslint-config": "^1.2.0",
     "@adfinis-sygroup/semantic-release-config": "^3.2.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
-    "@ember/jquery": "^1.1.0",
+    "@ember/jquery": "^2.0.0",
     "@ember/optional-features": "^1.1.0",
     "@html-next/vertical-collection": "github:html-next/vertical-collection#4c787b2cd92ec6fd548b52c4e22d8e0e0d0b85d3",
     "babel-eslint": "^10.0.3",
