@@ -14,13 +14,17 @@
     "start": "ember server --proxy http://localhost:8000",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
-    "test": "ember test"
+    "test": "ember test",
+    "prepare": "husky install"
   },
-  "engines": {
-    "node": "12.* || >= 14.*"
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
   },
   "devDependencies": {
     "@adfinis-sygroup/eslint-config": "^1.2.0",
+    "@adfinis-sygroup/semantic-release-config": "^3.2.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.8.3",
     "@ember/jquery": "^1.1.0",
     "@ember/optional-features": "^1.1.0",
@@ -90,11 +94,18 @@
     "eslint-plugin-node": "^9.0.1",
     "eslint-plugin-prettier": "^3.1.2",
     "faker": "^4.1.0",
+    "husky": "^7.0.2",
     "loader.js": "^4.7.0",
     "pagination-pager": "^3.2.0",
     "prettier": "1.19.1",
     "qunit-dom": "^0.8.4",
     "sass": "^1.24.2",
     "typeface-source-sans-pro": "^0.0.75"
+  },
+  "engines": {
+    "node": "12.* || >= 14.*"
+  },
+  "release": {
+    "extends": "@adfinis-sygroup/semantic-release-config"
   }
 }
