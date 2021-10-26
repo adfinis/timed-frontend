@@ -65,6 +65,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
   analysisIndexController: controller("analysis.index"),
   intersectionModel: reads("intersection.lastSuccessful.value.model"),
+  isAccountant: reads("session.data.user.isAccountant"),
 
   setup() {
     this.get("intersection").perform();
@@ -76,7 +77,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       data: {
         ...prepareParams(this.get("allQueryParams")),
         editable: 1,
-        include: "task,project,customer"
+        include: "task,project,customer,user"
       }
     });
 
@@ -101,6 +102,10 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   _task: computed("intersectionModel.task.id", function() {
     const id = this.get("intersectionModel.task.id");
     return id && this.store.peekRecord("task", id);
+  }),
+
+  hasSelectedOwnReports: computed("intersectionModel.user.id", function() {
+    return this.get("intersectionModel.user.id") === this.session.data.user.id;
   }),
 
   canVerify: computed(

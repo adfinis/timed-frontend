@@ -197,6 +197,12 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     return `The export limit is ${this.exportLimit}. Please use filters to reduce the amount of reports.`;
   }),
 
+  canBill: computed("session.data.user", function() {
+    return (
+      this.session.data.user.isAccountant || this.session.data.user.isSuperuser
+    );
+  }),
+
   exportLinks: config.APP.REPORTEXPORTS,
 
   exportLimit: config.APP.EXPORT_LIMIT,
@@ -458,7 +464,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     },
 
     selectRow(report) {
-      if (this.get("can").can("edit report", report)) {
+      if (this.can.can("edit report", report) || this.canBill) {
         const selected = this.get("selectedReportIds");
 
         if (selected.includes(report.id)) {

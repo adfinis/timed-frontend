@@ -76,7 +76,7 @@ export default Model.extend({
   /**
    * Whether the user is an accountant
    */
-  isAccountant: attr("boolean"),
+  isAccountant: attr("boolean", { defaultValue: false }),
 
   /**
    * Whether the user completed the app tour

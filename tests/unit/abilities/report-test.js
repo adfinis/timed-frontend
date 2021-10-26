@@ -11,6 +11,21 @@ module("Unit | Ability | report", function(hooks) {
     assert.equal(ability.get("canEdit"), true);
   });
 
+  test("can edit when user is accountant", function(assert) {
+    const ability = this.owner.lookup("ability:report");
+    ability.set("user", { isAccountant: true });
+
+    assert.equal(ability.get("canEdit"), true);
+  });
+
+  test("can edit when user is accountant and report is verified", function(assert) {
+    const ability = this.owner.lookup("ability:report");
+    ability.set("user", { isAccountant: true });
+    ability.set("model", { verifiedBy: { id: 1 } });
+
+    assert.equal(ability.get("canEdit"), true);
+  });
+
   test("can edit when user is superuser and report is verified", function(assert) {
     const ability = this.owner.lookup("ability:report");
     ability.set("user", { isSuperuser: true });
