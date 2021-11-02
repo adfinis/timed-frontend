@@ -161,13 +161,6 @@ class IsNotTransferred(BasePermission):
         return not obj.transferred
 
 
-class IsNotBilledOrVerified(BasePermission):
-    """Allows access only to not billed or not verfied objects."""
-
-    def has_object_permission(self, request, view, obj):
-        return not obj.billed or obj.verified_by_id is None
-
-
 class IsInternal(IsAuthenticated):
     """Allows access only to internal employees."""
 

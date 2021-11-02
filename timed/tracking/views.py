@@ -18,7 +18,6 @@ from timed.permissions import (
     IsAuthenticated,
     IsExternal,
     IsInternal,
-    IsNotBilledOrVerified,
     IsNotDelete,
     IsNotTransferred,
     IsOwner,
@@ -96,9 +95,8 @@ class ReportViewSet(ModelViewSet):
     permission_classes = [
         # superuser and accountants may edit all reports but not delete
         (IsSuperUser | IsAccountant) & IsNotDelete
-        # reviewer and supervisor may change reports which aren't verfied or billed
-        # but not delete them
-        | (IsReviewer | IsSupervisor) & IsNotBilledOrVerified & IsNotDelete
+        # reviewer and supervisor may change reports which aren't verfied but not delete them
+        | (IsReviewer | IsSupervisor) & IsUnverified & IsNotDelete
         # internal employees may only change its own unverified reports
         # only external employees with resource role may only change its own unverified reports
         | IsOwner & IsUnverified & (IsInternal | (IsExternal & IsResource))
@@ -250,7 +248,8 @@ class ReportViewSet(ModelViewSet):
             )
 
         if "task" in fields:
-            fields["billed"] = fields["task"].project.billed
+            if fields["task"].project.billed:
+                fields["billed"] = fields["task"].project.billed
 
         if fields:
             tasks.notify_user_changed_reports(queryset, fields, user)

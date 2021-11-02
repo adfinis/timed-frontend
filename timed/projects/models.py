@@ -2,7 +2,12 @@
 
 from django.conf import settings
 from django.db import models
+from django.db.models import Q
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from djmoney.models.fields import MoneyField
+
+from timed.tracking.models import Report
 
 
 class Customer(models.Model):
@@ -242,3 +247,21 @@ class TaskAssignee(models.Model):
     is_resource = models.BooleanField(default=False)
     is_reviewer = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+
+
+@receiver(pre_save, sender=Project)
+def update_billed_flag_on_reports(sender, instance, **kwargs):
+    """Update billed flag on all reports from the updated project.
+
+    Only update reports if the billed flag on the project was changed.
+    Setting the billed flag to True on a project in Django Admin should set
+    all existing reports to billed=True. Same goes for setting the flag to billed=False.
+    The billed flag should primarily be set in frontend.
+    This is only a quicker way for the accountants to update all reports at once.
+    """
+    # check whether the project was created or is being updated
+    if instance.pk:
+        if instance.billed != Project.objects.get(id=instance.id).billed:
+            Report.objects.filter(Q(task__project=instance)).update(
+                billed=instance.billed
+            )

@@ -169,8 +169,15 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         if not user.is_accountant and billed:
             raise ValidationError(_("Only accountants may bill reports."))
 
+        # update billed flag on created reports
         if not self.instance or billed is None:
             data["billed"] = task.project.billed
+
+        # update billed flag on reports that are being moved to a different project
+        # according to the billed flag of the project the report was moved to
+        if self.instance and data.get("task"):
+            if self.instance.task.id != data.get("task").id:
+                data["billed"] = data.get("task").project.billed
 
         current_employment = Employment.objects.get_at(user=user, date=date.today())
 

@@ -146,3 +146,21 @@ def test_project_filter(internal_employee_client):
 
     json = response.json()
     assert len(json["data"]) == 1
+
+
+def test_project_update_billed_flag(internal_employee_client, report_factory):
+    report = report_factory.create()
+    project = report.task.project
+    assert not report.billed
+
+    project.billed = True
+    project.save()
+
+    report.refresh_from_db()
+    assert report.billed
+
+    project.billed = False
+    project.save()
+
+    report.refresh_from_db()
+    assert not report.billed
