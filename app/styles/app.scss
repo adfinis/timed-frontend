@@ -117,6 +117,10 @@ strong {
   }
 }
 
+.comment-field {
+  padding-right: 35px;
+}
+
 .btn-group--auto .btn {
   flex-grow: 1;
 }
@@ -302,20 +306,24 @@ strong {
   position: relative;
   float: right;
   margin-top: -1.7rem;
-  margin-right: 1rem;
+  margin-right: 0.8rem;
   z-index: 1;
 }
 
 @media (max-width: 680px) {
   .activity-customer-visible-icon {
     margin-top: 0rem;
-    margin-left : 90%;
+    margin-right: 10px;
   }
 
   .customer-visible-icon {
     margin-top: -2.5rem;
   }
 }
+
+  .customer-visible-icon {
+    margin-top: -1.7rem;
+  }
 
 @media #{$sm-viewport} {
   .activity-customer-visible-icon {
@@ -326,8 +334,8 @@ strong {
 
 @media #{$md-viewport} {
   .activity-customer-visible-icon {
-    margin-top: -22px;
-    margin-left: 90%;
+    margin-top: -30px;
+    margin-left: 95%;
   }
 
   .customer-visible-icon {

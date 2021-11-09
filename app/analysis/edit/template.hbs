@@ -89,10 +89,13 @@
                     <input
                       type="text"
                       placeholder="Enter comment..."
-                      class="form-control"
+                      class="form-control comment-field"
                       onchange={{action fi.update value='target.value'}}
                       value={{fi.value}}
                     >
+                    {{#if model.task.project.customerVisible}}
+                      <CustomerVisibleIcon class="customer-visible-icon" />
+                    {{/if}}
                   </f.input>
 
                   <f.input

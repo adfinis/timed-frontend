@@ -31,3 +31,9 @@
     width: 100%;
   }
 }
+
+@media #{$xs-viewport} {
+  .form-control {
+    padding-right: 35px;
+  }
+}
