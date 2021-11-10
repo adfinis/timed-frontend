@@ -14,7 +14,7 @@ from rest_framework_json_api.serializers import (
     ValidationError,
 )
 
-from timed.employment.models import AbsenceType, Employment, PublicHoliday
+from timed.employment.models import AbsenceType, Employment, PublicHoliday, User
 from timed.employment.relations import CurrentUserResourceRelatedField
 from timed.projects.models import Customer, Project, Task
 from timed.serializers import TotalTimeRootMetaMixin
@@ -268,6 +268,9 @@ class ReportIntersectionSerializer(Serializer):
     task = relations.SerializerMethodResourceRelatedField(
         source="get_task", model=Task, read_only=True
     )
+    user = relations.SerializerMethodResourceRelatedField(
+        source="get_user", model=User, read_only=True
+    )
     comment = SerializerMethodField()
     review = SerializerMethodField()
     not_billable = SerializerMethodField()
@@ -298,6 +301,9 @@ class ReportIntersectionSerializer(Serializer):
 
     def get_task(self, instance):
         return self._intersection(instance, "task", Task)
+
+    def get_user(self, instance):
+        return self._intersection(instance, "user", User)
 
     def get_comment(self, instance):
         return self._intersection(instance, "comment")
@@ -332,6 +338,7 @@ class ReportIntersectionSerializer(Serializer):
         "customer": "timed.projects.serializers.CustomerSerializer",
         "project": "timed.projects.serializers.ProjectSerializer",
         "task": "timed.projects.serializers.TaskSerializer",
+        "user": "timed.employment.serializers.UserSerializer",
     }
 
     class Meta:
