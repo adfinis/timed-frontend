@@ -16,6 +16,9 @@ test: ## Test the project
 shell: ## Shell into the backend
 	@docker-compose exec backend bash
 
+dbshell: ## Start a psql shell
+	@docker-compose exec db psql -Utimed timed
+
 flush: ## Flush database contents
 	@docker-compose exec backend ./manage.py flush --no-input
 
