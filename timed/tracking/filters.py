@@ -127,8 +127,7 @@ class ReportFilterSet(FilterSet):
         user. If set to `0` to not editable.
         """
         user = self.request.user
-
-        editable_filter = (
+        assignee_filter = (
             # avoid duplicates by using subqueries instead of joins
             Q(user__in=user.supervisees.values("id"))
             | Q(
@@ -144,13 +143,16 @@ class ReportFilterSet(FilterSet):
                 task__project__customer__customer_assignees__is_reviewer=True,
             )
             | Q(user=user)
-        ) & ~(Q(verified_by__isnull=False) & Q(billed=True))
+        )
+        unfinished_filter = Q(verified_by__isnull=True) | Q(billed=False)
+        editable_filter = assignee_filter & unfinished_filter
 
         if value:  # editable
             if user.is_superuser:
                 # superuser may edit all reports
                 return queryset
-
+            elif user.is_accountant:
+                return queryset.filter(unfinished_filter)
             # only owner, reviewer or supervisor may change unverified reports
             queryset = queryset.filter(editable_filter).distinct()
 
@@ -159,6 +161,8 @@ class ReportFilterSet(FilterSet):
             if user.is_superuser:
                 # no reports which are not editable
                 return queryset.none()
+            elif user.is_accountant:
+                return queryset.exclude(unfinished_filter)
 
             queryset = queryset.exclude(editable_filter)
             return queryset

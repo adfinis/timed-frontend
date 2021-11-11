@@ -90,6 +90,7 @@ def test_report_intersection_full(
                     "data": {"id": str(report.task.project.id), "type": "projects"}
                 },
                 "task": {"data": {"id": str(report.task.id), "type": "tasks"}},
+                "user": {"data": {"id": str(report.user.id), "type": "users"}},
             },
         },
         "meta": {"count": 1},
@@ -128,9 +129,98 @@ def test_report_intersection_partial(
                 "customer": {"data": None},
                 "project": {"data": None},
                 "task": {"data": None},
+                "user": {"data": None},
             },
         },
         "meta": {"count": 2},
+    }
+    assert json == expected
+
+
+def test_report_intersection_accountant_editable(
+    internal_employee_client,
+    report_factory,
+    user_factory,
+):
+    user = internal_employee_client.user
+    user.is_accountant = True
+    user.save()
+
+    other_user = user_factory()
+    report_factory.create(review=True, not_billable=True, user=other_user)
+
+    report1 = report_factory.create(review=True, not_billable=True, user=other_user)
+    report1.billed = True
+    report1.save()
+
+    url = reverse("report-intersection")
+    response = internal_employee_client.get(url, {"editable": 1})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    expected = {
+        "data": {
+            "id": "editable=1",
+            "type": "report-intersections",
+            "attributes": {
+                "comment": None,
+                "not-billable": True,
+                "verified": False,
+                "review": True,
+                "billed": None,
+            },
+            "relationships": {
+                "customer": {"data": None},
+                "project": {"data": None},
+                "task": {"data": None},
+                "user": {"data": {"id": str(other_user.id), "type": "users"}},
+            },
+        },
+        "meta": {"count": 2},
+    }
+    assert json == expected
+
+
+def test_report_intersection_accountant_not_editable(
+    internal_employee_client,
+    report_factory,
+    user_factory,
+):
+    user = internal_employee_client.user
+    user.is_accountant = True
+    user.save()
+
+    other_user = user_factory()
+    report_factory.create(review=True, not_billable=True, user=other_user)
+
+    report = report_factory.create(review=True, not_billable=True, user=other_user)
+    report.billed = True
+    report.save()
+
+    url = reverse("report-intersection")
+    response = internal_employee_client.get(url, {"editable": 0})
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    expected = {
+        "data": {
+            "id": "editable=0",
+            "type": "report-intersections",
+            "attributes": {
+                "comment": None,
+                "not-billable": None,
+                "verified": None,
+                "review": None,
+                "billed": None,
+            },
+            "relationships": {
+                "customer": {"data": None},
+                "project": {"data": None},
+                "task": {"data": None},
+                "user": {"data": None},
+            },
+        },
+        "meta": {"count": 0},
     }
     assert json == expected
 
