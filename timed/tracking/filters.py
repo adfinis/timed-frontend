@@ -144,7 +144,7 @@ class ReportFilterSet(FilterSet):
             )
             | Q(user=user)
         )
-        unfinished_filter = Q(verified_by__isnull=True) | Q(billed=False)
+        unfinished_filter = Q(verified_by__isnull=True)
         editable_filter = assignee_filter & unfinished_filter
 
         if value:  # editable
