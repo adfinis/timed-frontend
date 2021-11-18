@@ -102,22 +102,55 @@ class ReportFilterSet(FilterSet):
     def filter_has_reviewer(self, queryset, name, value):
         if not value:  # pragma: no cover
             return queryset
-        return queryset.filter(
+
+        # reports in which user is customer assignee and responsible reviewer
+        reports_customer_assignee_is_reviewer = queryset.filter(
+            Q(
+                task__project__customer_id__in=CustomerAssignee.objects.filter(
+                    is_reviewer=True, user_id=value
+                ).values("customer_id")
+            )
+        ).exclude(
+            Q(
+                task__project_id__in=ProjectAssignee.objects.filter(
+                    is_reviewer=True
+                ).values("project_id")
+            )
+            | Q(
+                task_id__in=TaskAssignee.objects.filter(is_reviewer=True).values(
+                    "task_id"
+                )
+            )
+        )
+
+        # reports in which user is project assignee and responsible reviewer
+        reports_project_assignee_is_reviewer = queryset.filter(
+            Q(
+                task__project_id__in=ProjectAssignee.objects.filter(
+                    is_reviewer=True, user_id=value
+                ).values("project_id")
+            )
+        ).exclude(
+            Q(
+                task_id__in=TaskAssignee.objects.filter(is_reviewer=True).values(
+                    "task_id"
+                )
+            )
+        )
+
+        # reports in which user task assignee and responsible reviewer
+        reports_task_assignee_is_reviewer = queryset.filter(
             Q(
                 task_id__in=TaskAssignee.objects.filter(
                     is_reviewer=True, user_id=value
-                ).values("task_id"),
+                ).values("task_id")
             )
-            | Q(
-                task__project_id__in=ProjectAssignee.objects.filter(
-                    is_reviewer=True, user_id=value
-                ).values("project_id"),
-            )
-            | Q(
-                task__project__customer_id__in=CustomerAssignee.objects.filter(
-                    is_reviewer=True, user_id=value
-                ).values("customer_id"),
-            )
+        )
+
+        return (
+            reports_customer_assignee_is_reviewer
+            | reports_project_assignee_is_reviewer
+            | reports_task_assignee_is_reviewer
         )
 
     def filter_editable(self, queryset, name, value):

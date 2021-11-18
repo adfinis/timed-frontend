@@ -9,7 +9,11 @@ from django.utils.duration import duration_string
 from rest_framework import status
 
 from timed.employment.factories import EmploymentFactory, UserFactory
-from timed.projects.factories import ProjectAssigneeFactory, TaskAssigneeFactory
+from timed.projects.factories import (
+    ProjectAssigneeFactory,
+    TaskAssigneeFactory,
+    TaskFactory,
+)
 
 
 def test_report_list(
@@ -269,6 +273,14 @@ def test_report_list_filter_reviewer(
     ProjectAssigneeFactory.create(
         user=user, project=report.task.project, is_reviewer=True
     )
+
+    # add new task to the project
+    task2 = TaskFactory.create(project=report.task.project)
+    report_factory.create(user=user, task=task2)
+
+    # add task assignee with reviewer role to the new task
+    user2 = UserFactory.create()
+    TaskAssigneeFactory.create(user=user2, task=task2, is_reviewer=True)
 
     url = reverse("report-list")
 
