@@ -1,16 +1,16 @@
-import Router from "@ember/routing/router";
+import EmberRouter from "@ember/routing/router";
 
 import config from "./config/environment";
 
-const ApplicationRouter = Router.extend({
-  location: config.locationType,
-  rootURL: config.rootURL
-});
+export default class Router extends EmberRouter {
+  location = config.locationType;
+  rootURL = config.rootURL;
+}
 
 const resetNamespace = true;
 
 // eslint-disable-next-line array-callback-return
-ApplicationRouter.map(function() {
+Router.map(function() {
   this.route("login");
   this.route("no-access");
 
@@ -45,5 +45,3 @@ ApplicationRouter.map(function() {
     this.route("notfound", { resetNamespace, path: "/*path" });
   });
 });
-
-export default ApplicationRouter;
