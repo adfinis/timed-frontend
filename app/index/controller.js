@@ -144,7 +144,7 @@ export default Controller.extend({
         return total.add(moment().diff(current.get("from")));
       }, moment.duration());
 
-    this.set("_activeActivityDuration", duration);
+    // this.set("_activeActivityDuration", duration);
   },
 
   /**
