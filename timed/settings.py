@@ -357,3 +357,6 @@ if env.str("DJANGO_SENTRY_DSN", default=""):  # pragma: no cover
     )
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+DATA_UPLOAD_MAX_NUMBER_FIELDS = env.int(
+    "DJANGO_DATA_UPLOAD_MAX_NUMBER_FIELDS", default=1000
+)
