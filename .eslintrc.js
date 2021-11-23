@@ -5,6 +5,7 @@ module.exports = {
   rules: {
     "ember/no-mixins": "warn",
     "ember/no-classic-classes": "warn",
-    "ember/no-get": "warn"
+    "ember/no-get": "warn",
+    "qunit/no-assert-equal": "warn"
   }
 };
