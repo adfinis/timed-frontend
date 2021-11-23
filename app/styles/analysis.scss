@@ -34,7 +34,7 @@
 
   &:nth-child(9),
   &:nth-child(10),
-  &:nth-child(11){
+  &:nth-child(11) {
     width: 6%;
   }
 
@@ -50,7 +50,7 @@
 
 .analysis-scrollable-container::after,
 .analysis-scrollable-container::before {
-  content: '';
+  content: "";
   position: absolute;
   z-index: 1;
   left: 0;

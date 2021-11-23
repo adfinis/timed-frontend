@@ -8,7 +8,7 @@
   overflow: hidden;
   background-color: #ddd;
 }
-.loader:before{
+.loader:before {
   display: block;
   position: absolute;
   content: "";
@@ -20,10 +20,23 @@
 }
 
 @keyframes loading {
-    from { left: -200px; width: 30%; }
-    50%  {               width: 30%; }
-    70%  {               width: 70%; }
-    80%  { left: 50%;                }
-    95%  { left: 120%;               }
-    to   { left: 100%;               }
+  from {
+    left: -200px;
+    width: 30%;
+  }
+  50% {
+    width: 30%;
+  }
+  70% {
+    width: 70%;
+  }
+  80% {
+    left: 50%;
+  }
+  95% {
+    left: 120%;
+  }
+  to {
+    left: 100%;
+  }
 }

@@ -75,16 +75,24 @@
 }
 
 .donut-segment {
-  @include donut-segment('primary', $color-primary);
+  @include donut-segment("primary", $color-primary);
 
   animation-duration: 1s;
   animation-timing-function: ease-in-out;
 }
 
-&.success .donut-segment { @include donut-segment('success', $color-success); }
-&.info .donut-segment { @include donut-segment('info', $color-info); }
-&.warning .donut-segment { @include donut-segment('warning', $color-warning); }
-&.danger .donut-segment { @include donut-segment('danger', $color-danger); }
+&.success .donut-segment {
+  @include donut-segment("success", $color-success);
+}
+&.info .donut-segment {
+  @include donut-segment("info", $color-info);
+}
+&.warning .donut-segment {
+  @include donut-segment("warning", $color-warning);
+}
+&.danger .donut-segment {
+  @include donut-segment("danger", $color-danger);
+}
 
 @media #{$lg-viewport} {
   & {

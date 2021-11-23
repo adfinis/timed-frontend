@@ -18,7 +18,7 @@
       animation-delay: 0ms;
       background-color: darken($color-primary, 40%);
       height: 80%;
-      width:  80%;
+      width: 80%;
     }
 
     &:nth-child(1)::before,
@@ -28,7 +28,7 @@
       animation-delay: -500ms;
       background-color: darken($color-primary, 0%);
       height: 60%;
-      width:  60%;
+      width: 60%;
     }
 
     &:nth-child(2)::before,
@@ -38,11 +38,11 @@
       animation-delay: -1000ms;
       background-color: darken($color-primary, 20%);
       height: 70%;
-      width:  70%;
+      width: 70%;
     }
 
     &::before {
-      content: '';
+      content: "";
       display: block;
       position: absolute;
       top: 50%;

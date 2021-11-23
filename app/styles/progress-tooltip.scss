@@ -1,12 +1,12 @@
 $progress-tooltip-arrow-size: 0.5rem;
-$progress-tooltip-color: rgb(87,87,87);
+$progress-tooltip-color: rgb(87, 87, 87);
 
 .progress-tooltip {
   z-index: 1000;
   background: $progress-tooltip-color;
-  box-shadow: 0 1px 5px rgba(23,23,23,0.5);
+  box-shadow: 0 1px 5px rgba(23, 23, 23, 0.5);
   max-width: initial;
-  color: rgb(255,255,255);
+  color: rgb(255, 255, 255);
   font-size: 0.9rem;
   padding: 0.3rem 0.5rem;
   border-radius: 0.3rem;
@@ -46,7 +46,7 @@ $progress-tooltip-color: rgb(87,87,87);
   }
 
   &::after {
-    content: '';
+    content: "";
     display: block;
     width: 0;
     height: 0;

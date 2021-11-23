@@ -1,8 +1,8 @@
 .user-navigation {
   margin: 0 ($page-padding-h * -1);
   border-bottom: 1px solid $color-border;
-  background-color: rgb(255,255,255);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .user-navigation > ul {
@@ -21,7 +21,7 @@
   flex-grow: 1;
   text-align: center;
   padding: 0.9rem 2rem;
-  color: rgb(180,180,180);
+  color: rgb(180, 180, 180);
   font-size: 1.1rem;
 }
 
@@ -43,7 +43,7 @@
 }
 
 @media #{$xl-viewport} {
-  .user-navigation{
+  .user-navigation {
     margin: 0 ($page-padding-h * 1.5 * -1);
   }
 }
