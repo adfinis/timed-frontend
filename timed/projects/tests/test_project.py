@@ -32,7 +32,7 @@ def test_project_list_include(
 
     url = reverse("project-list")
 
-    with django_assert_num_queries(2):
+    with django_assert_num_queries(3):
         response = internal_employee_client.get(
             url,
             data={"include": ",".join(ProjectSerializer.included_serializers.keys())},
