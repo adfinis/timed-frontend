@@ -9,7 +9,11 @@ from timed.employment.factories import (
     EmploymentFactory,
     UserFactory,
 )
-from timed.projects.factories import ProjectAssigneeFactory, ProjectFactory
+from timed.projects.factories import (
+    CustomerAssigneeFactory,
+    ProjectAssigneeFactory,
+    ProjectFactory,
+)
 from timed.tracking.factories import AbsenceFactory, ReportFactory
 
 
@@ -264,3 +268,27 @@ def test_user_me_anonymous(client):
 
     response = client.get(url)
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.parametrize(
+    "is_assigned, expected, status_code",
+    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+)
+def test_user_list_assignee_no_employment(
+    auth_client, is_assigned, expected, status_code
+):
+    user = auth_client.user
+    UserFactory.create_batch(2)
+    if is_assigned:
+        CustomerAssigneeFactory.create(user=user)
+
+    url = reverse("user-list")
+
+    response = auth_client.get(url)
+
+    assert response.status_code == status_code
+
+    if expected:
+        json = response.json()
+        assert len(json["data"]) == 1
+        assert json["data"][0]["id"] == str(user.id)
