@@ -145,9 +145,12 @@ class ReportViewSet(ModelViewSet):
             queryset = queryset.filter(Q(task__in=assigned_tasks) | Q(user=user))
             return queryset
         except Employment.DoesNotExist:
-            if CustomerAssignee.objects.filter(user=user).exists():
+            if CustomerAssignee.objects.filter(user=user, is_customer=True).exists():
                 return queryset.filter(
-                    Q(task__project__customer__customer_assignees__user=user)
+                    Q(
+                        task__project__customer__customer_assignees__user=user,
+                        task__project__customer__customer_assignees__is_customer=True,
+                    )
                 )
             raise exceptions.PermissionDenied(
                 "User has no employment and isn't a customer!"

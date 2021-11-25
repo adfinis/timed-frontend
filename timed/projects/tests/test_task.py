@@ -6,7 +6,11 @@ from django.urls import reverse
 from rest_framework import status
 
 from timed.employment.factories import EmploymentFactory
-from timed.projects.factories import ProjectFactory, TaskFactory
+from timed.projects.factories import (
+    CustomerAssigneeFactory,
+    ProjectFactory,
+    TaskFactory,
+)
 
 
 def test_task_list_not_archived(internal_employee_client, task_factory):
@@ -198,16 +202,16 @@ def test_task_list_external_employee(external_employee_client, is_assigned, expe
 
 
 @pytest.mark.parametrize(
-    "is_assigned, expected, status_code",
+    "is_customer, expected, status_code",
     [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
 )
-def test_task_list_user_assignee_no_employment(
-    auth_client, is_assigned, expected, status_code
-):
+def test_task_list_no_employment(auth_client, is_customer, expected, status_code):
     TaskFactory.create_batch(4)
     task = TaskFactory.create()
-    if is_assigned:
-        task.project.customer.assignees.add(auth_client.user)
+    if is_customer:
+        CustomerAssigneeFactory.create(
+            user=auth_client.user, is_customer=True, customer=task.project.customer
+        )
 
     url = reverse("task-list")
 

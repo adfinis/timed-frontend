@@ -1,13 +1,13 @@
-from rest_framework import (
-    decorators,
-    exceptions,
-    mixins,
-    permissions,
-    response,
-    status,
-    viewsets,
-)
+from rest_framework import decorators, exceptions, response, status, viewsets
 
+from timed.permissions import (
+    IsAccountant,
+    IsAuthenticated,
+    IsCreateOnly,
+    IsCustomer,
+    IsReadOnly,
+    IsSuperUser,
+)
 from timed.projects.filters import ProjectFilterSet
 from timed.projects.models import Project
 
@@ -38,20 +38,22 @@ class PackageViewSet(viewsets.ReadOnlyModelViewSet):
         return models.Package.objects.select_related("billing_type")
 
 
-class OrderViewSet(
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.DestroyModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
-):
+class OrderViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.OrderSerializer
     filterset_class = filters.OrderFilter
+    permission_classes = [
+        # superuser and accountants may edit all orders
+        (IsSuperUser | IsAccountant)
+        # customers may only create orders
+        | IsCustomer & IsCreateOnly
+        # all authenticated users may read all orders
+        | IsAuthenticated & IsReadOnly
+    ]
 
     @decorators.action(
         detail=True,
         methods=["post"],
-        permission_classes=[permissions.IsAuthenticated, permissions.IsAdminUser],
+        permission_classes=[IsSuperUser | IsAccountant],
     )
     def confirm(self, request, pk=None):
         """
@@ -69,9 +71,11 @@ class OrderViewSet(
     def get_queryset(self):
         return models.Order.objects.select_related("project")
 
-    def perform_destroy(self, instance):
+    def destroy(self, request, pk):
+        instance = self.get_object()
         if instance.acknowledged:
             # acknowledge orders may not be deleted
             raise exceptions.PermissionDenied()
 
         instance.delete()
+        return response.Response(status=status.HTTP_204_NO_CONTENT)

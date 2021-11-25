@@ -178,7 +178,14 @@ class CustomerAssigneeSerializer(ModelSerializer):
         """Meta information for the customer assignee serializer."""
 
         model = models.CustomerAssignee
-        fields = ["user", "customer", "is_reviewer", "is_manager", "is_resource"]
+        fields = [
+            "user",
+            "customer",
+            "is_reviewer",
+            "is_manager",
+            "is_resource",
+            "is_customer",
+        ]
 
 
 class ProjectAssigneeSerializer(ModelSerializer):
@@ -193,7 +200,14 @@ class ProjectAssigneeSerializer(ModelSerializer):
         """Meta information for the project assignee serializer."""
 
         model = models.ProjectAssignee
-        fields = ["user", "project", "is_reviewer", "is_manager", "is_resource"]
+        fields = [
+            "user",
+            "project",
+            "is_reviewer",
+            "is_manager",
+            "is_resource",
+            "is_customer",
+        ]
 
 
 class TaskAssigneeSerializer(ModelSerializer):
@@ -208,4 +222,11 @@ class TaskAssigneeSerializer(ModelSerializer):
         """Meta information for the task assignee serializer."""
 
         model = models.TaskAssignee
-        fields = ["user", "task", "is_reviewer", "is_manager", "is_resource"]
+        fields = [
+            "user",
+            "task",
+            "is_reviewer",
+            "is_manager",
+            "is_resource",
+            "is_customer",
+        ]

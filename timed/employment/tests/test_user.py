@@ -35,7 +35,7 @@ def test_user_list(db, internal_employee_client, django_assert_num_queries):
 
     url = reverse("user-list")
 
-    with django_assert_num_queries(15):
+    with django_assert_num_queries(14):
         response = internal_employee_client.get(url)
 
     assert response.status_code == status.HTTP_200_OK
@@ -271,21 +271,18 @@ def test_user_me_anonymous(client):
 
 
 @pytest.mark.parametrize(
-    "is_assigned, expected, status_code",
+    "is_customer, expected, status_code",
     [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
 )
-def test_user_list_assignee_no_employment(
-    auth_client, is_assigned, expected, status_code
-):
+def test_user_list_no_employment(auth_client, is_customer, expected, status_code):
     user = auth_client.user
     UserFactory.create_batch(2)
-    if is_assigned:
-        CustomerAssigneeFactory.create(user=user)
+    if is_customer:
+        CustomerAssigneeFactory.create(user=user, is_customer=True)
 
     url = reverse("user-list")
 
     response = auth_client.get(url)
-
     assert response.status_code == status_code
 
     if expected:
