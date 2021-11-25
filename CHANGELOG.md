@@ -1,3 +1,10 @@
+## [2.0.4](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.0.3...v2.0.4) (2021-11-25)
+
+
+### Bug Fixes
+
+* **styling:** fix overlapping eye-icon in comment field ([b8eceb2](https://github.com/adfinis-sygroup/timed-frontend/commit/b8eceb2e5f608caea51fa4a7c4550eeb0592db45))
+
 ## [2.0.3](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.0.2...v2.0.3) (2021-10-19)
 
 
