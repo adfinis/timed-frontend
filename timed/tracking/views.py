@@ -28,7 +28,7 @@ from timed.permissions import (
     IsSupervisor,
     IsUnverified,
 )
-from timed.projects.models import Task
+from timed.projects.models import CustomerAssignee, Task
 from timed.serializers import AggregateObject
 from timed.tracking import filters, models, serializers
 
@@ -121,28 +121,37 @@ class ReportViewSet(ModelViewSet):
     def get_queryset(self):
         """Get filtered reports for external employees."""
         user = self.request.user
-        current_employment = Employment.objects.get_at(user=user, date=date.today())
         queryset = super().get_queryset()
         queryset.select_related(
             "task", "user", "task__project", "task__project__customer"
         )
 
-        if not current_employment.is_external:
-            return queryset
+        try:
+            current_employment = Employment.objects.get_at(user=user, date=date.today())
+            if not current_employment.is_external:
+                return queryset
 
-        assigned_tasks = Task.objects.filter(
-            Q(task_assignees__user=user, task_assignees__is_reviewer=True)
-            | Q(
-                project__project_assignees__user=user,
-                project__project_assignees__is_reviewer=True,
+            assigned_tasks = Task.objects.filter(
+                Q(task_assignees__user=user, task_assignees__is_reviewer=True)
+                | Q(
+                    project__project_assignees__user=user,
+                    project__project_assignees__is_reviewer=True,
+                )
+                | Q(
+                    project__customer__customer_assignees__user=user,
+                    project__customer__customer_assignees__is_reviewer=True,
+                )
             )
-            | Q(
-                project__customer__customer_assignees__user=user,
-                project__customer__customer_assignees__is_reviewer=True,
+            queryset = queryset.filter(Q(task__in=assigned_tasks) | Q(user=user))
+            return queryset
+        except Employment.DoesNotExist:
+            if CustomerAssignee.objects.filter(user=user).exists():
+                return queryset.filter(
+                    Q(task__project__customer__customer_assignees__user=user)
+                )
+            raise exceptions.PermissionDenied(
+                "User has no employment and isn't a customer!"
             )
-        )
-        queryset = queryset.filter(Q(task__in=assigned_tasks) | Q(user=user))
-        return queryset
 
     def update(self, request, *args, **kwargs):
         """Override so we can issue emails on update."""

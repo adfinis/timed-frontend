@@ -71,3 +71,25 @@ def test_customer_list_external_employee(
 
     json = response.json()
     assert len(json["data"]) == expected
+
+
+@pytest.mark.parametrize(
+    "is_assigned, expected, status_code",
+    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+)
+def test_customer_list_user_assignee_no_employment(
+    auth_client, is_assigned, expected, status_code
+):
+    CustomerFactory.create_batch(4)
+    customer = CustomerFactory.create()
+    if is_assigned:
+        customer.assignees.add(auth_client.user)
+
+    url = reverse("customer-list")
+
+    response = auth_client.get(url)
+    assert response.status_code == status_code
+
+    if expected:
+        json = response.json()
+        assert len(json["data"]) == expected

@@ -10,6 +10,7 @@ from rest_framework import status
 
 from timed.employment.factories import EmploymentFactory, UserFactory
 from timed.projects.factories import (
+    CustomerAssigneeFactory,
     ProjectAssigneeFactory,
     TaskAssigneeFactory,
     TaskFactory,
@@ -1643,3 +1644,39 @@ def test_report_list_external_employee(external_employee_client, report_factory)
     assert len(json["data"]) == 1
     assert json["data"][0]["id"] == str(report.id)
     assert json["meta"]["total-time"] == "01:00:00"
+
+
+@pytest.mark.parametrize(
+    "is_assigned, expected, status_code",
+    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+)
+def test_report_list_user_assignee_no_employment(
+    auth_client, report_factory, is_assigned, expected, status_code
+):
+    user = auth_client.user
+    report = report_factory.create(user=user, duration=timedelta(hours=1))
+    if is_assigned:
+        CustomerAssigneeFactory.create(user=user, customer=report.task.project.customer)
+    report_factory.create_batch(4)
+
+    url = reverse("report-list")
+
+    response = auth_client.get(
+        url,
+        data={
+            "date": report.date,
+            "user": user.id,
+            "task": report.task_id,
+            "project": report.task.project_id,
+            "customer": report.task.project.customer_id,
+            "include": ("user,task,task.project,task.project.customer,verified_by"),
+        },
+    )
+
+    assert response.status_code == status_code
+
+    json = response.json()
+    if expected:
+        assert len(json["data"]) == expected
+        assert json["data"][0]["id"] == str(report.id)
+        assert json["meta"]["total-time"] == "01:00:00"

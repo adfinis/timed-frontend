@@ -3,6 +3,7 @@
 from datetime import date
 
 from django.db.models import Q
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from timed.employment.models import Employment
@@ -32,17 +33,22 @@ class CustomerViewSet(ReadOnlyModelViewSet):
         :rtype:  QuerySet
         """
         user = self.request.user
-        current_employment = Employment.objects.get_at(user=user, date=date.today())
         queryset = models.Customer.objects.prefetch_related("projects")
 
-        if not current_employment.is_external:  # pragma: no cover
-            return queryset
-        else:
-            return queryset.filter(
-                Q(assignees=user)
-                | Q(projects__assignees=user)
-                | Q(projects__tasks__assignees=user)
-            )
+        try:
+            current_employment = Employment.objects.get_at(user=user, date=date.today())
+            if not current_employment.is_external:  # pragma: no cover
+                return queryset
+            else:
+                return queryset.filter(
+                    Q(assignees=user)
+                    | Q(projects__assignees=user)
+                    | Q(projects__tasks__assignees=user)
+                )
+        except Employment.DoesNotExist:
+            if models.CustomerAssignee.objects.filter(user=user).exists():
+                return queryset.filter(Q(assignees=user))
+            raise PermissionDenied("User has no employment and isn't a customer!")
 
 
 class BillingTypeViewSet(ReadOnlyModelViewSet):
@@ -85,21 +91,26 @@ class ProjectViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         """Get only assigned projects, if an employee is external."""
         user = self.request.user
-        current_employment = Employment.objects.get_at(user=user, date=date.today())
         queryset = (
             super()
             .get_queryset()
             .select_related("customer", "billing_type", "cost_center")
         )
 
-        if not current_employment.is_external:  # pragma: no cover
-            return queryset
-        else:
-            return queryset.filter(
-                Q(assignees=user)
-                | Q(tasks__assignees=user)
-                | Q(customer__assignees=user)
-            )
+        try:
+            current_employment = Employment.objects.get_at(user=user, date=date.today())
+            if not current_employment.is_external:  # pragma: no cover
+                return queryset
+            else:
+                return queryset.filter(
+                    Q(assignees=user)
+                    | Q(tasks__assignees=user)
+                    | Q(customer__assignees=user)
+                )
+        except Employment.DoesNotExist:
+            if models.CustomerAssignee.objects.filter(user=user).exists():
+                return queryset.filter(Q(customer__assignees=user))
+            raise PermissionDenied("User has no employment and isn't a customer!")
 
 
 class TaskViewSet(ModelViewSet):
@@ -131,17 +142,22 @@ class TaskViewSet(ModelViewSet):
     def get_queryset(self):
         """Get only assigned tasks, if an employee is external."""
         user = self.request.user
-        current_employment = Employment.objects.get_at(user=user, date=date.today())
         queryset = super().get_queryset().select_related("project", "cost_center")
 
-        if not current_employment.is_external:  # pragma: no cover
-            return queryset
-        else:
-            return queryset.filter(
-                Q(assignees=user)
-                | Q(project__assignees=user)
-                | Q(project__customer__assignees=user)
-            )
+        try:
+            current_employment = Employment.objects.get_at(user=user, date=date.today())
+            if not current_employment.is_external:  # pragma: no cover
+                return queryset
+            else:
+                return queryset.filter(
+                    Q(assignees=user)
+                    | Q(project__assignees=user)
+                    | Q(project__customer__assignees=user)
+                )
+        except Employment.DoesNotExist:
+            if models.CustomerAssignee.objects.filter(user=user).exists():
+                return queryset.filter(Q(project__customer__assignees=user))
+            raise PermissionDenied("User has no employment and isn't a customer!")
 
 
 class TaskAsssigneeViewSet(ReadOnlyModelViewSet):

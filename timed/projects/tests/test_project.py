@@ -164,3 +164,25 @@ def test_project_update_billed_flag(internal_employee_client, report_factory):
 
     report.refresh_from_db()
     assert not report.billed
+
+
+@pytest.mark.parametrize(
+    "is_assigned, expected, status_code",
+    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+)
+def test_project_list_user_assignee_no_employment(
+    auth_client, is_assigned, expected, status_code
+):
+    ProjectFactory.create_batch(4)
+    project = ProjectFactory.create()
+    if is_assigned:
+        project.customer.assignees.add(auth_client.user)
+
+    url = reverse("project-list")
+
+    response = auth_client.get(url)
+    assert response.status_code == status_code
+
+    if expected:
+        json = response.json()
+        assert len(json["data"]) == expected
