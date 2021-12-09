@@ -4,7 +4,7 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from timed.projects.factories import CustomerFactory
+from timed.projects.factories import CustomerAssigneeFactory, CustomerFactory
 
 
 def test_customer_list_not_archived(internal_employee_client):
@@ -74,16 +74,16 @@ def test_customer_list_external_employee(
 
 
 @pytest.mark.parametrize(
-    "is_assigned, expected, status_code",
+    "is_customer, expected, status_code",
     [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
 )
-def test_customer_list_user_assignee_no_employment(
-    auth_client, is_assigned, expected, status_code
-):
+def test_customer_list_no_employment(auth_client, is_customer, expected, status_code):
     CustomerFactory.create_batch(4)
     customer = CustomerFactory.create()
-    if is_assigned:
-        customer.assignees.add(auth_client.user)
+    if is_customer:
+        CustomerAssigneeFactory.create(
+            user=auth_client.user, is_customer=True, customer=customer
+        )
 
     url = reverse("customer-list")
 

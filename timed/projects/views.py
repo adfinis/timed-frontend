@@ -46,7 +46,9 @@ class CustomerViewSet(ReadOnlyModelViewSet):
                     | Q(projects__tasks__assignees=user)
                 )
         except Employment.DoesNotExist:
-            if models.CustomerAssignee.objects.filter(user=user).exists():
+            if models.CustomerAssignee.objects.filter(
+                user=user, is_customer=True
+            ).exists():
                 return queryset.filter(Q(assignees=user))
             raise PermissionDenied("User has no employment and isn't a customer!")
 
@@ -108,7 +110,9 @@ class ProjectViewSet(ReadOnlyModelViewSet):
                     | Q(customer__assignees=user)
                 )
         except Employment.DoesNotExist:
-            if models.CustomerAssignee.objects.filter(user=user).exists():
+            if models.CustomerAssignee.objects.filter(
+                user=user, is_customer=True
+            ).exists():
                 return queryset.filter(Q(customer__assignees=user))
             raise PermissionDenied("User has no employment and isn't a customer!")
 
@@ -155,7 +159,9 @@ class TaskViewSet(ModelViewSet):
                     | Q(project__customer__assignees=user)
                 )
         except Employment.DoesNotExist:
-            if models.CustomerAssignee.objects.filter(user=user).exists():
+            if models.CustomerAssignee.objects.filter(
+                user=user, is_customer=True
+            ).exists():
                 return queryset.filter(Q(project__customer__assignees=user))
             raise PermissionDenied("User has no employment and isn't a customer!")
 

@@ -2,7 +2,6 @@
 from datetime import date
 
 from django.db.models import Q
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticated
 
 from timed.employment import models as employment_models
@@ -112,7 +111,13 @@ class IsReviewer(IsAuthenticated):
         if not super().has_permission(request, view):  # pragma: no cover
             return False
 
-        return True
+        if (
+            request.user.customer_assignees.filter(is_reviewer=True).exists()
+            or request.user.project_assignees.filter(is_reviewer=True).exists()
+            or request.user.task_assignees.filter(is_reviewer=True).exists()
+        ):
+            return True
+        return False
 
     def has_object_permission(self, request, view, obj):
         if not super().has_object_permission(request, view, obj):  # pragma: no cover
@@ -154,7 +159,7 @@ class IsSuperUser(IsAuthenticated):
         return self.has_permission(request, view)
 
 
-class IsNotTransferred(BasePermission):
+class IsNotTransferred(IsAuthenticated):
     """Allows access only to not transferred objects."""
 
     def has_object_permission(self, request, view, obj):
@@ -174,7 +179,12 @@ class IsInternal(IsAuthenticated):
             )
             return not employment.is_external
         except employment_models.Employment.DoesNotExist:
-            raise PermissionDenied("User has no employment")
+            # if the user has no employment, check if he's a customer
+            if projects_models.CustomerAssignee.objects.filter(
+                user=request.user, is_customer=True
+            ).exists():
+                return True
+            return False
 
     def has_object_permission(self, request, view, obj):
         if not super().has_object_permission(request, view, obj):  # pragma: no cover
@@ -201,7 +211,12 @@ class IsExternal(IsAuthenticated):
             )
             return employment.is_external
         except employment_models.Employment.DoesNotExist:  # pragma: no cover
-            raise PermissionDenied("User has no employment")
+            # if the user has no employment, check if he's a customer
+            if projects_models.CustomerAssignee.objects.filter(
+                user=request.user, is_customer=True
+            ).exists():
+                return True
+            return False
 
     def has_object_permission(self, request, view, obj):
         if not super().has_object_permission(request, view, obj):  # pragma: no cover
@@ -305,8 +320,26 @@ class IsResource(IsAuthenticated):
 class IsAccountant(IsAuthenticated):
     """Allows access only to accountants."""
 
+    def has_permission(self, request, view):
+        if not super().has_permission(request, view):  # pragma: no cover
+            return False
+
+        return request.user.is_accountant
+
     def has_object_permission(self, request, view, obj):
         if not super().has_object_permission(request, view, obj):  # pragma: no cover
             return False
 
         return request.user.is_accountant
+
+
+class IsCustomer(IsAuthenticated):
+    """Allows access only to assignees with customer role."""
+
+    def has_permission(self, request, view):
+        if not super().has_permission(request, view):  # pragma: no cover
+            return False
+
+        if request.user.customer_assignees.filter(is_customer=True).exists():
+            return True
+        return False

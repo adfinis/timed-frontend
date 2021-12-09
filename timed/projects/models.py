@@ -209,6 +209,7 @@ class CustomerAssignee(models.Model):
     is_resource = models.BooleanField(default=False)
     is_reviewer = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_customer = models.BooleanField(default=False)
 
 
 class ProjectAssignee(models.Model):
@@ -228,6 +229,7 @@ class ProjectAssignee(models.Model):
     is_resource = models.BooleanField(default=False)
     is_reviewer = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_customer = models.BooleanField(default=False)
 
 
 class TaskAssignee(models.Model):
@@ -247,6 +249,7 @@ class TaskAssignee(models.Model):
     is_resource = models.BooleanField(default=False)
     is_reviewer = models.BooleanField(default=False)
     is_manager = models.BooleanField(default=False)
+    is_customer = models.BooleanField(default=False)
 
 
 @receiver(pre_save, sender=Project)

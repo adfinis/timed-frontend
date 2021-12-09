@@ -6,7 +6,11 @@ from django.urls import reverse
 from rest_framework import status
 
 from timed.employment.factories import UserFactory
-from timed.projects.factories import ProjectAssigneeFactory, ProjectFactory
+from timed.projects.factories import (
+    CustomerAssigneeFactory,
+    ProjectAssigneeFactory,
+    ProjectFactory,
+)
 from timed.projects.serializers import ProjectSerializer
 
 
@@ -167,16 +171,16 @@ def test_project_update_billed_flag(internal_employee_client, report_factory):
 
 
 @pytest.mark.parametrize(
-    "is_assigned, expected, status_code",
+    "is_customer, expected, status_code",
     [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
 )
-def test_project_list_user_assignee_no_employment(
-    auth_client, is_assigned, expected, status_code
-):
+def test_project_list_no_employment(auth_client, is_customer, expected, status_code):
     ProjectFactory.create_batch(4)
     project = ProjectFactory.create()
-    if is_assigned:
-        project.customer.assignees.add(auth_client.user)
+    if is_customer:
+        CustomerAssigneeFactory.create(
+            user=auth_client.user, is_customer=True, customer=project.customer
+        )
 
     url = reverse("project-list")
 

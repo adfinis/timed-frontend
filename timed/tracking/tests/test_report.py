@@ -478,7 +478,7 @@ def test_report_detail(
     "task_assignee__is_reviewer, task_assignee__is_manager, task_assignee__is_resource, is_external, expected",
     [
         (True, False, False, True, status.HTTP_400_BAD_REQUEST),
-        (False, True, False, True, status.HTTP_400_BAD_REQUEST),
+        (False, True, False, True, status.HTTP_403_FORBIDDEN),
         (False, False, True, True, status.HTTP_201_CREATED),
         (True, False, False, False, status.HTTP_201_CREATED),
         (False, True, False, False, status.HTTP_201_CREATED),
@@ -1200,7 +1200,7 @@ def test_report_export(
 
     url = reverse("report-export")
 
-    with django_assert_num_queries(2):
+    with django_assert_num_queries(7):
         response = internal_employee_client.get(url, data={"file_type": file_type})
 
     assert response.status_code == status.HTTP_200_OK
@@ -1650,29 +1650,20 @@ def test_report_list_external_employee(external_employee_client, report_factory)
     "is_assigned, expected, status_code",
     [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
 )
-def test_report_list_user_assignee_no_employment(
+def test_report_list_no_employment(
     auth_client, report_factory, is_assigned, expected, status_code
 ):
     user = auth_client.user
     report = report_factory.create(user=user, duration=timedelta(hours=1))
     if is_assigned:
-        CustomerAssigneeFactory.create(user=user, customer=report.task.project.customer)
+        CustomerAssigneeFactory.create(
+            user=user, is_customer=True, customer=report.task.project.customer
+        )
     report_factory.create_batch(4)
 
     url = reverse("report-list")
 
-    response = auth_client.get(
-        url,
-        data={
-            "date": report.date,
-            "user": user.id,
-            "task": report.task_id,
-            "project": report.task.project_id,
-            "customer": report.task.project.customer_id,
-            "include": ("user,task,task.project,task.project.customer,verified_by"),
-        },
-    )
-
+    response = auth_client.get(url)
     assert response.status_code == status_code
 
     json = response.json()
