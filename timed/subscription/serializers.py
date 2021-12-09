@@ -6,7 +6,6 @@ from rest_framework_json_api.serializers import (
     CharField,
     ModelSerializer,
     SerializerMethodField,
-    ValidationError,
 )
 
 from timed.projects.models import Project
@@ -79,26 +78,6 @@ class OrderSerializer(ModelSerializer):
     included_serializers = {
         "project": ("timed.subscription.serializers" ".SubscriptionProjectSerializer")
     }
-
-    def validate(self, data):
-        """Validate orders.
-
-        Customers and users can not create confirmed orders and can not modify them,
-        if they're already confirmed.
-        """
-
-        user = self.context["request"].user
-        acknowledged = data.get("acknowledged")
-        request_method = self.context["request"].method
-
-        if (
-            request_method == "POST"
-            and acknowledged
-            and not (user.is_accountant or user.is_superuser)
-        ):
-            raise ValidationError("User can not create confirmed orders!")
-
-        return data
 
     class Meta:
         model = Order

@@ -2,6 +2,7 @@ from datetime import date
 
 from django.db.models import Q
 from rest_framework import decorators, exceptions, response, status, viewsets
+from rest_framework_json_api.serializers import ValidationError
 
 from timed.employment.models import Employment
 from timed.permissions import (
@@ -15,7 +16,7 @@ from timed.permissions import (
 from timed.projects.filters import ProjectFilterSet
 from timed.projects.models import CustomerAssignee, Project
 
-from . import filters, models, serializers
+from . import filters, models, notify_admin, serializers
 
 
 class SubscriptionProjectViewSet(viewsets.ReadOnlyModelViewSet):
@@ -69,6 +70,22 @@ class OrderViewSet(viewsets.ModelViewSet):
         # all authenticated users may read all orders
         | IsAuthenticated & IsReadOnly
     ]
+
+    def create(self, request, *args, **kwargs):
+        """Override so we can issue emails on creation."""
+        # check if order is acknowledged and created by admin/accountant
+        if (
+            request.method == "POST"
+            and request.data.get("acknowledged")
+            and not (request.user.is_accountant or request.user.is_superuser)
+        ):
+            raise ValidationError("User can not create confirmed orders!")
+
+        project = Project.objects.get(id=request.data.get("project")["id"])
+        order_duration = request.data.get("duration")
+
+        notify_admin.prepare_and_send_email(project, order_duration)
+        return super().create(request, *args, **kwargs)
 
     @decorators.action(
         detail=True,
