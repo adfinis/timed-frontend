@@ -124,20 +124,27 @@ def test_order_confirm(
 
 
 @pytest.mark.parametrize(
-    "is_customer, is_accountant, is_superuser, acknowledged, expected",
+    "is_customer, is_accountant, is_superuser, acknowledged, mail_sent, expected",
     [
-        (True, False, False, True, status.HTTP_400_BAD_REQUEST),
-        (True, False, False, False, status.HTTP_201_CREATED),
-        (False, True, False, True, status.HTTP_201_CREATED),
-        (False, True, False, False, status.HTTP_201_CREATED),
-        (False, False, True, True, status.HTTP_201_CREATED),
-        (False, False, True, False, status.HTTP_201_CREATED),
-        (False, False, False, True, status.HTTP_403_FORBIDDEN),
-        (False, False, False, False, status.HTTP_403_FORBIDDEN),
+        (True, False, False, True, 0, status.HTTP_400_BAD_REQUEST),
+        (True, False, False, False, 1, status.HTTP_201_CREATED),
+        (False, True, False, True, 1, status.HTTP_201_CREATED),
+        (False, True, False, False, 1, status.HTTP_201_CREATED),
+        (False, False, True, True, 1, status.HTTP_201_CREATED),
+        (False, False, True, False, 1, status.HTTP_201_CREATED),
+        (False, False, False, True, 0, status.HTTP_403_FORBIDDEN),
+        (False, False, False, False, 0, status.HTTP_403_FORBIDDEN),
     ],
 )
 def test_order_create(
-    auth_client, is_customer, is_accountant, is_superuser, acknowledged, expected
+    auth_client,
+    mailoutbox,
+    is_customer,
+    is_accountant,
+    is_superuser,
+    acknowledged,
+    mail_sent,
+    expected,
 ):
     """Test which user may create orders.
 
@@ -176,6 +183,15 @@ def test_order_create(
 
     response = auth_client.post(url, data)
     assert response.status_code == expected
+
+    assert len(mailoutbox) == mail_sent
+    if mail_sent:
+        mail = mailoutbox[0]
+        url = f"https://my.adfinis-sygroup.ch/timed-admin/{project.id}"
+        assert str(project.customer) in mail.body
+        assert str(project.name) in mail.body
+        assert "0:30:00" in mail.body
+        assert url in mail.alternatives[0][0]
 
 
 @pytest.mark.parametrize(

@@ -283,6 +283,10 @@ DEFAULT_FROM_EMAIL = env.str(
     "DJANGO_DEFAULT_FROM_EMAIL", default("webmaster@localhost")
 )
 
+CUSTOMER_CENTER_EMAIL = env.str(
+    "DJANGO_CUSTOMER_CENTER_EMAIL", default("admin@localhost")
+)
+
 SERVER_EMAIL = env.str("DJANGO_SERVER_EMAIL", default("root@localhost"))
 EMAIL_EXTRA_HEADERS = {"Auto-Submitted": "auto-generated"}
 
