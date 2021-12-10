@@ -31,7 +31,7 @@ services:
   keycloak:
     image: jboss/keycloak:10.0.1
     volumes:
-      - ./dev-config/keycloak-config.json:/etc/keycloak/keycloak-config.json:ro
+      - ./dev-config/keycloak-config.json:/etc/keycloak/keycloak-config.json:rw
     depends_on:
       - db
     environment:
@@ -43,6 +43,8 @@ services:
       - PROXY_ADDRESS_FORWARDING=true
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
+    # start keycloak with the following command to perform an export of the `timed` realm.
+    #command: ["-Dkeycloak.migration.action=export", "-Dkeycloak.migration.realmName=timed", "-Dkeycloak.migration.provider=singleFile", "-Dkeycloak.migration.file=/etc/keycloak/keycloak-config.json", "-b", "0.0.0.0"]
     command: ["-Dkeycloak.migration.action=import", "-Dkeycloak.migration.provider=singleFile", "-Dkeycloak.migration.file=/etc/keycloak/keycloak-config.json", "-b", "0.0.0.0"]
     networks:
       - timed.local
