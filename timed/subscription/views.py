@@ -1,5 +1,9 @@
+from datetime import date
+
+from django.db.models import Q
 from rest_framework import decorators, exceptions, response, status, viewsets
 
+from timed.employment.models import Employment
 from timed.permissions import (
     IsAccountant,
     IsAuthenticated,
@@ -9,7 +13,7 @@ from timed.permissions import (
     IsSuperUser,
 )
 from timed.projects.filters import ProjectFilterSet
-from timed.projects.models import Project
+from timed.projects.models import CustomerAssignee, Project
 
 from . import filters, models, serializers
 
@@ -27,7 +31,23 @@ class SubscriptionProjectViewSet(viewsets.ReadOnlyModelViewSet):
     ordering_fields = ("name", "id")
 
     def get_queryset(self):
-        return Project.objects.filter(archived=False, customer_visible=True)
+        user = self.request.user
+        queryset = Project.objects.filter(archived=False, customer_visible=True)
+        try:
+            # check if user is an internal employee
+            current_employment = Employment.objects.get_at(user=user, date=date.today())
+            if not current_employment.is_external:  # pragma: no cover
+                return queryset
+        except Employment.DoesNotExist:
+            # if user has no employment, check if he's a customer
+            if CustomerAssignee.objects.filter(user=user, is_customer=True).exists():
+                return queryset.filter(
+                    Q(
+                        customer__customer_assignees__user=user,
+                        customer__customer_assignees__is_customer=True,
+                    )
+                )
+        return queryset.none()
 
 
 class PackageViewSet(viewsets.ReadOnlyModelViewSet):
