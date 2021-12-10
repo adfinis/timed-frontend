@@ -60,7 +60,9 @@ class TimedOIDCAuthenticationBackend(OIDCAuthenticationBackend):
         users = self.filter_users_by_claims(claims)
 
         if len(users) == 1:
-            return users[0]
+            user = users.get()
+            self.update_user_from_claims(user, claims)
+            return user
         elif settings.OIDC_CREATE_USER:
             return self.create_user(claims)
         else:
@@ -70,6 +72,12 @@ class TimedOIDCAuthenticationBackend(OIDCAuthenticationBackend):
                 self.get_username(claims),
             )
             return None
+
+    def update_user_from_claims(self, user, claims):
+        user.email = claims.get(settings.OIDC_EMAIL_CLAIM, "")
+        user.first_name = claims.get(settings.OIDC_FIRSTNAME_CLAIM, "")
+        user.last_name = claims.get(settings.OIDC_LASTNAME_CLAIM, "")
+        user.save()
 
     def filter_users_by_claims(self, claims):
         username = self.get_username(claims)

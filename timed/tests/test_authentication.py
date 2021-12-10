@@ -9,6 +9,8 @@ from requests.exceptions import HTTPError
 from rest_framework import exceptions, status
 from rest_framework.exceptions import AuthenticationFailed
 
+from timed.employment.factories import UserFactory
+
 
 @pytest.mark.parametrize("is_id_token", [True, False])
 @pytest.mark.parametrize(
@@ -85,6 +87,29 @@ def test_authentication_new_user(
         assert user.username == username
 
     assert user_model.objects.count() == expected_count
+
+
+def test_authentication_update_user_data(db, rf, requests_mock, settings):
+    user_model = get_user_model()
+    user = UserFactory.create()
+
+    userinfo = {
+        "sub": user.username,
+        "email": "test@localhost",
+        "given_name": "Max",
+        "family_name": "Mustermann",
+    }
+
+    requests_mock.get(settings.OIDC_OP_USER_ENDPOINT, text=json.dumps(userinfo))
+
+    request = rf.get("/openid", HTTP_AUTHORIZATION="Bearer Token")
+
+    user, _ = OIDCAuthentication().authenticate(request)
+
+    assert user_model.objects.count() == 1
+    assert user.first_name == "Max"
+    assert user.last_name == "Mustermann"
+    assert user.email == "test@localhost"
 
 
 def test_authentication_idp_502(db, rf, requests_mock, settings):
