@@ -195,6 +195,26 @@
     }
   },
   {
+    "model": "employment.user",
+    "pk": 5,
+    "fields": {
+      "password": "pbkdf2_sha256$150000$R6spIXkVyNm7$Qg2vsL0klTpgTqRwXm9bu0efHtYM8aAVYsgcXqVJsF0=",
+      "last_login": null,
+      "is_superuser": false,
+      "username": "wladimirc",
+      "first_name": "Wladimir",
+      "email": "wladimir@example.com",
+      "is_staff": false,
+      "is_active": true,
+      "date_joined": "2020-03-12T09:28:55Z",
+      "tour_done": true,
+      "last_name": "Customer",
+      "groups": [],
+      "user_permissions": [],
+      "supervisors": []
+    }
+  },
+  {
     "model": "projects.project",
     "pk": 1,
     "fields": {
@@ -339,6 +359,18 @@
       "is_resource": false,
       "is_reviewer": true,
       "is_manager": false
+    }
+  },
+  {
+    "model": "projects.customerassignee",
+    "pk": 2,
+    "fields": {
+      "user": 5,
+      "customer": 1,
+      "is_resource": false,
+      "is_reviewer": true,
+      "is_manager": false,
+      "is_customer": true
     }
   },
   {
