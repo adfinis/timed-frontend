@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "djmoney",
     "mozilla_django_oidc",
     "django_prometheus",
+    "corsheaders",
     "nested_inline",
     "timed.employment",
     "timed.projects",
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -364,3 +366,4 @@ SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 DATA_UPLOAD_MAX_NUMBER_FIELDS = env.int(
     "DJANGO_DATA_UPLOAD_MAX_NUMBER_FIELDS", default=1000
 )
+CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", default=[])
