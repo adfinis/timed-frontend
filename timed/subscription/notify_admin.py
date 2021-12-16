@@ -1,5 +1,6 @@
 import datetime
 
+from dateutil import parser
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives, get_connection
 from django.template.loader import get_template, render_to_string
@@ -13,9 +14,12 @@ def prepare_and_send_email(project, order_duration):
 
     customer = project.customer
 
-    duration = datetime.datetime.strptime(order_duration, "%H:%M:%S")
+    duration = parser.parse(order_duration)
     hours_added = datetime.timedelta(
-        hours=duration.hour, minutes=duration.minute, seconds=duration.second
+        days=duration.day,
+        hours=duration.hour,
+        minutes=duration.minute,
+        seconds=duration.second,
     )
     hours_total = hours_added + project.estimated_time
 
