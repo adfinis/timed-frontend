@@ -21,7 +21,8 @@ def prepare_and_send_email(project, order_duration):
         minutes=duration.minute,
         seconds=duration.second,
     )
-    hours_total = hours_added + project.estimated_time
+    estimated_time = 0 if project.estimated_time is None else project.estimated_time
+    hours_total = hours_added + estimated_time
 
     subject = f"Customer Center Credits/Reports: {customer.name} has ordered {hours_added} hours."
 
