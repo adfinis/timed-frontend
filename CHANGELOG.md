@@ -1,3 +1,83 @@
+# v1.5.1
+
+### Fix
+* **subscription/notify_admin:** Check project.estimate before calcualting total_hours ([`63273d2`](https://github.com/adfinis-sygroup/timed-backend/commit/63273d27e9c57714ba9c01c9870a6949cfd33e91))
+* **subscriptions/notify_admin:** Use dateutils parser to prevent an error ([`c3a8c6c`](https://github.com/adfinis-sygroup/timed-backend/commit/c3a8c6ceb708efd309f79c6f9808231e2169dea4))
+
+# v1.5.0
+
+### Feat
+
+* **settings**: add CORS_ALLOWED_ORIGINS to env (9e32bdc58171cbbd24304fb2c30d745d9e2cbe23)
+
+# v1.4.5
+
+### Features
+
+* Add new `is_customer` assignee role and update permissions #810 
+* Update fixtures and keycloak config #813 
+* **authentication:** Update django user data according to OIDC userinfo #814 
+* **subscription:** Send email on order creation #811 
+
+### Fixes
+
+* Fix visibility in various models to not depend on employment #808 
+* **subscription:** fix visibility of subscription projects #812
+
+# v1.4.4
+
+### Features
+
+* **reports:** Change column for total hours for tasks #800 
+* **fixtures:** Add accountant user to fixtures #802 
+* **tracking:** Add user to Report Intersection #803 
+* **settings:** Make DATA_UPLOAD_MAX_NUMBER_FIELDS alterable #805 
+
+### Fixes
+
+* Fix setting correct value for billed flag on projects #799 
+* **tracking:** Remove billed check from "editable" filter #804 
+* **tracking:** Fix reviewer filter to only show reports in which the user is sole reviewer #807
+
+# v1.4.3
+
+### Features
+
+* Use whitenoise to host static files #790 
+* Add SECURE_PROXY_SSL_HEADER #785 
+
+### Fixes
+
+* Rename IsNotBilledAndVerified permission #796 
+* **reports:** Add missing logo and update font in workreport #794 
+* **redmine:** Fix total hours calculation #793
+
+# v1.4.2
+
+### Features
+
+* Add accountant flag for users #782
+* Add number filter for assignees #780 
+
+### Fixes
+
+* Fix calculations in workreport #781
+
+# v1.4.1
+
+### Fixes
+
+Add manager role to project assignees #779 
+
+# v1.4.0
+
+### Features
+- Serve static files for Django Admin #777 
+
+### Fixes
+- Update fixtures according to new roles #778
+
+ 
 # v1.3.0 (12 August 2021)
 
 ### Feature
