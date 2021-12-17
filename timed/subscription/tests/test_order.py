@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pytest
 from django.urls import reverse
 from rest_framework import status
@@ -124,16 +126,24 @@ def test_order_confirm(
 
 
 @pytest.mark.parametrize(
-    "is_customer, is_accountant, is_superuser, acknowledged, mail_sent, expected",
+    "is_customer, is_accountant, is_superuser, acknowledged, mail_sent, project_estimate, expected",
     [
-        (True, False, False, True, 0, status.HTTP_400_BAD_REQUEST),
-        (True, False, False, False, 1, status.HTTP_201_CREATED),
-        (False, True, False, True, 1, status.HTTP_201_CREATED),
-        (False, True, False, False, 1, status.HTTP_201_CREATED),
-        (False, False, True, True, 1, status.HTTP_201_CREATED),
-        (False, False, True, False, 1, status.HTTP_201_CREATED),
-        (False, False, False, True, 0, status.HTTP_403_FORBIDDEN),
-        (False, False, False, False, 0, status.HTTP_403_FORBIDDEN),
+        (
+            True,
+            False,
+            False,
+            True,
+            0,
+            timedelta(minutes=1),
+            status.HTTP_400_BAD_REQUEST,
+        ),
+        (True, False, False, False, 1, timedelta(hours=1), status.HTTP_201_CREATED),
+        (False, True, False, True, 1, timedelta(hours=10), status.HTTP_201_CREATED),
+        (False, True, False, False, 1, timedelta(hours=24), status.HTTP_201_CREATED),
+        (False, False, True, True, 1, timedelta(hours=50), status.HTTP_201_CREATED),
+        (False, False, True, False, 1, timedelta(hours=100), status.HTTP_201_CREATED),
+        (False, False, False, True, 0, timedelta(hours=200), status.HTTP_403_FORBIDDEN),
+        (False, False, False, False, 0, None, status.HTTP_403_FORBIDDEN),
     ],
 )
 def test_order_create(
@@ -144,6 +154,7 @@ def test_order_create(
     is_superuser,
     acknowledged,
     mail_sent,
+    project_estimate,
     expected,
 ):
     """Test which user may create orders.
@@ -151,7 +162,8 @@ def test_order_create(
     Additionally test if for creation of acknowledged/confirmed orders.
     """
     user = auth_client.user
-    project = ProjectFactory.create()
+    project = ProjectFactory.create(estimated_time=project_estimate)
+
     if is_customer:
         CustomerAssigneeFactory.create(
             user=user, is_customer=True, customer=project.customer
