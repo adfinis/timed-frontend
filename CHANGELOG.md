@@ -1,3 +1,8 @@
+# v1.5.2
+
+### Fix
+* **subscription/notify_admin:** Prevent invalid addition of datetime and int ([`645881d`](https://github.com/adfinis-sygroup/timed-backend/pull/829/commits/645881d22aa7987614a13e7ee62a8f201b60c717))
+
 # v1.5.1
 
 ### Fix
