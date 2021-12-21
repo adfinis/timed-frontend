@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.0.4...v2.1.0) (2021-12-21)
+
+
+### Features
+
+* create view for users with no permission ([85ea184](https://github.com/adfinis-sygroup/timed-frontend/commit/85ea1846c87dabcc4ed900e106b17429dd1fbc32))
+
 ## [2.0.4](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.0.3...v2.0.4) (2021-11-25)
 
 
