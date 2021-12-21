@@ -1,10 +1,7 @@
-from datetime import date
-
 from django.db.models import Q
 from rest_framework import decorators, exceptions, response, status, viewsets
 from rest_framework_json_api.serializers import ValidationError
 
-from timed.employment.models import Employment
 from timed.permissions import (
     IsAccountant,
     IsAuthenticated,
@@ -34,13 +31,9 @@ class SubscriptionProjectViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         user = self.request.user
         queryset = Project.objects.filter(archived=False, customer_visible=True)
-        try:
-            # check if user is an internal employee
-            current_employment = Employment.objects.get_at(user=user, date=date.today())
-            if not current_employment.is_external:  # pragma: no cover
-                return queryset
-        except Employment.DoesNotExist:
-            # if user has no employment, check if he's a customer
+        current_employment = user.get_active_employment()
+
+        if current_employment is None or current_employment.is_external:
             if CustomerAssignee.objects.filter(user=user, is_customer=True).exists():
                 return queryset.filter(
                     Q(
@@ -48,6 +41,8 @@ class SubscriptionProjectViewSet(viewsets.ReadOnlyModelViewSet):
                         customer__customer_assignees__is_customer=True,
                     )
                 )
+        elif not current_employment.is_external:
+            return queryset
         return queryset.none()
 
 

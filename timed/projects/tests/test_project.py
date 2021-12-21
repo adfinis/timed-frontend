@@ -171,12 +171,16 @@ def test_project_update_billed_flag(internal_employee_client, report_factory):
 
 
 @pytest.mark.parametrize(
-    "is_customer, expected, status_code",
-    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+    "is_customer, project__customer_visible, expected",
+    [
+        (True, True, 1),
+        (True, False, 0),
+        (False, True, 0),
+        (False, False, 0),
+    ],
 )
-def test_project_list_no_employment(auth_client, is_customer, expected, status_code):
+def test_project_list_no_employment(auth_client, project, is_customer, expected):
     ProjectFactory.create_batch(4)
-    project = ProjectFactory.create()
     if is_customer:
         CustomerAssigneeFactory.create(
             user=auth_client.user, is_customer=True, customer=project.customer
@@ -185,8 +189,7 @@ def test_project_list_no_employment(auth_client, is_customer, expected, status_c
     url = reverse("project-list")
 
     response = auth_client.get(url)
-    assert response.status_code == status_code
+    assert response.status_code == status.HTTP_200_OK
 
-    if expected:
-        json = response.json()
-        assert len(json["data"]) == expected
+    json = response.json()
+    assert len(json["data"]) == expected

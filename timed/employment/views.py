@@ -345,6 +345,16 @@ class LocationViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.LocationSerializer
     ordering = ("name",)
 
+    def get_queryset(self):
+        """Don't show locations to customers."""
+        user = self.request.user
+
+        queryset = models.Location.objects.all()
+
+        if user.get_active_employment():
+            return queryset
+        return queryset.none()
+
 
 class PublicHolidayViewSet(ReadOnlyModelViewSet):
     """Public holiday view set."""
@@ -356,10 +366,18 @@ class PublicHolidayViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         """Prefetch the related data.
 
+        Don't show public holidays to customers.
+
         :return: The public holidays
         :rtype:  QuerySet
         """
-        return models.PublicHoliday.objects.select_related("location")
+        user = self.request.user
+
+        queryset = models.PublicHoliday.objects.select_related("location")
+
+        if user.get_active_employment():
+            return queryset
+        return queryset.none()
 
 
 class AbsenceTypeViewSet(ReadOnlyModelViewSet):
@@ -369,6 +387,16 @@ class AbsenceTypeViewSet(ReadOnlyModelViewSet):
     serializer_class = serializers.AbsenceTypeSerializer
     filterset_class = filters.AbsenceTypeFilterSet
     ordering = ("name",)
+
+    def get_queryset(self):
+        """Don't show absence types to customers."""
+        user = self.request.user
+
+        queryset = models.AbsenceType.objects.all()
+
+        if user.get_active_employment():
+            return queryset
+        return queryset.none()
 
 
 class AbsenceCreditViewSet(ModelViewSet):
