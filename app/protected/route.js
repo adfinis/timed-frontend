@@ -39,11 +39,15 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const usermodel = await this.store.peekRecord("user", user.data.id);
 
     // Fetch current employment
-    await this.store.query("employment", {
+    const employment = await this.store.query("employment", {
       user: usermodel.id,
       date: moment().format("YYYY-MM-DD"),
       include: "location"
     });
+
+    if (!employment.length) {
+      this.transitionTo("no-access");
+    }
 
     this.set("session.data.user", usermodel);
 
