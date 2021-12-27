@@ -1,7 +1,4 @@
-from datetime import date
-
-from django.db.models import Value
-from django.db.models.functions import Coalesce
+from django.db.models import Q
 from django_filters.constants import EMPTY_VALUES
 from django_filters.rest_framework import DateFilter, Filter, FilterSet, NumberFilter
 
@@ -75,9 +72,11 @@ class EmploymentFilterSet(FilterSet):
     date = DateFilter(method="filter_date")
 
     def filter_date(self, queryset, name, value):
-        queryset = queryset.annotate(end=Coalesce("end_date", Value(date.today())))
 
-        queryset = queryset.filter(start_date__lte=value, end__gte=value)
+        queryset = queryset.filter(
+            Q(start_date__lte=value)
+            & Q(Q(end_date__gte=value) | Q(end_date__isnull=True))
+        )
 
         return queryset
 
