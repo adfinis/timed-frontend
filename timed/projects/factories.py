@@ -44,6 +44,7 @@ class ProjectFactory(DjangoModelFactory):
     estimated_time = Faker("time_delta")
     archived = False
     billed = False
+    customer_visible = False
     comment = Faker("sentence")
     customer = SubFactory("timed.projects.factories.CustomerFactory")
     cost_center = SubFactory("timed.projects.factories.CostCenterFactory")

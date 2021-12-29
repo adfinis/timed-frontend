@@ -202,22 +202,29 @@ def test_task_list_external_employee(external_employee_client, is_assigned, expe
 
 
 @pytest.mark.parametrize(
-    "is_customer, expected, status_code",
-    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+    "is_customer, customer_visible, expected",
+    [
+        (True, True, 1),
+        (True, False, 0),
+        (False, False, 0),
+        (False, True, 0),
+    ],
 )
-def test_task_list_no_employment(auth_client, is_customer, expected, status_code):
+def test_task_list_no_employment(auth_client, is_customer, customer_visible, expected):
     TaskFactory.create_batch(4)
     task = TaskFactory.create()
     if is_customer:
         CustomerAssigneeFactory.create(
             user=auth_client.user, is_customer=True, customer=task.project.customer
         )
+    if customer_visible:
+        task.project.customer_visible = True
+        task.project.save()
 
     url = reverse("task-list")
 
     response = auth_client.get(url)
-    assert response.status_code == status_code
+    assert response.status_code == status.HTTP_200_OK
 
-    if expected:
-        json = response.json()
-        assert len(json["data"]) == expected
+    json = response.json()
+    assert len(json["data"]) == expected

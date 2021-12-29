@@ -402,3 +402,15 @@ class User(AbstractUser):
         balance = sum([balance[2] for balance in balances], timedelta())
 
         return (reported, expected, balance)
+
+    def get_active_employment(self):
+        """Get current employment of the user.
+
+        Get current active employment of the user.
+        If the user doesn't have a return None.
+        """
+        try:
+            current_employment = Employment.objects.get_at(user=self, date=date.today())
+            return current_employment
+        except Employment.DoesNotExist:
+            return None

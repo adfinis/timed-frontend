@@ -1,28 +1,58 @@
+import pytest
 from django.urls import reverse
 from rest_framework import status
 
-from timed.employment.factories import LocationFactory
+from timed.conftest import setup_customer_and_employment_status
+from timed.employment.factories import EmploymentFactory, LocationFactory
 
 
-def test_location_list(auth_client):
-    LocationFactory.create()
+@pytest.mark.parametrize(
+    "is_employed, is_customer_assignee, is_customer, expected",
+    [
+        (False, True, True, 0),
+        (False, True, False, 0),
+        (True, True, True, 2),
+        (True, True, False, 2),
+        (True, False, False, 2),
+    ],
+)
+def test_location_list(
+    auth_client, is_employed, is_customer_assignee, is_customer, expected, location
+):
+    setup_customer_and_employment_status(
+        user=auth_client.user,
+        is_assignee=is_customer_assignee,
+        is_customer=is_customer,
+        is_employed=is_employed,
+        is_external=False,
+    )
     url = reverse("location-list")
 
     response = auth_client.get(url)
     assert response.status_code == status.HTTP_200_OK
 
     data = response.json()["data"]
-    assert len(data) == 1
-    assert data[0]["attributes"]["workdays"] == ([str(day) for day in range(1, 6)])
+    assert len(data) == expected
+    if expected:
+        assert data[0]["attributes"]["workdays"] == ([str(day) for day in range(1, 6)])
 
 
-def test_location_detail(auth_client):
+@pytest.mark.parametrize(
+    "is_employed, expected",
+    [
+        (True, status.HTTP_200_OK),
+        (False, status.HTTP_404_NOT_FOUND),
+    ],
+)
+def test_location_detail(auth_client, is_employed, expected):
     location = LocationFactory.create()
+    if is_employed:
+        EmploymentFactory.create(user=auth_client.user)
 
     url = reverse("location-detail", args=[location.id])
 
     response = auth_client.get(url)
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == expected
 
 
 def test_location_create(auth_client):

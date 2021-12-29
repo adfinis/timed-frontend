@@ -142,3 +142,16 @@ def internal_employee_client(internal_employee):
 @pytest.fixture(scope="function", autouse=True)
 def _autoclear_cache():
     cache.clear()
+
+
+def setup_customer_and_employment_status(
+    user, is_assignee, is_customer, is_employed, is_external
+):
+    if is_assignee:
+        projects_factories.CustomerAssigneeFactory.create(
+            user=user, is_customer=is_customer
+        )
+    if is_employed:
+        employment_factories.EmploymentFactory.create(
+            user=user, is_external=is_external
+        )

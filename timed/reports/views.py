@@ -39,6 +39,7 @@ class YearStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         queryset = queryset.annotate(year=ExtractYear("date")).values("year")
         queryset = queryset.annotate(duration=Sum("duration"))
         queryset = queryset.annotate(pk=F("year"))
+
         return queryset
 
 
@@ -63,6 +64,7 @@ class MonthStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         queryset = queryset.values("year", "month")
         queryset = queryset.annotate(duration=Sum("duration"))
         queryset = queryset.annotate(pk=F("year") * 100 + F("month"))
+
         return queryset
 
 
@@ -81,7 +83,6 @@ class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = Report.objects.all()
-
         queryset = queryset.values("task__project__customer")
         queryset = queryset.annotate(duration=Sum("duration"))
         queryset = queryset.annotate(pk=F("task__project__customer"))
@@ -104,7 +105,6 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = Report.objects.all()
-
         queryset = queryset.values("task__project")
         queryset = queryset.annotate(duration=Sum("duration"))
         queryset = queryset.annotate(pk=F("task__project"))
@@ -127,7 +127,6 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = Report.objects.all()
-
         queryset = queryset.values("task")
         queryset = queryset.annotate(duration=Sum("duration"))
         queryset = queryset.annotate(pk=F("task"))
@@ -150,7 +149,6 @@ class UserStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = Report.objects.all()
-
         queryset = queryset.values("user")
         queryset = queryset.annotate(duration=Sum("duration"))
         queryset = queryset.annotate(pk=F("user"))
@@ -171,7 +169,10 @@ class WorkReportViewSet(GenericViewSet):
     ordering_fields = ReportViewSet.ordering_fields
 
     def get_queryset(self):
-        return Report.objects.select_related(
+        """Don't show any reports to customers."""
+        user = self.request.user
+
+        queryset = Report.objects.select_related(
             "user", "task", "task__project", "task__project__customer"
         ).prefetch_related(
             # need to prefetch verified_by as select_related joins nullable
@@ -181,6 +182,10 @@ class WorkReportViewSet(GenericViewSet):
             # and user is not nullable
             "verified_by"
         )
+
+        if user.get_active_employment():
+            return queryset
+        return queryset.none()
 
     def _parse_query_params(self, queryset, request):
         """Parse query params by using filterset_class."""

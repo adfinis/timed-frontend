@@ -74,10 +74,10 @@ def test_customer_list_external_employee(
 
 
 @pytest.mark.parametrize(
-    "is_customer, expected, status_code",
-    [(True, 1, status.HTTP_200_OK), (False, 0, status.HTTP_403_FORBIDDEN)],
+    "is_customer, expected",
+    [(True, 1), (False, 0)],
 )
-def test_customer_list_no_employment(auth_client, is_customer, expected, status_code):
+def test_customer_list_no_employment(auth_client, is_customer, expected):
     CustomerFactory.create_batch(4)
     customer = CustomerFactory.create()
     if is_customer:
@@ -88,8 +88,7 @@ def test_customer_list_no_employment(auth_client, is_customer, expected, status_
     url = reverse("customer-list")
 
     response = auth_client.get(url)
-    assert response.status_code == status_code
+    assert response.status_code == status.HTTP_200_OK
 
-    if expected:
-        json = response.json()
-        assert len(json["data"]) == expected
+    json = response.json()
+    assert len(json["data"]) == expected

@@ -173,18 +173,10 @@ class IsInternal(IsAuthenticated):
         if not super().has_permission(request, view):  # pragma: no cover
             return False
 
-        try:
-            employment = employment_models.Employment.objects.get_at(
-                user=request.user, date=date.today()
-            )
+        employment = request.user.get_active_employment()
+        if employment:
             return not employment.is_external
-        except employment_models.Employment.DoesNotExist:
-            # if the user has no employment, check if he's a customer
-            if projects_models.CustomerAssignee.objects.filter(
-                user=request.user, is_customer=True
-            ).exists():
-                return True
-            return False
+        return False
 
     def has_object_permission(self, request, view, obj):
         if not super().has_object_permission(request, view, obj):  # pragma: no cover
@@ -205,18 +197,10 @@ class IsExternal(IsAuthenticated):
         if not super().has_permission(request, view):  # pragma: no cover
             return False
 
-        try:
-            employment = employment_models.Employment.objects.get_at(
-                user=request.user, date=date.today()
-            )
+        employment = request.user.get_active_employment()
+        if employment:
             return employment.is_external
-        except employment_models.Employment.DoesNotExist:  # pragma: no cover
-            # if the user has no employment, check if he's a customer
-            if projects_models.CustomerAssignee.objects.filter(
-                user=request.user, is_customer=True
-            ).exists():
-                return True
-            return False
+        return False
 
     def has_object_permission(self, request, view, obj):
         if not super().has_object_permission(request, view, obj):  # pragma: no cover
