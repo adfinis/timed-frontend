@@ -81,7 +81,7 @@ class TimedOIDCAuthenticationBackend(OIDCAuthenticationBackend):
 
     def filter_users_by_claims(self, claims):
         username = self.get_username(claims)
-        return self.UserModel.objects.filter(username=username)
+        return self.UserModel.objects.filter(username__iexact=username)
 
     def cached_request(self, method, token, cache_prefix):
         token_hash = hashlib.sha256(force_bytes(token)).hexdigest()
