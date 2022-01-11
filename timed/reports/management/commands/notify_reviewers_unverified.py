@@ -8,6 +8,7 @@ from django.core.management.base import BaseCommand
 from django.db.models import Q
 from django.template.loader import get_template
 
+from timed.projects.models import CustomerAssignee, ProjectAssignee, TaskAssignee
 from timed.tracking.models import Report
 
 template = get_template("mail/notify_reviewers_unverified.txt", using="text")
@@ -89,7 +90,12 @@ class Command(BaseCommand):
         return Report.objects.filter(date__range=[start, end], verified_by__isnull=True)
 
     def _notify_reviewers(self, start, end, reports, optional_message, cc):
-        """Notify reviewers on their unverified reports."""
+        """Notify reviewers on their unverified reports.
+
+        Only the reviewers lowest in the hierarchy should be notified.
+        If a project has a project assignee and a task assignee with reviewer role,
+        then only the task assignee should be notified about unverified reports.
+        """
         User = get_user_model()
         reviewers = User.objects.all_reviewers().filter(email__isnull=False)
         subject = "[Timed] Verification of reports"
@@ -98,19 +104,53 @@ class Command(BaseCommand):
         messages = []
 
         for reviewer in reviewers:
-            if reports.filter(
+            # unverified reports in which user is customer assignee and responsible reviewer
+            reports_customer_assignee_is_reviewer = reports.filter(
                 Q(
-                    task__task_assignees__user=reviewer,
-                    task__task_assignees__is_reviewer=True,
+                    task__project__customer_id__in=CustomerAssignee.objects.filter(
+                        is_reviewer=True, user_id=reviewer
+                    ).values("customer_id")
+                )
+            ).exclude(
+                Q(
+                    task__project_id__in=ProjectAssignee.objects.filter(
+                        is_reviewer=True
+                    ).values("project_id")
                 )
                 | Q(
-                    task__project__project_assignees__user=reviewer,
-                    task__project__project_assignees__is_reviewer=True,
+                    task_id__in=TaskAssignee.objects.filter(is_reviewer=True).values(
+                        "task_id"
+                    )
                 )
-                | Q(
-                    task__project__customer__customer_assignees__user=reviewer,
-                    task__project__customer__customer_assignees__is_reviewer=True,
+            )
+
+            # unverified reports in which user is project assignee and responsible reviewer
+            reports_project_assignee_is_reviewer = reports.filter(
+                Q(
+                    task__project_id__in=ProjectAssignee.objects.filter(
+                        is_reviewer=True, user_id=reviewer
+                    ).values("project_id")
                 )
+            ).exclude(
+                Q(
+                    task_id__in=TaskAssignee.objects.filter(is_reviewer=True).values(
+                        "task_id"
+                    )
+                )
+            )
+
+            # unverified reports in which user task assignee and responsible reviewer
+            reports_task_assignee_is_reviewer = reports.filter(
+                Q(
+                    task_id__in=TaskAssignee.objects.filter(
+                        is_reviewer=True, user_id=reviewer
+                    ).values("task_id")
+                )
+            )
+            if (
+                reports_customer_assignee_is_reviewer
+                | reports_project_assignee_is_reviewer
+                | reports_task_assignee_is_reviewer
             ).exists():
                 body = template.render(
                     {
