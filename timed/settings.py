@@ -281,6 +281,8 @@ if not ALLOW_LOCAL_LOGIN:  # pragma: no cover
 EMAIL_CONFIG = env.email_url("EMAIL_URL", default="smtp://localhost:25")
 vars().update(EMAIL_CONFIG)
 
+EMAIL_USE_TLS = env.bool("DJANGO_EMAIL_USE_TLS", default=True)
+
 DEFAULT_FROM_EMAIL = env.str(
     "DJANGO_DEFAULT_FROM_EMAIL", default("webmaster@localhost")
 )
