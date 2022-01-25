@@ -4,7 +4,12 @@ import pytest
 from django.core.management import call_command
 
 from timed.employment.factories import UserFactory
-from timed.projects.factories import ProjectAssigneeFactory, ProjectFactory, TaskFactory
+from timed.projects.factories import (
+    ProjectAssigneeFactory,
+    ProjectFactory,
+    TaskAssigneeFactory,
+    TaskFactory,
+)
 from timed.tracking.factories import ReportFactory
 
 
@@ -81,4 +86,35 @@ def test_notify_reviewers(db, mailoutbox):
         "http://localhost:4200/analysis?fromDate=2017-07-01&"
         "toDate=2017-07-31&reviewer=%d&editable=1"
     ) % reviewer_work.id
+    assert url in mail.body
+
+
+@pytest.mark.freeze_time("2017-8-4")
+def test_notify_reviewers_reviewer_hierarchy(db, mailoutbox):
+    """Test notification with reviewer hierarchy.
+
+    Test if only the lowest in reviewer hierarchy gets notified.
+    """
+    # user that shouldn't be notified
+    project_reviewer = UserFactory.create()
+    # user that should be notified
+    task_reviewer = UserFactory.create()
+    project = ProjectFactory.create()
+    task = TaskFactory.create(project=project)
+    ProjectAssigneeFactory.create(
+        user=project_reviewer, project=project, is_reviewer=True
+    )
+    TaskAssigneeFactory.create(user=task_reviewer, task=task, is_reviewer=True)
+
+    ReportFactory.create(date=date(2017, 7, 1), task=task, verified_by=None)
+
+    call_command("notify_reviewers_unverified")
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert mail.to == [task_reviewer.email]
+    url = (
+        "http://localhost:4200/analysis?fromDate=2017-07-01&"
+        "toDate=2017-07-31&reviewer=%d&editable=1"
+    ) % task_reviewer.id
     assert url in mail.body
