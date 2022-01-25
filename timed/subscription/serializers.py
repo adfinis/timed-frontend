@@ -42,6 +42,7 @@ class SubscriptionProjectSerializer(ModelSerializer):
 
     included_serializers = {
         "billing_type": "timed.projects.serializers.BillingTypeSerializer",
+        "cost_center": "timed.projects.serializers.CostCenterSerializer",
         "customer": "timed.projects.serializers.CustomerSerializer",
         "orders": "timed.subscription.serializers.OrderSerializer",
     }
@@ -52,6 +53,7 @@ class SubscriptionProjectSerializer(ModelSerializer):
         fields = (
             "name",
             "billing_type",
+            "cost_center",
             "purchased_time",
             "spent_time",
             "customer",
