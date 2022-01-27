@@ -5,6 +5,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from timed.permissions import (
     IsAuthenticated,
+    IsCustomer,
     IsInternal,
     IsManager,
     IsReadOnly,
@@ -55,11 +56,42 @@ class BillingTypeViewSet(ReadOnlyModelViewSet):
         # superuser may edit all billing types
         IsSuperUser
         # internal employees may read all billing types
-        | IsAuthenticated & IsInternal & IsReadOnly
+        | IsAuthenticated & (IsInternal | IsCustomer) & IsReadOnly
     ]
 
     def get_queryset(self):
-        return models.BillingType.objects.all()
+        """Get billing types depending on the user's role.
+
+        Internal employees should see all billing types.
+        Customers should only see billing types that are used in customer visible projects.
+        """
+        user = self.request.user
+        queryset = models.BillingType.objects.all()
+
+        current_employment = user.get_active_employment()
+
+        if current_employment:
+            if (
+                current_employment.is_external
+                and models.CustomerAssignee.objects.filter(
+                    user=user, is_customer=True
+                ).exists()
+            ):
+                return queryset.filter(
+                    projects__customer_visible=True,
+                    projects__customer__customer_assignees__user=user,
+                    projects__customer__customer_assignees__is_customer=True,
+                )
+            return queryset
+        else:
+            if models.CustomerAssignee.objects.filter(
+                user=user, is_customer=True
+            ).exists():
+                return queryset.filter(
+                    projects__customer_visible=True,
+                    projects__customer__customer_assignees__user=user,
+                    projects__customer__customer_assignees__is_customer=True,
+                )
 
 
 class CostCenterViewSet(ReadOnlyModelViewSet):
