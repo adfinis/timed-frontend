@@ -5,5 +5,5 @@ export default VerticalCollectionComponent.extend({
   init(...args) {
     this._super(...args);
     this.set("renderAll", Ember.testing);
-  }
+  },
 });
