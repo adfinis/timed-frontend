@@ -138,10 +138,10 @@ def test_order_confirm(
             status.HTTP_400_BAD_REQUEST,
         ),
         (True, False, False, False, 1, timedelta(hours=1), status.HTTP_201_CREATED),
-        (False, True, False, True, 1, timedelta(hours=10), status.HTTP_201_CREATED),
-        (False, True, False, False, 1, timedelta(hours=24), status.HTTP_201_CREATED),
-        (False, False, True, True, 1, timedelta(hours=50), status.HTTP_201_CREATED),
-        (False, False, True, False, 1, timedelta(hours=100), status.HTTP_201_CREATED),
+        (False, True, False, True, 0, timedelta(hours=10), status.HTTP_201_CREATED),
+        (False, True, False, False, 0, timedelta(hours=24), status.HTTP_201_CREATED),
+        (False, False, True, True, 0, timedelta(hours=50), status.HTTP_201_CREATED),
+        (False, False, True, False, 0, timedelta(hours=100), status.HTTP_201_CREATED),
         (False, False, False, True, 0, timedelta(hours=200), status.HTTP_403_FORBIDDEN),
         (False, False, False, False, 0, None, status.HTTP_403_FORBIDDEN),
     ],
@@ -204,6 +204,54 @@ def test_order_create(
         assert str(project.name) in mail.body
         assert "0:30:00" in mail.body
         assert url in mail.alternatives[0][0]
+
+
+@pytest.mark.parametrize(
+    "duration, expected, status_code",
+    [
+        ("00:30:00", "0:30:00", status.HTTP_201_CREATED),
+        ("30:00:00", "1 day, 6:00:00", status.HTTP_201_CREATED),
+        ("30:30:00", "1 day, 6:30:00", status.HTTP_201_CREATED),
+        ("-00:30:00", "-0:30:00", status.HTTP_400_BAD_REQUEST),
+        ("-30:00:00", "-1 day, 6:00:00", status.HTTP_400_BAD_REQUEST),
+        ("-30:30:00", "-1 day, 6:30:00", status.HTTP_400_BAD_REQUEST),
+    ],
+)
+def test_order_create_duration(
+    auth_client, mailoutbox, duration, expected, status_code
+):
+    user = auth_client.user
+    project = ProjectFactory.create(estimated_time=timedelta(hours=1))
+    CustomerAssigneeFactory.create(
+        user=user, is_customer=True, customer=project.customer
+    )
+
+    data = {
+        "data": {
+            "type": "subscription-orders",
+            "id": None,
+            "attributes": {
+                "acknowledged": False,
+                "duration": duration,
+            },
+            "relationships": {
+                "project": {
+                    "data": {"type": "subscription-projects", "id": project.id}
+                },
+            },
+        }
+    }
+
+    url = reverse("subscription-order-list")
+
+    response = auth_client.post(url, data)
+    assert response.status_code == status_code
+
+    if status_code == status.HTTP_201_CREATED:
+        assert len(mailoutbox) == 1
+
+        mail = mailoutbox[0]
+        assert expected in mail.body
 
 
 @pytest.mark.parametrize(

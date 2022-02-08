@@ -79,7 +79,14 @@ class OrderViewSet(viewsets.ModelViewSet):
         project = Project.objects.get(id=request.data.get("project")["id"])
         order_duration = request.data.get("duration")
 
-        notify_admin.prepare_and_send_email(project, order_duration)
+        # only send notification emails if order was created by a customer
+        # don't allow customers to create orders with negative duration
+        if not (request.user.is_accountant or request.user.is_superuser):
+            if "-" in request.data.get("duration"):
+                raise ValidationError(
+                    "Customer can not create orders with negative duration!"
+                )
+            notify_admin.prepare_and_send_email(project, order_duration)
         return super().create(request, *args, **kwargs)
 
     @decorators.action(
