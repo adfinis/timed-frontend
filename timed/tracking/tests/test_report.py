@@ -1529,12 +1529,24 @@ def test_report_update_billed_user(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
+@pytest.mark.parametrize(
+    "is_accountant, expected",
+    [
+        (True, status.HTTP_200_OK),
+        (False, status.HTTP_400_BAD_REQUEST),
+    ],
+)
 def test_report_set_billed_by_user(
     internal_employee_client,
     report_factory,
+    is_accountant,
+    expected,
 ):
     """Test that normal user may not bill report."""
     user = internal_employee_client.user
+    if is_accountant:
+        user.is_accountant = True
+        user.save()
     report = report_factory.create(user=user)
     data = {
         "data": {
@@ -1546,12 +1558,12 @@ def test_report_set_billed_by_user(
 
     url = reverse("report-detail", args=[report.id])
     response = internal_employee_client.patch(url, data)
-    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    assert response.status_code == expected
 
 
 def test_report_update_billed(internal_employee_client, report_factory, task):
     user = internal_employee_client.user
-    report = report_factory.create(user=user)
+    report = report_factory.create(user=user, billed=True)
     report.task.project.billed = True
     report.task.project.save()
 
