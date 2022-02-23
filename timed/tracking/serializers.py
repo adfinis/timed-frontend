@@ -117,6 +117,16 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         """Only owner is allowed to change duration."""
         return self._validate_owner_only(value, "duration")
 
+    def validate_billed(self, value):
+        """Only accountants may bill reports."""
+        if self.instance is not None:
+            if not self.context["request"].user.is_accountant and (
+                self.instance.billed != value
+            ):
+                raise ValidationError(_("Only accountants may bill reports."))
+
+        return value
+
     def validate(self, data):
         """
         Validate that verified by is only set by reviewer or superuser.
@@ -165,9 +175,6 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
                 raise ValidationError(
                     _("Report can't both be set as `review` and `verified`.")
                 )
-
-        if not user.is_accountant and billed:
-            raise ValidationError(_("Only accountants may bill reports."))
 
         # update billed flag on created reports
         if not self.instance or billed is None:
