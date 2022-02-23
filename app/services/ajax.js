@@ -3,9 +3,9 @@
  * @submodule timed-services
  * @public
  */
-import { computed } from "@ember/object";
 import { reads } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
+import { isUnauthorizedError } from "ember-ajax/errors";
 import AjaxService from "ember-ajax/services/ajax";
 
 /**
@@ -15,14 +15,9 @@ import AjaxService from "ember-ajax/services/ajax";
  * @extends EmberAjax.AjaxService
  * @public
  */
-export default AjaxService.extend({
-  /**
-   * The session service
-   *
-   * @property {EmberSimpleAuth.SessionService} session
-   * @public
-   */
-  session: service("session"),
+export default class AjaxCustomService extends AjaxService {
+  @service session;
+  @service router;
 
   /**
    * The JWT access token.
@@ -30,7 +25,7 @@ export default AjaxService.extend({
    * @property {String} token
    * @public
    */
-  token: reads("session.data.authenticated.access_token"),
+  @reads("session.data.authenticated.access_token") token;
 
   /**
    * The HTTP request headers
@@ -40,16 +35,28 @@ export default AjaxService.extend({
    * @property {Object} headers
    * @public
    */
-  headers: computed("token", function() {
+  get headers() {
     const headers = {
       Accept: "application/vnd.api+json",
       "Content-Type": "application/vnd.api+json"
     };
 
-    const auth = this.get("token")
-      ? { Authorization: `Bearer ${this.get("token")}` }
-      : {};
+    const auth = this.token ? { Authorization: `Bearer ${this.token}` } : {};
 
     return Object.assign(headers, auth);
-  })
-});
+  }
+
+  handleResponse(status, headers, payload, requestData) {
+    const response = super.handleResponse(
+      status,
+      headers,
+      payload,
+      requestData
+    );
+
+    if (isUnauthorizedError(response)) {
+      this.router.transitionTo("login");
+    }
+    return response;
+  }
+}
