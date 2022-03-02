@@ -55,7 +55,7 @@ export default class AjaxCustomService extends AjaxService {
     );
 
     if (isUnauthorizedError(response)) {
-      this.router.transitionTo("login");
+      this.session.invalidate();
     }
     return response;
   }
