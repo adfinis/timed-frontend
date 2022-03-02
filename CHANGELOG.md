@@ -1,3 +1,10 @@
+## [2.1.2](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.1.1...v2.1.2) (2022-03-02)
+
+
+### Bug Fixes
+
+* **auth:** invalidate session on HTTP 401 ([2014ea2](https://github.com/adfinis-sygroup/timed-frontend/commit/2014ea29a21051ae2f59c786413e6cfa081c1681))
+
 # [2.1.0](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.0.4...v2.1.0) (2021-12-21)
 
 
