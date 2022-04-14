@@ -93,7 +93,7 @@ def test_work_report_single_project(
 @pytest.mark.parametrize(
     "is_employed, status_code, expected",
     [
-        (True, status.HTTP_200_OK, 4),
+        (True, status.HTTP_200_OK, 3),
         (False, status.HTTP_400_BAD_REQUEST, 1),
     ],
 )

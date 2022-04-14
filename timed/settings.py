@@ -52,7 +52,7 @@ HOST_DOMAIN = env.str("DJANGO_HOST_DOMAIN", default=default("localhost:4200"))
 INSTALLED_APPS = [
     "timed.apps.TimedAdminConfig",
     "django.contrib.humanize",
-    "multiselectfield",
+    "multiselectfield.apps.MultiSelectFieldConfig",
     "django.forms",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -61,9 +61,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "rest_framework",
     "django_filters",
-    "djmoney",
+    "djmoney.apps.MoneyConfig",
     "mozilla_django_oidc",
-    "django_prometheus",
+    "django_prometheus.apps.DjangoPrometheusConfig",
     "corsheaders",
     "nested_inline",
     "timed.employment",
@@ -369,3 +369,4 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = env.int(
     "DJANGO_DATA_UPLOAD_MAX_NUMBER_FIELDS", default=1000
 )
 CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", default=[])
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
