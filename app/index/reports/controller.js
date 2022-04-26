@@ -4,7 +4,6 @@
  * @public
  */
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
 import ReportValidations from "timed/validations/report";
 
 /**
@@ -14,10 +13,10 @@ import ReportValidations from "timed/validations/report";
  * @extends Ember.Controller
  * @public
  */
-export default Controller.extend({
-  ReportValidations,
+export default class IndexReportController extends Controller {
+  ReportValidations = ReportValidations;
 
-  showReschedule: false,
+  showReschedule = false;
 
   /**
    * All reports currently in the store
@@ -25,9 +24,9 @@ export default Controller.extend({
    * @property {Report[]} _allReports
    * @private
    */
-  _allReports: computed(function() {
+  get _allReports() {
     return this.store.peekAll("report");
-  }),
+  }
 
   /**
    * The reports filtered by the selected day
@@ -37,27 +36,22 @@ export default Controller.extend({
    * @property {Report[]} reports
    * @public
    */
-  reports: computed(
-    "_allReports.@each.{user,date,isNew,isDeleted}",
-    "model",
-    "user",
-    function() {
-      const reportsToday = this.get("_allReports").filter(r => {
-        return (
-          (!r.get("user.id") || r.get("user.id") === this.get("user.id")) &&
-          r.get("date").isSame(this.get("model"), "day") &&
-          !r.get("isDeleted")
-        );
+  get reports() {
+    const reportsToday = this._allReports.filter((r) => {
+      return (
+        (!r.get("user.id") || r.get("user.id") === this.get("user.id")) &&
+        r.get("date").isSame(this.model, "day") &&
+        !r.get("isDeleted")
+      );
+    });
+
+    if (!reportsToday.filterBy("isNew", true).get("length")) {
+      this.store.createRecord("report", {
+        date: this.model,
+        user: this.user,
       });
-
-      if (!reportsToday.filterBy("isNew", true).get("length")) {
-        this.store.createRecord("report", {
-          date: this.get("model"),
-          user: this.get("user")
-        });
-      }
-
-      return reportsToday.sort(a => (a.get("isNew") ? 1 : 0));
     }
-  )
-});
+
+    return reportsToday.sort((a) => (a.get("isNew") ? 1 : 0));
+  }
+}

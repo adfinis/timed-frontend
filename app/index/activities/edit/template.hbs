@@ -47,7 +47,7 @@
                 max          = changeset.to
                 precision    = 1
                 on-focus-out = (action 'validateChangeset' changeset)
-                on-change    = (action (mut changeset.from))
+                onChange    = (action (mut changeset.from))
               }}
             </td>
             <td>-</td>
@@ -58,7 +58,7 @@
                 precision    = 1
                 disabled     = (if changeset.active true)
                 on-focus-out = (action 'validateChangeset' changeset)
-                on-change    = (action (mut changeset.to))
+                onChange    = (action (mut changeset.to))
               }}
             </td>
           </tr>

@@ -5,13 +5,13 @@
 <div class="form-list form-list--reports">
   <div class="form-list-body">
     {{#each reports as |report|}}
-      {{report-row
-        report
+      <ReportRow
+        @report={{report}}
+        @onSave={{route-action "saveReport"}}
+        @onDelete={{route-action "deleteReport"}}
+        data-test-report-row-id={{report.id}}
         data-test-report-row
-        data-test-report-row-id = report.id
-        on-save                 = (route-action 'saveReport')
-        on-delete               = (route-action 'deleteReport')
-      }}
+      />
     {{/each}}
   </div>
 </div>

@@ -3,9 +3,10 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
+import { action } from "@ember/object";
+import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
+import Component from "@glimmer/component";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
 import ReportValidations from "timed/validations/report";
@@ -17,40 +18,18 @@ import ReportValidations from "timed/validations/report";
  * @extends Ember.Component
  * @public
  */
-const ReportRowComponent = Component.extend({
-  can: service(),
+export default class ReportRowComponent extends Component {
+  @service abilities;
 
-  /**
-   * The element tag name
-   *
-   * @property {String} tagName
-   * @public
-   */
-  tagName: "form",
+  get editable() {
+    return this.abilities.can("edit report", this.args.report);
+  }
 
-  /**
-   * CSS class names
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["form-list-row"],
-
-  attributeBindings: ["title"],
-
-  editable: computed("report.{verifiedBy,billed}", {
-    get() {
-      return this.can.can("edit report", this.get("report"));
-    }
-  }),
-
-  title: computed("editable", function() {
+  get title() {
     return this.editable
       ? ""
-      : `This entry was already verified by ${this.get(
-          "report.verifiedBy.fullName"
-        )} and therefore not editable anymore`;
-  }),
+      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and therefore not editable anymore`;
+  }
 
   /**
    * The changeset to edit
@@ -58,43 +37,39 @@ const ReportRowComponent = Component.extend({
    * @property {EmberChangeset.Changeset} changeset
    * @public
    */
-  changeset: computed("report.{id,verifiedBy}", function() {
+  get changeset() {
     const c = new Changeset(
-      this.get("report"),
+      this.args.report,
       lookupValidator(ReportValidations),
       ReportValidations
     );
 
-    c.validate();
+    later(() => {
+      c.validate();
+    });
 
     return c;
-  }),
-
-  actions: {
-    /**
-     * Save the row
-     *
-     * @method save
-     * @public
-     */
-    save() {
-      this.get("on-save")(this.get("changeset"));
-    },
-
-    /**
-     * Delete the row
-     *
-     * @method delete
-     * @public
-     */
-    delete() {
-      this.get("on-delete")(this.get("report"));
-    }
   }
-});
 
-ReportRowComponent.reopenClass({
-  positionalParams: ["report"]
-});
+  /**
+   * Save the row
+   *
+   * @method save
+   * @public
+   */
+  @action
+  save() {
+    this.args.onSave(this.changeset);
+  }
 
-export default ReportRowComponent;
+  /**
+   * Delete the row
+   *
+   * @method delete
+   * @public
+   */
+  @action
+  delete() {
+    this.args.onDelete(this.args.report);
+  }
+}

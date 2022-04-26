@@ -3,7 +3,7 @@
  * @submodule timed-components
  * @public
  */
-import { computed } from "@ember/object";
+import { action } from "@ember/object";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 import SyTimepickerComponent from "timed/components/sy-timepicker/component";
@@ -20,18 +20,18 @@ const { abs } = Math;
  * @extends Ember.Component
  * @public
  */
-export default SyTimepickerComponent.extend({
-  name: "duration",
+export default class SyDurationpicker extends SyTimepickerComponent {
+  name = "duration";
 
-  min: MIN_SAFE_INTEGER,
+  min = MIN_SAFE_INTEGER;
 
-  max: MAX_SAFE_INTEGER,
+  max = MAX_SAFE_INTEGER;
 
-  maxlength: null,
+  maxlength = null;
 
   sanitize(value) {
     return value.replace(/[^\d:-]/, "");
-  },
+  }
 
   /**
    * The precision of the time
@@ -41,7 +41,7 @@ export default SyTimepickerComponent.extend({
    * @property {Number} precision
    * @public
    */
-  precision: 15,
+  precision = 15;
 
   /**
    * The regex for the input
@@ -49,14 +49,14 @@ export default SyTimepickerComponent.extend({
    * @property {String} pattern
    * @public
    */
-  pattern: computed("min", "precision", function() {
-    const count = 60 / this.get("precision");
+  get pattern() {
+    const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
-    return `${
-      this.get("min") < 0 ? "-?" : ""
-    }\\d+:(${minutes.map(m => padStart(m, 2)).join("|")})`;
-  }),
+    return `${this.min < 0 ? "-?" : ""}\\d+:(${minutes
+      .map((m) => padStart(m, 2))
+      .join("|")})`;
+  }
 
   change({ target: { validity, value } }) {
     if (validity.valid) {
@@ -64,11 +64,11 @@ export default SyTimepickerComponent.extend({
 
       const [h = NaN, m = NaN] = this.sanitize(value)
         .split(":")
-        .map(n => abs(parseInt(n)) * (negative ? -1 : 1));
+        .map((n) => abs(parseInt(n)) * (negative ? -1 : 1));
 
       this._change([h, m].some(isNaN) ? null : this._set(h, m));
     }
-  },
+  }
 
   /**
    * The display representation of the value
@@ -78,9 +78,11 @@ export default SyTimepickerComponent.extend({
    * @property {String} displayValue
    * @public
    */
-  displayValue: computed("value", function() {
-    return this.get("value") ? formatDuration(this.get("value"), false) : "";
-  }),
+  get displayValue() {
+    return this.args.value
+      ? formatDuration(this.args.value.content ?? this.args.value, false)
+      : "";
+  }
 
   /**
    * Set the current value
@@ -93,7 +95,7 @@ export default SyTimepickerComponent.extend({
    */
   _set(h, m) {
     return moment.duration({ h, m });
-  },
+  }
 
   /**
    * Add hours and minutes to the current value
@@ -105,6 +107,11 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _add(h, m) {
-    return moment.duration(this.get("value")).add({ h, m });
+    return moment.duration(this.args.value).add({ h, m });
   }
-});
+
+  @action
+  handleKeyPress(event) {
+    super.keyDown(event);
+  }
+}
