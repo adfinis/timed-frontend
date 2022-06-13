@@ -180,7 +180,7 @@ def test_user_transfer(superadmin_client):
     AbsenceTypeFactory.create(fill_worktime=True)
     AbsenceTypeFactory.create(fill_worktime=False)
     absence_type = AbsenceTypeFactory.create(fill_worktime=False)
-    AbsenceFactory.create(user=user, type=absence_type, date=date(2017, 12, 29))
+    AbsenceFactory.create(user=user, absence_type=absence_type, date=date(2017, 12, 29))
 
     url = reverse("user-transfer", args=[user.id])
     response = superadmin_client.post(url)

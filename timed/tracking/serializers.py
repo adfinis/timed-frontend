@@ -267,16 +267,16 @@ class ReportIntersectionSerializer(Serializer):
     """
 
     customer = relations.SerializerMethodResourceRelatedField(
-        source="get_customer", model=Customer, read_only=True
+        method_name="get_customer", model=Customer, read_only=True
     )
     project = relations.SerializerMethodResourceRelatedField(
-        source="get_project", model=Project, read_only=True
+        method_name="get_project", model=Project, read_only=True
     )
     task = relations.SerializerMethodResourceRelatedField(
-        source="get_task", model=Task, read_only=True
+        method_name="get_task", model=Task, read_only=True
     )
     user = relations.SerializerMethodResourceRelatedField(
-        source="get_user", model=User, read_only=True
+        method_name="get_user", model=User, read_only=True
     )
     comment = SerializerMethodField()
     review = SerializerMethodField()
@@ -356,12 +356,12 @@ class AbsenceSerializer(ModelSerializer):
     """Absence serializer."""
 
     duration = SerializerMethodField(source="get_duration")
-    type = ResourceRelatedField(queryset=AbsenceType.objects.all())
+    absence_type = ResourceRelatedField(queryset=AbsenceType.objects.all())
     user = CurrentUserResourceRelatedField()
 
     included_serializers = {
         "user": "timed.employment.serializers.UserSerializer",
-        "type": "timed.employment.serializers.AbsenceTypeSerializer",
+        "absence_type": "timed.employment.serializers.AbsenceTypeSerializer",
     }
 
     def get_duration(self, instance):
@@ -383,7 +383,7 @@ class AbsenceSerializer(ModelSerializer):
 
         return value
 
-    def validate_type(self, value):
+    def validate_absence_type(self, value):
         """Only owner is allowed to change type."""
         if self.instance is not None:
             user = self.context["request"].user
@@ -425,4 +425,4 @@ class AbsenceSerializer(ModelSerializer):
         """Meta information for the absence serializer."""
 
         model = models.Absence
-        fields = ["comment", "date", "duration", "type", "user"]
+        fields = ["comment", "date", "duration", "absence_type", "user"]

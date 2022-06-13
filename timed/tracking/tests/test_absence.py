@@ -116,7 +116,7 @@ def test_absence_create(auth_client, is_external, expected):
     employment = EmploymentFactory.create(
         user=user, start_date=date, worktime_per_day=datetime.timedelta(hours=8)
     )
-    type = AbsenceTypeFactory.create()
+    absence_type = AbsenceTypeFactory.create()
 
     if is_external:
         employment.is_external = True
@@ -128,7 +128,9 @@ def test_absence_create(auth_client, is_external, expected):
             "id": None,
             "attributes": {"date": date.strftime("%Y-%m-%d")},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }
@@ -200,7 +202,7 @@ def test_absence_update_superadmin_type(superadmin_client):
     """Test that superadmin may not change type of absence."""
     user = UserFactory.create()
     date = datetime.date(2017, 5, 3)
-    type = AbsenceTypeFactory.create()
+    absence_type = AbsenceTypeFactory.create()
     absence = AbsenceFactory.create(user=user, date=datetime.date(2016, 5, 3))
     EmploymentFactory.create(
         user=user, start_date=date, worktime_per_day=datetime.timedelta(hours=8)
@@ -210,8 +212,11 @@ def test_absence_update_superadmin_type(superadmin_client):
         "data": {
             "type": "absences",
             "id": absence.id,
+            "attributes": {"date": date.strftime("%Y-%m-%d")},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }
@@ -249,7 +254,7 @@ def test_absence_fill_worktime(auth_client):
     EmploymentFactory.create(
         user=user, start_date=date, worktime_per_day=datetime.timedelta(hours=8)
     )
-    type = AbsenceTypeFactory.create(fill_worktime=True)
+    absence_type = AbsenceTypeFactory.create(fill_worktime=True)
 
     ReportFactory.create(user=user, date=date, duration=datetime.timedelta(hours=5))
 
@@ -259,7 +264,9 @@ def test_absence_fill_worktime(auth_client):
             "id": None,
             "attributes": {"date": date.strftime("%Y-%m-%d")},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }
@@ -284,7 +291,7 @@ def test_absence_fill_worktime_reported_time_to_long(auth_client):
     EmploymentFactory.create(
         user=user, start_date=date, worktime_per_day=datetime.timedelta(hours=8)
     )
-    type = AbsenceTypeFactory.create(fill_worktime=True)
+    absence_type = AbsenceTypeFactory.create(fill_worktime=True)
 
     ReportFactory.create(
         user=user, date=date, duration=datetime.timedelta(hours=8, minutes=30)
@@ -296,7 +303,9 @@ def test_absence_fill_worktime_reported_time_to_long(auth_client):
             "id": None,
             "attributes": {"date": date.strftime("%Y-%m-%d")},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }
@@ -314,7 +323,7 @@ def test_absence_weekend(auth_client):
     """Should not be able to create an absence on a weekend."""
     date = datetime.date(2017, 5, 14)
     user = auth_client.user
-    type = AbsenceTypeFactory.create()
+    absence_type = AbsenceTypeFactory.create()
     EmploymentFactory.create(
         user=user, start_date=date, worktime_per_day=datetime.timedelta(hours=8)
     )
@@ -325,7 +334,9 @@ def test_absence_weekend(auth_client):
             "id": None,
             "attributes": {"date": date.strftime("%Y-%m-%d")},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }
@@ -340,7 +351,7 @@ def test_absence_public_holiday(auth_client):
     """Should not be able to create an absence on a public holiday."""
     date = datetime.date(2017, 5, 16)
     user = auth_client.user
-    type = AbsenceTypeFactory.create()
+    absence_type = AbsenceTypeFactory.create()
     employment = EmploymentFactory.create(
         user=user, start_date=date, worktime_per_day=datetime.timedelta(hours=8)
     )
@@ -352,7 +363,9 @@ def test_absence_public_holiday(auth_client):
             "id": None,
             "attributes": {"date": date.strftime("%Y-%m-%d")},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }
@@ -365,7 +378,7 @@ def test_absence_public_holiday(auth_client):
 
 def test_absence_create_unemployed(auth_client):
     """Test creation of absence fails on unemployed day."""
-    type = AbsenceTypeFactory.create()
+    absence_type = AbsenceTypeFactory.create()
 
     data = {
         "data": {
@@ -373,7 +386,9 @@ def test_absence_create_unemployed(auth_client):
             "id": None,
             "attributes": {"date": "2017-05-16"},
             "relationships": {
-                "type": {"data": {"type": "absence-types", "id": type.id}}
+                "absence_type": {
+                    "data": {"type": "absence-types", "id": absence_type.id}
+                }
             },
         }
     }

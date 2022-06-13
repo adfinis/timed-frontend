@@ -114,7 +114,7 @@ class AbsenceBalanceSerializer(Serializer):
     )
 
     absence_credits = relations.SerializerMethodResourceRelatedField(
-        source="get_absence_credits",
+        method_name="get_absence_credits",
         model=models.AbsenceCredit,
         many=True,
         read_only=True,
@@ -183,8 +183,8 @@ class AbsenceBalanceSerializer(Serializer):
                 for absence in Absence.objects.filter(
                     user=instance.user,
                     date__range=[start, instance.date],
-                    type_id=instance.id,
-                ).select_related("type")
+                    absence_type_id=instance.id,
+                ).select_related("absence_type")
             ],
             timedelta(),
         )

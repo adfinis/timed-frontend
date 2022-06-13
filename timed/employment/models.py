@@ -112,7 +112,7 @@ class AbsenceType(models.Model):
             return None
 
         absences = Absence.objects.filter(
-            user=user, type=self, date__range=[start, end]
+            user=user, absence_type=self, date__range=[start, end]
         )
         used_days = absences.count()
         return used_days
@@ -301,7 +301,7 @@ class Employment(models.Model):
                 absence.calculate_duration(self)
                 for absence in Absence.objects.filter(
                     user=self.user_id, date__gte=start, date__lte=end
-                ).select_related("type")
+                ).select_related("absence_type")
             ],
             timedelta(),
         )

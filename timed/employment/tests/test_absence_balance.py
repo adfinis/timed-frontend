@@ -24,9 +24,11 @@ def test_absence_balance_full_day(auth_client, django_assert_num_queries):
     # credit on different user, may not show up
     AbsenceCreditFactory.create(date=date.today(), absence_type=absence_type)
 
-    AbsenceFactory.create(date=day, user=user, type=absence_type)
+    AbsenceFactory.create(date=day, user=user, absence_type=absence_type)
 
-    AbsenceFactory.create(date=day - timedelta(days=1), user=user, type=absence_type)
+    AbsenceFactory.create(
+        date=day - timedelta(days=1), user=user, absence_type=absence_type
+    )
 
     url = reverse("absence-balance-list")
 
@@ -68,9 +70,11 @@ def test_absence_balance_fill_worktime(auth_client, django_assert_num_queries):
         user=user, date=day + timedelta(days=1), duration=timedelta(hours=4)
     )
 
-    AbsenceFactory.create(date=day + timedelta(days=1), user=user, type=absence_type)
+    AbsenceFactory.create(
+        date=day + timedelta(days=1), user=user, absence_type=absence_type
+    )
 
-    AbsenceFactory.create(date=day, user=user, type=absence_type)
+    AbsenceFactory.create(date=day, user=user, absence_type=absence_type)
 
     url = reverse("absence-balance-list")
     with django_assert_num_queries(11):

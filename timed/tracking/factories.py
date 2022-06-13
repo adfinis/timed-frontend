@@ -79,7 +79,7 @@ class AbsenceFactory(DjangoModelFactory):
     """Absence factory."""
 
     user = SubFactory("timed.employment.factories.UserFactory")
-    type = SubFactory("timed.employment.factories.AbsenceTypeFactory")
+    absence_type = SubFactory("timed.employment.factories.AbsenceTypeFactory")
     date = Faker("date")
 
     class Meta:

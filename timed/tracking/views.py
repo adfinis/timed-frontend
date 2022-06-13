@@ -367,10 +367,10 @@ class AbsenceViewSet(ModelViewSet):
         """Get absences only for internal employees."""
         user = self.request.user
         if user.is_superuser:
-            queryset = models.Absence.objects.select_related("type", "user")
+            queryset = models.Absence.objects.select_related("absence_type", "user")
             return queryset
 
-        queryset = models.Absence.objects.select_related("type", "user").filter(
+        queryset = models.Absence.objects.select_related("absence_type", "user").filter(
             Q(user=user) | Q(user__in=user.supervisees.all())
         )
         return queryset
