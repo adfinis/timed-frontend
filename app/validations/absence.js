@@ -15,8 +15,8 @@ export default {
   /**
    * Absence type validator, check if an absence type is existent
    *
-   * @property {Function} type
+   * @property {Function} absenceType
    * @public
    */
-  type: validatePresence(true)
+  absenceType: validatePresence(true)
 };

@@ -18,10 +18,10 @@ export default {
   /**
    * Absence type validator, check if an absence type is existent
    *
-   * @property {Function} type
+   * @property {Function} absenceTtype
    * @public
    */
-  type: validatePresence(true),
+  absenceType: validatePresence(true),
 
   /**
    * Date validation, ensure at least one date is selected

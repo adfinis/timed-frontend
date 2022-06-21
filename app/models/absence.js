@@ -43,10 +43,10 @@ export default Model.extend({
   /**
    * The type of the absence
    *
-   * @property {AbsenceType} type
+   * @property {AbsenceType} absenceType
    * @public
    */
-  type: belongsTo("absence-type"),
+  absenceType: belongsTo("absence-type"),
 
   /**
    * The user
