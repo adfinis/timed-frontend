@@ -219,7 +219,7 @@ class Migration(migrations.Migration):
                     ("PEI", "Peruvian Inti"),
                     ("PEN", "Peruvian Sol"),
                     ("PES", "Peruvian Sol (1863–1965)"),
-                    ("PHP", "Philippine Piso"),
+                    ("PHP", "Philippine Peso"),
                     ("XPT", "Platinum"),
                     ("PLN", "Polish Zloty"),
                     ("PLZ", "Polish Zloty (1950–1995)"),

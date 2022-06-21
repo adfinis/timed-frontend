@@ -151,7 +151,7 @@ class Absence(models.Model):
 
     comment = models.TextField(blank=True)
     date = models.DateField()
-    type = models.ForeignKey(
+    absence_type = models.ForeignKey(
         "employment.AbsenceType", on_delete=models.PROTECT, related_name="absences"
     )
     user = models.ForeignKey(
@@ -167,7 +167,7 @@ class Absence(models.Model):
         for absences which need to fill day calcuation needs to check
         how much time has been reported on that day.
         """
-        if not self.type.fill_worktime:
+        if not self.absence_type.fill_worktime:
             return employment.worktime_per_day
 
         reports = Report.objects.filter(date=self.date, user=self.user_id)

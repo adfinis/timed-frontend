@@ -37,10 +37,10 @@ class AggregateQuerysetMixin(object):
         Ignores serializer method fields which define logic separately.
         """
         return isinstance(val, relations.ResourceRelatedField) and not isinstance(
-            val, relations.SerializerMethodResourceRelatedField
+            val, relations.ManySerializerMethodResourceRelatedField
         )
 
-    def get_serializer(self, data, *args, **kwargs):
+    def get_serializer(self, data=None, *args, **kwargs):
         # no data no wrapping needed
         if not data:
             return super().get_serializer(data, *args, **kwargs)
