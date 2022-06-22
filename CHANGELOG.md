@@ -1,3 +1,47 @@
+# v2.0.0
+
+### Breaking
+* **tracking:** rename field type to absence_type ([`8ca44d2`](https://github.com/adfinis-sygroup/timed-backend/commit/8ca44d2f361228e7f71e3e28a795079a2e3e7745))
+
+# v1.6.3
+
+### Fix
+
+* **workreport:** Update metadata ([`257e2ae`](https://github.com/adfinis-sygroup/timed-backend/pull/855/commits/257e2aeedd36a112018bdedaf32191eaf0100420))
+* **deps:** Bump django from 3.1.14 to 3.2.13 ([`ca8b76d`](https://github.com/adfinis-sygroup/timed-backend/pull/856/commits/ca8b76dd2d1f2ce365595101bb4a6d53aa85994d))
+
+# v1.6.2
+
+### Fix
+
+* **tracking:** Allow updating of billed reports ([`e73e716`](https://github.com/adfinis-sygroup/timed-backend/pull/851/commits/e73e7161d51b93b14faa0a5f5babf740166aff06))
+
+# v1.6.1
+
+### Fix
+
+* **projects:** Change permissions and visibility for billing types ([`8a705db`](https://github.com/adfinis-sygroup/timed-backend/pull/847/commits/8a705dbca7a66abd443f0a99341004c3515f3dbd))
+* **subscription:** Fix parser and notifications for orders ([`0deaafa`](https://github.com/adfinis-sygroup/timed-backend/pull/849/commits/0deaafa71d8520c7bf17fc91aa938f0106f96150))
+
+# v1.6.0
+
+### Feature
+* **env:** Add tls option for emails to env var ([`c68107a`](https://github.com/adfinis-sygroup/timed-backend/pull/845/commits/c68107a4a58f54fbaa2c1de2f158437ad78609f3))
+
+### Fix
+* **reports:** Add reviewer hierarchy in `notify_reviewers_unverified` ([`91751e9`](https://github.com/adfinis-sygroup/timed-backend/pull/843/commits/91751e9497ac67ecb3072e33a6c990169d8488ee))
+* **subscription:** Include cost center in `SubscriptionProjectSerializer` ([`11640f8`](https://github.com/adfinis-sygroup/timed-backend/pull/846/commits/11640f88d797480a5f110fc7fc9b27d262f22bfa))
+
+# v1.5.5
+
+### Fix
+* **reports:** Center total hours column in workreport ([`1acd374`](https://github.com/adfinis-sygroup/timed-backend/pull/840/commits/1acd3742af972e17d8600b560f16f7afe9a70d1d))
+
+# v1.5.4
+
+### Fix
+* **auth:** Username should be case insensitive ([`1ce24bd`](https://github.com/adfinis-sygroup/timed-backend/commit/1ce24bd04f4b217e560707bd699bbeb6fe14fe09))
+
 # v1.5.2
 
 ### Fix
