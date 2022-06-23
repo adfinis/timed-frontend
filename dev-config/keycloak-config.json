@@ -367,6 +367,8 @@
     "enabled" : true,
     "totp" : false,
     "emailVerified" : true,
+    "firstName" : "Admin",
+    "lastName" : "Strator",
     "credentials" : [ {
       "id" : "42fa428a-0ca4-4951-9a4e-cb632f8e3367",
       "type" : "password",
@@ -389,6 +391,8 @@
     "enabled" : true,
     "totp" : false,
     "emailVerified" : true,
+    "firstName" : "Axel",
+    "lastName" : "Schöni",
     "credentials" : [ {
       "id" : "ded43644-9163-4a1f-944f-0eb925896507",
       "type" : "password",
@@ -411,6 +415,8 @@
     "enabled" : true,
     "totp" : false,
     "emailVerified" : true,
+    "firstName" : "Fritz",
+    "lastName" : "Muster",
     "credentials" : [ {
       "id" : "a4822286-3490-497e-942b-96afbfc52fee",
       "type" : "password",
