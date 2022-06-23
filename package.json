@@ -120,5 +120,8 @@
   },
   "ember": {
     "edition": "octane"
+  },
+  "dependencies": {
+    "ember-classic-decorator": "^3.0.0"
   }
 }

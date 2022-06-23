@@ -1,8 +1,14 @@
 <PowerSelect
-  @options={{@options}}
+  @options={{this.options}}
   @placeholder={{@placeholder}}
+  @selected={{@selected}}
+  @disabled={{@disabled}}
+  @allowClear={{@allowClear}}
+  @searchEnabled={{true}}
+  @searchField={{@searchField}}
   @name={{@name}}
   @optionsComponent={{component "optimized-power-select/options"}}
-  @triggerComponent={{component "power-select/trigger"}}
+  @triggerComponent={{component "optimized-power-select/trigger"}}
   @onChange={{@onChange}}
+  @extra={{this.extra}}
 />

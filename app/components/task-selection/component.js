@@ -27,15 +27,6 @@ export default Component.extend({
   store: service(),
   tracking: service(),
 
-  /**
-   * HTML tag name for the component
-   *
-   * This is an empty string, so we don't have an element of this component in
-   * the DOM
-   *
-   * @property {String} tagName
-   * @public
-   */
   tagName: "",
 
   /**
@@ -275,31 +266,29 @@ export default Component.extend({
   customersAndRecentTasks: computed("history", "archived", async function() {
     let ids = [];
 
-    await this.get("tracking.customers.last");
+    await this.tracking.customers.last;
 
-    if (this.get("history")) {
-      await this.get("tracking.recentTasks.last");
+    if (this.history) {
+      await this.tracking.recentTasks.last;
 
-      const last = this.get("tracking.recentTasks.last.value");
+      const last = this.tracking.recentTasks.last.value;
 
       ids = last ? last.mapBy("id") : [];
     }
 
-    const customers = this.get("store")
+    const customers = this.store
       .peekAll("customer")
-      .filter(customer => {
-        return this.get("archived") ? true : !customer.get("archived");
+      .filter((customer) => {
+        return this.archived ? true : !customer.get("archived");
       })
       .sortBy("name");
 
-    const tasks = this.get("store")
-      .peekAll("task")
-      .filter(task => {
-        return (
-          ids.includes(task.get("id")) &&
-          (this.get("archived") ? true : !task.get("archived"))
-        );
-      });
+    const tasks = this.store.peekAll("task").filter((task) => {
+      return (
+        ids.includes(task.get("id")) &&
+        (this.archived ? true : !task.get("archived"))
+      );
+    });
 
     return [...tasks.toArray(), ...customers.toArray()];
   }),
@@ -312,17 +301,17 @@ export default Component.extend({
    * @property {Project[]} projects
    * @public
    */
-  projects: computed("customer.id", "archived", async function() {
-    if (this.get("customer.id")) {
+  projects: computed("customer.id", "archived", async function () {
+    if (this.customer?.id) {
       await this.tracking.projects.perform(this.customer.id);
     }
 
-    return this.get("store")
+    return this.store
       .peekAll("project")
-      .filter(project => {
+      .filter((project) => {
         return (
-          project.get("customer.id") === this.get("customer.id") &&
-          (this.get("archived") ? true : !project.get("archived"))
+          project.get("customer.id") === this.customer.id &&
+          (this.archived ? true : !project.get("archived"))
         );
       })
       .sortBy("name");
@@ -336,17 +325,17 @@ export default Component.extend({
    * @property {Task[]} tasks
    * @public
    */
-  tasks: computed("project.id", "archived", async function() {
-    if (this.get("project.id")) {
+  tasks: computed("project.id", "archived", async function () {
+    if (this.project?.id) {
       await this.tracking.tasks.perform(this.project.id);
     }
 
-    return this.get("store")
+    return this.store
       .peekAll("task")
-      .filter(t => {
+      .filter((t) => {
         return (
-          t.get("project.id") === this.get("project.id") &&
-          (this.get("archived") ? true : !t.get("archived"))
+          t.get("project.id") === this.project.id &&
+          (this.archived ? true : !t.get("archived"))
         );
       })
       .sortBy("name");
@@ -363,7 +352,7 @@ export default Component.extend({
       this.setProperties({
         customer: null,
         project: null,
-        task: null
+        task: null,
       });
     },
 
@@ -371,6 +360,6 @@ export default Component.extend({
       this.send("clear");
 
       this._setInitial();
-    }
-  }
+    },
+  },
 });
