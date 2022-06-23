@@ -1,3 +1,10 @@
+## [2.1.3](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.1.2...v2.1.3) (2022-06-23)
+
+
+### Bug Fixes
+
+* **index:** rename type to absence_type ([9d369f4](https://github.com/adfinis-sygroup/timed-frontend/commit/9d369f47312759498630b0bee4ff5b17e4b4ec61))
+
 ## [2.1.2](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.1.1...v2.1.2) (2022-03-02)
 
 
