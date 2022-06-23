@@ -122,7 +122,7 @@ export default Route.extend(RouteAutostartTourMixin, {
     controller.set("newAbsence", {
       dates: [model],
       comment: "",
-      type: null
+      absenceType: null
     });
   },
 
@@ -178,12 +178,12 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async addAbsence(changeset) {
       try {
-        const type = changeset.get("type");
+        const absenceType = changeset.get("absenceType");
         const comment = changeset.get("comment");
 
         changeset.get("dates").forEach(async date => {
           const absence = this.store.createRecord("absence", {
-            type,
+            absenceType,
             date,
             comment
           });

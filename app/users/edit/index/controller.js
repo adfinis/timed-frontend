@@ -21,7 +21,7 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
         month: 0,
         year: this.get("year")
       }).format("YYYY-MM-DD"),
-      include: "type"
+      include: "absence_type"
     });
   }),
 

@@ -435,7 +435,7 @@ export default Controller.extend({
       if (publicHolidays.length) {
         prefix = publicHolidays.get("firstObject.name");
       } else if (absences.length) {
-        prefix = absences.get("firstObject.type.name");
+        prefix = absences.get("firstObject.absenceType.name");
       }
 
       return {

@@ -103,7 +103,7 @@
               <tbody>
                 {{#each absences as |absence index|}}
                   <tr>
-                    <td>{{absence.type.name}}</td>
+                    <td>{{absence.absenceType.name}}</td>
                     <td>{{moment-format absence.date 'DD.MM.YYYY'}}</td>
                     <td>{{absence.comment}}</td>
                   </tr>

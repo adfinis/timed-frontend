@@ -43,7 +43,7 @@
             disabled={{cannot "access page"}}
             {{action (toggle 'showEditModal' this)}}
           >
-            {{absence.type.name}}
+            {{absence.absenceType.name}}
           </button>
         {{/if}}
           <button
@@ -82,7 +82,7 @@
               class="btn btn-warning"
               {{action (toggle 'showEditModal' this)}}
             >
-              {{absence.type.name}}
+              {{absence.absenceType.name}}
             </button>
           {{/if}}
             <button
@@ -113,10 +113,10 @@
           Edit absence
         </modal.header>
         <modal.body>
-          <f.input @name="type" as |fi|>
+          <f.input @name="absenceType" as |fi|>
             <div class="btn-group btn-group--auto">
               {{#each absenceTypes as |at|}}
-                <button type="button" class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
+                <button type="button" class="btn btn-default {{if (eq at.id changeset.absenceType.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
               {{/each}}
             </div>
           </f.input>
@@ -146,10 +146,10 @@
         New absence
       </modal.header>
       <modal.body>
-        <f.input @name="type" as |fi|>
+        <f.input @name="absenceType" as |fi|>
           <div class="btn-group btn-group--auto">
             {{#each absenceTypes as |at|}}
-              <button type="button" class="btn btn-default {{if (eq at.id changeset.type.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
+              <button type="button" class="btn btn-default {{if (eq at.id changeset.absenceType.id) 'active'}}" {{action fi.update at}}>{{at.name}}</button>
             {{/each}}
           </div>
         </f.input>
