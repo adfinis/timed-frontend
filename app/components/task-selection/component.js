@@ -3,10 +3,14 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
+import { computed, set } from "@ember/object";
+import { action } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { dropTask } from "ember-concurrency";
 import hbs from "htmlbars-inline-precompile";
 import { resolve } from "rsvp";
 import customerOptionTemplate from "timed/templates/customer-option";
@@ -23,11 +27,18 @@ const SELECTED_TEMPLATE = hbs`{{selected.name}}`;
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  store: service(),
-  tracking: service(),
+export default class TaskSelectionComponent extends Component {
+  @service store;
+  @service tracking;
 
-  tagName: "",
+  tagName = "";
+
+  constructor(...args) {
+    super(...args);
+
+    this.prefetchData.perform();
+    this._setInitial();
+  }
 
   /**
    * Init hook, initially load customers and recent tasks
@@ -35,12 +46,11 @@ export default Component.extend({
    * @method init
    * @public
    */
-  async init(...args) {
-    this._super(...args);
-
+  @dropTask
+  *prefetchData() {
     try {
-      await this.tracking.customers.perform();
-      await this.tracking.recentTasks.perform();
+      yield this.tracking.customers.perform();
+      yield this.tracking.recentTasks.perform();
     } catch (e) {
       /* istanbul ignore next */
       if (e.taskInstance && e.taskInstance.isCanceling) {
@@ -50,36 +60,23 @@ export default Component.extend({
       /* istanbul ignore next */
       throw e;
     }
-  },
-
-  /**
-   * Set the initial values when receiving the attributes
-   *
-   * @method didReceiveAttrs
-   * @return {Task|Project|Customer} The setted task, project or customer
-   * @public
-   */
-  didReceiveAttrs() {
-    this._super();
-
-    this._setInitial();
-  },
+  }
 
   _setInitial() {
-    const { customer, project, task } = this.getWithDefault("initial", {
+    const { customer, project, task } = this.args.initial ?? {
       customer: null,
       project: null,
-      task: null
-    });
+      task: null,
+    };
 
-    if (task && !this.get("task")) {
-      this.set("task", task);
-    } else if (project && !this.get("project")) {
-      this.set("project", project);
-    } else if (customer && !this.get("customer")) {
-      this.set("customer", customer);
+    if (task && !this.task) {
+      set(this, "task", task);
+    } else if (project && !this.project) {
+      set(this, "project", project);
+    } else if (customer && !this.customer) {
+      set(this, "customer", customer);
     }
-  },
+  }
 
   /**
    * Whether to show archived customers, projects or tasks
@@ -87,7 +84,7 @@ export default Component.extend({
    * @property {Boolean} archived
    * @public
    */
-  archived: false,
+  archived = false;
 
   /**
    * Template for displaying the customer options
@@ -95,7 +92,7 @@ export default Component.extend({
    * @property {*} customerOptionTemplate
    * @public
    */
-  customerOptionTemplate,
+  customerOptionTemplate = customerOptionTemplate;
 
   /**
    * Template for displaying the project options
@@ -103,7 +100,7 @@ export default Component.extend({
    * @property {*} projectOptionTemplate
    * @public
    */
-  projectOptionTemplate,
+  projectOptionTemplate = projectOptionTemplate;
 
   /**
    * Template for displaying the task options
@@ -111,7 +108,7 @@ export default Component.extend({
    * @property {*} taskOptionTemplate
    * @public
    */
-  taskOptionTemplate,
+  taskOptionTemplate = taskOptionTemplate;
 
   /**
    * Template for displaying the selected option
@@ -119,7 +116,7 @@ export default Component.extend({
    * @property {*} selectedTemplate
    * @public
    */
-  selectedTemplate: SELECTED_TEMPLATE,
+  selectedTemplate = SELECTED_TEMPLATE;
 
   /**
    * The manually selected customer
@@ -127,7 +124,8 @@ export default Component.extend({
    * @property {Customer} _customer
    * @private
    */
-  _customer: null,
+  @tracked
+  _customer = null;
 
   /**
    * The manually selected project
@@ -135,7 +133,8 @@ export default Component.extend({
    * @property {Project} _project
    * @private
    */
-  _project: null,
+  @tracked
+  _project = null;
 
   /**
    * The manually selected task
@@ -143,7 +142,8 @@ export default Component.extend({
    * @property {Task} _task
    * @private
    */
-  _task: null,
+  @tracked
+  _task = null;
 
   /**
    * Whether to show history entries in the customer selection or not
@@ -151,7 +151,7 @@ export default Component.extend({
    * @property {Boolean} history
    * @public
    */
-  history: true,
+  history = true;
 
   /**
    * The selected customer
@@ -162,35 +162,36 @@ export default Component.extend({
    * @property {Customer} customer
    * @public
    */
-  customer: computed("_customer", {
-    get() {
-      return this.get("_customer");
-    },
-    set(key, value) {
-      // It is also possible a task was selected from the history.
-      if (value && value.get("constructor.modelName") === "task") {
-        this.set("task", value);
+  @computed("_customer")
+  get customer() {
+    return this._customer;
+  }
+  set customer(value) {
+    // It is also possible a task was selected from the history.
+    if (value && value.get("constructor.modelName") === "task") {
+      set(this, "task", value);
 
-        return value.get("project.customer");
-      }
-
-      this.set("_customer", value);
-
-      /* istanbul ignore else */
-      if (
-        this.get("project") &&
-        (!value || value.get("id") !== this.get("project.customer.id"))
-      ) {
-        this.set("project", null);
-      }
-
-      later(this, () => {
-        this.getWithDefault("on-set-customer", () => {})(value);
-      });
-
-      return value;
+      return value.get("project.customer");
     }
-  }),
+
+    this._customer = value;
+
+    /* istanbul ignore else */
+    if (
+      this.project &&
+      (!value || value.get("id") !== this.project.customer.id)
+    ) {
+      set(this, "project", null);
+    }
+
+    later(this, () => {
+      (this["on-set-customer"] === undefined
+        ? () => {}
+        : this["on-set-customer"])(value);
+    });
+
+    return value;
+  }
 
   /**
    * The selected project
@@ -201,34 +202,35 @@ export default Component.extend({
    * @property {Project} project
    * @public
    */
-  project: computed("_project", {
-    get() {
-      return this.get("_project");
-    },
-    set(key, value) {
-      this.set("_project", value);
+  @computed("_project")
+  get project() {
+    return this._project;
+  }
+  set project(value) {
+    set(this, "_project", value);
 
-      if (value && value.get("customer.id")) {
-        resolve(value.get("customer")).then(c => {
-          this.set("customer", c);
-        });
-      }
-
-      /* istanbul ignore else */
-      if (
-        this.get("task") &&
-        (value === null || value.get("id") !== this.get("task.project.id"))
-      ) {
-        this.set("task", null);
-      }
-
-      later(this, () => {
-        this.getWithDefault("on-set-project", () => {})(value);
+    if (value && value.get("customer.id")) {
+      resolve(value.get("customer")).then((c) => {
+        set(this, "customer", c);
       });
-
-      return value;
     }
-  }),
+
+    /* istanbul ignore else */
+    if (
+      this.task &&
+      (value === null || value.get("id") !== this.task.project.id)
+    ) {
+      set(this, "task", null);
+    }
+
+    later(this, () => {
+      (this["on-set-project"] === undefined
+        ? () => {}
+        : this["on-set-project"])(value);
+    });
+
+    return value;
+  }
 
   /**
    * The currently selected task
@@ -236,26 +238,27 @@ export default Component.extend({
    * @property {Task} task
    * @public
    */
-  task: computed("_task", {
-    get() {
-      return this.get("_task");
-    },
-    set(key, value) {
-      this.set("_task", value);
+  @computed("_task")
+  get task() {
+    return this._task;
+  }
+  set task(value) {
+    set(this, "_task", value);
 
-      if (value && value.get("project.id")) {
-        resolve(value.get("project")).then(p => {
-          this.set("project", p);
-        });
-      }
-
-      later(this, async () => {
-        this.getWithDefault("on-set-task", () => {})(value);
+    if (value && value.get("project.id")) {
+      resolve(value.get("project")).then(p => {
+        set(this, "project", p);
       });
-
-      return value;
     }
-  }),
+
+    later(this, async () => {
+      (this["on-set-task"] === undefined ? () => {} : this["on-set-task"])(
+        value
+      );
+    });
+
+    return value;
+  }
 
   /**
    * All customers and recent tasks which are selectable in the dropdown
@@ -263,13 +266,18 @@ export default Component.extend({
    * @property {Array} customersAndRecentTasks
    * @public
    */
-  customersAndRecentTasks: computed("history", "archived", async function() {
+  @computed("history", "archived")
+  get customersAndRecentTasks() {
     let ids = [];
 
-    await this.tracking.customers.last;
+    (async () => {
+      await this.tracking.customers.last;
+    })();
 
     if (this.history) {
-      await this.tracking.recentTasks.last;
+      (async () => {
+        await this.tracking.recentTasks.last;
+      })();
 
       const last = this.tracking.recentTasks.last.value;
 
@@ -291,7 +299,7 @@ export default Component.extend({
     });
 
     return [...tasks.toArray(), ...customers.toArray()];
-  }),
+  }
 
   /**
    * All projects which are selectable in the dropdown
@@ -301,9 +309,12 @@ export default Component.extend({
    * @property {Project[]} projects
    * @public
    */
-  projects: computed("customer.id", "archived", async function () {
+  @computed("customer.id", "archived")
+  get projects() {
     if (this.customer?.id) {
-      await this.tracking.projects.perform(this.customer.id);
+      (async () => {
+        await this.tracking.projects.perform(this.customer.id);
+      })();
     }
 
     return this.store
@@ -315,7 +326,7 @@ export default Component.extend({
         );
       })
       .sortBy("name");
-  }),
+  }
 
   /**
    * All tasks which are selectable in the dropdown
@@ -325,9 +336,12 @@ export default Component.extend({
    * @property {Task[]} tasks
    * @public
    */
-  tasks: computed("project.id", "archived", async function () {
+  @computed("project.id", "archived")
+  get tasks() {
     if (this.project?.id) {
-      await this.tracking.tasks.perform(this.project.id);
+      (async () => {
+        await this.tracking.tasks.perform(this.project.id);
+      })();
     }
 
     return this.store
@@ -339,27 +353,25 @@ export default Component.extend({
         );
       })
       .sortBy("name");
-  }),
+  }
 
-  actions: {
-    /**
-     * Clear all comboboxes
-     *
-     * @method clear
-     * @public
-     */
-    clear() {
-      this.setProperties({
-        customer: null,
-        project: null,
-        task: null,
-      });
-    },
+  /**
+   * Clear all comboboxes
+   *
+   * @method clear
+   * @public
+   */
+  @action
+  clear() {
+    set(this, "customer", null);
+    set(this, "project", null);
+    set(this, "task", null);
+  }
 
-    reset() {
-      this.send("clear");
+  @action
+  reset() {
+    this.clear();
 
-      this._setInitial();
-    },
-  },
-});
+    this._setInitial();
+  }
+}
