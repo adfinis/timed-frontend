@@ -35,6 +35,7 @@
     "@adfinis-sygroup/semantic-release-config": "^3.2.0",
     "@babel/plugin-proposal-object-rest-spread": "7.8.3",
     "@ember/optional-features": "2.0.0",
+    "@ember/render-modifiers": "2.0.4",
     "@ember/test-helpers": "2.4.2",
     "@glimmer/component": "1.0.4",
     "@glimmer/tracking": "1.0.4",
