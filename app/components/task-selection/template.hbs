@@ -39,12 +39,12 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'task-select'
-    onChange           = (action (mut task))
+    onChange           = (fn (mut task))
     extra              = (hash
       selectedTemplate = selectedTemplate
       optionTemplate   = taskOptionTemplate
     )
   )
-  clear                = (action 'clear')
-  reset                = (action 'reset')
+  clear                = (fn this.clear)
+  reset                = (fn this.reset)
 )}}

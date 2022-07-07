@@ -4,8 +4,7 @@
  * @public
  */
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { computed, set } from "@ember/object";
-import { action } from "@ember/object";
+import { action, computed, set } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
