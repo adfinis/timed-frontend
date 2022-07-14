@@ -259,7 +259,7 @@ export default Service.extend({
       throw new Error("No customer selected");
     }
 
-    return yield this.get("store").query("project", { customer });
+    return yield this.store.query("project", { customer });
   }),
 
   /**
@@ -277,5 +277,5 @@ export default Service.extend({
     }
 
     return yield this.get("store").query("task", { project });
-  })
+  }),
 });

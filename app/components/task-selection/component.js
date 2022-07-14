@@ -9,7 +9,7 @@ import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { dropTask } from "ember-concurrency";
+import { dropTask, lastValue } from "ember-concurrency";
 import hbs from "htmlbars-inline-precompile";
 import { resolve } from "rsvp";
 import customerOptionTemplate from "timed/templates/customer-option";
@@ -29,8 +29,6 @@ const SELECTED_TEMPLATE = hbs`{{selected.name}}`;
 export default class TaskSelectionComponent extends Component {
   @service store;
   @service tracking;
-
-  tagName = "";
 
   constructor(...args) {
     super(...args);
@@ -152,6 +150,12 @@ export default class TaskSelectionComponent extends Component {
    */
   history = true;
 
+  @lastValue("getProjectsByCustomer")
+  projects = [];
+
+  @lastValue("getTasksByProjects")
+  tasks = [];
+
   /**
    * The selected customer
    *
@@ -161,35 +165,8 @@ export default class TaskSelectionComponent extends Component {
    * @property {Customer} customer
    * @public
    */
-  @computed("_customer")
   get customer() {
     return this._customer;
-  }
-  set customer(value) {
-    // It is also possible a task was selected from the history.
-    if (value && value.get("constructor.modelName") === "task") {
-      set(this, "task", value);
-
-      return value.get("project.customer");
-    }
-
-    this._customer = value;
-
-    /* istanbul ignore else */
-    if (
-      this.project &&
-      (!value || value.get("id") !== this.project.customer.id)
-    ) {
-      set(this, "project", null);
-    }
-
-    later(this, () => {
-      (this["on-set-customer"] === undefined
-        ? () => {}
-        : this["on-set-customer"])(value);
-    });
-
-    return value;
   }
 
   /**
@@ -201,34 +178,8 @@ export default class TaskSelectionComponent extends Component {
    * @property {Project} project
    * @public
    */
-  @computed("_project")
   get project() {
     return this._project;
-  }
-  set project(value) {
-    set(this, "_project", value);
-
-    if (value && value.get("customer.id")) {
-      resolve(value.get("customer")).then((c) => {
-        set(this, "customer", c);
-      });
-    }
-
-    /* istanbul ignore else */
-    if (
-      this.task &&
-      (value === null || value.get("id") !== this.task.project.id)
-    ) {
-      set(this, "task", null);
-    }
-
-    later(this, () => {
-      (this["on-set-project"] === undefined
-        ? () => {}
-        : this["on-set-project"])(value);
-    });
-
-    return value;
   }
 
   /**
@@ -237,26 +188,8 @@ export default class TaskSelectionComponent extends Component {
    * @property {Task} task
    * @public
    */
-  @computed("_task")
   get task() {
     return this._task;
-  }
-  set task(value) {
-    set(this, "_task", value);
-
-    if (value && value.get("project.id")) {
-      resolve(value.get("project")).then(p => {
-        set(this, "project", p);
-      });
-    }
-
-    later(this, async () => {
-      (this["on-set-task"] === undefined ? () => {} : this["on-set-task"])(
-        value
-      );
-    });
-
-    return value;
   }
 
   /**
@@ -265,7 +198,12 @@ export default class TaskSelectionComponent extends Component {
    * @property {Array} customersAndRecentTasks
    * @public
    */
-  @computed("history", "archived")
+  @computed(
+    "archived",
+    "history",
+    "tracking.customers.last",
+    "tracking.recentTasks.last.value"
+  )
   get customersAndRecentTasks() {
     let ids = [];
 
@@ -278,7 +216,7 @@ export default class TaskSelectionComponent extends Component {
         await this.tracking.recentTasks.last;
       })();
 
-      const last = this.tracking.recentTasks.last.value;
+      const last = this.tracking.recentTasks.last?.value;
 
       ids = last ? last.mapBy("id") : [];
     }
@@ -308,19 +246,17 @@ export default class TaskSelectionComponent extends Component {
    * @property {Project[]} projects
    * @public
    */
-  @computed("customer.id", "archived")
-  get projects() {
+  @dropTask
+  *getProjectsByCustomer() {
     if (this.customer?.id) {
-      (async () => {
-        await this.tracking.projects.perform(this.customer.id);
-      })();
+      yield this.tracking.projects.perform(this.customer.id);
     }
 
-    return this.store
+    return yield this.store
       .peekAll("project")
       .filter((project) => {
         return (
-          project.get("customer.id") === this.customer.id &&
+          project.get("customer.id") === this.customer?.id &&
           (this.archived ? true : !project.get("archived"))
         );
       })
@@ -335,19 +271,17 @@ export default class TaskSelectionComponent extends Component {
    * @property {Task[]} tasks
    * @public
    */
-  @computed("project.id", "archived")
-  get tasks() {
+  @dropTask
+  *getTasksByProjects() {
     if (this.project?.id) {
-      (async () => {
-        await this.tracking.tasks.perform(this.project.id);
-      })();
+      yield this.tracking.tasks.perform(this.project.id);
     }
 
-    return this.store
+    return yield this.store
       .peekAll("task")
       .filter((t) => {
         return (
-          t.get("project.id") === this.project.id &&
+          t.get("project.id") === this.project?.id &&
           (this.archived ? true : !t.get("archived"))
         );
       })
@@ -370,7 +304,71 @@ export default class TaskSelectionComponent extends Component {
   @action
   reset() {
     this.clear();
-
     this._setInitial();
+  }
+
+  @action
+  async onCustomerChange(value) {
+    if (value && value.get("constructor.modelName") === "task") {
+      this._customer = value.get("project.customer");
+      this.onTaskChange(value);
+      return;
+    }
+
+    this._customer = value;
+
+    if (
+      this.project &&
+      (!value || value.get("id") !== this.project.get("customer.id"))
+    ) {
+      this.onProjectChange(null);
+      return;
+    }
+
+    this.getProjectsByCustomer.perform();
+
+    later(this, () => {
+      (this["on-set-customer"] === undefined
+        ? () => {}
+        : this["on-set-customer"])(value);
+    });
+  }
+
+  @action
+  onProjectChange(value) {
+    this._project = value;
+
+    if (
+      this.task &&
+      (value === null || value.get("id") !== this.task.get("project.id"))
+    ) {
+      this.onTaskChange(null);
+      return;
+    }
+
+    this.getTasksByProjects.perform();
+
+    later(this, () => {
+      (this["on-set-project"] === undefined
+        ? () => {}
+        : this["on-set-project"])(value);
+    });
+  }
+
+  @action
+  onTaskChange(value) {
+    this._task = value;
+
+    if (value && value.get("project.id")) {
+      resolve(value.get("project")).then((p) => {
+        this.onProjectChange(p);
+      });
+    }
+
+    later(this, async () => {
+      (this["on-set-task"] === undefined ? () => {} : this["on-set-task"])(
+        value
+      );
+    });
   }
 }

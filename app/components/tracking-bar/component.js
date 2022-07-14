@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
+import Component from "@ember/component";
 import { inject as service } from "@ember/service";
-import Component from "@glimmer/component";
 
 /**
  * The tracking bar component
@@ -13,6 +13,8 @@ import Component from "@glimmer/component";
  * @extends Ember.Component
  * @public
  */
-export default class TrackingBarComponent extends Component {
-  @service tracking;
-}
+export default Component.extend({
+  tracking: service("tracking"),
+
+  classNames: ["tracking-bar"],
+});

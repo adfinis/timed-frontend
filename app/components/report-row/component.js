@@ -28,7 +28,7 @@ export default class ReportRowComponent extends Component {
   get title() {
     return this.editable
       ? ""
-      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and therefore not editable anymore`;
+      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and is therefore not editable anymore`;
   }
 
   /**

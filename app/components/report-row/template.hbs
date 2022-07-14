@@ -2,11 +2,15 @@
   class="form-list-row"
   title={{this.title}}
 >
-  {{#task-selection disabled=(not this.editable) task=this.changeset.task as |t|}}
+  <TaskSelection
+    @disabled={{not this.editable}}
+    @task={{this.changeset.task}}
+    as |t|
+  >
     <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.customer}}</div>
     <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.project}}</div>
     <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.task}}</div>
-  {{/task-selection}}
+  </TaskSelection>
 
   <div class="form-list-cell form-group">
     <input

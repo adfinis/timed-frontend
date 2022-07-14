@@ -1,14 +1,14 @@
 {{yield (hash
   customer             = (component 'optimized-power-select'
     options            = this.customersAndRecentTasks
-    disabled           = disabled
+    disabled           = this.disabled
     selected           = this.customer
     placeholder        = 'Select customer...'
     searchField        = 'longName'
     allowClear         = true
     tagName            = 'div'
     class              = 'customer-select'
-    onChange           = (fn (mut this.customer))
+    onChange           = (fn this.onCustomerChange)
     extra              = (hash
       lazy             = true
       selectedTemplate = this.selectedTemplate
@@ -17,32 +17,32 @@
   )
   project              = (component 'optimized-power-select'
     options            = this.projects
-    disabled           = (or disabled (not this.customer))
+    disabled           = (or this.disabled (not this.customer))
     selected           = this.project
     placeholder        = 'Select project...'
     searchField        = 'name'
     allowClear         = true
     tagName            = 'div'
     class              = 'project-select'
-    onChange           = (fn (mut project))
+    onChange           = (fn this.onProjectChange)
     extra              = (hash
       selectedTemplate = this.selectedTemplate
       optionTemplate   = this.projectOptionTemplate
     )
   )
   task                 = (component 'optimized-power-select'
-    options            = tasks
-    disabled           = (or disabled (not project))
-    selected           = task
+    options            = this.tasks
+    disabled           = (or this.disabled (not this.project))
+    selected           = this.task
     placeholder        = 'Select task...'
     searchField        = 'name'
     allowClear         = true
     tagName            = 'div'
     class              = 'task-select'
-    onChange           = (fn (mut task))
+    onChange           = (fn this.onTaskChange)
     extra              = (hash
-      selectedTemplate = selectedTemplate
-      optionTemplate   = taskOptionTemplate
+      selectedTemplate = this.selectedTemplate
+      optionTemplate   = this.taskOptionTemplate
     )
   )
   clear                = (fn this.clear)
