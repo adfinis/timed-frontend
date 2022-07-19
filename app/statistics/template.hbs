@@ -15,11 +15,13 @@
         project       = selectedProject
         task          = selectedTask
       }}
-    as |t|>
+      as |t|
+    >
       <FilterSidebar
         @appliedCount={{this.appliedFilters.length}}
         @on-reset={{action (queue t.clear (action 'reset'))}}
-      as |fs|>
+        as |fs|
+      >
         <fs.group @label='Task' @expanded={{true}}>
           <fs.label>
             Customer

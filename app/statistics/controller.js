@@ -10,10 +10,10 @@ import {
 
 const DATE_FORMAT = "YYYY-MM-DD";
 
-const serializeMoment = momentObject =>
+const serializeMoment = (momentObject) =>
   (momentObject && momentObject.format(DATE_FORMAT)) || null;
 
-const deserializeMoment = momentString =>
+const deserializeMoment = (momentString) =>
   (momentString && moment(momentString, DATE_FORMAT)) || null;
 
 const TYPES = {

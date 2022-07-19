@@ -338,9 +338,9 @@ export default class TaskSelectionComponent extends Component {
 
     if (!options.preventAction && this._customer) {
       later(this, () => {
-        (this["on-set-customer"] === undefined
+        (this.args["on-set-customer"] === undefined
           ? () => {}
-          : this["on-set-customer"])(value);
+          : this.args["on-set-customer"])(value);
       });
     }
   }
@@ -357,7 +357,7 @@ export default class TaskSelectionComponent extends Component {
       return;
     }
 
-    if (!this.customer && value.get("customer.id")) {
+    if (!this.customer && value?.get("customer.id")) {
       resolve(value.get("customer")).then((c) => {
         this.onCustomerChange(c, {
           preventFetchingData: true,
@@ -372,9 +372,9 @@ export default class TaskSelectionComponent extends Component {
 
     if (!options.preventAction) {
       later(this, () => {
-        (this["on-set-project"] === undefined
+        (this.args["on-set-project"] === undefined
           ? () => {}
-          : this["on-set-project"])(value);
+          : this.args["on-set-project"])(value);
       });
     }
   }
