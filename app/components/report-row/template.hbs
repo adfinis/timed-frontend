@@ -1,66 +1,83 @@
-<form
-  class="form-list-row"
-  title={{this.title}}
->
-  <TaskSelection
-    @disabled={{not this.editable}}
-    @task={{this.changeset.task}}
-    as |t|
+{{#if this.createChangeset.lastSuccessful}}
+  <form
+    class="form-list-row"
+    title={{this.title}}
   >
-    <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.customer}}</div>
-    <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.project}}</div>
-    <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.task}}</div>
-  </TaskSelection>
-
-  <div class="form-list-cell form-group">
-    <input
-      type="text"
-      class="form-control comment-field"
-      placeholder="Comment"
-      name="comment"
-      value={{this.changeset.comment}}
-      disabled={{not editable}}
-      onchange={{action (mut this.changeset.comment) value='target.value'}}
-      data-test-report-comment
-    >
-    {{#if changeset.task.project.customerVisible }}
-        <CustomerVisibleIcon class="customer-visible-icon" />
-    {{/if}}
-  </div>
-  <div class="form-list-cell form-group">
-    <SyDurationpickerDay
+    <TaskSelection
       @disabled={{not this.editable}}
-      @value={{this.changeset.duration}}
-      @onChange={{fn (mut this.changeset.duration)}}
-      data-test-report-duration
-    />
-  </div>
-  <div class="form-list-cell form-group">
-    {{sy-checkbox data-test-report-review disabled=(not editable) checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
-  </div>
-  <div class="form-list-cell form-group">
-    {{sy-checkbox data-test-report-not-billable disabled=(not editable) checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
-  </div>
-  <div class="form-list-cell form-group">
-    {{#if editable}}
-      <button
-        data-test-delete-report
-        type="button"
-        class="btn btn-danger"
-        disabled={{report.verifiedBy.id}}
-        {{on "click" this.delete}}
+      @task={{this.changeset.task}}
+      @on-set-task={{fn this.updateTask}}
+      as |t|
+    >
+      <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.customer}}</div>
+      <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.project}}</div>
+      <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.task}}</div>
+    </TaskSelection>
+
+    <div class="form-list-cell form-group">
+      <input
+        type="text"
+        class="form-control comment-field"
+        placeholder="Comment"
+        name="comment"
+        value={{this.changeset.comment}}
+        disabled={{not this.editable}}
+        {{on "input" this.updateComment}}
+        data-test-report-comment
       >
-        {{fa-icon 'trash'}}
-      </button>
-      <button
-        data-test-save-report
-        type="submit"
-        class="btn btn-primary"
-        disabled={{or (not changeset.isDirty) (not changeset.isValid)}}
-        {{on "click" this.save}}
-      >
-        {{fa-icon 'save'}}
-      </button>
-    {{/if}}
-  </div>
-</form>
+      {{#if this.changeset.task.project.customerVisible}}
+        <CustomerVisibleIcon class="customer-visible-icon" />
+      {{/if}}
+    </div>
+    <div class="form-list-cell form-group">
+      <SyDurationpickerDay
+        @disabled={{not this.editable}}
+        @value={{this.changeset.duration}}
+        @onChange={{fn (mut this.changeset.duration)}}
+        data-test-report-duration
+      />
+    </div>
+    <div class="form-list-cell form-group">
+      {{!sy-checkbox data-test-report-review disabled=(not editable) checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
+      <SyCheckbox
+        @disabled={{not this.editable}}
+        @checked={{this.changeset.review}}
+        @on-change={{fn (mut this.changeset.review)}}
+        @label="Needs review"
+        data-test-report-review
+      />
+    </div>
+    <div class="form-list-cell form-group">
+      {{!sy-checkbox data-test-report-not-billable disabled=(not editable) checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
+      <SyCheckbox
+        @disabled={{not this.editable}}
+        @checked={{this.changeset.notBillable}}
+        @on-change={{fn (mut this.changeset.notBillable)}}
+        @label="Not billable"
+        data-test-report-not-billable
+      />
+    </div>
+    <div class="form-list-cell form-group">
+      {{#if this.editable}}
+        <button
+          data-test-delete-report
+          type="button"
+          class="btn btn-danger"
+          disabled={{@report.verifiedBy.id}}
+          {{on "click" this.delete}}
+        >
+          {{fa-icon 'trash'}}
+        </button>
+        <button
+          data-test-save-report
+          type="submit"
+          class="btn btn-primary"
+          disabled={{or (not this.changeset.isDirty) (not this.changeset.isValid)}}
+          {{on "click" this.save}}
+        >
+          {{fa-icon 'save'}}
+        </button>
+      {{/if}}
+    </div>
+  </form>
+{{/if}}

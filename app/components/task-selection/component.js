@@ -4,7 +4,7 @@
  * @public
  */
 // eslint-disable-next-line ember/no-computed-properties-in-native-classes
-import { action, computed, set } from "@ember/object";
+import { action, computed } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
@@ -35,13 +35,16 @@ export default class TaskSelectionComponent extends Component {
 
     this.prefetchData.perform();
     this._setInitial();
+
+    if (this.args.task) {
+      this.onTaskChange(this.args.task, { preventAction: true });
+    }
   }
 
   /**
-   * Init hook, initially load customers and recent tasks
+   * Initially, load customers and recent tasks
    *
-   * @method init
-   * @public
+   * @returns {Generator<*, void, *>}
    */
   @dropTask
   *prefetchData() {
@@ -67,11 +70,11 @@ export default class TaskSelectionComponent extends Component {
     };
 
     if (task && !this.task) {
-      set(this, "task", task);
+      this.onTaskChange(task);
     } else if (project && !this.project) {
-      set(this, "project", project);
+      this.onProjectChange(project);
     } else if (customer && !this.customer) {
-      set(this, "customer", customer);
+      this.onCustomerChange(customer);
     }
   }
 
@@ -142,19 +145,21 @@ export default class TaskSelectionComponent extends Component {
   @tracked
   _task = null;
 
+  @lastValue("getProjectsByCustomer")
+  projects = [];
+
+  @lastValue("getTasksByProjects")
+  tasks = [];
+
   /**
    * Whether to show history entries in the customer selection or not
    *
    * @property {Boolean} history
    * @public
    */
-  history = true;
-
-  @lastValue("getProjectsByCustomer")
-  projects = [];
-
-  @lastValue("getTasksByProjects")
-  tasks = [];
+  get history() {
+    return this.args.history ?? true;
+  }
 
   /**
    * The selected customer
@@ -296,9 +301,10 @@ export default class TaskSelectionComponent extends Component {
    */
   @action
   clear() {
-    set(this, "customer", null);
-    set(this, "project", null);
-    set(this, "task", null);
+    this.onCustomerChange(null, {
+      preventFetchingData: true,
+      preventAction: true,
+    });
   }
 
   @action
@@ -308,7 +314,7 @@ export default class TaskSelectionComponent extends Component {
   }
 
   @action
-  async onCustomerChange(value) {
+  onCustomerChange(value, options = {}) {
     if (value && value.get("constructor.modelName") === "task") {
       this._customer = value.get("project.customer");
       this.onTaskChange(value);
@@ -322,20 +328,23 @@ export default class TaskSelectionComponent extends Component {
       (!value || value.get("id") !== this.project.get("customer.id"))
     ) {
       this.onProjectChange(null);
-      return;
     }
 
-    this.getProjectsByCustomer.perform();
+    if (!options.preventFetchingData && this._customer) {
+      this.getProjectsByCustomer.perform();
+    }
 
-    later(this, () => {
-      (this["on-set-customer"] === undefined
-        ? () => {}
-        : this["on-set-customer"])(value);
-    });
+    if (!options.preventAction && this._customer) {
+      later(this, () => {
+        (this["on-set-customer"] === undefined
+          ? () => {}
+          : this["on-set-customer"])(value);
+      });
+    }
   }
 
   @action
-  onProjectChange(value) {
+  onProjectChange(value, options = {}) {
     this._project = value;
 
     if (
@@ -346,29 +355,47 @@ export default class TaskSelectionComponent extends Component {
       return;
     }
 
-    this.getTasksByProjects.perform();
+    if (!this.customer && value.get("customer.id")) {
+      resolve(value.get("customer")).then((c) => {
+        this.onCustomerChange(c, {
+          preventFetchingData: true,
+          preventAction: true,
+        });
+      });
+    }
 
-    later(this, () => {
-      (this["on-set-project"] === undefined
-        ? () => {}
-        : this["on-set-project"])(value);
-    });
+    if (!options.preventFetchingData) {
+      this.getTasksByProjects.perform();
+    }
+
+    if (!options.preventAction) {
+      later(this, () => {
+        (this["on-set-project"] === undefined
+          ? () => {}
+          : this["on-set-project"])(value);
+      });
+    }
   }
 
   @action
-  onTaskChange(value) {
+  onTaskChange(value, options = {}) {
     this._task = value;
 
     if (value && value.get("project.id")) {
       resolve(value.get("project")).then((p) => {
-        this.onProjectChange(p);
+        this.onProjectChange(p, {
+          preventFetchingData: true,
+          preventAction: true,
+        });
       });
     }
 
-    later(this, async () => {
-      (this["on-set-task"] === undefined ? () => {} : this["on-set-task"])(
-        value
-      );
-    });
+    if (!options.preventAction) {
+      later(this, async () => {
+        (this.args["on-set-task"] === undefined
+          ? () => {}
+          : this.args["on-set-task"])(value);
+      });
+    }
   }
 }

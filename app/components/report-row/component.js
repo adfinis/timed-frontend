@@ -4,11 +4,12 @@
  * @public
  */
 import { action } from "@ember/object";
-import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
+import { dropTask } from "ember-concurrency";
 import ReportValidations from "timed/validations/report";
 
 /**
@@ -21,6 +22,15 @@ import ReportValidations from "timed/validations/report";
 export default class ReportRowComponent extends Component {
   @service abilities;
 
+  @tracked
+  changeset;
+
+  constructor(...args) {
+    super(...args);
+
+    this.createChangeset.perform();
+  }
+
   get editable() {
     return this.abilities.can("edit report", this.args.report);
   }
@@ -31,24 +41,27 @@ export default class ReportRowComponent extends Component {
       : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and is therefore not editable anymore`;
   }
 
-  /**
-   * The changeset to edit
-   *
-   * @property {EmberChangeset.Changeset} changeset
-   * @public
-   */
-  get changeset() {
+  @dropTask
+  *createChangeset() {
     const c = new Changeset(
       this.args.report,
       lookupValidator(ReportValidations),
       ReportValidations
     );
 
-    later(() => {
-      c.validate();
-    });
+    yield c.validate();
 
-    return c;
+    this.changeset = c;
+  }
+
+  @action
+  updateComment(event) {
+    this.changeset.comment = event.target.value;
+  }
+
+  @action
+  updateTask(task) {
+    this.changeset.task = task;
   }
 
   /**
@@ -58,7 +71,8 @@ export default class ReportRowComponent extends Component {
    * @public
    */
   @action
-  save() {
+  save(event) {
+    event.preventDefault();
     this.args.onSave(this.changeset);
   }
 
