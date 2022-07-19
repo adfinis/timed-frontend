@@ -71,54 +71,65 @@
       {{#if selectedTask}}
         <div class="task-form-container" data-test-task-form>
           <h2>{{if selectedTask.isNew "Add task" selectedTask.name}}</h2>
-          {{#validated-form
-            model     = (changeset selectedTask TaskValidations)
-            on-submit = (perform saveTask)
-          as |f|}}
+          <ValidatedForm
+            @model={{changeset this.selectedTask TaskValidations}}
+            @on-submit={{perform this.saveTask}}
+            as |f|
+          >
             <div class="task-form-container-row">
               <div class="task-form-container-column">
-                {{f.input
+                <f.input
+                  @label="Name"
+                  @name="name"
+                  @required={{true}}
                   data-test-name
-                  label="Name"
-                  name="name"
-                  required=true
-                }}
-                {{f.input
+                />
+                <f.input
+                  @label="Reference"
+                  @name="reference"
+                  @required={{false}}
                   data-test-reference
-                  label="Reference"
-                  name="reference"
-                  required=false
-                }}
+                />
               </div>
               <div class="task-form-container-column">
-                {{#f.input name='estimatedTime' as |fi|}}
+                <f.input @name="estimatedTime" as |fi|>
                   <label>
                     Estimated time
                   </label>
-                  {{sy-durationpicker
+                  <SyDurationpicker
+                    @value={{fi.value}}
+                    @onChange={{fi.update}}
                     data-test-estimated-time
-                    value=fi.value
-                    on-change=fi.update
-                  }}
-                {{/f.input}}
+                  />
+                </f.input>
 
-                {{#f.input data-test-archived name='archived' as |fi|}}
+                <f.input data-test-archived @name="archived" as |fi|>
                   <label>
                     Archived
                   </label>
-                  {{sy-checkbox
-                    checked=selectedTask.archived
-                    value=fi.value
-                    on-change=fi.update
-                  }}
-                {{/f.input}}
+                  <SyCheckbox
+                    @checked={{this.selectedTask.archived}}
+                    @value={{fi.value}}
+                    @on-change={{fi.update}}
+                  />
+                </f.input>
               </div>
             </div>
             <div class="btn-toolbar btn-toolbar--right">
-              <button class="btn btn-primary" {{action (mut selectedTask) null}} data-test-cancel>Cancel</button>
-              {{f.submit data-test-save disabled=f.model.isInvalid}}
+              <button
+                class="btn btn-secondary"
+                data-test-cancel
+                {{on "click" (fn (mut this.selectedTask) null)}}
+              >
+                Cancel
+              </button>
+              <f.submit
+                @label="Save"
+                @disabled={{f.model.isInvalid}}
+                data-test-save
+              />
             </div>
-          {{/validated-form}}
+          </ValidatedForm>
         </div>
       {{/if}}
     {{else}}

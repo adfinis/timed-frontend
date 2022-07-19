@@ -80,7 +80,7 @@
               @labelPath='name'
               @prompt='All billing types'
               @options={{this.billingTypes}}
-              @on-change={{fn (mut billingType)}}
+              @on-change={{fn (mut this.billingType)}}
             />
           </fs.label>
           <fs.label>
@@ -93,7 +93,7 @@
               @labelPath='name'
               @prompt='All cost centers'
               @options={{this.costCenters}}
-              @on-change={{fn (mut costCenter)}}
+              @on-change={{fn (mut this.costCenter)}}
             />
           </fs.label>
         </fs.group>
@@ -104,7 +104,7 @@
               data-test-filter-from-date
               @type='date'
               @selected={{this.fromDate}}
-              @on-change={{fn (mut fromDate)}}
+              @on-change={{fn (mut this.fromDate)}}
             />
           </fs.label>
           <fs.label>
