@@ -13,5 +13,5 @@ export default Component.extend({
     this._super(...args);
 
     this.set("limits", [10, 20, 50, 100]);
-  }
+  },
 });

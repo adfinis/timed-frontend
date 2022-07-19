@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
+import { and } from "@ember/object/computed";
 
 /**
  * Controller to edit an activity
@@ -23,9 +23,7 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {Boolean} saveEnabled
    * @public
    */
-  saveEnabled: computed("changeset.{isValid,isDirty}", function() {
-    return this.get("changeset.isDirty") && this.get("changeset.isValid");
-  }),
+  saveEnabled: and("changeset.isDirty", "changeset.isValid"),
 
   actions: {
     /**
@@ -37,8 +35,8 @@ const IndexActivitiesEditController = Controller.extend({
      */
     validateChangeset(changeset) {
       changeset.validate();
-    }
-  }
+    },
+  },
 });
 
 export default IndexActivitiesEditController;

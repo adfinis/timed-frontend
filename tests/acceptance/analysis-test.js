@@ -4,7 +4,7 @@ import {
   currentURL,
   visit,
   find,
-  findAll
+  findAll,
 } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { selectChoose } from "ember-power-select/test-support";
@@ -15,11 +15,11 @@ import { module, test } from "qunit";
 import config from "../../config/environment";
 import userSelect from "../helpers/user-select";
 
-module("Acceptance | analysis", function(hooks) {
+module("Acceptance | analysis", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     this.user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
@@ -28,14 +28,14 @@ module("Acceptance | analysis", function(hooks) {
     this.server.createList("report", 40, { userId: this.user.id });
   });
 
-  test("can visit /analysis", async function(assert) {
+  test("can visit /analysis", async function (assert) {
     await visit("/analysis");
 
     assert.dom("[data-test-apply-filters]").exists();
     assert.dom("[data-test-widen-filters]").doesNotExist();
   });
 
-  test("can download a file", async function(assert) {
+  test("can download a file", async function (assert) {
     await visit("/analysis");
 
     await selectChoose(
@@ -49,11 +49,11 @@ module("Acceptance | analysis", function(hooks) {
     assert.dom('[data-download-count="1"]').exists();
   });
 
-  test("disables buttons if export limit exceeded", async function(assert) {
-    this.server.get("/reports", function({ reports }) {
+  test("disables buttons if export limit exceeded", async function (assert) {
+    this.server.get("/reports", function ({ reports }) {
       return {
         ...this.serialize(reports.all()),
-        meta: { pagination: { count: config.APP.EXPORT_LIMIT + 1 } }
+        meta: { pagination: { count: config.APP.EXPORT_LIMIT + 1 } },
       };
     });
 
@@ -68,7 +68,7 @@ module("Acceptance | analysis", function(hooks) {
     assert.dom(".export-buttons .btn:first-child").isDisabled();
   });
 
-  test("can filter and reset filter", async function(assert) {
+  test("can filter and reset filter", async function (assert) {
     await visit("/analysis");
 
     await userSelect("[data-test-filter-user]");
@@ -87,7 +87,7 @@ module("Acceptance | analysis", function(hooks) {
     assert.equal(currentURL(), "/analysis?ordering=-user__username%2Cid");
   });
 
-  test("can have initial filters", async function(assert) {
+  test("can have initial filters", async function (assert) {
     const params = {
       customer: this.server.create("customer").id,
       project: this.server.create("project").id,
@@ -100,12 +100,12 @@ module("Acceptance | analysis", function(hooks) {
       toDate: "2017-12-01",
       review: "",
       notBillable: "",
-      verified: ""
+      verified: "",
     };
 
     await visit(
       `/analysis?${Object.keys(params)
-        .map(k => `${k}=${params[k]}`)
+        .map((k) => `${k}=${params[k]}`)
         .join("&")}`
     );
 
@@ -156,7 +156,7 @@ module("Acceptance | analysis", function(hooks) {
     );
   });
 
-  test("can select a report", async function(assert) {
+  test("can select a report", async function (assert) {
     await visit("/analysis");
 
     await selectChoose(
@@ -174,7 +174,7 @@ module("Acceptance | analysis", function(hooks) {
     assert.notOk(find("tbody > tr:first-child.selected"));
   });
 
-  test("can edit", async function(assert) {
+  test("can edit", async function (assert) {
     this.server.create("report-intersection");
 
     await visit("/analysis?editable=1");
@@ -184,7 +184,7 @@ module("Acceptance | analysis", function(hooks) {
     assert.equal(currentURL(), "/analysis/edit?editable=1");
   });
 
-  test("can edit selected reports", async function(assert) {
+  test("can edit selected reports", async function (assert) {
     this.server.create("report-intersection");
 
     await visit("/analysis");
@@ -203,12 +203,12 @@ module("Acceptance | analysis", function(hooks) {
     assert.ok(currentURL().includes("id=1%2C2"));
   });
 
-  test("cannot edit verified reports", async function(assert) {
+  test("cannot edit verified reports", async function (assert) {
     const verifier = this.server.create("user");
 
     this.server.create("report", {
       userId: this.user.id,
-      verifiedBy: verifier
+      verifiedBy: verifier,
     });
 
     await visit(`/analysis?user=${this.user.id}`);

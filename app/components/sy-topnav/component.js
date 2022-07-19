@@ -9,5 +9,5 @@ export default Component.extend({
   session: service("session"),
   media: service("media"),
   expand: false,
-  navMobile: or("media.isMo", "media.isXs", "media.isSm")
+  navMobile: or("media.isMo", "media.isXs", "media.isSm"),
 });

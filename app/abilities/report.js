@@ -5,7 +5,7 @@ export default Ability.extend({
   canEdit: computed(
     "user.{id,isSuperuser}",
     "model.{user.id,user.supervisors,verifiedBy,billed,taskAssignees,projectAssignees,customerAssignees}",
-    function() {
+    function () {
       const isEditable =
         this.get("user.isSuperuser") ||
         (!this.get("model.verifiedBy.id") &&
@@ -23,5 +23,5 @@ export default Ability.extend({
           .includes(this.get("user.id")) && !this.get("model.verifiedBy.id");
       return isEditable || isReviewer;
     }
-  )
+  ),
 });

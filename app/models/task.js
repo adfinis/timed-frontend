@@ -3,10 +3,8 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 import { computed } from "@ember/object";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo, hasMany } from "ember-data/relationships";
 
 /**
  * The task model
@@ -74,11 +72,11 @@ export default Model.extend({
    */
   isTask: true,
 
-  longName: computed("project", function() {
+  longName: computed("project", function () {
     const taskName = this.get("name");
     const projectName = this.get("project.name");
     const customerName = this.get("project.customer.name");
 
     return `${customerName} > ${projectName} > ${taskName}`;
-  })
+  }),
 });

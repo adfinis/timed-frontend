@@ -14,5 +14,5 @@ import { validatePresence } from "ember-changeset-validations/validators";
 export default {
   date: validatePresence(true),
   from: validatePresence(true),
-  to: validatePresence(true)
+  to: validatePresence(true),
 };

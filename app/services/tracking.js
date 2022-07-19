@@ -50,10 +50,15 @@ export default Service.extend({
 
     const actives = await this.get("store").query("activity", {
       include: "task,task.project,task.project.customer",
-      active: true
+      active: true,
     });
 
-    this.set("activity", actives.getWithDefault("firstObject", null));
+    this.set(
+      "activity",
+      actives.get("firstObject") === undefined
+        ? null
+        : actives.get("firstObject")
+    );
 
     this.get("_computeTitle").perform();
   },
@@ -64,7 +69,7 @@ export default Service.extend({
    * @property {Ember.Application} application
    * @public
    */
-  application: computed(function() {
+  application: computed(function () {
     return getOwner(this).lookup("application:main");
   }),
 
@@ -74,7 +79,7 @@ export default Service.extend({
    * @property {String} title
    * @public
    */
-  title: computed("application.name", function() {
+  title: computed("application.name", function () {
     return capitalize(camelize(this.get("application.name") || "Timed"));
   }),
 
@@ -85,7 +90,7 @@ export default Service.extend({
    * @private
    */
   // eslint-disable-next-line ember/no-observers
-  _triggerTitle: observer("activity.active", function() {
+  _triggerTitle: observer("activity.active", function () {
     if (this.get("activity.active")) {
       this.get("_computeTitle").perform();
     } else {
@@ -101,14 +106,11 @@ export default Service.extend({
    * @public
    */
   setTitle(title) {
-    scheduleOnce(
-      "afterRender",
-      this,
-      t => {
-        document.title = t;
-      },
-      title
-    );
+    scheduleOnce("afterRender", this, this.scheduleDocumentTitle(title));
+  },
+
+  scheduleDocumentTitle(t) {
+    document.title = t;
   },
 
   /**
@@ -118,7 +120,7 @@ export default Service.extend({
    * @method _computeTitle
    * @private
    */
-  _computeTitle: task(function*() {
+  _computeTitle: task(function* () {
     while (this.get("activity.active")) {
       const duration = moment.duration(
         moment().diff(this.get("activity.from"))
@@ -170,7 +172,7 @@ export default Service.extend({
       this.set("_activity", newActivity);
 
       return newActivity;
-    }
+    },
   }),
 
   /**
@@ -179,7 +181,7 @@ export default Service.extend({
    * @method startActivity
    * @public
    */
-  startActivity: task(function*() {
+  startActivity: task(function* () {
     try {
       const activity = yield this.get("activity").start();
       this.set("activity", activity);
@@ -197,7 +199,7 @@ export default Service.extend({
    * @method stopActivity
    * @public
    */
-  stopActivity: task(function*() {
+  stopActivity: task(function* () {
     try {
       if (!this.get("activity.isNew")) {
         yield this.get("activity").stop();
@@ -218,10 +220,10 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  recentTasks: task(function*() {
+  recentTasks: task(function* () {
     return yield this.get("store").query("task", {
       my_most_frequent: 10, // eslint-disable-line camelcase
-      include: "project,project.customer"
+      include: "project,project.customer",
     });
   }).drop(),
 
@@ -231,7 +233,7 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} users
    * @public
    */
-  users: task(function*() {
+  users: task(function* () {
     return yield this.get("store").query("user", {});
   }),
 
@@ -241,7 +243,7 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} customers
    * @public
    */
-  customers: task(function*() {
+  customers: task(function* () {
     return yield this.get("store").query("customer", {});
   }).drop(),
 
@@ -252,7 +254,7 @@ export default Service.extend({
    * @param {Number} customer The customer id to filter by
    * @public
    */
-  projects: task(function*(customer) {
+  projects: task(function* (customer) {
     /* istanbul ignore next */
     if (!customer) {
       // We can't test this because the UI prevents it
@@ -269,7 +271,7 @@ export default Service.extend({
    * @param {Number} project The project id to filter by
    * @public
    */
-  tasks: task(function*(project) {
+  tasks: task(function* (project) {
     /* istanbul ignore next */
     if (!project) {
       // We can't test this because the UI prevents it

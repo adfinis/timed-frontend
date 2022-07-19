@@ -18,7 +18,7 @@ export default [
       Let's begin by starting a new activity! Select a task of your choice,
       enter a comment and hit the start button.
     </p>
-    `
+    `,
   },
   {
     target: ".table--activities",
@@ -33,7 +33,7 @@ export default [
       You can start or stop the listed activities with the buttons at the end
       of the row. Or edit them by clicking on it.
     </p>
-    `
+    `,
   },
   {
     target: ".btn-toolbar .btn-success",
@@ -54,6 +54,6 @@ export default [
     <p>
       Go ahead and try it!
     </p>
-    `
-  }
+    `,
+  },
 ];

@@ -27,7 +27,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   queryParams: {
-    day: { refreshModel: true }
+    day: { refreshModel: true },
   },
 
   /**
@@ -71,12 +71,8 @@ export default Route.extend(RouteAutostartTourMixin, {
   afterModel(model) {
     const userId = this.get("session.data.user.id");
     const day = model.format(DATE_FORMAT);
-    const from = moment(model)
-      .subtract(20, "days")
-      .format(DATE_FORMAT);
-    const to = moment(model)
-      .add(10, "days")
-      .format(DATE_FORMAT);
+    const from = moment(model).subtract(20, "days").format(DATE_FORMAT);
+    const to = moment(model).add(10, "days").format(DATE_FORMAT);
     const location = this.store
       .peekRecord("user", userId)
       .get("activeEmployment.location.id");
@@ -84,31 +80,31 @@ export default Route.extend(RouteAutostartTourMixin, {
     return all([
       this.store.query("activity", {
         include: "task,task.project,task.project.customer",
-        day
+        day,
       }),
       this.store.query("attendance", { date: day }),
       this.store.query("absence-type", {}),
       this.store.query("report", {
         include: "task,task.project,task.project.customer",
         date: day,
-        user: userId
+        user: userId,
       }),
       /* eslint-disable camelcase */
       this.store.query("report", {
         from_date: from,
         to_date: to,
-        user: userId
+        user: userId,
       }),
       this.store.query("absence", {
         from_date: from,
         to_date: to,
-        user: userId
+        user: userId,
       }),
       this.store.query("public-holiday", {
         from_date: from,
         to_date: to,
-        location
-      })
+        location,
+      }),
       /* eslint-enable camelcase */
     ]);
   },
@@ -122,7 +118,7 @@ export default Route.extend(RouteAutostartTourMixin, {
     controller.set("newAbsence", {
       dates: [model],
       comment: "",
-      absenceType: null
+      absenceType: null,
     });
   },
 
@@ -181,11 +177,11 @@ export default Route.extend(RouteAutostartTourMixin, {
         const absenceType = changeset.get("absenceType");
         const comment = changeset.get("comment");
 
-        changeset.get("dates").forEach(async date => {
+        changeset.get("dates").forEach(async (date) => {
           const absence = this.store.createRecord("absence", {
             absenceType,
             date,
-            comment
+            comment,
           });
 
           await absence.save();
@@ -200,6 +196,6 @@ export default Route.extend(RouteAutostartTourMixin, {
       } finally {
         this.send("finished");
       }
-    }
-  }
+    },
+  },
 });

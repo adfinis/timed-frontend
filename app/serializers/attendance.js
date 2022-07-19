@@ -26,6 +26,6 @@ export default ApplicationSerializer.extend({
    */
   attrs: {
     from: "from-time",
-    to: "to-time"
-  }
+    to: "to-time",
+  },
 });

@@ -4,7 +4,7 @@
  * @public
  */
 import Component from "@ember/component";
-import { computed } from "@ember/object";
+import { and } from "@ember/object/computed";
 import moment from "moment";
 
 /**
@@ -39,9 +39,7 @@ export default Component.extend({
    */
   recording: false,
 
-  active: computed("recording", "activity.id", function() {
-    return this.get("recording") && this.get("activity.id");
-  }),
+  active: and("recording", "activity.id"),
 
   /**
    * The actions for the record button component
@@ -68,6 +66,6 @@ export default Component.extend({
      */
     stop() {
       this.get("on-stop")();
-    }
-  }
+    },
+  },
 });

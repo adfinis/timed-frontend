@@ -7,5 +7,5 @@ export default Factory.extend({
 
   afterCreate(taskStatistic, server) {
     taskStatistic.update({ taskId: server.create("task").id });
-  }
+  },
 });

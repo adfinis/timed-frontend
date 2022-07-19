@@ -55,7 +55,7 @@ export default Component.extend({
     close() {
       this.set("visible", false);
 
-      this.getWithDefault("on-close", () => {})();
-    }
-  }
+      (this.get("on-close") === undefined ? () => {} : this.get("on-close"))();
+    },
+  },
 });

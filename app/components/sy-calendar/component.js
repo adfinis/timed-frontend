@@ -9,7 +9,7 @@ export default PowerCalendarComponent.extend({
   months: moment.months(),
 
   years: [...new Array(40).keys()].map(
-    i => `${CURRENT_YEAR + YEARS_IN_FUTURE - i}`
+    (i) => `${CURRENT_YEAR + YEARS_IN_FUTURE - i}`
   ),
 
   actions: {
@@ -18,6 +18,6 @@ export default PowerCalendarComponent.extend({
       const newCenter = moment(date)[unit](event.target.value);
 
       this.onCenterChange({ moment: newCenter });
-    }
-  }
+    },
+  },
 });

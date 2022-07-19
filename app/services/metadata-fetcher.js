@@ -8,12 +8,12 @@ const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create();
 const META_MODELS = {
   project: {
     spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
-    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
+    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
   },
   task: {
     spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
-    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
-  }
+    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
+  },
 };
 
 /**
@@ -41,7 +41,7 @@ export default Service.extend({
    * @return {Object} An object with the parsed metadata
    * @public
    */
-  fetchSingleRecordMetadata: task(function*(type, id) {
+  fetchSingleRecordMetadata: task(function* (type, id) {
     /* istanbul ignore next */
     if (!id) {
       throw new Error(`${capitalize(type)} ID is missing`);
@@ -58,10 +58,10 @@ export default Service.extend({
 
         return {
           ...parsedMeta,
-          [key]: value ? transform.deserialize(value) : defaultValue
+          [key]: value ? transform.deserialize(value) : defaultValue,
         };
       },
       {}
     );
-  }).restartable()
+  }).restartable(),
 });

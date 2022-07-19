@@ -16,16 +16,16 @@ export default Controller.extend({
   tasks: reads("fetchTasksByProject.lastSuccessful.value"),
   loading: reads("fetchTasksByProject.isRunning"),
 
-  customers: computed("projects", function() {
+  customers: computed("projects", function () {
     return (
       this.get("projects")
-        ?.map(project => project.get("customer"))
+        ?.map((project) => project.get("customer"))
         .uniqBy("id")
         .sortBy("name") ?? []
     );
   }),
 
-  fetchProjectsByUser: task(function*() {
+  fetchProjectsByUser: task(function* () {
     try {
       let projects;
       if (this.get("user.isSuperuser")) {
@@ -33,7 +33,7 @@ export default Controller.extend({
       } else {
         projects = yield this.store.query("project", {
           has_manager: this.get("user.id"),
-          include: "customer"
+          include: "customer",
         });
       }
 
@@ -43,23 +43,24 @@ export default Controller.extend({
     }
   }),
 
-  filterProjects: task(function*() {
+  filterProjects: task(function* () {
     return yield this.get("projects").filter(
-      project => project.get("customer.id") === this.get("selectedCustomer.id")
+      (project) =>
+        project.get("customer.id") === this.get("selectedCustomer.id")
     );
   }),
 
-  fetchTasksByProject: task(function*() {
+  fetchTasksByProject: task(function* () {
     try {
       return yield this.store.query("task", {
-        project: this.get("selectedProject.id")
+        project: this.get("selectedProject.id"),
       });
     } catch (error) {
       this.notify.error("Error while fetching tasks");
     }
   }).drop(),
 
-  saveTask: task(function*(changeset) {
+  saveTask: task(function* (changeset) {
     try {
       yield changeset.save();
 
@@ -72,11 +73,11 @@ export default Controller.extend({
     this.fetchTasksByProject.perform(this.get("selectedProject"));
   }).drop(),
 
-  createTask: task(function*() {
+  createTask: task(function* () {
     this.set(
       "selectedTask",
       yield this.store.createRecord("task", {
-        project: this.get("selectedProject")
+        project: this.get("selectedProject"),
       })
     );
   }).drop(),
@@ -97,6 +98,6 @@ export default Controller.extend({
       if (this.get("selectedProject") !== null) {
         this.fetchTasksByProject.perform();
       }
-    }
-  }
+    },
+  },
 });

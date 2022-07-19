@@ -14,5 +14,5 @@ export default Component.extend({
    * @property {string} tagName
    * @public
    */
-  tagName: "tbody"
+  tagName: "tbody",
 });

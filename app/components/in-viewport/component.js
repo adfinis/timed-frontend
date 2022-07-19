@@ -12,14 +12,22 @@ const InViewportComponent = Component.extend({
     const observer = new IntersectionObserver(
       ([{ isIntersecting }]) => {
         if (isIntersecting) {
-          return this.getWithDefault("on-enter-viewport", () => {})();
+          return (
+            this.get("on-enter-viewport") === undefined
+              ? () => {}
+              : this.get("on-enter-viewport")
+          )();
         }
 
-        return this.getWithDefault("on-exit-viewport", () => {})();
+        return (
+          this.get("on-exit-viewport") === undefined
+            ? () => {}
+            : this.get("on-exit-viewport")
+        )();
       },
       {
         root: document.querySelector(this.get("rootSelector")),
-        rootMargin: `${this.get("rootMargin")}px`
+        rootMargin: `${this.get("rootMargin")}px`,
       }
     );
 
@@ -33,7 +41,7 @@ const InViewportComponent = Component.extend({
     this._super(...args);
 
     this.get("_observer").disconnect();
-  }
+  },
 });
 
 export default InViewportComponent;

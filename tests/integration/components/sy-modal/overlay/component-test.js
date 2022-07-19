@@ -3,15 +3,15 @@ import { setupRenderingTest } from "ember-qunit";
 import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy modal/overlay", function(hooks) {
+module("Integration | Component | sy modal/overlay", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`{{sy-modal/overlay}}`);
     assert.ok(this.element);
   });
 
-  test("closes on click", async function(assert) {
+  test("closes on click", async function (assert) {
     this.set("visible", true);
     this.set("closeAction", () => this.set("visible", false));
 
@@ -22,14 +22,14 @@ module("Integration | Component | sy modal/overlay", function(hooks) {
       }}
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click(".modal");
 
-    assert.notOk(this.get("visible"));
+    assert.notOk(this.visible);
   });
 
-  test("does not close on click of a child element", async function(assert) {
+  test("does not close on click of a child element", async function (assert) {
     this.set("visible", true);
     this.set("closeAction", () => this.set("visible", false));
 
@@ -39,10 +39,10 @@ module("Integration | Component | sy modal/overlay", function(hooks) {
       {{/sy-modal/overlay}}
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click("#some-child");
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
   });
 });

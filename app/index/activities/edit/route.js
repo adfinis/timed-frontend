@@ -126,6 +126,6 @@ export default Route.extend(RouteAutostartTourMixin, {
         /* istanbul ignore next */
         this.get("notify").error("Error while deleting the activity");
       }
-    }
-  }
+    },
+  },
 });

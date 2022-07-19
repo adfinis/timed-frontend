@@ -6,11 +6,11 @@ export default Factory.extend({
 
   morning: trait({
     fromTime: "08:00:00",
-    toTime: "11:30:00"
+    toTime: "11:30:00",
   }),
 
   afternoon: trait({
     fromTime: "12:00:00",
-    toTime: "17:00:00"
-  })
+    toTime: "17:00:00",
+  }),
 });

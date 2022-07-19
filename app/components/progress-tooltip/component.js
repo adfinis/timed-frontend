@@ -79,7 +79,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {Number} progressTotal
    * @public
    */
-  progressTotal: computed("estimated", "spent", function() {
+  progressTotal: computed("estimated", "spent", function () {
     return this.get("estimated") && this.get("estimated").asHours()
       ? this.get("spent") / this.get("estimated")
       : 0;
@@ -91,7 +91,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {String} colorTotal
    * @public
    */
-  colorTotal: computed("progressTotal", function() {
+  colorTotal: computed("progressTotal", function () {
     if (this.get("progressTotal") > 1) {
       return "danger";
     } else if (this.get("progressTotal") >= 0.9) {
@@ -107,7 +107,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {Number} progressBillable
    * @public
    */
-  progressBillable: computed("estimated", "billable", function() {
+  progressBillable: computed("estimated", "billable", function () {
     return this.get("estimated") && this.get("estimated").asHours()
       ? this.get("billable") / this.get("estimated")
       : 0;
@@ -119,7 +119,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {String} colorBillable
    * @public
    */
-  colorBillable: computed("progressBillable", function() {
+  colorBillable: computed("progressBillable", function () {
     if (this.get("progressBillable") > 1) {
       return "danger";
     } else if (this.get("progressBillable") >= 0.9) {
@@ -135,7 +135,7 @@ const ProgressTooltipComponent = Component.extend({
    * @property {EmberConcurrency.Task} tooltipVisible
    * @public
    */
-  tooltipVisible: computed("visible", function() {
+  tooltipVisible: computed("visible", function () {
     const task = this.get("_computeTooltipVisible");
 
     task.perform(this.get("visible"));
@@ -151,7 +151,7 @@ const ProgressTooltipComponent = Component.extend({
    * @return {Boolean} Whether the tooltip is now visible
    * @public
    */
-  _computeTooltipVisible: task(function*(visible) {
+  _computeTooltipVisible: task(function* (visible) {
     if (visible) {
       yield timeout(this.get("delay"));
 
@@ -165,7 +165,7 @@ const ProgressTooltipComponent = Component.extend({
     }
 
     return visible;
-  }).restartable()
+  }).restartable(),
 });
 
 export default ProgressTooltipComponent;

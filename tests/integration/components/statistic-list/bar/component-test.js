@@ -3,10 +3,10 @@ import { setupRenderingTest } from "ember-qunit";
 import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
-module("Integration | Component | statistic list/bar", function(hooks) {
+module("Integration | Component | statistic list/bar", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`{{statistic-list/bar 0.5}}`);
 
     const element = this.element.querySelector(".statistic-list-bar");
@@ -14,10 +14,7 @@ module("Integration | Component | statistic list/bar", function(hooks) {
     assert.ok(element);
 
     assert.equal(
-      window
-        .getComputedStyle(element)
-        .getPropertyValue("--value")
-        .trim(),
+      window.getComputedStyle(element).getPropertyValue("--value").trim(),
       "0.5"
     );
   });

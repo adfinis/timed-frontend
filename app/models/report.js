@@ -3,9 +3,7 @@
  * @submodule timed-models
  * @public
  */
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
+import Model, { attr, belongsTo } from "@ember-data/model";
 import moment from "moment";
 
 /**
@@ -86,5 +84,5 @@ export default Model.extend({
    * @property {User} verifiedBy
    * @public
    */
-  verifiedBy: belongsTo("user")
+  verifiedBy: belongsTo("user"),
 });

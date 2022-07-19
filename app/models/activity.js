@@ -3,11 +3,9 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, belongsTo } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
 import moment from "moment";
 import { all } from "rsvp";
 
@@ -91,11 +89,11 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  active: computed("toTime", function() {
+  active: computed("toTime", function () {
     return !this.get("toTime") && !!this.get("id");
   }),
 
-  duration: computed("fromTime", "toTime", function() {
+  duration: computed("fromTime", "toTime", function () {
     return moment.duration(
       (this.get("to") ? this.get("to") : moment()).diff(this.get("from"))
     );
@@ -110,14 +108,14 @@ export default Model.extend({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
-          ms: time.milliseconds()
+          ms: time.milliseconds(),
         })
       );
     },
     set(key, val) {
       this.set("fromTime", val);
       return val;
-    }
+    },
   }),
 
   to: computed("date", "toTime", {
@@ -129,14 +127,14 @@ export default Model.extend({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
-          ms: time.milliseconds()
+          ms: time.milliseconds(),
         })
       );
     },
     set(key, val) {
       this.set("toTime", val);
       return val;
-    }
+    },
   }),
 
   /**
@@ -152,7 +150,7 @@ export default Model.extend({
       task: this.get("task"),
       comment: this.get("comment"),
       review: this.get("review"),
-      notBillable: this.get("notBillable")
+      notBillable: this.get("notBillable"),
     });
 
     await activity.save();
@@ -189,13 +187,13 @@ export default Model.extend({
           date: moment(this.get("date")).add(1, "days"),
           review: this.get("review"),
           notBillable: this.get("notBillable"),
-          fromTime: moment({ h: 0, m: 0, s: 0 })
+          fromTime: moment({ h: 0, m: 0, s: 0 }),
         })
       );
     }
 
     await all(
-      activities.map(async activity => {
+      activities.map(async (activity) => {
         if (activity.get("isNew")) {
           await activity.save();
         }
@@ -207,7 +205,7 @@ export default Model.extend({
               moment(activity.get("date")).set({
                 h: 23,
                 m: 59,
-                s: 59
+                s: 59,
               }),
               moment()
             )
@@ -219,12 +217,10 @@ export default Model.extend({
     );
 
     if (moment().diff(this.get("date"), "days") > 1) {
-      this.get(
-        "notify"
-      ).info(
+      this.get("notify").info(
         "The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.",
         { closeAfter: 5000 }
       );
     }
-  }
+  },
 });

@@ -26,6 +26,6 @@ export default ApplicationSerializer.extend({
    */
   attrs: {
     start: "start-date",
-    end: "end-date"
-  }
+    end: "end-date",
+  },
 });

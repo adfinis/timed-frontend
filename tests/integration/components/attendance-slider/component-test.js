@@ -7,13 +7,13 @@ import { module, test } from "qunit";
 
 const ATTENDANCE = EmberObject.create({
   from: moment({ h: 8, m: 0, s: 0, ms: 0 }),
-  to: moment({ h: 8, m: 0, s: 0, ms: 0 })
+  to: moment({ h: 8, m: 0, s: 0, ms: 0 }),
 });
 
-module("Integration | Component | attendance slider", function(hooks) {
+module("Integration | Component | attendance slider", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("attendance", ATTENDANCE);
 
     await render(hbs`
@@ -23,10 +23,11 @@ module("Integration | Component | attendance slider", function(hooks) {
     assert.dom(".noUi-connect").exists();
   });
 
-  test("can delete", async function(assert) {
+  test("can delete", async function (assert) {
+    assert.expect(1);
     this.set("attendance", ATTENDANCE);
 
-    this.set("deleteAction", attendance => {
+    this.set("deleteAction", (attendance) => {
       assert.ok(attendance);
     });
 
@@ -40,12 +41,12 @@ module("Integration | Component | attendance slider", function(hooks) {
     await click(".fa-trash");
   });
 
-  test("can handle attendances until 00:00", async function(assert) {
+  test("can handle attendances until 00:00", async function (assert) {
     this.set(
       "attendance",
       EmberObject.create({
         from: moment({ h: 0, m: 0, s: 0 }),
-        to: moment({ h: 0, m: 0, s: 0 })
+        to: moment({ h: 0, m: 0, s: 0 }),
       })
     );
 

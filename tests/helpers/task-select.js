@@ -1,6 +1,9 @@
 import { selectChoose } from "ember-power-select/test-support";
 
-export default async function(selector = "", options = { fromHistory: false }) {
+export default async function (
+  selector = "",
+  options = { fromHistory: false }
+) {
   if (options.fromHistory) {
     await selectChoose(
       `${selector} .customer-select`,

@@ -4,10 +4,11 @@ import wait from "ember-test-helpers/wait";
 import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
-module("Integration | Component | filter sidebar", function(hooks) {
+module("Integration | Component | filter sidebar", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("can reset", async function(assert) {
+  test("can reset", async function (assert) {
+    assert.expect(1);
     this.set("didReset", false);
 
     await render(hbs`
@@ -22,7 +23,7 @@ module("Integration | Component | filter sidebar", function(hooks) {
     });
   });
 
-  test("shows applied filter count", async function(assert) {
+  test("shows applied filter count", async function (assert) {
     this.set("count", 0);
 
     await render(hbs`

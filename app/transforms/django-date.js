@@ -21,5 +21,5 @@ export default MomentTransform.extend({
    * @property {String} format
    * @public
    */
-  format: "YYYY-MM-DD"
+  format: "YYYY-MM-DD",
 });

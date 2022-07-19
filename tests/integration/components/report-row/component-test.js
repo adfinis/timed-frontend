@@ -5,18 +5,18 @@ import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 import { startMirage } from "timed/initializers/ember-cli-mirage";
 
-module("Integration | Component | report row", function(hooks) {
+module("Integration | Component | report row", function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.server = startMirage();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     this.server.shutdown();
   });
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set(
       "report",
       EmberObject.create({ verifiedBy: EmberObject.create() })
@@ -30,7 +30,7 @@ module("Integration | Component | report row", function(hooks) {
     assert.dom(".btn-primary").exists({ count: 1 });
   });
 
-  test("can delete row", async function(assert) {
+  test("can delete row", async function (assert) {
     this.set(
       "report",
       EmberObject.create({ verifiedBy: EmberObject.create() })
@@ -49,15 +49,15 @@ module("Integration | Component | report row", function(hooks) {
     assert.ok(this.get("didDelete"));
   });
 
-  test("can be read-only", async function(assert) {
+  test("can be read-only", async function (assert) {
     this.set(
       "report",
       EmberObject.create({
         verifiedBy: EmberObject.create({
           id: 1,
-          fullName: "John Doe"
+          fullName: "John Doe",
         }),
-        billed: true
+        billed: true,
       })
     );
 

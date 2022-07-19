@@ -12,17 +12,17 @@ export default Controller.extend({
 
   notify: service("notify"),
 
-  credit: task(function*() {
+  credit: task(function* () {
     const id = this.get("model");
 
     return id
       ? yield this.store.findRecord("overtime-credit", id)
       : yield this.store.createRecord("overtime-credit", {
-          user: this.get("user")
+          user: this.get("user"),
         });
   }),
 
-  save: task(function*(changeset) {
+  save: task(function* (changeset) {
     try {
       yield changeset.save();
 
@@ -39,10 +39,10 @@ export default Controller.extend({
       }
 
       const year =
-        allYears.find(y => y === String(changeset.get("date").year())) || "";
+        allYears.find((y) => y === String(changeset.get("date").year())) || "";
 
       yield this.transitionToRoute("users.edit.credits", this.get("user.id"), {
-        queryParams: { year }
+        queryParams: { year },
       });
     } catch (e) {
       /* istanbul ignore next */
@@ -50,7 +50,7 @@ export default Controller.extend({
     }
   }).drop(),
 
-  delete: task(function*(credit) {
+  delete: task(function* (credit) {
     try {
       yield credit.destroyRecord();
 
@@ -63,5 +63,5 @@ export default Controller.extend({
       /* istanbul ignore next */
       this.get("notify").error("Error while deleting the overtime credit");
     }
-  }).drop()
+  }).drop(),
 });

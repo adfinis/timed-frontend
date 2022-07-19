@@ -40,5 +40,5 @@ export default Component.extend({
     if (e.target === this.get("element")) {
       this.get("on-close")();
     }
-  }
+  },
 });

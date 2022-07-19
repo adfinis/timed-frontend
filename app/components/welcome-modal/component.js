@@ -4,5 +4,5 @@ export default Component.extend({
   tagName: "",
   "on-never"() {},
   "on-later"() {},
-  "on-start"() {}
+  "on-start"() {},
 });

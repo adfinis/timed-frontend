@@ -12,16 +12,16 @@ const MONTH_LAYOUT = hbs`{{moment-format (moment value 'M') 'MMMM'}}`;
 const COLUMN_MAP = {
   year: [
     { title: "Year", path: "year", layout: PLAIN_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   month: [
     { title: "Year", path: "year", layout: PLAIN_LAYOUT },
     { title: "Month", path: "month", layout: MONTH_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   customer: [
     { title: "Customer", path: "customer.name", layout: PLAIN_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   project: [
     { title: "Customer", path: "project.customer.name", layout: PLAIN_LAYOUT },
@@ -29,34 +29,34 @@ const COLUMN_MAP = {
     {
       title: "Estimated",
       path: "project.estimatedTime",
-      layout: DURATION_LAYOUT
+      layout: DURATION_LAYOUT,
     },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   task: [
     {
       title: "Customer",
       path: "task.project.customer.name",
-      layout: PLAIN_LAYOUT
+      layout: PLAIN_LAYOUT,
     },
     { title: "Project", path: "task.project.name", layout: PLAIN_LAYOUT },
     { title: "Task", path: "task.name", layout: PLAIN_LAYOUT },
     { title: "Estimated", path: "task.estimatedTime", layout: DURATION_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   user: [
     {
       title: "User",
       path: "user.fullName",
       ordering: "user__username",
-      layout: PLAIN_LAYOUT
+      layout: PLAIN_LAYOUT,
     },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
-  ]
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
+  ],
 };
 
 export default Component.extend({
-  maxDuration: computed("data.last.value.@each.duration", function() {
+  maxDuration: computed("data.last.value.@each.duration", function () {
     return (
       this.get("data.last.value") &&
       moment.duration(
@@ -65,20 +65,22 @@ export default Component.extend({
     );
   }),
 
-  total: computed("data.last.value", function() {
+  total: computed("data.last.value", function () {
     return parseDjangoDuration(
-      this.getWithDefault("data.last.value.meta.total-time", null)
+      this.get("data.last.value.meta.total-time") === undefined
+        ? null
+        : this.get("data.last.value.meta.total-time")
     );
   }),
 
-  columns: computed("type", function() {
-    return get(COLUMN_MAP, this.get("type")).map(col => ({
+  columns: computed("type", function () {
+    return get(COLUMN_MAP, this.get("type")).map((col) => ({
       ...col,
-      ordering: col.ordering || col.path.replace(/\./g, "__")
+      ordering: col.ordering || col.path.replace(/\./g, "__"),
     }));
   }),
 
-  missingParamsMessage: computed("missingParams.[]", function() {
+  missingParamsMessage: computed("missingParams.[]", function () {
     if (!this.get("missingParams.length")) {
       return "";
     }
@@ -107,5 +109,5 @@ export default Component.extend({
         : "is a required parameter";
 
     return `${text} ${suffix} for this statistic`;
-  })
+  }),
 });

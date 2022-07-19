@@ -10,5 +10,5 @@ export default Factory.extend({
 
   afterCreate(task, server) {
     task.update({ projectId: server.create("project").id });
-  }
+  },
 });

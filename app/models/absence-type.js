@@ -3,9 +3,7 @@
  * @submodule timed-models
  * @public
  */
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { hasMany } from "ember-data/relationships";
+import Model, { attr, hasMany } from "@ember-data/model";
 
 /**
  * The absence type model
@@ -39,5 +37,5 @@ export default Model.extend({
    * @property {AbsenceBalance[]} absenceBalances
    * @public
    */
-  absenceBalances: hasMany("absence-balance")
+  absenceBalances: hasMany("absence-balance"),
 });

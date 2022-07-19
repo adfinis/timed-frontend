@@ -1,19 +1,19 @@
 import { setupTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Unit | Service | autostart tour", function(hooks) {
+module("Unit | Service | autostart tour", function (hooks) {
   setupTest(hooks);
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     localStorage.removeItem("timed-tour-test");
   });
 
-  test("exists", function(assert) {
+  test("exists", function (assert) {
     const service = this.owner.lookup("service:autostart-tour");
     assert.ok(service);
   });
 
-  test("can set and get the done tours", function(assert) {
+  test("can set and get the done tours", function (assert) {
     const service = this.owner.lookup("service:autostart-tour");
 
     service.setProperties({ doneKey: "timed-tour-test" });
@@ -25,7 +25,7 @@ module("Unit | Service | autostart tour", function(hooks) {
     assert.deepEqual(service.get("done"), ["test"]);
   });
 
-  test("can check if all tours are done", function(assert) {
+  test("can check if all tours are done", function (assert) {
     const service = this.owner.lookup("service:autostart-tour");
 
     service.setProperties({ doneKey: "timed-tour-test", tours: ["test"] });

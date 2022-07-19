@@ -10,8 +10,8 @@ const UsersEditCreditsQueryParams = new QueryParams({
   year: {
     defaultValue: `${moment().year()}`,
     replace: true,
-    refresh: true
-  }
+    refresh: true,
+  },
 });
 
 export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
@@ -23,18 +23,16 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
   userController: controller("users.edit"),
 
-  years: task(function*() {
+  years: task(function* () {
     const employments = yield this.store.query("employment", {
       user: this.get("model.id"),
-      ordering: "start_date"
+      ordering: "start_date",
     });
 
     const from = (employments.get("firstObject.start") || moment()).year();
-    const to = moment()
-      .add(1, "year")
-      .year();
+    const to = moment().add(1, "year").year();
 
-    return [...new Array(to + 1 - from).keys()].map(i => `${from + i}`);
+    return [...new Array(to + 1 - from).keys()].map((i) => `${from + i}`);
   }),
 
   overtimeCreditAbility: ability("overtime-credit"),
@@ -44,7 +42,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     "year",
     "overtimeCreditAbility.canCreate",
     "absenceCreditAbility.canCreate",
-    function() {
+    function () {
       return (
         parseInt(this.get("year")) === moment().year() - 1 &&
         this.get("overtimeCreditAbility.canCreate") &&
@@ -66,28 +64,28 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     }
   },
 
-  absenceCredits: task(function*() {
+  absenceCredits: task(function* () {
     const year = this.get("year");
 
     return yield this.store.query("absence-credit", {
       user: this.get("model.id"),
       include: "absence_type",
       ordering: "-date",
-      ...(year ? { year } : {})
+      ...(year ? { year } : {}),
     });
   }),
 
-  overtimeCredits: task(function*() {
+  overtimeCredits: task(function* () {
     const year = this.get("year");
 
     return yield this.store.query("overtime-credit", {
       user: this.get("model.id"),
       ordering: "-date",
-      ...(year ? { year } : {})
+      ...(year ? { year } : {}),
     });
   }),
 
-  transfer: task(function*() {
+  transfer: task(function* () {
     /* istanbul ignore next */
     if (!this.get("allowTransfer")) {
       return;
@@ -97,7 +95,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
       yield this.get("ajax").request(
         `/api/v1/users/${this.get("model.id")}/transfer`,
         {
-          method: "POST"
+          method: "POST",
         }
       );
 
@@ -112,7 +110,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     }
   }).drop(),
 
-  editAbsenceCredit: task(function*(id) {
+  editAbsenceCredit: task(function* (id) {
     if (this.get("can").can("edit absence-credit")) {
       yield this.transitionToRoute(
         "users.edit.credits.absence-credits.edit",
@@ -121,12 +119,12 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     }
   }).drop(),
 
-  editOvertimeCredit: task(function*(id) {
+  editOvertimeCredit: task(function* (id) {
     if (this.get("can").can("edit overtime-credit")) {
       yield this.transitionToRoute(
         "users.edit.credits.overtime-credits.edit",
         id
       );
     }
-  }).drop()
+  }).drop(),
 });

@@ -7,11 +7,11 @@ import { module, test } from "qunit";
 
 import userSelect from "../helpers/user-select";
 
-module("Acceptance | users", function(hooks) {
+module("Acceptance | users", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user");
 
     this.server.createList("user", 5, { supervisorIds: [user.id] });
@@ -21,7 +21,7 @@ module("Acceptance | users", function(hooks) {
     await authenticateSession({ user_id: user.id });
   });
 
-  test("shows only supervisees", async function(assert) {
+  test("shows only supervisees", async function (assert) {
     await visit("/users");
 
     await waitFor("table tbody tr");
@@ -29,10 +29,10 @@ module("Acceptance | users", function(hooks) {
     assert.dom("table tbody tr").exists({ count: 5 });
   });
 
-  test("shows all to superuser", async function(assert) {
+  test("shows all to superuser", async function (assert) {
     const user = this.server.create("user", { isSuperuser: true });
 
-    this.server.get("users/me", function() {
+    this.server.get("users/me", function () {
       return user;
     });
 
@@ -46,10 +46,10 @@ module("Acceptance | users", function(hooks) {
     assert.dom("table tbody tr").exists({ count: 12 });
   });
 
-  test("can filter and reset", async function(assert) {
+  test("can filter and reset", async function (assert) {
     const user = this.server.create("user", { isSuperuser: true });
 
-    this.server.get("users/me", function() {
+    this.server.get("users/me", function () {
       return user;
     });
 

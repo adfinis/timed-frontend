@@ -14,6 +14,7 @@ import RouteTourMixin from "ember-site-tour/mixins/route-tour";
  * @uses EmberSiteTour.RouteTourMixin
  * @public
  */
+// eslint-disable-next-line ember/no-new-mixins
 export default Mixin.create(RouteTourMixin, {
   autostartTour: service("autostart-tour"),
   notify: service("notify"),
@@ -51,9 +52,7 @@ export default Mixin.create(RouteTourMixin, {
   _wantsTour(routeName, user) {
     return (
       !user.get("tourDone") &&
-      !this.get("autostartTour")
-        .get("done")
-        .includes(routeName) &&
+      !this.get("autostartTour").get("done").includes(routeName) &&
       (this.get("media.isMd") ||
         this.get("media.isLg") ||
         this.get("media.isXl"))
@@ -118,7 +117,7 @@ export default Mixin.create(RouteTourMixin, {
         const tour = this.get("controller.tour");
 
         /* istanbul ignore next */
-        tour.on("tour.end", async event => {
+        tour.on("tour.end", async (event) => {
           if (event.currentStep + 1 !== event.tour._steps.length) {
             return;
           }
@@ -176,5 +175,5 @@ export default Mixin.create(RouteTourMixin, {
     this.startParentTour();
 
     this._super(...args);
-  }
+  },
 });

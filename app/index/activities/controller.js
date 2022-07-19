@@ -24,7 +24,7 @@ export default Controller.extend({
    * @property {Activity[]} _allActivities
    * @private
    */
-  _allActivities: computed(function() {
+  _allActivities: computed(function () {
     return this.store.peekAll("activity");
   }),
 
@@ -47,8 +47,8 @@ export default Controller.extend({
     "_allActivities.@each.{date,user,isNew,isDeleted}",
     "model",
     "user",
-    function() {
-      return this.get("_allActivities").filter(activity => {
+    function () {
+      return this.get("_allActivities").filter((activity) => {
         return (
           activity.get("date") &&
           activity.get("date").isSame(this.get("model"), "day") &&
@@ -60,7 +60,7 @@ export default Controller.extend({
     }
   ),
 
-  sortedActivities: sort("activities", function(a, b) {
+  sortedActivities: sort("activities", function (a, b) {
     return b.get("from").toDate() - a.get("from").toDate();
-  })
+  }),
 });

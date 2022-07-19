@@ -2,10 +2,10 @@ import { setupTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Unit | Transform | django duration", function(hooks) {
+module("Unit | Transform | django duration", function (hooks) {
   setupTest(hooks);
 
-  test("serializes", function(assert) {
+  test("serializes", function (assert) {
     const transform = this.owner.lookup("transform:django-duration");
 
     assert.notOk(transform.serialize(null));
@@ -15,7 +15,7 @@ module("Unit | Transform | django duration", function(hooks) {
         moment.duration({
           hours: 1,
           minutes: 2,
-          seconds: 3
+          seconds: 3,
         })
       ),
       "01:02:03"
@@ -27,7 +27,7 @@ module("Unit | Transform | django duration", function(hooks) {
           days: 1,
           hours: 2,
           minutes: 3,
-          seconds: 4
+          seconds: 4,
         })
       ),
       "1 02:03:04"
@@ -39,7 +39,7 @@ module("Unit | Transform | django duration", function(hooks) {
           hours: 1,
           minutes: 2,
           seconds: 3,
-          milliseconds: 4
+          milliseconds: 4,
         })
       ),
       "01:02:03.004000"
@@ -52,7 +52,7 @@ module("Unit | Transform | django duration", function(hooks) {
           hours: 2,
           minutes: 3,
           seconds: 4,
-          milliseconds: 5
+          milliseconds: 5,
         })
       ),
       "1 02:03:04.005000"
@@ -63,7 +63,7 @@ module("Unit | Transform | django duration", function(hooks) {
         moment.duration({
           hours: -1,
           minutes: -2,
-          seconds: -3
+          seconds: -3,
         })
       ),
       "-1 22:57:57"
@@ -75,14 +75,14 @@ module("Unit | Transform | django duration", function(hooks) {
           days: -9,
           hours: -1,
           minutes: -2,
-          seconds: -3
+          seconds: -3,
         })
       ),
       "-10 22:57:57"
     );
   });
 
-  test("deserializes", function(assert) {
+  test("deserializes", function (assert) {
     const transform = this.owner.lookup("transform:django-duration");
 
     assert.ok(transform.deserialize("00:00:00"));

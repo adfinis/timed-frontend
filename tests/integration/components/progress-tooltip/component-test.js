@@ -7,28 +7,28 @@ import moment from "moment";
 import { module, skip, test } from "qunit";
 import { startMirage } from "timed/initializers/ember-cli-mirage";
 
-module("Integration | Component | progress tooltip", function(hooks) {
+module("Integration | Component | progress tooltip", function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.server = startMirage();
 
     this.server.create("task");
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     this.server.shutdown();
   });
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 50 }),
         constructor: EmberObject.create({
-          modelName: "project"
-        })
+          modelName: "project",
+        }),
       })
     );
 
@@ -54,15 +54,15 @@ module("Integration | Component | progress tooltip", function(hooks) {
     });
   });
 
-  test("renders with tasks", async function(assert) {
+  test("renders with tasks", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100, m: 30 }),
         constructor: EmberObject.create({
-          modelName: "task"
-        })
+          modelName: "task",
+        }),
       })
     );
 
@@ -88,15 +88,15 @@ module("Integration | Component | progress tooltip", function(hooks) {
     });
   });
 
-  test("toggles correctly", async function(assert) {
+  test("toggles correctly", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100, m: 30 }),
         constructor: EmberObject.create({
-          modelName: "task"
-        })
+          modelName: "task",
+        }),
       })
     );
 
@@ -117,24 +117,24 @@ module("Integration | Component | progress tooltip", function(hooks) {
   });
 
   // TODO enable this
-  skip("uses danger color when the factor is more than 1", async function(assert) {
+  skip("uses danger color when the factor is more than 1", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100 }),
         constructor: EmberObject.create({
-          modelName: "project"
-        })
+          modelName: "project",
+        }),
       })
     );
 
-    this.server.get("/projects/:id", function({ projects }, request) {
+    this.server.get("/projects/:id", function ({ projects }, request) {
       return {
         ...this.serialize(projects.find(request.params.id)),
         meta: {
-          "spent-time": "4 05:00:00" // 101 hours
-        }
+          "spent-time": "4 05:00:00", // 101 hours
+        },
       };
     });
 
@@ -150,24 +150,24 @@ module("Integration | Component | progress tooltip", function(hooks) {
   });
 
   // TODO enable this
-  skip("uses warning color when the factor is 0.9 or more", async function(assert) {
+  skip("uses warning color when the factor is 0.9 or more", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 100 }),
         constructor: EmberObject.create({
-          modelName: "project"
-        })
+          modelName: "project",
+        }),
       })
     );
 
-    this.server.get("/projects/:id", function({ projects }, request) {
+    this.server.get("/projects/:id", function ({ projects }, request) {
       return {
         ...this.serialize(projects.find(request.params.id)),
         meta: {
-          "spent-time": "3 18:00:00" // 90 hours
-        }
+          "spent-time": "3 18:00:00", // 90 hours
+        },
       };
     });
 

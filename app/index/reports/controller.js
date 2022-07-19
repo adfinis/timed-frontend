@@ -39,7 +39,7 @@ export default class IndexReportController extends Controller {
   get reports() {
     const reportsToday = this._allReports.filter((r) => {
       return (
-        (!r.get("user.id") || r.get("user.id") === this.get("user.id")) &&
+        (!r.get("user.id") || r.get("user.id") === this.user.id) &&
         r.get("date").isSame(this.model, "day") &&
         !r.get("isDeleted")
       );

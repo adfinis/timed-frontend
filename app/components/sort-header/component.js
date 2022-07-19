@@ -1,21 +1,21 @@
 import Component from "@ember/component";
 import { computed } from "@ember/object";
 
-const getDirection = state => {
+const getDirection = (state) => {
   return state.startsWith("-") ? "desc" : "asc";
 };
 
-const getColname = state =>
+const getColname = (state) =>
   state.startsWith("-") ? state.substring(1) : state;
 
 export default Component.extend({
   tagName: "th",
 
-  direction: computed("current", function() {
+  direction: computed("current", function () {
     return getDirection(this.get("current"));
   }).readOnly(),
 
-  active: computed("current", function() {
+  active: computed("current", function () {
     const by = this.get("by");
     const current = this.get("current");
 
@@ -29,5 +29,5 @@ export default Component.extend({
       this.get("active") && getDirection(current) === "desc" ? by : `-${by}`;
 
     this.get("update")(sort);
-  }
+  },
 });

@@ -1,11 +1,11 @@
 import Component from "@ember/component";
 
 const AsyncListComponent = Component.extend({
-  tagName: ""
+  tagName: "",
 });
 
 AsyncListComponent.reopenClass({
-  positionalParams: ["data"]
+  positionalParams: ["data"],
 });
 
 export default AsyncListComponent;

@@ -1,4 +1,5 @@
 import { computed } from "@ember/object";
+import { gt } from "@ember/object/computed";
 import Service, { inject as service } from "@ember/service";
 import Ember from "ember";
 import moment from "moment";
@@ -21,14 +22,10 @@ export default Service.extend({
   notify: service(),
   amountReports: 0,
 
-  hasReports: computed("amountReports", function() {
-    return this.get("amountReports") > 0;
-  }),
+  hasReports: gt("amountReports", 0),
 
-  reportsToDate: computed(function() {
-    return moment()
-      .subtract(1, "month")
-      .endOf("month");
+  reportsToDate: computed(function () {
+    return moment().subtract(1, "month").endOf("month");
   }),
 
   init() {
@@ -50,7 +47,7 @@ export default Service.extend({
         reviewer: this.session.data.user.id,
         editable: 1,
         verified: 0,
-        page: { number: 1, size: 1 }
+        page: { number: 1, size: 1 },
       });
 
       this.set("amountReports", reports.meta.pagination.count);
@@ -61,5 +58,5 @@ export default Service.extend({
 
   willDestroy() {
     clearInterval(this.intervalId);
-  }
+  },
 });

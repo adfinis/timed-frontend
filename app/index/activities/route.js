@@ -87,7 +87,7 @@ export default Route.extend(RouteAutostartTourMixin, {
     async startActivity(activity) {
       if (!activity.get("date").isSame(moment(), "day")) {
         activity = this.store.createRecord("activity", {
-          ...activity.getProperties("task", "comment")
+          ...activity.getProperties("task", "comment"),
         });
       }
 
@@ -98,7 +98,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       await this.get("tracking.startActivity").perform();
 
       await this.transitionTo("index.activities", {
-        queryParams: { day: moment().format("YYYY-MM-DD") }
+        queryParams: { day: moment().format("YYYY-MM-DD") },
       });
     },
 
@@ -127,7 +127,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         undefined
       );
       const hasOverlapping = !!this.get("controller.sortedActivities").find(
-        a => {
+        (a) => {
           return a.get("active") && !a.get("from").isSame(moment(), "day");
         }
       );
@@ -153,7 +153,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       try {
         await this.get("controller.activities")
           .filter(
-            a =>
+            (a) =>
               a.get("task.id") &&
               !(a.get("active") && !a.get("from").isSame(moment(), "day")) &&
               !a.get("transferred")
@@ -175,10 +175,10 @@ export default Route.extend(RouteAutostartTourMixin, {
               task: activity.get("task"),
               review: activity.get("review"),
               notBillable: activity.get("notBillable"),
-              comment: activity.get("comment").trim()
+              comment: activity.get("comment").trim(),
             };
 
-            let report = this.store.peekAll("report").find(r => {
+            let report = this.store.peekAll("report").find((r) => {
               return (
                 (!r.get("user.id") ||
                   r.get("user.id") === activity.get("user.id")) &&
@@ -211,6 +211,6 @@ export default Route.extend(RouteAutostartTourMixin, {
         /* istanbul ignore next */
         this.get("notify").error("Error while generating reports");
       }
-    }
-  }
+    },
+  },
 });

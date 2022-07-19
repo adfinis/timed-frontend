@@ -15,5 +15,5 @@ export default Route.extend({
     controller.set("user", this.modelFor("users.edit"));
     controller.get("absenceTypes").perform();
     controller.get("credit").perform();
-  }
+  },
 });

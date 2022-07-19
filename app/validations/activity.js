@@ -13,5 +13,5 @@ import validateMoment from "timed/validators/moment";
  */
 export default {
   from: validateMoment({ lt: "to" }),
-  to: validateMoment({ gt: "from" })
+  to: validateMoment({ gt: "from" }),
 };

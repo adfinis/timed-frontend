@@ -22,5 +22,5 @@ export default Component.extend({
    * @property {string[]} classNames
    * @public
    */
-  classNames: ["table", "table--striped", "table--hover"]
+  classNames: ["table", "table--striped", "table--hover"],
 });

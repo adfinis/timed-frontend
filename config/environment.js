@@ -1,19 +1,19 @@
 /* jshint node: true */
 
-module.exports = function(environment) {
+module.exports = function (environment) {
   const ENV = {
     modulePrefix: "timed",
     environment,
     rootURL: "/",
     locationType: "auto",
     moment: {
-      includeTimezone: "all"
+      includeTimezone: "all",
     },
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
-      }
+      },
     },
 
     APP: {
@@ -22,30 +22,30 @@ module.exports = function(environment) {
           label: "CSV",
           url: "/api/v1/reports/export",
           params: {
-            file_type: "csv"
-          }
+            file_type: "csv",
+          },
         },
         {
           label: "ODS",
           url: "/api/v1/reports/export",
           params: {
-            file_type: "ods"
-          }
+            file_type: "ods",
+          },
         },
         {
           label: "XLSX",
           url: "/api/v1/reports/export",
           params: {
-            file_type: "xlsx"
-          }
+            file_type: "xlsx",
+          },
         },
         {
           label: "Work report",
           url: "/api/v1/work-reports",
-          params: {}
-        }
+          params: {},
+        },
       ],
-      EXPORT_LIMIT: 100000
+      EXPORT_LIMIT: 100000,
     },
 
     "ember-simple-auth-oidc": {
@@ -55,7 +55,7 @@ module.exports = function(environment) {
       tokenEndpoint: "/token",
       endSessionEndpoint: "/logout",
       userinfoEndpoint: "/userinfo",
-      afterLogoutUri: "/"
+      afterLogoutUri: "/",
     },
 
     "ember-validated-form": {
@@ -69,9 +69,9 @@ module.exports = function(environment) {
         help: "error-text",
         button: "btn btn-default",
         submit: "btn btn-primary",
-        loading: "loading"
-      }
-    }
+        loading: "loading",
+      },
+    },
   };
 
   if (environment === "development") {
@@ -96,7 +96,7 @@ module.exports = function(environment) {
     ENV.APP.autoboot = false;
 
     ENV["ember-tether"] = {
-      bodyElementId: "ember-testing"
+      bodyElementId: "ember-testing",
     };
   }
 

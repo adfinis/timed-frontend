@@ -9,5 +9,5 @@ export default Component.extend({
     this._super(...args);
 
     this.set("destination", document.getElementById("filter-sidebar-target"));
-  }
+  },
 });

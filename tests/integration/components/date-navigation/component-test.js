@@ -6,10 +6,10 @@ import { module, test } from "qunit";
 
 const DATE = moment({ y: 2017, m: 2, d: 10 });
 
-module("Integration | Component | date navigation", function(hooks) {
+module("Integration | Component | date navigation", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("date", DATE);
 
     await render(
@@ -19,7 +19,7 @@ module("Integration | Component | date navigation", function(hooks) {
     assert.equal(this.get("date").format("YYYY-MM-DD"), "2017-01-10");
   });
 
-  test("can select the next day", async function(assert) {
+  test("can select the next day", async function (assert) {
     this.set("date", DATE);
 
     await render(
@@ -31,7 +31,7 @@ module("Integration | Component | date navigation", function(hooks) {
     assert.equal(this.get("date").format("YYYY-MM-DD"), "2017-01-11");
   });
 
-  test("can select the previous day", async function(assert) {
+  test("can select the previous day", async function (assert) {
     this.set("date", DATE);
 
     await render(
@@ -43,7 +43,7 @@ module("Integration | Component | date navigation", function(hooks) {
     assert.equal(this.get("date").format("YYYY-MM-DD"), "2017-01-09");
   });
 
-  test("can select the current day", async function(assert) {
+  test("can select the current day", async function (assert) {
     this.set("date", DATE);
 
     await render(

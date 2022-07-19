@@ -66,7 +66,7 @@ const ProgressBarComponent = Component.extend({
    * @property {Number} value
    * @public
    */
-  value: computed("progress", function() {
+  value: computed("progress", function () {
     return round(this.get("progress") * 100);
   }),
 
@@ -77,11 +77,11 @@ const ProgressBarComponent = Component.extend({
    * @default 100
    * @public
    */
-  max: 100
+  max: 100,
 });
 
 ProgressBarComponent.reopenClass({
-  positionalParams: ["progress"]
+  positionalParams: ["progress"],
 });
 
 export default ProgressBarComponent;

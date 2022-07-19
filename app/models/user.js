@@ -3,10 +3,8 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, hasMany } from "@ember-data/model";
 import { computed } from "@ember/object";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { hasMany } from "ember-data/relationships";
 import moment from "moment";
 
 /**
@@ -134,7 +132,7 @@ export default Model.extend({
    * @property {String} fullName
    * @public
    */
-  fullName: computed("firstName", "lastName", function() {
+  fullName: computed("firstName", "lastName", function () {
     if (!this.get("firstName") && !this.get("lastName")) {
       return "";
     }
@@ -151,7 +149,7 @@ export default Model.extend({
    * @property {String} longName
    * @public
    */
-  longName: computed("username", "fullName", function() {
+  longName: computed("username", "fullName", function () {
     return this.get("fullName")
       ? `${this.get("fullName")} (${this.get("username")})`
       : this.get("username");
@@ -165,9 +163,9 @@ export default Model.extend({
    * @property {Employment} activeEmployment
    * @public
    */
-  activeEmployment: computed("employments.[]", function() {
+  activeEmployment: computed("employments.[]", function () {
     return (
-      this.store.peekAll("employment").find(e => {
+      this.store.peekAll("employment").find((e) => {
         return (
           e.get("user.id") === this.get("id") &&
           (!e.get("end") || e.get("end").isSameOrAfter(moment.now(), "day"))
@@ -182,14 +180,14 @@ export default Model.extend({
    * @property {WorktimeBalance} currentWorktimeBalance
    * @public
    */
-  currentWorktimeBalance: computed("worktimeBalances.[]", function() {
+  currentWorktimeBalance: computed("worktimeBalances.[]", function () {
     return (
-      this.store.peekAll("worktime-balance").find(balance => {
+      this.store.peekAll("worktime-balance").find((balance) => {
         return (
           balance.get("user.id") === this.get("id") &&
           balance.get("date").isSame(moment(), "day")
         );
       }) || null
     );
-  })
+  }),
 });

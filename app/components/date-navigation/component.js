@@ -63,6 +63,6 @@ export default Component.extend({
       const date = moment(this.get("current")).add(1, "days");
 
       this.get("on-change")(date);
-    }
-  }
+    },
+  },
 });

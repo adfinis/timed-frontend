@@ -8,33 +8,33 @@ import { startMirage } from "timed/initializers/ember-cli-mirage";
 
 const CUSTOMER = EmberObject.create({
   id: 1,
-  name: "Test Customer"
+  name: "Test Customer",
 });
 
 const PROJECT = EmberObject.create({
   id: 1,
   name: "Test Project",
-  customer: CUSTOMER
+  customer: CUSTOMER,
 });
 
 const TASK = EmberObject.create({
   id: 1,
   name: "Test Task",
-  project: PROJECT
+  project: PROJECT,
 });
 
-module("Integration | Component | task selection", function(hooks) {
+module("Integration | Component | task selection", function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.server = startMirage();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     this.server.shutdown();
   });
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`
       {{#task-selection as |t|}}
         {{t.customer}}
@@ -48,7 +48,8 @@ module("Integration | Component | task selection", function(hooks) {
     assert.dom(".task-select [aria-disabled=true]").exists();
   });
 
-  test("can set initial customer", async function(assert) {
+  test("can set initial customer", async function (assert) {
+    assert.expect(4);
     this.set("customer", CUSTOMER);
 
     await render(hbs`
@@ -77,7 +78,8 @@ module("Integration | Component | task selection", function(hooks) {
     });
   });
 
-  test("can set initial project", async function(assert) {
+  test("can set initial project", async function (assert) {
+    assert.expect(5);
     this.set("project", PROJECT);
 
     await render(hbs`
@@ -112,7 +114,8 @@ module("Integration | Component | task selection", function(hooks) {
     });
   });
 
-  test("can set initial task", async function(assert) {
+  test("can set initial task", async function (assert) {
+    assert.expect(6);
     this.set("task", TASK);
 
     await render(hbs`
@@ -153,7 +156,7 @@ module("Integration | Component | task selection", function(hooks) {
     });
   });
 
-  test("can clear customer", async function(assert) {
+  test("can clear customer", async function (assert) {
     assert.expect(0);
 
     this.set("task", TASK);
@@ -171,7 +174,7 @@ module("Integration | Component | task selection", function(hooks) {
     `);
   });
 
-  test("can clear all filters", async function(assert) {
+  test("can clear all filters", async function (assert) {
     this.set("task", TASK);
 
     await render(hbs`

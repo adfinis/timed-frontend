@@ -109,7 +109,7 @@ export default Route.extend(RouteAutostartTourMixin, {
       try {
         const reports = this.get("controller.reports").filterBy("isNew", false);
         await all(
-          reports.map(async report => {
+          reports.map(async (report) => {
             report.set("date", date);
             return await report.save();
           })
@@ -120,6 +120,6 @@ export default Route.extend(RouteAutostartTourMixin, {
         /* istanbul ignore next */
         this.get("notify").error("Error while rescheduling the timesheet");
       }
-    }
-  }
+    },
+  },
 });

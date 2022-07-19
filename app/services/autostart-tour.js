@@ -17,7 +17,7 @@ export default Service.extend({
     this.set("tours", [
       "index.activities",
       "index.attendances",
-      "index.reports"
+      "index.reports",
     ]);
   },
 
@@ -45,7 +45,7 @@ export default Service.extend({
       localStorage.setItem(this.get("doneKey"), JSON.stringify(value));
 
       return value;
-    }
+    },
   }),
 
   /**
@@ -59,6 +59,6 @@ export default Service.extend({
     const tours = this.get("tours");
     const done = this.get("done");
 
-    return tours.every(tour => done.includes(tour));
-  }
+    return tours.every((tour) => done.includes(tour));
+  },
 });

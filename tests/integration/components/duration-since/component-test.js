@@ -4,18 +4,16 @@ import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | duration since", function(hooks) {
+module("Integration | Component | duration since", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("computes the duration correctly", async function(assert) {
+  test("computes the duration correctly", async function (assert) {
     this.set(
       "start",
-      moment()
-        .milliseconds(0)
-        .subtract({
-          minutes: 5,
-          seconds: 5
-        })
+      moment().milliseconds(0).subtract({
+        minutes: 5,
+        seconds: 5,
+      })
     );
 
     await render(hbs`{{duration-since start}}`);
@@ -24,12 +22,12 @@ module("Integration | Component | duration since", function(hooks) {
     assert.dom(this.element).hasText("00:05:05");
   });
 
-  test("computes the duration correctly with elapsed time", async function(assert) {
+  test("computes the duration correctly with elapsed time", async function (assert) {
     this.set(
       "start",
       moment().subtract({
         minutes: 5,
-        seconds: 5
+        seconds: 5,
       })
     );
 
@@ -38,7 +36,7 @@ module("Integration | Component | duration since", function(hooks) {
       moment.duration({
         hours: 1,
         minutes: 1,
-        seconds: 1
+        seconds: 1,
       })
     );
 

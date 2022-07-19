@@ -3,7 +3,7 @@
  * @submodule timed-transforms
  * @public
  */
-import Transform from "ember-data/transform";
+import Transform from "@ember-data/serializer/transform";
 import { padTpl, padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
@@ -63,7 +63,7 @@ export default Transform.extend({
       hours: positiveDuration.hours(),
       minutes: positiveDuration.minutes(),
       seconds: positiveDuration.seconds(),
-      microseconds: round(positiveDuration.milliseconds() * 1000)
+      microseconds: round(positiveDuration.milliseconds() * 1000),
     };
   },
 
@@ -80,13 +80,8 @@ export default Transform.extend({
       return null;
     }
 
-    const {
-      days,
-      hours,
-      minutes,
-      seconds,
-      microseconds
-    } = this._getDurationComponentsTimedeltaLike(deserialized);
+    const { days, hours, minutes, seconds, microseconds } =
+      this._getDurationComponentsTimedeltaLike(deserialized);
 
     let string = padTpl2`${hours}:${minutes}:${seconds}`;
 
@@ -99,5 +94,5 @@ export default Transform.extend({
     }
 
     return string;
-  }
+  },
 });

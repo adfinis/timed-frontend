@@ -7,13 +7,13 @@ const StatisticListBarComponent = Component.extend({
 
   attributeBindings: ["style"],
 
-  style: computed("value", function() {
+  style: computed("value", function () {
     return htmlSafe(`--value: ${this.get("value")}`);
-  })
+  }),
 });
 
 StatisticListBarComponent.reopenClass({
-  positionalParams: ["value"]
+  positionalParams: ["value"],
 });
 
 export default StatisticListBarComponent;

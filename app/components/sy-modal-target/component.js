@@ -19,5 +19,5 @@ export default Component.extend({
    * @property {String} elementId
    * @public
    */
-  elementId: "sy-modals"
+  elementId: "sy-modals",
 });

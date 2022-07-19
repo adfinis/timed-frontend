@@ -8,7 +8,7 @@ const FONT_FAMILY = "Source Sans Pro";
 export default EmberChartComponent.extend({
   type: "line",
 
-  data: computed("worktimeBalances.[]", function() {
+  data: computed("worktimeBalances.[]", function () {
     if (!this.get("worktimeBalances")) {
       return [];
     }
@@ -17,11 +17,11 @@ export default EmberChartComponent.extend({
       labels: this.get("worktimeBalances").mapBy("date"),
       datasets: [
         {
-          data: this.get("worktimeBalances").map(balance =>
+          data: this.get("worktimeBalances").map((balance) =>
             balance.get("balance").asHours()
-          )
-        }
-      ]
+          ),
+        },
+      ],
     };
   }),
 
@@ -36,7 +36,7 @@ export default EmberChartComponent.extend({
         line: {
           borderColor: "rgb(91, 142, 219)",
           backgroundColor: "transparent",
-          borderWidth: 2
+          borderWidth: 2,
         },
         point: {
           borderColor: "rgb(91, 142, 219)",
@@ -45,8 +45,8 @@ export default EmberChartComponent.extend({
           borderWidth: 2,
           radius: 3.5,
           hoverRadius: 3.5,
-          hitRadius: 10
-        }
+          hitRadius: 10,
+        },
       },
       scales: {
         xAxes: [
@@ -56,26 +56,26 @@ export default EmberChartComponent.extend({
                 return [value.format("DD"), value.format("dd").toUpperCase()];
               },
               fontFamily: FONT_FAMILY,
-              fontColor: "rgb(180, 180, 180)"
+              fontColor: "rgb(180, 180, 180)",
             },
             gridLines: {
               drawBorder: false,
-              display: false
-            }
-          }
+              display: false,
+            },
+          },
         ],
         yAxes: [
           {
             ticks: {
-              display: false
+              display: false,
             },
             gridLines: {
               drawBorder: false,
               drawTicks: false,
-              borderDash: [5, 5]
-            }
-          }
-        ]
+              borderDash: [5, 5],
+            },
+          },
+        ],
       },
       tooltips: {
         displayColors: false,
@@ -94,9 +94,9 @@ export default EmberChartComponent.extend({
           },
           label({ yLabel: hours }) {
             return humanizeDuration(moment.duration({ hours }));
-          }
-        }
-      }
+          },
+        },
+      },
     });
-  }
+  },
 });

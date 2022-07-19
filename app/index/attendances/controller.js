@@ -23,7 +23,7 @@ export default Controller.extend({
    * @property {Attendance[]} _allAttendances
    * @private
    */
-  _allAttendances: computed(function() {
+  _allAttendances: computed(function () {
     return this.store.peekAll("attendance");
   }),
 
@@ -37,8 +37,8 @@ export default Controller.extend({
     "_allAttendances.@each.{date,user,isDeleted}",
     "model",
     "user",
-    function() {
-      return this.get("_allAttendances").filter(a => {
+    function () {
+      return this.get("_allAttendances").filter((a) => {
         return (
           a.get("date").isSame(this.get("model"), "day") &&
           a.get("user.id") === this.get("user.id") &&
@@ -46,5 +46,5 @@ export default Controller.extend({
         );
       });
     }
-  )
+  ),
 });

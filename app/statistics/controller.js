@@ -5,7 +5,7 @@ import QueryParams from "ember-parachute";
 import moment from "moment";
 import {
   underscoreQueryParams,
-  serializeParachuteQueryParams
+  serializeParachuteQueryParams,
 } from "timed/utils/query-params";
 
 const DATE_FORMAT = "YYYY-MM-DD";
@@ -22,95 +22,95 @@ const TYPES = {
   customer: { include: "customer", requiredParams: [] },
   project: {
     include: "project,project.customer",
-    requiredParams: ["customer"]
+    requiredParams: ["customer"],
   },
   task: {
     include: "task,task.project,task.project.customer",
-    requiredParams: ["customer", "project"]
+    requiredParams: ["customer", "project"],
   },
-  user: { include: "user", requiredParams: [] }
+  user: { include: "user", requiredParams: [] },
 };
 
 export const StatisticsQueryParams = new QueryParams({
   customer: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   project: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   task: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   user: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   reviewer: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   billingType: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   costCenter: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   fromDate: {
     defaultValue: null,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
-    deserialize: deserializeMoment
+    deserialize: deserializeMoment,
   },
   toDate: {
     defaultValue: null,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
-    deserialize: deserializeMoment
+    deserialize: deserializeMoment,
   },
   review: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   notBillable: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   verified: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   billed: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   type: {
     defaultValue: Object.keys(TYPES)[0],
     replace: true,
-    refresh: true
+    refresh: true,
   },
   ordering: {
     defaultValue: "",
     replace: true,
-    refresh: true
-  }
+    refresh: true,
+  },
 });
 
 export default Controller.extend(StatisticsQueryParams.Mixin, {
@@ -118,14 +118,14 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
   billingTypes: computed(
     "prefetchData.lastSuccessful.value.billingTypes",
-    function() {
+    function () {
       return this.store.findAll("billing-type");
     }
   ),
 
   costCenters: computed(
     "prefetchData.lastSuccessful.value.costCenters",
-    function() {
+    function () {
       return this.store.findAll("cost-center");
     }
   ),
@@ -133,7 +133,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   selectedCustomer: computed(
     "customer",
     "prefetchData.lastSuccessful.value.customer",
-    function() {
+    function () {
       return (
         this.get("customer") &&
         this.store.peekRecord("customer", this.get("customer"))
@@ -144,7 +144,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   selectedProject: computed(
     "project",
     "prefetchData.lastSuccessful.value.project",
-    function() {
+    function () {
       return (
         this.get("project") &&
         this.store.peekRecord("project", this.get("project"))
@@ -155,7 +155,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   selectedTask: computed(
     "task",
     "prefetchData.lastSuccessful.value.task",
-    function() {
+    function () {
       return (
         this.get("task") && this.store.peekRecord("task", this.get("task"))
       );
@@ -165,7 +165,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   selectedUser: computed(
     "user",
     "prefetchData.lastSuccessful.value.user",
-    function() {
+    function () {
       return (
         this.get("user") && this.store.peekRecord("user", this.get("user"))
       );
@@ -175,7 +175,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   selectedReviewer: computed(
     "reviewer",
     "prefetchData.lastSuccessful.value.reviewer",
-    function() {
+    function () {
       return (
         this.get("reviewer") &&
         this.store.peekRecord("user", this.get("reviewer"))
@@ -186,9 +186,9 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   missingParams: computed(
     "requiredParams.[]",
     `queryParamsState.{observed}.changed`,
-    function() {
+    function () {
       return this.get("requiredParams").filter(
-        param => !this.get(`queryParamsState.${param}.changed`)
+        (param) => !this.get(`queryParamsState.${param}.changed`)
       );
     }
   ),
@@ -197,7 +197,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     const observed = Object.keys(TYPES).reduce((set, key) => {
       return [
         ...set,
-        ...get(TYPES, `${key}.requiredParams`).filter(p => !set.includes(p))
+        ...get(TYPES, `${key}.requiredParams`).filter((p) => !set.includes(p)),
       ];
     }, []);
     this.set("observed", observed.join(","));
@@ -223,23 +223,23 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     }
   },
 
-  appliedFilters: computed("queryParamsState", function() {
-    return Object.keys(this.get("queryParamsState")).filter(key => {
+  appliedFilters: computed("queryParamsState", function () {
+    return Object.keys(this.get("queryParamsState")).filter((key) => {
       return this.get(`queryParamsState.${key}.changed`) && key !== "type";
     });
   }),
 
-  requiredParams: computed("type", function() {
+  requiredParams: computed("type", function () {
     return TYPES[this.get("type")].requiredParams;
   }),
 
-  prefetchData: task(function*() {
+  prefetchData: task(function* () {
     const {
       customer: customerId,
       project: projectId,
       task: taskId,
       user: userId,
-      reviewer: reviewerId
+      reviewer: reviewerId,
     } = this.get("allQueryParams");
 
     return yield hash({
@@ -249,11 +249,11 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
       user: userId && this.store.findRecord("user", userId),
       reviewer: reviewerId && this.store.findRecord("user", reviewerId),
       billingTypes: this.store.findAll("billing-type"),
-      costCenters: this.store.findAll("cost-center")
+      costCenters: this.store.findAll("cost-center"),
     });
   }).restartable(),
 
-  data: task(function*() {
+  data: task(function* () {
     if (this.get("missingParams.length")) {
       return null;
     }
@@ -273,7 +273,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
     return yield this.store.query(`${type}-statistic`, {
       include: TYPES[type].include,
-      ...params
+      ...params,
     });
   }).restartable(),
 
@@ -284,8 +284,8 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
     reset() {
       this.resetQueryParams(
-        Object.keys(this.get("allQueryParams")).filter(qp => qp !== "type")
+        Object.keys(this.get("allQueryParams")).filter((qp) => qp !== "type")
       );
-    }
-  }
+    },
+  },
 });

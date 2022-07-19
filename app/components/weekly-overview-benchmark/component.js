@@ -63,9 +63,9 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed("max", "hours", function() {
+  style: computed("max", "hours", function () {
     return htmlSafe(
       `bottom: calc(100% / ${this.get("max")} * ${this.get("hours")})`
     );
-  })
+  }),
 });

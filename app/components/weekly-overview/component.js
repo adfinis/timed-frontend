@@ -37,7 +37,7 @@ export default Component.extend({
    * @property {Number} hours
    * @public
    */
-  hours: computed("expected", function() {
+  hours: computed("expected", function () {
     return this.get("expected").asHours();
   }),
 
@@ -49,7 +49,7 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed("height", function() {
+  style: computed("height", function () {
     return htmlSafe(`height: ${this.get("height")}px;`);
-  })
+  }),
 });

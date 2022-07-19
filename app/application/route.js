@@ -35,6 +35,6 @@ export default Route.extend(OIDCApplicationRouteMixin, {
       this.set("autostartTour.done", []);
 
       this.session.invalidate();
-    }
-  }
+    },
+  },
 });

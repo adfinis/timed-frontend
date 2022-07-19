@@ -21,7 +21,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   notify: service("notify"),
   autostartTour: service("autostart-tour"),
   tourManager: service("tour-manager"),
-  routing: service("-routing"),
+  router: service(),
   media: service("media"),
   store: service(),
   ajax: service(),
@@ -30,8 +30,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const user = await this.ajax.request("/api/v1/users/me", {
       method: "GET",
       data: {
-        include: "supervisors,supervisees"
-      }
+        include: "supervisors,supervisees",
+      },
     });
 
     await this.store.pushPayload("user", user);
@@ -42,7 +42,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     const employment = await this.store.query("employment", {
       user: usermodel.id,
       date: moment().format("YYYY-MM-DD"),
-      include: "location"
+      include: "location",
     });
 
     if (!employment.length) {
@@ -82,15 +82,13 @@ export default Route.extend(AuthenticatedRouteMixin, {
    * @private
    */
   _closeCurrentTour() {
-    const currentRoute = this.get("routing.router.currentRouteName").replace(
+    const currentRoute = this.get("router.currentRouteName").replace(
       /\.index$/,
       ""
     );
 
     if (this.get("autostartTour.tours").includes(currentRoute)) {
-      this.controllerFor(currentRoute)
-        .get("tour")
-        .close();
+      this.controllerFor(currentRoute).get("tour").close();
     }
   },
 
@@ -185,6 +183,6 @@ export default Route.extend(AuthenticatedRouteMixin, {
       this.set("controller.visible", false);
 
       this.transitionTo("index.activities");
-    }
-  }
+    },
+  },
 });

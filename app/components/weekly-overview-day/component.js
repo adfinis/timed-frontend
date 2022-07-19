@@ -81,7 +81,7 @@ export default Component.extend({
    * @property {String} title
    * @public
    */
-  title: computed("worktime", "prefix", function() {
+  title: computed("worktime", "prefix", function () {
     const pre = this.get("prefix.length") ? `${this.get("prefix")}, ` : "";
 
     let title = `${this.get("worktime").hours()}h`;
@@ -109,7 +109,7 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed("max", "worktime", function() {
+  style: computed("max", "worktime", function () {
     const height = Math.min(
       (this.get("worktime").asHours() / this.get("max")) * 100,
       100
@@ -129,5 +129,5 @@ export default Component.extend({
 
       this.get("on-click")(this.get("day"));
     }
-  }
+  },
 });

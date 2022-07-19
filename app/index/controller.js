@@ -77,7 +77,7 @@ export default Controller.extend({
    * @property {Activity[]} _allActivities
    * @private
    */
-  _allActivities: computed(function() {
+  _allActivities: computed(function () {
     return this.store.peekAll("activity");
   }),
 
@@ -91,8 +91,8 @@ export default Controller.extend({
     "date",
     "_allActivities.@each.{date,user,isDeleted}",
     "user",
-    function() {
-      const activitiesThen = this.get("_allActivities").filter(a => {
+    function () {
+      const activitiesThen = this.get("_allActivities").filter((a) => {
         return (
           a.get("date") &&
           a.get("date").isSame(this.get("date"), "day") &&
@@ -102,14 +102,16 @@ export default Controller.extend({
       });
 
       if (activitiesThen.get("length")) {
-        scheduleOnce("afterRender", this, () => {
-          this.get("_activitySumTask").perform();
-        });
+        scheduleOnce("afterRender", this, this.executeActivitySumTask);
       }
 
       return activitiesThen;
     }
   ),
+
+  executeActivitySumTask() {
+    this.get("_activitySumTask").perform();
+  },
 
   /**
    * The duration sum of all activities of the selected day
@@ -120,7 +122,7 @@ export default Controller.extend({
   activitySum: computed(
     "_activities.@each.{fromTime,duration}",
     "_activeActivityDuration",
-    function() {
+    function () {
       this._activitySum();
 
       return this.get("_activities")
@@ -138,7 +140,7 @@ export default Controller.extend({
    * @private
    */
   _activitySum() {
-    const duration = this.get("_activities")
+    return this.get("_activities")
       .filterBy("active")
       .reduce((total, current) => {
         return total.add(moment().diff(current.get("from")));
@@ -153,7 +155,7 @@ export default Controller.extend({
    * @method _activitySumTask
    * @private
    */
-  _activitySumTask: task(function*() {
+  _activitySumTask: task(function* () {
     while (true) {
       this._activitySum();
 
@@ -173,7 +175,7 @@ export default Controller.extend({
    * @property {Attendance[]} _allAttendances
    * @private
    */
-  _allAttendances: computed(function() {
+  _allAttendances: computed(function () {
     return this.store.peekAll("attendance");
   }),
 
@@ -187,8 +189,8 @@ export default Controller.extend({
     "date",
     "_allAttendances.@each.{date,user,isDeleted}",
     "user",
-    function() {
-      return this.get("_allAttendances").filter(attendance => {
+    function () {
+      return this.get("_allAttendances").filter((attendance) => {
         return (
           attendance.get("date") &&
           attendance.get("date").isSame(this.get("date"), "day") &&
@@ -205,7 +207,7 @@ export default Controller.extend({
    * @property {moment.duration} attendanceSum
    * @public
    */
-  attendanceSum: computed("_attendances.@each.{from,to}", function() {
+  attendanceSum: computed("_attendances.@each.{from,to}", function () {
     return this.get("_attendances").reduce((total, current) => {
       return total.add(current.get("duration"));
     }, moment.duration());
@@ -217,7 +219,7 @@ export default Controller.extend({
    * @property {Report[]} _allReports
    * @private
    */
-  _allReports: computed(function() {
+  _allReports: computed(function () {
     return this.store.peekAll("report");
   }),
 
@@ -227,7 +229,7 @@ export default Controller.extend({
    * @property {Absence[]} _allAbsences
    * @private
    */
-  _allAbsences: computed(function() {
+  _allAbsences: computed(function () {
     return this.store.peekAll("absence");
   }),
 
@@ -241,8 +243,8 @@ export default Controller.extend({
     "date",
     "_allReports.@each.{date,user,isNew,isDeleted}",
     "user",
-    function() {
-      return this.get("_allReports").filter(report => {
+    function () {
+      return this.get("_allReports").filter((report) => {
         return (
           report.get("date").isSame(this.get("date"), "day") &&
           report.get("user.id") === this.get("user.id") &&
@@ -263,8 +265,8 @@ export default Controller.extend({
     "date",
     "_allAbsences.@each.{date,user,isNew,isDeleted}",
     "user",
-    function() {
-      return this.get("_allAbsences").filter(absence => {
+    function () {
+      return this.get("_allAbsences").filter((absence) => {
         return (
           absence.get("date").isSame(this.get("date"), "day") &&
           absence.get("user.id") === this.get("user.id") &&
@@ -284,7 +286,7 @@ export default Controller.extend({
   reportSum: computed(
     "_reports.@each.duration",
     "_absences.@each.duration",
-    function() {
+    function () {
       const reportDurations = this.get("_reports").mapBy("duration");
       const absenceDurations = this.get("_absences").mapBy("duration");
 
@@ -304,8 +306,10 @@ export default Controller.extend({
    * @property {Absence} absence
    * @public
    */
-  absence: computed("_absences.[]", function() {
-    return this.getWithDefault("_absences.firstObject", null);
+  absence: computed("_absences.[]", function () {
+    return this.get("_absences.firstObject") === undefined
+      ? null
+      : this.get("_absences.firstObject");
   }),
 
   /**
@@ -314,7 +318,7 @@ export default Controller.extend({
    * @property {AbsenceType[]} absenceTypes
    * @public
    */
-  absenceTypes: computed(function() {
+  absenceTypes: computed(function () {
     return this.store.peekAll("absence-type");
   }),
 
@@ -332,7 +336,7 @@ export default Controller.extend({
       this.set("day", value.format("YYYY-MM-DD"));
 
       return value;
-    }
+    },
   }),
 
   /**
@@ -362,7 +366,7 @@ export default Controller.extend({
     "_allAbsences.@each.{duration,date,user}",
     "date",
     "user",
-    function() {
+    function () {
       const task = this.get("_weeklyOverviewData");
 
       task.perform(
@@ -382,18 +386,18 @@ export default Controller.extend({
    * @property {EmberConcurrency.Task} _weeklyOverviewData
    * @private
    */
-  _weeklyOverviewData: task(function*(allReports, allAbsences, date, user) {
+  _weeklyOverviewData: task(function* (allReports, allAbsences, date, user) {
     yield timeout(200);
 
     allReports = allReports.filter(
-      report =>
+      (report) =>
         report.get("user.id") === user.get("id") &&
         !report.get("isDeleted") &&
         !report.get("isNew")
     );
 
     allAbsences = allAbsences.filter(
-      absence =>
+      (absence) =>
         absence.get("user.id") === user.get("id") &&
         !absence.get("isDeleted") &&
         !absence.get("isNew")
@@ -413,7 +417,7 @@ export default Controller.extend({
     const container = [
       ...allReports.toArray(),
       ...allAbsences.toArray(),
-      ...allHolidays.toArray()
+      ...allHolidays.toArray(),
     ].reduce((obj, model) => {
       const d = model.get("date").format("YYYY-MM-DD");
 
@@ -426,9 +430,12 @@ export default Controller.extend({
 
     return Array.from({ length: 31 }, (value, index) =>
       moment(date).add(index - 20, "days")
-    ).map(d => {
-      const { reports = [], absences = [], publicHolidays = [] } =
-        container[d.format("YYYY-MM-DD")] || {};
+    ).map((d) => {
+      const {
+        reports = [],
+        absences = [],
+        publicHolidays = [],
+      } = container[d.format("YYYY-MM-DD")] || {};
 
       let prefix = "";
 
@@ -445,10 +452,10 @@ export default Controller.extend({
         workday: this.get("workdays").includes(d.isoWeekday()),
         worktime: [
           ...reports.mapBy("duration"),
-          ...absences.mapBy("duration")
+          ...absences.mapBy("duration"),
         ].reduce((val, dur) => val.add(dur), moment.duration()),
         holiday: !!publicHolidays.length,
-        prefix
+        prefix,
       };
     });
   }).restartable(),
@@ -462,7 +469,7 @@ export default Controller.extend({
    * @param {Date} value.date The date version of the value
    * @public
    */
-  setCenter: task(function*({ moment: center }) {
+  setCenter: task(function* ({ moment: center }) {
     const from = moment(center)
       .startOf("month")
       .startOf("week")
@@ -478,7 +485,7 @@ export default Controller.extend({
     const params = {
       from_date: from.format("YYYY-MM-DD"),
       to_date: to.format("YYYY-MM-DD"),
-      user: this.get("user.id")
+      user: this.get("user.id"),
     };
     /* eslint-enable camelcase */
 
@@ -486,12 +493,12 @@ export default Controller.extend({
 
     const publicHolidays = yield this.store.query("public-holiday", {
       ...params,
-      location: this.get("user.activeEmployment.location.id")
+      location: this.get("user.activeEmployment.location.id"),
     });
 
     const disabled = [
       ...absences.mapBy("date"),
-      ...publicHolidays.mapBy("date")
+      ...publicHolidays.mapBy("date"),
     ];
     const date = moment(from);
     const workdays = this.get("workdays");
@@ -516,9 +523,9 @@ export default Controller.extend({
   disabledDatesForEdit: computed(
     "absence.date",
     "disabledDates.[]",
-    function() {
+    function () {
       return this.get("disabledDates").filter(
-        date => !date.isSame(this.get("absence.date"), "day")
+        (date) => !date.isSame(this.get("absence.date"), "day")
       );
     }
   ),
@@ -535,6 +542,6 @@ export default Controller.extend({
       this.get("setCenter").perform({ moment: this.get("date") });
 
       changeset.rollback();
-    }
-  }
+    },
+  },
 });

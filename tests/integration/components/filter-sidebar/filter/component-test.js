@@ -4,17 +4,17 @@ import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | filter sidebar/filter", function(hooks) {
+module("Integration | Component | filter sidebar/filter", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("works with type button", async function(assert) {
+  test("works with type button", async function (assert) {
     this.setProperties({
       options: [
         { id: 1, label: "test 1" },
         { id: 2, label: "test 2" },
-        { id: 3, label: "test 3" }
+        { id: 3, label: "test 3" },
       ],
-      selected: 2
+      selected: 2,
     });
 
     await render(hbs`
@@ -30,7 +30,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
     assert.dom("button").exists({ count: 3 });
 
     assert.deepEqual(
-      findAll("button").map(b => b.innerHTML.trim()),
+      findAll("button").map((b) => b.innerHTML.trim()),
       ["test 1", "test 2", "test 3"]
     );
 
@@ -41,14 +41,14 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
     assert.equal(this.get("selected"), 1);
   });
 
-  test("works with type select", async function(assert) {
+  test("works with type select", async function (assert) {
     this.setProperties({
       options: [
         { id: 1, label: "test 1" },
         { id: 2, label: "test 2" },
-        { id: 3, label: "test 3" }
+        { id: 3, label: "test 3" },
       ],
-      selected: 2
+      selected: 2,
     });
 
     await render(hbs`
@@ -64,7 +64,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
     assert.dom("option").exists({ count: 3 });
 
     assert.deepEqual(
-      findAll("option").map(b => b.innerHTML.trim()),
+      findAll("option").map((b) => b.innerHTML.trim()),
       ["test 1", "test 2", "test 3"]
     );
     assert.equal(
@@ -77,7 +77,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
     assert.equal(this.get("selected"), "1");
   });
 
-  test("works with type date", async function(assert) {
+  test("works with type date", async function (assert) {
     this.set("selected", moment({ year: 2017, month: 10, day: 1 }));
 
     await render(hbs`
@@ -97,7 +97,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
     );
   });
 
-  test("works with type search", async function(assert) {
+  test("works with type search", async function (assert) {
     this.set("selected", "foobar");
 
     await render(hbs`
@@ -114,7 +114,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
     assert.equal(this.get("selected"), "foobarbaz");
   });
 
-  test("works with block style", async function(assert) {
+  test("works with block style", async function (assert) {
     await render(hbs`
       {{#filter-sidebar/filter}}
         Works

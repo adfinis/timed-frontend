@@ -10,7 +10,7 @@ export default Component.extend({
       "this year",
       "last week",
       "last month",
-      "last year"
+      "last year",
     ]);
   },
 
@@ -30,42 +30,26 @@ export default Component.extend({
           this.get("onUpdateToDate")(null);
           break;
         case "last week":
-          this.get("onUpdateFromDate")(
-            moment()
-              .subtract(1, "week")
-              .day(1)
-          );
-          this.get("onUpdateToDate")(
-            moment()
-              .subtract(1, "week")
-              .day(7)
-          );
+          this.get("onUpdateFromDate")(moment().subtract(1, "week").day(1));
+          this.get("onUpdateToDate")(moment().subtract(1, "week").day(7));
           break;
         case "last month":
           this.get("onUpdateFromDate")(
-            moment()
-              .subtract(1, "month")
-              .startOf("month")
+            moment().subtract(1, "month").startOf("month")
           );
           this.get("onUpdateToDate")(
-            moment()
-              .subtract(1, "month")
-              .endOf("month")
+            moment().subtract(1, "month").endOf("month")
           );
           break;
         case "last year":
           this.get("onUpdateFromDate")(
-            moment()
-              .subtract(1, "year")
-              .startOf("year")
+            moment().subtract(1, "year").startOf("year")
           );
           this.get("onUpdateToDate")(
-            moment()
-              .subtract(1, "year")
-              .endOf("year")
+            moment().subtract(1, "year").endOf("year")
           );
           break;
       }
-    }
-  }
+    },
+  },
 });

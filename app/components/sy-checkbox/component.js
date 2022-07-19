@@ -15,20 +15,23 @@ import { scheduleOnce } from "@ember/runloop";
  * @public
  */
 export default Component.extend({
-  checkboxElementId: computed("elementId", function() {
+  checkboxElementId: computed("elementId", function () {
     return `${this.get("elementId")}-checkbox`;
   }),
 
   didReceiveAttrs() {
-    scheduleOnce("afterRender", () => {
-      if (this.get("checked") === null) {
-        const cb = this.get("element").querySelector(
-          `#${this.get("checkboxElementId")}`
-        );
+    this._super();
+    scheduleOnce("afterRender", this, this.handleCheckBox);
+  },
 
-        cb.indeterminate = true;
-      }
-    });
+  handleCheckBox() {
+    if (this.get("checked") === null) {
+      const cb = this.get("element").querySelector(
+        `#${this.get("checkboxElementId")}`
+      );
+
+      cb.indeterminate = true;
+    }
   },
 
   /**
@@ -69,5 +72,5 @@ export default Component.extend({
    * @property {Boolean} disabled
    * @public
    */
-  disabled: false
+  disabled: false,
 });

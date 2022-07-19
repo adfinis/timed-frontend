@@ -1,6 +1,4 @@
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo, hasMany } from "ember-data/relationships";
+import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 
 export default Model.extend({
   credit: attr("number"),
@@ -9,5 +7,5 @@ export default Model.extend({
   balance: attr("number"),
   user: belongsTo("user"),
   absenceType: belongsTo("absence-type"),
-  absenceCredits: hasMany("absence-credit")
+  absenceCredits: hasMany("absence-credit"),
 });

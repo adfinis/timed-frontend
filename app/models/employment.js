@@ -3,9 +3,7 @@
  * @submodule timed-models
  * @public
  */
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
+import Model, { attr, belongsTo } from "@ember-data/model";
 
 /**
  * The employment model
@@ -69,5 +67,5 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo("location")
+  location: belongsTo("location"),
 });

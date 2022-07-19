@@ -13,7 +13,7 @@ export const filterQueryParams = (params, ...keys) => {
 /**
  * Underscore all object keys
  */
-export const underscoreQueryParams = params => {
+export const underscoreQueryParams = (params) => {
   return Object.keys(params).reduce((obj, key) => {
     return { ...obj, [underscore(key)]: get(params, key) };
   }, {});
@@ -39,7 +39,7 @@ export const serializeParachuteQueryParams = (params, queryParamsObject) => {
       ? parsed
       : {
           ...parsed,
-          [key]: serializeFn ? serializeFn(value) : value
+          [key]: serializeFn ? serializeFn(value) : value,
         };
   }, {});
 };
