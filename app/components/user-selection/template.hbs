@@ -1,7 +1,7 @@
 {{yield (hash
-  user                 = (component 'power-select'
+  user                 = (component 'optimized-power-select'
     options            = users
-    disabled           = disabled
+    disabled           = @disabled
     selected           = user
     placeholder        = 'Select user...'
     searchField        = 'longName'

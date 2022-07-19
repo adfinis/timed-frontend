@@ -1,7 +1,7 @@
 {{yield (hash
   customer             = (component 'optimized-power-select'
     options            = this.customersAndRecentTasks
-    disabled           = this.disabled
+    disabled           = @disabled
     selected           = this.customer
     placeholder        = 'Select customer...'
     searchField        = 'longName'
@@ -17,7 +17,7 @@
   )
   project              = (component 'optimized-power-select'
     options            = this.projects
-    disabled           = (or this.disabled (not this.customer))
+    disabled           = (or @disabled (not this.customer))
     selected           = this.project
     placeholder        = 'Select project...'
     searchField        = 'name'
@@ -32,7 +32,7 @@
   )
   task                 = (component 'optimized-power-select'
     options            = this.tasks
-    disabled           = (or this.disabled (not this.project))
+    disabled           = (or @disabled (not this.project))
     selected           = this.task
     placeholder        = 'Select task...'
     searchField        = 'name'

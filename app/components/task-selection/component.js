@@ -79,14 +79,6 @@ export default class TaskSelectionComponent extends Component {
   }
 
   /**
-   * Whether to show archived customers, projects or tasks
-   *
-   * @property {Boolean} archived
-   * @public
-   */
-  archived = false;
-
-  /**
    * Template for displaying the customer options
    *
    * @property {*} customerOptionTemplate
@@ -150,6 +142,16 @@ export default class TaskSelectionComponent extends Component {
 
   @lastValue("getTasksByProjects")
   tasks = [];
+
+  /**
+   * Whether to show archived customers, projects or tasks
+   *
+   * @property {Boolean} archived
+   * @public
+   */
+  get archived() {
+    return this.args.archived ?? false;
+  }
 
   /**
    * Whether to show history entries in the customer selection or not
