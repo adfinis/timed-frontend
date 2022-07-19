@@ -3,7 +3,6 @@
  * @submodule timed-components
  * @public
  */
-// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
@@ -206,6 +205,7 @@ export default class TaskSelectionComponent extends Component {
    * @public
    */
   @computed(
+    // eslint-disable-next-line ember/use-brace-expansion
     "archived",
     "history",
     "tracking.customers.last",
