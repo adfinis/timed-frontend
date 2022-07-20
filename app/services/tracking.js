@@ -104,11 +104,12 @@ export default Service.extend({
     scheduleOnce(
       "afterRender",
       this,
-      t => {
-        document.title = t;
-      },
-      title
+      this.scheduleDocumentTitle.bind(this, title)
     );
+  },
+
+  scheduleDocumentTitle(t) {
+    document.title = t;
   },
 
   /**
