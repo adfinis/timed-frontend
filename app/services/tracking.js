@@ -106,7 +106,7 @@ export default Service.extend({
    * @public
    */
   setTitle(title) {
-    scheduleOnce("afterRender", this, this.scheduleDocumentTitle(title));
+    scheduleOnce("afterRender", this, this.scheduleDocumentTitle.bind(this, title));
   },
 
   scheduleDocumentTitle(t) {

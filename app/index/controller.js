@@ -102,16 +102,12 @@ export default Controller.extend({
       });
 
       if (activitiesThen.get("length")) {
-        scheduleOnce("afterRender", this, this.executeActivitySumTask);
+        scheduleOnce("afterRender", this, this.get("_activitySumTask").perform);
       }
 
       return activitiesThen;
     }
   ),
-
-  executeActivitySumTask() {
-    this.get("_activitySumTask").perform();
-  },
 
   /**
    * The duration sum of all activities of the selected day
