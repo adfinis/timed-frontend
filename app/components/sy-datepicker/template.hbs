@@ -1,6 +1,7 @@
 {{#basic-dropdown horizontalPosition='auto-right' as |dd|}}
   {{#dd.trigger tabindex=-1}}
     <input
+      aria-label="Date"
       type="text"
       class="form-control"
       pattern="\d{1,2}\.\d{1,2}\.\d{2,4}"

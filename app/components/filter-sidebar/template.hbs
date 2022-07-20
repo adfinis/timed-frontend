@@ -2,7 +2,7 @@
   <aside class="filter-sidebar {{if visible 'filter-sidebar--visible'}}">
     <div class="filter-sidebar-title">
       {{#if appliedCount}}
-        {{appliedCount}} Filter{{unless (eq appliedCount 1) 's'}} applied
+        {{appliedCount}} Filter{{if (gt appliedCount 1) 's'}} applied
       {{else}}
         Filters
       {{/if}}
@@ -22,9 +22,10 @@
     </div>
 
     <button
+      type="button"
       title="{{if visible 'Hide' 'Show'}} filters"
       class="filter-sidebar-toggle"
-      {{action (toggle 'visible' this)}}
+      {{on "click" (fn (toggle 'visible' this))}}
     >
       <span class="filter-sidebar-toggle-background"></span>
       <span class="filter-sidebar-toggle-icon">
@@ -36,5 +37,9 @@
       <span class="filter-sidebar-toggle-text">Filters</span>
     </button>
   </aside>
-  <div class="filter-sidebar-overlay {{if visible 'filter-sidebar-overlay--visible'}}" {{action (mut visible) false}}></div>
+  <div
+    role="button"
+    class="filter-sidebar-overlay {{if visible 'filter-sidebar-overlay--visible'}}"
+    {{on "click" (fn (mut visible) false)}}
+  ></div>
 {{/-in-element}}

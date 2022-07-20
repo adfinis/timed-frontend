@@ -5,19 +5,19 @@
   {{#if attendances}}
     {{#if (or (media 'isXl') (media 'isLg') (media 'isMd'))}}
       {{#each attendances as |attendance|}}
-        {{attendance-slider
+        <AttendanceSlider
+          @attendance={{changeset attendance this.AttendanceValidator}}
+          @on-save={{route-action "saveAttendance"}}
+          @on-delete={{route-action "deleteAttendance"}}
           data-test-attendance-slider
           data-test-attendance-slider-id=attendance.id
-          attendance = (changeset attendance AttendanceValidator)
-          on-save    = (route-action 'saveAttendance')
-          on-delete  = (route-action 'deleteAttendance')
-        }}
+        />
       {{/each}}
     {{else}}
       <table class="table table--striped table--attendances">
         <tbody>
           {{#each attendances as |attendance|}}
-            {{#with (changeset attendance AttendanceValidator) as |model|}}
+            {{#let (changeset attendance AttendanceValidator) as |model|}}
               <tr
                 data-test-attendance-slider
                 data-test-attendance-slider-id={{attendance.id}}>
@@ -32,7 +32,7 @@
                   <button type="submit" class="btn btn-primary" disabled={{not (and model.isDirty model.isValid)}} {{action 'saveAttendance' model}}>{{fa-icon 'save'}}</button>
                 </td>
               </tr>
-            {{/with}}
+            {{/let}}
           {{/each}}
         </tbody>
       </table>

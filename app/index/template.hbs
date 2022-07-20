@@ -28,13 +28,13 @@
     </div>
     <div class="grid-cell hidden-sm">
       <div class="btn-group btn-group--vertical">
-        <LinkTo @route="index.activities" @tagName="button" @type="button" class="btn">
+        <LinkTo @route="index.activities" @tagName="button" class="btn">
           Activities <span class="badge">{{humanize-duration activitySum true}}</span>
         </LinkTo>
-        <LinkTo @route="index.attendances" @tagName="button" @type="button" class="btn">
+        <LinkTo @route="index.attendances" @tagName="button" class="btn">
           Attendances <span class="badge">{{humanize-duration attendanceSum}}</span>
         </LinkTo>
-        <LinkTo @route="index.reports" @tagName="button" @type="button" class="btn">
+        <LinkTo @route="index.reports" @tagName="button" class="btn">
           Timesheet <span class="badge">{{humanize-duration reportSum}}</span>
         </LinkTo>
         {{#if absence}}

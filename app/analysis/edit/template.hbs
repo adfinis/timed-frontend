@@ -8,11 +8,11 @@
         </div>
       {{else}}
         <h1 class="text-center">
-          {{#unless (eq intersection.lastSuccessful.value.meta.count 1)}}
+          {{#if (gt intersection.lastSuccessful.value.meta.count 1)}}
             Bulk edit {{intersection.lastSuccessful.value.meta.count}} reports
           {{else}}
             Edit report
-          {{/unless}}
+          {{/if}}
         </h1>
         <div class="card">
           <div class="card-block">
@@ -40,9 +40,9 @@
                         {{#unless model.customer}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.customer.id model.customer.id)}}
+                        {{#if (not-eq f.model.change.customer.id model.customer.id)}}
                           <ChangedWarning />
-                        {{/unless}}
+                        {{/if}}
                       </label>
                       <t.customer />
                     </div>
@@ -52,9 +52,9 @@
                         {{#unless model.project}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.project.id model.project.id)}}
+                        {{#if (not-eq f.model.change.project.id model.project.id)}}
                           <ChangedWarning />
-                        {{/unless}}
+                        {{/if}}
                       </label>
                       <t.project />
                     </div>
@@ -64,9 +64,9 @@
                         {{#unless model.task}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.task.id model.task.id)}}
+                        {{#if (not-eq f.model.change.task.id model.task.id)}}
                           <ChangedWarning />
-                        {{/unless}}
+                        {{/if}}
                       </label>
                       <t.task />
                     </div>
@@ -82,9 +82,9 @@
                       {{#if (eq model.comment null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.comment model.comment)}}
+                      {{#if (not-eq f.model.comment model.comment)}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </label>
                     <input
                       type="text"
@@ -111,9 +111,9 @@
                       {{#if (eq model.notBillable null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.notBillable model.notBillable)}}
+                      {{#if (not-eq f.model.notBillable model.notBillable)}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
@@ -130,9 +130,9 @@
                       {{#if (eq model.review null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.review model.review)}}
+                      {{#if (not-eq f.model.review model.review)}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
@@ -151,9 +151,9 @@
                       {{#if (eq model.billed null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.billed model.billed)}}
+                      {{#if (not-eq f.model.billed model.billed)}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
@@ -172,9 +172,9 @@
                       {{#if (eq model.verified null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.verified model.verified)}}
+                      {{#if (not-eq f.model.verified model.verified)}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 

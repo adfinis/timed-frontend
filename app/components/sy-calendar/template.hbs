@@ -6,7 +6,7 @@
     <span class="nav-select-month">
       {{#let (moment-format calendar.center 'MMMM') as |currentMonth|}}
         {{currentMonth}}
-        <select onchange={{action 'changeCenter' 'month'}}>
+        <select aria-label="Month" onchange={{action 'changeCenter' 'month'}}>
           {{#each months as |month|}}
             <option value={{month}} selected={{eq month currentMonth}}>{{month}}</option>
           {{/each}}
@@ -16,7 +16,7 @@
     <span class="nav-select-year">
       {{#let (moment-format calendar.center 'YYYY') as |currentYear|}}
         {{currentYear}}
-        <select onchange={{action 'changeCenter' 'year'}}>
+        <select aria-label="Year" onchange={{action 'changeCenter' 'year'}}>
           {{#each years as |year|}}
             <option value={{year}} selected={{eq year currentYear}}>{{year}}</option>
           {{/each}}

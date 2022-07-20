@@ -221,7 +221,7 @@
                   class="btn btn-success"
                   {{action 'edit' this.selectedReportIds}}
                 >
-                  Edit {{this.selectedReportIds.length}} selected report{{unless (eq this.selectedReportIds.length 1) 's'}}
+                  Edit {{this.selectedReportIds.length}} selected report{{if (gt this.selectedReportIds.length 1) 's'}}
                 </button>
               {{/if}}
               <button
@@ -282,7 +282,7 @@
                   </colgroup>
                   <tbody>
                     {{#each reports as |report|}}
-                      <tr class="{{if (contains report.id this.selectedReportIds) 'selected'}} {{if (can 'edit report' report) 'pointer'}}" {{action 'selectRow' report}}>
+                      <tr role="button" class="{{if (contains report.id this.selectedReportIds) 'selected'}} {{if (can 'edit report' report) 'pointer'}}" {{action 'selectRow' report}}>
                         <td>{{report.user.username}}</td>
                         <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
                         <td>{{format-duration report.duration false}}</td>

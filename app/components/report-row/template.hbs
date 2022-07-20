@@ -6,7 +6,7 @@
     <TaskSelection
       @disabled={{not this.editable}}
       @task={{this.changeset.task}}
-      @on-set-task={{fn this.updateTask}}
+      @on-set-task={{this.updateTask}}
       as |t|
     >
       <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.customer}}</div>
@@ -16,6 +16,7 @@
 
     <div class="form-list-cell form-group">
       <input
+        aria-label="Comment"
         type="text"
         class="form-control comment-field"
         placeholder="Comment"

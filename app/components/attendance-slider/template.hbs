@@ -22,5 +22,8 @@
 </div>
 
 <div class="slider-title">
-  <span>{{duration}}</span> {{fa-icon data-test-delete-attendance 'trash' click=(perform delete)}}
+  <span>{{duration}}</span>
+  <span role="button" {{on "click" (perform delete)}}>
+    <FaIcon @icon="trash" data-test-delete-attendance />
+  </span>
 </div>

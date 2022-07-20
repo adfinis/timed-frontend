@@ -99,8 +99,20 @@
     Overlapping activities will not be taken into account for the timesheet.
   {{/modal.body}}
   {{#modal.footer data-test-overlapping-warning}}
-   <button class="btn btn-primary" {{action (if showUnknownWarning (action (mut showOverlappingWarning) false) 'generateReports')}}>That's fine</button>
-   <button class="btn btn-default" {{action (queue (action (mut showOverlappingWarning) false) (action (mut showUnknownWarning) false))}}>Cancel</button>
+   <button
+     type="button"
+     class="btn btn-primary"
+     {{action (if showUnknownWarning (action (mut showOverlappingWarning) false) 'generateReports')}}
+   >
+     That's fine
+   </button>
+   <button
+     type="button"
+     class="btn btn-default"
+     {{action (queue (action (mut showOverlappingWarning) false) (action (mut showUnknownWarning) false))}}
+   >
+     Cancel
+   </button>
   {{/modal.footer}}
 {{/sy-modal}}
 
@@ -112,7 +124,19 @@
     Unknown tasks will not be taken into account for the timesheet.
   {{/modal.body}}
   {{#modal.footer data-test-unknown-warning}}
-   <button class="btn btn-primary" {{action (if showOverlappingWarning (action (mut showUnknownWarning) false) 'generateReports')}}>That's fine</button>
-   <button class="btn btn-default" {{action (queue (action (mut showUnknownWarning) false) (action (mut showOverlappingWarning) false))}}>Cancel</button>
+   <button
+     type="button"
+     class="btn btn-primary"
+     {{action (if showOverlappingWarning (action (mut showUnknownWarning) false) 'generateReports')}}
+   >
+     That's fine
+   </button>
+   <button
+     type="button"
+     class="btn btn-default"
+     {{action (queue (action (mut showUnknownWarning) false) (action (mut showOverlappingWarning) false))}}
+   >
+     Cancel
+   </button>
   {{/modal.footer}}
 {{/sy-modal}}

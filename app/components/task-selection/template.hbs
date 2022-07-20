@@ -8,7 +8,7 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'customer-select'
-    onChange           = (fn this.onCustomerChange)
+    onChange           = this.onCustomerChange
     extra              = (hash
       lazy             = true
       selectedTemplate = this.selectedTemplate
@@ -24,7 +24,7 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'project-select'
-    onChange           = (fn this.onProjectChange)
+    onChange           = this.onProjectChange
     extra              = (hash
       selectedTemplate = this.selectedTemplate
       optionTemplate   = this.projectOptionTemplate
@@ -39,12 +39,12 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'task-select'
-    onChange           = (fn this.onTaskChange)
+    onChange           = this.onTaskChange
     extra              = (hash
       selectedTemplate = this.selectedTemplate
       optionTemplate   = this.taskOptionTemplate
     )
   )
-  clear                = (fn this.clear)
-  reset                = (fn this.reset)
+  clear                = this.clear
+  reset                = this.reset
 )}}

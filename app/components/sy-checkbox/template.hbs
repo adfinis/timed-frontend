@@ -5,4 +5,4 @@
   disabled={{disabled}}
   onchange={{action on-change value='target.checked'}}
 >
-<label for={{checkboxElementId}} title={{title}}>{{#if hasBlock}}{{~yield~}}{{else}}{{#if label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
+<label for={{checkboxElementId}} title={{title}}>{{#if (has-block)}}{{~yield~}}{{else}}{{#if label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
