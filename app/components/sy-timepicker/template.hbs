@@ -7,5 +7,7 @@
   maxlength={{this.maxlength}}
   placeholder={{this.placeholder}}
   autocomplete="off"
-  {{on "keyPress" this.keyDown}}
+  {{on "keydown" this.keyDown}}
+  {{on "change" this.change}}
+  {{on "focusout" (or this.args.focusOut (noop))}}
 />

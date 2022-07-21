@@ -61,7 +61,6 @@ export default Route.extend(RouteAutostartTourMixin, {
       lookupValidator(ActivityValidator),
       ActivityValidator
     );
-
     changeset.validate();
 
     controller.setProperties({ changeset });

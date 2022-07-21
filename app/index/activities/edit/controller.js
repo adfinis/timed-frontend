@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from "@ember/controller";
-import { and } from "@ember/object/computed";
+import { action } from "@ember/object";
 
 /**
  * Controller to edit an activity
@@ -13,7 +13,7 @@ import { and } from "@ember/object/computed";
  * @extends Ember.Controller
  * @public
  */
-const IndexActivitiesEditController = Controller.extend({
+export default class IndexActivitiesEditController extends Controller {
   /**
    * Whether the save button is enabled
    *
@@ -23,20 +23,24 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {Boolean} saveEnabled
    * @public
    */
-  saveEnabled: and("changeset.isDirty", "changeset.isValid"),
+  get saveEnabled() {
+    return this.changeset.isDirty && this.changeset.isValid;
+  }
 
-  actions: {
-    /**
-     * Validate the given changeset
-     *
-     * @method validateChangeset
-     * @param {EmberChangeset.Changeset} changeset The changeset to validate
-     * @public
-     */
-    validateChangeset(changeset) {
-      changeset.validate();
-    },
-  },
-});
+  /**
+   * Validate the given changeset
+   *
+   * @method validateChangeset
+   * @param {EmberChangeset.Changeset} changeset The changeset to validate
+   * @public
+   */
+  @action
+  validateChangeset(changeset) {
+    this.changeset.validate();
+  }
 
-export default IndexActivitiesEditController;
+  @action
+  toggle(prop) {
+    this.changeset[prop] = !!this.changeset[prop];
+  }
+}

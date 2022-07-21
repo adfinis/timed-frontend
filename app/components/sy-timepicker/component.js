@@ -3,11 +3,10 @@
  * @submodule timed-components
  * @public
  */
+import { action } from "@ember/object";
 import Component from "@glimmer/component";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
-
-const noop = () => {};
 
 /**
  * Timepicker component
@@ -17,8 +16,39 @@ const noop = () => {};
  * @public
  */
 export default class SyTimepickerComponent extends Component {
+  optionalUnwrap(date) {
+    if (this.isProxiedDate(date)) {
+      return date.unwrap();
+    }
+    return date;
+  }
+
+  isProxiedDate(obj) {
+    return obj && obj.unwrap && obj.unwrap()._isAMomentObject;
+  }
+
   sanitize(value) {
     return value.replace(/[^\d:]/, "");
+  }
+
+  get value() {
+    return this.optionalUnwrap(this.args.value) ?? moment();
+  }
+
+  get max() {
+    // unwrap proxy to get the moment instance
+    // https://github.com/poteto/ember-changeset/pull/636
+    return (
+      this.optionalUnwrap(this.args.max) ??
+      moment(this.value).set({ h: 23, m: 59 })
+    );
+  }
+
+  get min() {
+    return (
+      this.optionalUnwrap(this.args.min) ??
+      moment(this.value).set({ h: 0, m: 0 })
+    );
   }
 
   /**
@@ -27,7 +57,9 @@ export default class SyTimepickerComponent extends Component {
    * @property {String} placeholder
    * @public
    */
-  placeholder = "00:00";
+  get placeholder() {
+    return this.args.placeholder ?? "00:00";
+  }
 
   /**
    * The maximal length of the value
@@ -35,7 +67,9 @@ export default class SyTimepickerComponent extends Component {
    * @property {Number} maxlength
    * @public
    */
-  maxlength = 5;
+  get maxlength() {
+    return this.args.maxLength ?? 5;
+  }
 
   /**
    * The precision of the time
@@ -45,7 +79,9 @@ export default class SyTimepickerComponent extends Component {
    * @property {Number} precision
    * @public
    */
-  precision = 15;
+  get precision() {
+    return this.args.precision ?? 15;
+  }
 
   /**
    * The regex for the input
@@ -71,39 +107,9 @@ export default class SyTimepickerComponent extends Component {
    * @public
    */
   get displayValue() {
-    const value = this.args.value;
-    return value && value.isValid() ? value.format("HH:mm") : "";
-  }
-
-  /**
-   * Init hook, set min and max if not passed
-   *
-   * @method init
-   * @public
-   */
-  constructor(...args) {
-    super(...args);
-
-    const value = this.args.value || moment();
-
-    if (!this.min) {
-      this.min = moment(value).set({ h: 0, m: 0 });
-    }
-
-    if (!this.max) {
-      this.max = moment(value).set({ h: 23, m: 59 });
-    }
-  }
-
-  /**
-   * Handle focus out
-   *
-   * @event focusOut
-   * @param {jQuery.Event} e The jquery focus out event
-   * @public
-   */
-  focusOut() {
-    this["on-focus-out"] ?? noop();
+    return this.args.value && this.args.value.isValid()
+      ? this.args.value.format("HH:mm")
+      : "";
   }
 
   /**
@@ -113,6 +119,7 @@ export default class SyTimepickerComponent extends Component {
    * @param {jQuery.Event} e The jquery change event
    * @public
    */
+  @action
   change(e) {
     if (e.target.validity.valid) {
       const [h = NaN, m = NaN] = this.sanitize(e.target.value)
@@ -131,6 +138,7 @@ export default class SyTimepickerComponent extends Component {
    * @return {Boolean} Whether to bubble the event or not
    * @public
    */
+  @action
   keyDown(e) {
     this._handleArrows(e);
 
@@ -147,7 +155,7 @@ export default class SyTimepickerComponent extends Component {
    * @private
    */
   _set(h, m) {
-    return moment(this.args.value || this.min).set({ h, m });
+    return moment(this.value || this.min).set({ h, m });
   }
 
   /**
@@ -160,9 +168,9 @@ export default class SyTimepickerComponent extends Component {
    * @private
    */
   _add(h, m) {
-    let base = this.args.value;
+    let base = this.value;
 
-    if (!base) {
+    if (!this.args.value) {
       base = [h, m].any((n) => n < 0) ? this.max.add(1, "minute") : this.min;
     }
 
@@ -178,7 +186,7 @@ export default class SyTimepickerComponent extends Component {
    * @private
    */
   _isValid(value) {
-    return value < this.max && value > this.min;
+    return value.isBefore(moment(this.max)) && value.isAfter(moment(this.min));
   }
 
   /**
