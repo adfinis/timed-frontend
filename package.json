@@ -84,7 +84,7 @@
     "ember-template-lint": "^3.2.0",
     "ember-test-selectors": "^3.0.0",
     "ember-tether": "^1.0.0",
-    "ember-truth-helpers": "^2.1.0",
+    "ember-truth-helpers": "^3.1.0",
     "ember-validated-form": "^1.4.2",
     "ember-wormhole": "^0.5.5",
     "eslint": "^6.8.0",
