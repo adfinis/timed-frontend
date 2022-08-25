@@ -31,6 +31,7 @@
                     project=_project
                     task=_task
                   }}
+                  @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
                   as |t|
                 >
                   <f.input @name='task' as |fi|>
@@ -92,6 +93,7 @@
                       class="form-control comment-field"
                       onchange={{action fi.update value='target.value'}}
                       value={{fi.value}}
+                      disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
                     >
                     {{#if model.task.project.customerVisible}}
                       <CustomerVisibleIcon class="customer-visible-icon" />
@@ -106,6 +108,7 @@
                     <SyCheckbox
                       @checked={{fi.value}}
                       @on-change={{fi.update}}
+                      @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
                     >
                       Not billable
                       {{#if (eq model.notBillable null)}}
@@ -125,6 +128,7 @@
                     <SyCheckbox
                       @checked={{fi.value}}
                       @on-change={{fi.update}}
+                      @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
                     >
                       Needs Review
                       {{#if (eq model.review null)}}
@@ -144,7 +148,7 @@
                     <SyCheckbox
                       @checked={{fi.value}}
                       @on-change={{fi.update}}
-                      @title="You do not have appropriate roles for this action."
+                      @title={{not canBill "You do not have appropriate roles for this action."}}
                       @disabled={{not canBill}}
                     >
                       Billed

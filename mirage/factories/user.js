@@ -15,6 +15,7 @@ export default Factory.extend({
   isStaff: true,
   isActive: true,
   isSuperuser: false,
+  isAccountant: false,
   tourDone: true,
 
   afterCreate(user, server) {

@@ -219,4 +219,45 @@ module("Acceptance | analysis", function(hooks) {
     assert.notOk(find("tbody > tr:last-child.selected"));
     assert.dom("[data-test-edit-selected]").doesNotExist();
   });
+
+  test("can edit selected reports of other users as accountant", async function(assert) {
+    const user = this.server.create("user", { isAccountant: true });
+    this.server.get("users/me", function() {
+      return user;
+    });
+
+    this.server.create("report-intersection", {
+      userId: this.user.id
+    });
+
+    await visit("/analysis");
+
+    await selectChoose(
+      "[data-test-filter-customer]",
+      ".ember-power-select-option",
+      0
+    );
+
+    await click("tbody > tr:nth-child(1)");
+    await click("tbody > tr:nth-child(2)");
+    await click("[data-test-edit-selected]");
+
+    assert.ok(currentURL().includes("id=1%2C2"));
+
+    assert
+      .dom("[data-test-customer] div > div")
+      .hasAttribute("aria-disabled", "true");
+    assert
+      .dom("[data-test-project] div > div")
+      .hasAttribute("aria-disabled", "true");
+    assert
+      .dom("[data-test-task] div > div")
+      .hasAttribute("aria-disabled", "true");
+
+    assert.dom("[data-test-comment] input").isDisabled();
+    assert.dom("[data-test-not-billable] div > input").isDisabled();
+    assert.dom("[data-test-review] div > input").isDisabled();
+    assert.dom("[data-test-billed] div > input").isNotDisabled();
+    assert.dom("[data-test-verified] div > input").isDisabled();
+  });
 });

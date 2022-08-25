@@ -11,5 +11,6 @@ export default Model.extend({
 
   customer: belongsTo("customer"),
   project: belongsTo("project"),
-  task: belongsTo("task")
+  task: belongsTo("task"),
+  user: belongsTo("user")
 });
