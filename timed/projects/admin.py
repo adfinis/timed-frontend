@@ -13,16 +13,19 @@ from timed.subscription.admin import CustomerPasswordInline
 
 
 class CustomerAssigneeInline(admin.TabularInline):
+    autocomplete_fields = ["user"]
     model = models.CustomerAssignee
     extra = 0
 
 
 class ProjectAssigneeInline(NestedStackedInline):
+    autocomplete_fields = ["user"]
     model = models.ProjectAssignee
     extra = 0
 
 
 class TaskAssigneeInline(NestedStackedInline):
+    autocomplete_fields = ["user"]
     model = models.TaskAssignee
     extra = 1
 
