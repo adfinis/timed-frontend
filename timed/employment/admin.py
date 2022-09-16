@@ -4,6 +4,7 @@ import datetime
 
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.widgets import AutocompleteSelect
 from django.contrib.auth.admin import UserAdmin
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -21,7 +22,11 @@ class SupervisorForm(forms.ModelForm):
 
     # Change the label of the supervisor through table attribute to_user
     to_user = forms.ModelChoiceField(
-        queryset=models.User.objects.all(), label=_("supervised by")
+        queryset=models.User.objects.all(),
+        label=_("supervised by"),
+        widget=AutocompleteSelect(
+            models.User.supervisors.through.to_user.field, admin_site=admin.site
+        ),
     )
 
     class Meta:
@@ -36,7 +41,11 @@ class SuperviseeForm(forms.ModelForm):
 
     # Change the label of the supervisor through table attribute from_user
     from_user = forms.ModelChoiceField(
-        queryset=models.User.objects.all(), label=_("supervising")
+        queryset=models.User.objects.all(),
+        label=_("supervising"),
+        widget=AutocompleteSelect(
+            models.User.supervisors.through.from_user.field, admin_site=admin.site
+        ),
     )
 
     class Meta:
@@ -47,6 +56,7 @@ class SuperviseeForm(forms.ModelForm):
 
 
 class SupervisorInline(admin.TabularInline):
+    autocomplete_fields = ["to_user"]
     form = SupervisorForm
     model = models.User.supervisors.through
     extra = 0
@@ -56,6 +66,7 @@ class SupervisorInline(admin.TabularInline):
 
 
 class SuperviseeInline(admin.TabularInline):
+    autocomplete_fields = ["from_user"]
     form = SuperviseeForm
     model = models.User.supervisors.through
     extra = 0
@@ -143,6 +154,7 @@ class UserAdmin(UserAdmin):
         AbsenceCreditInline,
     ]
     list_display = ("username", "first_name", "last_name", "is_staff", "is_active")
+    search_fields = ["username"]
 
     actions = [
         "disable_users",
