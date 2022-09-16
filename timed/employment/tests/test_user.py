@@ -205,6 +205,21 @@ def test_user_transfer(superadmin_client):
     assert absence_credit.comment == "Transfer 2017"
 
 
+@pytest.mark.parametrize("value,expected", [(1, 2), (0, 2)])
+def test_user_is_external_filter(internal_employee_client, value, expected):
+    """Should filter users if they have an internal employment."""
+    user = UserFactory.create()
+    user2, user3 = UserFactory.create_batch(2)
+    EmploymentFactory.create(is_external=False, user=user)
+    EmploymentFactory.create(is_external=True, user=user2)
+    EmploymentFactory.create(is_external=True, user=user3)
+
+    response = internal_employee_client.get(
+        reverse("user-list"), {"is_external": value}
+    )
+    assert len(response.json()["data"]) == expected
+
+
 @pytest.mark.parametrize("value,expected", [(1, 1), (0, 4)])
 def test_user_is_reviewer_filter(internal_employee_client, value, expected):
     """Should filter users if they are a reviewer."""
