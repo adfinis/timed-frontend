@@ -46,6 +46,10 @@ class UserFilterSet(FilterSet):
     is_reviewer = NumberFilter(method="filter_is_reviewer")
     is_supervisor = NumberFilter(method="filter_is_supervisor")
     is_accountant = NumberFilter(field_name="is_accountant")
+    is_external = NumberFilter(method="filter_is_external")
+
+    def filter_is_external(self, queryset, name, value):
+        return queryset.filter(employments__is_external=value)
 
     def filter_is_reviewer(self, queryset, name, value):
         if value:
