@@ -17,15 +17,15 @@
         {{t.task}}
       </div>
       <div class="form-group" data-test-tracking-comment>
-        <input
-          type="text"
-          class="form-control"
-          placeholder="Comment"
+        <Input
           aria-label="Comment"
-          name="comment"
-          value={{this.tracking.activity.comment}}
+          class="form-control"
           disabled={{this.tracking.activity.active}}
-        >
+          name="comment"
+          placeholder="Comment"
+          type="text"
+          @value={{this.tracking.activity.comment}}
+        />
         {{#if tracking.activity.task.project.customerVisible}}
           <CustomerVisibleIcon class="customer-visible-icon" />
         {{/if}}
