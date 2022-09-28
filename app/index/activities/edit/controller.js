@@ -6,7 +6,6 @@
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
-import lookupValidator from "ember-changeset-validations";
 import ActivityValidator from "timed/validations/activity";
 
 /**
@@ -20,8 +19,7 @@ export default class IndexActivitiesEditController extends Controller {
   @service notify;
   @service router;
 
-  validator = ActivityValidator;
-  validationMap = lookupValidator(ActivityValidator);
+  validations = ActivityValidator;
 
   @action
   validateChangeset(changeset) {
@@ -29,17 +27,7 @@ export default class IndexActivitiesEditController extends Controller {
   }
 
   @action
-  toggleValue(changeset, propertyName) {
-    changeset[propertyName] = !changeset[propertyName];
-  }
-
-  @action
-  updateValue(changeset, propertyName, event) {
-    changeset[propertyName] = event.target.value;
-  }
-
-  @action
-  async delete() {
+  async delete(model) {
     /* istanbul ignore next */
     if (this.router.currentRoute.active) {
       // We can't test this because the UI already prevents this by disabling
@@ -51,7 +39,7 @@ export default class IndexActivitiesEditController extends Controller {
     }
 
     try {
-      await this.model.destroyRecord();
+      await model.destroyRecord();
 
       this.notify.success("Activity was deleted");
 

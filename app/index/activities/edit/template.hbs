@@ -1,4 +1,4 @@
-{{#let (changeset @model this.validations this.validationMap) as |cs|}}
+{{#let (changeset @model this.validations) as |cs|}}
 <form data-test-activity-edit-form {{on "submit" (fn this.save cs)}}>
   <div class="card">
     <div class="card-header hidden-lg">
@@ -13,14 +13,13 @@
     </div>
     <div class="card-footer text-right">
       <div class="form-group">
-        <input
+        <Input
           type="text"
           class="form-control comment-field"
           placeholder="Comment"
           name="comment"
-          value={{cs.comment}}
-          {{ on "change" (fn this.updateValue cs "comment") }}
-        >
+          @value={{cs.comment}}
+        />
         {{#if cs.task.project.customerVisible }}
           <CustomerVisibleIcon class="customer-visible-icon" />
         {{/if}}
@@ -30,13 +29,13 @@
           data-test-activity-review
           @checked={{cs.review}}
           @label={{'Needs review'}}
-          @onChange={{(fn this.toggleValue cs "review")}}
+          @onChange={{(toggle "review" cs)}}
         />
         <SyCheckbox
           data-test-activity-not-billable
           @checked={{cs.notBillable}}
           @label='Not billable'
-          @onChange={{(fn this.toggleValue cs "notBillable")}}
+          @onChange={{(toggle "notBillable" cs)}}
         />
       </div>
       <table class="table table--striped table--activity-edit">
@@ -69,7 +68,7 @@
       </table>
     </div>
     <div class="card-footer text-right">
-      <button class="btn btn-danger" type="button" disabled={{@model.active}} {{ on "click" this.delete }} data-test-activity-edit-form-delete>Delete</button>
+      <button class="btn btn-danger" type="button" disabled={{@model.active}} {{ on "click" (fn this.delete @model)}} data-test-activity-edit-form-delete>Delete</button>
       <button class="btn btn-primary" type="submit" disabled={{not (and cs.isDirty cs.isValid)}} data-test-activity-edit-form-save>Save</button>
     </div>
   </div>
