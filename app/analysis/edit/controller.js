@@ -61,6 +61,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   notify: service("notify"),
   ajax: service("ajax"),
   session: service("session"),
+  router: service("router"),
   unverifiedReports: service(),
 
   analysisIndexController: controller("analysis.index"),
@@ -186,20 +187,22 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     },
 
     cancel() {
-      const task = this.get("analysisIndexController.data");
+      const task = this.analysisIndexController.data;
 
       /* istanbul ignore next */
-      if (task.get("lastSuccessful")) {
+      if (task.lastSuccessful) {
         this.set("analysisIndexController.skipResetOnSetup", true);
       }
 
-      this.transitionToRoute("analysis.index", {
-        queryParams: {
-          ...this.get("allQueryParams"),
-        },
-      }).then(() => {
-        this.set("analysisIndexController.skipResetOnSetup", false);
-      });
+      this.router
+        .transitionToRoute("analysis.index", {
+          queryParams: {
+            ...this.get("allQueryParams"),
+          },
+        })
+        .then(() => {
+          this.set("analysisIndexController.skipResetOnSetup", false);
+        });
     },
 
     reset(changeset) {
