@@ -105,7 +105,7 @@
     "ember-site-tour": "^2.2.0",
     "ember-source": "3.28.0",
     "ember-template-lint": "^3.6.0",
-    "ember-test-selectors": "^3.0.0",
+    "ember-test-selectors": "^6.0.0",
     "ember-tether": "^2.0.1",
     "ember-truth-helpers": "^3.1.1",
     "ember-validated-form": "4.1.0",
