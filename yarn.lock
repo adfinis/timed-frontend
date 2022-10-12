@@ -4222,6 +4222,11 @@
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
 
+"@fontsource/source-sans-pro@^4.5.11":
+  version "4.5.11"
+  resolved "https://registry.yarnpkg.com/@fontsource/source-sans-pro/-/source-sans-pro-4.5.11.tgz#06b3f08ef1a5250d78c8198e5a0482b5d87a4d52"
+  integrity sha512-f7iw44q1EjBv3MNcHCGAgrW/QVyweaEouFsJzykPhTOGnZFSwFJRISToXornOmuAy7xUUGiVdqOLiykgZoYB8A==
+
 "@gar/promisify@^1.0.1":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@gar/promisify/-/promisify-1.1.2.tgz#30aa825f11d438671d585bd44e7fd564535fc210"
@@ -22946,11 +22951,6 @@ typedarray-to-buffer@^3.1.5:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
-
-typeface-source-sans-pro@^0.0.75:
-  version "0.0.75"
-  resolved "https://registry.yarnpkg.com/typeface-source-sans-pro/-/typeface-source-sans-pro-0.0.75.tgz#33e60ea079738c2dbdb2d0aa28f899f565e1646e"
-  integrity sha512-8aI6ywe+5py1MoMQjdnuQKepOATSLpFoyatVMweF6JNUD8cu+sWaVEfZBN08CRxPrSC4KYTArf6prrQzcqpyQA==
 
 typescript-memoize@^1.0.0-alpha.3:
   version "1.0.0-alpha.3"
