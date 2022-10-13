@@ -27,7 +27,7 @@ export default class SyTimepickerComponent extends Component {
     return obj && obj.unwrap && obj.unwrap()._isAMomentObject;
   }
 
-  sanitize(value) {
+  sanitize (value) {
     return value.replace(/[^\d:]/, "");
   }
 
@@ -186,7 +186,10 @@ export default class SyTimepickerComponent extends Component {
    * @return {Boolean} Whether the value is valid
    * @private
    */
-  _isValid(value) {
+  _isValid(momentOrDuration) {
+    const value = momentOrDuration._isAMomentObject
+      ? momentOrDuration
+      : moment(momentOrDuration);
     return value.isBefore(moment(this.max)) && value.isAfter(moment(this.min));
   }
 
