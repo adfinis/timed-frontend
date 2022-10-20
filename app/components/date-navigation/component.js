@@ -1,12 +1,11 @@
-import classic from "ember-classic-decorator";
-import { action } from "@ember/object";
-import { classNames } from "@ember-decorators/component";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
+
+import { action } from "@ember/object";
+import Component from "@glimmer/component";
 import moment from "moment";
 
 /**
@@ -16,45 +15,42 @@ import moment from "moment";
  * @extends Ember.Component
  * @public
  */
-@classic
-@classNames("btn-toolbar")
-export default class DateNavigation extends Component {
- /**
-  * Set the current date to today
-  *
-  * @method setToday
-  * @public
-  */
- @action
- setToday() {
-   const date = moment();
+export default class DateNavigationComponent extends Component {
+  /**
+   * Set the current date to today
+   *
+   * @method setToday
+   * @public
+   */
+  @action
+  setToday() {
+    const date = moment();
 
-   this["on-change"](date);
- }
+    this.args.onChange(date);
+  }
+  /**
+   * Decrease the current date by one day
+   *
+   * @method setPrevious
+   * @public
+   */
+  @action
+  setPrevious() {
+    const date = moment(this.args.current).subtract(1, "days");
 
- /**
-  * Decrease the current date by one day
-  *
-  * @method setPrevious
-  * @public
-  */
- @action
- setPrevious() {
-   const date = moment(this.current).subtract(1, "days");
+    this.args.onChange(date);
+  }
 
-   this["on-change"](date);
- }
+  /**
+   * Increase the current date by one day
+   *
+   * @method setNext
+   * @public
+   */
+  @action
+  setNext() {
+    const date = moment(this.args.current).add(1, "days");
 
- /**
-  * Increase the current date by one day
-  *
-  * @method setNext
-  * @public
-  */
- @action
- setNext() {
-   const date = moment(this.current).add(1, "days");
-
-   this["on-change"](date);
- }
+    this.args.onChange(date);
+  }
 }

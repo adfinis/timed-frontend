@@ -3871,6 +3871,14 @@
     ember-cli-version-checker "^5.1.2"
     semver "^7.3.5"
 
+"@embroider/addon-shim@^1.6.0":
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/@embroider/addon-shim/-/addon-shim-1.8.3.tgz#2368510b8ce42d50d02cb3289c32e260dfa34bd9"
+  integrity sha512-7pyHwzT6ESXc3nZsB8rfnirLkUhQWdvj6CkYH+0MUPN74mX4rslf7pnBqZE/KZkW3uBIaBYvU8fxi0hcKC/Paw==
+  dependencies:
+    "@embroider/shared-internals" "^1.8.3"
+    semver "^7.3.5"
+
 "@embroider/core@^0.33.0":
   version "0.33.0"
   resolved "https://registry.yarnpkg.com/@embroider/core/-/core-0.33.0.tgz#0fb1752d6e34ea45368e65c42e13220a57ffae76"
@@ -3958,7 +3966,7 @@
     resolve "^1.20.0"
     semver "^7.3.2"
 
-"@embroider/shared-internals@1.8.3", "@embroider/shared-internals@^1.0.0":
+"@embroider/shared-internals@1.8.3", "@embroider/shared-internals@^1.0.0", "@embroider/shared-internals@^1.8.3":
   version "1.8.3"
   resolved "https://registry.yarnpkg.com/@embroider/shared-internals/-/shared-internals-1.8.3.tgz#52d868dc80016e9fe983552c0e516f437bf9b9f9"
   integrity sha512-N5Gho6Qk8z5u+mxLCcMYAoQMbN4MmH+z2jXwQHVs859bxuZTxwF6kKtsybDAASCtd2YGxEmzcc1Ja/wM28824w==
@@ -10510,7 +10518,7 @@ ember-basic-dropdown@6.0.1, ember-basic-dropdown@^6.0.0:
     ember-style-modifier "^0.8.0"
     ember-truth-helpers "^2.1.0 || ^3.0.0"
 
-ember-cache-primitive-polyfill@^1.0.1:
+ember-cache-primitive-polyfill@^1.0.0, ember-cache-primitive-polyfill@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ember-cache-primitive-polyfill/-/ember-cache-primitive-polyfill-1.0.1.tgz#a27075443bd87e5af286c1cd8a7df24e3b9f6715"
   integrity sha512-hSPcvIKarA8wad2/b6jDd/eU+OtKmi6uP+iYQbzi5TQpjsqV6b4QdRqrLk7ClSRRKBAtdTuutx+m+X+WlEd2lw==
@@ -11155,6 +11163,22 @@ ember-cli-typescript@^5.0.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-5.1.1.tgz#cf561026f3e7bd05312c1c212acffa1c30d5fa0c"
   integrity sha512-DbzATYWY8nbXwSxXqtK8YlqGJTcyFyL+eg6IGCc2ur0AMnq/H+o6Z9np9eGoq1sI+HwX7vBkOVoD3k0WurAwXg==
+  dependencies:
+    ansi-to-html "^0.6.15"
+    broccoli-stew "^3.0.0"
+    debug "^4.0.0"
+    execa "^4.0.0"
+    fs-extra "^9.0.1"
+    resolve "^1.5.0"
+    rsvp "^4.8.1"
+    semver "^7.3.2"
+    stagehand "^1.0.0"
+    walk-sync "^2.2.0"
+
+ember-cli-typescript@^5.1.0:
+  version "5.2.1"
+  resolved "https://registry.yarnpkg.com/ember-cli-typescript/-/ember-cli-typescript-5.2.1.tgz#553030f1ce3e8958b8e4fc34909acd1218cb35f2"
+  integrity sha512-qqp5TAIuPHxHiGXJKL+78Euyhy0zSKQMovPh8sJpN/ZBYx0H90pONufHR3anaMcp1snVfx4B+mb9+7ijOik8ZA==
   dependencies:
     ansi-to-html "^0.6.15"
     broccoli-stew "^3.0.0"
@@ -12000,6 +12024,14 @@ ember-text-measurer@^0.6.0:
   dependencies:
     ember-cli-babel "^7.19.0"
     ember-cli-htmlbars "^4.3.1"
+
+ember-tracked-storage-polyfill@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/ember-tracked-storage-polyfill/-/ember-tracked-storage-polyfill-1.0.0.tgz#84d307a1e4badc5f84dca681db2cfea9bdee8a77"
+  integrity sha512-eL7lZat68E6P/D7b9UoTB5bB5Oh/0aju0Z7PCMi3aTwhaydRaxloE7TGrTRYU+NdJuyNVZXeGyxFxn2frvd3TA==
+  dependencies:
+    ember-cli-babel "^7.26.3"
+    ember-cli-htmlbars "^5.7.1"
 
 "ember-truth-helpers@^2.1.0 || ^3.0.0", ember-truth-helpers@^3.0.0:
   version "3.0.0"
@@ -23206,6 +23238,23 @@ tr46@~0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=
+
+tracked-built-ins@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/tracked-built-ins/-/tracked-built-ins-3.1.0.tgz#827703e8e8857e45ac449dfc41e8706e0d6da309"
+  integrity sha512-yPEZV1aYaw7xFWdoEluvdwNxIJIA834HaBQaMATjNAYPwd1fRqIJ46YnuRo6+9mRRWu6nM6sJqrVVa5H6UhFuw==
+  dependencies:
+    ember-cli-babel "^7.26.10"
+    ember-cli-typescript "^5.1.0"
+    ember-tracked-storage-polyfill "^1.0.0"
+
+tracked-toolbox@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/tracked-toolbox/-/tracked-toolbox-2.0.0.tgz#7862575527b4c633ef8f9b4111d9d64c07ef2a49"
+  integrity sha512-adZtX+RGN6F+pWs/5JqVuDxLhuia4uhqmQp+UlUaxpykWjDFETtAdQR+LdDJiFPXFAXnS6FBqn/tnSLJQCm3Yw==
+  dependencies:
+    "@embroider/addon-shim" "^1.6.0"
+    ember-cache-primitive-polyfill "^1.0.0"
 
 traverse@~0.6.6:
   version "0.6.6"

@@ -26,6 +26,9 @@
 @import "users-navigation";
 @import "users";
 
+/* Component styles */
+@import "components/date-navigation";
+
 html {
   hyphens: auto;
 }
@@ -95,7 +98,8 @@ strong {
   }
 }
 
-.error-text {
+.error-text,
+.invalid-feedback {
   font-size: 80%;
   margin: 0;
   color: $color-danger;
@@ -321,9 +325,9 @@ strong {
   }
 }
 
-  .customer-visible-icon {
-    margin-top: -1.7rem;
-  }
+.customer-visible-icon {
+  margin-top: -1.7rem;
+}
 
 @media #{$sm-viewport} {
   .activity-customer-visible-icon {
