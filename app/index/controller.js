@@ -121,8 +121,6 @@ export default Controller.extend({
     "_activities.@each.{fromTime,duration}",
     "_activeActivityDuration",
     function() {
-      this._activitySum();
-
       return this.get("_activities")
         .rejectBy("active")
         .reduce((total, current) => {
@@ -144,7 +142,7 @@ export default Controller.extend({
         return total.add(moment().diff(current.get("from")));
       }, moment.duration());
 
-    // this.set("_activeActivityDuration", duration);
+    this.set("_activeActivityDuration", duration);
   },
 
   /**
