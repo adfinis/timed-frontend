@@ -27,7 +27,7 @@ export default Mixin.create(RouteTourMixin, {
    * @private
    */
   _getParentRouteName() {
-    const parts = this.get("routeName").split(".");
+    const parts = this.routeName.split(".");
 
     parts.pop();
 
@@ -51,9 +51,7 @@ export default Mixin.create(RouteTourMixin, {
   _wantsTour(routeName, user) {
     return (
       !user.get("tourDone") &&
-      !this.get("autostartTour")
-        .get("done")
-        .includes(routeName) &&
+      !this.autostartTour.get("done").includes(routeName) &&
       (this.get("media.isMd") ||
         this.get("media.isLg") ||
         this.get("media.isXl"))
@@ -113,7 +111,7 @@ export default Mixin.create(RouteTourMixin, {
    * @public
    */
   startTour() {
-    if (this._wantsTour(this.get("routeName"), this.modelFor("protected"))) {
+    if (this._wantsTour(this.routeName, this.modelFor("protected"))) {
       schedule("afterRender", this, () => {
         const tour = this.get("controller.tour");
 
@@ -123,25 +121,23 @@ export default Mixin.create(RouteTourMixin, {
             return;
           }
 
-          const done = this.get("autostartTour").get("done");
+          const done = this.autostartTour.get("done");
 
-          done.push(this.get("routeName"));
+          done.push(this.routeName);
 
-          this.get("autostartTour").set("done", done);
+          this.autostartTour.set("done", done);
 
-          if (this.get("autostartTour").allDone()) {
+          if (this.autostartTour.allDone()) {
             try {
               const user = this.modelFor("protected");
 
               user.set("tourDone", true);
 
               await user.save();
-              this.get("notify").info(
-                "Congratulations you completed the tour!"
-              );
+              this.notify.info("Congratulations you completed the tour!");
             } catch (error) {
               /* istanbul ignore next */
-              this.get("notify").error("Error while saving the user");
+              this.notify.error("Error while saving the user");
             }
           }
         });

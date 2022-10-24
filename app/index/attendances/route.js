@@ -54,10 +54,10 @@ export default Route.extend(RouteAutostartTourMixin, {
       try {
         await attendance.save();
 
-        this.get("notify").success("Attendance was saved");
+        this.notify.success("Attendance was saved");
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while saving the attendance");
+        this.notify.error("Error while saving the attendance");
       }
     },
 
@@ -74,10 +74,10 @@ export default Route.extend(RouteAutostartTourMixin, {
           .peekRecord("attendance", attendance.get("id"))
           .destroyRecord();
 
-        this.get("notify").success("Attendance was deleted");
+        this.notify.success("Attendance was deleted");
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while deleting the attendance");
+        this.notify.error("Error while deleting the attendance");
       }
     },
 
@@ -104,10 +104,10 @@ export default Route.extend(RouteAutostartTourMixin, {
 
         await attendance.save();
 
-        this.get("notify").success("Attendance was added");
+        this.notify.success("Attendance was added");
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while adding the attendance");
+        this.notify.error("Error while adding the attendance");
       }
     }
   }

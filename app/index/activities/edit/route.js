@@ -90,12 +90,12 @@ export default Route.extend(RouteAutostartTourMixin, {
       try {
         await this.get("controller.changeset").save();
 
-        this.get("notify").success("Activity was saved");
+        this.notify.success("Activity was saved");
 
         await this.transitionTo("index.activities");
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while saving the activity");
+        this.notify.error("Error while saving the activity");
       }
     },
 
@@ -111,20 +111,20 @@ export default Route.extend(RouteAutostartTourMixin, {
         // We can't test this because the UI already prevents this by disabling
         // the save button..
 
-        this.get("notify").error("You can't delete an active activity");
+        this.notify.error("You can't delete an active activity");
 
         return;
       }
 
       try {
-        await this.get("currentModel").destroyRecord();
+        await this.currentModel.destroyRecord();
 
-        this.get("notify").success("Activity was deleted");
+        this.notify.success("Activity was deleted");
 
         await this.transitionTo("index.activities");
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while deleting the activity");
+        this.notify.error("Error while deleting the activity");
       }
     }
   }

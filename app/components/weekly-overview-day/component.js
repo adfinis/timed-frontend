@@ -82,12 +82,12 @@ export default Component.extend({
    * @public
    */
   title: computed("worktime", "prefix", function() {
-    const pre = this.get("prefix.length") ? `${this.get("prefix")}, ` : "";
+    const pre = this.get("prefix.length") ? `${this.prefix}, ` : "";
 
-    let title = `${this.get("worktime").hours()}h`;
+    let title = `${this.worktime.hours()}h`;
 
-    if (this.get("worktime").minutes()) {
-      title += ` ${this.get("worktime").minutes()}m`;
+    if (this.worktime.minutes()) {
+      title += ` ${this.worktime.minutes()}m`;
     }
 
     return `${pre}${title}`;
@@ -110,10 +110,7 @@ export default Component.extend({
    * @public
    */
   style: computed("max", "worktime", function() {
-    const height = Math.min(
-      (this.get("worktime").asHours() / this.get("max")) * 100,
-      100
-    );
+    const height = Math.min((this.worktime.asHours() / this.max) * 100, 100);
 
     return htmlSafe(`height: ${height}%;`);
   }),
@@ -127,7 +124,7 @@ export default Component.extend({
     if (action) {
       event.preventDefault();
 
-      this.get("on-click")(this.get("day"));
+      this.get("on-click")(this.day);
     }
   }
 });

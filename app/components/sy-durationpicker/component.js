@@ -50,11 +50,11 @@ export default SyTimepickerComponent.extend({
    * @public
    */
   pattern: computed("min", "precision", function() {
-    const count = 60 / this.get("precision");
+    const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
     return `${
-      this.get("min") < 0 ? "-?" : ""
+      this.min < 0 ? "-?" : ""
     }\\d+:(${minutes.map(m => padStart(m, 2)).join("|")})`;
   }),
 
@@ -79,7 +79,7 @@ export default SyTimepickerComponent.extend({
    * @public
    */
   displayValue: computed("value", function() {
-    return this.get("value") ? formatDuration(this.get("value"), false) : "";
+    return this.value ? formatDuration(this.value, false) : "";
   }),
 
   /**
@@ -105,6 +105,6 @@ export default SyTimepickerComponent.extend({
    * @private
    */
   _add(h, m) {
-    return moment.duration(this.get("value")).add({ h, m });
+    return moment.duration(this.value).add({ h, m });
   }
 });

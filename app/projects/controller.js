@@ -18,7 +18,7 @@ export default Controller.extend({
 
   customers: computed("projects", function() {
     return (
-      this.get("projects")
+      this.projects
         ?.map(project => project.get("customer"))
         .uniqBy("id")
         .sortBy("name") ?? []
@@ -44,7 +44,7 @@ export default Controller.extend({
   }),
 
   filterProjects: task(function*() {
-    return yield this.get("projects").filter(
+    return yield this.projects.filter(
       project => project.get("customer.id") === this.get("selectedCustomer.id")
     );
   }),
@@ -69,14 +69,14 @@ export default Controller.extend({
       this.notify.error("Error while saving task");
     }
 
-    this.fetchTasksByProject.perform(this.get("selectedProject"));
+    this.fetchTasksByProject.perform(this.selectedProject);
   }).drop(),
 
   createTask: task(function*() {
     this.set(
       "selectedTask",
       yield this.store.createRecord("task", {
-        project: this.get("selectedProject")
+        project: this.selectedProject
       })
     );
   }).drop(),
@@ -94,7 +94,7 @@ export default Controller.extend({
       this.set("selectedProject", project);
       this.set("selectedTask", null);
 
-      if (this.get("selectedProject") !== null) {
+      if (this.selectedProject !== null) {
         this.fetchTasksByProject.perform();
       }
     }

@@ -8,7 +8,7 @@ module("Unit | Ability | report", function(hooks) {
     const ability = this.owner.lookup("ability:report");
     ability.set("user", { isSuperuser: true });
 
-    assert.equal(ability.get("canEdit"), true);
+    assert.true(ability.get("canEdit"));
   });
 
   test("can edit when user is superuser and report is verified", function(assert) {
@@ -16,7 +16,7 @@ module("Unit | Ability | report", function(hooks) {
     ability.set("user", { isSuperuser: true });
     ability.set("model", { verifiedBy: { id: 1 } });
 
-    assert.equal(ability.get("canEdit"), true);
+    assert.true(ability.get("canEdit"));
   });
 
   test("can edit when user owns report", function(assert) {
@@ -24,7 +24,7 @@ module("Unit | Ability | report", function(hooks) {
     ability.set("user", { id: 1 });
     ability.set("model", { user: { id: 1 } });
 
-    assert.equal(ability.get("canEdit"), true);
+    assert.true(ability.get("canEdit"));
   });
 
   test("can edit when user is supervisor of owner", function(assert) {
@@ -32,7 +32,7 @@ module("Unit | Ability | report", function(hooks) {
     ability.set("user", { id: 1 });
     ability.set("model", { user: { supervisors: [{ id: 1 }] } });
 
-    assert.equal(ability.get("canEdit"), true);
+    assert.true(ability.get("canEdit"));
   });
 
   test("can edit when user reviewer of project", function(assert) {
@@ -44,7 +44,7 @@ module("Unit | Ability | report", function(hooks) {
       projectAssignees: projectAssignee
     });
 
-    assert.equal(ability.get("canEdit"), true);
+    assert.true(ability.get("canEdit"));
   });
 
   test("can not edit when not allowed", function(assert) {
@@ -56,7 +56,7 @@ module("Unit | Ability | report", function(hooks) {
       projectAssignees: [{ id: 2 }]
     });
 
-    assert.equal(ability.get("canEdit"), false);
+    assert.false(ability.get("canEdit"));
   });
 
   test("can not edit when report is verified and billed", function(assert) {
@@ -69,6 +69,6 @@ module("Unit | Ability | report", function(hooks) {
       billed: true
     });
 
-    assert.equal(ability.get("canEdit"), false);
+    assert.false(ability.get("canEdit"));
   });
 });

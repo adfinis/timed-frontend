@@ -16,7 +16,7 @@ import { scheduleOnce } from "@ember/runloop";
  */
 export default Component.extend({
   checkboxElementId: computed("elementId", function() {
-    return `${this.get("elementId")}-checkbox`;
+    return `${this.elementId}-checkbox`;
   }),
 
   didReceiveAttrs() {

@@ -143,7 +143,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         this.set("controller.showEditModal", false);
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while saving the absence");
+        this.notify.error("Error while saving the absence");
       } finally {
         this.send("finished");
       }
@@ -163,7 +163,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         await absence.destroyRecord();
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while deleting the absence");
+        this.notify.error("Error while deleting the absence");
       } finally {
         this.send("finished");
       }
@@ -196,7 +196,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         this.set("controller.showAddModal", false);
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while adding the absence");
+        this.notify.error("Error while adding the absence");
       } finally {
         this.send("finished");
       }

@@ -19,14 +19,14 @@ export default Controller.extend({
   }),
 
   credit: task(function*() {
-    const id = this.get("model");
+    const id = this.model;
 
     return id
       ? yield this.store.findRecord("absence-credit", id, {
           include: "absence_type"
         })
       : yield this.store.createRecord("absence-credit", {
-          user: this.get("user")
+          user: this.user
         });
   }),
 
@@ -34,7 +34,7 @@ export default Controller.extend({
     try {
       yield changeset.save();
 
-      this.get("notify").success("Absence credit was saved");
+      this.notify.success("Absence credit was saved");
 
       this.get("userController.data").perform(this.get("user.id"));
 
@@ -54,7 +54,7 @@ export default Controller.extend({
       });
     } catch (e) {
       /* istanbul ignore next */
-      this.get("notify").error("Error while saving the absence credit");
+      this.notify.error("Error while saving the absence credit");
     }
   }).drop(),
 
@@ -62,14 +62,14 @@ export default Controller.extend({
     try {
       yield credit.destroyRecord();
 
-      this.get("notify").success("Absence credit was deleted");
+      this.notify.success("Absence credit was deleted");
 
       this.get("userController.data").perform(this.get("user.id"));
 
       this.transitionToRoute("users.edit.credits");
     } catch (e) {
       /* istanbul ignore next */
-      this.get("notify").error("Error while deleting the absence credit");
+      this.notify.error("Error while deleting the absence credit");
     }
   }).drop()
 });

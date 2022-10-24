@@ -71,7 +71,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         }
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while saving the report");
+        this.notify.error("Error while saving the report");
       } finally {
         this.send("finished");
       }
@@ -99,7 +99,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         }
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while deleting the report");
+        this.notify.error("Error while deleting the report");
       } finally {
         this.send("finished");
       }
@@ -118,7 +118,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         this.controllerFor("index").set("date", date);
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while rescheduling the timesheet");
+        this.notify.error("Error while rescheduling the timesheet");
       }
     }
   }

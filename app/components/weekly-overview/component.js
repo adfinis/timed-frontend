@@ -38,7 +38,7 @@ export default Component.extend({
    * @public
    */
   hours: computed("expected", function() {
-    return this.get("expected").asHours();
+    return this.expected.asHours();
   }),
 
   /**
@@ -50,6 +50,6 @@ export default Component.extend({
    * @public
    */
   style: computed("height", function() {
-    return htmlSafe(`height: ${this.get("height")}px;`);
+    return htmlSafe(`height: ${this.height}px;`);
   })
 });

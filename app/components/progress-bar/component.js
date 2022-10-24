@@ -67,7 +67,7 @@ const ProgressBarComponent = Component.extend({
    * @public
    */
   value: computed("progress", function() {
-    return round(this.get("progress") * 100);
+    return round(this.progress * 100);
   }),
 
   /**

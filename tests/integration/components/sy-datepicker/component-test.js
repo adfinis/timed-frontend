@@ -62,18 +62,18 @@ module("Integration | Component | sy datepicker", function(hooks) {
     find("input").value = "1.2.2018";
     await triggerEvent("input", "change");
 
-    assert.equal(this.get("value").format("YYYY-MM-DD"), "2018-02-01");
+    assert.equal(this.value.format("YYYY-MM-DD"), "2018-02-01");
 
     find("input").value = "";
     await triggerEvent("input", "change");
 
-    assert.equal(this.get("value"), null);
+    assert.equal(this.value, null);
 
     find("input").value = "somewrongthing";
     await triggerEvent("input", "change");
 
     // value stays unchanged
-    assert.equal(this.get("value"), null);
+    assert.equal(this.value, null);
   });
 
   test("changes value on selection", async function(assert) {
@@ -92,7 +92,7 @@ module("Integration | Component | sy datepicker", function(hooks) {
       .endOf("month")
       .endOf("week");
 
-    assert.ok(this.get("value").isSame(expected, "day"));
+    assert.ok(this.value.isSame(expected, "day"));
   });
 
   test("toggles the calendar on focus and blur of the input", async function(assert) {

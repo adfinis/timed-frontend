@@ -22,11 +22,11 @@ module("Integration | Component | sy modal/overlay", function(hooks) {
       }}
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click(".modal");
 
-    assert.notOk(this.get("visible"));
+    assert.notOk(this.visible);
   });
 
   test("does not close on click of a child element", async function(assert) {
@@ -39,10 +39,10 @@ module("Integration | Component | sy modal/overlay", function(hooks) {
       {{/sy-modal/overlay}}
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click("#some-child");
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
   });
 });

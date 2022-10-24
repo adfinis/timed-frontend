@@ -66,7 +66,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     this._super(controller, model, ...args);
 
     const visible =
-      !this.get("autostartTour").allDone() &&
+      !this.autostartTour.allDone() &&
       !model.get("tourDone") &&
       (this.get("media.isMd") ||
         this.get("media.isLg") ||
@@ -111,7 +111,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @public
      */
     loading(transition) {
-      const controller = this.get("controller");
+      const controller = this.controller;
 
       if (controller) {
         controller.set("loading", true);
@@ -131,7 +131,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
      * @public
      */
     finished() {
-      const controller = this.get("controller");
+      const controller = this.controller;
 
       if (controller) {
         controller.set("loading", false);
@@ -146,7 +146,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
      */
     async neverTour() {
       try {
-        const user = this.get("currentModel");
+        const user = this.currentModel;
 
         user.set("tourDone", true);
 
@@ -156,7 +156,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
         this.set("controller.visible", false);
       } catch (error) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while saving the user");
+        this.notify.error("Error while saving the user");
       }
     },
 

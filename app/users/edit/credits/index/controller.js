@@ -46,7 +46,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     "absenceCreditAbility.canCreate",
     function() {
       return (
-        parseInt(this.get("year")) === moment().year() - 1 &&
+        parseInt(this.year) === moment().year() - 1 &&
         this.get("overtimeCreditAbility.canCreate") &&
         this.get("absenceCreditAbility.canCreate")
       );
@@ -54,20 +54,20 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   ),
 
   setup() {
-    this.get("years").perform();
-    this.get("absenceCredits").perform();
-    this.get("overtimeCredits").perform();
+    this.years.perform();
+    this.absenceCredits.perform();
+    this.overtimeCredits.perform();
   },
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
-      this.get("absenceCredits").perform();
-      this.get("overtimeCredits").perform();
+      this.absenceCredits.perform();
+      this.overtimeCredits.perform();
     }
   },
 
   absenceCredits: task(function*() {
-    const year = this.get("year");
+    const year = this.year;
 
     return yield this.store.query("absence-credit", {
       user: this.get("model.id"),
@@ -78,7 +78,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   }),
 
   overtimeCredits: task(function*() {
-    const year = this.get("year");
+    const year = this.year;
 
     return yield this.store.query("overtime-credit", {
       user: this.get("model.id"),
@@ -89,31 +89,31 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
   transfer: task(function*() {
     /* istanbul ignore next */
-    if (!this.get("allowTransfer")) {
+    if (!this.allowTransfer) {
       return;
     }
 
     try {
-      yield this.get("ajax").request(
+      yield this.ajax.request(
         `/api/v1/users/${this.get("model.id")}/transfer`,
         {
           method: "POST"
         }
       );
 
-      this.get("notify").success("Transfer was successful");
+      this.notify.success("Transfer was successful");
 
       this.get("userController.data").perform(this.get("model.id"));
 
       this.resetQueryParams("year");
     } catch (e) {
       /* istanbul ignore next */
-      this.get("notify").error("Error while transfering");
+      this.notify.error("Error while transfering");
     }
   }).drop(),
 
   editAbsenceCredit: task(function*(id) {
-    if (this.get("can").can("edit absence-credit")) {
+    if (this.can.can("edit absence-credit")) {
       yield this.transitionToRoute(
         "users.edit.credits.absence-credits.edit",
         id
@@ -122,7 +122,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   }).drop(),
 
   editOvertimeCredit: task(function*(id) {
-    if (this.get("can").can("edit overtime-credit")) {
+    if (this.can.can("edit overtime-credit")) {
       yield this.transitionToRoute(
         "users.edit.credits.overtime-credits.edit",
         id

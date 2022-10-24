@@ -38,7 +38,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
 
     await click("button:nth-child(1)");
 
-    assert.equal(this.get("selected"), 1);
+    assert.equal(this.selected, 1);
   });
 
   test("works with type select", async function(assert) {
@@ -74,7 +74,7 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
 
     await fillIn("select", "1");
 
-    assert.equal(this.get("selected"), "1");
+    assert.equal(this.selected, "1");
   });
 
   test("works with type date", async function(assert) {
@@ -87,12 +87,12 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
       }}
     `);
 
-    assert.dom("input").hasValue(this.get("selected").format("DD.MM.YYYY"));
+    assert.dom("input").hasValue(this.selected.format("DD.MM.YYYY"));
 
     await fillIn("input", "10.10.2010");
 
     assert.equal(
-      this.get("selected").format(),
+      this.selected.format(),
       moment({ year: 2010, month: 9, day: 10 }).format()
     );
   });
@@ -107,11 +107,11 @@ module("Integration | Component | filter sidebar/filter", function(hooks) {
       }}
     `);
 
-    assert.dom("input").hasValue(this.get("selected"));
+    assert.dom("input").hasValue(this.selected);
 
     await fillIn("input", "foobarbaz");
 
-    assert.equal(this.get("selected"), "foobarbaz");
+    assert.equal(this.selected, "foobarbaz");
   });
 
   test("works with block style", async function(assert) {

@@ -37,12 +37,10 @@ export default Service.extend({
    */
   done: computed({
     get() {
-      return Array.from(
-        JSON.parse(localStorage.getItem(this.get("doneKey"))) || []
-      );
+      return Array.from(JSON.parse(localStorage.getItem(this.doneKey)) || []);
     },
     set(key, value = []) {
-      localStorage.setItem(this.get("doneKey"), JSON.stringify(value));
+      localStorage.setItem(this.doneKey, JSON.stringify(value));
 
       return value;
     }
@@ -56,8 +54,8 @@ export default Service.extend({
    * @public
    */
   allDone() {
-    const tours = this.get("tours");
-    const done = this.get("done");
+    const tours = this.tours;
+    const done = this.done;
 
     return tours.every(tour => done.includes(tour));
   }

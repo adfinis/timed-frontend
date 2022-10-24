@@ -12,22 +12,22 @@ export default Component.extend({
   tagName: "th",
 
   direction: computed("current", function() {
-    return getDirection(this.get("current"));
+    return getDirection(this.current);
   }).readOnly(),
 
   active: computed("current", function() {
-    const by = this.get("by");
-    const current = this.get("current");
+    const by = this.by;
+    const current = this.current;
 
     return getColname(current) === by;
   }).readOnly(),
 
   click() {
-    const current = this.get("current");
-    const by = this.get("by");
+    const current = this.current;
+    const by = this.by;
     const sort =
-      this.get("active") && getDirection(current) === "desc" ? by : `-${by}`;
+      this.active && getDirection(current) === "desc" ? by : `-${by}`;
 
-    this.get("update")(sort);
+    this.update(sort);
   }
 });

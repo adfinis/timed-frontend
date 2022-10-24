@@ -61,12 +61,10 @@ export default Model.extend({
    */
   duration: computed("from", "to", function() {
     const calcTo =
-      this.get("to").format("HH:mm") === "00:00"
-        ? this.get("to")
-            .clone()
-            .add(1, "day")
-        : this.get("to");
+      this.to.format("HH:mm") === "00:00"
+        ? this.to.clone().add(1, "day")
+        : this.to;
 
-    return moment.duration(calcTo.diff(this.get("from")));
+    return moment.duration(calcTo.diff(this.from));
   })
 });

@@ -62,7 +62,7 @@ export default Component.extend({
     this._super(...args);
 
     this.set("tooltips", [Formatter, Formatter]);
-    this.set("values", this.get("start"));
+    this.set("values", this.start);
   },
 
   /**
@@ -89,8 +89,8 @@ export default Component.extend({
    * @public
    */
   duration: computed("values", function() {
-    const from = moment({ hour: 0 }).minute(this.get("values")[0]);
-    const to = moment({ hour: 0 }).minute(this.get("values")[1]);
+    const from = moment({ hour: 0 }).minute(this.values[0]);
+    const to = moment({ hour: 0 }).minute(this.values[1]);
 
     return formatDuration(moment.duration(to.diff(from)), false);
   }),
@@ -128,7 +128,7 @@ export default Component.extend({
    * @public
    */
   save: task(function*([fromMin, toMin]) {
-    const attendance = this.get("attendance");
+    const attendance = this.attendance;
 
     attendance.set(
       "from",
@@ -153,6 +153,6 @@ export default Component.extend({
    * @public
    */
   delete: task(function*() {
-    yield this.get("on-delete")(this.get("attendance"));
+    yield this.get("on-delete")(this.attendance);
   }).drop()
 });

@@ -38,16 +38,13 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
     "supervisor",
     "prefetchData.lastSuccessful.value.supervisor",
     function() {
-      return (
-        this.get("supervisor") &&
-        this.store.peekRecord("user", this.get("supervisor"))
-      );
+      return this.supervisor && this.store.peekRecord("user", this.supervisor);
     }
   ),
 
   setup() {
-    this.get("prefetchData").perform();
-    this.get("data").perform();
+    this.prefetchData.perform();
+    this.data.perform();
   },
 
   reset() {
@@ -57,12 +54,12 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
-      this.get("data").perform();
+      this.data.perform();
     }
   },
 
   prefetchData: task(function*() {
-    const supervisorId = this.get("supervisor");
+    const supervisorId = this.supervisor;
 
     return yield hash({
       supervisor: supervisorId && this.store.findRecord("user", supervisorId)
@@ -76,7 +73,7 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
     yield this.store.query("worktime-balance", { date });
 
     return yield this.store.query("user", {
-      ...this.get("allQueryParams"),
+      ...this.allQueryParams,
       ...(this.get("currentUser.isSuperuser")
         ? {}
         : {

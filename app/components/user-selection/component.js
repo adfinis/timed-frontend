@@ -44,9 +44,9 @@ export default Component.extend({
 
   users: computed("queryOptions", async function() {
     await this.get("tracking.users.last");
-    const queryOptions = this.get("queryOptions") || {};
+    const queryOptions = this.queryOptions || {};
 
     queryOptions.ordering = "username";
-    return this.get("store").query("user", queryOptions);
+    return this.store.query("user", queryOptions);
   })
 });

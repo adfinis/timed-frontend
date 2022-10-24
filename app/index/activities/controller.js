@@ -48,10 +48,10 @@ export default Controller.extend({
     "model",
     "user",
     function() {
-      return this.get("_allActivities").filter(activity => {
+      return this._allActivities.filter(activity => {
         return (
           activity.get("date") &&
-          activity.get("date").isSame(this.get("model"), "day") &&
+          activity.get("date").isSame(this.model, "day") &&
           activity.get("user.id") === this.get("user.id") &&
           !activity.get("isNew") &&
           !activity.get("isDeleted")

@@ -18,7 +18,7 @@ module("Unit | Component | statistic list", function(hooks) {
       }
     });
 
-    assert.equal(component.get("maxDuration").hours(), 15);
+    assert.strictEqual(component.get("maxDuration").hours(), 15);
   });
 
   test("parses total", function(assert) {
@@ -33,10 +33,11 @@ module("Unit | Component | statistic list", function(hooks) {
       }
     });
 
-    assert.equal(component.get("total").asHours(), 34.5);
+    assert.strictEqual(component.get("total").asHours(), 34.5);
   });
 
   test("computes columns", function(assert) {
+    assert.expect(6);
     const expected = {
       year: ["Year", "Duration"],
       month: ["Year", "Month", "Duration"],
@@ -56,6 +57,7 @@ module("Unit | Component | statistic list", function(hooks) {
   });
 
   test("computes correct missing params message", function(assert) {
+    assert.expect(4);
     const expected = [
       { params: [], text: "" },
       {
@@ -78,7 +80,7 @@ module("Unit | Component | statistic list", function(hooks) {
     expected.forEach(({ params, text }) => {
       component.set("missingParams", params);
 
-      assert.equal(component.get("missingParamsMessage"), text);
+      assert.strictEqual(component.get("missingParamsMessage"), text);
     });
   });
 });

@@ -37,7 +37,7 @@ export default Component.extend({
    * @public
    */
   click(e) {
-    if (e.target === this.get("element")) {
+    if (e.target === this.element) {
       this.get("on-close")();
     }
   }

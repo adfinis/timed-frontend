@@ -46,7 +46,7 @@ module("Integration | Component | report row", function(hooks) {
 
     await click(".btn-danger");
 
-    assert.ok(this.get("didDelete"));
+    assert.ok(this.didDelete);
   });
 
   test("can be read-only", async function(assert) {

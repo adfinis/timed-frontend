@@ -18,48 +18,48 @@ export default Component.extend({
     selectDate(expr) {
       switch (expr) {
         case "this week":
-          this.get("onUpdateFromDate")(moment().day(1));
-          this.get("onUpdateToDate")(null);
+          this.onUpdateFromDate(moment().day(1));
+          this.onUpdateToDate(null);
           break;
         case "this month":
-          this.get("onUpdateFromDate")(moment().date(1));
-          this.get("onUpdateToDate")(null);
+          this.onUpdateFromDate(moment().date(1));
+          this.onUpdateToDate(null);
           break;
         case "this year":
-          this.get("onUpdateFromDate")(moment().dayOfYear(1));
-          this.get("onUpdateToDate")(null);
+          this.onUpdateFromDate(moment().dayOfYear(1));
+          this.onUpdateToDate(null);
           break;
         case "last week":
-          this.get("onUpdateFromDate")(
+          this.onUpdateFromDate(
             moment()
               .subtract(1, "week")
               .day(1)
           );
-          this.get("onUpdateToDate")(
+          this.onUpdateToDate(
             moment()
               .subtract(1, "week")
               .day(7)
           );
           break;
         case "last month":
-          this.get("onUpdateFromDate")(
+          this.onUpdateFromDate(
             moment()
               .subtract(1, "month")
               .startOf("month")
           );
-          this.get("onUpdateToDate")(
+          this.onUpdateToDate(
             moment()
               .subtract(1, "month")
               .endOf("month")
           );
           break;
         case "last year":
-          this.get("onUpdateFromDate")(
+          this.onUpdateFromDate(
             moment()
               .subtract(1, "year")
               .startOf("year")
           );
-          this.get("onUpdateToDate")(
+          this.onUpdateToDate(
             moment()
               .subtract(1, "year")
               .endOf("year")

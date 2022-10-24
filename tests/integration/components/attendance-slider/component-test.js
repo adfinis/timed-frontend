@@ -24,6 +24,7 @@ module("Integration | Component | attendance slider", function(hooks) {
   });
 
   test("can delete", async function(assert) {
+    assert.expect(1);
     this.set("attendance", ATTENDANCE);
 
     this.set("deleteAction", attendance => {

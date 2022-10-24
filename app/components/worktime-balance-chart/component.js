@@ -9,15 +9,15 @@ export default EmberChartComponent.extend({
   type: "line",
 
   data: computed("worktimeBalances.[]", function() {
-    if (!this.get("worktimeBalances")) {
+    if (!this.worktimeBalances) {
       return [];
     }
 
     return {
-      labels: this.get("worktimeBalances").mapBy("date"),
+      labels: this.worktimeBalances.mapBy("date"),
       datasets: [
         {
-          data: this.get("worktimeBalances").map(balance =>
+          data: this.worktimeBalances.map(balance =>
             balance.get("balance").asHours()
           )
         }

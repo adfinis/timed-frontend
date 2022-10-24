@@ -22,7 +22,7 @@ export default Service.extend({
   amountReports: 0,
 
   hasReports: computed("amountReports", function() {
-    return this.get("amountReports") > 0;
+    return this.amountReports > 0;
   }),
 
   reportsToDate: computed(function() {
@@ -45,8 +45,8 @@ export default Service.extend({
 
   async pollReports() {
     try {
-      const reports = await this.get("store").query("report", {
-        to_date: this.get("reportsToDate").format("YYYY-MM-DD"),
+      const reports = await this.store.query("report", {
+        to_date: this.reportsToDate.format("YYYY-MM-DD"),
         reviewer: this.session.data.user.id,
         editable: 1,
         verified: 0,

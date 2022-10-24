@@ -134,10 +134,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     "customer",
     "prefetchData.lastSuccessful.value.customer",
     function() {
-      return (
-        this.get("customer") &&
-        this.store.peekRecord("customer", this.get("customer"))
-      );
+      return this.customer && this.store.peekRecord("customer", this.customer);
     }
   ),
 
@@ -145,10 +142,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     "project",
     "prefetchData.lastSuccessful.value.project",
     function() {
-      return (
-        this.get("project") &&
-        this.store.peekRecord("project", this.get("project"))
-      );
+      return this.project && this.store.peekRecord("project", this.project);
     }
   ),
 
@@ -156,9 +150,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     "task",
     "prefetchData.lastSuccessful.value.task",
     function() {
-      return (
-        this.get("task") && this.store.peekRecord("task", this.get("task"))
-      );
+      return this.task && this.store.peekRecord("task", this.task);
     }
   ),
 
@@ -166,9 +158,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     "user",
     "prefetchData.lastSuccessful.value.user",
     function() {
-      return (
-        this.get("user") && this.store.peekRecord("user", this.get("user"))
-      );
+      return this.user && this.store.peekRecord("user", this.user);
     }
   ),
 
@@ -176,10 +166,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     "reviewer",
     "prefetchData.lastSuccessful.value.reviewer",
     function() {
-      return (
-        this.get("reviewer") &&
-        this.store.peekRecord("user", this.get("reviewer"))
-      );
+      return this.reviewer && this.store.peekRecord("user", this.reviewer);
     }
   ),
 
@@ -187,7 +174,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     "requiredParams.[]",
     `queryParamsState.{observed}.changed`,
     function() {
-      return this.get("requiredParams").filter(
+      return this.requiredParams.filter(
         param => !this.get(`queryParamsState.${param}.changed`)
       );
     }
@@ -202,8 +189,8 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
     }, []);
     this.set("observed", observed.join(","));
 
-    this.get("prefetchData").perform();
-    this.get("data").perform();
+    this.prefetchData.perform();
+    this.data.perform();
   },
 
   reset(_, isExiting) {
@@ -215,7 +202,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
   queryParamsDidChange({ shouldRefresh, changed }) {
     if (shouldRefresh) {
-      this.get("data").perform();
+      this.data.perform();
     }
 
     if (Object.keys(changed).includes("type")) {
@@ -224,13 +211,13 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
   },
 
   appliedFilters: computed("queryParamsState", function() {
-    return Object.keys(this.get("queryParamsState")).filter(key => {
+    return Object.keys(this.queryParamsState).filter(key => {
       return this.get(`queryParamsState.${key}.changed`) && key !== "type";
     });
   }),
 
   requiredParams: computed("type", function() {
-    return TYPES[this.get("type")].requiredParams;
+    return TYPES[this.type].requiredParams;
   }),
 
   prefetchData: task(function*() {
@@ -240,7 +227,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
       task: taskId,
       user: userId,
       reviewer: reviewerId
-    } = this.get("allQueryParams");
+    } = this.allQueryParams;
 
     return yield hash({
       customer: customerId && this.store.findRecord("customer", customerId),
@@ -258,13 +245,10 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
       return null;
     }
 
-    const type = this.get("type");
+    const type = this.type;
 
     let params = underscoreQueryParams(
-      serializeParachuteQueryParams(
-        this.get("allQueryParams"),
-        StatisticsQueryParams
-      )
+      serializeParachuteQueryParams(this.allQueryParams, StatisticsQueryParams)
     );
 
     params = Object.keys(params).reduce((obj, key) => {
@@ -284,7 +268,7 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
     reset() {
       this.resetQueryParams(
-        Object.keys(this.get("allQueryParams")).filter(qp => qp !== "type")
+        Object.keys(this.allQueryParams).filter(qp => qp !== "type")
       );
     }
   }

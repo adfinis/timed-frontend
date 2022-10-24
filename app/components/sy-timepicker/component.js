@@ -112,7 +112,7 @@ export default Component.extend({
    * @public
    */
   pattern: computed("precision", function() {
-    const count = 60 / this.get("precision");
+    const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
     return `([01]?[0-9]|2[0-3]):(${minutes
@@ -129,7 +129,7 @@ export default Component.extend({
    * @public
    */
   displayValue: computed("value", function() {
-    const value = this.get("value");
+    const value = this.value;
     return value && value.isValid() ? value.format("HH:mm") : "";
   }),
 
@@ -140,13 +140,13 @@ export default Component.extend({
    * @public
    */
   init(...args) {
-    const value = this.get("value") || moment();
+    const value = this.value || moment();
 
-    if (!this.get("min")) {
+    if (!this.min) {
       this.set("min", moment(value).set({ h: 0, m: 0 }));
     }
 
-    if (!this.get("max")) {
+    if (!this.max) {
       this.set("max", moment(value).set({ h: 23, m: 59 }));
     }
 
@@ -205,7 +205,7 @@ export default Component.extend({
    * @private
    */
   _set(h, m) {
-    return moment(this.get("value") || this.get("min")).set({ h, m });
+    return moment(this.value || this.min).set({ h, m });
   },
 
   /**
@@ -218,12 +218,10 @@ export default Component.extend({
    * @private
    */
   _add(h, m) {
-    let base = this.get("value");
+    let base = this.value;
 
     if (!base) {
-      base = [h, m].any(n => n < 0)
-        ? this.get("max").add(1, "minute")
-        : this.get("min");
+      base = [h, m].any(n => n < 0) ? this.max.add(1, "minute") : this.min;
     }
 
     return moment(base).add({ h, m });
@@ -238,7 +236,7 @@ export default Component.extend({
    * @private
    */
   _isValid(value) {
-    return value < this.get("max") && value > this.get("min");
+    return value < this.max && value > this.min;
   },
 
   /**
@@ -298,14 +296,14 @@ export default Component.extend({
         if (e.ctrlKey || e.shiftKey) {
           this._addHours(1);
         } else {
-          this._addMinutes(this.get("precision"));
+          this._addMinutes(this.precision);
         }
         break;
       case 40:
         if (e.ctrlKey || e.shiftKey) {
           this._addHours(-1);
         } else {
-          this._addMinutes(-this.get("precision"));
+          this._addMinutes(-this.precision);
         }
         break;
     }

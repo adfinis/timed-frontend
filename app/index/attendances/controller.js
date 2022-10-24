@@ -38,9 +38,9 @@ export default Controller.extend({
     "model",
     "user",
     function() {
-      return this.get("_allAttendances").filter(a => {
+      return this._allAttendances.filter(a => {
         return (
-          a.get("date").isSame(this.get("model"), "day") &&
+          a.get("date").isSame(this.model, "day") &&
           a.get("user.id") === this.get("user.id") &&
           !a.get("isDeleted")
         );

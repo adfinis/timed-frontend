@@ -7,8 +7,8 @@ const UsersEditIndexQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
   setup() {
-    this.get("absences").perform();
-    this.get("employments").perform();
+    this.absences.perform();
+    this.employments.perform();
   },
 
   absences: task(function*() {
@@ -19,7 +19,7 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
       from_date: moment({
         day: 1,
         month: 0,
-        year: this.get("year")
+        year: this.year
       }).format("YYYY-MM-DD"),
       include: "absence_type"
     });

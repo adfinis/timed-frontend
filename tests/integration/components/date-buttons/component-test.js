@@ -18,35 +18,35 @@ module("Integration | Component | date buttons", function(hooks) {
 
     await click('[data-test-preset-date="0"]');
     assert.equal(
-      this.get("fromDate").format(format),
+      this.fromDate.format(format),
       moment()
         .day(1)
         .format(format)
     );
     await click('[data-test-preset-date="1"]');
     assert.equal(
-      this.get("fromDate").format(format),
+      this.fromDate.format(format),
       moment()
         .date(1)
         .format(format)
     );
     await click('[data-test-preset-date="2"]');
     assert.equal(
-      this.get("fromDate").format(format),
+      this.fromDate.format(format),
       moment()
         .dayOfYear(1)
         .format(format)
     );
     await click('[data-test-preset-date="3"]');
     assert.equal(
-      this.get("fromDate").format(format),
+      this.fromDate.format(format),
       moment()
         .subtract(1, "week")
         .day(1)
         .format(format)
     );
     assert.equal(
-      this.get("toDate").format(format),
+      this.toDate.format(format),
       moment()
         .subtract(1, "week")
         .day(7)
@@ -54,14 +54,14 @@ module("Integration | Component | date buttons", function(hooks) {
     );
     await click('[data-test-preset-date="4"]');
     assert.equal(
-      this.get("fromDate").format(format),
+      this.fromDate.format(format),
       moment()
         .subtract(1, "month")
         .startOf("month")
         .format(format)
     );
     assert.equal(
-      this.get("toDate").format(format),
+      this.toDate.format(format),
       moment()
         .subtract(1, "month")
         .endOf("month")
@@ -69,14 +69,14 @@ module("Integration | Component | date buttons", function(hooks) {
     );
     await click('[data-test-preset-date="5"]');
     assert.equal(
-      this.get("fromDate").format(format),
+      this.fromDate.format(format),
       moment()
         .subtract(1, "year")
         .startOf("year")
         .format(format)
     );
     assert.equal(
-      this.get("toDate").format(format),
+      this.toDate.format(format),
       moment()
         .subtract(1, "year")
         .endOf("year")

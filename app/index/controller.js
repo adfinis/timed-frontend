@@ -92,10 +92,10 @@ export default Controller.extend({
     "_allActivities.@each.{date,user,isDeleted}",
     "user",
     function() {
-      const activitiesThen = this.get("_allActivities").filter(a => {
+      const activitiesThen = this._allActivities.filter(a => {
         return (
           a.get("date") &&
-          a.get("date").isSame(this.get("date"), "day") &&
+          a.get("date").isSame(this.date, "day") &&
           a.get("user.id") === this.get("user.id") &&
           !a.get("isDeleted")
         );
@@ -121,11 +121,9 @@ export default Controller.extend({
     "_activities.@each.{fromTime,duration}",
     "_activeActivityDuration",
     function() {
-      return this.get("_activities")
-        .rejectBy("active")
-        .reduce((total, current) => {
-          return total.add(current.get("duration"));
-        }, this.get("_activeActivityDuration"));
+      return this._activities.rejectBy("active").reduce((total, current) => {
+        return total.add(current.get("duration"));
+      }, this._activeActivityDuration);
     }
   ),
 
@@ -136,7 +134,7 @@ export default Controller.extend({
    * @private
    */
   _activitySum() {
-    const duration = this.get("_activities")
+    const duration = this._activities
       .filterBy("active")
       .reduce((total, current) => {
         return total.add(moment().diff(current.get("from")));
@@ -186,10 +184,10 @@ export default Controller.extend({
     "_allAttendances.@each.{date,user,isDeleted}",
     "user",
     function() {
-      return this.get("_allAttendances").filter(attendance => {
+      return this._allAttendances.filter(attendance => {
         return (
           attendance.get("date") &&
-          attendance.get("date").isSame(this.get("date"), "day") &&
+          attendance.get("date").isSame(this.date, "day") &&
           attendance.get("user.id") === this.get("user.id") &&
           !attendance.get("isDeleted")
         );
@@ -204,7 +202,7 @@ export default Controller.extend({
    * @public
    */
   attendanceSum: computed("_attendances.@each.{from,to}", function() {
-    return this.get("_attendances").reduce((total, current) => {
+    return this._attendances.reduce((total, current) => {
       return total.add(current.get("duration"));
     }, moment.duration());
   }),
@@ -240,9 +238,9 @@ export default Controller.extend({
     "_allReports.@each.{date,user,isNew,isDeleted}",
     "user",
     function() {
-      return this.get("_allReports").filter(report => {
+      return this._allReports.filter(report => {
         return (
-          report.get("date").isSame(this.get("date"), "day") &&
+          report.get("date").isSame(this.date, "day") &&
           report.get("user.id") === this.get("user.id") &&
           !report.get("isNew") &&
           !report.get("isDeleted")
@@ -262,9 +260,9 @@ export default Controller.extend({
     "_allAbsences.@each.{date,user,isNew,isDeleted}",
     "user",
     function() {
-      return this.get("_allAbsences").filter(absence => {
+      return this._allAbsences.filter(absence => {
         return (
-          absence.get("date").isSame(this.get("date"), "day") &&
+          absence.get("date").isSame(this.date, "day") &&
           absence.get("user.id") === this.get("user.id") &&
           !absence.get("isNew") &&
           !absence.get("isDeleted")
@@ -283,8 +281,8 @@ export default Controller.extend({
     "_reports.@each.duration",
     "_absences.@each.duration",
     function() {
-      const reportDurations = this.get("_reports").mapBy("duration");
-      const absenceDurations = this.get("_absences").mapBy("duration");
+      const reportDurations = this._reports.mapBy("duration");
+      const absenceDurations = this._absences.mapBy("duration");
 
       return [...reportDurations, ...absenceDurations].reduce(
         (val, dur) => val.add(dur),
@@ -324,7 +322,7 @@ export default Controller.extend({
    */
   date: computed("day", {
     get() {
-      return moment(this.get("day"), "YYYY-MM-DD");
+      return moment(this.day, "YYYY-MM-DD");
     },
     set(key, value) {
       this.set("day", value.format("YYYY-MM-DD"));
@@ -361,14 +359,9 @@ export default Controller.extend({
     "date",
     "user",
     function() {
-      const task = this.get("_weeklyOverviewData");
+      const task = this._weeklyOverviewData;
 
-      task.perform(
-        this.get("_allReports"),
-        this.get("_allAbsences"),
-        this.get("date"),
-        this.get("user")
-      );
+      task.perform(this._allReports, this._allAbsences, this.date, this.user);
 
       return task;
     }
@@ -440,7 +433,7 @@ export default Controller.extend({
         day: d,
         active: d.isSame(date, "day"),
         absence: !!absences.length,
-        workday: this.get("workdays").includes(d.isoWeekday()),
+        workday: this.workdays.includes(d.isoWeekday()),
         worktime: [
           ...reports.mapBy("duration"),
           ...absences.mapBy("duration")
@@ -492,7 +485,7 @@ export default Controller.extend({
       ...publicHolidays.mapBy("date")
     ];
     const date = moment(from);
-    const workdays = this.get("workdays");
+    const workdays = this.workdays;
 
     while (date < to) {
       if (!workdays.includes(date.isoWeekday())) {
@@ -515,7 +508,7 @@ export default Controller.extend({
     "absence.date",
     "disabledDates.[]",
     function() {
-      return this.get("disabledDates").filter(
+      return this.disabledDates.filter(
         date => !date.isSame(this.get("absence.date"), "day")
       );
     }
@@ -530,7 +523,7 @@ export default Controller.extend({
      * @public
      */
     rollback(changeset) {
-      this.get("setCenter").perform({ moment: this.get("date") });
+      this.setCenter.perform({ moment: this.date });
 
       changeset.rollback();
     }

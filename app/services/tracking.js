@@ -48,14 +48,14 @@ export default Service.extend({
   async init() {
     this._super();
 
-    const actives = await this.get("store").query("activity", {
+    const actives = await this.store.query("activity", {
       include: "task,task.project,task.project.customer",
       active: true
     });
 
     this.set("activity", actives.getWithDefault("firstObject", null));
 
-    this.get("_computeTitle").perform();
+    this._computeTitle.perform();
   },
 
   /**
@@ -87,9 +87,9 @@ export default Service.extend({
   // eslint-disable-next-line ember/no-observers
   _triggerTitle: observer("activity.active", function() {
     if (this.get("activity.active")) {
-      this.get("_computeTitle").perform();
+      this._computeTitle.perform();
     } else {
-      this.setTitle(this.get("title"));
+      this.setTitle(this.title);
     }
   }),
 
@@ -162,10 +162,10 @@ export default Service.extend({
    */
   activity: computed("_activity", {
     get() {
-      return this.get("_activity");
+      return this._activity;
     },
     set(key, value) {
-      const newActivity = value || this.get("store").createRecord("activity");
+      const newActivity = value || this.store.createRecord("activity");
 
       this.set("_activity", newActivity);
 
@@ -181,13 +181,13 @@ export default Service.extend({
    */
   startActivity: task(function*() {
     try {
-      const activity = yield this.get("activity").start();
+      const activity = yield this.activity.start();
       this.set("activity", activity);
 
-      this.get("notify").success("Activity was started");
+      this.notify.success("Activity was started");
     } catch (e) {
       /* istanbul ignore next */
-      this.get("notify").error("Error while starting the activity");
+      this.notify.error("Error while starting the activity");
     }
   }).drop(),
 
@@ -200,15 +200,15 @@ export default Service.extend({
   stopActivity: task(function*() {
     try {
       if (!this.get("activity.isNew")) {
-        yield this.get("activity").stop();
+        yield this.activity.stop();
 
-        this.get("notify").success("Activity was stopped");
+        this.notify.success("Activity was stopped");
       }
 
       this.set("activity", null);
     } catch (e) {
       /* istanbul ignore next */
-      this.get("notify").error("Error while stopping the activity");
+      this.notify.error("Error while stopping the activity");
     }
   }).drop(),
 
@@ -219,7 +219,7 @@ export default Service.extend({
    * @public
    */
   recentTasks: task(function*() {
-    return yield this.get("store").query("task", {
+    return yield this.store.query("task", {
       my_most_frequent: 10, // eslint-disable-line camelcase
       include: "project,project.customer"
     });
@@ -232,7 +232,7 @@ export default Service.extend({
    * @public
    */
   users: task(function*() {
-    return yield this.get("store").query("user", {});
+    return yield this.store.query("user", {});
   }),
 
   /**
@@ -242,7 +242,7 @@ export default Service.extend({
    * @public
    */
   customers: task(function*() {
-    return yield this.get("store").query("customer", {});
+    return yield this.store.query("customer", {});
   }).drop(),
 
   /**
@@ -259,7 +259,7 @@ export default Service.extend({
       throw new Error("No customer selected");
     }
 
-    return yield this.get("store").query("project", { customer });
+    return yield this.store.query("project", { customer });
   }),
 
   /**
@@ -276,6 +276,6 @@ export default Service.extend({
       throw new Error("No project selected");
     }
 
-    return yield this.get("store").query("task", { project });
+    return yield this.store.query("task", { project });
   })
 });

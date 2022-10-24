@@ -44,7 +44,7 @@ const PowerSelectCustomComponent = PowerSelectComponent.extend({
 
     scrollTo() {
       const options = document.querySelector(
-        `#ember-power-select-options-${this.get("publicAPI").uniqueId}`
+        `#ember-power-select-options-${this.publicAPI.uniqueId}`
       );
 
       const current = options.querySelector("[aria-current=true]");

@@ -37,8 +37,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
     await fillIn("input", "13:15");
     await blur("input");
 
-    assert.equal(this.get("value").hour(), 13);
-    assert.equal(this.get("value").minute(), 15);
+    assert.strictEqual(this.value.hour(), 13);
+    assert.strictEqual(this.value.minute(), 15);
   });
 
   test("can't set an invalid value", async function(assert) {
@@ -57,8 +57,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
     await fillIn("input", "24:15");
     await blur("input");
 
-    assert.equal(this.get("value").hour(), 12);
-    assert.equal(this.get("value").minute(), 30);
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 30);
   });
 
   test("can only input digits and colons", async function(assert) {
@@ -71,12 +71,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     await fillIn("input", "xx:xx");
     await blur("input");
 
-    assert.equal(this.get("value"), null);
+    assert.strictEqual(this.value, null);
 
     await fillIn("input", "01:30");
     await blur("input");
 
-    assert.notEqual(this.get("value"), null);
+    assert.notEqual(this.value, null);
   });
 
   test("can increase minutes per arrow", async function(assert) {
@@ -98,8 +98,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 12);
-    assert.equal(this.get("value").minute(), 30);
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 30);
   });
 
   test("can decrease minutes per arrow", async function(assert) {
@@ -121,8 +121,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 12);
-    assert.equal(this.get("value").minute(), 0);
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 0);
   });
 
   test("can increase hours per arrow with shift", async function(assert) {
@@ -147,8 +147,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 13);
-    assert.equal(this.get("value").minute(), 15);
+    assert.strictEqual(this.value.hour(), 13);
+    assert.strictEqual(this.value.minute(), 15);
   });
 
   test("can decrease minutes per arrow with shift", async function(assert) {
@@ -173,8 +173,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 11);
-    assert.equal(this.get("value").minute(), 15);
+    assert.strictEqual(this.value.hour(), 11);
+    assert.strictEqual(this.value.minute(), 15);
   });
 
   test("can increase hours per arrow with ctrl", async function(assert) {
@@ -199,8 +199,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 13);
-    assert.equal(this.get("value").minute(), 15);
+    assert.strictEqual(this.value.hour(), 13);
+    assert.strictEqual(this.value.minute(), 15);
   });
 
   test("can decrease minutes per arrow with ctrl", async function(assert) {
@@ -225,8 +225,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 11);
-    assert.equal(this.get("value").minute(), 15);
+    assert.strictEqual(this.value.hour(), 11);
+    assert.strictEqual(this.value.minute(), 15);
   });
 
   test("can't change day", async function(assert) {
@@ -248,8 +248,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 23);
-    assert.equal(this.get("value").minute(), 45);
+    assert.strictEqual(this.value.hour(), 23);
+    assert.strictEqual(this.value.minute(), 45);
   });
 
   test("can't be bigger than max or smaller than min", async function(assert) {
@@ -287,8 +287,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 12);
-    assert.equal(this.get("value").minute(), 30);
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 30);
 
     this.element
       .querySelectorAll("input")
@@ -296,8 +296,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 12);
-    assert.equal(this.get("value").minute(), 30);
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 30);
   });
 
   test("respects the precision", async function(assert) {
@@ -319,8 +319,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 10);
-    assert.equal(this.get("value").minute(), 5);
+    assert.strictEqual(this.value.hour(), 10);
+    assert.strictEqual(this.value.minute(), 5);
   });
 
   test("can handle null values", async function(assert) {
@@ -333,7 +333,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     await fillIn("input", "");
     await blur("input");
 
-    assert.equal(this.get("value", null));
+    assert.strictEqual(this.value, null);
   });
 
   test("can handle null values with arrow up", async function(assert) {
@@ -349,8 +349,8 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 0);
-    assert.equal(this.get("value").minute(), 15);
+    assert.strictEqual(this.value.hour(), 0);
+    assert.strictEqual(this.value.minute(), 15);
   });
 
   test("can handle null values with arrow down", async function(assert) {
@@ -366,7 +366,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     await settled();
 
-    assert.equal(this.get("value").hour(), 23);
-    assert.equal(this.get("value").minute(), 45);
+    assert.strictEqual(this.value.hour(), 23);
+    assert.strictEqual(this.value.minute(), 45);
   });
 });

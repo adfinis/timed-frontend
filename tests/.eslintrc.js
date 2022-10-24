@@ -1,6 +1,9 @@
+"use strict";
+
 module.exports = {
   env: {
-    embertest: true
+    embertest: true,
+    node: true
   },
   globals: {
     server: true,

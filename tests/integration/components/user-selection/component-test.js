@@ -26,6 +26,7 @@ module("Integration | Component | user selection", function(hooks) {
   });
 
   test("renders", async function(assert) {
+    assert.expect(1);
     this.set("user", USER);
 
     await render(hbs`
@@ -35,7 +36,7 @@ module("Integration | Component | user selection", function(hooks) {
     `);
 
     return wait().then(() => {
-      assert.equal(
+      assert.strictEqual(
         find(
           ".user-select .ember-power-select-selected-item"
         ).textContent.trim(),
