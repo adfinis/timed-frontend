@@ -1,8 +1,13 @@
 from django.contrib.auth import get_user_model
 from rest_framework_json_api import relations
-from rest_framework_json_api.serializers import DurationField, IntegerField, Serializer
+from rest_framework_json_api.serializers import (
+    CharField,
+    DurationField,
+    IntegerField,
+    Serializer,
+)
 
-from timed.projects.models import Customer, Project, Task
+from timed.projects.models import Project
 from timed.serializers import TotalTimeRootMetaMixin
 
 
@@ -25,9 +30,7 @@ class MonthStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
 
 class CustomerStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
-    customer = relations.ResourceRelatedField(
-        source="task__project__customer", model=Customer, read_only=True
-    )
+    name = CharField(read_only=True)
 
     included_serializers = {"customer": "timed.projects.serializers.CustomerSerializer"}
 
@@ -37,21 +40,19 @@ class CustomerStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
 
 class ProjectStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
-    project = relations.ResourceRelatedField(
-        source="task__project", model=Project, read_only=True
-    )
-
-    included_serializers = {"project": "timed.projects.serializers.ProjectSerializer"}
+    name = CharField()
 
     class Meta:
         resource_name = "project-statistics"
 
 
 class TaskStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
+    name = CharField(read_only=True)
+    most_recent_remaining_effort = DurationField(read_only=True)
     duration = DurationField(read_only=True)
-    task = relations.ResourceRelatedField(model=Task, read_only=True)
+    project = relations.ResourceRelatedField(model=Project, read_only=True)
 
-    included_serializers = {"task": "timed.projects.serializers.TaskSerializer"}
+    included_serializers = {"project": "timed.projects.serializers.ProjectSerializer"}
 
     class Meta:
         resource_name = "task-statistics"

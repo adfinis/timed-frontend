@@ -5,7 +5,7 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.db.models import F, Sum
+from django.db.models import DurationField, F, OuterRef, QuerySet, Subquery, Sum
 from django.db.models.functions import ExtractMonth, ExtractYear
 from django.http import HttpResponse
 from ezodf import Cell, opendoc
@@ -15,7 +15,9 @@ from rest_framework.viewsets import GenericViewSet, ReadOnlyModelViewSet
 
 from timed.mixins import AggregateQuerysetMixin
 from timed.permissions import IsAuthenticated, IsInternal, IsSuperUser
+from timed.projects.models import Customer, Project, Task
 from timed.reports import serializers
+from timed.reports.filters import TaskStatisticFilterSet
 from timed.tracking.filters import ReportFilterSet
 from timed.tracking.models import Report
 from timed.tracking.views import ReportViewSet
@@ -72,9 +74,9 @@ class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Customer statistics calculates total reported time per customer."""
 
     serializer_class = serializers.CustomerStatisticSerializer
-    filterset_class = ReportFilterSet
-    ordering_fields = ("task__project__customer__name", "duration")
-    ordering = ("task__project__customer__name",)
+    filterset_class = TaskStatisticFilterSet
+    ordering_fields = ("project__customer__name", "duration")
+    ordering = ("project__customer__name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
         (IsInternal | IsSuperUser)
@@ -82,11 +84,13 @@ class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self):
-        queryset = Report.objects.all()
-        queryset = queryset.values("task__project__customer")
-        queryset = queryset.annotate(duration=Sum("duration"))
-        queryset = queryset.annotate(pk=F("task__project__customer"))
-
+        queryset = MultiQS(
+            start=Customer,
+            annotations={
+                "customer_id": F("pk"),
+                "name": F("name"),
+            },
+        )
         return queryset
 
 
@@ -94,9 +98,9 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Project statistics calculates total reported time per project."""
 
     serializer_class = serializers.ProjectStatisticSerializer
-    filterset_class = ReportFilterSet
-    ordering_fields = ("task__project__name", "duration")
-    ordering = ("task__project__name",)
+    filterset_class = TaskStatisticFilterSet
+    ordering_fields = ("project__name", "duration")
+    ordering = ("project__name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
         (IsInternal | IsSuperUser)
@@ -104,14 +108,12 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self):
-        queryset = Report.objects.all()
-        queryset = queryset.values("task__project")
-        queryset = queryset.annotate(duration=Sum("duration"))
-        queryset = queryset.annotate(
-            pk=F("task__project"),
-            sum_remaining=F("task__project__total_remaining_effort"),
+        queryset = MultiQS(
+            start=Project,
+            annotations={
+                "name": F("name"),
+            },
         )
-
         return queryset
 
 
@@ -119,9 +121,9 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Task statistics calculates total reported time per task."""
 
     serializer_class = serializers.TaskStatisticSerializer
-    filterset_class = ReportFilterSet
-    ordering_fields = ("task__name", "duration")
-    ordering = ("task__name",)
+    filterset_class = TaskStatisticFilterSet
+    ordering_fields = ("name", "duration")
+    ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
         (IsInternal | IsSuperUser)
@@ -129,14 +131,105 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self):
-        queryset = Report.objects.all()
-        queryset = queryset.values("task")
-        queryset = queryset.annotate(duration=Sum("duration"))
-        queryset = queryset.annotate(
-            pk=F("task"),
-            most_recent_remaining_effort=F("task__most_recent_remaining_effort"),
+        queryset = MultiQS(
+            start=Task,
+            annotations={
+                "name": F("name"),
+                "project": F("project"),
+                "most_recent_remaining_effort": F("most_recent_remaining_effort"),
+            },
         )
+        return queryset
 
+
+class MultiQS(QuerySet):
+    def __init__(self, start, annotations):
+        self.model = Task  # just to make filterset happy
+
+        self._start = start
+
+        self._tasks = Task.objects.all()
+        self._reports = Report.objects.all()
+
+        self._annotations = annotations
+
+    def _clone(self):
+        new_self = MultiQS(
+            start=self._start,
+            annotations=self._annotations,
+        )
+        new_self._tasks = self._tasks
+        new_self._reports = self._reports
+
+        return new_self
+
+    def _validate_q(self, q_object):
+        if isinstance(q_object, tuple):
+            assert not q_object[0].startswith(
+                "reports__"
+            ), "Filtering of reports not possible"
+        else:
+            for child in q_object.children:
+                self._validate_q(child)
+
+    def _apply(self, method, *args, **kwargs):
+        for arg in args:
+            self._validate_q(arg)
+
+        new_self = self._clone()
+        task_filters = {}
+        report_filters = {}
+        for kw, val in kwargs.items():
+            if kw.startswith("reports__"):
+                kw = kw.replace("reports__", "")
+                report_filters[kw] = val
+            else:
+                task_filters[kw] = val
+
+        if report_filters:
+            new_self._reports = getattr(new_self._reports, method)(**report_filters)
+        if task_filters:
+            new_self._tasks = getattr(new_self._tasks, method)(**task_filters)
+        if args:
+            new_self._tasks = getattr(new_self._tasks, method)(*args)
+        return new_self
+
+    def filter(self, *args, **kwargs):
+        return self._apply("filter", *args, **kwargs)
+
+    def exclude(self, *args, **kwargs):  # pragma: no cover
+        return self._apply("exclude", *args, **kwargs)
+
+    def all(self):
+        return self._clone()
+
+    def _finalize(self):
+        task_lookup = {
+            "Customer": "projects__tasks__id__in",
+            "Project": "tasks__id__in",
+            "Task": "pk__in",
+        }
+        base_qs = self._start.objects.all().values("pk")
+        task_lookup = task_lookup[self._start.__name__]
+
+        back_ref_lookups = {
+            "Customer": "task__project__customer_id",
+            "Project": "task__project_id",
+            "Task": "task_id",
+        }
+        back_ref = back_ref_lookups[self._start.__name__]
+
+        base_qs = base_qs.filter(**{task_lookup: self._tasks.values("pk")})
+
+        report_qs = (
+            self._reports.values(back_ref)
+            .annotate(report_duration=Sum("duration", output_field=DurationField()))
+            .filter(**{back_ref: OuterRef("pk")})
+            .values("report_duration")
+        )
+        queryset = base_qs.annotate(
+            duration=Subquery(report_qs), **self._annotations
+        ).distinct()
         return queryset
 
 
