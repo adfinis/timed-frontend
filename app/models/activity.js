@@ -3,11 +3,9 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, belongsTo } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
 import moment from "moment";
 import { all } from "rsvp";
 
@@ -91,11 +89,11 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  active: computed("toTime", function() {
+  active: computed("id", "toTime", function () {
     return !this.toTime && !!this.id;
   }),
 
-  duration: computed("fromTime", "toTime", function() {
+  duration: computed("from", "fromTime", "to", "toTime", function () {
     return moment.duration((this.to ? this.to : moment()).diff(this.from));
   }),
 
@@ -108,14 +106,14 @@ export default Model.extend({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
-          ms: time.milliseconds()
+          ms: time.milliseconds(),
         })
       );
     },
     set(key, val) {
       this.set("fromTime", val);
       return val;
-    }
+    },
   }),
 
   to: computed("date", "toTime", {
@@ -127,14 +125,14 @@ export default Model.extend({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
-          ms: time.milliseconds()
+          ms: time.milliseconds(),
         })
       );
     },
     set(key, val) {
       this.set("toTime", val);
       return val;
-    }
+    },
   }),
 
   /**
@@ -150,7 +148,7 @@ export default Model.extend({
       task: this.task,
       comment: this.comment,
       review: this.review,
-      notBillable: this.notBillable
+      notBillable: this.notBillable,
     });
 
     await activity.save();
@@ -187,13 +185,13 @@ export default Model.extend({
           date: moment(this.date).add(1, "days"),
           review: this.review,
           notBillable: this.notBillable,
-          fromTime: moment({ h: 0, m: 0, s: 0 })
+          fromTime: moment({ h: 0, m: 0, s: 0 }),
         })
       );
     }
 
     await all(
-      activities.map(async activity => {
+      activities.map(async (activity) => {
         if (activity.get("isNew")) {
           await activity.save();
         }
@@ -205,7 +203,7 @@ export default Model.extend({
               moment(activity.get("date")).set({
                 h: 23,
                 m: 59,
-                s: 59
+                s: 59,
               }),
               moment()
             )
@@ -222,5 +220,5 @@ export default Model.extend({
         { closeAfter: 5000 }
       );
     }
-  }
+  },
 });

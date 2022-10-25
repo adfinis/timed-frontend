@@ -3,10 +3,8 @@
  * @submodule timed-transforms
  * @public
  */
-import DS from "ember-data";
+import Transform from "@ember-data/serializer/transform";
 import moment from "moment";
-
-const { Transform } = DS;
 
 /**
  * The moment transform
@@ -50,5 +48,5 @@ export default Transform.extend({
     return deserialized && deserialized.isValid()
       ? deserialized.format(this.format)
       : null;
-  }
+  },
 });
