@@ -20,15 +20,15 @@ export default Component.extend({
   }),
 
   didReceiveAttrs() {
-    scheduleOnce("afterRender", () => {
-      if (this.get("checked") === null) {
-        const cb = this.get("element").querySelector(
-          `#${this.get("checkboxElementId")}`
-        );
+    scheduleOnce("afterRender", this, this.deferredWork);
+  },
 
-        cb.indeterminate = true;
-      }
-    });
+  deferredWork() {
+    if (this.checked === null) {
+      const cb = this.element.querySelector(`#${this.checkboxElementId}`);
+
+      cb.indeterminate = true;
+    }
   },
 
   /**
