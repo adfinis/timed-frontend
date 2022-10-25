@@ -11,15 +11,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/cache@v3
+        with:
+          path: .venv
+          key: poetry-${{ hashFiles('poetry.lock')}}
+          restore-keys: |
+            peotry-
       - name: Build the project
         run: |
           echo "ENV=dev" > .env
           docker-compose up -d --build backend
-          docker-compose exec -T backend pip install -r requirements-dev.txt
       - name: Lint the code
         run: |
-          docker-compose exec -T backend black --check .
-          docker-compose exec -T backend flake8
-          docker-compose exec -T backend ./manage.py makemigrations --check --dry-run --no-input
+          docker-compose exec -T backend poetry run black --check .
+          docker-compose exec -T backend poetry run flake8
+          docker-compose exec -T backend poetry run python manage.py makemigrations --check --dry-run --no-input
       - name: Run pytest
-        run: docker-compose exec -T backend pytest --no-cov-on-fail --cov --create-db -vv
+        run: docker-compose exec -T backend poetry run pytest --no-cov-on-fail --cov --create-db -vv

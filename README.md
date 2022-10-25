@@ -59,7 +59,7 @@ To access the Django admin interface you will have to change the admin password 
 
 ```console
 $ make shell
-root@0a036a10f3c4:/app# python manage.py changepassword admin
+root@0a036a10f3c4:/app# peotry run python manage.py changepassword admin
 Changing password for user 'admin'
 Password: 
 Password (again): 
