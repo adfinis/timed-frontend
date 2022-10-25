@@ -107,7 +107,7 @@
     "typeface-source-sans-pro": "^0.0.75"
   },
   "engines": {
-    "node": "12.* || >= 14.*"
+    "node": ">= 14.17"
   },
   "ember": {
     "edition": "octane"
