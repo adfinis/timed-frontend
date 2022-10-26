@@ -1,5 +1,6 @@
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize, dasherize } from "@ember/string";
+import classic from "ember-classic-decorator";
 import { task } from "ember-concurrency";
 import DjangoDurationTransform from "timed/transforms/django-duration";
 
@@ -8,12 +9,12 @@ const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create();
 const META_MODELS = {
   project: {
     spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
-    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
+    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
   },
   task: {
     spentTime: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
-    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM }
-  }
+    spentBillable: { defaultValue: null, transform: DJANGO_DURATION_TRANSFORM },
+  },
 };
 
 /**
@@ -23,14 +24,16 @@ const META_MODELS = {
  * @extends Ember.Service
  * @public
  */
-export default Service.extend({
+@classic
+export default class MetadataFetcherService extends Service {
   /**
    * Ajax service to handle HTTP requests
    *
    * @property {EmberAjax.AjaxService} ajax
    * @public
    */
-  ajax: service("ajax"),
+  @service("ajax")
+  ajax;
 
   /**
    * Task to fetch a single records metadata
@@ -41,7 +44,7 @@ export default Service.extend({
    * @return {Object} An object with the parsed metadata
    * @public
    */
-  fetchSingleRecordMetadata: task(function*(type, id) {
+  @(task(function* (type, id) {
     /* istanbul ignore next */
     if (!id) {
       throw new Error(`${capitalize(type)} ID is missing`);
@@ -58,10 +61,11 @@ export default Service.extend({
 
         return {
           ...parsedMeta,
-          [key]: value ? transform.deserialize(value) : defaultValue
+          [key]: value ? transform.deserialize(value) : defaultValue,
         };
       },
       {}
     );
-  }).restartable()
-});
+  }).restartable())
+  fetchSingleRecordMetadata;
+}

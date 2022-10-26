@@ -3,12 +3,15 @@
  * @submodule timed-services
  * @public
  */
+
+import { observes } from "@ember-decorators/object";
 import { getOwner } from "@ember/application";
-import { computed, observer, get } from "@ember/object";
+import { computed } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize } from "@ember/string";
 import Ember from "ember";
+import classic from "ember-classic-decorator";
 import { task, timeout } from "ember-concurrency";
 import moment from "moment";
 import formatDuration from "timed/utils/format-duration";
@@ -22,14 +25,15 @@ import formatDuration from "timed/utils/format-duration";
  * @extends Ember.Service
  * @public
  */
-export default Service.extend({
+@classic
+export default class TrackingService extends Service {
   /**
    * The store service
    *
    * @property {Ember.Store} store
    * @public
    */
-  store: service("store"),
+  @service store;
 
   /**
    * The notify service
@@ -37,7 +41,7 @@ export default Service.extend({
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service("notify"),
+  @service notify;
 
   /**
    * Init hook, get the current activity
@@ -46,17 +50,17 @@ export default Service.extend({
    * @public
    */
   async init() {
-    this._super();
+    super.init();
 
     const actives = await this.store.query("activity", {
       include: "task,task.project,task.project.customer",
-      active: true
+      active: true,
     });
 
-    this.set("activity", get(actives, "firstObject") ?? null);
+    this.set("activity", actives.firstObject ?? null);
 
     this._computeTitle.perform();
-  },
+  }
 
   /**
    * The application
@@ -64,9 +68,10 @@ export default Service.extend({
    * @property {Ember.Application} application
    * @public
    */
-  application: computed(function() {
+  @computed
+  get application() {
     return getOwner(this).lookup("application:main");
-  }),
+  }
 
   /**
    * The default application title
@@ -74,9 +79,10 @@ export default Service.extend({
    * @property {String} title
    * @public
    */
-  title: computed("application.name", function() {
-    return capitalize(camelize(this.get("application.name") || "Timed"));
-  }),
+  @computed("application.name")
+  get title() {
+    return capitalize(camelize(this.application.name || "Timed"));
+  }
 
   /**
    * Trigger a reload of the title because the activity has changed
@@ -85,13 +91,14 @@ export default Service.extend({
    * @private
    */
   // eslint-disable-next-line ember/no-observers
-  _triggerTitle: observer("activity.active", function() {
-    if (this.get("activity.active")) {
+  @observes("activity.active")
+  _triggerTitle() {
+    if (this.activity.active) {
       this._computeTitle.perform();
     } else {
       this.setTitle(this.title);
     }
-  }),
+  }
 
   /**
    * Set the doctitle
@@ -106,11 +113,11 @@ export default Service.extend({
       this,
       this.scheduleDocumentTitle.bind(this, title)
     );
-  },
+  }
 
   scheduleDocumentTitle(t) {
     document.title = t;
-  },
+  }
 
   /**
    * Set the title of the application to show the current tracking time and
@@ -119,18 +126,16 @@ export default Service.extend({
    * @method _computeTitle
    * @private
    */
-  _computeTitle: task(function*() {
-    while (this.get("activity.active")) {
-      const duration = moment.duration(
-        moment().diff(this.get("activity.from"))
-      );
+  @task(function* () {
+    while (this.activity.active) {
+      const duration = moment.duration(moment().diff(this.activity.from));
 
       let task = "Unknown Task";
 
-      if (this.get("activity.task.content")) {
-        const c = this.get("activity.task.project.customer.name");
-        const p = this.get("activity.task.project.name");
-        const t = this.get("activity.task.name");
+      if (this.activity?.task?.content) {
+        const c = this.activity.task?.project?.customer?.name;
+        const p = this.activity.task?.project?.name;
+        const t = this.activity.task?.name;
 
         task = `${c} > ${p} > ${t}`;
       }
@@ -145,7 +150,8 @@ export default Service.extend({
       /* istanbul ignore next */
       yield timeout(1000);
     }
-  }),
+  })
+  _computeTitle;
 
   /**
    * The current activity
@@ -153,7 +159,7 @@ export default Service.extend({
    * @property {Activity} currentActivity
    * @public
    */
-  _activity: null,
+  _activity = null;
 
   /**
    * The currenty activity or create a new one if none is set
@@ -161,18 +167,16 @@ export default Service.extend({
    * @property {Activity} activity
    * @public
    */
-  activity: computed("_activity", {
-    get() {
-      return this._activity;
-    },
-    set(key, value) {
-      const newActivity = value || this.store.createRecord("activity");
+  @computed("_activity")
+  get activity() {
+    return this._activity;
+  }
 
-      this.set("_activity", newActivity);
+  set activity(value) {
+    const newActivity = value || this.store.createRecord("activity");
 
-      return newActivity;
-    }
-  }),
+    this.set("_activity", newActivity);
+  }
 
   /**
    * Start the activity
@@ -180,7 +184,7 @@ export default Service.extend({
    * @method startActivity
    * @public
    */
-  startActivity: task(function*() {
+  @(task(function* () {
     try {
       const activity = yield this.activity.start();
       this.set("activity", activity);
@@ -190,7 +194,8 @@ export default Service.extend({
       /* istanbul ignore next */
       this.notify.error("Error while starting the activity");
     }
-  }).drop(),
+  }).drop())
+  startActivity;
 
   /**
    * Stop the activity
@@ -198,9 +203,9 @@ export default Service.extend({
    * @method stopActivity
    * @public
    */
-  stopActivity: task(function*() {
+  @(task(function* () {
     try {
-      if (!this.get("activity.isNew")) {
+      if (!this.activity?.isNew) {
         yield this.activity.stop();
 
         this.notify.success("Activity was stopped");
@@ -211,7 +216,8 @@ export default Service.extend({
       /* istanbul ignore next */
       this.notify.error("Error while stopping the activity");
     }
-  }).drop(),
+  }).drop())
+  stopActivity;
 
   /**
    * The 10 last used tasks
@@ -219,12 +225,13 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  recentTasks: task(function*() {
+  @(task(function* () {
     return yield this.store.query("task", {
       my_most_frequent: 10, // eslint-disable-line camelcase
-      include: "project,project.customer"
+      include: "project,project.customer",
     });
-  }).drop(),
+  }).drop())
+  recentTasks;
 
   /**
    * All users
@@ -232,9 +239,10 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} users
    * @public
    */
-  users: task(function*() {
+  @task(function* () {
     return yield this.store.query("user", {});
-  }),
+  })
+  users;
 
   /**
    * All customers
@@ -242,9 +250,10 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} customers
    * @public
    */
-  customers: task(function*() {
+  @(task(function* () {
     return yield this.store.query("customer", {});
-  }).drop(),
+  }).drop())
+  customers;
 
   /**
    * Projects filtered by customer
@@ -253,7 +262,7 @@ export default Service.extend({
    * @param {Number} customer The customer id to filter by
    * @public
    */
-  projects: task(function*(customer) {
+  @task(function* (customer) {
     /* istanbul ignore next */
     if (!customer) {
       // We can't test this because the UI prevents it
@@ -261,7 +270,8 @@ export default Service.extend({
     }
 
     return yield this.store.query("project", { customer });
-  }),
+  })
+  projects;
 
   /**
    * Tasks filtered by project
@@ -270,7 +280,7 @@ export default Service.extend({
    * @param {Number} project The project id to filter by
    * @public
    */
-  tasks: task(function*(project) {
+  @task(function* (project) {
     /* istanbul ignore next */
     if (!project) {
       // We can't test this because the UI prevents it
@@ -279,4 +289,5 @@ export default Service.extend({
 
     return yield this.store.query("task", { project });
   })
-});
+  tasks;
+}
