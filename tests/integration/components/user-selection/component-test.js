@@ -1,7 +1,7 @@
+import { hbs } from 'ember-cli-htmlbars';
 import EmberObject from "@ember/object";
 import { find, render } from "@ember/test-helpers";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 import { startMirage } from "timed/initializers/ember-cli-mirage";
 

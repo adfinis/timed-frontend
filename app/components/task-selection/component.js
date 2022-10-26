@@ -1,3 +1,4 @@
+import { hbs } from 'ember-cli-htmlbars';
 /**
  * @module timed
  * @submodule timed-components
@@ -7,7 +8,6 @@ import Component from "@ember/component";
 import { computed } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
-import hbs from "htmlbars-inline-precompile";
 import { resolve } from "rsvp";
 import customerOptionTemplate from "timed/templates/customer-option";
 import projectOptionTemplate from "timed/templates/project-option";

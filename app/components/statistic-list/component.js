@@ -1,7 +1,7 @@
+import { hbs } from 'ember-cli-htmlbars';
 import Component from "@ember/component";
 import { get, computed } from "@ember/object";
 import { capitalize } from "@ember/string";
-import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 

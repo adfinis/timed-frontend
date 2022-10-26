@@ -1,3 +1,4 @@
+import { hbs } from 'ember-cli-htmlbars';
 import {
   fillIn,
   blur,
@@ -6,7 +7,6 @@ import {
   settled
 } from "@ember/test-helpers";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import { module, test } from "qunit";
 
