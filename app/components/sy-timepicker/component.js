@@ -277,7 +277,7 @@ export default Component.extend({
    * @private
    */
   _change(value) {
-    this.get("on-change")(value);
+    this["on-change"](value);
   },
 
   /**

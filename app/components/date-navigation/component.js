@@ -38,7 +38,7 @@ export default Component.extend({
     setToday() {
       const date = moment();
 
-      this.get("on-change")(date);
+      this["on-change"](date);
     },
 
     /**
@@ -50,7 +50,7 @@ export default Component.extend({
     setPrevious() {
       const date = moment(this.current).subtract(1, "days");
 
-      this.get("on-change")(date);
+      this["on-change"](date);
     },
 
     /**
@@ -62,7 +62,7 @@ export default Component.extend({
     setNext() {
       const date = moment(this.current).add(1, "days");
 
-      this.get("on-change")(date);
+      this["on-change"](date);
     }
   }
 });

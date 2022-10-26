@@ -15,7 +15,7 @@ export default Component.extend({
   placeholder: DISPLAY_FORMAT,
 
   displayValue: computed("value", function() {
-    const value = this.get("value");
+    const value = this.value;
     return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null;
   }),
 
@@ -42,7 +42,7 @@ export default Component.extend({
 
       // eslint-disable-next-line ember/no-incorrect-calls-with-inline-anonymous-functions
       scheduleOnce("afterRender", this, function() {
-        const target = this.get("element").querySelector(
+        const target = this.element.querySelector(
           ".ember-basic-dropdown-trigger input"
         );
 
@@ -65,7 +65,7 @@ export default Component.extend({
       if (valid) {
         const parsed = parse(value);
 
-        return this.get("on-change")(
+        return this["on-change"](
           parsed && parsed.isValid() ? parsed : null
         );
       }

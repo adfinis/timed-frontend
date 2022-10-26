@@ -78,7 +78,7 @@ const ReportRowComponent = Component.extend({
      * @public
      */
     save() {
-      this.get("on-save")(this.changeset);
+      this["on-save"](this.changeset);
     },
 
     /**
@@ -88,7 +88,7 @@ const ReportRowComponent = Component.extend({
      * @public
      */
     delete() {
-      this.get("on-delete")(this.report);
+      this["on-delete"](this.report);
     }
   }
 });

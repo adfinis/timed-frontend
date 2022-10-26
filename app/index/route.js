@@ -117,7 +117,7 @@ export default Route.extend(RouteAutostartTourMixin, {
     this._super(controller, model, ...args);
 
     controller.set("user", this.modelFor("protected"));
-    controller.get("setCenter").perform({ moment: model });
+    controller.setCenter.perform({ moment: model });
 
     controller.set("newAbsence", {
       dates: [model],

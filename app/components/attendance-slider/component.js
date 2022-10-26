@@ -143,7 +143,7 @@ export default Component.extend({
         .minute(toMin)
     );
 
-    yield this.get("on-save")(attendance);
+    yield this["on-save"](attendance);
   }).drop(),
 
   /**
@@ -153,6 +153,6 @@ export default Component.extend({
    * @public
    */
   delete: task(function*() {
-    yield this.get("on-delete")(this.attendance);
+    yield this["on-delete"](this.attendance);
   }).drop()
 });
