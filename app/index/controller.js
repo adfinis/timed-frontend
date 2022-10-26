@@ -4,7 +4,7 @@
  * @public
  */
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
+import { computed, get } from "@ember/object";
 import { reads } from "@ember/object/computed";
 import { scheduleOnce } from "@ember/runloop";
 import { inject as service } from "@ember/service";
@@ -303,7 +303,7 @@ export default Controller.extend({
    * @public
    */
   absence: computed("_absences.[]", function() {
-    return this.getWithDefault("_absences.firstObject", null);
+    return get(this, "_absences.firstObject") ?? null;
   }),
 
   /**

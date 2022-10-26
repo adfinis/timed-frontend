@@ -1,3 +1,4 @@
+import { get } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
@@ -55,7 +56,7 @@ export default Component.extend({
     close() {
       this.set("visible", false);
 
-      this.getWithDefault("on-close", () => {})();
+      (get(this, "on-close") ?? (() => {}))();
     }
   }
 });

@@ -1,3 +1,4 @@
+import { get } from "@ember/object";
 import Component from "@ember/component";
 
 const InViewportComponent = Component.extend({
@@ -12,10 +13,10 @@ const InViewportComponent = Component.extend({
     const observer = new IntersectionObserver(
       ([{ isIntersecting }]) => {
         if (isIntersecting) {
-          return this.getWithDefault("on-enter-viewport", () => {})();
+          return (get(this, "on-enter-viewport") ?? (() => {}))();
         }
 
-        return this.getWithDefault("on-exit-viewport", () => {})();
+        return (get(this, "on-exit-viewport") ?? (() => {}))();
       },
       {
         root: document.querySelector(this.rootSelector),

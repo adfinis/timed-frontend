@@ -67,7 +67,7 @@ export default Component.extend({
 
   total: computed("data.last.value", function() {
     return parseDjangoDuration(
-      this.getWithDefault("data.last.value.meta.total-time", null)
+      get(this, "data.last.value.meta.total-time") ?? null
     );
   }),
 

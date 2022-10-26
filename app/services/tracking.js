@@ -4,7 +4,7 @@
  * @public
  */
 import { getOwner } from "@ember/application";
-import { computed, observer } from "@ember/object";
+import { computed, observer, get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize } from "@ember/string";
@@ -53,7 +53,7 @@ export default Service.extend({
       active: true
     });
 
-    this.set("activity", actives.getWithDefault("firstObject", null));
+    this.set("activity", get(actives, "firstObject") ?? null);
 
     this._computeTitle.perform();
   },

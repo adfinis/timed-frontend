@@ -4,7 +4,7 @@
  * @public
  */
 import Component from "@ember/component";
-import { computed } from "@ember/object";
+import { computed, get } from "@ember/object";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 
@@ -161,7 +161,7 @@ export default Component.extend({
    * @public
    */
   focusOut() {
-    this.getWithDefault("on-focus-out", noop)();
+    (get(this, "on-focus-out") ?? noop)();
   },
 
   /**
