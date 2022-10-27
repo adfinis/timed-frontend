@@ -11,7 +11,7 @@ stop: ## Stop the development server
 	@docker-compose stop
 
 test: ## Test the project
-	@docker-compose exec backend sh -c "black --check . && flake8 && pytest --no-cov-on-fail --cov"
+	@docker-compose exec backend sh -c "poetry run black --check . && poetry run flake8 && poetry run pytest --no-cov-on-fail --cov"
 
 shell: ## Shell into the backend
 	@docker-compose exec backend bash
@@ -20,7 +20,7 @@ dbshell: ## Start a psql shell
 	@docker-compose exec db psql -Utimed timed
 
 flush: ## Flush database contents
-	@docker-compose exec backend ./manage.py flush --no-input
+	@docker-compose exec backend poetry run python manage.py flush --no-input
 
 loaddata: flush ## Loads test data into the database
-	@docker-compose exec backend ./manage.py loaddata timed/fixtures/test_data.json
+	@docker-compose exec backend poetry run python manage.py loaddata timed/fixtures/test_data.json

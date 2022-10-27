@@ -10,8 +10,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/* \
   && mkdir -p /app
 
-ARG REQUIREMENTS=requirements.txt
-
 ENV DJANGO_SETTINGS_MODULE timed.settings
 ENV STATIC_ROOT /var/www/static
 ENV WAITFORIT_TIMEOUT 0
@@ -21,8 +19,11 @@ ENV UWSGI_MAX_REQUESTS 2000
 ENV UWSGI_HARAKIRI 5
 ENV UWSGI_PROCESSES 4
 
-COPY requirements.txt requirements-dev.txt /app/
-RUN pip install --upgrade --no-cache-dir --requirement $REQUIREMENTS --disable-pip-version-check
+RUN pip install -U poetry
+
+ARG INSTALL_DEV_DEPENDENCIES=false
+COPY pyproject.toml poetry.lock /app/
+RUN if [ "$INSTALL_DEV_DEPENDENCIES" = "true" ]; then poetry install; else poetry install --no-dev; fi
 
 COPY . /app
 
