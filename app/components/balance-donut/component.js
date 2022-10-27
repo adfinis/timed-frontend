@@ -1,25 +1,28 @@
-import Component from "@ember/component";
+import classic from "ember-classic-decorator";
+import { attributeBindings, classNameBindings } from "@ember-decorators/component";
 import { computed } from "@ember/object";
+import Component from "@ember/component";
 import { htmlSafe } from "@ember/string";
 
 const { PI, floor, min, abs } = Math;
 
 const { isInteger } = Number;
 
-const BalanceDonutComponent = Component.extend({
-  attributeBindings: ["style"],
-
-  classNameBindings: ["color"],
-
-  value: computed("balance.{usedDays,usedDuration,credit}", function() {
+@classic
+@attributeBindings("style")
+@classNameBindings("color")
+class BalanceDonutComponent extends Component {
+  @computed("balance.{usedDays,usedDuration,credit}")
+  get value() {
     if (this.get("balance.usedDuration") || !this.get("balance.credit")) {
       return 1;
     }
 
     return abs(this.get("balance.usedDays") / this.get("balance.credit"));
-  }),
+  }
 
-  color: computed("value", "balance.usedDuration", function() {
+  @computed("value", "balance.usedDuration")
+  get color() {
     if (this.get("balance.usedDuration")) {
       return "primary";
     }
@@ -33,11 +36,12 @@ const BalanceDonutComponent = Component.extend({
     }
 
     return "success";
-  }),
+  }
 
-  radius: 100 / (2 * PI),
+  radius = 100 / (2 * PI);
 
-  style: computed("count", "index", function() {
+  @computed("count", "index")
+  get style() {
     const mean = this.count / 2;
 
     const median = [floor(mean), ...(isInteger(mean) ? [floor(mean - 1)] : [])];
@@ -48,8 +52,8 @@ const BalanceDonutComponent = Component.extend({
       deviation && (1 / (floor(mean) - (isInteger(mean) ? 1 : 0))) * deviation;
 
     return htmlSafe(`--offset-multiplicator: ${offset};`);
-  })
-});
+  }
+}
 
 BalanceDonutComponent.reopenClass({
   positionalParams: ["balance"]

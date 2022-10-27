@@ -1,3 +1,4 @@
+import classic from "ember-classic-decorator";
 import { computed } from "@ember/object";
 import EmberChartComponent from "ember-cli-chart/components/ember-chart";
 import moment from "moment";
@@ -5,10 +6,12 @@ import humanizeDuration from "timed/utils/humanize-duration";
 
 const FONT_FAMILY = "Source Sans Pro";
 
-export default EmberChartComponent.extend({
-  type: "line",
+@classic
+export default class WorktimeBalanceChart extends EmberChartComponent {
+  type = "line";
 
-  data: computed("worktimeBalances.[]", function() {
+  @computed("worktimeBalances.[]")
+  get data() {
     if (!this.worktimeBalances) {
       return [];
     }
@@ -23,10 +26,10 @@ export default EmberChartComponent.extend({
         }
       ]
     };
-  }),
+  }
 
   init(...args) {
-    this._super(...args);
+    super.init(...args);
 
     this.set("options", {
       lineTension: 0,
@@ -99,4 +102,4 @@ export default EmberChartComponent.extend({
       }
     });
   }
-});
+}

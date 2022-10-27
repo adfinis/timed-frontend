@@ -1,5 +1,6 @@
+import classic from "ember-classic-decorator";
+import { action, computed } from "@ember/object";
 import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import moment from "moment";
 
@@ -9,66 +10,71 @@ const PARSE_FORMAT = "D.M.YYYY";
 
 const parse = value => (value ? moment(value, PARSE_FORMAT) : null);
 
-export default Component.extend({
-  value: null,
+@classic
+export default class SyDatepicker extends Component {
+  value = null;
+  placeholder = DISPLAY_FORMAT;
 
-  placeholder: DISPLAY_FORMAT,
-
-  displayValue: computed("value", function() {
+  @computed("value")
+  get displayValue() {
     const value = this.value;
     return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null;
-  }),
+  }
 
-  name: "date",
+  name = "date";
 
-  actions: {
-    handleBlur(dd, e) {
-      const container = document.getElementById(
-        `ember-basic-dropdown-content-${dd.uniqueId}`
+  @action
+  handleBlur(dd, e) {
+    const container = document.getElementById(
+      `ember-basic-dropdown-content-${dd.uniqueId}`
+    );
+
+    if (!container || !container.contains(e.relatedTarget)) {
+      dd.actions.close();
+    }
+  }
+
+  @action
+  handleFocus(dd) {
+    dd.actions.open();
+  }
+
+  @action
+  checkValidity() {
+    // This is subject to change in future refactorings anyways, so pleace
+    // don't think about it to hard.
+
+    // eslint-disable-next-line ember/no-incorrect-calls-with-inline-anonymous-functions
+    scheduleOnce("afterRender", this, function() {
+      const target = this.element.querySelector(
+        ".ember-basic-dropdown-trigger input"
       );
 
-      if (!container || !container.contains(e.relatedTarget)) {
-        dd.actions.close();
+      const parsed = parse(target.value);
+
+      if (parsed && !parsed.isValid()) {
+        return target.setCustomValidity("Invalid date");
       }
-    },
 
-    handleFocus(dd) {
-      dd.actions.open();
-    },
+      return target.setCustomValidity("");
+    });
+  }
 
-    checkValidity() {
-      // This is subject to change in future refactorings anyways, so pleace
-      // don't think about it to hard.
-
-      // eslint-disable-next-line ember/no-incorrect-calls-with-inline-anonymous-functions
-      scheduleOnce("afterRender", this, function() {
-        const target = this.element.querySelector(
-          ".ember-basic-dropdown-trigger input"
-        );
-
-        const parsed = parse(target.value);
-
-        if (parsed && !parsed.isValid()) {
-          return target.setCustomValidity("Invalid date");
-        }
-
-        return target.setCustomValidity("");
-      });
-    },
-
-    handleChange({
+  @action
+  handleChange(
+    {
       target: {
         value,
         validity: { valid }
       }
-    }) {
-      if (valid) {
-        const parsed = parse(value);
+    }
+  ) {
+    if (valid) {
+      const parsed = parse(value);
 
-        return this["on-change"](
-          parsed && parsed.isValid() ? parsed : null
-        );
-      }
+      return this["on-change"](
+        parsed && parsed.isValid() ? parsed : null
+      );
     }
   }
-});
+}

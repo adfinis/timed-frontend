@@ -1,14 +1,15 @@
+import classic from "ember-classic-decorator";
 import { get } from "@ember/object";
 import Component from "@ember/component";
 
-const InViewportComponent = Component.extend({
-  rootSelector: "body",
-  rootMargin: 0,
-
-  _observer: null,
+@classic
+class InViewportComponent extends Component {
+  rootSelector = "body";
+  rootMargin = 0;
+  _observer = null;
 
   didInsertElement(...args) {
-    this._super(...args);
+    super.didInsertElement(...args);
 
     const observer = new IntersectionObserver(
       ([{ isIntersecting }]) => {
@@ -28,13 +29,13 @@ const InViewportComponent = Component.extend({
 
     // eslint-disable-next-line ember/no-observers
     observer.observe(this.element);
-  },
+  }
 
   willDestroyElement(...args) {
-    this._super(...args);
+    super.willDestroyElement(...args);
 
     this._observer.disconnect();
   }
-});
+}
 
 export default InViewportComponent;

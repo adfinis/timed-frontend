@@ -1,10 +1,13 @@
+import classic from "ember-classic-decorator";
 import { computed } from "@ember/object";
 import FaIconComponent from "ember-font-awesome/components/fa-icon";
 
-export default FaIconComponent.extend({
-  checked: false,
+@classic
+export default class SyCheckmark extends FaIconComponent {
+  checked = false;
 
-  icon: computed("checked", function() {
+  @computed("checked")
+  get icon() {
     return this.checked ? "check-square-o" : "square-o";
-  })
-});
+  }
+}

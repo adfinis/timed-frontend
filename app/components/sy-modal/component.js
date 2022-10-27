@@ -1,4 +1,5 @@
-import { get } from "@ember/object";
+import classic from "ember-classic-decorator";
+import { get, action } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
@@ -31,32 +32,26 @@ import Component from "@ember/component";
  * @class SyModalComponent
  * @public
  */
-export default Component.extend({
-  /**
-   * Whether the modal is visible
-   *
-   * @property {Boolean} visible
-   * @public
-   */
-  visible: false,
+@classic
+export default class SyModal extends Component {
+ /**
+  * Whether the modal is visible
+  *
+  * @property {Boolean} visible
+  * @public
+  */
+ visible = false;
 
-  /**
-   * Actions of the modal component
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Close the modal
-     *
-     * @method close
-     * @public
-     */
-    close() {
-      this.set("visible", false);
+ /**
+  * Close the modal
+  *
+  * @method close
+  * @public
+  */
+ @action
+ close() {
+   this.set("visible", false);
 
-      (get(this, "on-close") ?? (() => {}))();
-    }
-  }
-});
+   (get(this, "on-close") ?? (() => {}))();
+ }
+}

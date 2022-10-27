@@ -1,3 +1,5 @@
+import classic from "ember-classic-decorator";
+import { classNames } from "@ember-decorators/component";
 /**
  * @module timed
  * @submodule timed-components
@@ -12,12 +14,6 @@ import Component from "@ember/component";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * CSS classes of the component
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["modal-footer"]
-});
+@classic
+@classNames("modal-footer")
+export default class Footer extends Component {}

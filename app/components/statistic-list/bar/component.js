@@ -1,16 +1,18 @@
-import Component from "@ember/component";
+import classic from "ember-classic-decorator";
+import { classNames, attributeBindings } from "@ember-decorators/component";
 import { computed } from "@ember/object";
+import Component from "@ember/component";
 import { htmlSafe } from "@ember/string";
 
-const StatisticListBarComponent = Component.extend({
-  classNames: ["statistic-list-bar"],
-
-  attributeBindings: ["style"],
-
-  style: computed("value", function() {
+@classic
+@classNames("statistic-list-bar")
+@attributeBindings("style")
+class StatisticListBarComponent extends Component {
+  @computed("value")
+  get style() {
     return htmlSafe(`--value: ${this.value}`);
-  })
-});
+  }
+}
 
 StatisticListBarComponent.reopenClass({
   positionalParams: ["value"]

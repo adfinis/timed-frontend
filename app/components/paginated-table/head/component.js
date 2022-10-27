@@ -1,3 +1,5 @@
+import classic from "ember-classic-decorator";
+import { tagName } from "@ember-decorators/component";
 import Component from "@ember/component";
 
 /**
@@ -7,12 +9,6 @@ import Component from "@ember/component";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * The tagName of the component
-   *
-   * @property {string} tagName
-   * @public
-   */
-  tagName: "thead"
-});
+@classic
+@tagName("thead")
+export default class Head extends Component {}

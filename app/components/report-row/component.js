@@ -1,11 +1,13 @@
+import classic from "ember-classic-decorator";
+import { classNames, attributeBindings, tagName } from "@ember-decorators/component";
+import { action, computed } from "@ember/object";
+import { inject as service } from "@ember/service";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
 import Component from "@ember/component";
-import { computed } from "@ember/object";
-import { inject as service } from "@ember/service";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
 import ReportValidations from "timed/validations/report";
@@ -17,40 +19,27 @@ import ReportValidations from "timed/validations/report";
  * @extends Ember.Component
  * @public
  */
-const ReportRowComponent = Component.extend({
-  can: service(),
+@classic
+@tagName("form")
+@classNames("form-list-row")
+@attributeBindings("title")
+class ReportRowComponent extends Component {
+  @service
+  can;
 
-  /**
-   * The element tag name
-   *
-   * @property {String} tagName
-   * @public
-   */
-  tagName: "form",
+  @computed("report.{verifiedBy,billed}")
+  get editable() {
+    return this.can.can("edit report", this.report);
+  }
 
-  /**
-   * CSS class names
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["form-list-row"],
-
-  attributeBindings: ["title"],
-
-  editable: computed("report.{verifiedBy,billed}", {
-    get() {
-      return this.can.can("edit report", this.report);
-    }
-  }),
-
-  title: computed("editable", function() {
+  @computed("editable")
+  get title() {
     return this.editable
       ? ""
       : `This entry was already verified by ${this.get(
           "report.verifiedBy.fullName"
         )} and therefore not editable anymore`;
-  }),
+  }
 
   /**
    * The changeset to edit
@@ -58,7 +47,8 @@ const ReportRowComponent = Component.extend({
    * @property {EmberChangeset.Changeset} changeset
    * @public
    */
-  changeset: computed("report.{id,verifiedBy}", function() {
+  @computed("report.{id,verifiedBy}")
+  get changeset() {
     const c = new Changeset(
       this.report,
       lookupValidator(ReportValidations),
@@ -68,30 +58,30 @@ const ReportRowComponent = Component.extend({
     c.validate();
 
     return c;
-  }),
-
-  actions: {
-    /**
-     * Save the row
-     *
-     * @method save
-     * @public
-     */
-    save() {
-      this["on-save"](this.changeset);
-    },
-
-    /**
-     * Delete the row
-     *
-     * @method delete
-     * @public
-     */
-    delete() {
-      this["on-delete"](this.report);
-    }
   }
-});
+
+  /**
+   * Save the row
+   *
+   * @method save
+   * @public
+   */
+  @action
+  save() {
+    this["on-save"](this.changeset);
+  }
+
+  /**
+   * Delete the row
+   *
+   * @method delete
+   * @public
+   */
+  @action
+  delete() {
+    this["on-delete"](this.report);
+  }
+}
 
 ReportRowComponent.reopenClass({
   positionalParams: ["report"]

@@ -1,10 +1,12 @@
+import classic from "ember-classic-decorator";
+import { attributeBindings, classNameBindings } from "@ember-decorators/component";
+import { computed } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
 import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
 
 /**
@@ -16,115 +18,104 @@ import { htmlSafe } from "@ember/string";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * Attribute bindings
-   *
-   * @property {String[]} attributeBindings
-   * @public
-   */
-  attributeBindings: ["style", "title"],
+@classic
+@attributeBindings("style", "title")
+@classNameBindings("active", "workday::weekend", "absence", "holiday")
+export default class WeeklyOverviewDay extends Component {
+ /**
+  * Whether there is an absence on this day
+  *
+  * @property {Boolean} absence
+  * @public
+  */
+ absence = false;
 
-  /**
-   * Class name bindings
-   *
-   * @property {String[]} classNameBindings
-   * @public
-   */
-  classNameBindings: ["active", "workday::weekend", "absence", "holiday"],
+ /**
+  * Whether there is an holiday on this day
+  *
+  * @property {Boolean} holiday
+  * @public
+  */
+ holiday = false;
 
-  /**
-   * Whether there is an absence on this day
-   *
-   * @property {Boolean} absence
-   * @public
-   */
-  absence: false,
+ /**
+  * Whether it is the currently selected day
+  *
+  * @property {Boolean} active
+  * @public
+  */
+ active = false;
 
-  /**
-   * Whether there is an holiday on this day
-   *
-   * @property {Boolean} holiday
-   * @public
-   */
-  holiday: false,
+ /**
+  * Maximum worktime in hours
+  *
+  * @property {Number} max
+  * @public
+  */
+ max = 20;
 
-  /**
-   * Whether it is the currently selected day
-   *
-   * @property {Boolean} active
-   * @public
-   */
-  active: false,
+ /**
+  * A prefix to the title
+  *
+  * @property {String} prefix
+  * @public
+  */
+ prefix = "";
 
-  /**
-   * Maximum worktime in hours
-   *
-   * @property {Number} max
-   * @public
-   */
-  max: 20,
+ /**
+  * The element title
+  *
+  * This is shown on hover. It contains the worktime.
+  *
+  * @property {String} title
+  * @public
+  */
+ @computed("worktime", "prefix")
+ get title() {
+   const pre = this.get("prefix.length") ? `${this.prefix}, ` : "";
 
-  /**
-   * A prefix to the title
-   *
-   * @property {String} prefix
-   * @public
-   */
-  prefix: "",
+   let title = `${this.worktime.hours()}h`;
 
-  /**
-   * The element title
-   *
-   * This is shown on hover. It contains the worktime.
-   *
-   * @property {String} title
-   * @public
-   */
-  title: computed("worktime", "prefix", function() {
-    const pre = this.get("prefix.length") ? `${this.prefix}, ` : "";
+   if (this.worktime.minutes()) {
+     title += ` ${this.worktime.minutes()}m`;
+   }
 
-    let title = `${this.worktime.hours()}h`;
+   return `${pre}${title}`;
+ }
 
-    if (this.worktime.minutes()) {
-      title += ` ${this.worktime.minutes()}m`;
-    }
+ /**
+  * Whether the day is a workday
+  *
+  * @property {Boolean} workday
+  * @public
+  */
+ workday = true;
 
-    return `${pre}${title}`;
-  }),
+ /**
+  * The style of the element
+  *
+  * This computes the height of the bar
+  *
+  * @property {String} style
+  * @public
+  */
+ @computed("max", "worktime")
+ get style() {
+   const height = Math.min((this.worktime.asHours() / this.max) * 100, 100);
 
-  /**
-   * Whether the day is a workday
-   *
-   * @property {Boolean} workday
-   * @public
-   */
-  workday: true,
+   return htmlSafe(`height: ${height}%;`);
+ }
 
-  /**
-   * The style of the element
-   *
-   * This computes the height of the bar
-   *
-   * @property {String} style
-   * @public
-   */
-  style: computed("max", "worktime", function() {
-    const height = Math.min((this.worktime.asHours() / this.max) * 100, 100);
+ /**
+  * Click event - fire the on-click action
+  */
+ click(event) {
+   const action = this["on-click"];
 
-    return htmlSafe(`height: ${height}%;`);
-  }),
+   if (action) {
+     event.preventDefault();
 
-  /**
-   * Click event - fire the on-click action
-   */
-  click(event) {
-    const action = this["on-click"];
-
-    if (action) {
-      event.preventDefault();
-
-      this["on-click"](this.day);
-    }
-  }
-});
+     this["on-click"](this.day);
+   }
+ }
+}

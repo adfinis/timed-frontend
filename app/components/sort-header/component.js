@@ -1,5 +1,7 @@
-import Component from "@ember/component";
+import classic from "ember-classic-decorator";
+import { tagName } from "@ember-decorators/component";
 import { computed } from "@ember/object";
+import Component from "@ember/component";
 
 const getDirection = state => {
   return state.startsWith("-") ? "desc" : "asc";
@@ -8,19 +10,21 @@ const getDirection = state => {
 const getColname = state =>
   state.startsWith("-") ? state.substring(1) : state;
 
-export default Component.extend({
-  tagName: "th",
-
-  direction: computed("current", function() {
+@classic
+@tagName("th")
+export default class SortHeader extends Component {
+  @(computed("current").readOnly())
+  get direction() {
     return getDirection(this.current);
-  }).readOnly(),
+  }
 
-  active: computed("current", function() {
+  @(computed("current").readOnly())
+  get active() {
     const by = this.by;
     const current = this.current;
 
     return getColname(current) === by;
-  }).readOnly(),
+  }
 
   click() {
     const current = this.current;
@@ -30,4 +34,4 @@ export default Component.extend({
 
     this.update(sort);
   }
-});
+}
