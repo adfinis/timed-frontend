@@ -1,3 +1,4 @@
+import { tracked } from '@glimmer/tracking';
 import classic from "ember-classic-decorator";
 import { attributeBindings } from "@ember-decorators/component";
 import { computed } from "@ember/object";
@@ -25,7 +26,7 @@ export default class WeeklyOverview extends Component {
   * @property {Number} height
   * @public
   */
- height = 150;
+ @tracked height = 150;
 
  /**
   * The expected worktime in hours
@@ -46,7 +47,6 @@ export default class WeeklyOverview extends Component {
   * @property {String} style
   * @public
   */
- @computed("height")
  get style() {
    return htmlSafe(`height: ${this.height}px;`);
  }

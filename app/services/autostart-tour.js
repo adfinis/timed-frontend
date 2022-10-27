@@ -23,8 +23,7 @@ export default class AutostartTourService extends Service {
    * @property {String} doneKey
    * @public
    */
-  @tracked
-  doneKey = "timed-tour";
+  @tracked doneKey = "timed-tour";
 
   /**
    * All done tours

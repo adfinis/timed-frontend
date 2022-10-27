@@ -1,3 +1,4 @@
+import { tracked } from '@glimmer/tracking';
 /**
  * @module timed
  * @submodule timed-services
@@ -159,7 +160,7 @@ export default class TrackingService extends Service {
    * @property {Activity} currentActivity
    * @public
    */
-  _activity = null;
+  @tracked _activity = null;
 
   /**
    * The currenty activity or create a new one if none is set
@@ -167,7 +168,6 @@ export default class TrackingService extends Service {
    * @property {Activity} activity
    * @public
    */
-  @computed("_activity")
   get activity() {
     return this._activity;
   }

@@ -1,7 +1,12 @@
-import classic from "ember-classic-decorator";
-import { classNames, attributeBindings, classNameBindings, tagName } from "@ember-decorators/component";
-import { computed } from "@ember/object";
+import {
+  classNames,
+  attributeBindings,
+  classNameBindings,
+  tagName,
+} from "@ember-decorators/component";
 import Component from "@ember/component";
+import { tracked } from "@glimmer/tracking";
+import classic from "ember-classic-decorator";
 
 const { round } = Math;
 
@@ -18,45 +23,44 @@ const { round } = Math;
 @classNames("progress-bar")
 @classNameBindings("color")
 class ProgressBarComponent extends Component {
- /**
-  * The current progress as a factor
-  *
-  * @property {Number} progress
-  * @public
-  */
- progress = 0;
+  /**
+   * The current progress as a factor
+   *
+   * @property {Number} progress
+   * @public
+   */
+  @tracked progress = 0;
 
- /**
-  * Custom color of the progress bar, this is added as a class
-  *
-  * @property {String} color
-  * @public
-  */
- color = null;
+  /**
+   * Custom color of the progress bar, this is added as a class
+   *
+   * @property {String} color
+   * @public
+   */
+  color = null;
 
- /**
-  * The current progress value
-  *
-  * @property {Number} value
-  * @public
-  */
- @computed("progress")
- get value() {
-   return round(this.progress * 100);
- }
+  /**
+   * The current progress value
+   *
+   * @property {Number} value
+   * @public
+   */
+  get value() {
+    return round(this.progress * 100);
+  }
 
- /**
-  * The max value
-  *
-  * @property {Number} max
-  * @default 100
-  * @public
-  */
- max = 100;
+  /**
+   * The max value
+   *
+   * @property {Number} max
+   * @default 100
+   * @public
+   */
+  max = 100;
 }
 
 ProgressBarComponent.reopenClass({
-  positionalParams: ["progress"]
+  positionalParams: ["progress"],
 });
 
 export default ProgressBarComponent;

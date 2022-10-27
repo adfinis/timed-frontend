@@ -1,3 +1,4 @@
+import { tracked } from '@glimmer/tracking';
 import classic from "ember-classic-decorator";
 import { computed } from "@ember/object";
 import { padStart } from "ember-pad/utils/pad";
@@ -19,7 +20,7 @@ const { abs } = Math;
 @classic
 export default class SyDurationpicker extends SyTimepickerComponent {
   name = "duration";
-  min = MIN_SAFE_INTEGER;
+  @tracked min = MIN_SAFE_INTEGER;
   max = MAX_SAFE_INTEGER;
   maxlength = null;
 
@@ -35,7 +36,7 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @property {Number} precision
    * @public
    */
-  precision = 15;
+  @tracked precision = 15;
 
   /**
    * The regex for the input
@@ -43,7 +44,6 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @property {String} pattern
    * @public
    */
-  @computed("min", "precision")
   get pattern() {
     const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);

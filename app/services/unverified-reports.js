@@ -1,3 +1,4 @@
+import { tracked } from '@glimmer/tracking';
 import { computed } from "@ember/object";
 import Service, { inject as service } from "@ember/service";
 import Ember from "ember";
@@ -27,9 +28,8 @@ export default class UnverifiedReportsService extends Service {
   @service
   notify;
 
-  amountReports = 0;
+  @tracked amountReports = 0;
 
-  @computed("amountReports")
   get hasReports() {
     return this.amountReports > 0;
   }

@@ -1,21 +1,21 @@
-import classic from "ember-classic-decorator";
-import { action, computed } from "@ember/object";
+import { action } from "@ember/object";
 import Component from "@ember/component";
 import { scheduleOnce } from "@ember/runloop";
+import { tracked } from "@glimmer/tracking";
+import classic from "ember-classic-decorator";
 import moment from "moment";
 
 const DISPLAY_FORMAT = "DD.MM.YYYY";
 
 const PARSE_FORMAT = "D.M.YYYY";
 
-const parse = value => (value ? moment(value, PARSE_FORMAT) : null);
+const parse = (value) => (value ? moment(value, PARSE_FORMAT) : null);
 
 @classic
 export default class SyDatepicker extends Component {
-  value = null;
+  @tracked value = null;
   placeholder = DISPLAY_FORMAT;
 
-  @computed("value")
   get displayValue() {
     const value = this.value;
     return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null;
@@ -45,7 +45,7 @@ export default class SyDatepicker extends Component {
     // don't think about it to hard.
 
     // eslint-disable-next-line ember/no-incorrect-calls-with-inline-anonymous-functions
-    scheduleOnce("afterRender", this, function() {
+    scheduleOnce("afterRender", this, function () {
       const target = this.element.querySelector(
         ".ember-basic-dropdown-trigger input"
       );
@@ -61,20 +61,16 @@ export default class SyDatepicker extends Component {
   }
 
   @action
-  handleChange(
-    {
-      target: {
-        value,
-        validity: { valid }
-      }
-    }
-  ) {
+  handleChange({
+    target: {
+      value,
+      validity: { valid },
+    },
+  }) {
     if (valid) {
       const parsed = parse(value);
 
-      return this["on-change"](
-        parsed && parsed.isValid() ? parsed : null
-      );
+      return this["on-change"](parsed && parsed.isValid() ? parsed : null);
     }
   }
 }

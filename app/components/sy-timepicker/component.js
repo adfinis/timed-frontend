@@ -1,12 +1,17 @@
-import classic from "ember-classic-decorator";
-import { classNames, attributeBindings, tagName } from "@ember-decorators/component";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
+import {
+  classNames,
+  attributeBindings,
+  tagName,
+} from "@ember-decorators/component";
 import Component from "@ember/component";
-import { get, computed } from "@ember/object";
+import { computed } from "@ember/object";
+import { tracked } from "@glimmer/tracking";
+import classic from "ember-classic-decorator";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 
@@ -69,7 +74,7 @@ export default class SyTimepicker extends Component {
    * @property {Number} precision
    * @public
    */
-  precision = 15;
+  @tracked precision = 15;
 
   /**
    * Whether the picker is disabled
@@ -93,13 +98,12 @@ export default class SyTimepicker extends Component {
    * @property {String} pattern
    * @public
    */
-  @computed("precision")
   get pattern() {
     const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
     return `([01]?[0-9]|2[0-3]):(${minutes
-      .map(m => padStart(m, 2))
+      .map((m) => padStart(m, 2))
       .join("|")})`;
   }
 
@@ -145,7 +149,7 @@ export default class SyTimepicker extends Component {
    * @public
    */
   focusOut() {
-    (get(this, "on-focus-out") ?? noop)();
+    (this["on-focus-out"] ?? noop)();
   }
 
   /**
@@ -159,7 +163,7 @@ export default class SyTimepicker extends Component {
     if (e.target.validity.valid) {
       const [h = NaN, m = NaN] = this.sanitize(e.target.value)
         .split(":")
-        .map(n => parseInt(n));
+        .map((n) => parseInt(n));
 
       this._change([h, m].some(isNaN) ? null : this._set(h, m));
     }
@@ -205,7 +209,7 @@ export default class SyTimepicker extends Component {
     let base = this.value;
 
     if (!base) {
-      base = [h, m].any(n => n < 0) ? this.max.add(1, "minute") : this.min;
+      base = [h, m].any((n) => n < 0) ? this.max.add(1, "minute") : this.min;
     }
 
     return moment(base).add({ h, m });
