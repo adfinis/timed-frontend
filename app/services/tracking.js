@@ -7,7 +7,7 @@ import { tracked } from '@glimmer/tracking';
 
 import { observes } from "@ember-decorators/object";
 import { getOwner } from "@ember/application";
-import { computed } from "@ember/object";
+import { computed, get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize } from "@ember/string";
@@ -133,10 +133,10 @@ export default class TrackingService extends Service {
 
       let task = "Unknown Task";
 
-      if (this.activity?.task?.content) {
-        const c = this.activity.task?.project?.customer?.name;
-        const p = this.activity.task?.project?.name;
-        const t = this.activity.task?.name;
+      if (get(this, "activity.task.content")) {
+        const c = get(this, "activity.task.project.customer.name");
+        const p = get(this, "activity.task.project.name");
+        const t = get(this, "activity.task.name");
 
         task = `${c} > ${p} > ${t}`;
       }

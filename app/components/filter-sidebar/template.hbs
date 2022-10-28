@@ -1,13 +1,13 @@
-{{#-in-element destination}}
-  <aside class="filter-sidebar {{if visible 'filter-sidebar--visible'}}">
+{{#-in-element this.destination}}
+  <aside class="filter-sidebar {{if this.visible 'filter-sidebar--visible'}}">
     <div class="filter-sidebar-title">
-      {{#if appliedCount}}
-        {{appliedCount}} Filter{{unless (eq appliedCount 1) 's'}} applied
+      {{#if this.appliedCount}}
+        {{this.appliedCount}} Filter{{unless (eq this.appliedCount 1) 's'}} applied
       {{else}}
         Filters
       {{/if}}
-      {{#if on-reset}}
-        <a href="#" class="filter-sidebar-reset" {{action on-reset on='click'}}>
+      {{#if this.on-reset}}
+        <a href="#" class="filter-sidebar-reset" {{action this.on-reset on='click'}}>
           Reset
         </a>
       {{/if}}
@@ -22,19 +22,19 @@
     </div>
 
     <button
-      title="{{if visible 'Hide' 'Show'}} filters"
+      title="{{if this.visible 'Hide' 'Show'}} filters"
       class="filter-sidebar-toggle"
       {{action (toggle 'visible' this)}}
     >
       <span class="filter-sidebar-toggle-background"></span>
       <span class="filter-sidebar-toggle-icon">
         {{fa-icon 'sliders'}}
-        {{#if appliedCount}}
-          <span class="filter-sidebar-toggle-icon-badge">{{appliedCount}}</span>
+        {{#if this.appliedCount}}
+          <span class="filter-sidebar-toggle-icon-badge">{{this.appliedCount}}</span>
         {{/if}}
       </span>
       <span class="filter-sidebar-toggle-text">Filters</span>
     </button>
   </aside>
-  <div class="filter-sidebar-overlay {{if visible 'filter-sidebar-overlay--visible'}}" {{action (mut visible) false}}></div>
+  <div class="filter-sidebar-overlay {{if this.visible 'filter-sidebar-overlay--visible'}}" {{action (mut this.visible) false}}></div>
 {{/-in-element}}

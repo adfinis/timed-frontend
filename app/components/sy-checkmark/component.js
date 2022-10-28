@@ -1,6 +1,5 @@
-import { tracked } from '@glimmer/tracking';
+import { tracked } from "@glimmer/tracking";
 import classic from "ember-classic-decorator";
-import { computed } from "@ember/object";
 import FaIconComponent from "ember-font-awesome/components/fa-icon";
 
 @classic

@@ -1,13 +1,13 @@
-{{#let (assign publicAPI (hash
-  nav=(component navComponent calendar=(readonly publicAPI) onCenterChange=(readonly onCenterChange))
-  days=(component daysComponent calendar=(readonly publicAPI) onSelect=(readonly onSelect))
+{{#let (assign this.publicAPI (hash
+  nav=(component this.navComponent calendar=(readonly this.publicAPI) onCenterChange=(readonly this.onCenterChange))
+  days=(component this.daysComponent calendar=(readonly this.publicAPI) onSelect=(readonly this.onSelect))
 )) as |calendar|}}
   <calendar.nav>
     <span class="nav-select-month">
       {{#let (moment-format calendar.center 'MMMM') as |currentMonth|}}
         {{currentMonth}}
         <select onchange={{action 'changeCenter' 'month'}}>
-          {{#each months as |month|}}
+          {{#each this.months as |month|}}
             <option value={{month}} selected={{eq month currentMonth}}>{{month}}</option>
           {{/each}}
         </select>
@@ -17,7 +17,7 @@
       {{#let (moment-format calendar.center 'YYYY') as |currentYear|}}
         {{currentYear}}
         <select onchange={{action 'changeCenter' 'year'}}>
-          {{#each years as |year|}}
+          {{#each this.years as |year|}}
             <option value={{year}} selected={{eq year currentYear}}>{{year}}</option>
           {{/each}}
         </select>

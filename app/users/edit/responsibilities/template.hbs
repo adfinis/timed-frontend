@@ -3,12 +3,12 @@
     <h4>Projects</h4>
     <div class="card">
       <div class="card-block">
-        {{#if projects.isRunning}}
+        {{#if this.projects.isRunning}}
           <div class="empty">
-            {{loading-icon}}
+            <LoadingIcon />
           </div>
         {{else}}
-          {{#with projects.lastSuccessful.value as |projects|}}
+          {{#with this.projects.lastSuccessful.value as |projects|}}
             <table class="table table--striped">
               <thead>
                 <tr>
@@ -44,12 +44,12 @@
     <h4>Supervisees</h4>
     <div class="card">
       <div class="card-block">
-        {{#if supervisees.isRunning}}
+        {{#if this.supervisees.isRunning}}
           <div class="empty">
-            {{loading-icon}}
+            <LoadingIcon />
           </div>
         {{else}}
-          {{#with supervisees.lastSuccessful.value as |supervisees|}}
+          {{#with this.supervisees.lastSuccessful.value as |supervisees|}}
             <table class="table table--striped">
               <thead>
                 <tr>
@@ -60,7 +60,7 @@
               </thead>
               <tbody>
                 {{#each supervisees as |supervisee|}}
-                  {{#link-to "users.edit" supervisee.id tagName="tr" class="pointer"}}
+                  <LinkTo @route="users.edit" @model={{supervisee.id}} @tagName="tr" class="pointer">
                     <td>{{supervisee.fullName}}</td>
                     <td>
                       <span class="worktime-balance {{balance-highlight-class supervisee.currentWorktimeBalance.balance}}">
@@ -73,7 +73,7 @@
                       contain one element. This is why we use firstObject here.
                     --}}
                     <td>{{supervisee.absenceBalances.firstObject.balance}}</td>
-                  {{/link-to}}
+                  </LinkTo>
                 {{/each}}
               </tbody>
             </table>

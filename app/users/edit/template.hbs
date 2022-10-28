@@ -1,20 +1,20 @@
-{{#if (can 'read user' model)}}
+{{#if (can 'read user' this.model)}}
   <header class="user-header">
     <div class="user-header-info">
-      <h1>{{model.fullName}}</h1>
+      <h1>{{this.model.fullName}}</h1>
     </div>
 
-    {{#if data.isRunning}}
+    {{#if this.data.isRunning}}
       <div class="user-header-loading">
-        {{loading-icon}}
+        <LoadingIcon />
       </div>
     {{else}}
-      {{#unless model.activeEmployment.isExternal}}
+      {{#unless this.model.activeEmployment.isExternal}}
         <div class="user-header-worktime-balance-container">
           <h2 class="user-header-worktime-balance-title">Worktime balance</h2>
 
           <div class="user-header-worktime-balance-last-valid-timesheet">
-            {{#let data.lastSuccessful.value.worktimeBalanceLastValidTimesheet as |balance|}}
+            {{#let this.data.lastSuccessful.value.worktimeBalanceLastValidTimesheet as |balance|}}
               <h2 title="Last day with timesheet entries or absences">
                 {{moment-format balance.date 'DD.MM.YYYY'}}
               </h2>
@@ -25,11 +25,11 @@
           </div>
 
           <div class="user-header-worktime-balance">
-            {{worktime-balance-chart worktimeBalances=data.lastSuccessful.value.worktimeBalances}}
+            <WorktimeBalanceChart @worktimeBalances={{this.data.lastSuccessful.value.worktimeBalances}} />
           </div>
 
           <div class="user-header-worktime-balance-today">
-            {{#let data.lastSuccessful.value.worktimeBalanceToday as |balance|}}
+            {{#let this.data.lastSuccessful.value.worktimeBalanceToday as |balance|}}
               <h2>Today</h2>
               <div class="{{balance-highlight-class balance.balance}}">
                 {{format-duration balance.balance false}}
@@ -39,7 +39,7 @@
         </div>
 
         <div class="user-header-absence-balance-container">
-          {{#let data.lastSuccessful.value.absenceBalances as |balances|}}
+          {{#let this.data.lastSuccessful.value.absenceBalances as |balances|}}
             {{#each balances as |balance index|}}
               {{balance-donut balance
                 class = 'user-header-absence-balance'
@@ -56,9 +56,9 @@
 
   <nav class="user-navigation">
     <ul>
-      <li>{{#link-to 'users.edit.index' model.id}}General{{/link-to}}</li>
-      <li>{{#link-to 'users.edit.credits' model.id}}Credits{{/link-to}}</li>
-      <li>{{#link-to 'users.edit.responsibilities' model.id}}Responsibilities{{/link-to}}</li>
+      <li><LinkTo @route="users.edit.index" @model={{this.model.id}}>General</LinkTo></li>
+      <li><LinkTo @route="users.edit.credits" @model={{this.model.id}}>Credits</LinkTo></li>
+      <li><LinkTo @route="users.edit.responsibilities" @model={{this.model.id}}>Responsibilities</LinkTo></li>
     </ul>
   </nav>
 
@@ -66,5 +66,5 @@
     {{outlet}}
   </section>
 {{else}}
-  {{no-permission}}
+  <NoPermission />
 {{/if}}

@@ -1,34 +1,34 @@
 <h1>Users</h1>
 
-{{#filter-sidebar on-reset=(perform resetFilter) as |fs|}}
-  {{#fs.group label='General' expanded=true}}
-    {{#fs.label}}
+{{#filter-sidebar on-reset=(perform this.resetFilter) as |fs|}}
+  <fs.group @label="General" @expanded={{true}}>
+    <fs.label>
       Search
       {{fs.filter 'search'
         data-test-filter-search
-        selected = search
-        on-change = (perform setSearchFilter)
+        selected = this.search
+        on-change = (perform this.setSearchFilter)
       }}
-    {{/fs.label}}
-    {{#if currentUser.isSuperuser}}
-      {{#fs.label}}
+    </fs.label>
+    {{#if this.currentUser.isSuperuser}}
+      <fs.label>
         Supervisor
-        {{#fs.filter data-test-filter-user}}
+        <fs.filter>
           {{#user-selection
-            user          = selectedSupervisor
-            on-change     = (perform setModelFilter 'supervisor')
+            user          = this.selectedSupervisor
+            on-change     = (perform this.setModelFilter 'supervisor')
             queryOptions  = (hash is_supervisor=1 active=1)
           as |u|}}
-            {{u.user placeholder='Select supervisor...'}}
+            <u.user @placeholder="Select supervisor..." />
           {{/user-selection}}
-        {{/fs.filter}}
-      {{/fs.label}}
+        </fs.filter>
+      </fs.label>
     {{/if}}
-    {{#fs.label}}
+    <fs.label>
       Active
       {{fs.filter 'button'
         data-test-filter-active
-        selected  = active
+        selected  = this.active
         valuePath = 'value'
         labelPath = 'label'
         options   = (array
@@ -36,13 +36,13 @@
           (hash value='1' label='Active')
           (hash value='0' label='Inactive')
         )
-        on-change = (action (mut active))
+        on-change = (action (mut this.active))
       }}
-    {{/fs.label}}
-  {{/fs.group}}
+    </fs.label>
+  </fs.group>
 {{/filter-sidebar}}
 
-{{#async-list data as |section data|}}
+{{#async-list this.data as |section data|}}
   {{#if (eq section 'empty')}}
     <div class="empty">
       <div>
@@ -67,7 +67,7 @@
         bufferSize        = 10
         containerSelector = '.page-content--scroll'
       as |user|}}
-        {{#link-to 'users.edit' user.id tagName='tr' class='pointer'}}
+        <LinkTo @route="users.edit" @model={{user.id}} @tagName="tr" class="pointer">
           <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
           {{#if user.activeEmployment}}
             <td>{{user.activeEmployment.percentage}}%</td>
@@ -80,7 +80,7 @@
               {{format-duration user.currentWorktimeBalance.balance false}}
             </span>
           </td>
-        {{/link-to}}
+        </LinkTo>
       {{/vertical-collection}}
     </table>
   {{/if}}

@@ -1,19 +1,19 @@
 <div
-  class="{{if option.archived 'inactive'}}"
-  title="{{if option.isTask option.longName option.name}}{{if option.archived ' (archived)'}}"
+  class="{{if this.option.archived 'inactive'}}"
+  title="{{if this.option.isTask this.option.longName this.option.name}}{{if this.option.archived ' (archived)'}}"
 >
-  {{#if option.isTask}}
+  {{#if this.option.isTask}}
     <span class="history">
       <i class="fa fa-history"></i>
       <span class="history-text">
-        <small>{{option.project.customer.name}} > {{option.project.name}}</small>
-        {{option.name}}
+        <small>{{this.option.project.customer.name}} > {{this.option.project.name}}</small>
+        {{this.option.name}}
       </span>
     </span>
   {{else}}
-    {{option.name}}
+    {{this.option.name}}
   {{/if}}
-  {{#if option.archived}}
+  {{#if this.option.archived}}
     <i class="fa fa-archive"></i>
   {{/if}}
 </div>

@@ -1,48 +1,48 @@
 {{yield (hash
   customer             = (component 'power-select'
-    options            = customersAndRecentTasks
-    disabled           = disabled
-    selected           = customer
+    options            = this.customersAndRecentTasks
+    disabled           = this.disabled
+    selected           = this.customer
     placeholder        = 'Select customer...'
     searchField        = 'longName'
     allowClear         = true
     tagName            = 'div'
     class              = 'customer-select'
-    onChange           = (action (mut customer))
+    onChange           = (action (mut this.customer))
     extra              = (hash
       lazy             = true
-      selectedTemplate = selectedTemplate
-      optionTemplate   = customerOptionTemplate
+      selectedTemplate = this.selectedTemplate
+      optionTemplate   = this.customerOptionTemplate
     )
   )
   project              = (component 'power-select'
-    options            = projects
-    disabled           = (or disabled (not customer))
-    selected           = project
+    options            = this.projects
+    disabled           = (or this.disabled (not this.customer))
+    selected           = this.project
     placeholder        = 'Select project...'
     searchField        = 'name'
     allowClear         = true
     tagName            = 'div'
     class              = 'project-select'
-    onChange           = (action (mut project))
+    onChange           = (action (mut this.project))
     extra              = (hash
-      selectedTemplate = selectedTemplate
-      optionTemplate   = projectOptionTemplate
+      selectedTemplate = this.selectedTemplate
+      optionTemplate   = this.projectOptionTemplate
     )
   )
   task                 = (component 'power-select'
-    options            = tasks
-    disabled           = (or disabled (not project))
-    selected           = task
+    options            = this.tasks
+    disabled           = (or this.disabled (not this.project))
+    selected           = this.task
     placeholder        = 'Select task...'
     searchField        = 'name'
     allowClear         = true
     tagName            = 'div'
     class              = 'task-select'
-    onChange           = (action (mut task))
+    onChange           = (action (mut this.task))
     extra              = (hash
-      selectedTemplate = selectedTemplate
-      optionTemplate   = taskOptionTemplate
+      selectedTemplate = this.selectedTemplate
+      optionTemplate   = this.taskOptionTemplate
     )
   )
   clear                = (action 'clear')

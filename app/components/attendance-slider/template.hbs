@@ -1,18 +1,7 @@
-{{range-slider
-  start     = start
-  step      = 15
-  min       = 0
-  max       = 1440
-  connect   = true
-  animate   = true
-  behaviour = "drag"
-  tooltips  = tooltips
-  on-slide  = (action (mut values))
-  on-change = (action (perform save))
-}}
+<RangeSlider @start={{this.start}} @step={{15}} @min={{0}} @max={{1440}} @connect={{true}} @animate={{true}} @behaviour="drag" @tooltips={{this.tooltips}} @on-slide={{action (mut this.values)}} @on-change={{action (perform this.save)}} />
 
 <div class="slider-labels">
-  {{#each labels as |label|}}
+  {{#each this.labels as |label|}}
     <div style={{label.style}} class="slider-label slider-label--{{label.size}}">
       <div class="slider-label-text">
         {{label.value}}
@@ -22,5 +11,5 @@
 </div>
 
 <div class="slider-title">
-  <span>{{duration}}</span> {{fa-icon data-test-delete-attendance 'trash' click=(perform delete)}}
+  <span>{{this.duration}}</span> {{fa-icon data-test-delete-attendance 'trash' click=(perform this.delete)}}
 </div>

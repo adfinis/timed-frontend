@@ -1,15 +1,15 @@
 {{#basic-dropdown horizontalPosition='auto-right' as |dd|}}
-  {{#dd.trigger tagName='button' class='btn btn-default'}}
+  <dd.trigger @tagName="button" @class="btn btn-default">
     {{fa-icon 'calendar'}}
-  {{/dd.trigger}}
+  </dd.trigger>
 
-  {{#dd.content}}
+  <dd.content>
     {{sy-calendar
-      center         = center
-      selected       = value
+      center         = this.center
+      selected       = this.value
       class          = 'sy-datepicker'
-      onCenterChange = (action (mut center) value='moment')
-      onSelect       = (action on-change value='moment')
+      onCenterChange = (action (mut this.center) value='moment')
+      onSelect       = (action this.on-change value='moment')
     }}
-  {{/dd.content}}
+  </dd.content>
 {{/basic-dropdown}}

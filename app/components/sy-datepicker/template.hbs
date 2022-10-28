@@ -1,26 +1,26 @@
 {{#basic-dropdown horizontalPosition='auto-right' as |dd|}}
-  {{#dd.trigger tabindex=-1}}
+  <dd.trigger @tabindex={{-1}}>
     <input
       type="text"
       class="form-control"
       pattern="\d{1,2}\.\d{1,2}\.\d{2,4}"
-      name={{name}}
-      value={{displayValue}}
-      placeholder={{placeholder}}
+      name={{this.name}}
+      value={{this.displayValue}}
+      placeholder={{this.placeholder}}
       onfocus={{action 'handleFocus' dd}}
       onblur={{action 'handleBlur' dd}}
       onchange={{action 'handleChange'}}
       oninput={{action 'checkValidity'}}
     >
-  {{/dd.trigger}}
+  </dd.trigger>
 
-  {{#dd.content}}
+  <dd.content>
     {{sy-calendar
-      center         = center
-      selected       = value
+      center         = this.center
+      selected       = this.value
       class          = 'sy-datepicker'
-      onCenterChange = (action (mut center) value='moment')
-      onSelect       = (action (queue (action on-change) (action 'checkValidity')) value='moment')
+      onCenterChange = (action (mut this.center) value='moment')
+      onSelect       = (action (queue (action this.on-change) (action 'checkValidity')) value='moment')
     }}
-  {{/dd.content}}
+  </dd.content>
 {{/basic-dropdown}}
