@@ -74,6 +74,9 @@ INSTALLED_APPS = [
     "timed.subscription",
 ]
 
+if ENV == "dev":
+    INSTALLED_APPS.append("django_extensions")
+
 MIDDLEWARE = [
     "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "corsheaders.middleware.CorsMiddleware",
