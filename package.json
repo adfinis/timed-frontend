@@ -127,7 +127,7 @@
     "qunit": "^2.19.3",
     "qunit-dom": "^2.0.0",
     "sass": "^1.55.0",
-    "webpack": "5"
+    "webpack": "5.74.0"
   },
   "engines": {
     "node": " ^14.17.0 || >= 16"
@@ -136,6 +136,7 @@
     "edition": "octane"
   },
   "resolutions": {
-    "@embroider/macros": "^0.50.0"
+    "@embroider/macros": "^1.0.0",
+    "ember-concurrency": ">=2.0.0"
   }
 }
