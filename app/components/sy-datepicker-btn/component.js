@@ -1,10 +1,12 @@
-import classic from "ember-classic-decorator";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
+
+import { action } from "@ember/object";
 import SyDatepickerComponent from "timed/components/sy-datepicker/component";
+import { localCopy } from "tracked-toolbox";
 
 /**
  * The sy datepicker btn component
@@ -13,5 +15,16 @@ import SyDatepickerComponent from "timed/components/sy-datepicker/component";
  * @extends SyDatepickerComponent
  * @public
  */
-@classic
-export default class SyDatepickerBtn extends SyDatepickerComponent {}
+export default class SyDatepickerBtnComponent extends SyDatepickerComponent {
+  @localCopy("args.current") center;
+
+  @action
+  updateCenter({ moment }) {
+    this.center = moment;
+  }
+
+  @action
+  updateSelection({ moment }) {
+    this.args.onChange(moment);
+  }
+}

@@ -14,10 +14,8 @@ export default class SyCalendar extends PowerCalendarComponent {
   );
 
   @action
-  changeCenter(unit, event) {
-    const date = this.publicAPI.center;
-    const newCenter = moment(date)[unit](event.target.value);
-
-    this.onCenterChange({ moment: newCenter });
+  changeCenter(unit, calendar, e) {
+    const newCenter = moment(calendar.center)[unit](e.target.value);
+    calendar.actions.changeCenter(newCenter);
   }
 }

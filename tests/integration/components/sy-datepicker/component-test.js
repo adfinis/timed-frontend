@@ -1,28 +1,28 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { find, triggerEvent, click, render } from "@ember/test-helpers";
 import { clickTrigger } from "ember-basic-dropdown/test-support/helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy datepicker", function(hooks) {
+module("Integration | Component | sy datepicker", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     assert.dom("input").hasValue(moment().format("DD.MM.YYYY"));
   });
 
-  test("toggles the calendar on click of the input", async function(assert) {
+  test("toggles the calendar on click of the input", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     assert.dom(".sy-datepicker").doesNotExist();
@@ -32,11 +32,11 @@ module("Integration | Component | sy datepicker", function(hooks) {
     assert.dom(".sy-datepicker").exists();
   });
 
-  test("validates the input", async function(assert) {
+  test("validates the input", async function (assert) {
     this.set("value", null);
 
     await render(
-      hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     assert.ok(find("input").validity.valid);
@@ -52,11 +52,11 @@ module("Integration | Component | sy datepicker", function(hooks) {
     assert.ok(find("input").validity.valid);
   });
 
-  test("changes value on change (input)", async function(assert) {
+  test("changes value on change (input)", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     find("input").value = "1.2.2018";
@@ -76,11 +76,11 @@ module("Integration | Component | sy datepicker", function(hooks) {
     assert.equal(this.value, null);
   });
 
-  test("changes value on selection", async function(assert) {
+  test("changes value on selection", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     await clickTrigger();
@@ -88,18 +88,16 @@ module("Integration | Component | sy datepicker", function(hooks) {
       ".ember-power-calendar-day-grid .ember-power-calendar-row:last-child .ember-power-calendar-day:last-child"
     );
 
-    const expected = moment()
-      .endOf("month")
-      .endOf("week");
+    const expected = moment().endOf("month").endOf("week");
 
     assert.ok(this.value.isSame(expected, "day"));
   });
 
-  test("toggles the calendar on focus and blur of the input", async function(assert) {
+  test("toggles the calendar on focus and blur of the input", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     assert.dom(".sy-datepicker").doesNotExist();
@@ -110,7 +108,7 @@ module("Integration | Component | sy datepicker", function(hooks) {
 
     // do not hide if focus changed into the picker
     await triggerEvent("input", "blur", {
-      relatedTarget: find(".sy-datepicker")
+      relatedTarget: find(".sy-datepicker"),
     });
     assert.dom(".sy-datepicker").exists();
 
