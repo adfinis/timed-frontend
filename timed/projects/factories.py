@@ -50,6 +50,8 @@ class ProjectFactory(DjangoModelFactory):
     cost_center = SubFactory("timed.projects.factories.CostCenterFactory")
     billing_type = SubFactory("timed.projects.factories.BillingTypeFactory")
     remaining_effort_tracking = False
+    amount_offered = Faker("pydecimal", positive=True, left_digits=4, right_digits=2)
+    amount_invoiced = Faker("pydecimal", positive=True, left_digits=4, right_digits=2)
 
     class Meta:
         """Meta informations for the project factory."""
