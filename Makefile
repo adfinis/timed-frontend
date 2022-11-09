@@ -14,15 +14,15 @@ stop: ## Stop the development server
 
 .PHONY: lint
 lint: ## Lint the project
-	@docker-compose exec backend sh -c "poetry run black --check . && poetry run flake8"
+	@docker-compose exec backend sh -c "black --check . && flake8"
 
 .PHONY: format-code
 format-code: ## Format the backend code
-	@docker-compose exec backend sh -c "poetry run black . && poetry run isort ."
+	@docker-compose exec backend sh -c "black . && isort ."
 
 .PHONY: test
 test: ## Test the project
-	@docker-compose exec backend sh -c "poetry run black . && poetry run isort . && poetry run pytest --no-cov-on-fail --cov
+	@docker-compose exec backend sh -c "black . && isort . && pytest --no-cov-on-fail --cov"
 
 .PHONY: bash
 bash: ## Shell into the backend
@@ -34,15 +34,15 @@ dbshell: ## Start a psql shell
 
 .PHONY: shell_plus
 shell_plus: ## Run shell_plus
-	@docker-compose exec backend poetry run python manage.py shell_plus
+	@docker-compose exec backend ./manage.py shell_plus
 
 .PHONY: makemigrations
 makemigrations: ## Make django migrations
-	@docker-compose exec backend poetry run python manage.py makemigrations
+	@docker-compose exec backend ./manage.py makemigrations
 
 .PHONY: migrate
 migrate: ## Migrate django
-	@docker-compose backend poetry run python manage.py migrate
+	@docker-compose exec backend ./manage.py migrate
 
 .PHONY: debug-backend
 debug-backend: ## Start backend container with service ports for debugging
@@ -50,8 +50,8 @@ debug-backend: ## Start backend container with service ports for debugging
 
 .PHONY: flush
 flush: ## Flush database contents
-	@docker-compose exec backend poetry run python manage.py flush --no-input
+	@docker-compose exec backend ./manage.py flush --no-input
 
 .PHONY: loaddata
 loaddata: flush ## Loads test data into the database
-	@docker-compose exec backend poetry run python manage.py loaddata timed/fixtures/test_data.json
+	@docker-compose exec backend ./manage.py loaddata timed/fixtures/test_data.json

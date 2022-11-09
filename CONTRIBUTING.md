@@ -32,13 +32,13 @@ etc.
 
 ```bash
 # linting
-poetry run flake8
+flake8
 # format code
-poetry run black .
+black .
 # running tests
-poetry run pytest
+pytest
 # create migrations
-poetry run python manage.py makemigrations
+python manage.py makemigrations
 ```
 
 Writing of code can still happen outside the docker container of course.
