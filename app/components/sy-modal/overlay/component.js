@@ -1,3 +1,5 @@
+import classic from "ember-classic-decorator";
+import { classNames, classNameBindings } from "@ember-decorators/component";
 /**
  * @module timed
  * @submodule timed-components
@@ -12,33 +14,20 @@ import Component from "@ember/component";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * CSS classes
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["modal"],
-
-  /**
-   * Classes which are bound to a property
-   *
-   * @property {String[]} classNameBindings
-   * @public
-   */
-  classNameBindings: ["visible:modal--visible"],
-
-  /**
-   * Close the modal if the user clicks on the overlay, not a child of it
-   *
-   * @event click
-   * @param {jQuery.Event} e The jquery click event
-   * @public
-   */
-  click(e) {
-    if (e.target === this.element) {
-      this["on-close"]();
-    }
-  }
-});
+@classic
+@classNames("modal")
+@classNameBindings("visible:modal--visible")
+export default class Overlay extends Component {
+ /**
+  * Close the modal if the user clicks on the overlay, not a child of it
+  *
+  * @event click
+  * @param {jQuery.Event} e The jquery click event
+  * @public
+  */
+ click(e) {
+   if (e.target === this.element) {
+     this["on-close"]();
+   }
+ }
+}

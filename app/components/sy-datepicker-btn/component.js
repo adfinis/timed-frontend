@@ -1,3 +1,4 @@
+import classic from "ember-classic-decorator";
 /**
  * @module timed
  * @submodule timed-components
@@ -12,4 +13,5 @@ import SyDatepickerComponent from "timed/components/sy-datepicker/component";
  * @extends SyDatepickerComponent
  * @public
  */
-export default SyDatepickerComponent.extend({});
+@classic
+export default class SyDatepickerBtn extends SyDatepickerComponent {}

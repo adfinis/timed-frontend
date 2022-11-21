@@ -5,7 +5,7 @@ import { hbs } from 'ember-cli-htmlbars';
  * @public
  */
 import Component from "@ember/component";
-import { computed } from "@ember/object";
+import { computed, get } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { resolve } from "rsvp";
@@ -75,11 +75,11 @@ export default Component.extend({
   },
 
   _setInitial() {
-    const { customer, project, task } = this.getWithDefault("initial", {
+    const { customer, project, task } = get(this, "initial") ?? {
       customer: null,
       project: null,
       task: null
-    });
+    };
 
     if (task && !this.task) {
       this.set("task", task);
@@ -194,7 +194,7 @@ export default Component.extend({
       }
 
       later(this, () => {
-        this.getWithDefault("on-set-customer", () => {})(value);
+        (get(this, "on-set-customer") ?? (() => {}))(value);
       });
 
       return value;
@@ -232,7 +232,7 @@ export default Component.extend({
       }
 
       later(this, () => {
-        this.getWithDefault("on-set-project", () => {})(value);
+        (get(this, "on-set-project") ?? (() => {}))(value);
       });
 
       return value;
@@ -259,7 +259,7 @@ export default Component.extend({
       }
 
       later(this, async () => {
-        this.getWithDefault("on-set-task", () => {})(value);
+        (get(this, "on-set-task") ?? (() => {}))(value);
       });
 
       return value;

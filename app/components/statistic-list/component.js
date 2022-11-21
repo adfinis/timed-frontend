@@ -1,3 +1,4 @@
+import classic from "ember-classic-decorator";
 import { hbs } from 'ember-cli-htmlbars';
 import Component from "@ember/component";
 import { get, computed } from "@ember/object";
@@ -55,30 +56,35 @@ const COLUMN_MAP = {
   ]
 };
 
-export default Component.extend({
-  maxDuration: computed("data.last.value.@each.duration", function() {
+@classic
+export default class StatisticList extends Component {
+  @computed("data.last.value.@each.duration")
+  get maxDuration() {
     return (
       this.get("data.last.value") &&
       moment.duration(
         Math.max(...this.get("data.last.value").mapBy("duration"))
       )
     );
-  }),
+  }
 
-  total: computed("data.last.value", function() {
+  @computed("data.last.value")
+  get total() {
     return parseDjangoDuration(
-      this.getWithDefault("data.last.value.meta.total-time", null)
+      get(this, "data.last.value.meta.total-time") ?? null
     );
-  }),
+  }
 
-  columns: computed("type", function() {
+  @computed("type")
+  get columns() {
     return get(COLUMN_MAP, this.type).map(col => ({
       ...col,
       ordering: col.ordering || col.path.replace(/\./g, "__")
     }));
-  }),
+  }
 
-  missingParamsMessage: computed("missingParams.[]", function() {
+  @computed("missingParams.[]")
+  get missingParamsMessage() {
     if (!this.get("missingParams.length")) {
       return "";
     }
@@ -107,5 +113,5 @@ export default Component.extend({
         : "is a required parameter";
 
     return `${text} ${suffix} for this statistic`;
-  })
-});
+  }
+}

@@ -1,6 +1,8 @@
+import { tracked } from '@glimmer/tracking';
 import { computed } from "@ember/object";
 import Service, { inject as service } from "@ember/service";
 import Ember from "ember";
+import classic from "ember-classic-decorator";
 import moment from "moment";
 
 const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
@@ -15,24 +17,30 @@ const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
  * @extends Ember.Service
  * @public
  */
-export default Service.extend({
-  store: service(),
-  session: service(),
-  notify: service(),
-  amountReports: 0,
+@classic
+export default class UnverifiedReportsService extends Service {
+  @service
+  store;
 
-  hasReports: computed("amountReports", function() {
+  @service
+  session;
+
+  @service
+  notify;
+
+  @tracked amountReports = 0;
+
+  get hasReports() {
     return this.amountReports > 0;
-  }),
+  }
 
-  reportsToDate: computed(function() {
-    return moment()
-      .subtract(1, "month")
-      .endOf("month");
-  }),
+  @computed
+  get reportsToDate() {
+    return moment().subtract(1, "month").endOf("month");
+  }
 
   init() {
-    this._super();
+    super.init();
     this.pollReports();
 
     this.set(
@@ -41,7 +49,7 @@ export default Service.extend({
         ? null
         : setInterval(this.pollReports.bind(this), INTERVAL_DELAY)
     );
-  },
+  }
 
   async pollReports() {
     try {
@@ -50,16 +58,16 @@ export default Service.extend({
         reviewer: this.session.data.user.id,
         editable: 1,
         verified: 0,
-        page: { number: 1, size: 1 }
+        page: { number: 1, size: 1 },
       });
 
       this.set("amountReports", reports.meta.pagination.count);
     } catch (e) {
       this.notify.error("Error while polling reports");
     }
-  },
+  }
 
   willDestroy() {
     clearInterval(this.intervalId);
   }
-});
+}

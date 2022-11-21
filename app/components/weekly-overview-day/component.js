@@ -3,9 +3,15 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
+import {
+  attributeBindings,
+  classNameBindings,
+} from "@ember-decorators/component";
 import { computed } from "@ember/object";
+import Component from "@ember/component";
 import { htmlSafe } from "@ember/string";
+import { tracked } from "@glimmer/tracking";
+import classic from "ember-classic-decorator";
 
 /**
  * Component to display a single day in the weekly overview
@@ -16,30 +22,17 @@ import { htmlSafe } from "@ember/string";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * Attribute bindings
-   *
-   * @property {String[]} attributeBindings
-   * @public
-   */
-  attributeBindings: ["style", "title"],
-
-  /**
-   * Class name bindings
-   *
-   * @property {String[]} classNameBindings
-   * @public
-   */
-  classNameBindings: ["active", "workday::weekend", "absence", "holiday"],
-
+@classic
+@attributeBindings("style", "title")
+@classNameBindings("active", "workday::weekend", "absence", "holiday")
+export default class WeeklyOverviewDay extends Component {
   /**
    * Whether there is an absence on this day
    *
    * @property {Boolean} absence
    * @public
    */
-  absence: false,
+  absence = false;
 
   /**
    * Whether there is an holiday on this day
@@ -47,7 +40,7 @@ export default Component.extend({
    * @property {Boolean} holiday
    * @public
    */
-  holiday: false,
+  holiday = false;
 
   /**
    * Whether it is the currently selected day
@@ -55,7 +48,7 @@ export default Component.extend({
    * @property {Boolean} active
    * @public
    */
-  active: false,
+  active = false;
 
   /**
    * Maximum worktime in hours
@@ -63,7 +56,7 @@ export default Component.extend({
    * @property {Number} max
    * @public
    */
-  max: 20,
+  @tracked max = 20;
 
   /**
    * A prefix to the title
@@ -71,7 +64,7 @@ export default Component.extend({
    * @property {String} prefix
    * @public
    */
-  prefix: "",
+  @tracked prefix = "";
 
   /**
    * The element title
@@ -81,8 +74,9 @@ export default Component.extend({
    * @property {String} title
    * @public
    */
-  title: computed("worktime", "prefix", function() {
-    const pre = this.get("prefix.length") ? `${this.prefix}, ` : "";
+  @computed("worktime", "prefix")
+  get title() {
+    const pre = this.prefix?.length ? `${this.prefix}, ` : "";
 
     let title = `${this.worktime.hours()}h`;
 
@@ -91,7 +85,7 @@ export default Component.extend({
     }
 
     return `${pre}${title}`;
-  }),
+  }
 
   /**
    * Whether the day is a workday
@@ -99,7 +93,7 @@ export default Component.extend({
    * @property {Boolean} workday
    * @public
    */
-  workday: true,
+  workday = true;
 
   /**
    * The style of the element
@@ -109,11 +103,12 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed("max", "worktime", function() {
+  @computed("max", "worktime")
+  get style() {
     const height = Math.min((this.worktime.asHours() / this.max) * 100, 100);
 
     return htmlSafe(`height: ${height}%;`);
-  }),
+  }
 
   /**
    * Click event - fire the on-click action
@@ -127,4 +122,4 @@ export default Component.extend({
       this["on-click"](this.day);
     }
   }
-});
+}

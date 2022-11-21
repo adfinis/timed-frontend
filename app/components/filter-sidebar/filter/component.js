@@ -1,6 +1,8 @@
+import classic from "ember-classic-decorator";
 import Component from "@ember/component";
 
-const FilterSidebarFilterComponent = Component.extend({});
+@classic
+class FilterSidebarFilterComponent extends Component {}
 
 FilterSidebarFilterComponent.reopenClass({
   positionalParams: ["type"]

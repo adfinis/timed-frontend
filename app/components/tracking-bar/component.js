@@ -1,10 +1,12 @@
+import classic from "ember-classic-decorator";
+import { classNames } from "@ember-decorators/component";
+import { inject as service } from "@ember/service";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
 import Component from "@ember/component";
-import { inject as service } from "@ember/service";
 
 /**
  * The tracking bar component
@@ -13,8 +15,9 @@ import { inject as service } from "@ember/service";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  tracking: service("tracking"),
-
-  classNames: ["tracking-bar"]
-});
+@classic
+@classNames("tracking-bar")
+export default class TrackingBar extends Component {
+ @service("tracking")
+ tracking;
+}

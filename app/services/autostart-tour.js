@@ -1,5 +1,5 @@
-import { computed } from "@ember/object";
 import Service from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 
 /**
  * Autostart tour service
@@ -10,16 +10,12 @@ import Service from "@ember/service";
  * @extends Ember.Service
  * @public
  */
-export default Service.extend({
-  init(...args) {
-    this._super(...args);
+export default class AutostartTourService extends Service {
+  constructor(...args) {
+    super(...args);
 
-    this.set("tours", [
-      "index.activities",
-      "index.attendances",
-      "index.reports"
-    ]);
-  },
+    this.tours = ["index.activities", "index.attendances", "index.reports"];
+  }
 
   /**
    * The item key to use in the localstorage
@@ -27,7 +23,7 @@ export default Service.extend({
    * @property {String} doneKey
    * @public
    */
-  doneKey: "timed-tour",
+  @tracked doneKey = "timed-tour";
 
   /**
    * All done tours
@@ -35,16 +31,13 @@ export default Service.extend({
    * @property {String[]} done
    * @public
    */
-  done: computed({
-    get() {
-      return Array.from(JSON.parse(localStorage.getItem(this.doneKey)) || []);
-    },
-    set(key, value = []) {
-      localStorage.setItem(this.doneKey, JSON.stringify(value));
+  get done() {
+    return Array.from(JSON.parse(localStorage.getItem(this.doneKey)) || []);
+  }
 
-      return value;
-    }
-  }),
+  set done(value = []) {
+    localStorage.setItem(this.doneKey, JSON.stringify(value));
+  }
 
   /**
    * Whether all tours are done
@@ -57,6 +50,6 @@ export default Service.extend({
     const tours = this.tours;
     const done = this.done;
 
-    return tours.every(tour => done.includes(tour));
+    return tours.every((tour) => done.includes(tour));
   }
-});
+}

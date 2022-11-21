@@ -1,8 +1,5 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
+import { tracked } from '@glimmer/tracking';
+import classic from "ember-classic-decorator";
 import { computed } from "@ember/object";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
@@ -20,18 +17,16 @@ const { abs } = Math;
  * @extends Ember.Component
  * @public
  */
-export default SyTimepickerComponent.extend({
-  name: "duration",
-
-  min: MIN_SAFE_INTEGER,
-
-  max: MAX_SAFE_INTEGER,
-
-  maxlength: null,
+@classic
+export default class SyDurationpicker extends SyTimepickerComponent {
+  name = "duration";
+  @tracked min = MIN_SAFE_INTEGER;
+  max = MAX_SAFE_INTEGER;
+  maxlength = null;
 
   sanitize(value) {
     return value.replace(/[^\d:-]/, "");
-  },
+  }
 
   /**
    * The precision of the time
@@ -41,7 +36,7 @@ export default SyTimepickerComponent.extend({
    * @property {Number} precision
    * @public
    */
-  precision: 15,
+  @tracked precision = 15;
 
   /**
    * The regex for the input
@@ -49,14 +44,14 @@ export default SyTimepickerComponent.extend({
    * @property {String} pattern
    * @public
    */
-  pattern: computed("min", "precision", function() {
+  get pattern() {
     const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
     return `${
       this.min < 0 ? "-?" : ""
     }\\d+:(${minutes.map(m => padStart(m, 2)).join("|")})`;
-  }),
+  }
 
   change({ target: { validity, value } }) {
     if (validity.valid) {
@@ -68,7 +63,7 @@ export default SyTimepickerComponent.extend({
 
       this._change([h, m].some(isNaN) ? null : this._set(h, m));
     }
-  },
+  }
 
   /**
    * The display representation of the value
@@ -78,9 +73,10 @@ export default SyTimepickerComponent.extend({
    * @property {String} displayValue
    * @public
    */
-  displayValue: computed("value", function() {
+  @computed("value")
+  get displayValue() {
     return this.value ? formatDuration(this.value, false) : "";
-  }),
+  }
 
   /**
    * Set the current value
@@ -93,7 +89,7 @@ export default SyTimepickerComponent.extend({
    */
   _set(h, m) {
     return moment.duration({ h, m });
-  },
+  }
 
   /**
    * Add hours and minutes to the current value
@@ -107,4 +103,4 @@ export default SyTimepickerComponent.extend({
   _add(h, m) {
     return moment.duration(this.value).add({ h, m });
   }
-});
+}

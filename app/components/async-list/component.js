@@ -1,8 +1,10 @@
+import classic from "ember-classic-decorator";
+import { tagName } from "@ember-decorators/component";
 import Component from "@ember/component";
 
-const AsyncListComponent = Component.extend({
-  tagName: ""
-});
+@classic
+@tagName("")
+class AsyncListComponent extends Component {}
 
 AsyncListComponent.reopenClass({
   positionalParams: ["data"]

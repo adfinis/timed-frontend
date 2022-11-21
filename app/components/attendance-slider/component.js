@@ -1,10 +1,11 @@
+import classic from "ember-classic-decorator";
+import { computed } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
 import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
 import { task } from "ember-concurrency";
 import { padStartTpl } from "ember-pad/utils/pad";
@@ -43,14 +44,15 @@ const Formatter = {
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
+@classic
+export default class AttendanceSlider extends Component {
   /**
    * The attendance
    *
    * @property {Attendance} attendance
    * @public
    */
-  attendance: null,
+  attendance = null;
 
   /**
    * Initialize the component
@@ -59,11 +61,11 @@ export default Component.extend({
    * @public
    */
   init(...args) {
-    this._super(...args);
+    super.init(...args);
 
     this.set("tooltips", [Formatter, Formatter]);
     this.set("values", this.start);
-  },
+  }
 
   /**
    * The start and end time in minutes
@@ -71,7 +73,8 @@ export default Component.extend({
    * @property {Number[]} start
    * @public
    */
-  start: computed("attendance.{from,to}", function() {
+  @computed("attendance.{from,to}")
+  get start() {
     return [
       this.get("attendance.from").hour() * 60 +
         this.get("attendance.from").minute(),
@@ -80,7 +83,7 @@ export default Component.extend({
       this.get("attendance.to").hour() * 60 +
         this.get("attendance.to").minute() || 24 * 60
     ];
-  }),
+  }
 
   /**
    * The duration of the attendance as a string
@@ -88,12 +91,13 @@ export default Component.extend({
    * @property {String} duration
    * @public
    */
-  duration: computed("values", function() {
+  @computed("values")
+  get duration() {
     const from = moment({ hour: 0 }).minute(this.values[0]);
     const to = moment({ hour: 0 }).minute(this.values[1]);
 
     return formatDuration(moment.duration(to.diff(from)), false);
-  }),
+  }
 
   /**
    * The labels for the slider
@@ -101,7 +105,8 @@ export default Component.extend({
    * @property {String[]} labels
    * @public
    */
-  labels: computed(function() {
+  @computed
+  get labels() {
     const labels = [];
 
     for (let h = 0; h <= 24; h++) {
@@ -118,7 +123,7 @@ export default Component.extend({
     }
 
     return labels;
-  }),
+  }
 
   /**
    * Save the attendance
@@ -127,7 +132,7 @@ export default Component.extend({
    * @param {Number[]} values The time in minutes
    * @public
    */
-  save: task(function*([fromMin, toMin]) {
+  @(task(function*([fromMin, toMin]) {
     const attendance = this.attendance;
 
     attendance.set(
@@ -144,7 +149,8 @@ export default Component.extend({
     );
 
     yield this["on-save"](attendance);
-  }).drop(),
+  }).drop())
+  save;
 
   /**
    * Delete the attendance
@@ -152,7 +158,8 @@ export default Component.extend({
    * @method delete
    * @public
    */
-  delete: task(function*() {
+  @(task(function*() {
     yield this["on-delete"](this.attendance);
-  }).drop()
-});
+  }).drop())
+  delete;
+}

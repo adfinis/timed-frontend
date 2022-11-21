@@ -3,9 +3,11 @@
  * @submodule timed-components
  * @public
  */
+import { classNames } from "@ember-decorators/component";
 import Component from "@ember/component";
 import { computed } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
+import classic from "ember-classic-decorator";
 
 /**
  * Component for an adcssy styled checkbox
@@ -14,14 +16,17 @@ import { scheduleOnce } from "@ember/runloop";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  checkboxElementId: computed("elementId", function() {
+@classic
+@classNames("checkbox")
+export default class SyCheckbox extends Component {
+  @computed("elementId")
+  get checkboxElementId() {
     return `${this.elementId}-checkbox`;
-  }),
+  }
 
   didReceiveAttrs() {
     scheduleOnce("afterRender", this, this.deferredWork);
-  },
+  }
 
   deferredWork() {
     if (this.checked === null) {
@@ -29,15 +34,7 @@ export default Component.extend({
 
       cb.indeterminate = true;
     }
-  },
-
-  /**
-   * The CSS class names
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["checkbox"],
+  }
 
   /**
    * Action to call if the checked state has changed
@@ -45,7 +42,7 @@ export default Component.extend({
    * @method on-change
    * @public
    */
-  "on-change"() {},
+  "on-change"() {}
 
   /**
    * The label of the checkbox
@@ -53,7 +50,7 @@ export default Component.extend({
    * @property {String} label
    * @public
    */
-  label: "",
+  label = "";
 
   /**
    * Whether the checkbox is checked
@@ -61,7 +58,7 @@ export default Component.extend({
    * @property {Boolean} checked
    * @public
    */
-  checked: false,
+  checked = false;
 
   /**
    * Whether the checkbox is disabled
@@ -69,5 +66,5 @@ export default Component.extend({
    * @property {Boolean} disabled
    * @public
    */
-  disabled: false
-});
+  disabled = false;
+}
