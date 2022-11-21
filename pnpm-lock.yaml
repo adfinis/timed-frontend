@@ -12,9 +12,11 @@ specifiers:
   '@ember/optional-features': 2.0.0
   '@ember/render-modifiers': 2.0.4
   '@ember/test-helpers': 2.8.1
+  '@embroider/macros': ^1.9.0
   '@fontsource/source-sans-pro': 4.5.11
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
+  '@glint/template': '>= 0.8.3'
   '@html-next/vertical-collection': 4.0.0
   babel-eslint: 10.1.0
   broccoli-asset-rev: 3.0.0
@@ -64,6 +66,7 @@ specifiers:
   ember-power-select: 6.0.1
   ember-qunit: 6.0.0
   ember-resolver: 8.0.3
+  ember-resources: 5.6.0
   ember-responsive: 5.0.0
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
@@ -107,9 +110,11 @@ devDependencies:
   '@ember/optional-features': 2.0.0
   '@ember/render-modifiers': 2.0.4_ember-source@3.28.0
   '@ember/test-helpers': 2.8.1_ember-source@3.28.0
+  '@embroider/macros': 1.9.0
   '@fontsource/source-sans-pro': 4.5.11
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
+  '@glint/template': 0.9.7_@glimmer+component@1.1.2
   '@html-next/vertical-collection': 4.0.0
   babel-eslint: 10.1.0_eslint@7.32.0
   broccoli-asset-rev: 3.0.0
@@ -159,6 +164,7 @@ devDependencies:
   ember-power-select: 6.0.1_ember-source@3.28.0
   ember-qunit: 6.0.0_qlun7vkcguccocg2zpe7gp5kwa
   ember-resolver: 8.0.3
+  ember-resources: 5.6.0_dbrt6eyp6y45rcwnqrscmaa2xy
   ember-responsive: 5.0.0
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
@@ -1816,11 +1822,11 @@ packages:
       regenerator-runtime: 0.13.9
     dev: true
 
-  /@babel/runtime/7.16.7:
-    resolution: {integrity: sha512-9E9FJowqAsytyOY6LG+1KuueckRL+aQW+mKvXRXnuFGyRAyepJPmEo9vgMfXUA6O9u3IeEdv9MAkppFcaQwogQ==}
+  /@babel/runtime/7.20.6:
+    resolution: {integrity: sha512-Q+8MqP7TiHMWzSfwiJwXCjyf4GYA4Dgw3emg/7xmwsdLJOZUp+nMqcOwOzzYheuM1rhDu8FSj2l0aoMygEuXuA==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      regenerator-runtime: 0.13.9
+      regenerator-runtime: 0.13.11
     dev: true
 
   /@babel/template/7.18.10:
@@ -2669,6 +2675,14 @@ packages:
       babel-plugin-debug-macros: 0.3.4
     transitivePeerDependencies:
       - '@babel/core'
+    dev: true
+
+  /@glint/template/0.9.7_@glimmer+component@1.1.2:
+    resolution: {integrity: sha512-MCp8GxQDIbH8ZzfNxHhVqCSKlydBgQfBEwJLDpN81lgFRCldSDPueIbk8sz3EhpGiZJVdNQbpGeYIDsUXe1ocg==}
+    peerDependencies:
+      '@glimmer/component': ^1.1.2
+    dependencies:
+      '@glimmer/component': 1.1.2
     dev: true
 
   /@handlebars/parser/2.0.0:
@@ -9045,6 +9059,35 @@ packages:
       - supports-color
     dev: true
 
+  /ember-resources/5.6.0_dbrt6eyp6y45rcwnqrscmaa2xy:
+    resolution: {integrity: sha512-yTI3u3JV7/WxdbX/+9lB3DoeHLiHg993F1vMw/3bVtr7i9f8f2TQUoeIxp+jzCk2Ozjm4zb+x+/DuSIx1FzyJA==}
+    peerDependencies:
+      '@ember/test-waiters': ^3.0.0
+      '@glimmer/component': ^1.1.2
+      '@glimmer/tracking': ^1.1.2
+      '@glint/template': '>= 0.8.3'
+      ember-concurrency: ^2.0.0
+      ember-source: '>= 3.28.0'
+    peerDependenciesMeta:
+      '@ember/test-waiters':
+        optional: true
+      '@glimmer/component':
+        optional: true
+      ember-concurrency:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.20.6
+      '@embroider/addon-shim': 1.8.3
+      '@embroider/macros': 1.9.0
+      '@glimmer/component': 1.1.2
+      '@glimmer/tracking': 1.1.2
+      '@glint/template': 0.9.7_@glimmer+component@1.1.2
+      ember-concurrency: 2.2.1
+      ember-source: 3.28.0
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /ember-responsive/5.0.0:
     resolution: {integrity: sha512-JDwNIKHNcHrILGkpLqLqZ1idO7hxxt6f4M2wmiktOuzhBm2/JxUjkK+yec+tzIzXaD7rrl2/S7STa/Uj5s6TEw==}
     engines: {node: 10.* || >= 12}
@@ -15153,6 +15196,10 @@ packages:
     resolution: {integrity: sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==}
     dev: true
 
+  /regenerator-runtime/0.13.11:
+    resolution: {integrity: sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==}
+    dev: true
+
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
     dev: true
@@ -15168,7 +15215,7 @@ packages:
   /regenerator-transform/0.15.0:
     resolution: {integrity: sha512-LsrGtPmbYg19bcPHwdtmXwbW+TqNvtY4riE3P83foeHRroMbH6/2ddFBfab3t7kbzc7v7p4wbkIecHImqt0QNg==}
     dependencies:
-      '@babel/runtime': 7.16.7
+      '@babel/runtime': 7.20.6
     dev: true
 
   /regex-not/1.0.2:
