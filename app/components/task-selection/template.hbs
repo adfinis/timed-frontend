@@ -8,7 +8,7 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'customer-select'
-    onchange           = (action (mut customer))
+    onChange           = (action (mut customer))
     extra              = (hash
       lazy             = true
       selectedTemplate = selectedTemplate
@@ -24,7 +24,7 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'project-select'
-    onchange           = (action (mut project))
+    onChange           = (action (mut project))
     extra              = (hash
       selectedTemplate = selectedTemplate
       optionTemplate   = projectOptionTemplate
@@ -39,7 +39,7 @@
     allowClear         = true
     tagName            = 'div'
     class              = 'task-select'
-    onchange           = (action (mut task))
+    onChange           = (action (mut task))
     extra              = (hash
       selectedTemplate = selectedTemplate
       optionTemplate   = taskOptionTemplate

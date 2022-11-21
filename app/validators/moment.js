@@ -17,7 +17,7 @@ export default function validateMoment(options = { gt: null, lt: null }) {
     if (!newValue && get(content, "active")) {
       newValue = moment();
     }
-    let valid = !!newValue && newValue.isValid();
+    let valid = !!newValue && newValue._isValid;
 
     if (!valid) {
       return valid;

@@ -5,35 +5,35 @@
     </div>
   {{else}}
     <div class="header">
-      {{#power-select
+      <PowerSelect 
         data-test-customer-selection
-        tagName="div"
+        @tagName="div"
         class="header-item"
-        options=customers
-        placeholder="Select customer..."
-        searchField="name"
-        onchange=(action "handleCustomerChange")
-        selected=selectedCustomer
-        allowClear=true
-      as |customer|
-      }}
+        @options={{this.customers}}
+        @placeholder="Select customer..."
+        @searchField="name"
+        @onChange={{this.handleCustomerChange}}
+        @selected={{this.selectedCustomer}}
+        @allowClear={{true}} 
+        as |customer|
+      >
         <div>{{customer.name}}</div>
-      {{/power-select}}
-      {{#power-select
-        data-test-project-selection
-        tagName="div"
-        class="header-item"
-        options=filteredProjects
-        placeholder="Select project..."
-        searchField="name"
-        onchange=(action "handleProjectChange")
-        selected=selectedProject
-        allowClear=true
-        disabled=(not selectedCustomer)
-      as |project|
-      }}
+      </PowerSelect>
+      <PowerSelect
+        data-test-project-selection 
+        @tagName="div"
+        class="header-item" 
+        @options={{this.filteredProjects}}
+        placeholder="Select project..." 
+        @searchField="name"
+        @onChange={{this.handleProjectChange}}
+        @selected={{this.selectedProject}}
+        @allowClear={{true}}
+        @disabled={{not this.selectedCustomer}}
+        as |project|
+      >
         <div>{{project.name}}</div>
-      {{/power-select}}
+      </PowerSelect>
     </div>
     {{#if selectedProject}}
       <h3>

@@ -1,7 +1,6 @@
 import EmberObject from "@ember/object";
 import { find, render } from "@ember/test-helpers";
 import { setupRenderingTest } from "ember-qunit";
-import wait from "ember-test-helpers/wait";
 import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 import { startMirage } from "timed/initializers/ember-cli-mirage";
@@ -35,13 +34,9 @@ module("Integration | Component | user selection", function(hooks) {
       {{/user-selection}}
     `);
 
-    return wait().then(() => {
-      assert.strictEqual(
-        find(
-          ".user-select .ember-power-select-selected-item"
-        ).textContent.trim(),
-        USER.longName
-      );
-    });
+    assert.strictEqual(
+      find(".user-select .ember-power-select-selected-item").textContent.trim(),
+      USER.longName
+    );
   });
 });
