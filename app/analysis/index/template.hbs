@@ -1,5 +1,5 @@
 {{#if (or (media 'isMo') (media 'isXs') (media 'isSm'))}}
-  {{no-mobile-message}}
+  <NoMobileMessage/>
 {{else}}
   <PagePermission>
     <h1>Analysis</h1>
@@ -11,9 +11,9 @@
       @on-set-project={{action 'setModelFilter' 'project'}}
       @on-set-task={{action 'setModelFilter' 'task'}}
       @initial={{hash
-        customer      = selectedCustomer
-        project       = selectedProject
-        task          = selectedTask
+        customer      = this.selectedCustomer
+        project       = this.selectedProject
+        task          = this.selectedTask
       }}
       as |t|
     >
@@ -80,7 +80,7 @@
               @labelPath='name'
               @prompt='All billing types'
               @options={{this.billingTypes}}
-              @on-change={{fn (mut billingType)}}
+              @on-change={{fn (mut this.billingType)}}
             />
           </fs.label>
           <fs.label>
@@ -93,7 +93,7 @@
               @labelPath='name'
               @prompt='All cost centers'
               @options={{this.costCenters}}
-              @on-change={{fn (mut costCenter)}}
+              @on-change={{fn (mut this.costCenter)}}
             />
           </fs.label>
         </fs.group>
@@ -104,7 +104,7 @@
               data-test-filter-from-date
               @type='date'
               @selected={{this.fromDate}}
-              @on-change={{fn (mut fromDate)}}
+              @on-change={{fn (mut this.fromDate)}}
             />
           </fs.label>
           <fs.label>
@@ -113,12 +113,12 @@
               data-test-filter-to-date
               @type='date'
               @selected={{this.toDate}}
-              @on-change={{fn (mut toDate)}}
+              @on-change={{fn (mut this.toDate)}}
             />
           </fs.label>
           <DateButtons
-            @onUpdateFromDate={{fn (mut fromDate)}}
-            @onUpdateToDate={{fn (mut toDate)}}
+            @onUpdateFromDate={{fn (mut this.fromDate)}}
+            @onUpdateToDate={{fn (mut this.toDate)}}
           />
         </fs.group>
         <fs.group @label='State'>
@@ -135,7 +135,7 @@
                 (hash label='Needed' value='1')
                 (hash label='Not needed' value='0')
               }}
-              @on-change={{fn (mut review)}}
+              @on-change={{fn (mut this.review)}}
             />
           </fs.label>
           <fs.label>
@@ -151,7 +151,7 @@
                 (hash label='Billable' value='0')
                 (hash label='Not billable' value='1')
               }}
-              @on-change={{fn (mut notBillable)}}
+              @on-change={{fn (mut this.notBillable)}}
             />
           </fs.label>
           <fs.label>
@@ -167,7 +167,7 @@
                 (hash label='Verified' value='1')
                 (hash label='Not verified' value='0')
               }}
-              @on-change={{fn (mut verified)}}
+              @on-change={{fn (mut this.verified)}}
             />
           </fs.label>
           <fs.label>
@@ -183,7 +183,7 @@
                 (hash label='Billed' value='1')
                 (hash label='Not Billed' value='0')
               }}
-              @on-change={{fn (mut billed)}}
+              @on-change={{fn (mut this.billed)}}
             />
           </fs.label>
           <fs.label>
@@ -198,7 +198,7 @@
                 (hash label='All' value='')
                 (hash label='Editable' value='1')
               }}
-              @on-change={{fn (mut editable)}}
+              @on-change={{fn (mut this.editable)}}
             />
           </fs.label>
         </fs.group>
@@ -219,7 +219,7 @@
                   data-test-edit-selected
                   type="button"
                   class="btn btn-success"
-                  {{action 'edit' this.selectedReportIds}}
+                  {{on "click" (fn this.edit this.selectedReportIds)}}
                 >
                   Edit {{this.selectedReportIds.length}} selected report{{unless (eq this.selectedReportIds.length 1) 's'}}
                 </button>
@@ -230,7 +230,7 @@
                 class="btn"
                 title={{unless this.editable 'Please enable the "editable" filter to modify all entries at once.'}}
                 disabled={{unless this.editable 'true'}}
-                {{action 'edit'}}
+                {{on "click" this.edit}}
               >
                 Edit all
               </button>
@@ -251,21 +251,21 @@
               </colgroup>
               <thead>
                 <tr>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='user__username'>User</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='date'>Date</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='duration'>Duration</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='task__project__customer__name'>Customer</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='task__project__name'>Project</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='task__name'>Task</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='comment'>Comment</SortHeader>
-                  <SortHeader @update={{fn (mut ordering)}} @current={{this.ordering}} @by='verified_by__username'>Verified by</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='user__username'>User</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='date'>Date</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='duration'>Duration</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='task__project__customer__name'>Customer</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='task__project__name'>Project</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='task__name'>Task</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='comment'>Comment</SortHeader>
+                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='verified_by__username'>Verified by</SortHeader>
                   <th>Review</th>
                   <th>Not billable</th>
                   <th>Billed</th>
                 </tr>
               </thead>
             </table>
-              {{#ember-scrollable class='analysis-scrollable-container'}}
+              <EmberScrollable @class="analysis-scrollable-container">
                 <table class="table table--striped table--analysis">
                   <colgroup>
                     <col>
@@ -302,7 +302,7 @@
                           {{#in-viewport
                             rootSelector='analysis-scrollable-container'
                             on-enter-viewport=(perform this.loadNext)
-                            on-exit-viewport=(action (mut _shouldLoadMore) false)
+                            on-exit-viewport=(action (mut this._shouldLoadMore) false)
                           }}
                             Loading<span class="loading-dots"><i>.</i><i>.</i><i>.</i></span>
                           {{/in-viewport}}
@@ -311,7 +311,7 @@
                     {{/if}}
                   </tbody>
                 </table>
-              {{/ember-scrollable}}
+              </EmberScrollable>
             <table class="table table--striped table--analysis">
               <colgroup>
                 <col>
@@ -328,14 +328,14 @@
               <tfoot>
                 <tr>
                   <td colspan="2"><strong>Total:</strong></td>
-                  <td colspan="2"><strong class="total">{{format-duration totalTime false}}</strong></td>
+                  <td colspan="2"><strong class="total">{{format-duration this.totalTime false}}</strong></td>
                   <td colspan="6" class="text-right"><em>Displaying {{this.reports.length}} of {{this.totalItems}} reports</em></td>
                 </tr>
               </tfoot>
             </table>
             <div class="export-buttons">
               {{#each this.exportLinks as |link|}}
-                <button {{action (perform this.download) notify allQueryParams jwt link}}
+                <button {{on "click" (fn (perform this.download) this.notify this.allQueryParams this.jwt link)}}
                   type="button"
                   data-download-count="{{this.download.performCount}}"
                   class="btn btn-primary {{if (and (eq this.download.last.url link.url) (eq this.download.last.params link.params) this.download.isRunning) 'loading'}}"

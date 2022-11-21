@@ -1,15 +1,15 @@
 <div class="grid grid--12of12 grid-md--6of12">
   <div class="grid-cell grid-cell-md--12of12 year-select form-inline">
-    {{#if allowTransfer}}
-      <button type="button" class="btn" {{action (perform transfer) on='click'}}>Transfer</button>
+    {{#if this.allowTransfer}}
+      <button type="button" class="btn" {{action (perform this.transfer) on='click'}}>Transfer</button>
     {{/if}}
 
-    {{#with years.lastSuccessful.value as |years|}}
-      <select class="form-control" onchange={{action (mut year) value='target.value'}}>
+    {{#with this.years.lastSuccessful.value as |years|}}
+      <select class="form-control" onchange={{action (mut this.year) value='target.value'}}>
         {{#each years as |y|}}
-          <option value={{y}} selected={{eq y year}}>{{y}}</option>
+          <option value={{y}} selected={{eq y this.year}}>{{y}}</option>
         {{/each}}
-        <option value="" selected={{not year}}>All</option>
+        <option value="" selected={{not this.year}}>All</option>
       </select>
     {{/with}}
   </div>
@@ -17,12 +17,12 @@
   <div class="grid-cell">
     <h4>Absence credits</h4>
     <div class="card" data-test-absence-credits>
-      {{#if absenceCredits.isRunning}}
+      {{#if this.absenceCredits.isRunning}}
         <div class="card-block empty">
-          {{loading-icon}}
+          <LoadingIcon />
         </div>
       {{else}}
-        {{#with absenceCredits.lastSuccessful.value as |absenceCredit|}}
+        {{#with this.absenceCredits.lastSuccessful.value as |absenceCredit|}}
           <div class="card-block">
             <div class="grid">
               <div class="grid-cell">
@@ -37,7 +37,7 @@
                   </thead>
                   <tbody>
                     {{#each absenceCredit as |absenceCredit|}}
-                      <tr class="{{if (can 'edit absence-credit') 'pointer'}}" {{action (perform editAbsenceCredit) absenceCredit.id on='click'}}>
+                      <tr class="{{if (can 'edit absence-credit') 'pointer'}}" {{action (perform this.editAbsenceCredit) absenceCredit.id on='click'}}>
                         <td>{{moment-format absenceCredit.date 'DD.MM.YYYY'}}</td>
                         <td>{{absenceCredit.days}}</td>
                         <td>{{absenceCredit.absenceType.name}}</td>
@@ -50,7 +50,7 @@
             </div>
             {{#if (can 'create absence-credit')}}
               <div class="text-right">
-                {{#link-to 'users.edit.credits.absence-credits.new' class='card-link'}}Add new credit{{/link-to}}
+                <LinkTo @route="users.edit.credits.absence-credits.new" class="card-link">Add new credit</LinkTo>
               </div>
             {{/if}}
           </div>
@@ -63,7 +63,7 @@
                 {{#if (can 'create absence-credit')}}
                   Add a new credit by clicking the button below!<br>
                   <br>
-                  {{#link-to 'users.edit.credits.absence-credits.new' tagName='button' class='btn btn-success'}}Add new credit{{/link-to}}
+                  <LinkTo @route="users.edit.credits.absence-credits.new" @tagName="button" class="btn btn-success">Add new credit</LinkTo>
                 {{/if}}
               </p>
             </div>
@@ -78,12 +78,12 @@
       Overtime credits
     </h4>
     <div class="card" data-test-overtime-credits>
-      {{#if overtimeCredits.isRunning}}
+      {{#if this.overtimeCredits.isRunning}}
         <div class="card-block empty">
-          {{loading-icon}}
+          <LoadingIcon />
         </div>
       {{else}}
-        {{#with overtimeCredits.lastSuccessful.value as |overtimeCredits|}}
+        {{#with this.overtimeCredits.lastSuccessful.value as |overtimeCredits|}}
           <div class="card-block">
             <div class="grid">
               <div class="grid-cell">
@@ -97,7 +97,7 @@
                   </thead>
                   <tbody>
                     {{#each overtimeCredits as |overtimeCredit|}}
-                      <tr class="{{if (can 'edit overtime-credit') 'pointer'}}" {{action (perform editOvertimeCredit) overtimeCredit.id on='click'}}>
+                      <tr class="{{if (can 'edit overtime-credit') 'pointer'}}" {{action (perform this.editOvertimeCredit) overtimeCredit.id on='click'}}>
                         <td>{{moment-format overtimeCredit.date 'DD.MM.YYYY'}}</td>
                         <td>{{humanize-duration overtimeCredit.duration false}}</td>
                         <td>{{overtimeCredit.comment}}</td>
@@ -109,7 +109,7 @@
             </div>
             {{#if (can 'create overtime-credit')}}
               <div class="text-right">
-                {{#link-to 'users.edit.credits.overtime-credits.new' class='card-link'}}Add new credit{{/link-to}}
+                <LinkTo @route="users.edit.credits.overtime-credits.new" class="card-link">Add new credit</LinkTo>
               </div>
             {{/if}}
           </div>
@@ -122,7 +122,7 @@
                 {{#if (can 'create overtime-credit')}}
                   Add a new credit by clicking the button below!<br>
                   <br>
-                  {{#link-to 'users.edit.credits.overtime-credits.new' tagName='button' class='btn btn-success'}}Add new credit{{/link-to}}
+                  <LinkTo @route="users.edit.credits.overtime-credits.new" @tagName="button" class="btn btn-success">Add new credit</LinkTo>
                 {{/if}}
               </p>
             </div>

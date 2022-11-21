@@ -1,3 +1,3 @@
-{{#each choices as |choice index|}}
+{{#each this.choices as |choice index|}}
   <button class="btn date-button" {{action "selectDate" choice}} data-test-preset-date={{index}}>{{choice}}</button>
 {{/each}}

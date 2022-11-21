@@ -7,28 +7,28 @@
           <tbody>
             <tr>
               <td>Email:</td>
-              <td>{{model.email}}</td>
+              <td>{{this.model.email}}</td>
             </tr>
             <tr>
               <td>Username:</td>
-              <td>{{model.username}}</td>
+              <td>{{this.model.username}}</td>
             </tr>
-            {{#if model.activeEmployment}}
+            {{#if this.model.activeEmployment}}
               <tr>
                 <td>Location:</td>
-                <td>{{model.activeEmployment.location.name}}</td>
+                <td>{{this.model.activeEmployment.location.name}}</td>
               </tr>
               <tr>
                 <td>Contract type:</td>
-                <td>{{if model.activeEmployment.isExternal "External" "Internal"}}</td>
+                <td>{{if this.model.activeEmployment.isExternal "External" "Internal"}}</td>
               </tr>
               <tr>
                 <td>Percentage:</td>
-                <td>{{model.activeEmployment.percentage}}%</td>
+                <td>{{this.model.activeEmployment.percentage}}%</td>
               </tr>
               <tr>
                 <td>Worktime:</td>
-                <td>{{humanize-duration model.activeEmployment.worktimePerDay false}}</td>
+                <td>{{humanize-duration this.model.activeEmployment.worktimePerDay false}}</td>
               </tr>
             {{/if}}
           </tbody>
@@ -41,12 +41,12 @@
     <h4>Employments</h4>
     <div class="card">
       <div class="card-block">
-        {{#if employments.isRunning}}
+        {{#if this.employments.isRunning}}
           <div class="empty">
-            {{loading-icon}}
+            <LoadingIcon />
           </div>
         {{else}}
-          {{#with employments.lastSuccessful.value as |employments|}}
+          {{#with this.employments.lastSuccessful.value as |employments|}}
             <table class="table table--striped">
               <thead>
                 <tr>
@@ -86,12 +86,12 @@
     <h4>Absences</h4>
     <div class="card">
       <div class="card-block">
-        {{#if absences.isRunning}}
+        {{#if this.absences.isRunning}}
           <div class="empty">
-            {{loading-icon}}
+            <LoadingIcon />
           </div>
         {{else}}
-          {{#with absences.lastSuccessful.value as |absences|}}
+          {{#with this.absences.lastSuccessful.value as |absences|}}
             <table class="table table--striped">
               <thead>
                 <tr>

@@ -1,8 +1,8 @@
-{{#if data.isRunning}}
+{{#if this.data.isRunning}}
   <div class="empty">
-    {{loading-icon}}
+    <LoadingIcon />
   </div>
-{{else if data.last.isError}}
+{{else if this.data.last.isError}}
   <div class="empty">
     <div>
       {{fa-icon 'bolt'}}
@@ -14,15 +14,15 @@
       </p>
     </div>
   </div>
-{{else if missingParams}}
+{{else if this.missingParams}}
   <div class="empty">
     <div>
       {{fa-icon 'search'}}
       <h3>Missing filter parameters</h3>
-      <p>{{missingParamsMessage}}</p>
+      <p>{{this.missingParamsMessage}}</p>
     </div>
   </div>
-{{else if (not data.last.value)}}
+{{else if (not this.data.last.value)}}
   <div class="empty">
     <div>
       {{fa-icon 'bar-chart'}}
@@ -34,11 +34,11 @@
   <table class="table table-striped table--statistics">
     <thead>
       <tr>
-        {{#each columns as |column|}}
+        {{#each this.columns as |column|}}
           {{#if column.ordering}}
             {{#sort-header
-              current = ordering
-              update  = (action on-ordering-change)
+              current = this.ordering
+              update  = (action this.on-ordering-change)
               by      = column.ordering
             }}
               {{column.title}}
@@ -51,33 +51,33 @@
       </tr>
     </thead>
     {{#vertical-collection
-      data.last.value
+      this.data.last.value
       tagName           = 'tbody'
       estimateHeight    = 40
       bufferSize        = 10
       containerSelector = '.page-content--scroll'
     as |row|}}
       <tr>
-        {{#each columns as |column|}}
-          {{statistic-list/column
-            layout = column.layout
-            value  = (get row column.path)
-          }}
+        {{#each this.columns as |column|}}
+          <StatisticList::Column
+            @layout={{column.layout}}
+            @value={{(get row column.path)}}
+          />
         {{/each}}
         <td>
-          {{statistic-list/bar (div row.duration maxDuration)}}
+          <StatisticList::Bar @value={{(div row.duration this.maxDuration)}} />
         </td>
       </tr>
     {{/vertical-collection}}
     <tfoot>
       <tr>
-        {{#each columns as |column index|}}
+        {{#each this.columns as |column index|}}
           <td>
             <strong>
               {{#if (not index)}}
                 Total:
               {{else if (eq column.title 'Duration')}}
-                <span class="total">{{humanize-duration total false}}</span>
+                <span class="total">{{humanize-duration this.total false}}</span>
               {{/if}}
             </strong>
           </td>

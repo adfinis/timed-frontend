@@ -1,10 +1,10 @@
 <form data-test-activity-edit-form {{action 'save' on='submit'}}>
   <div class="card">
     <div class="card-header hidden-lg">
-      {{#link-to 'index.activities'}}{{fa-icon 'chevron-left'}}{{/link-to}}
+      <LinkTo @route="index.activities">{{fa-icon 'chevron-left'}}</LinkTo>
     </div>
     <div class="card-block">
-      {{#task-selection task=changeset.task as |t|}}
+      {{#task-selection task=this.changeset.task as |t|}}
         <div class="form-group">{{t.customer}}</div>
         <div class="form-group">{{t.project}}</div>
         <div class="form-group">{{t.task}}</div>
@@ -15,24 +15,24 @@
           class="form-control comment-field"
           placeholder="Comment"
           name="comment"
-          value={{changeset.comment}}
-          onchange={{action (mut changeset.comment) value='target.value'}}
+          value={{this.changeset.comment}}
+          onchange={{action (mut this.changeset.comment) value='target.value'}}
         >
-        {{#if changeset.task.project.customerVisible }}
+        {{#if this.changeset.task.project.customerVisible }}
           <CustomerVisibleIcon class="customer-visible-icon" />
         {{/if}}
       </div>
       <div class="form-group checkboxes">
         {{sy-checkbox
           data-test-activity-review
-          checked=changeset.review
-          on-change=(action (mut changeset.review))
+          checked=this.changeset.review
+          on-change=(action (mut this.changeset.review))
           label='Needs review'
         }}
         {{sy-checkbox
           data-test-activity-not-billable
-          checked=changeset.notBillable
-          on-change=(action (mut changeset.notBillable))
+          checked=this.changeset.notBillable
+          on-change=(action (mut this.changeset.notBillable))
           label='Not billable'
         }}
       </div>
@@ -41,24 +41,24 @@
           <tr
             data-test-activity-block-row
           >
-            <td class="form-group {{if changeset.error.from 'has-error'}}">
+            <td class="form-group {{if this.changeset.error.from 'has-error'}}">
               {{sy-timepicker
-                value        = changeset.from
-                max          = changeset.to
+                value        = this.changeset.from
+                max          = this.changeset.to
                 precision    = 1
-                on-focus-out = (action 'validateChangeset' changeset)
-                on-change    = (action (mut changeset.from))
+                on-focus-out = (action 'validateChangeset' this.changeset)
+                on-change    = (action (mut this.changeset.from))
               }}
             </td>
             <td>-</td>
-            <td class="form-group {{if changeset.error.to 'has-error'}}">
+            <td class="form-group {{if this.changeset.error.to 'has-error'}}">
               {{sy-timepicker
-                value        = changeset.to
-                min          = changeset.from
+                value        = this.changeset.to
+                min          = this.changeset.from
                 precision    = 1
-                disabled     = (if changeset.active true)
-                on-focus-out = (action 'validateChangeset' changeset)
-                on-change    = (action (mut changeset.to))
+                disabled     = (if this.changeset.active true)
+                on-focus-out = (action 'validateChangeset' this.changeset)
+                on-change    = (action (mut this.changeset.to))
               }}
             </td>
           </tr>
@@ -66,8 +66,8 @@
       </table>
     </div>
     <div class="card-footer text-right">
-      <button class="btn btn-danger" type="button" disabled={{model.active}} {{action 'delete'}} data-test-activity-edit-form-delete>Delete</button>
-      <button class="btn btn-primary" type="submit" disabled={{not saveEnabled}} data-test-activity-edit-form-save>Save</button>
+      <button class="btn btn-danger" type="button" disabled={{this.model.active}} {{action 'delete'}} data-test-activity-edit-form-delete>Delete</button>
+      <button class="btn btn-primary" type="submit" disabled={{not this.saveEnabled}} data-test-activity-edit-form-save>Save</button>
     </div>
   </div>
 </form>

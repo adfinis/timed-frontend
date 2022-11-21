@@ -1,13 +1,13 @@
 <div
-  title="{{option.name}}{{if option.archived ' (archived)'}}"
-  class="{{if option.archived 'inactive'}}"
-  id="project-option-{{option.id}}"
+  title="{{this.option.name}}{{if this.option.archived ' (archived)'}}"
+  class="{{if this.option.archived 'inactive'}}"
+  id="project-option-{{this.option.id}}"
 >
-  {{#if (and current (or (media 'isMd') (media 'isLg') (media 'isXl')))}}
-    {{progress-tooltip target=(concat '#project-option-' option.id) visible=current model=option}}
+  {{#if (and this.current (or (media 'isMd') (media 'isLg') (media 'isXl')))}}
+    <ProgressTooltip @target={{concat '#project-option-' this.option.id}} @visible={{this.current}} @model={{this.option}} />
   {{/if}}
-  {{option.name}}
-  {{#if option.archived}}
+  {{this.option.name}}
+  {{#if this.option.archived}}
     <i class="fa fa-archive"></i>
   {{/if}}
 </div>

@@ -1,24 +1,24 @@
-{{#if (or select.loading options.isPending)}}
-  {{#if loadingMessage}}
-    <li class="ember-power-select-option ember-power-select-option--loading-message" role="option">{{loadingMessage}}</li>
+{{#if (or this.select.loading this.options.isPending)}}
+  {{#if this.loadingMessage}}
+    <li class="ember-power-select-option ember-power-select-option--loading-message" role="option">{{this.loadingMessage}}</li>
   {{/if}}
 {{/if}}
 
-{{#vertical-collection options estimateHeight=30 bufferSize=5 as |opt index|}}
+{{#vertical-collection this.options estimateHeight=30 bufferSize=5 as |opt index|}}
   <li class="ember-power-select-option"
-    aria-selected="{{ember-power-select-is-selected opt select.selected}}"
+    aria-selected="{{ember-power-select-is-selected opt this.select.selected}}"
     aria-disabled={{if opt.disabled 'true'}}
-    aria-current="{{eq opt select.highlighted}}"
-    data-option-index="{{groupIndex}}{{index}}"
+    aria-current="{{eq opt this.select.highlighted}}"
+    data-option-index="{{this.groupIndex}}{{index}}"
     role="option">
-    {{#if extra.optionTemplate}}
+    {{#if this.extra.optionTemplate}}
       {{component 'power-select/option'
-        layout  = extra.optionTemplate
+        layout  = this.extra.optionTemplate
         option  = opt
-        current = (eq opt select.highlighted)
+        current = (eq opt this.select.highlighted)
       }}
     {{else}}
-      {{yield opt select}}
+      {{yield opt this.select}}
     {{/if}}
   </li>
 {{/vertical-collection}}

@@ -11,9 +11,9 @@
       @on-set-project={{action 'setModelFilter' 'project'}}
       @on-set-task={{action 'setModelFilter' 'task'}}
       @initial={{hash
-        customer      = selectedCustomer
-        project       = selectedProject
-        task          = selectedTask
+        customer      = this.selectedCustomer
+        project       = this.selectedProject
+        task          = this.selectedTask
       }}
     as |t|>
       <FilterSidebar
@@ -76,7 +76,7 @@
               @labelPath='name'
               @prompt='All billing types'
               @options={{this.billingTypes}}
-              @on-change={{fn (mut billingType)}}
+              @on-change={{fn (mut this.billingType)}}
             />
           </fs.label>
           <fs.label>
@@ -89,7 +89,7 @@
               @labelPath='name'
               @prompt='All cost centers'
               @options={{this.costCenters}}
-              @on-change={{fn (mut costCenter)}}
+              @on-change={{fn (mut this.costCenter)}}
             />
           </fs.label>
         </fs.group>
@@ -100,7 +100,7 @@
               data-test-filter-from-date
               @type='date'
               @selected={{this.fromDate}}
-              @on-change={{fn (mut fromDate)}}
+              @on-change={{fn (mut this.fromDate)}}
             />
           </fs.label>
           <fs.label>
@@ -109,12 +109,12 @@
               data-test-filter-to-date
               @type='date'
               @selected={{this.toDate}}
-              @on-change={{fn (mut toDate)}}
+              @on-change={{fn (mut this.toDate)}}
             />
           </fs.label>
           <DateButtons
-              @onUpdateFromDate={{fn (mut fromDate)}}
-              @onUpdateToDate={{fn (mut toDate)}}
+              @onUpdateFromDate={{fn (mut this.fromDate)}}
+              @onUpdateToDate={{fn (mut this.toDate)}}
           />
         </fs.group>
         <fs.group @label='State'>
@@ -131,7 +131,7 @@
                 (hash label='Needed' value='1')
                 (hash label='Not needed' value='0')
               }}
-              @on-change={{fn (mut review)}}
+              @on-change={{fn (mut this.review)}}
             />
           </fs.label>
           <fs.label>
@@ -147,7 +147,7 @@
                 (hash label='Billable' value='0')
                 (hash label='Not billable' value='1')
               }}
-              @on-change={{fn (mut notBillable)}}
+              @on-change={{fn (mut this.notBillable)}}
             />
           </fs.label>
           <fs.label>
@@ -163,7 +163,7 @@
                 (hash label='Verified' value='1')
                 (hash label='Not verified' value='0')
               }}
-              @on-change={{fn (mut verified)}}
+              @on-change={{fn (mut this.verified)}}
             />
           </fs.label>
           <fs.label>
@@ -179,7 +179,7 @@
                 (hash label='Billed' value='1')
                 (hash label='Not Billed' value='0')
               }}
-              @on-change={{fn (mut billed)}}
+              @on-change={{fn (mut this.billed)}}
             />
           </fs.label>
         </fs.group>
@@ -188,9 +188,9 @@
 
     <div>
       <ul class="nav-tabs">
-        {{#each types as |t|}}
+        {{#each this.types as |t|}}
           <li>
-            <a href="#" class={{if (eq t type) 'active'}} {{on 'click' (fn (mut type) t)}}>
+            <a href="#" class={{if (eq t this.type) 'active'}} {{on 'click' (fn (mut this.type) t)}}>
               By {{t}}
             </a>
           </li>
@@ -205,7 +205,7 @@
         @type={{this.type}}
         @missingParams={{this.missingParams}}
         @ordering={{this.ordering}}
-        @on-ordering-change={{fn (mut ordering)}}
+        @on-ordering-change={{fn (mut this.ordering)}}
       />
     </div>
   </PagePermission>

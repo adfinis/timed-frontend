@@ -2,24 +2,24 @@
   <div class="grid grid--12of12 grid-md--4of12">
     <div class="grid-cell"></div>
     <div class="grid-cell">
-      {{#if intersection.isRunning}}
+      {{#if this.intersection.isRunning}}
         <div class="empty">
           <LoadingIcon />
         </div>
       {{else}}
         <h1 class="text-center">
-          {{#unless (eq intersection.lastSuccessful.value.meta.count 1)}}
-            Bulk edit {{intersection.lastSuccessful.value.meta.count}} reports
+          {{#unless (eq this.intersection.lastSuccessful.value.meta.count 1)}}
+            Bulk edit {{this.intersection.lastSuccessful.value.meta.count}} reports
           {{else}}
             Edit report
           {{/unless}}
         </h1>
         <div class="card">
           <div class="card-block">
-            {{#let intersection.lastSuccessful.value.model as |model|}}
+            {{#let this.intersection.lastSuccessful.value.model as |model|}}
               <ValidatedForm
-                @model={{changeset model IntersectionValidations}}
-                @on-submit={{perform save}}
+                @model={{changeset model this.IntersectionValidations}}
+                @on-submit={{perform this.save}}
                 as |f|
               >
                 <TaskSelection
@@ -27,9 +27,9 @@
                   @on-set-project={{action (queue (action (mut f.model.project)) (action 'validate' f.model))}}
                   @on-set-task={{action (queue (action (mut f.model.task)) (action 'validate' f.model))}}
                   @initial={{hash
-                    customer=_customer
-                    project=_project
-                    task=_task
+                    customer=this._customer
+                    project=this._project
+                    task=this._task
                   }}
                   @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
                   as |t|
@@ -148,8 +148,8 @@
                     <SyCheckbox
                       @checked={{fi.value}}
                       @on-change={{fi.update}}
-                      @title={{not canBill "You do not have appropriate roles for this action."}}
-                      @disabled={{not canBill}}
+                      @title={{not this.canBill "You do not have appropriate roles for this action."}}
+                      @disabled={{not this.canBill}}
                     >
                       Billed
                       {{#if (eq model.billed null)}}
@@ -169,8 +169,8 @@
                     <SyCheckbox
                       @checked={{fi.value}}
                       @on-change={{fi.update}}
-                      @title={{toolTipText}}
-                      @disabled={{or (not canVerify) needsReview}}
+                      @title={{this.toolTipText}}
+                      @disabled={{or (not this.canVerify) this.needsReview}}
                     >
                       Verified
                       {{#if (eq model.verified null)}}

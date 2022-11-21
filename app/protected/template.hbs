@@ -1,15 +1,15 @@
 <main class="page-main">
-  {{#if loading}}<span class="loader"></span>{{/if}}
+  {{#if this.loading}}<span class="loader"></span>{{/if}}
   <div class="page-content page-content--scroll">
-    {{sy-topnav on-logout=(route-action 'invalidateSession')}}
+    <SyTopnav @on-logout={{route-action 'invalidateSession'}} />
 
     {{outlet}}
   </div>
 </main>
 
-{{welcome-modal
-  visible  = visible
-  on-never = (route-action 'neverTour')
-  on-later = (route-action 'laterTour')
-  on-start = (route-action 'startTour')
+<WelcomeModal
+  @visible={{this.visible}}
+  @on-never={{route-action 'neverTour'}}
+  @on-later={{route-action 'laterTour'}}
+  @on-start={{route-action 'startTour'}}
 }}

@@ -1,33 +1,33 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { click, find, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | weekly overview day", function(hooks) {
+module("Integration | Component | weekly overview day", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("day", moment({ y: 2017, m: 4, d: 5 }));
     this.set("expected", moment.duration({ h: 8 }));
     this.set("worktime", moment.duration({ h: 8 }));
 
     await render(
-      hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
+      hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} />`
     );
 
     assert.ok(this.element);
 
-    assert.equal(find(".day").textContent.trim(), "05\n  Th");
+    assert.strictEqual(find(".day").textContent.trim(), "05\n  Th");
   });
 
-  test("computes a title", async function(assert) {
+  test("computes a title", async function (assert) {
     this.set("day", moment({ y: 2017, m: 4, d: 5 }));
     this.set("expected", moment.duration({ h: 8, m: 30 }));
     this.set("worktime", moment.duration({ h: 8, m: 30 }));
 
     await render(
-      hbs`{{weekly-overview-day day=day expected=expected worktime=worktime prefix='Ferien'}}`
+      hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} @prefix='Ferien' />`
     );
 
     assert
@@ -35,14 +35,14 @@ module("Integration | Component | weekly overview day", function(hooks) {
       .hasAttribute("title", "Ferien, 8h 30m");
   });
 
-  test("fires on-click action on click", async function(assert) {
+  test("fires on-click action on click", async function (assert) {
     this.set("day", moment({ y: 2017, m: 4, d: 5 }));
     this.set("expected", moment.duration({ h: 8, m: 30 }));
     this.set("worktime", moment.duration({ h: 8, m: 30 }));
     this.set("clicked", false);
 
     await render(
-      hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
+      hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} />`
     );
 
     assert.notOk(this.clicked);
@@ -51,7 +51,7 @@ module("Integration | Component | weekly overview day", function(hooks) {
     assert.notOk(this.clicked);
 
     await render(
-      hbs`{{weekly-overview-day day=day expected=expected worktime=worktime on-click=(action (mut clicked) true)}}`
+      hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} @on-click={{fn (mut clicked) true}} />`
     );
 
     assert.notOk(this.clicked);

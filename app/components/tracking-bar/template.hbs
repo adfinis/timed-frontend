@@ -1,40 +1,35 @@
-{{#task-selection
-  disabled    = tracking.activity.active
-  on-set-task = (action (mut tracking.activity.task))
-  initial     = (hash
-    task      = tracking.activity.task
-  )
-as |t|}}
-  <form {{action 'start' on='submit'}}>
-    <div class="form-group" data-test-tracking-customer>
-      {{t.customer}}
-    </div>
-    <div class="form-group" data-test-tracking-project>
-      {{t.project}}
-    </div>
-    <div class="form-group" data-test-tracking-task>
-      {{t.task}}
-    </div>
-    <div class="form-group" data-test-tracking-comment>
-      {{input
-        type        = 'text'
-        class       = 'form-control'
-        placeholder = 'Comment'
-        name        = 'comment'
-        value       = tracking.activity.comment
-        disabled    = tracking.activity.active
-      }}
-      {{#if tracking.activity.task.project.customerVisible }}
-        <CustomerVisibleIcon class="customer-visible-icon" />
-      {{/if}}
-    </div>
-    <div class="form-group">
-      {{record-button
-        activity  = tracking.activity
-        recording = tracking.activity.active
-        on-start  = (action (perform tracking.startActivity))
-        on-stop   = (action (queue (action (perform tracking.stopActivity)) t.clear))
-      }}
-    </div>
-  </form>
-{{/task-selection}}
+<div class="tracking-bar" ...attributes>
+  {{#task-selection
+    disabled    = this.tracking.activity.active
+    on-set-task = (action (mut this.tracking.activity.task))
+    initial     = (hash
+      task      = this.tracking.activity.task
+    )
+  as |t|}}
+    <form {{action 'start' on='submit'}}>
+      <div class="form-group" data-test-tracking-customer>
+        {{t.customer}}
+      </div>
+      <div class="form-group" data-test-tracking-project>
+        {{t.project}}
+      </div>
+      <div class="form-group" data-test-tracking-task>
+        {{t.task}}
+      </div>
+      <div class="form-group" data-test-tracking-comment>
+        <Input @type="text" class="form-control" placeholder="Comment" @name="comment" @value={{this.tracking.activity.comment}} @disabled={{this.tracking.activity.active}} />
+        {{#if this.tracking.activity.task.project.customerVisible }}
+          <CustomerVisibleIcon class="customer-visible-icon" />
+        {{/if}}
+      </div>
+      <div class="form-group">
+        {{record-button
+          activity  = this.tracking.activity
+          recording = this.tracking.activity.active
+          on-start  = (action (perform this.tracking.startActivity))
+          on-stop   = (action (queue (action (perform this.tracking.stopActivity)) t.clear))
+        }}
+      </div>
+    </form>
+  {{/task-selection}}
+</div>

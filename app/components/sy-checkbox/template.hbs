@@ -1,8 +1,8 @@
 <input
   type="checkbox"
-  id={{checkboxElementId}}
-  checked={{checked}}
-  disabled={{disabled}}
-  onchange={{action on-change value='target.checked'}}
+  id={{this.checkboxElementId}}
+  checked={{this.checked}}
+  disabled={{this.disabled}}
+  onchange={{action this.on-change value='target.checked'}}
 >
-<label for={{checkboxElementId}} title={{title}}>{{#if hasBlock}}{{~yield~}}{{else}}{{#if label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
+<label for={{this.checkboxElementId}} title={{this.title}}>{{#if has-block}}{{~yield~}}{{else}}{{#if this.label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
