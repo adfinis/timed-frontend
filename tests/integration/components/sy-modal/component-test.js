@@ -39,10 +39,10 @@ module("Integration | Component | sy modal", function(hooks) {
       {{/sy-modal}}
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click("#sy-modals .modal-header button");
 
-    assert.notOk(this.get("visible"));
+    assert.notOk(this.visible);
   });
 });

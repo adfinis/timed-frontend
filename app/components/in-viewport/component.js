@@ -18,21 +18,21 @@ const InViewportComponent = Component.extend({
         return this.getWithDefault("on-exit-viewport", () => {})();
       },
       {
-        root: document.querySelector(this.get("rootSelector")),
-        rootMargin: `${this.get("rootMargin")}px`
+        root: document.querySelector(this.rootSelector),
+        rootMargin: `${this.rootMargin}px`
       }
     );
 
     this.set("_observer", observer);
 
     // eslint-disable-next-line ember/no-observers
-    observer.observe(this.get("element"));
+    observer.observe(this.element);
   },
 
   willDestroyElement(...args) {
     this._super(...args);
 
-    this.get("_observer").disconnect();
+    this._observer.disconnect();
   }
 });
 

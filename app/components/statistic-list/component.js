@@ -72,7 +72,7 @@ export default Component.extend({
   }),
 
   columns: computed("type", function() {
-    return get(COLUMN_MAP, this.get("type")).map(col => ({
+    return get(COLUMN_MAP, this.type).map(col => ({
       ...col,
       ordering: col.ordering || col.path.replace(/\./g, "__")
     }));
@@ -83,7 +83,7 @@ export default Component.extend({
       return "";
     }
 
-    const text = this.get("missingParams")
+    const text = this.missingParams
       .map((param, index) => {
         if (index === 0) {
           param = capitalize(param);

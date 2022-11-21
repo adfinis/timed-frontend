@@ -71,7 +71,7 @@ const DurationSinceComponent = Component.extend({
   _compute() {
     this.set(
       "duration",
-      moment.duration(moment().diff(this.get("from"))).add(this.get("elapsed"))
+      moment.duration(moment().diff(this.from)).add(this.elapsed)
     );
   },
 

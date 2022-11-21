@@ -209,7 +209,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         await this.transitionTo("index.reports");
       } catch (e) {
         /* istanbul ignore next */
-        this.get("notify").error("Error while generating reports");
+        this.notify.error("Error while generating reports");
       }
     }
   }

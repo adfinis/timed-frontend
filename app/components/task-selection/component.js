@@ -81,11 +81,11 @@ export default Component.extend({
       task: null
     });
 
-    if (task && !this.get("task")) {
+    if (task && !this.task) {
       this.set("task", task);
-    } else if (project && !this.get("project")) {
+    } else if (project && !this.project) {
       this.set("project", project);
-    } else if (customer && !this.get("customer")) {
+    } else if (customer && !this.customer) {
       this.set("customer", customer);
     }
   },
@@ -173,7 +173,7 @@ export default Component.extend({
    */
   customer: computed("_customer", {
     get() {
-      return this.get("_customer");
+      return this._customer;
     },
     set(key, value) {
       // It is also possible a task was selected from the history.
@@ -187,7 +187,7 @@ export default Component.extend({
 
       /* istanbul ignore else */
       if (
-        this.get("project") &&
+        this.project &&
         (!value || value.get("id") !== this.get("project.customer.id"))
       ) {
         this.set("project", null);
@@ -212,7 +212,7 @@ export default Component.extend({
    */
   project: computed("_project", {
     get() {
-      return this.get("_project");
+      return this._project;
     },
     set(key, value) {
       this.set("_project", value);
@@ -225,7 +225,7 @@ export default Component.extend({
 
       /* istanbul ignore else */
       if (
-        this.get("task") &&
+        this.task &&
         (value === null || value.get("id") !== this.get("task.project.id"))
       ) {
         this.set("task", null);
@@ -247,7 +247,7 @@ export default Component.extend({
    */
   task: computed("_task", {
     get() {
-      return this.get("_task");
+      return this._task;
     },
     set(key, value) {
       this.set("_task", value);
@@ -277,7 +277,7 @@ export default Component.extend({
 
     await this.get("tracking.customers.last");
 
-    if (this.get("history")) {
+    if (this.history) {
       await this.get("tracking.recentTasks.last");
 
       const last = this.get("tracking.recentTasks.last.value");
@@ -285,21 +285,19 @@ export default Component.extend({
       ids = last ? last.mapBy("id") : [];
     }
 
-    const customers = this.get("store")
+    const customers = this.store
       .peekAll("customer")
       .filter(customer => {
-        return this.get("archived") ? true : !customer.get("archived");
+        return this.archived ? true : !customer.get("archived");
       })
       .sortBy("name");
 
-    const tasks = this.get("store")
-      .peekAll("task")
-      .filter(task => {
-        return (
-          ids.includes(task.get("id")) &&
-          (this.get("archived") ? true : !task.get("archived"))
-        );
-      });
+    const tasks = this.store.peekAll("task").filter(task => {
+      return (
+        ids.includes(task.get("id")) &&
+        (this.archived ? true : !task.get("archived"))
+      );
+    });
 
     return [...tasks.toArray(), ...customers.toArray()];
   }),
@@ -317,12 +315,12 @@ export default Component.extend({
       await this.tracking.projects.perform(this.customer.id);
     }
 
-    return this.get("store")
+    return this.store
       .peekAll("project")
       .filter(project => {
         return (
           project.get("customer.id") === this.get("customer.id") &&
-          (this.get("archived") ? true : !project.get("archived"))
+          (this.archived ? true : !project.get("archived"))
         );
       })
       .sortBy("name");
@@ -341,12 +339,12 @@ export default Component.extend({
       await this.tracking.tasks.perform(this.project.id);
     }
 
-    return this.get("store")
+    return this.store
       .peekAll("task")
       .filter(t => {
         return (
           t.get("project.id") === this.get("project.id") &&
-          (this.get("archived") ? true : !t.get("archived"))
+          (this.archived ? true : !t.get("archived"))
         );
       })
       .sortBy("name");

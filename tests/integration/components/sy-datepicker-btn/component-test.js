@@ -41,6 +41,6 @@ module("Integration | Component | sy datepicker btn", function(hooks) {
       .endOf("month")
       .endOf("week");
 
-    assert.ok(this.get("value").isSame(expected, "day"));
+    assert.ok(this.value.isSame(expected, "day"));
   });
 });

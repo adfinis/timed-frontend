@@ -26,17 +26,17 @@ module("Integration | Component | sy checkbox", function(hooks) {
     );
 
     assert.dom("input").isNotChecked();
-    assert.notOk(this.get("checked"));
+    assert.notOk(this.checked);
 
     await click("label");
 
     assert.dom("input").isChecked();
-    assert.ok(this.get("checked"));
+    assert.ok(this.checked);
 
     await click("label");
 
     assert.dom("input").isNotChecked();
-    assert.notOk(this.get("checked"));
+    assert.notOk(this.checked);
   });
 
   test("can be indeterminate", async function(assert) {
@@ -47,12 +47,12 @@ module("Integration | Component | sy checkbox", function(hooks) {
     );
 
     assert.ok(find("input").indeterminate);
-    assert.equal(this.get("checked"), null);
+    assert.equal(this.checked, null);
 
     await click("label");
 
     // clicking on an indeterminate checkbox makes test checked
     assert.dom("input").isChecked();
-    assert.ok(this.get("checked"));
+    assert.ok(this.checked);
   });
 });

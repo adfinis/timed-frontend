@@ -42,18 +42,18 @@ export default Controller.extend({
     "model",
     "user",
     function() {
-      const reportsToday = this.get("_allReports").filter(r => {
+      const reportsToday = this._allReports.filter(r => {
         return (
           (!r.get("user.id") || r.get("user.id") === this.get("user.id")) &&
-          r.get("date").isSame(this.get("model"), "day") &&
+          r.get("date").isSame(this.model, "day") &&
           !r.get("isDeleted")
         );
       });
 
       if (!reportsToday.filterBy("isNew", true).get("length")) {
         this.store.createRecord("report", {
-          date: this.get("model"),
-          user: this.get("user")
+          date: this.model,
+          user: this.user
         });
       }
 

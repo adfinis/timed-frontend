@@ -49,6 +49,7 @@ module("Integration | Component | task selection", function(hooks) {
   });
 
   test("can set initial customer", async function(assert) {
+    assert.expect(4);
     this.set("customer", CUSTOMER);
 
     await render(hbs`
@@ -68,7 +69,7 @@ module("Integration | Component | task selection", function(hooks) {
       assert.dom(".project-select [aria-disabled=true]").doesNotExist();
       assert.dom(".task-select [aria-disabled=true]").exists();
 
-      assert.equal(
+      assert.strictEqual(
         this.element
           .querySelector(".customer-select .ember-power-select-selected-item")
           .innerHTML.trim(),
@@ -78,6 +79,7 @@ module("Integration | Component | task selection", function(hooks) {
   });
 
   test("can set initial project", async function(assert) {
+    assert.expect(5);
     this.set("project", PROJECT);
 
     await render(hbs`
@@ -97,13 +99,13 @@ module("Integration | Component | task selection", function(hooks) {
       assert.dom(".project-select [aria-disabled=true]").doesNotExist();
       assert.dom(".task-select [aria-disabled=true]").doesNotExist();
 
-      assert.equal(
+      assert.strictEqual(
         this.element
           .querySelector(".customer-select .ember-power-select-selected-item")
           .innerHTML.trim(),
         CUSTOMER.name
       );
-      assert.equal(
+      assert.strictEqual(
         this.element
           .querySelector(".project-select .ember-power-select-selected-item")
           .innerHTML.trim(),
@@ -113,6 +115,7 @@ module("Integration | Component | task selection", function(hooks) {
   });
 
   test("can set initial task", async function(assert) {
+    assert.expect(6);
     this.set("task", TASK);
 
     await render(hbs`
@@ -132,19 +135,19 @@ module("Integration | Component | task selection", function(hooks) {
       assert.dom(".project-select [aria-disabled=true]").doesNotExist();
       assert.dom(".task-select [aria-disabled=true]").doesNotExist();
 
-      assert.equal(
+      assert.strictEqual(
         this.element
           .querySelector(".customer-select .ember-power-select-selected-item")
           .innerHTML.trim(),
         CUSTOMER.name
       );
-      assert.equal(
+      assert.strictEqual(
         this.element
           .querySelector(".project-select .ember-power-select-selected-item")
           .innerHTML.trim(),
         PROJECT.name
       );
-      assert.equal(
+      assert.strictEqual(
         this.element
           .querySelector(".task-select .ember-power-select-selected-item")
           .innerHTML.trim(),

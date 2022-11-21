@@ -140,10 +140,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     "customer",
     "prefetchData.lastSuccessful.value.customer",
     function() {
-      return (
-        this.get("customer") &&
-        this.store.peekRecord("customer", this.get("customer"))
-      );
+      return this.customer && this.store.peekRecord("customer", this.customer);
     }
   ),
 
@@ -151,10 +148,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     "project",
     "prefetchData.lastSuccessful.value.project",
     function() {
-      return (
-        this.get("project") &&
-        this.store.peekRecord("project", this.get("project"))
-      );
+      return this.project && this.store.peekRecord("project", this.project);
     }
   ),
 
@@ -162,9 +156,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     "task",
     "prefetchData.lastSuccessful.value.task",
     function() {
-      return (
-        this.get("task") && this.store.peekRecord("task", this.get("task"))
-      );
+      return this.task && this.store.peekRecord("task", this.task);
     }
   ),
 
@@ -172,9 +164,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     "user",
     "prefetchData.lastSuccessful.value.user",
     function() {
-      return (
-        this.get("user") && this.store.peekRecord("user", this.get("user"))
-      );
+      return this.user && this.store.peekRecord("user", this.user);
     }
   ),
 
@@ -182,10 +172,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     "reviewer",
     "prefetchData.lastSuccessful.value.reviewer",
     function() {
-      return (
-        this.get("reviewer") &&
-        this.store.peekRecord("user", this.get("reviewer"))
-      );
+      return this.reviewer && this.store.peekRecord("user", this.reviewer);
     }
   ),
 
@@ -225,16 +212,16 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   },
 
   setup() {
-    this.get("prefetchData").perform();
+    this.prefetchData.perform();
 
-    if (!this.get("skipResetOnSetup")) {
+    if (!this.skipResetOnSetup) {
       this._reset();
     }
   },
 
   _reset() {
-    this.get("data").cancelAll();
-    this.get("loadNext").cancelAll();
+    this.data.cancelAll();
+    this.loadNext.cancelAll();
 
     this.setProperties({
       _lastPage: 0,
@@ -244,7 +231,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       selectedReportIds: A()
     });
 
-    this.get("data").perform();
+    this.data.perform();
   },
 
   queryParamsDidChange({ shouldRefresh }) {
@@ -258,7 +245,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   _lastPage: 0,
 
   appliedFilters: computed("queryParamsState", function() {
-    return Object.keys(this.get("queryParamsState")).filter(key => {
+    return Object.keys(this.queryParamsState).filter(key => {
       return key !== "ordering" && this.get(`queryParamsState.${key}.changed`);
     });
   }),
@@ -270,7 +257,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       task: taskId,
       user: userId,
       reviewer: reviewerId
-    } = this.get("allQueryParams");
+    } = this.allQueryParams;
 
     return yield hash({
       customer: customerId && this.store.findRecord("customer", customerId),
@@ -285,15 +272,12 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
   data: task(function*() {
     const params = underscoreQueryParams(
-      serializeParachuteQueryParams(
-        this.get("allQueryParams"),
-        AnalysisQueryParams
-      )
+      serializeParachuteQueryParams(this.allQueryParams, AnalysisQueryParams)
     );
 
     const data = yield this.store.query("report", {
       page: {
-        number: this.get("_lastPage") + 1,
+        number: this._lastPage + 1,
         size: 20
       },
       ...params,
@@ -335,9 +319,9 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _lastPage: data.get("meta.pagination.page")
     });
 
-    this.get("_dataCache").pushObjects(mappedReports.toArray());
+    this._dataCache.pushObjects(mappedReports.toArray());
 
-    return this.get("_dataCache");
+    return this._dataCache;
   }).enqueue(),
 
   fetchAssignees: task(function*(data) {
@@ -382,8 +366,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   loadNext: task(function*() {
     this.set("_shouldLoadMore", true);
 
-    while (this.get("_shouldLoadMore") && this.get("_canLoadMore")) {
-      yield this.get("data").perform();
+    while (this._shouldLoadMore && this._canLoadMore) {
+      yield this.data.perform();
 
       yield rAF();
     }
@@ -458,14 +442,14 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       this.transitionToRoute("analysis.edit", {
         queryParams: {
           id: ids,
-          ...this.get("allQueryParams")
+          ...this.allQueryParams
         }
       });
     },
 
     selectRow(report) {
       if (this.can.can("edit report", report) || this.canBill) {
-        const selected = this.get("selectedReportIds");
+        const selected = this.selectedReportIds;
 
         if (selected.includes(report.id)) {
           this.set(
@@ -484,7 +468,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     reset() {
       this.resetQueryParams(
-        Object.keys(this.get("allQueryParams")).filter(k => k !== "ordering")
+        Object.keys(this.allQueryParams).filter(k => k !== "ordering")
       );
     }
   }

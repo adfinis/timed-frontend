@@ -8,7 +8,7 @@ const StatisticListBarComponent = Component.extend({
   attributeBindings: ["style"],
 
   style: computed("value", function() {
-    return htmlSafe(`--value: ${this.get("value")}`);
+    return htmlSafe(`--value: ${this.value}`);
   })
 });
 

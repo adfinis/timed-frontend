@@ -135,11 +135,11 @@ export default Model.extend({
    * @public
    */
   fullName: computed("firstName", "lastName", function() {
-    if (!this.get("firstName") && !this.get("lastName")) {
+    if (!this.firstName && !this.lastName) {
       return "";
     }
 
-    return `${this.get("firstName")} ${this.get("lastName")}`;
+    return `${this.firstName} ${this.lastName}`;
   }),
 
   /**
@@ -152,9 +152,9 @@ export default Model.extend({
    * @public
    */
   longName: computed("username", "fullName", function() {
-    return this.get("fullName")
-      ? `${this.get("fullName")} (${this.get("username")})`
-      : this.get("username");
+    return this.fullName
+      ? `${this.fullName} (${this.username})`
+      : this.username;
   }),
 
   /**
@@ -169,7 +169,7 @@ export default Model.extend({
     return (
       this.store.peekAll("employment").find(e => {
         return (
-          e.get("user.id") === this.get("id") &&
+          e.get("user.id") === this.id &&
           (!e.get("end") || e.get("end").isSameOrAfter(moment.now(), "day"))
         );
       }) || null
@@ -186,7 +186,7 @@ export default Model.extend({
     return (
       this.store.peekAll("worktime-balance").find(balance => {
         return (
-          balance.get("user.id") === this.get("id") &&
+          balance.get("user.id") === this.id &&
           balance.get("date").isSame(moment(), "day")
         );
       }) || null

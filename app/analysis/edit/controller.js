@@ -68,14 +68,14 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
   isAccountant: reads("session.data.user.isAccountant"),
 
   setup() {
-    this.get("intersection").perform();
+    this.intersection.perform();
   },
 
   intersection: task(function*() {
-    const res = yield this.get("ajax").request("/api/v1/reports/intersection", {
+    const res = yield this.ajax.request("/api/v1/reports/intersection", {
       method: "GET",
       data: {
-        ...prepareParams(this.get("allQueryParams")),
+        ...prepareParams(this.allQueryParams),
         editable: 1,
         include: "task,project,customer,user"
       }
@@ -136,11 +136,11 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
   toolTipText: computed("canVerify", "needsReview", function() {
     let result = "";
-    if (this.get("needsReview") && this.get("canVerify")) {
+    if (this.needsReview && this.canVerify) {
       result = TOOLTIP_NEEDS_REVIEW;
-    } else if (!this.get("needsReview") && !this.get("canVerify")) {
+    } else if (!this.needsReview && !this.canVerify) {
       result = TOOLTIP_CANNOT_VERIFY;
-    } else if (this.get("needsReview") && !this.get("canVerify")) {
+    } else if (this.needsReview && !this.canVerify) {
       result = `${TOOLTIP_CANNOT_VERIFY} ${TOOLTIP_NEEDS_REVIEW}`;
     }
     return result;
@@ -148,7 +148,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
   save: task(function*(changeset) {
     try {
-      const params = prepareParams(this.get("allQueryParams"));
+      const params = prepareParams(this.allQueryParams);
 
       const queryString = toQueryString(params);
 
@@ -156,7 +156,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
       const {
         data: { attributes, relationships }
-      } = this.get("intersectionModel").serialize();
+      } = this.intersectionModel.serialize();
 
       const data = {
         type: "report-bulks",
@@ -164,7 +164,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         relationships: filterUnchanged(relationships, changeset.get("changes"))
       };
 
-      yield this.get("ajax").request(
+      yield this.ajax.request(
         `/api/v1/reports/bulk?editable=1&${queryString}`,
         {
           method: "POST",
@@ -174,14 +174,14 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
       this.transitionToRoute("analysis.index", {
         queryParams: {
-          ...this.get("allQueryParams")
+          ...this.allQueryParams
         }
       });
 
-      this.get("notify").success("Reports were saved");
+      this.notify.success("Reports were saved");
     } catch (e) {
       /* istanbul ignore next */
-      this.get("notify").error("Error while saving the reports");
+      this.notify.error("Error while saving the reports");
     }
 
     this.unverifiedReports.pollReports();
@@ -202,7 +202,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
       this.transitionToRoute("analysis.index", {
         queryParams: {
-          ...this.get("allQueryParams")
+          ...this.allQueryParams
         }
       }).then(() => {
         this.set("analysisIndexController.skipResetOnSetup", false);

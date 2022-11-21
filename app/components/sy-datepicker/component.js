@@ -37,7 +37,11 @@ export default Component.extend({
     },
 
     checkValidity() {
-      scheduleOnce("afterRender", this, () => {
+      // This is subject to change in future refactorings anyways, so pleace
+      // don't think about it to hard.
+
+      // eslint-disable-next-line ember/no-incorrect-calls-with-inline-anonymous-functions
+      scheduleOnce("afterRender", this, function() {
         const target = this.get("element").querySelector(
           ".ember-basic-dropdown-trigger input"
         );

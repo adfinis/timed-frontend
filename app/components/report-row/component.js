@@ -40,7 +40,7 @@ const ReportRowComponent = Component.extend({
 
   editable: computed("report.{verifiedBy,billed}", {
     get() {
-      return this.can.can("edit report", this.get("report"));
+      return this.can.can("edit report", this.report);
     }
   }),
 
@@ -60,7 +60,7 @@ const ReportRowComponent = Component.extend({
    */
   changeset: computed("report.{id,verifiedBy}", function() {
     const c = new Changeset(
-      this.get("report"),
+      this.report,
       lookupValidator(ReportValidations),
       ReportValidations
     );
@@ -78,7 +78,7 @@ const ReportRowComponent = Component.extend({
      * @public
      */
     save() {
-      this.get("on-save")(this.get("changeset"));
+      this.get("on-save")(this.changeset);
     },
 
     /**
@@ -88,7 +88,7 @@ const ReportRowComponent = Component.extend({
      * @public
      */
     delete() {
-      this.get("on-delete")(this.get("report"));
+      this.get("on-delete")(this.report);
     }
   }
 });

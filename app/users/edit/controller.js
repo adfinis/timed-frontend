@@ -7,17 +7,17 @@ const UsersEditQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditQueryParams.Mixin, {
   setup() {
-    this.get("data").perform(this.get("model.id"));
+    this.data.perform(this.get("model.id"));
   },
 
   data: task(function*(uid) {
     return yield hash({
-      worktimeBalanceLastValidTimesheet: this.get(
-        "worktimeBalanceLastValidTimesheet"
-      ).perform(uid),
-      worktimeBalanceToday: this.get("worktimeBalanceToday").perform(uid),
-      worktimeBalances: this.get("worktimeBalances").perform(uid),
-      absenceBalances: this.get("absenceBalances").perform(uid)
+      worktimeBalanceLastValidTimesheet: this.worktimeBalanceLastValidTimesheet.perform(
+        uid
+      ),
+      worktimeBalanceToday: this.worktimeBalanceToday.perform(uid),
+      worktimeBalances: this.worktimeBalances.perform(uid),
+      absenceBalances: this.absenceBalances.perform(uid)
     });
   }),
 

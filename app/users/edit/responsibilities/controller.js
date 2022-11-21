@@ -8,8 +8,8 @@ const UsersEditResponsibilitiesQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
   setup() {
-    this.get("projects").perform();
-    this.get("supervisees").perform();
+    this.projects.perform();
+    this.supervisees.perform();
   },
 
   projects: task(function*() {

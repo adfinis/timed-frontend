@@ -47,7 +47,7 @@ export default Service.extend({
       throw new Error(`${capitalize(type)} ID is missing`);
     }
 
-    const { meta = {} } = yield this.get("ajax").request(
+    const { meta = {} } = yield this.ajax.request(
       `/api/v1/${dasherize(type)}s/${id}`
     );
 

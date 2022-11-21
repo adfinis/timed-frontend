@@ -24,11 +24,11 @@ const BalanceDonutComponent = Component.extend({
       return "primary";
     }
 
-    if (this.get("value") > 1 || this.get("value") < 0) {
+    if (this.value > 1 || this.value < 0) {
       return "danger";
     }
 
-    if (this.get("value") === 1) {
+    if (this.value === 1) {
       return "warning";
     }
 
@@ -38,11 +38,11 @@ const BalanceDonutComponent = Component.extend({
   radius: 100 / (2 * PI),
 
   style: computed("count", "index", function() {
-    const mean = this.get("count") / 2;
+    const mean = this.count / 2;
 
     const median = [floor(mean), ...(isInteger(mean) ? [floor(mean - 1)] : [])];
 
-    const deviation = min(...median.map(m => abs(m - this.get("index"))));
+    const deviation = min(...median.map(m => abs(m - this.index)));
 
     const offset =
       deviation && (1 / (floor(mean) - (isInteger(mean) ? 1 : 0))) * deviation;

@@ -21,6 +21,6 @@ module("Integration | Component | pagination limit", function(hooks) {
 
     await click("span:last-of-type a");
 
-    assert.equal(this.get("limit"), 100);
+    assert.equal(this.limit, 100);
   });
 });

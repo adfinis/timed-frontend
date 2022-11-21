@@ -10,14 +10,14 @@ MediaService.reopen({
   _defaultBreakpoint: "xl",
 
   _breakpointArr: computed("breakpoints", function() {
-    return Object.keys(this.get("breakpoints")) || A([]);
+    return Object.keys(this.breakpoints) || A([]);
   }),
 
   _forceSetBreakpoint(breakpoint) {
     let found = false;
 
     const props = {};
-    this.get("_breakpointArr").forEach(function(bp) {
+    this._breakpointArr.forEach(function(bp) {
       const val = bp === breakpoint;
       if (val) {
         found = true;
@@ -40,7 +40,7 @@ MediaService.reopen({
   init(...args) {
     this._super(...args);
 
-    this._forceSetBreakpoint(this.get("_defaultBreakpoint"));
+    this._forceSetBreakpoint(this._defaultBreakpoint);
   }
 });
 

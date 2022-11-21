@@ -31,12 +31,12 @@ const ProgressTooltipComponent = Component.extend({
     this._super(...args);
 
     /* istanbul ignore next */
-    if (!this.get("model")) {
+    if (!this.model) {
       throw new Error("A model must be given");
     }
 
     /* istanbul ignore next */
-    if (!this.get("target")) {
+    if (!this.target) {
       throw new Error("A target for the tooltip must be given");
     }
   },
@@ -80,8 +80,8 @@ const ProgressTooltipComponent = Component.extend({
    * @public
    */
   progressTotal: computed("estimated", "spent", function() {
-    return this.get("estimated") && this.get("estimated").asHours()
-      ? this.get("spent") / this.get("estimated")
+    return this.estimated && this.estimated.asHours()
+      ? this.spent / this.estimated
       : 0;
   }),
 
@@ -92,9 +92,9 @@ const ProgressTooltipComponent = Component.extend({
    * @public
    */
   colorTotal: computed("progressTotal", function() {
-    if (this.get("progressTotal") > 1) {
+    if (this.progressTotal > 1) {
       return "danger";
-    } else if (this.get("progressTotal") >= 0.9) {
+    } else if (this.progressTotal >= 0.9) {
       return "warning";
     }
 
@@ -108,8 +108,8 @@ const ProgressTooltipComponent = Component.extend({
    * @public
    */
   progressBillable: computed("estimated", "billable", function() {
-    return this.get("estimated") && this.get("estimated").asHours()
-      ? this.get("billable") / this.get("estimated")
+    return this.estimated && this.estimated.asHours()
+      ? this.billable / this.estimated
       : 0;
   }),
 
@@ -120,9 +120,9 @@ const ProgressTooltipComponent = Component.extend({
    * @public
    */
   colorBillable: computed("progressBillable", function() {
-    if (this.get("progressBillable") > 1) {
+    if (this.progressBillable > 1) {
       return "danger";
-    } else if (this.get("progressBillable") >= 0.9) {
+    } else if (this.progressBillable >= 0.9) {
       return "warning";
     }
 
@@ -136,9 +136,9 @@ const ProgressTooltipComponent = Component.extend({
    * @public
    */
   tooltipVisible: computed("visible", function() {
-    const task = this.get("_computeTooltipVisible");
+    const task = this._computeTooltipVisible;
 
-    task.perform(this.get("visible"));
+    task.perform(this.visible);
 
     return task;
   }),
@@ -153,7 +153,7 @@ const ProgressTooltipComponent = Component.extend({
    */
   _computeTooltipVisible: task(function*(visible) {
     if (visible) {
-      yield timeout(this.get("delay"));
+      yield timeout(this.delay);
 
       const { spentTime, spentBillable } = yield this.get(
         "metadataFetcher.fetchSingleRecordMetadata"

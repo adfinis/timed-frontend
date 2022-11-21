@@ -40,7 +40,7 @@ export default Component.extend({
   recording: false,
 
   active: computed("recording", "activity.id", function() {
-    return this.get("recording") && this.get("activity.id");
+    return this.recording && this.get("activity.id");
   }),
 
   /**

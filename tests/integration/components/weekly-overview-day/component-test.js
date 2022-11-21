@@ -45,27 +45,27 @@ module("Integration | Component | weekly overview day", function(hooks) {
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime}}`
     );
 
-    assert.notOk(this.get("clicked"));
+    assert.notOk(this.clicked);
     await click(".bar");
     await click(".day");
-    assert.notOk(this.get("clicked"));
+    assert.notOk(this.clicked);
 
     await render(
       hbs`{{weekly-overview-day day=day expected=expected worktime=worktime on-click=(action (mut clicked) true)}}`
     );
 
-    assert.notOk(this.get("clicked"));
+    assert.notOk(this.clicked);
 
     await click(".bar");
 
-    assert.ok(this.get("clicked"));
+    assert.ok(this.clicked);
 
     this.set("clicked", false);
 
-    assert.notOk(this.get("clicked"));
+    assert.notOk(this.clicked);
 
     await click(".day");
 
-    assert.ok(this.get("clicked"));
+    assert.ok(this.clicked);
   });
 });

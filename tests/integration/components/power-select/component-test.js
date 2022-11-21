@@ -4,7 +4,6 @@ import {
   clickTrigger
 } from "ember-power-select/test-support/helpers";
 import { setupRenderingTest } from "ember-qunit";
-import wait from "ember-test-helpers/wait";
 import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
@@ -41,17 +40,14 @@ module("Integration | Component | power select", function(hooks) {
 
     await clickTrigger(".select");
 
-    return wait().then(() => {
-      assert
-        .dom(".ember-power-select-selected-item")
-        .hasText("Selected: Test 1");
-      assert
-        .dom(".ember-power-select-option:first-of-type")
-        .hasText("Option: Test 1");
-    });
+    assert.dom(".ember-power-select-selected-item").hasText("Selected: Test 1");
+    assert
+      .dom(".ember-power-select-option:first-of-type")
+      .hasText("Option: Test 1");
   });
 
   test("can select with tab", async function(assert) {
+    assert.expect(1);
     this.set("options", OPTIONS);
     this.set("selected", OPTIONS[0]);
 
@@ -79,8 +75,6 @@ module("Integration | Component | power select", function(hooks) {
 
     await triggerKeyEvent(".ember-power-select-search-input", "keydown", 9);
 
-    return wait().then(() => {
-      assert.equal(this.get("selected.id"), 2);
-    });
+    assert.strictEqual(this.get("selected.id"), 2);
   });
 });

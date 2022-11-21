@@ -75,7 +75,7 @@ export default Model.extend({
   isTask: true,
 
   longName: computed("project", function() {
-    const taskName = this.get("name");
+    const taskName = this.name;
     const projectName = this.get("project.name");
     const customerName = this.get("project.customer.name");
 

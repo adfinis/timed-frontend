@@ -31,10 +31,10 @@ module("Integration | Component | sy modal/header", function(hooks) {
       {{/sy-modal/header}}
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click("button");
 
-    assert.notOk(this.get("visible"));
+    assert.notOk(this.visible);
   });
 });
