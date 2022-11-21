@@ -7,6 +7,6 @@ export default Route.extend({
     this._super(controller, ...args);
 
     controller.set("user", this.modelFor("users.edit"));
-    controller.get("credit").perform();
+    controller.credit.perform();
   }
 });

@@ -1,7 +1,7 @@
+import { hbs } from 'ember-cli-htmlbars';
 import { find, render } from "@ember/test-helpers";
 import { clickTrigger } from "ember-basic-dropdown/test-support/helpers";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import { module, test } from "qunit";
 

@@ -1,6 +1,6 @@
+import { hbs } from 'ember-cli-htmlbars';
 import { find, render } from "@ember/test-helpers";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
 module("Integration | Component | weekly overview benchmark", function(hooks) {

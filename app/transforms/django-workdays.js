@@ -3,9 +3,7 @@
  * @submodule timed-transforms
  * @public
  */
-import DS from "ember-data";
-
-const { Transform } = DS;
+import Transform from "@ember-data/serializer/transform";
 
 /**
  * Django worktime transform
@@ -39,5 +37,5 @@ export default Transform.extend({
    */
   serialize(deserialized) {
     return deserialized.map(String);
-  }
+  },
 });

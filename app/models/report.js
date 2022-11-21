@@ -3,26 +3,24 @@
  * @submodule timed-models
  * @public
  */
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
+import Model, { attr, belongsTo } from "@ember-data/model";
 import moment from "moment";
 
 /**
  * The report model
  *
  * @class Report
- * @extends DS.Model
+ * @extends Model
  * @public
  */
-export default Model.extend({
+export default class Report extends Model {
   /**
    * The comment
    *
    * @property {String} comment
    * @public
    */
-  comment: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) comment;
 
   /**
    * The date
@@ -30,7 +28,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr("django-date"),
+  @attr("django-date") date;
 
   /**
    * The duration
@@ -38,7 +36,7 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: attr("django-duration", { defaultValue: () => moment.duration() }),
+  @attr("django-duration", { defaultValue: () => moment.duration() }) duration;
 
   /**
    * Whether the report needs to be reviewed
@@ -46,7 +44,7 @@ export default Model.extend({
    * @property {Boolean} review
    * @public
    */
-  review: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) review;
 
   /**
    * Whether the report is not billable
@@ -54,7 +52,7 @@ export default Model.extend({
    * @property {Boolean} notBillable
    * @public
    */
-  notBillable: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) notBillable;
 
   /**
    * Whether the report has been marked as billed
@@ -62,7 +60,7 @@ export default Model.extend({
    * @property {Boolean} billed
    * @public
    */
-  billed: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) billed;
 
   /**
    * The task
@@ -70,7 +68,7 @@ export default Model.extend({
    * @property {Task} task
    * @public
    */
-  task: belongsTo("task"),
+  @belongsTo("task") task;
 
   /**
    * The user
@@ -78,7 +76,7 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo("user"),
+  @belongsTo("user") user;
 
   /**
    * The user which verified this report
@@ -86,5 +84,5 @@ export default Model.extend({
    * @property {User} verifiedBy
    * @public
    */
-  verifiedBy: belongsTo("user")
-});
+  @belongsTo("user") verifiedBy;
+}

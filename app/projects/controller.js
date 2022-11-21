@@ -75,9 +75,9 @@ export default Controller.extend({
   createTask: task(function*() {
     this.set(
       "selectedTask",
-      yield this.store.createRecord("task", {
+      (yield this.store.createRecord("task", {
         project: this.selectedProject
-      })
+      }))
     );
   }).drop(),
 

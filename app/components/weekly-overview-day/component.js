@@ -119,12 +119,12 @@ export default Component.extend({
    * Click event - fire the on-click action
    */
   click(event) {
-    const action = this.get("on-click");
+    const action = this["on-click"];
 
     if (action) {
       event.preventDefault();
 
-      this.get("on-click")(this.day);
+      this["on-click"](this.day);
     }
   }
 });

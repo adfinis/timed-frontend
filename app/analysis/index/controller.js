@@ -339,25 +339,25 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       .join(",");
 
     const projectAssignees = projectIds.length
-      ? yield this.store.query("project-assignee", {
+      ? (yield this.store.query("project-assignee", {
           is_reviewer: 1,
           projects: projectIds,
           include: "project,user"
-        })
+        }))
       : [];
     const taskAssignees = taskIds.length
-      ? yield this.store.query("task-assignee", {
+      ? (yield this.store.query("task-assignee", {
           is_reviewer: 1,
           tasks: taskIds,
           include: "task,user"
-        })
+        }))
       : [];
     const customerAssignees = customerIds.length
-      ? yield this.store.query("customer-assignee", {
+      ? (yield this.store.query("customer-assignee", {
           is_reviewer: 1,
           customers: customerIds,
           include: "customer,user"
-        })
+        }))
       : [];
 
     return { projectAssignees, taskAssignees, customerAssignees };

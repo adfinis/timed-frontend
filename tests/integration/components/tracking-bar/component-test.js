@@ -1,8 +1,8 @@
+import { hbs } from 'ember-cli-htmlbars';
 import Service from "@ember/service";
 import { render } from "@ember/test-helpers";
 import { task } from "ember-concurrency";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
 export const trackingStub = Service.extend({

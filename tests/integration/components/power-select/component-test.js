@@ -1,10 +1,10 @@
+import { hbs } from 'ember-cli-htmlbars';
 import { triggerKeyEvent, render } from "@ember/test-helpers";
 import {
   typeInSearch,
   clickTrigger
 } from "ember-power-select/test-support/helpers";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
 const OPTIONS = [

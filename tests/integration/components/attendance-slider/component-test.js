@@ -1,7 +1,7 @@
+import { hbs } from 'ember-cli-htmlbars';
 import EmberObject from "@ember/object";
 import { click, render } from "@ember/test-helpers";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import { module, test } from "qunit";
 

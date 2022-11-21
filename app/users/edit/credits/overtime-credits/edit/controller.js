@@ -16,10 +16,10 @@ export default Controller.extend({
     const id = this.model;
 
     return id
-      ? yield this.store.findRecord("overtime-credit", id)
-      : yield this.store.createRecord("overtime-credit", {
+      ? (yield this.store.findRecord("overtime-credit", id))
+      : (yield this.store.createRecord("overtime-credit", {
           user: this.user
-        });
+        }));
   }),
 
   save: task(function*(changeset) {

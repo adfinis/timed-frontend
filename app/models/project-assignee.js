@@ -3,9 +3,7 @@
  * @submodule timed-models
  * @public
  */
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
+import Model, { attr, belongsTo } from "@ember-data/model";
 
 /**
  * The project assignee model
@@ -58,5 +56,5 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  isResource: attr("boolean", { defaultValue: false })
+  isResource: attr("boolean", { defaultValue: false }),
 });

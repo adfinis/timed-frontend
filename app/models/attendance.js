@@ -3,10 +3,8 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, belongsTo } from "@ember-data/model";
 import { computed } from "@ember/object";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
 import moment from "moment";
 
 /**
@@ -59,12 +57,12 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: computed("from", "to", function() {
+  duration: computed("from", "to", function () {
     const calcTo =
       this.to.format("HH:mm") === "00:00"
         ? this.to.clone().add(1, "day")
         : this.to;
 
     return moment.duration(calcTo.diff(this.from));
-  })
+  }),
 });

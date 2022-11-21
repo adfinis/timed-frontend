@@ -22,12 +22,12 @@ export default Controller.extend({
     const id = this.model;
 
     return id
-      ? yield this.store.findRecord("absence-credit", id, {
+      ? (yield this.store.findRecord("absence-credit", id, {
           include: "absence_type"
-        })
-      : yield this.store.createRecord("absence-credit", {
+        }))
+      : (yield this.store.createRecord("absence-credit", {
           user: this.user
-        });
+        }));
   }),
 
   save: task(function*(changeset) {

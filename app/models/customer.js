@@ -3,10 +3,8 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, hasMany } from "@ember-data/model";
 import { reads } from "@ember/object/computed";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { hasMany } from "ember-data/relationships";
 
 /**
  * The customer model
@@ -58,7 +56,7 @@ const Customer = Model.extend({
    * @type {CustomerAssignee[]}
    * @public
    */
-  assignees: hasMany("customer-assignee")
+  assignees: hasMany("customer-assignee"),
 });
 
 export default Customer;
