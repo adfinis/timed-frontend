@@ -18,7 +18,6 @@ export default function validateMoment(options = { gt: null, lt: null }) {
       newValue = moment();
     }
     let valid = !!newValue && newValue._isValid;
-
     if (!valid) {
       return valid;
     }
@@ -39,7 +38,6 @@ export default function validateMoment(options = { gt: null, lt: null }) {
         valid = false;
       }
     }
-
     return valid;
   };
 }

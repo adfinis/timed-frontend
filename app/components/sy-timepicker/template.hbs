@@ -1,0 +1,12 @@
+<input
+  type="text"
+  class="form-control"
+  pattern={{this.pattern}}
+  value={{this.displayValue}}
+  maxlength={{this.maxlength}}
+  placeholder={{this.placeholder}}
+  autocomplete="off"
+  {{on "keydown" this.keyDown}}
+  {{on "change" this.change}}
+  {{on "focusout" (optional @onFocusOut)}}
+/>

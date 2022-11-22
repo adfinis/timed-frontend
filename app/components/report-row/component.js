@@ -3,15 +3,11 @@
  * @submodule timed-components
  * @public
  */
-import classic from "ember-classic-decorator";
-import {
-  classNames,
-  attributeBindings,
-  tagName,
-} from "@ember-decorators/component";
-import { action, computed } from "@ember/object";
+
+import { action } from "@ember/object";
+import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
-import Component from "@ember/component";
+import Component from "@glimmer/component";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
 import ReportValidations from "timed/validations/report";
@@ -23,23 +19,17 @@ import ReportValidations from "timed/validations/report";
  * @extends Ember.Component
  * @public
  */
-@classic
-@tagName("form")
-@classNames("form-list-row")
-@attributeBindings("title")
-class ReportRowComponent extends Component {
-  @service can;
+export default class ReportRowComponent extends Component {
+  @service abilities;
 
-  @computed("report.{verifiedBy,billed}")
   get editable() {
-    return this.can.can("edit report", this.report);
+    return this.abilities.can("edit report", this.args.report);
   }
 
-  @computed("editable")
   get title() {
     return this.editable
       ? ""
-      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and is therefore not editable anymore`;
+      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and therefore not editable anymore`;
   }
 
   /**
@@ -48,15 +38,16 @@ class ReportRowComponent extends Component {
    * @property {EmberChangeset.Changeset} changeset
    * @public
    */
-  @computed("report.{id,verifiedBy}")
   get changeset() {
     const c = new Changeset(
-      this.report,
+      this.args.report,
       lookupValidator(ReportValidations),
       ReportValidations
     );
 
-    c.validate();
+    later(() => {
+      c.validate();
+    });
 
     return c;
   }
@@ -69,9 +60,8 @@ class ReportRowComponent extends Component {
    */
   @action
   save() {
-    this["on-save"](this.changeset);
+    this.args.onSave(this.changeset);
   }
-
   /**
    * Delete the row
    *
@@ -80,12 +70,6 @@ class ReportRowComponent extends Component {
    */
   @action
   delete() {
-    this["on-delete"](this.report);
+    this.args.onDelete(this.args.report);
   }
 }
-
-ReportRowComponent.reopenClass({
-  positionalParams: ["report"],
-});
-
-export default ReportRowComponent;

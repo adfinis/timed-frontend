@@ -4,7 +4,8 @@
  * @public
  */
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
+import { action } from "@ember/object";
+import { inject as service } from "@ember/service";
 
 /**
  * Controller to edit an activity
@@ -13,7 +14,10 @@ import { computed } from "@ember/object";
  * @extends Ember.Controller
  * @public
  */
-const IndexActivitiesEditController = Controller.extend({
+export default class IndexActivitiesEditController extends Controller {
+  @service notify;
+  @service router;
+
   /**
    * Whether the save button is enabled
    *
@@ -23,22 +27,76 @@ const IndexActivitiesEditController = Controller.extend({
    * @property {Boolean} saveEnabled
    * @public
    */
-  saveEnabled: computed("changeset.{isValid,isDirty}", function() {
-    return this.get("changeset.isDirty") && this.get("changeset.isValid");
-  }),
+  get saveEnabled() {
+    return this.changeset.isDirty && this.changeset.isValid;
+  }
 
-  actions: {
-    /**
-     * Validate the given changeset
-     *
-     * @method validateChangeset
-     * @param {EmberChangeset.Changeset} changeset The changeset to validate
-     * @public
-     */
-    validateChangeset(changeset) {
-      changeset.validate();
+  /**
+   * Validate the given changeset
+   *
+   * @method validateChangeset
+   * @param {EmberChangeset.Changeset} changeset The changeset to validate
+   * @public
+   */
+  @action
+  validateChangeset(changeset) {
+    this.changeset.validate();
+  }
+
+  @action
+  toggle(prop) {
+    this.changeset[prop] = !!this.changeset[prop];
+  }
+
+  @action
+  async save() {
+    /* istanbul ignore next */
+    if (!this.saveEnabled) {
+      /* UI prevents this, but could be executed by pressing enter */
+      return;
+    }
+
+    try {
+      await this.changeset.save();
+
+      this.notify.success("Activity was saved");
+
+      await this.router.transitionTo("index.activities");
+    } catch (e) {
+      console.error(e);
+      /* istanbul ignore next */
+      this.notify.error("Error while saving the activity");
     }
   }
-});
 
-export default IndexActivitiesEditController;
+  /**
+   * Delete the activity
+   *
+   * @method delete
+   * @public
+   */
+  @action
+  async delete() {
+    /* istanbul ignore next */
+    if (this.model.active) {
+      // We can't test this because the UI already prevents this by disabling
+      // the save button..
+
+      this.notify.error("You can't delete an active activity");
+
+      return;
+    }
+
+    try {
+      await this.model.destroyRecord();
+
+      this.notify.success("Activity was deleted");
+
+      await this.router.transitionTo("index.activities");
+    } catch (e) {
+      console.error(e);
+      /* istanbul ignore next */
+      this.notify.error("Error while deleting the activity");
+    }
+  }
+}
