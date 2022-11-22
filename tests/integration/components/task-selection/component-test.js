@@ -1,71 +1,64 @@
-import { hbs } from 'ember-cli-htmlbars';
 import EmberObject from "@ember/object";
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
+import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
-import { startMirage } from "timed/initializers/ember-cli-mirage";
 
 const CUSTOMER = EmberObject.create({
   id: 1,
-  name: "Test Customer"
+  name: "Test Customer",
 });
 
 const PROJECT = EmberObject.create({
   id: 1,
   name: "Test Project",
-  customer: CUSTOMER
+  customer: CUSTOMER,
 });
 
 const TASK = EmberObject.create({
   id: 1,
   name: "Test Task",
-  project: PROJECT
+  project: PROJECT,
 });
 
-module("Integration | Component | task selection", function(hooks) {
+module("Integration | Component | task selection", function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    this.server = startMirage();
-  });
-
-  hooks.afterEach(function() {
-    this.server.shutdown();
-  });
-
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`
-      {{#task-selection as |t|}}
+      <TaskSelection as |t|>
         {{t.customer}}
         {{t.project}}
         {{t.task}}
-      {{/task-selection}}
+      </TaskSelection>
     `);
 
-    assert.dom(".customer-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".project-select [aria-disabled=true]").exists();
-    assert.dom(".task-select [aria-disabled=true]").exists();
+    assert.dom(".customer-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".project-select[aria-disabled=true]").exists();
+    assert.dom(".task-select[aria-disabled=true]").exists();
   });
 
-  test("can set initial customer", async function(assert) {
+  test("can set initial customer", async function (assert) {
     assert.expect(4);
     this.set("customer", CUSTOMER);
 
     await render(hbs`
-      {{#task-selection
-        initial    = (hash
+      <TaskSelection
+        @initial={{(hash
           customer = customer
-        )
-      as |t|}}
+        )}}
+      as |t|>
         {{t.customer}}
         {{t.project}}
         {{t.task}}
-      {{/task-selection}}
+      </TaskSelection>
     `);
 
-    assert.dom(".customer-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".project-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".task-select [aria-disabled=true]").exists();
+    assert.dom(".customer-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".project-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".task-select[aria-disabled=true]").exists();
 
     assert.strictEqual(
       this.element
@@ -75,25 +68,25 @@ module("Integration | Component | task selection", function(hooks) {
     );
   });
 
-  test("can set initial project", async function(assert) {
+  test("can set initial project", async function (assert) {
     assert.expect(5);
     this.set("project", PROJECT);
 
     await render(hbs`
-      {{#task-selection
-        initial   = (hash
+      <TaskSelection
+        @initial={{(hash
           project = project
-        )
-      as |t|}}
+        )}}
+      as |t|>
         {{t.customer}}
         {{t.project}}
         {{t.task}}
-      {{/task-selection}}
+      </TaskSelection>
     `);
 
-    assert.dom(".customer-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".project-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".task-select [aria-disabled=true]").doesNotExist();
+    assert.dom(".customer-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".project-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".task-select[aria-disabled=true]").doesNotExist();
 
     assert.strictEqual(
       this.element
@@ -109,25 +102,25 @@ module("Integration | Component | task selection", function(hooks) {
     );
   });
 
-  test("can set initial task", async function(assert) {
+  test("can set initial task", async function (assert) {
     assert.expect(6);
     this.set("task", TASK);
 
     await render(hbs`
-      {{#task-selection
-        initial = (hash
+      <TaskSelection
+        @initial={{(hash
           task  = task
-        )
-      as |t|}}
+        )}}
+      as |t|>
         {{t.customer}}
         {{t.project}}
         {{t.task}}
-      {{/task-selection}}
+      </TaskSelection>
     `);
 
-    assert.dom(".customer-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".project-select [aria-disabled=true]").doesNotExist();
-    assert.dom(".task-select [aria-disabled=true]").doesNotExist();
+    assert.dom(".customer-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".project-select[aria-disabled=true]").doesNotExist();
+    assert.dom(".task-select[aria-disabled=true]").doesNotExist();
 
     assert.strictEqual(
       this.element
@@ -149,38 +142,38 @@ module("Integration | Component | task selection", function(hooks) {
     );
   });
 
-  test("can clear customer", async function(assert) {
+  test("can clear customer", async function (assert) {
     assert.expect(0);
 
     this.set("task", TASK);
 
     await render(hbs`
-      {{#task-selection
-        initial = (hash
+      <TaskSelection
+        @initial={{(hash
           task  = task
-        )
-      as |t|}}
+        )}}
+      as |t|>
         {{t.customer}}
         {{t.project}}
         {{t.task}}
-      {{/task-selection}}
+      </TaskSelection>
     `);
   });
 
-  test("can clear all filters", async function(assert) {
+  test("can clear all filters", async function (assert) {
     this.set("task", TASK);
 
     await render(hbs`
-      {{#task-selection
-        initial = (hash
+      <TaskSelection
+        @initial={{(hash
           task  = task
-        )
-      as |t|}}
+        )}}
+      as |t|>
         {{t.customer}}
         {{t.project}}
         {{t.task}}
-        <button {{action t.clear}}></button>
-      {{/task-selection}}
+        <button {{on "click" t.clear}}></button>
+      </TaskSelection>
     `);
 
     await click("button");

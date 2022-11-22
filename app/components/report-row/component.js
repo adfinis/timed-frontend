@@ -1,12 +1,16 @@
-import classic from "ember-classic-decorator";
-import { classNames, attributeBindings, tagName } from "@ember-decorators/component";
-import { action, computed } from "@ember/object";
-import { inject as service } from "@ember/service";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
+import classic from "ember-classic-decorator";
+import {
+  classNames,
+  attributeBindings,
+  tagName,
+} from "@ember-decorators/component";
+import { action, computed } from "@ember/object";
+import { inject as service } from "@ember/service";
 import Component from "@ember/component";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
@@ -24,8 +28,7 @@ import ReportValidations from "timed/validations/report";
 @classNames("form-list-row")
 @attributeBindings("title")
 class ReportRowComponent extends Component {
-  @service
-  can;
+  @service can;
 
   @computed("report.{verifiedBy,billed}")
   get editable() {
@@ -36,9 +39,7 @@ class ReportRowComponent extends Component {
   get title() {
     return this.editable
       ? ""
-      : `This entry was already verified by ${this.get(
-          "report.verifiedBy.fullName"
-        )} and therefore not editable anymore`;
+      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and is therefore not editable anymore`;
   }
 
   /**
@@ -84,7 +85,7 @@ class ReportRowComponent extends Component {
 }
 
 ReportRowComponent.reopenClass({
-  positionalParams: ["report"]
+  positionalParams: ["report"],
 });
 
 export default ReportRowComponent;

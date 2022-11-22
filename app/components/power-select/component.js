@@ -1,14 +1,16 @@
 import { action } from "@ember/object";
 import { isBlank } from "@ember/utils";
-import Ember from "ember";
 import PowerSelectComponent from "ember-power-select/components/power-select";
+import { isTesting, macroCondition } from "@embroider/macros"
 
 export default class PowerSelectCustomComponent extends PowerSelectComponent {
   constructor(...args) {
     super(...args);
-
+    
     this.extra = this.args.extra ?? {};
-    this.extra.testing = Ember.testing;
+    if (macroCondition(isTesting())){
+      this.extra.testing = true;
+    }
   }
 
   _handleKeyTab(...args) {
@@ -18,7 +20,7 @@ export default class PowerSelectCustomComponent extends PowerSelectComponent {
   _focusComesFromOutside(e) {
     const blurredEl = e.relatedTarget;
 
-    if (isBlank(blurredEl) || Ember.testing) {
+    if (isBlank(blurredEl) || this.extra.testing) {
       return false;
     }
 
