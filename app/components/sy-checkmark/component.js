@@ -1,12 +1,7 @@
-import { tracked } from "@glimmer/tracking";
-import classic from "ember-classic-decorator";
-import FaIconComponent from "ember-font-awesome/components/fa-icon";
+import Component from "@glimmer/component";
 
-@classic
-export default class SyCheckmark extends FaIconComponent {
-  @tracked checked = false;
-
+export default class SyCheckmark extends Component {
   get icon() {
-    return this.checked ? "check-square-o" : "square-o";
+    return this.args.checked ? "check-square-o" : "square-o";
   }
 }
