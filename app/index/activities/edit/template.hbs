@@ -39,13 +39,13 @@
           data-test-activity-review
           @checked={{this.changeset.review}}
           @label={{"Needs review"}}
-          {{on "change" (fn this.toggle "review")}}
+          @onChange={{(fn this.toggle "review")}}
         />
         <SyCheckbox
           data-test-activity-not-billable
           @checked={{this.changeset.notBillable}}
           @label="Not billable"
-          {{on "change" (fn this.toggle "notBillable")}}
+          @onChange={{(fn this.toggle "notBillable")}}
         />
       </div>
       <table class="table table--striped table--activity-edit">

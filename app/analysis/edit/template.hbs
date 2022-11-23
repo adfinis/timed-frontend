@@ -9,7 +9,9 @@
       {{else}}
         <h1 class="text-center">
           {{#unless (eq this.intersection.lastSuccessful.value.meta.count 1)}}
-            Bulk edit {{this.intersection.lastSuccessful.value.meta.count}} reports
+            Bulk edit
+            {{this.intersection.lastSuccessful.value.meta.count}}
+            reports
           {{else}}
             Edit report
           {{/unless}}
@@ -23,25 +25,43 @@
                 as |f|
               >
                 <TaskSelection
-                  @on-set-customer={{action (queue (action (mut f.model.customer)) (action 'validate' f.model))}}
-                  @on-set-project={{action (queue (action (mut f.model.project)) (action 'validate' f.model))}}
-                  @on-set-task={{action (queue (action (mut f.model.task)) (action 'validate' f.model))}}
+                  @on-set-customer={{action
+                    (queue
+                      (action (mut f.model.customer))
+                      (action "validate" f.model)
+                    )
+                  }}
+                  @on-set-project={{action
+                    (queue
+                      (action (mut f.model.project)) (action "validate" f.model)
+                    )
+                  }}
+                  @on-set-task={{action
+                    (queue
+                      (action (mut f.model.task)) (action "validate" f.model)
+                    )
+                  }}
                   @initial={{hash
                     customer=this._customer
                     project=this._project
                     task=this._task
                   }}
-                  @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
+                  @disabled={{and
+                    this.isAccountant
+                    (not this.hasSelectedOwnReports)
+                  }}
                   as |t|
                 >
-                  <f.input @name='task' as |fi|>
+                  <f.input @name="task" as |fi|>
                     <div class="form-group" data-test-customer>
                       <label>
                         Customer
                         {{#unless model.customer}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.customer.id model.customer.id)}}
+                        {{#unless
+                          (eq f.model.change.customer.id model.customer.id)
+                        }}
                           <ChangedWarning />
                         {{/unless}}
                       </label>
@@ -53,7 +73,9 @@
                         {{#unless model.project}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.project.id model.project.id)}}
+                        {{#unless
+                          (eq f.model.change.project.id model.project.id)
+                        }}
                           <ChangedWarning />
                         {{/unless}}
                       </label>
@@ -73,11 +95,7 @@
                     </div>
                   </f.input>
 
-                  <f.input
-                    data-test-comment
-                    @name='comment'
-                    as |fi|
-                  >
+                  <f.input data-test-comment @name="comment" as |fi|>
                     <label>
                       Comment
                       {{#if (eq model.comment null)}}
@@ -91,24 +109,26 @@
                       type="text"
                       placeholder="Enter comment..."
                       class="form-control comment-field"
-                      onchange={{action fi.update value='target.value'}}
+                      onchange={{action fi.update value="target.value"}}
                       value={{fi.value}}
-                      disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
-                    >
+                      disabled={{and
+                        this.isAccountant
+                        (not this.hasSelectedOwnReports)
+                      }}
+                    />
                     {{#if model.task.project.customerVisible}}
                       <CustomerVisibleIcon class="customer-visible-icon" />
                     {{/if}}
                   </f.input>
 
-                  <f.input
-                    data-test-not-billable
-                    @name='notBillable'
-                    as |fi|
-                  >
+                  <f.input data-test-not-billable @name="notBillable" as |fi|>
                     <SyCheckbox
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
+                      @onChange={{fi.update}}
+                      @disabled={{and
+                        this.isAccountant
+                        (not this.hasSelectedOwnReports)
+                      }}
                     >
                       Not billable
                       {{#if (eq model.notBillable null)}}
@@ -120,15 +140,14 @@
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input
-                    data-test-review
-                    @name='review'
-                    as |fi|
-                  >
+                  <f.input data-test-review @name="review" as |fi|>
                     <SyCheckbox
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
+                      @onChange={{fi.update}}
+                      @disabled={{and
+                        this.isAccountant
+                        (not this.hasSelectedOwnReports)
+                      }}
                     >
                       Needs Review
                       {{#if (eq model.review null)}}
@@ -140,15 +159,14 @@
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input
-                    data-test-billed
-                    @name='billed'
-                    as |fi|
-                  >
+                  <f.input data-test-billed @name="billed" as |fi|>
                     <SyCheckbox
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @title={{not this.canBill "You do not have appropriate roles for this action."}}
+                      @onChange={{fi.update}}
+                      @title={{not
+                        this.canBill
+                        "You do not have appropriate roles for this action."
+                      }}
                       @disabled={{not this.canBill}}
                     >
                       Billed
@@ -161,14 +179,10 @@
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input
-                    data-test-verified
-                    @name='verified'
-                    as |fi|
-                  >
+                  <f.input data-test-verified @name="verified" as |fi|>
                     <SyCheckbox
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
+                      @onChange={{fi.update}}
                       @title={{this.toolTipText}}
                       @disabled={{or (not this.canVerify) this.needsReview}}
                     >
@@ -183,8 +197,18 @@
                   </f.input>
 
                   <div class="text-right">
-                    <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
-                    <button data-test-reset type="button" class="btn" {{action (queue t.reset (action 'reset' f.model))}}>Reset</button>
+                    <button
+                      data-test-cancel
+                      type="button"
+                      class="btn"
+                      {{action "cancel"}}
+                    >Cancel</button>
+                    <button
+                      data-test-reset
+                      type="button"
+                      class="btn"
+                      {{action (queue t.reset (action "reset" f.model))}}
+                    >Reset</button>
                     <f.submit />
                   </div>
                 </TaskSelection>

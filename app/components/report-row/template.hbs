@@ -34,29 +34,30 @@
     {{/if}}
   </div>
   <div class="form-list-cell form-group">
-    {{sy-durationpicker-day
+    <SyDurationpickerDay
       data-test-report-duration
-      disabled=(not this.editable)
-      value=this.changeset.duration
-      on-change=(action (mut this.changeset.duration))
-    }}</div>
-  <div class="form-list-cell form-group">
-    {{sy-checkbox
-      data-test-report-review
-      disabled=(not this.editable)
-      checked=this.changeset.review
-      on-change=(action (mut this.changeset.review))
-      label="Needs review"
-    }}
+      @disabled={{(not this.editable)}}
+      @value={{this.changeset.duration}}
+      @onChange={{fn (mut this.changeset.duration)}}
+    />
   </div>
   <div class="form-list-cell form-group">
-    {{sy-checkbox
+    <SyCheckbox
+      data-test-report-review
+      @disabled={{(not this.editable)}}
+      @checked={{this.changeset.review}}
+      @onChange={{fn (mut this.changeset.review)}}
+      @label="Needs review"
+    />
+  </div>
+  <div class="form-list-cell form-group">
+    <SyCheckbox
       data-test-report-not-billable
-      disabled=(not this.editable)
-      checked=this.changeset.notBillable
-      on-change=(action (mut this.changeset.notBillable))
-      label="Not billable"
-    }}
+      @disabled={{(not this.editable)}}
+      @checked={{this.changeset.notBillable}}
+      @onChange={{fn (mut this.changeset.notBillable)}}
+      @label="Not billable"
+    />
   </div>
   <div class="form-list-cell form-group">
     {{#if this.editable}}
