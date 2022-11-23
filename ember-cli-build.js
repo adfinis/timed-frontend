@@ -16,6 +16,9 @@ module.exports = function (defaults) {
       importHopscotchJS: true,
       importHopscotchCSS: true,
     },
+    "ember-validated-form": {
+      theme: "bootstrap",
+    },
   });
 
   app.import("vendor/adcssy.min.css");
