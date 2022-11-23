@@ -37,8 +37,10 @@ def test_project_statistic_list(
         is_external=False,
     )
     report = ReportFactory.create(duration=timedelta(hours=1))
+    project = report.task.project
     ReportFactory.create(duration=timedelta(hours=2), task=report.task)
     report2 = ReportFactory.create(duration=timedelta(hours=4))
+    project_2 = report2.task.project
     task = TaskFactory(project=report.task.project)
     ReportFactory.create(duration=timedelta(hours=2), task=task)
 
@@ -56,6 +58,10 @@ def test_project_statistic_list(
                 "attributes": {
                     "duration": "04:00:00",
                     "name": report2.task.project.name,
+                    "amount-offered": str(project_2.amount_offered.amount),
+                    "amount-offered-currency": project_2.amount_offered_currency,
+                    "amount-invoiced": str(project_2.amount_invoiced.amount),
+                    "amount-invoiced-currency": project_2.amount_invoiced_currency,
                 },
             },
             {
@@ -64,6 +70,10 @@ def test_project_statistic_list(
                 "attributes": {
                     "duration": "05:00:00",
                     "name": report.task.project.name,
+                    "amount-offered": str(project.amount_offered.amount),
+                    "amount-offered-currency": project.amount_offered_currency,
+                    "amount-invoiced": str(project.amount_invoiced.amount),
+                    "amount-invoiced-currency": project.amount_invoiced_currency,
                 },
             },
         ]

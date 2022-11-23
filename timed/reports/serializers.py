@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework_json_api import relations
 from rest_framework_json_api.serializers import (
     CharField,
+    DecimalField,
     DurationField,
     IntegerField,
     Serializer,
@@ -41,6 +42,10 @@ class CustomerStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
 class ProjectStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
     name = CharField()
+    amount_offered = DecimalField(max_digits=None, decimal_places=2)
+    amount_offered_currency = CharField()
+    amount_invoiced = DecimalField(max_digits=None, decimal_places=2)
+    amount_invoiced_currency = CharField()
 
     class Meta:
         resource_name = "project-statistics"
