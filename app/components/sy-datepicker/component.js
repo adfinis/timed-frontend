@@ -1,8 +1,8 @@
 import { action } from "@ember/object";
-import Component from "@ember/component";
+import { guidFor } from "@ember/object/internals";
 import { scheduleOnce } from "@ember/runloop";
+import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import classic from "ember-classic-decorator";
 import moment from "moment";
 
 const DISPLAY_FORMAT = "DD.MM.YYYY";
@@ -11,17 +11,23 @@ const PARSE_FORMAT = "D.M.YYYY";
 
 const parse = (value) => (value ? moment(value, PARSE_FORMAT) : null);
 
-@classic
 export default class SyDatepicker extends Component {
-  @tracked value = null;
   placeholder = DISPLAY_FORMAT;
 
-  get displayValue() {
-    const value = this.value;
-    return value && value.isValid() ? value.format(DISPLAY_FORMAT) : null;
+  @tracked center;
+
+  constructor(...args) {
+    super(...args);
+
+    this.uniqueId = guidFor(this);
+    this.center = this.args.value ?? moment();
   }
 
-  name = "date";
+  get displayValue() {
+    return this.args.value && this.args.value.isValid()
+      ? this.args.value.format(DISPLAY_FORMAT)
+      : null;
+  }
 
   @action
   handleBlur(dd, e) {
@@ -41,23 +47,20 @@ export default class SyDatepicker extends Component {
 
   @action
   checkValidity() {
-    // This is subject to change in future refactorings anyways, so pleace
-    // don't think about it to hard.
+    scheduleOnce("afterRender", this, this.deferredWork);
+  }
 
-    // eslint-disable-next-line ember/no-incorrect-calls-with-inline-anonymous-functions
-    scheduleOnce("afterRender", this, function () {
-      const target = this.element.querySelector(
-        ".ember-basic-dropdown-trigger input"
-      );
+  @action
+  deferredWork() {
+    const target = document.getElementById(this.uniqueId);
 
-      const parsed = parse(target.value);
+    const parsed = parse(target.value);
 
-      if (parsed && !parsed.isValid()) {
-        return target.setCustomValidity("Invalid date");
-      }
+    if (parsed && !parsed.isValid()) {
+      return target.setCustomValidity("Invalid date");
+    }
 
-      return target.setCustomValidity("");
-    });
+    return target.setCustomValidity("");
   }
 
   @action
@@ -70,7 +73,18 @@ export default class SyDatepicker extends Component {
     if (valid) {
       const parsed = parse(value);
 
-      return this["on-change"](parsed && parsed.isValid() ? parsed : null);
+      return this.args.onChange(parsed && parsed.isValid() ? parsed : null);
     }
+  }
+
+  @action
+  updateCenter({ moment }) {
+    this.center = moment;
+  }
+
+  @action
+  updateSelect({ moment }) {
+    this.args.onChange(moment);
+    this.checkValidity();
   }
 }

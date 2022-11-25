@@ -5,7 +5,7 @@
       <h1 class="no-margin">{{moment-format this.model 'dddd, DD.MM.YYYY'}}</h1>
     </div>
     <div class="grid-cell grid-cell-sm--6of12 grid-cell--align-center">
-      <DateNavigation @current={{this.date}} @on-change={{fn (mut this.date)}} />
+      <DateNavigation @current={{this.date}} @onChange={{fn (mut this.date)}} />
     </div>
     <div class="grid-cell visible-md">
       <WeeklyOverview @expected={{this.expectedWorktime}}>
