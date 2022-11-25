@@ -19,14 +19,16 @@
   </TaskSelection>
 
   <div class="form-list-cell form-group">
+    <label for="row-comment" hidden>Comment</label>
     <input
       type="text"
       class="form-control comment-field"
       placeholder="Comment"
       name="comment"
+      id="row-comment"
       value={{this.changeset.comment}}
       disabled={{not this.editable}}
-      {{on "change" (pick "target.value" (mut this.changeset.comment)}}
+      {{on "change" (pick "target.value" (mut this.changeset.comment))}}
       data-test-report-comment
     />
     {{#if this.changeset.task.project.customerVisible}}
@@ -66,7 +68,7 @@
         data-test-delete-report
         class="btn btn-danger"
         disabled={{this.report.verifiedBy.id}}
-        {{action "delete"}}
+        {{this.delete}}
       >{{fa-icon "trash"}}</button>
       <button
         type="submit"
@@ -76,7 +78,7 @@
           (not this.changeset.isDirty)
           (not this.changeset.isValid)
         }}
-        {{action "save"}}
+        {{this.save}}
       >{{fa-icon "save"}}</button>
     {{/if}}
   </div>
