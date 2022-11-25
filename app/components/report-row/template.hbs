@@ -26,7 +26,7 @@
       name="comment"
       value={{this.changeset.comment}}
       disabled={{not this.editable}}
-      onchange={{action (mut this.changeset.comment) value="target.value"}}
+      {{on "change" (pick "target.value" (mut this.changeset.comment)}}
       data-test-report-comment
     />
     {{#if this.changeset.task.project.customerVisible}}

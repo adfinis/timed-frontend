@@ -39,17 +39,14 @@ export default class IndexActivitiesEditController extends Controller {
    * @public
    */
   @action
-  validateChangeset(changeset) {
+  validateChangeset() {
     this.changeset.validate();
   }
 
   @action
-  toggle(prop) {
-    this.changeset[prop] = !!this.changeset[prop];
-  }
+  async save(e) {
+    e.preventDefault();
 
-  @action
-  async save() {
     /* istanbul ignore next */
     if (!this.saveEnabled) {
       /* UI prevents this, but could be executed by pressing enter */
@@ -61,7 +58,7 @@ export default class IndexActivitiesEditController extends Controller {
 
       this.notify.success("Activity was saved");
 
-      await this.router.transitionTo("index.activities");
+      this.router.transitionTo("index.activities");
     } catch (e) {
       console.error(e);
       /* istanbul ignore next */
@@ -92,7 +89,7 @@ export default class IndexActivitiesEditController extends Controller {
 
       this.notify.success("Activity was deleted");
 
-      await this.router.transitionTo("index.activities");
+      this.router.transitionTo("index.activities");
     } catch (e) {
       console.error(e);
       /* istanbul ignore next */
