@@ -1,6 +1,7 @@
 <div class="tracking-bar" ...attributes>
   <TaskSelection
     @disabled={{this.tracking.activity.active}}
+    @liveTracking={{true}}
     @on-set-task={{fn (mut this.tracking.activity.task)}}
     @initial={{hash task=this.tracking.activity.task}}
     as |t|

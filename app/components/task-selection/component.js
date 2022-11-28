@@ -3,14 +3,13 @@ import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { dropTask, lastValue } from "ember-concurrency";
-import { hbs } from "ember-cli-htmlbars";
+import { restartableTask } from "ember-concurrency";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { resolve } from "rsvp";
-import customerOptionTemplate from "timed/templates/customer-option";
-import projectOptionTemplate from "timed/templates/project-option";
-import taskOptionTemplate from "timed/templates/task-option";
-
-const SELECTED_TEMPLATE = hbs`{{selected.name}}`;
+import customerOptionTemplate from "timed/components/optimized-power-select/custom-options/customer-option";
+import projectOptionTemplate from "timed/components/optimized-power-select/custom-options/project-option";
+import taskOptionTemplate from "timed/components/optimized-power-select/custom-options/task-option";
+import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/task-selection";
 
 /**
  * Component for selecting a task, which consists of selecting a customer and
@@ -27,7 +26,7 @@ export default class TaskSelectionComponent extends Component {
   constructor(...args) {
     super(...args);
 
-    this.prefetchData.perform();
+    // preselect initial task
     this._setInitial();
 
     if (this.args.task) {
@@ -35,28 +34,9 @@ export default class TaskSelectionComponent extends Component {
     }
   }
 
-  /**
-   * Initially, load customers and recent tasks
-   *
-   * @returns {Generator<*, void, *>}
-   */
-  @dropTask
-  *prefetchData() {
-    try {
-      yield this.tracking.customers.perform();
-      yield this.tracking.recentTasks.perform();
-    } catch (e) {
-      /* istanbul ignore next */
-      if (e.taskInstance && e.taskInstance.isCanceling) {
-        return;
-      }
+  async _setInitial() {
+    await this.tracking.fetchActiveActivity.last;
 
-      /* istanbul ignore next */
-      throw e;
-    }
-  }
-
-  _setInitial() {
     const { customer, project, task } = this.args.initial ?? {
       customer: null,
       project: null,
@@ -102,7 +82,7 @@ export default class TaskSelectionComponent extends Component {
    * @property {*} selectedTemplate
    * @public
    */
-  selectedTemplate = SELECTED_TEMPLATE;
+  selectedTemplate = customSelectedTemplate;
 
   /**
    * The manually selected customer
@@ -130,12 +110,6 @@ export default class TaskSelectionComponent extends Component {
    */
   @tracked
   _task = null;
-
-  @lastValue("getProjectsByCustomer")
-  projects = [];
-
-  @lastValue("getTasksByProjects")
-  tasks = [];
 
   /**
    * Whether to show archived customers, projects or tasks
@@ -167,7 +141,10 @@ export default class TaskSelectionComponent extends Component {
    * @public
    */
   get customer() {
-    return this._customer;
+    // Without unwrapping of the proxy ember-power-select will stick to wrong reference after clearing
+    return this.args.liveTracking
+      ? (this.tracking.activeCustomer?.content ?? this._customer)
+      : this._customer;
   }
 
   /**
@@ -180,7 +157,10 @@ export default class TaskSelectionComponent extends Component {
    * @public
    */
   get project() {
-    return this._project;
+    // Without unwrapping of the proxy ember-power-select will stick to wrong reference after clearing
+    return this.args.liveTracking
+      ? (this.tracking.activeProject?.content ?? this._project)
+      : this._project;
   }
 
   /**
@@ -190,7 +170,9 @@ export default class TaskSelectionComponent extends Component {
    * @public
    */
   get task() {
-    return this._task;
+    return this.args.liveTracking
+      ? (this.tracking.activeTask?.content ?? this._task)
+      : this._task;
   }
 
   /**
@@ -202,16 +184,8 @@ export default class TaskSelectionComponent extends Component {
   get customersAndRecentTasks() {
     let ids = [];
 
-    (async () => {
-      await this.tracking.customers.last;
-    })();
-
     if (this.history) {
-      (async () => {
-        await this.tracking.recentTasks.last;
-      })();
-
-      const last = this.tracking.recentTasks.last?.value;
+      const last = this.tracking.recentTasks;
 
       ids = last ? last.mapBy("id") : [];
     }
@@ -241,8 +215,10 @@ export default class TaskSelectionComponent extends Component {
    * @property {Project[]} projects
    * @public
    */
-  @dropTask
+  @restartableTask
   *getProjectsByCustomer() {
+    yield Promise.resolve();
+
     if (this.customer?.id) {
       yield this.tracking.projects.perform(this.customer.id);
     }
@@ -258,6 +234,14 @@ export default class TaskSelectionComponent extends Component {
       .sortBy("name");
   }
 
+  _getProjectsByCustomer = trackedTask(this, this.getProjectsByCustomer, () => [
+    this.customer,
+  ]);
+
+  get projects() {
+    return this._getProjectsByCustomer.value ?? [];
+  }
+
   /**
    * All tasks which are selectable in the dropdown
    *
@@ -266,8 +250,10 @@ export default class TaskSelectionComponent extends Component {
    * @property {Task[]} tasks
    * @public
    */
-  @dropTask
+  @restartableTask
   *getTasksByProjects() {
+    yield Promise.resolve();
+
     if (this.project?.id) {
       yield this.tracking.tasks.perform(this.project.id);
     }
@@ -283,6 +269,15 @@ export default class TaskSelectionComponent extends Component {
       .sortBy("name");
   }
 
+  _getTasksByProjects = trackedTask(this, this.getTasksByProjects, () => [
+    this.customer,
+    this.project,
+  ]);
+
+  get tasks() {
+    return this._getTasksByProjects.value ?? [];
+  }
+
   /**
    * Clear all comboboxes
    *
@@ -291,10 +286,12 @@ export default class TaskSelectionComponent extends Component {
    */
   @action
   clear() {
-    this.onCustomerChange(null, {
+    const options = {
       preventFetchingData: true,
       preventAction: true,
-    });
+    };
+    this.onCustomerChange(null, options);
+    // this.onTaskChange(null, options);
   }
 
   @action
@@ -304,9 +301,9 @@ export default class TaskSelectionComponent extends Component {
   }
 
   @action
-  onCustomerChange(value, options = {}) {
+  async onCustomerChange(value, options = {}) {
     if (value && value.get("constructor.modelName") === "task") {
-      this._customer = value.get("project.customer");
+      this._customer = await value.get("project.customer");
       this.onTaskChange(value);
       return;
     }
@@ -320,14 +317,10 @@ export default class TaskSelectionComponent extends Component {
       this.onProjectChange(null);
     }
 
-    if (!options.preventFetchingData && this._customer) {
-      this.getProjectsByCustomer.perform();
-    }
-
     if (!options.preventAction && this._customer) {
       later(this, () => {
         (this.args["on-set-customer"] === undefined
-          ? () => {}
+          ? () => { }
           : this.args["on-set-customer"])(value);
       });
     }
@@ -348,20 +341,15 @@ export default class TaskSelectionComponent extends Component {
     if (!this.customer && value?.get("customer.id")) {
       resolve(value.get("customer")).then((c) => {
         this.onCustomerChange(c, {
-          preventFetchingData: true,
           preventAction: true,
         });
       });
     }
 
-    if (!options.preventFetchingData) {
-      this.getTasksByProjects.perform();
-    }
-
     if (!options.preventAction) {
       later(this, () => {
         (this.args["on-set-project"] === undefined
-          ? () => {}
+          ? () => { }
           : this.args["on-set-project"])(value);
       });
     }
@@ -371,10 +359,9 @@ export default class TaskSelectionComponent extends Component {
   onTaskChange(value, options = {}) {
     this._task = value;
 
-    if (value && value.get("project.id")) {
+    if (!this.project && value?.get("project.id")) {
       resolve(value.get("project")).then((p) => {
         this.onProjectChange(p, {
-          preventFetchingData: true,
           preventAction: true,
         });
       });
@@ -383,7 +370,7 @@ export default class TaskSelectionComponent extends Component {
     if (!options.preventAction) {
       later(this, async () => {
         (this.args["on-set-task"] === undefined
-          ? () => {}
+          ? () => { }
           : this.args["on-set-task"])(value);
       });
     }

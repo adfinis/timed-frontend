@@ -12,7 +12,8 @@ specifiers:
   '@ember/optional-features': 2.0.0
   '@ember/render-modifiers': 2.0.4
   '@ember/test-helpers': 2.8.1
-  '@embroider/macros': ^1.9.0
+  '@embroider/macros': ^1.10.0
+  '@embroider/util': ^1.9.0
   '@fontsource/source-sans-pro': 4.5.11
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
@@ -110,7 +111,8 @@ devDependencies:
   '@ember/optional-features': 2.0.0
   '@ember/render-modifiers': 2.0.4_ember-source@3.28.0
   '@ember/test-helpers': 2.8.1_ember-source@3.28.0
-  '@embroider/macros': 1.9.0
+  '@embroider/macros': 1.10.0
+  '@embroider/util': 1.9.0_ember-source@3.28.0
   '@fontsource/source-sans-pro': 4.5.11
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
@@ -2423,7 +2425,7 @@ packages:
     peerDependencies:
       ember-source: ^3.8 || 4
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       ember-cli-babel: 7.26.11
       ember-modifier-manager-polyfill: 1.2.0
       ember-source: 3.28.0
@@ -2448,7 +2450,7 @@ packages:
       ember-source: '>=3.8.0'
     dependencies:
       '@ember/test-waiters': 3.0.1
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@embroider/util': 1.9.0_ember-source@3.28.0
       broccoli-debug: 0.6.5
       broccoli-funnel: 3.0.8
@@ -2495,11 +2497,11 @@ packages:
       - supports-color
     dev: true
 
-  /@embroider/macros/1.9.0:
-    resolution: {integrity: sha512-12ElrRT+mX3aSixGHjHnfsnyoH1hw5nM+P+Ax0ITZdp6TaAvWZ8dENnVHltdnv4ssHiX0EsVEXmqbIIdMN4nLA==}
+  /@embroider/macros/1.10.0:
+    resolution: {integrity: sha512-LMbfQGk/a+f6xtvAv5fq/wf2LRxETnbgSCLUf/z6ebzmuskOUxrke+uP55chF/loWrARi9g6erFQ7RDOUoBMSg==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/shared-internals': 1.8.3
+      '@embroider/shared-internals': 2.0.0
       assert-never: 1.2.1
       babel-import-util: 1.1.0
       ember-cli-babel: 7.26.11
@@ -2538,13 +2540,27 @@ packages:
       typescript-memoize: 1.1.1
     dev: true
 
+  /@embroider/shared-internals/2.0.0:
+    resolution: {integrity: sha512-qZ2/xky9mWm5YC6noOa6AiAwgISEQ78YTZNv4SNu2PFgEK/H+Ha/3ddngzGSsnXkVnIHZyxIBzhxETonQYHY9g==}
+    engines: {node: 12.* || 14.* || >= 16}
+    dependencies:
+      babel-import-util: 1.1.0
+      ember-rfc176-data: 0.3.17
+      fs-extra: 9.1.0
+      js-string-escape: 1.0.1
+      lodash: 4.17.21
+      resolve-package-path: 4.0.3
+      semver: 7.3.8
+      typescript-memoize: 1.1.1
+    dev: true
+
   /@embroider/util/1.9.0_ember-source@3.28.0:
     resolution: {integrity: sha512-9I63iJK6N01OHJafmS/BX0msUkTlmhFMIEmDl/SRNACVi0nS6QfNyTgTTeji1P/DALf6eobg/9t/N4VhS9G9QA==}
     engines: {node: 12.* || 14.* || >= 16}
     peerDependencies:
       ember-source: '*'
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       broccoli-funnel: 3.0.8
       ember-cli-babel: 7.26.11
       ember-source: 3.28.0
@@ -7569,7 +7585,7 @@ packages:
       '@babel/plugin-proposal-class-properties': 7.18.6_@babel+core@7.19.6
       '@babel/plugin-proposal-decorators': 7.20.0_@babel+core@7.19.6
       '@babel/preset-env': 7.19.4_@babel+core@7.19.6
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@embroider/shared-internals': 1.8.3
       babel-loader: 8.0.6_6zc4kxld457avlfyhj3lzsljlm
       babel-plugin-ember-modules-api-polyfill: 3.5.0
@@ -7605,7 +7621,7 @@ packages:
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
       '@ember/render-modifiers': 2.0.4_ember-source@3.28.0
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@embroider/util': 1.9.0_ember-source@3.28.0
       '@glimmer/component': 1.1.2
       '@glimmer/tracking': 1.1.2
@@ -7698,7 +7714,7 @@ packages:
       ember-data:
         optional: true
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@glimmer/tracking': 1.1.2
       ember-auto-import: 2.4.3_webpack@5.74.0
       ember-cli-babel: 7.26.11
@@ -7718,7 +7734,7 @@ packages:
       ember-data:
         optional: true
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@glimmer/tracking': 1.1.2
       ember-auto-import: 2.4.3_webpack@5.74.0
       ember-cli-babel: 7.26.11
@@ -7733,7 +7749,7 @@ packages:
     resolution: {integrity: sha512-IoocHPX1cY93Sma7VeDGbF0M1+TkBWDJLus+RD01902eD+KHEL2+diwM+iayCyO+1/xaUzdzNGh35J+i+TCxoA==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       babel-plugin-filter-imports: 4.0.0
       ember-cli-babel: 7.26.11
       ember-cli-htmlbars: 6.1.1
@@ -8757,7 +8773,7 @@ packages:
     resolution: {integrity: sha512-diD+HwwY8QqpEk5DnDYfH7onYwl6NOgr1qv1ENbXih+/iiWYUVS/e0S/PlM7A4gdorD9spn1bnisnTLTf49Wpw==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       ember-cli-babel: 7.26.11
     transitivePeerDependencies:
       - supports-color
@@ -8767,7 +8783,7 @@ packages:
     resolution: {integrity: sha512-uNmv1cPG/4qsac8oIf5txJ2FZ8p88LEpG4P3dNcjsJS98Y8hd0GPMFwVqpnzI78Lz7VYRGQWY4jnE4qm5R3j4g==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       ember-cli-babel: 7.26.11
     transitivePeerDependencies:
       - supports-color
@@ -9078,7 +9094,7 @@ packages:
     dependencies:
       '@babel/runtime': 7.20.6
       '@embroider/addon-shim': 1.8.3
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@glimmer/component': 1.1.2
       '@glimmer/tracking': 1.1.2
       '@glint/template': 0.9.7_@glimmer+component@1.1.2
@@ -9370,7 +9386,7 @@ packages:
     resolution: {integrity: sha512-v9ezPtiuLUtIiA0cyMAbPf13vSODXTRYsVmbtRDaZySjyYYk/ZxXlFB48VupJiq5eb8sxrCLZZdjdoq/lCvfSQ==}
     engines: {node: 14.* || >= 16}
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       '@embroider/util': 1.9.0_ember-source@3.28.0
       '@glimmer/component': 1.1.2
       '@glimmer/tracking': 1.1.2
@@ -9391,7 +9407,7 @@ packages:
     resolution: {integrity: sha512-aNyJW52eWvWhdcRfnb0pGYSDuQU4i4XjA682aDG1ocmz7eUEDw7bXXvKEYGtVsPTtPLtUPvTtaH9mXKpMG+1xA==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@embroider/macros': 1.9.0
+      '@embroider/macros': 1.10.0
       ember-cli-babel: 7.26.11
     transitivePeerDependencies:
       - supports-color

@@ -25,18 +25,17 @@
       aria-selected="{{ember-power-select-is-selected option @select.selected}}"
       aria-disabled="{{option.disabled}}"
       aria-current="{{eq option @select.highlighted}}"
-      data-option-index="{{groupIndex}}{{index}}"
+      data-option-index="{{@groupIndex}}{{index}}"
       role="option"
     >
       {{#if @extra.optionTemplate}}
         {{component
-          "power-select/option"
-          layout=@extra.optionTemplate
+          (ensure-safe-component @extra.optionTemplate)
           option=option
-          current=(eq option @select.highlighted)
+          current=(eq option this.select.highlighted)
         }}
       {{else}}
-        {{yield option @select}}
+        {{yield option this.select}}
       {{/if}}
     </li>
   </VerticalCollection>

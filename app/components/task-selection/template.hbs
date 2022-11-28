@@ -1,49 +1,48 @@
 {{yield
   (hash
     customer=(component
-      "optimized-power-select"
+      (ensure-safe-component "optimized-power-select")
       options=this.customersAndRecentTasks
-      disabled=this.disabled
+      disabled=@disabled
       selected=this.customer
       placeholder="Select customer..."
       searchField="longName"
       allowClear=true
       tagName="div"
       class="customer-select"
-      onChange=(fn this.onCustomerChange)
+      onChange=this.onCustomerChange
       extra=(hash
-        lazy=true
         selectedTemplate=this.selectedTemplate
         optionTemplate=this.customerOptionTemplate
       )
     )
     project=(component
-      "optimized-power-select"
+      (ensure-safe-component "optimized-power-select")
       options=this.projects
-      disabled=(or this.disabled (not this.customer))
+      disabled=(or @disabled (not this.customer))
       selected=this.project
       placeholder="Select project..."
       searchField="name"
       allowClear=true
       tagName="div"
       class="project-select"
-      onChange=(fn this.onProjectChange)
+      onChange=this.onProjectChange
       extra=(hash
         selectedTemplate=this.selectedTemplate
         optionTemplate=this.projectOptionTemplate
       )
     )
     task=(component
-      "optimized-power-select"
+      (ensure-safe-component "optimized-power-select")
       options=this.tasks
-      disabled=(or this.disabled (not this.project))
+      disabled=(or @disabled (not this.project))
       selected=this.task
       placeholder="Select task..."
       searchField="name"
       allowClear=true
       tagName="div"
       class="task-select"
-      onChange=(fn this.onTaskChange)
+      onChange=this.onTaskChange
       extra=(hash
         selectedTemplate=this.selectedTemplate
         optionTemplate=this.taskOptionTemplate

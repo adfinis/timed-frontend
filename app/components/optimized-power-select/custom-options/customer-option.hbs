@@ -1,0 +1,24 @@
+<div
+  class="{{if @option.archived 'inactive'}}"
+  title="{{if @option.isTask @option.longName @option.name}}{{if
+    @option.archived
+    ' (archived)'
+  }}"
+>
+  {{#if @option.isTask}}
+    <span class="history">
+      <i class="fa fa-history"></i>
+      <span class="history-text">
+        <small>{{@option.project.customer.name}}
+          >
+          {{@option.project.name}}</small>
+        {{@option.name}}
+      </span>
+    </span>
+  {{else}}
+    {{@option.name}}
+  {{/if}}
+  {{#if @option.archived}}
+    <i class="fa fa-archive"></i>
+  {{/if}}
+</div>

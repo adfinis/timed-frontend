@@ -8,11 +8,7 @@
   {{else}}
     <span class="ember-power-select-selected-item">
       {{#if @extra.selectedTemplate}}
-        {{component
-          "power-select/selected"
-          layout=@extra.selectedTemplate
-          selected=@select.selected
-        }}
+        {{component (ensure-safe-component @extra.selectedTemplate) selected=@select.selected}}
       {{else}}
         {{yield @select.selected @select}}
       {{/if}}
@@ -21,11 +17,14 @@
   {{#if (and @allowClear (not @select.disabled))}}
     <span
       class="ember-power-select-clear-btn"
-      onmousedown={{fn this.clear}}
-      ontouchstart={{fn this.clear}}
+      {{on "mousedown" this.clear}}
+      {{on "ontouchstart" this.clear}}
     >&times;</span>
   {{/if}}
 {{else}}
-  {{component @placeholderComponent placeholder=@placeholder}}
+  {{component
+    (ensure-safe-component @placeholderComponent)
+    placeholder=@placeholder
+  }}
 {{/if}}
 <span class="ember-power-select-status-icon"></span>
