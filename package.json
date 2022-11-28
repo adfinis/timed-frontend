@@ -147,7 +147,7 @@
     "peerDependencyRules": {
       "ignoreMissing": [
         "@babel/core",
-        "@glint/template@",
+        "@glint/template",
         "@types/node"
       ]
     }
