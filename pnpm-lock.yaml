@@ -6,6 +6,7 @@ overrides:
 specifiers:
   '@adfinis-sygroup/eslint-config': 1.5.0
   '@adfinis-sygroup/semantic-release-config': 3.4.0
+  '@apollo/client': 3.7.1
   '@commitlint/cli': 17.2.0
   '@commitlint/config-conventional': 17.2.0
   '@ember/jquery': 2.0.0
@@ -71,8 +72,8 @@ specifiers:
   ember-responsive: 5.0.0
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
-  ember-simple-auth: 3.1.0
-  ember-simple-auth-oidc: 3.0.0
+  ember-simple-auth: 4.2.2
+  ember-simple-auth-oidc: 5.0.1
   ember-site-tour: 2.2.0
   ember-source: 3.28.0
   ember-template-lint: 4.17.0
@@ -89,6 +90,7 @@ specifiers:
   eslint-plugin-prettier: 4.2.1
   eslint-plugin-qunit: 7.3.1
   faker: 4.1.0
+  graphql: 16.6.0
   husky: 7.0.4
   lint-staged: 13.0.3
   loader.js: 4.7.0
@@ -105,6 +107,7 @@ specifiers:
 devDependencies:
   '@adfinis-sygroup/eslint-config': 1.5.0_5lziwglof22oee3ms3owpbv4kq
   '@adfinis-sygroup/semantic-release-config': 3.4.0
+  '@apollo/client': 3.7.1_graphql@16.6.0
   '@commitlint/cli': 17.2.0
   '@commitlint/config-conventional': 17.2.0
   '@ember/jquery': 2.0.0
@@ -170,8 +173,8 @@ devDependencies:
   ember-responsive: 5.0.0
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
-  ember-simple-auth: 3.1.0_ember-fetch@8.1.2
-  ember-simple-auth-oidc: 3.0.0
+  ember-simple-auth: 4.2.2_ember-fetch@8.1.2
+  ember-simple-auth-oidc: 5.0.1_z5nuprfa2pprkoloewt57m3s2e
   ember-site-tour: 2.2.0
   ember-source: 3.28.0
   ember-template-lint: 4.17.0_ember-cli-htmlbars@6.0.0
@@ -188,6 +191,7 @@ devDependencies:
   eslint-plugin-prettier: 4.2.1_7gsvg5lgwpfdww3i7smtqxamuy
   eslint-plugin-qunit: 7.3.1_eslint@7.32.0
   faker: 4.1.0
+  graphql: 16.6.0
   husky: 7.0.4
   lint-staged: 13.0.3
   loader.js: 4.7.0
@@ -251,6 +255,40 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.17
+    dev: true
+
+  /@apollo/client/3.7.1_graphql@16.6.0:
+    resolution: {integrity: sha512-xu5M/l7p9gT9Fx7nF3AQivp0XukjB7TM7tOd5wifIpI8RskYveL4I+rpTijzWrnqCPZabkbzJKH7WEAKdctt9w==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      graphql-ws: ^5.5.5
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
+    peerDependenciesMeta:
+      graphql-ws:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      subscriptions-transport-ws:
+        optional: true
+    dependencies:
+      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
+      '@wry/context': 0.7.0
+      '@wry/equality': 0.5.3
+      '@wry/trie': 0.3.2
+      graphql: 16.6.0
+      graphql-tag: 2.12.6_graphql@16.6.0
+      hoist-non-react-statics: 3.3.2
+      optimism: 0.16.2
+      prop-types: 15.8.1
+      response-iterator: 0.2.6
+      symbol-observable: 4.0.0
+      ts-invariant: 0.10.3
+      tslib: 2.4.1
+      zen-observable-ts: 1.2.5
     dev: true
 
   /@babel/code-frame/7.12.11:
@@ -2693,6 +2731,14 @@ packages:
       - '@babel/core'
     dev: true
 
+  /@graphql-typed-document-node/core/3.1.1_graphql@16.6.0:
+    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.6.0
+    dev: true
+
   /@handlebars/parser/2.0.0:
     resolution: {integrity: sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==}
     dev: true
@@ -3617,6 +3663,27 @@ packages:
       '@webassemblyjs/ast': 1.9.0
       '@webassemblyjs/wast-parser': 1.9.0
       '@xtuc/long': 4.2.2
+    dev: true
+
+  /@wry/context/0.7.0:
+    resolution: {integrity: sha512-LcDAiYWRtwAoSOArfk7cuYvFXytxfVrdX7yxoUmK7pPITLk5jYh2F8knCwS7LjgYL8u1eidPlKKV6Ikqq0ODqQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      tslib: 2.4.1
+    dev: true
+
+  /@wry/equality/0.5.3:
+    resolution: {integrity: sha512-avR+UXdSrsF2v8vIqIgmeTY0UR91UT+IyablCyKe/uk22uOJ8fusKZnH9JH9e1/EtLeNJBtagNmL3eJdnOV53g==}
+    engines: {node: '>=8'}
+    dependencies:
+      tslib: 2.4.1
+    dev: true
+
+  /@wry/trie/0.3.2:
+    resolution: {integrity: sha512-yRTyhWSls2OY/pYLfwff867r8ekooZ4UI+/gxot5Wj8EFwSf2rG+n+Mo/6LoLQm1TKA4GRj2+LCpbfS937dClQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      tslib: 2.4.1
     dev: true
 
   /@xmldom/xmldom/0.7.6:
@@ -8748,17 +8815,6 @@ packages:
       - supports-color
     dev: true
 
-  /ember-get-config/0.2.4:
-    resolution: {integrity: sha512-CgkR97y80Dm+hbVTW1O5ZC5cEUIfTsGsR6UPOyuaRdv3B5SRlBSxysnHrYKjRMb68l8AUa5DRkVW6yBh/u7Icw==}
-    engines: {node: ^4.5 || 6.* || >= 7.*}
-    dependencies:
-      broccoli-file-creator: 1.2.0
-      ember-cli-babel: 6.18.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - supports-color
-    dev: true
-
   /ember-get-config/0.5.0:
     resolution: {integrity: sha512-y1osD6g8wV/BlDjuaN6OG5MT0iHY2X/yE38gUj/05uUIMIRfpcwOdWnFQHBiXIhDojvAJQTEF1VOYFIETQMkeQ==}
     engines: {node: 12.* || 14.* || >= 16}
@@ -9155,35 +9211,43 @@ packages:
       - supports-color
     dev: true
 
-  /ember-simple-auth-oidc/3.0.0:
-    resolution: {integrity: sha512-jYrCogmYuc3WQ3vHAe3k76mB8obVX1TrUpj+xv5Ti83AKYXQu6bu5/uboWJkBuCnyXRm3PqYADnzA2TCLKBtXg==}
-    engines: {node: 10.* || >= 12}
+  /ember-simple-auth-oidc/5.0.1_z5nuprfa2pprkoloewt57m3s2e:
+    resolution: {integrity: sha512-/LLp31cjWIpdPWLnxbroCHkfP/s5vcUqKjvk44qXjl0YZbxWWwVAqdh0paptRbkfk62eYPY1/519qADWu7wzsw==}
+    engines: {node: 14.* || >= 16}
     dependencies:
-      ember-auto-import: 1.12.2
+      '@apollo/client': 3.7.1_graphql@16.6.0
+      '@embroider/macros': 1.10.0
+      base64-js: 1.5.1
+      ember-auto-import: 2.4.3_webpack@5.74.0
       ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 4.5.0
+      ember-concurrency: 2.2.1
       ember-fetch: 8.1.2
-      ember-get-config: 0.2.4
-      ember-simple-auth: 3.1.0_ember-fetch@8.1.2
-      uuid: 7.0.3
+      ember-simple-auth: 4.2.2_ember-fetch@8.1.2
+      js-sha256: 0.9.0
+      tracked-built-ins: 3.1.0
+      uuid: 9.0.0
     transitivePeerDependencies:
       - '@babel/core'
       - encoding
+      - graphql
+      - graphql-ws
+      - react
+      - react-dom
+      - subscriptions-transport-ws
       - supports-color
-      - webpack-cli
-      - webpack-command
+      - webpack
     dev: true
 
-  /ember-simple-auth/3.1.0_ember-fetch@8.1.2:
-    resolution: {integrity: sha512-JS8NtYAlSftkoQh36Kxps6iLHTP/InIgKt8w21QBHCTqDx07af4aka59GojaBvc+8GubQuGKldk6vvw3R8bwxA==}
-    engines: {node: 10.* || >= 12.*}
+  /ember-simple-auth/4.2.2_ember-fetch@8.1.2:
+    resolution: {integrity: sha512-D7W6OREUvf5OzeB0ePptSNBilccchRYukH4f7mkbL6WT+z6VEqRRAIaQuBZdFM6lrcSFGmzctINLZJwsIpI3wg==}
+    engines: {node: '>= 12'}
     peerDependencies:
       ember-fetch: ^8.0.1
     dependencies:
       base-64: 0.1.0
       broccoli-file-creator: 2.1.1
       broccoli-funnel: 2.0.2
-      broccoli-merge-trees: 3.0.2
+      broccoli-merge-trees: 4.2.0
       ember-cli-babel: 7.26.11
       ember-cli-is-package-missing: 1.0.0
       ember-cookies: 0.5.2
@@ -11058,6 +11122,21 @@ packages:
     resolution: {integrity: sha512-8tLu60LgxF6XpdbK8OW3FA+IfTNBn1ZHGHKF4KQbEeSkajYw5PlYJcKluntgegDPTg8UkHjpet1T82vk6TQ68w==}
     dev: true
 
+  /graphql-tag/2.12.6_graphql@16.6.0:
+    resolution: {integrity: sha512-FdSNcu2QQcWnM2VNvSCCDCVS5PpPqpzgFT8+GXzqJuoDd0CBncxCY278u4mhRO7tMgo2JjgJA5aZ+nWSQ/Z+xg==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      graphql: ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+    dependencies:
+      graphql: 16.6.0
+      tslib: 2.4.1
+    dev: true
+
+  /graphql/16.6.0:
+    resolution: {integrity: sha512-KPIBPDlW7NxrbT/eh4qPXz5FiFdL5UbaA0XUNz2Rp3Z3hqBSkbj0GVjwFDztsWVauZUWsbKHgMg++sk8UX0bkw==}
+    engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
+    dev: true
+
   /growly/1.3.0:
     resolution: {integrity: sha512-+xGQY0YyAWCnqy7Cd++hc2JqMYzlm0dG30Jd0beaA64sROr8C4nt8Yc9V5Ro3avlSUDTN0ulqP/VBKi1/lLygw==}
     dev: true
@@ -11240,6 +11319,12 @@ packages:
       hash.js: 1.1.7
       minimalistic-assert: 1.0.1
       minimalistic-crypto-utils: 1.0.1
+    dev: true
+
+  /hoist-non-react-statics/3.3.2:
+    resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
+    dependencies:
+      react-is: 16.13.1
     dev: true
 
   /home-or-tmp/2.0.0:
@@ -12137,6 +12222,10 @@ packages:
 
   /jquery/3.6.1:
     resolution: {integrity: sha512-opJeO4nCucVnsjiXOE+/PcCgYw9Gwpvs/a6B1LL/lQhwWwpbVEVYDZ1FokFr8PRc7ghYlrFPuyHuiiDNTQxmcw==}
+    dev: true
+
+  /js-sha256/0.9.0:
+    resolution: {integrity: sha512-sga3MHh9sgQN2+pJ9VYZ+1LPwXOxuBJBA5nrR5/ofPfuiJBE2hnjsaN8se8JznOmGLN2p49Pe5U/ttafcs/apA==}
     dev: true
 
   /js-string-escape/1.0.1:
@@ -14197,6 +14286,13 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
+  /optimism/0.16.2:
+    resolution: {integrity: sha512-zWNbgWj+3vLEjZNIh/okkY2EUfX+vB9TJopzIZwT1xxaMqC5hRLLraePod4c5n4He08xuXNH+zhKFFCu390wiQ==}
+    dependencies:
+      '@wry/context': 0.7.0
+      '@wry/trie': 0.3.2
+    dev: true
+
   /optional-require/1.1.8:
     resolution: {integrity: sha512-jq83qaUb0wNg9Krv1c5OQ+58EK+vHde6aBPzLvPPqJm89UQWsvSuFy9X/OSNJnFeSOKo7btE0n8Nl2+nE+z5nA==}
     engines: {node: '>=4'}
@@ -14899,6 +14995,14 @@ packages:
     engines: {node: 10.* || >= 12.*}
     dev: true
 
+  /prop-types/15.8.1:
+    resolution: {integrity: sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==}
+    dependencies:
+      loose-envify: 1.4.0
+      object-assign: 4.1.1
+      react-is: 16.13.1
+    dev: true
+
   /proper-lockfile/4.1.2:
     resolution: {integrity: sha512-TjNPblN4BwAWMXU8s9AEz4JmQxnD1NNL7bNOY/AKUzyamc379FWASUhc/K1pL2noVb+XmZKLL68cjzLsiOAMaA==}
     dependencies:
@@ -15078,6 +15182,10 @@ packages:
       ini: 1.3.8
       minimist: 1.2.7
       strip-json-comments: 2.0.1
+    dev: true
+
+  /react-is/16.13.1:
+    resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
     dev: true
 
   /read-package-json-fast/2.0.3:
@@ -15450,6 +15558,11 @@ packages:
       is-core-module: 2.11.0
       path-parse: 1.0.7
       supports-preserve-symlinks-flag: 1.0.0
+    dev: true
+
+  /response-iterator/0.2.6:
+    resolution: {integrity: sha512-pVzEEzrsg23Sh053rmDUvLSkGXluZio0qu8VT6ukrYuvtjVfCbDZH9d6PGXb8HZfzdNZt8feXv/jvUzlhRgLnw==}
+    engines: {node: '>=0.8'}
     dev: true
 
   /responselike/1.0.2:
@@ -16581,6 +16694,11 @@ packages:
     engines: {node: '>= 0.4'}
     dev: true
 
+  /symbol-observable/4.0.0:
+    resolution: {integrity: sha512-b19dMThMV4HVFynSAM1++gBHAbk2Tc/osgLIBZMKsyqh34jb2e8Os7T6ZW/Bt3pJFdBTd2JwAnAAEQV7rSNvcQ==}
+    engines: {node: '>=0.10'}
+    dev: true
+
   /symlink-or-copy/1.3.1:
     resolution: {integrity: sha512-0K91MEXFpBUaywiwSSkmKjnGcasG/rVBXFLJz5DrgGabpYD6N+3yZrfD6uUIfpuTu65DZLHi7N8CizHc07BPZA==}
     dev: true
@@ -17080,6 +17198,13 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /ts-invariant/0.10.3:
+    resolution: {integrity: sha512-uivwYcQaxAucv1CzRp2n/QdYPo4ILf9VXgH19zEIjFx2EJufV16P0JtJVpYHy89DItG6Kwj2oIUjrcK5au+4tQ==}
+    engines: {node: '>=8'}
+    dependencies:
+      tslib: 2.4.1
+    dev: true
+
   /ts-node/10.9.1_jcmx33t3olsvcxopqdljsohpme:
     resolution: {integrity: sha512-NtVysVPkxxrwFGUUxGYhfux8k78pQB3JqYBXlLRZgdGUqTO5wU/UyHop5p70iEbGhB7q5KmiZiU0Y3KlJrScEw==}
     hasBin: true
@@ -17455,13 +17580,13 @@ packages:
     engines: {node: '>= 0.4.0'}
     dev: true
 
-  /uuid/7.0.3:
-    resolution: {integrity: sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==}
+  /uuid/8.3.2:
+    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
     hasBin: true
     dev: true
 
-  /uuid/8.3.2:
-    resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+  /uuid/9.0.0:
+    resolution: {integrity: sha512-MXcSTerfPa4uqyzStbRoTgt5XIe3x5+42+q1sDuy3R5MDk66URdLMOZe5aPX/SQd+kuYAh0FdP/pO28IkQyTeg==}
     hasBin: true
     dev: true
 
@@ -17972,4 +18097,14 @@ packages:
   /yocto-queue/1.0.0:
     resolution: {integrity: sha512-9bnSc/HEW2uRy67wc+T8UwauLuPJVn28jb+GtJY16iiKWyvmYJRXVT4UamsAEGQfPohgr2q4Tq0sQbQlxTfi1g==}
     engines: {node: '>=12.20'}
+    dev: true
+
+  /zen-observable-ts/1.2.5:
+    resolution: {integrity: sha512-QZWQekv6iB72Naeake9hS1KxHlotfRpe+WGNbNx5/ta+R3DNjVO2bswf63gXlWDcs+EMd7XY8HfVQyP1X6T4Zg==}
+    dependencies:
+      zen-observable: 0.8.15
+    dev: true
+
+  /zen-observable/0.8.15:
+    resolution: {integrity: sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==}
     dev: true

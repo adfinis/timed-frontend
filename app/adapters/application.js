@@ -3,8 +3,8 @@
  * @submodule timed-adapters
  * @public
  */
-import JSONAPIAdapter from "@ember-data/adapter/json-api";
-import OIDCAdapterMixin from "ember-simple-auth-oidc/mixins/oidc-adapter-mixin";
+import { inject as service } from "@ember/service";
+import OIDCJSONAPIAdapter from "ember-simple-auth-oidc/adapters/oidc-json-api-adapter";
 
 /**
  * The application adapter
@@ -14,6 +14,12 @@ import OIDCAdapterMixin from "ember-simple-auth-oidc/mixins/oidc-adapter-mixin";
  * @uses EmberSimpleAuthOIDC.OIDCAdapterMixin
  * @public
  */
-export default JSONAPIAdapter.extend(OIDCAdapterMixin, {
-  namespace: "api/v1",
-});
+export default class ApplicationAdapter extends OIDCJSONAPIAdapter {
+  @service session;
+
+  namespace = "api/v1";
+
+  get headers() {
+    return { ...this.session.headers };
+  }
+}

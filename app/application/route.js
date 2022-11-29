@@ -5,7 +5,6 @@
  */
 import Route from "@ember/routing/route";
 import { inject as service } from "@ember/service";
-import OIDCApplicationRouteMixin from "ember-simple-auth-oidc/mixins/oidc-application-route-mixin";
 
 /**
  * The application route
@@ -15,26 +14,10 @@ import OIDCApplicationRouteMixin from "ember-simple-auth-oidc/mixins/oidc-applic
  * @uses EmberSimpleAuth.ApplicationRouteMixin
  * @public
  */
-export default Route.extend(OIDCApplicationRouteMixin, {
-  autostartTour: service(),
+export default class ApplicationRoute extends Route {
+  @service session;
 
-  /**
-   * The actions for the application route
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Invalidate the session
-     *
-     * @method invalidateSession
-     * @public
-     */
-    invalidateSession() {
-      this.set("autostartTour.done", []);
-
-      this.session.invalidate();
-    }
+  async beforeModel() {
+    await this.session.setup();
   }
-});
+}
