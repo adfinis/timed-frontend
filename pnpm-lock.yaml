@@ -9079,6 +9079,8 @@ packages:
         optional: true
       '@glimmer/component':
         optional: true
+      '@glint/template':
+        optional: true
       ember-concurrency:
         optional: true
     dependencies:
