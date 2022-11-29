@@ -1,5 +1,6 @@
 import { action } from "@ember/object";
 import Component from "@glimmer/component";
+import { macroCondition, isTesting } from "@embroider/macros";
 
 const isTouchDevice = !!window && "ontouchstart" in window;
 if (typeof FastBoot === "undefined") {
@@ -28,6 +29,13 @@ if (typeof FastBoot === "undefined") {
 
 export default class OptimizedPowerSelectOptionsComponent extends Component {
   isTouchDevice = isTouchDevice;
+
+  get isTesting() {
+    if (macroCondition(isTesting())) {
+      return true;
+    }
+    return false;
+  }
 
   @action
   addHandlers(element) {

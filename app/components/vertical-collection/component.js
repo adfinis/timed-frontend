@@ -1,6 +1,6 @@
 import VerticalCollectionComponent from "@html-next/vertical-collection/components/vertical-collection/component";
-import classic from "ember-classic-decorator";
 import { isTesting, macroCondition } from "@embroider/macros";
+import classic from "ember-classic-decorator";
 
 @classic
 export default class VerticalCollection extends VerticalCollectionComponent {
