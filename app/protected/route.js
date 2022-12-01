@@ -22,14 +22,14 @@ export default class ProtectedRoute extends Route {
   @service router;
   @service media;
   @service store;
-  @service ajax;
+  @service fetch;
 
   beforeModel(transition) {
     this.session.requireAuthentication(transition, "login");
   }
 
   async model() {
-    const user = await this.ajax.request("/api/v1/users/me", {
+    const user = await this.fetch.fetch("/api/v1/users/me", {
       method: "GET",
       data: {
         include: "supervisors,supervisees",
@@ -79,7 +79,6 @@ export default class ProtectedRoute extends Route {
    * Loading action
    *
    * Set loading property on the controller
-   *
    * @method loading
    * @param {Ember.Transition} transition The transition which is loading
    * @public
