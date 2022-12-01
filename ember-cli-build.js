@@ -1,6 +1,6 @@
 "use strict";
 
-// eslint-disable-next-line node/no-extraneous-require
+// eslint-disable-next-line node/no-missing-require
 const Funnel = require("broccoli-funnel");
 const EmberApp = require("ember-cli/lib/broccoli/ember-app");
 
@@ -8,9 +8,6 @@ module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     sassOptions: {
       onlyIncluded: true,
-    },
-    babel: {
-      plugins: ["@babel/plugin-proposal-object-rest-spread"],
     },
     "ember-site-tour": {
       importHopscotchJS: true,
