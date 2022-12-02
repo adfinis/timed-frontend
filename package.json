@@ -83,6 +83,7 @@
     "ember-concurrency": "2.3.4",
     "ember-data": "3.28.0",
     "ember-decorators": "6.1.1",
+    "ember-event-helpers": "^0.1.1",
     "ember-export-application-global": "2.0.1",
     "ember-fetch": "8.1.2",
     "ember-font-awesome": "3.1.1",

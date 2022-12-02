@@ -224,7 +224,7 @@ export default class ActivitiesIndexController extends Controller {
             .then(report.save.bind(report));
         }, resolve());
 
-      await this.router.transitionTo("index.reports");
+      this.router.transitionTo("index.reports");
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while generating reports");

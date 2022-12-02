@@ -13,8 +13,8 @@
     {{#each this.reports as |report|}}
       <ReportRow
         @report={{report}}
-        @onSave={{route-action "saveReport"}}
-        @onDelete={{route-action "deleteReport"}}
+        @onSave={{this.saveReport}}
+        @onDelete={{this.deleteReport}}
         data-test-report-row-id={{report.id}}
         data-test-report-row
       />
@@ -22,22 +22,27 @@
   </div>
 </div>
 
-<SyModal @visible={{this.showReschedule}} @size="small" as |modal|>
+<SyModal
+  @visible={{this.showReschedule}}
+  @on-close={{toggle "showReschedule" this}}
+  @size="small"
+  as |modal|
+>
   <modal.header>
     Reschedule timesheet
   </modal.header>
   <modal.body>
     <PowerCalendar
-      @class="calendar"
+      class="calendar"
       @center={{this.center}}
       @selected={{this.rescheduleDate}}
-      @onCenterChange={{action (mut this.center) value="moment"}}
-      @onSelect={{action (mut this.rescheduleDate) value="moment"}}
+      @onCenterChange={{(pick "moment" (fn (mut this.center)))}}
+      @onSelect={{(pick "moment" (fn (mut this.rescheduleDate)))}}
       as |calendar|
     >
       <div class={{if calendar.loading "loading-mask"}}>
-        {{calendar.nav}}
-        <calendar.days
+        {{calendar.Nav}}
+        <calendar.Days
           @disabledDates={{this.disabledDates}}
           @startOfWeek={{1}}
         />
@@ -49,7 +54,7 @@
       type="submit"
       class="btn btn-primary"
       data-test-report-save
-      {{on "click" (fn this.reschedule this.rescheduleDate)}}
+      {{on "click" (prevent-default (fn this.reschedule this.rescheduleDate))}}
     >Save</button>
   </modal.footer>
 </SyModal>

@@ -4,7 +4,13 @@
  * @public
  */
 import Controller from "@ember/controller";
+import { action } from "@ember/object";
+import { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
+import moment from "moment";
+import { all } from "rsvp";
 import ReportValidations from "timed/validations/report";
+import { cached } from "tracked-toolbox";
 
 /**
  * The index reports controller
@@ -14,9 +20,21 @@ import ReportValidations from "timed/validations/report";
  * @public
  */
 export default class IndexReportController extends Controller {
+  @service notify;
+  @service router;
+
   ReportValidations = ReportValidations;
 
-  showReschedule = false;
+  @tracked showReschedule = false;
+  @tracked _center;
+
+  get center() {
+    return this._center ?? moment(this.model);
+  }
+
+  set center(date) {
+    this._center = date;
+  }
 
   /**
    * All reports currently in the store
@@ -39,7 +57,7 @@ export default class IndexReportController extends Controller {
   get reports() {
     const reportsToday = this._allReports.filter((r) => {
       return (
-        (!r.get("user.id") || r.get("user.id") === this.get("user.id")) &&
+        (!r.get("user.id") || r.get("user.id") === this.user.id) &&
         r.get("date").isSame(this.model, "day") &&
         !r.get("isDeleted")
       );
@@ -53,5 +71,88 @@ export default class IndexReportController extends Controller {
     }
 
     return reportsToday.sort((a) => (a.get("isNew") ? 1 : 0));
+  }
+
+  @cached
+  get absence() {
+    const absences = this.store.peekAll("absence").filter((absence) => {
+      return (
+        absence.date.isSame(this.model, "day") &&
+        absence.get("user.id") === this.user.id &&
+        !absence.isNew &&
+        !absence.isDeleted
+      );
+    });
+
+    return absences.firstObject;
+  }
+
+  /**
+   * Save a certain report and close the modal afterwards
+   *
+   * @method saveReport
+   * @param {Report} report The report to save
+   * @public
+   */
+  @action
+  async saveReport(report) {
+    try {
+      this.send("loading");
+
+      await report.save();
+
+      if (this.absence) {
+        await this.absence.reload();
+      }
+    } catch (e) {
+      this.notify.error("Error while saving the report");
+    } finally {
+      this.send("finished");
+    }
+  }
+
+  /**
+   * Delete a certain report and close the modal afterwards
+   *
+   * @method deleteReport
+   * @param {Report} report The report to delete
+   * @public
+   */
+  @action
+  async deleteReport(report) {
+    try {
+      this.send("loading");
+
+      await report.destroyRecord();
+
+      if (!report.get("isNew")) {
+        if (this.absence) {
+          await this.absence.reload();
+        }
+      }
+    } catch (e) {
+      this.notify.error("Error while deleting the report");
+    } finally {
+      this.send("finished");
+    }
+  }
+
+  @action
+  async reschedule(date) {
+    try {
+      const reports = this.reports.filterBy("isNew", false);
+      await all(
+        reports.map(async (report) => {
+          report.set("date", date);
+          return await report.save();
+        })
+      );
+      this.showReschedule = false;
+      this.router.transitionTo({
+        queryParams: { day: date.format("YYYY-MM-DD") },
+      });
+    } catch (e) {
+      this.notify.error("Error while rescheduling the timesheet");
+    }
   }
 }

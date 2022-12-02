@@ -1,31 +1,45 @@
 <PowerCalendar
   ...attributes
+  class="sy-calendar"
   @onSelect={{@onSelect}}
   @selected={{@selected}}
   @center={{@center}}
-  @onCenterChange={{@onCenterChange}} as |calendar|
+  @onCenterChange={{@onCenterChange}}
+  as |calendar|
 >
   <calendar.Nav>
     <span class="nav-select-month">
-      {{#let (moment-format calendar.center 'MMMM') as |currentMonth|}}
+      {{#let (moment-format calendar.center "MMMM") as |currentMonth|}}
         {{currentMonth}}
-        <select aria-label="Month" {{ on "change" (fn this.changeCenter "month" calendar) }}>
+        <select
+          aria-label="Month"
+          {{on "change" (fn this.changeCenter "month" calendar)}}
+        >
           {{#each this.months as |month|}}
-            <option value={{month}} selected={{eq month currentMonth}}>{{month}}</option>
+            <option
+              value={{month}}
+              selected={{eq month currentMonth}}
+            >{{month}}</option>
           {{/each}}
         </select>
       {{/let}}
     </span>
     <span class="nav-select-year">
-      {{#let (moment-format calendar.center 'YYYY') as |currentYear|}}
+      {{#let (moment-format calendar.center "YYYY") as |currentYear|}}
         {{currentYear}}
-        <select aria-label="Year" {{on "change" (fn this.changeCenter "year" calendar)}}>
+        <select
+          aria-label="Year"
+          {{on "change" (fn this.changeCenter "year" calendar)}}
+        >
           {{#each this.years as |year|}}
-            <option value={{year}} selected={{eq year currentYear}}>{{year}}</option>
+            <option
+              value={{year}}
+              selected={{eq year currentYear}}
+            >{{year}}</option>
           {{/each}}
         </select>
       {{/let}}
     </span>
   </calendar.Nav>
-  <calendar.Days/>
+  <calendar.Days />
 </PowerCalendar>

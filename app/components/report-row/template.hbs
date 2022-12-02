@@ -2,6 +2,7 @@
   <TaskSelection
     @disabled={{not this.editable}}
     @task={{this.changeset.task}}
+    @on-set-task={{fn (mut this.changeset.task)}}
     as |t|
   >
     <div
@@ -28,7 +29,7 @@
       id="row-comment"
       value={{this.changeset.comment}}
       disabled={{not this.editable}}
-      {{on "change" (pick "target.value" (mut this.changeset.comment))}}
+      {{on "change" (pick "target.value" (fn (mut this.changeset.comment)))}}
       data-test-report-comment
     />
     {{#if this.changeset.task.project.customerVisible}}
@@ -68,7 +69,7 @@
         data-test-delete-report
         class="btn btn-danger"
         disabled={{this.report.verifiedBy.id}}
-        {{this.delete}}
+        {{on "click" this.delete}}
       >{{fa-icon "trash"}}</button>
       <button
         type="submit"
@@ -78,7 +79,7 @@
           (not this.changeset.isDirty)
           (not this.changeset.isValid)
         }}
-        {{this.save}}
+        {{on "click" (prevent-default this.save)}}
       >{{fa-icon "save"}}</button>
     {{/if}}
   </div>

@@ -50,6 +50,7 @@ specifiers:
   ember-concurrency: ^2.1.1
   ember-data: 3.28.0
   ember-decorators: 6.1.1
+  ember-event-helpers: ^0.1.1
   ember-export-application-global: 2.0.1
   ember-fetch: 8.1.2
   ember-font-awesome: 3.1.1
@@ -148,6 +149,7 @@ devDependencies:
   ember-concurrency: 2.2.1
   ember-data: 3.28.0
   ember-decorators: 6.1.1
+  ember-event-helpers: 0.1.1
   ember-export-application-global: 2.0.1
   ember-fetch: 8.1.2
   ember-font-awesome: 3.1.1
@@ -8685,6 +8687,15 @@ packages:
       ember-cli-htmlbars: 2.0.5
     transitivePeerDependencies:
       - '@babel/core'
+      - supports-color
+    dev: true
+
+  /ember-event-helpers/0.1.1:
+    resolution: {integrity: sha512-fWcbWd4W4nRv8bbato8JB6oGRpATkR+oGYxMIqnfgTgPWaCS0ww7CuUVNpwg1TulojKMCuTXi8Fem2b1NSF1ZQ==}
+    engines: {node: 8.* || >= 10.*}
+    dependencies:
+      ember-cli-babel: 7.26.11
+    transitivePeerDependencies:
       - supports-color
     dev: true
 

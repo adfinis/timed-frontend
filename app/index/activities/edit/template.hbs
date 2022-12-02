@@ -9,7 +9,11 @@
       <LinkTo @route="index.activities">{{fa-icon "chevron-left"}}</LinkTo>
     </div>
     <div class="card-block">
-      <TaskSelection @task={{this.changeset.task}} as |t|>
+      <TaskSelection
+        @task={{this.changeset.task}}
+        @on-set-task={{fn (mut this.changeset.task)}}
+        as |t|
+      >
         <div class="form-group">{{t.customer}}</div>
         <div class="form-group">{{t.project}}</div>
         <div class="form-group">{{t.task}}</div>
