@@ -12,7 +12,7 @@ export default [
     <p>
       To add a new attendance just click here.
     </p>
-    `
+    `,
   },
   {
     target: ".tab-content .visible-md",
@@ -27,6 +27,6 @@ export default [
     <p>
       You can add as many attendances per day as you want.
     </p>
-    `
-  }
+    `,
+  },
 ];

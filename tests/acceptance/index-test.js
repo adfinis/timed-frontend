@@ -7,11 +7,11 @@ import { module, test } from "qunit";
 
 import taskSelect from "../helpers/task-select";
 
-module("Acceptance | index", function(hooks) {
+module("Acceptance | index", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
@@ -20,7 +20,7 @@ module("Acceptance | index", function(hooks) {
     this.user = user;
   });
 
-  test("can select a day", async function(assert) {
+  test("can select a day", async function (assert) {
     await visit("/");
 
     await click("[data-test-previous]");
@@ -34,7 +34,7 @@ module("Acceptance | index", function(hooks) {
     assert.equal(currentURL(), "/");
   });
 
-  test("can start a new activity", async function(assert) {
+  test("can start a new activity", async function (assert) {
     const task = this.server.create("task");
     await visit("/");
 
@@ -56,7 +56,7 @@ module("Acceptance | index", function(hooks) {
       .containsText(task.name);
   });
 
-  test("can start a new activity from the history", async function(assert) {
+  test("can start a new activity from the history", async function (assert) {
     const task = this.server.create("task");
 
     await visit("/");
@@ -76,9 +76,9 @@ module("Acceptance | index", function(hooks) {
       .containsText(task.name);
   });
 
-  test("can stop an active activity", async function(assert) {
+  test("can stop an active activity", async function (assert) {
     const activity = this.server.create("activity", "active", {
-      userId: this.user.id
+      userId: this.user.id,
     });
 
     await visit("/");
@@ -95,7 +95,7 @@ module("Acceptance | index", function(hooks) {
     assert.dom("[data-test-tracking-comment] input").hasNoValue();
   });
 
-  test("can set the document title", async function(assert) {
+  test("can set the document title", async function (assert) {
     this.server.create("activity", "active", { userId: this.user.id });
 
     await visit("/");
@@ -106,9 +106,9 @@ module("Acceptance | index", function(hooks) {
     assert.notOk(/\d{2}:\d{2}:\d{2} \(.* > .* > .*\)/.test(document.title));
   });
 
-  test("can set the document title without task", async function(assert) {
+  test("can set the document title without task", async function (assert) {
     const activity = this.server.create("activity", "active", {
-      userId: this.user.id
+      userId: this.user.id,
     });
     activity.update("task", null);
 
@@ -117,7 +117,7 @@ module("Acceptance | index", function(hooks) {
     assert.ok(/\d{2}:\d{2}:\d{2} \(Unknown Task\)/.test(document.title));
   });
 
-  test("can add an absence for multiple days and current day is preselected", async function(assert) {
+  test("can add an absence for multiple days and current day is preselected", async function (assert) {
     this.server.loadFixtures("absence-types");
 
     await visit("/?day=2017-06-29");
@@ -145,11 +145,11 @@ module("Acceptance | index", function(hooks) {
     assert.dom("[data-test-edit-absence]").isVisible();
   });
 
-  test("can edit an absence", async function(assert) {
+  test("can edit an absence", async function (assert) {
     this.server.loadFixtures("absence-types");
     this.server.create("absence", {
       date: moment({ year: 2017, month: 5, day: 29 }).format("YYYY-MM-DD"),
-      userId: this.user.id
+      userId: this.user.id,
     });
 
     await visit("/?day=2017-06-29");
@@ -169,11 +169,11 @@ module("Acceptance | index", function(hooks) {
     assert.dom("[data-test-edit-absence]").isVisible();
   });
 
-  test("can delete an absence", async function(assert) {
+  test("can delete an absence", async function (assert) {
     this.server.loadFixtures("absence-types");
     this.server.create("absence", {
       date: moment({ year: 2017, month: 5, day: 29 }).format("YYYY-MM-DD"),
-      userId: this.user.id
+      userId: this.user.id,
     });
 
     await visit("/?day=2017-06-29");
@@ -187,7 +187,7 @@ module("Acceptance | index", function(hooks) {
     assert.dom("[data-test-edit-absence]").isNotVisible();
   });
 
-  test("highlights holidays", async function(assert) {
+  test("highlights holidays", async function (assert) {
     const date = moment({ year: 2017, month: 5, day: 29 }).format("YYYY-MM-DD");
     this.server.create("public-holiday", { date });
     await visit("/?day=2017-06-29");
@@ -198,7 +198,7 @@ module("Acceptance | index", function(hooks) {
     assert.dom('[data-test-weekly-overview-day="28"].holiday').doesNotExist();
   });
 
-  test("rollbacks the absence modal", async function(assert) {
+  test("rollbacks the absence modal", async function (assert) {
     await visit("/?day=2017-06-29");
 
     await click("[data-test-add-absence]");

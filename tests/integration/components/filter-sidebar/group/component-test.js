@@ -1,12 +1,12 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | filter sidebar/group", function(hooks) {
+module("Integration | Component | filter sidebar/group", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`
       {{#filter-sidebar/group label='Group'}}
         Group content
@@ -17,7 +17,7 @@ module("Integration | Component | filter sidebar/group", function(hooks) {
     assert.dom(".filter-sidebar-group-body").includesText("Group content");
   });
 
-  test("can be toggled", async function(assert) {
+  test("can be toggled", async function (assert) {
     await render(hbs`
       {{#filter-sidebar/group label='Group'}}
         Group content

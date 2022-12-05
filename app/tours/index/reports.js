@@ -12,7 +12,7 @@ export default [
       changes you apply here will be overwritten when generating the timesheet
       again.
     </p>
-    `
+    `,
   },
   {
     target: ".table--reports input[name=duration]",
@@ -25,7 +25,7 @@ export default [
       15 minutes. By simultaneously pressing Shift or Ctrl it adds or subtracts
       an hour instead.
     </p>
-    `
+    `,
   },
   {
     target: ".table--reports",
@@ -36,7 +36,7 @@ export default [
       To add a new entry simply fill out the last row and save it. It will
       automatically generate a new empty row which then can be filled again.
     </p>
-    `
+    `,
   },
   {
     target: ".btn-toolbar .btn-success",
@@ -47,7 +47,7 @@ export default [
       If you created your timesheet on the wrong day you can transfer it by
       clicking the reschedule button and selecting the correct day.
     </p>
-    `
+    `,
   },
   {
     target: ".nav-tabs li:nth-child(2)",
@@ -58,6 +58,6 @@ export default [
       Now you know how the timesheet works. Let's continue by managing your
       attendances. See you there!
     </p>
-    `
-  }
+    `,
+  },
 ];

@@ -10,5 +10,5 @@ export default Route.extend({
     this._super(...args);
 
     controller.fetchProjectsByUser.perform();
-  }
+  },
 });

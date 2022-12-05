@@ -38,7 +38,7 @@ export default class AjaxCustomService extends AjaxService {
   get headers() {
     const headers = {
       Accept: "application/vnd.api+json",
-      "Content-Type": "application/vnd.api+json"
+      "Content-Type": "application/vnd.api+json",
     };
 
     const auth = this.token ? { Authorization: `Bearer ${this.token}` } : {};

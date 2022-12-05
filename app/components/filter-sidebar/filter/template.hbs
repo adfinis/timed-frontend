@@ -2,8 +2,7 @@
   <div class="btn-group btn-group--auto">
     {{#each this.options as |opt|}}
       <button
-        class="btn {{if (eq (get opt this.valuePath) this.selected) 'active'}}"
-        {{action (optional this.on-change) (get opt this.valuePath)}}
+        class="btn {{if (eq (get opt this.valuePath) this.selected) 'active'}}" type="button" {{action (optional this.on-change) (get opt this.valuePath)}}
       >
         {{get opt this.labelPath}}
       </button>

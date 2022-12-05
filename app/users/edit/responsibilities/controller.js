@@ -12,32 +12,32 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
     this.supervisees.perform();
   },
 
-  projects: task(function*() {
+  projects: task(function* () {
     return yield this.store.query("project", {
       has_reviewer: this.get("model.id"),
       include: "customer",
-      ordering: "customer__name,name"
+      ordering: "customer__name,name",
     });
   }),
 
-  supervisees: task(function*() {
+  supervisees: task(function* () {
     const supervisor = this.get("model.id");
 
     const balances = yield this.store.query("worktime-balance", {
       supervisor,
       date: moment().format("YYYY-MM-DD"),
-      include: "user"
+      include: "user",
     });
 
     return yield all(
       balances
         .mapBy("user")
         .filterBy("isActive")
-        .map(async user => {
+        .map(async (user) => {
           const absenceBalances = await this.store.query("absence-balance", {
             date: moment().format("YYYY-MM-DD"),
             user: user.get("id"),
-            absence_type: 2
+            absence_type: 2,
           });
 
           user.set("absenceBalances", absenceBalances);
@@ -45,5 +45,5 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
           return user;
         })
     );
-  })
+  }),
 });

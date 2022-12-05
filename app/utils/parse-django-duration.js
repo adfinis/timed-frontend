@@ -22,13 +22,13 @@ export default function parseDjangoDuration(str) {
 
   const [, days, hours, minutes, seconds, microseconds] = str
     .match(re)
-    .map(m => Number(m) || 0);
+    .map((m) => Number(m) || 0);
 
   return moment.duration({
     days,
     hours,
     minutes,
     seconds,
-    milliseconds: microseconds * 1000
+    milliseconds: microseconds * 1000,
   });
 }

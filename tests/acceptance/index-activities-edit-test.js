@@ -4,7 +4,7 @@ import {
   currentURL,
   blur,
   visit,
-  waitFor
+  waitFor,
 } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
@@ -13,11 +13,11 @@ import { module, test } from "qunit";
 
 import taskSelect from "../helpers/task-select";
 
-module("Acceptance | index activities edit", function(hooks) {
+module("Acceptance | index activities edit", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
@@ -28,7 +28,7 @@ module("Acceptance | index activities edit", function(hooks) {
     this.user = user;
   });
 
-  test("can edit an activity", async function(assert) {
+  test("can edit an activity", async function (assert) {
     await visit("/");
 
     await click('[data-test-activity-row-id="1"]');
@@ -56,7 +56,7 @@ module("Acceptance | index activities edit", function(hooks) {
     assert.dom('[data-test-activity-row-id="1"]').includesText("Test");
   });
 
-  test("can delete an activity", async function(assert) {
+  test("can delete an activity", async function (assert) {
     await visit("/");
 
     await click('[data-test-activity-row-id="1"]');
@@ -71,9 +71,9 @@ module("Acceptance | index activities edit", function(hooks) {
     assert.dom("[data-test-activity-row]").exists({ count: 4 });
   });
 
-  test("can't delete an active activity", async function(assert) {
+  test("can't delete an active activity", async function (assert) {
     const { id } = this.server.create("activity", "active", {
-      userId: this.user.id
+      userId: this.user.id,
     });
 
     await visit(`/edit/${id}`);
@@ -84,7 +84,7 @@ module("Acceptance | index activities edit", function(hooks) {
     assert.dom(`[data-test-activity-row-id="${id}"]`).exists();
   });
 
-  test("closes edit window when clicking on the currently edited activity row", async function(assert) {
+  test("closes edit window when clicking on the currently edited activity row", async function (assert) {
     await visit("/");
 
     await click('[data-test-activity-row-id="1"]');
@@ -100,7 +100,7 @@ module("Acceptance | index activities edit", function(hooks) {
     assert.equal(currentURL(), "/");
   });
 
-  test("validates time on blur", async function(assert) {
+  test("validates time on blur", async function (assert) {
     const { id } = this.server.create("activity", { userId: this.user.id });
 
     await visit(`/edit/${id}`);
@@ -130,10 +130,10 @@ module("Acceptance | index activities edit", function(hooks) {
       .doesNotHaveClass("has-error");
   });
 
-  test("can not edit transferred activities", async function(assert) {
+  test("can not edit transferred activities", async function (assert) {
     const { id } = this.server.create("activity", {
       userId: this.user.id,
-      transferred: true
+      transferred: true,
     });
     await visit(`/edit/${id}`);
     assert.equal(currentURL(), "/");

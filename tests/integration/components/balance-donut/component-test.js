@@ -1,16 +1,16 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { find, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | balance donut", function(hooks) {
+module("Integration | Component | balance donut", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders with a credit", async function(assert) {
+  test("renders with a credit", async function (assert) {
     this.set("balance", {
       credit: 10,
-      usedDays: 5
+      usedDays: 5,
     });
 
     await render(hbs`{{balance-donut balance}}`);
@@ -24,10 +24,10 @@ module("Integration | Component | balance donut", function(hooks) {
     );
   });
 
-  test("renders without a credit", async function(assert) {
+  test("renders without a credit", async function (assert) {
     this.set("balance", {
       credit: 0,
-      usedDays: 3
+      usedDays: 3,
     });
 
     await render(hbs`{{balance-donut balance}}`);
@@ -41,10 +41,10 @@ module("Integration | Component | balance donut", function(hooks) {
     );
   });
 
-  test("renders with a smaller credit than used days", async function(assert) {
+  test("renders with a smaller credit than used days", async function (assert) {
     this.set("balance", {
       credit: 10,
-      usedDays: 20
+      usedDays: 20,
     });
 
     await render(hbs`{{balance-donut balance}}`);
@@ -58,9 +58,9 @@ module("Integration | Component | balance donut", function(hooks) {
     );
   });
 
-  test("renders with a duration", async function(assert) {
+  test("renders with a duration", async function (assert) {
     this.set("balance", {
-      usedDuration: moment.duration({ h: 10 })
+      usedDuration: moment.duration({ h: 10 }),
     });
 
     await render(hbs`{{balance-donut balance}}`);

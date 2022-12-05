@@ -13,100 +13,100 @@ import { Promise } from "rsvp";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 import {
   underscoreQueryParams,
-  serializeParachuteQueryParams
+  serializeParachuteQueryParams,
 } from "timed/utils/query-params";
 import { cleanParams, toQueryString } from "timed/utils/url";
 
 import config from "../../config/environment";
 
 const rAF = () => {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     window.requestAnimationFrame(resolve);
   });
 };
 
 const DATE_FORMAT = "YYYY-MM-DD";
 
-const serializeMoment = momentObject =>
+const serializeMoment = (momentObject) =>
   (moment.isMoment(momentObject) && momentObject.format(DATE_FORMAT)) || null;
 
-const deserializeMoment = momentString =>
+const deserializeMoment = (momentString) =>
   (momentString && moment(momentString, DATE_FORMAT)) || null;
 
 export const AnalysisQueryParams = new QueryParams({
   customer: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   project: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   task: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   user: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   reviewer: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   billingType: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   costCenter: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   fromDate: {
     defaultValue: null,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
-    deserialize: deserializeMoment
+    deserialize: deserializeMoment,
   },
   toDate: {
     defaultValue: null,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
-    deserialize: deserializeMoment
+    deserialize: deserializeMoment,
   },
   review: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   notBillable: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   verified: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   editable: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   billed: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   ordering: {
     defaultValue: "-date",
@@ -117,21 +117,23 @@ export const AnalysisQueryParams = new QueryParams({
     },
     deserialize(val) {
       return val.replace(",id", "");
-    }
-  }
+    },
+  },
 });
 
 const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   billingTypes: computed(
     "prefetchData.lastSuccessful.value.billingTypes",
-    function() {
+    "store",
+    function () {
       return this.store.findAll("billing-type");
     }
   ),
 
   costCenters: computed(
     "prefetchData.lastSuccessful.value.costCenters",
-    function() {
+    "store",
+    function () {
       return this.store.findAll("cost-center");
     }
   ),
@@ -139,56 +141,60 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   selectedCustomer: computed(
     "customer",
     "prefetchData.lastSuccessful.value.customer",
-    function() {
+    "store",
+    function () {
       return this.customer && this.store.peekRecord("customer", this.customer);
     }
   ),
 
   selectedProject: computed(
-    "project",
     "prefetchData.lastSuccessful.value.project",
-    function() {
+    "project",
+    "store",
+    function () {
       return this.project && this.store.peekRecord("project", this.project);
     }
   ),
 
   selectedTask: computed(
-    "task",
     "prefetchData.lastSuccessful.value.task",
-    function() {
+    "store",
+    "task",
+    function () {
       return this.task && this.store.peekRecord("task", this.task);
     }
   ),
 
   selectedUser: computed(
-    "user",
     "prefetchData.lastSuccessful.value.user",
-    function() {
+    "store",
+    "user",
+    function () {
       return this.user && this.store.peekRecord("user", this.user);
     }
   ),
 
   selectedReviewer: computed(
-    "reviewer",
     "prefetchData.lastSuccessful.value.reviewer",
-    function() {
+    "reviewer",
+    "store",
+    function () {
       return this.reviewer && this.store.peekRecord("user", this.reviewer);
     }
   ),
 
-  exportLimitExceeded: computed("totalItems", function() {
+  exportLimitExceeded: computed("exportLimit", "totalItems", function () {
     return this.totalItems > this.exportLimit;
   }),
 
-  exportLimitMessage: computed("exportLimit", function() {
+  exportLimitMessage: computed("exportLimit", function () {
     return `The export limit is ${this.exportLimit}. Please use filters to reduce the amount of reports.`;
   }),
 
-  canBill: computed("session.data.user", function() {
-    return (
-      this.session.data.user.isAccountant || this.session.data.user.isSuperuser
-    );
-  }),
+  canBill: computed.or(
+    "session.data.user.isAccountant",
+    "session.data.user.isSuperuser"
+  ),
 
   exportLinks: config.APP.REPORTEXPORTS,
 
@@ -228,7 +234,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       _canLoadMore: true,
       _shouldLoadMore: false,
       _dataCache: A(),
-      selectedReportIds: A()
+      selectedReportIds: A(),
     });
 
     this.data.perform();
@@ -244,19 +250,19 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
   _canLoadMore: true,
   _lastPage: 0,
 
-  appliedFilters: computed("queryParamsState", function() {
-    return Object.keys(this.queryParamsState).filter(key => {
+  appliedFilters: computed("queryParamsState", function () {
+    return Object.keys(this.queryParamsState).filter((key) => {
       return key !== "ordering" && this.get(`queryParamsState.${key}.changed`);
     });
   }),
 
-  prefetchData: task(function*() {
+  prefetchData: task(function* () {
     const {
       customer: customerId,
       project: projectId,
       task: taskId,
       user: userId,
-      reviewer: reviewerId
+      reviewer: reviewerId,
     } = this.allQueryParams;
 
     return yield hash({
@@ -266,11 +272,11 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       user: userId && this.store.findRecord("user", userId),
       reviewer: reviewerId && this.store.findRecord("user", reviewerId),
       billingTypes: this.store.findAll("billing-type"),
-      costCenters: this.store.findAll("cost-center")
+      costCenters: this.store.findAll("cost-center"),
     });
   }),
 
-  data: task(function*() {
+  data: task(function* () {
     const params = underscoreQueryParams(
       serializeParachuteQueryParams(this.allQueryParams, AnalysisQueryParams)
     );
@@ -278,32 +284,33 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     const data = yield this.store.query("report", {
       page: {
         number: this._lastPage + 1,
-        size: 20
+        size: 20,
       },
       ...params,
-      include: "task,task.project,task.project.customer,user"
+      include: "task,task.project,task.project.customer,user",
     });
 
     const assignees = yield this.fetchAssignees.perform(data);
 
-    const mappedReports = data.map(report => {
+    const mappedReports = data.map((report) => {
       report.set(
         "taskAssignees",
         assignees.taskAssignees.filter(
-          taskAssignee => report.get("task.id") === taskAssignee.get("task.id")
+          (taskAssignee) =>
+            report.get("task.id") === taskAssignee.get("task.id")
         )
       );
       report.set(
         "projectAssignees",
         assignees.projectAssignees.filter(
-          projectAssignee =>
+          (projectAssignee) =>
             report.get("task.project.id") === projectAssignee.get("project.id")
         )
       );
       report.set(
         "customerAssignees",
         assignees.customerAssignees.filter(
-          customerAssignee =>
+          (customerAssignee) =>
             report.get("task.project.customer.id") ===
             customerAssignee.get("customer.id")
         )
@@ -316,7 +323,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       totalItems: parseInt(data.get("meta.pagination.count")),
       _canLoadMore:
         data.get("meta.pagination.pages") !== data.get("meta.pagination.page"),
-      _lastPage: data.get("meta.pagination.page")
+      _lastPage: data.get("meta.pagination.page"),
     });
 
     this._dataCache.pushObjects(mappedReports.toArray());
@@ -324,46 +331,46 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
     return this._dataCache;
   }).enqueue(),
 
-  fetchAssignees: task(function*(data) {
+  fetchAssignees: task(function* (data) {
     const projectIds = data
-      .map(report => report.get("task.project.id"))
+      .map((report) => report.get("task.project.id"))
       .uniq()
       .join(",");
     const taskIds = data
-      .map(report => report.get("task.id"))
+      .map((report) => report.get("task.id"))
       .uniq()
       .join(",");
     const customerIds = data
-      .map(report => report.get("task.project.customer.id"))
+      .map((report) => report.get("task.project.customer.id"))
       .uniq()
       .join(",");
 
     const projectAssignees = projectIds.length
-      ? (yield this.store.query("project-assignee", {
+      ? yield this.store.query("project-assignee", {
           is_reviewer: 1,
           projects: projectIds,
-          include: "project,user"
-        }))
+          include: "project,user",
+        })
       : [];
     const taskAssignees = taskIds.length
-      ? (yield this.store.query("task-assignee", {
+      ? yield this.store.query("task-assignee", {
           is_reviewer: 1,
           tasks: taskIds,
-          include: "task,user"
-        }))
+          include: "task,user",
+        })
       : [];
     const customerAssignees = customerIds.length
-      ? (yield this.store.query("customer-assignee", {
+      ? yield this.store.query("customer-assignee", {
           is_reviewer: 1,
           customers: customerIds,
-          include: "customer,user"
-        }))
+          include: "customer,user",
+        })
       : [];
 
     return { projectAssignees, taskAssignees, customerAssignees };
   }),
 
-  loadNext: task(function*() {
+  loadNext: task(function* () {
     this.set("_shouldLoadMore", true);
 
     while (this._shouldLoadMore && this._canLoadMore) {
@@ -388,15 +395,15 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
               ...serializeParachuteQueryParams(
                 allQueryParams,
                 AnalysisQueryParams
-              )
+              ),
             })
           )
         );
 
         const res = yield fetch(`${url}?${queryString}`, {
           headers: {
-            Authorization: `Bearer ${jwt}`
-          }
+            Authorization: `Bearer ${jwt}`,
+          },
         });
 
         /* istanbul ignore next */
@@ -434,7 +441,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
           "Error while downloading, try again or try reducing results"
         );
       }
-    }
+    },
   }),
 
   actions: {
@@ -442,8 +449,8 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       this.transitionToRoute("analysis.edit", {
         queryParams: {
           id: ids,
-          ...this.allQueryParams
-        }
+          ...this.allQueryParams,
+        },
       });
     },
 
@@ -454,7 +461,7 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
         if (selected.includes(report.id)) {
           this.set(
             "selectedReportIds",
-            A([...selected.filter(id => id !== report.id)])
+            A([...selected.filter((id) => id !== report.id)])
           );
         } else {
           this.set("selectedReportIds", A([...selected, report.id]));
@@ -468,10 +475,10 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
 
     reset() {
       this.resetQueryParams(
-        Object.keys(this.allQueryParams).filter(k => k !== "ordering")
+        Object.keys(this.allQueryParams).filter((k) => k !== "ordering")
       );
-    }
-  }
+    },
+  },
 });
 
 export default AnalysisController;

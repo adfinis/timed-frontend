@@ -14,6 +14,6 @@ import humanizeDuration from "timed/utils/humanize-duration";
  * @return {String} The humanized duration
  * @public
  */
-export const humanizeDurationFn = args => humanizeDuration(...args);
+export const humanizeDurationFn = (args) => humanizeDuration(...args);
 
 export default helper(humanizeDurationFn);

@@ -1,8 +1,8 @@
-import classic from "ember-classic-decorator";
 import { classNames, attributeBindings } from "@ember-decorators/component";
-import { computed } from "@ember/object";
 import Component from "@ember/component";
+import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
+import classic from "ember-classic-decorator";
 
 @classic
 @classNames("statistic-list-bar")
@@ -15,7 +15,7 @@ class StatisticListBarComponent extends Component {
 }
 
 StatisticListBarComponent.reopenClass({
-  positionalParams: ["value"]
+  positionalParams: ["value"],
 });
 
 export default StatisticListBarComponent;

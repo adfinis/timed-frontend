@@ -221,7 +221,7 @@
                   class="btn btn-success"
                   {{on "click" (fn this.edit this.selectedReportIds)}}
                 >
-                  Edit {{this.selectedReportIds.length}} selected report{{unless (eq this.selectedReportIds.length 1) 's'}}
+                  Edit {{this.selectedReportIds.length}} selected report{{if (not (eq this.selectedReportIds.length 1)) 's'}}
                 </button>
               {{/if}}
               <button
@@ -299,13 +299,9 @@
                     {{#if this._canLoadMore}}
                       <tr>
                         <td colspan="11" class="text-center">
-                          {{#in-viewport
-                            rootSelector='analysis-scrollable-container'
-                            on-enter-viewport=(perform this.loadNext)
-                            on-exit-viewport=(action (mut this._shouldLoadMore) false)
-                          }}
+                          <InViewport @rootSelector="analysis-scrollable-container" @on-enter-viewport={{perform this.loadNext}} @on-exit-viewport={{action (mut this._shouldLoadMore) false}}>
                             Loading<span class="loading-dots"><i>.</i><i>.</i><i>.</i></span>
-                          {{/in-viewport}}
+                          </InViewport>
                         </td>
                       </tr>
                     {{/if}}

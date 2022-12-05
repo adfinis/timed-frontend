@@ -2,17 +2,17 @@ import { setupTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Unit | Transform | django time", function(hooks) {
+module("Unit | Transform | django time", function (hooks) {
   setupTest(hooks);
 
-  test("serializes", function(assert) {
+  test("serializes", function (assert) {
     const transform = this.owner.lookup("transform:django-time");
 
     const result = transform.serialize(
       moment({
         hour: 12,
         minute: 12,
-        second: 12
+        second: 12,
       })
     );
 
@@ -22,14 +22,14 @@ module("Unit | Transform | django time", function(hooks) {
       moment({
         hour: 8,
         minute: 8,
-        second: 8
+        second: 8,
       })
     );
 
     assert.equal(result2, "08:08:08");
   });
 
-  test("deserializes", function(assert) {
+  test("deserializes", function (assert) {
     const transform = this.owner.lookup("transform:django-time");
 
     const result = transform.deserialize("12:12:12");

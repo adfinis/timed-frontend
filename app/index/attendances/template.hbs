@@ -6,7 +6,7 @@
     {{#if (or (media 'isXl') (media 'isLg') (media 'isMd'))}}
       {{#each this.attendances as |attendance|}}
         {{attendance-slider
-          data-test-attendance-slider
+          data-test-attendance-slider=true
           data-test-attendance-slider-id=attendance.id
           attendance = (changeset attendance this.AttendanceValidator)
           on-save    = (route-action 'saveAttendance')

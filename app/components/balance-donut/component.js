@@ -1,8 +1,11 @@
-import classic from "ember-classic-decorator";
-import { attributeBindings, classNameBindings } from "@ember-decorators/component";
-import { computed } from "@ember/object";
+import {
+  attributeBindings,
+  classNameBindings,
+} from "@ember-decorators/component";
 import Component from "@ember/component";
+import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
+import classic from "ember-classic-decorator";
 
 const { PI, floor, min, abs } = Math;
 
@@ -46,7 +49,7 @@ class BalanceDonutComponent extends Component {
 
     const median = [floor(mean), ...(isInteger(mean) ? [floor(mean - 1)] : [])];
 
-    const deviation = min(...median.map(m => abs(m - this.index)));
+    const deviation = min(...median.map((m) => abs(m - this.index)));
 
     const offset =
       deviation && (1 / (floor(mean) - (isInteger(mean) ? 1 : 0))) * deviation;
@@ -56,7 +59,7 @@ class BalanceDonutComponent extends Component {
 }
 
 BalanceDonutComponent.reopenClass({
-  positionalParams: ["balance"]
+  positionalParams: ["balance"],
 });
 
 export default BalanceDonutComponent;

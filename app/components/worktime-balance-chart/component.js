@@ -1,5 +1,5 @@
-import classic from "ember-classic-decorator";
 import { computed } from "@ember/object";
+import classic from "ember-classic-decorator";
 import EmberChartComponent from "ember-cli-chart/components/ember-chart";
 import moment from "moment";
 import humanizeDuration from "timed/utils/humanize-duration";
@@ -20,11 +20,11 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
       labels: this.worktimeBalances.mapBy("date"),
       datasets: [
         {
-          data: this.worktimeBalances.map(balance =>
+          data: this.worktimeBalances.map((balance) =>
             balance.get("balance").asHours()
-          )
-        }
-      ]
+          ),
+        },
+      ],
     };
   }
 
@@ -39,7 +39,7 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
         line: {
           borderColor: "rgb(91, 142, 219)",
           backgroundColor: "transparent",
-          borderWidth: 2
+          borderWidth: 2,
         },
         point: {
           borderColor: "rgb(91, 142, 219)",
@@ -48,8 +48,8 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
           borderWidth: 2,
           radius: 3.5,
           hoverRadius: 3.5,
-          hitRadius: 10
-        }
+          hitRadius: 10,
+        },
       },
       scales: {
         xAxes: [
@@ -59,26 +59,26 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
                 return [value.format("DD"), value.format("dd").toUpperCase()];
               },
               fontFamily: FONT_FAMILY,
-              fontColor: "rgb(180, 180, 180)"
+              fontColor: "rgb(180, 180, 180)",
             },
             gridLines: {
               drawBorder: false,
-              display: false
-            }
-          }
+              display: false,
+            },
+          },
         ],
         yAxes: [
           {
             ticks: {
-              display: false
+              display: false,
             },
             gridLines: {
               drawBorder: false,
               drawTicks: false,
-              borderDash: [5, 5]
-            }
-          }
-        ]
+              borderDash: [5, 5],
+            },
+          },
+        ],
       },
       tooltips: {
         displayColors: false,
@@ -97,9 +97,9 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
           },
           label({ yLabel: hours }) {
             return humanizeDuration(moment.duration({ hours }));
-          }
-        }
-      }
+          },
+        },
+      },
     });
   }
 }

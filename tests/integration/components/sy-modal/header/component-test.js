@@ -1,12 +1,12 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy modal/header", function(hooks) {
+module("Integration | Component | sy modal/header", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("visible", true);
 
     await render(hbs`
@@ -20,7 +20,7 @@ module("Integration | Component | sy modal/header", function(hooks) {
     assert.dom(this.element).hasText("Test ×");
   });
 
-  test("closes on click of the close icon", async function(assert) {
+  test("closes on click of the close icon", async function (assert) {
     this.set("visible", true);
 
     await render(hbs`

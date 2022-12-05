@@ -1,8 +1,12 @@
-import classic from "ember-classic-decorator";
-import { classNames, classNameBindings, tagName } from "@ember-decorators/component";
-import { inject as service } from "@ember/service";
-import { or } from "@ember/object/computed";
+import {
+  classNames,
+  classNameBindings,
+  tagName,
+} from "@ember-decorators/component";
 import Component from "@ember/component";
+import { or } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
+import classic from "ember-classic-decorator";
 
 @classic
 @tagName("nav")

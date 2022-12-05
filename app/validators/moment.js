@@ -14,7 +14,7 @@ import moment from "moment";
  */
 export default function validateMoment(options = { gt: null, lt: null }) {
   return (key, newValue, oldValue, changes, content) => {
-    if (!newValue && get(content, "active")) {
+    if (!newValue && content.active) {
       newValue = moment();
     }
     let valid = !!newValue && newValue._isValid;

@@ -9,7 +9,7 @@ export default Factory.extend({
 
   afterCreate(absence, server) {
     absence.update({
-      absenceTypeId: server.schema.absenceTypes.all().models[0].id
+      absenceTypeId: server.schema.absenceTypes.all().models[0].id,
     });
-  }
+  },
 });

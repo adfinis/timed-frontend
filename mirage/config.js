@@ -7,8 +7,8 @@ import { randomDuration } from "./helpers/duration";
 
 const { parse } = JSON;
 
-const statisticEndpoint = type => {
-  return function(db) {
+const statisticEndpoint = (type) => {
+  return function (db) {
     const stats = db[`${type}Statistics`].all();
 
     return {
@@ -18,24 +18,24 @@ const statisticEndpoint = type => {
           stats.models.reduce((total, { duration }) => {
             return total.add(parseDjangoDuration(duration));
           }, moment.duration())
-        )
-      }
+        ),
+      },
     };
   };
 };
 
-const byUserAndDate = modelName => {
-  return function(db, { queryParams: { user, date } }) {
+const byUserAndDate = (modelName) => {
+  return function (db, { queryParams: { user, date } }) {
     let models = db[modelName].all();
 
     if (date) {
-      models = models.filter(model => {
+      models = models.filter((model) => {
         return model.date.isSame(date, "day");
       });
     }
 
     if (user) {
-      models = models.filter(model => {
+      models = models.filter((model) => {
         return parseInt(model.userId) === parseInt(user);
       });
     }
@@ -44,7 +44,7 @@ const byUserAndDate = modelName => {
   };
 };
 
-export default function() {
+export default function () {
   this.passthrough("/write-coverage");
 
   this.urlPrefix = "";
@@ -55,12 +55,12 @@ export default function() {
   this.post("/auth/login", ({ users }, req) => {
     const {
       data: {
-        attributes: { username, password }
-      }
+        attributes: { username, password },
+      },
     } = parse(req.requestBody);
 
     const {
-      models: [user]
+      models: [user],
     } = users.where({ username, password });
 
     if (!user) {
@@ -76,8 +76,8 @@ export default function() {
       {
         data: {
           access: `${btoa("access")}.${btoa(payload)}.${btoa("pony")}`,
-          refresh: `${btoa("refresh")}.${btoa(payload)}.${btoa("pony")}`
-        }
+          refresh: `${btoa("refresh")}.${btoa(payload)}.${btoa("pony")}`,
+        },
       }
     );
   });
@@ -88,72 +88,75 @@ export default function() {
     return new Response(200, {}, { data: { access: refresh } });
   });
 
-  this.get("/attendances", function(
-    { attendances },
-    { queryParams: { date } }
-  ) {
-    return attendances.where(a => {
-      return a.date === date;
-    });
-  });
-  this.post("/attendances", function({ attendances, users }) {
+  this.get(
+    "/attendances",
+    function ({ attendances }, { queryParams: { date } }) {
+      return attendances.where((a) => {
+        return a.date === date;
+      });
+    }
+  );
+  this.post("/attendances", function ({ attendances, users }) {
     return attendances.create({
       ...this.normalizedRequestAttrs(),
-      userId: users.first().id
+      userId: users.first().id,
     });
   });
   this.get("/attendances/:id");
   this.patch("/attendances/:id");
   this.del("/attendances/:id");
 
-  this.get("/activities", function(
-    { activities },
-    { queryParams: { active } }
-  ) {
-    if (active) {
-      return activities.where({ toTime: null });
-    }
+  this.get(
+    "/activities",
+    function ({ activities }, { queryParams: { active } }) {
+      if (active) {
+        return activities.where({ toTime: null });
+      }
 
-    return activities.all();
-  });
-  this.post("/activities", function({ activities, users }) {
+      return activities.all();
+    }
+  );
+  this.post("/activities", function ({ activities, users }) {
     return activities.create({
       ...this.normalizedRequestAttrs(),
-      userId: users.first().id
+      userId: users.first().id,
     });
   });
   this.get("/activities/:id");
   this.patch("/activities/:id");
   this.del("/activities/:id");
 
-  this.get("/reports", function(
-    { reports },
-    { queryParams: { "page[number]": page, "page[size]": limit } }
-  ) {
-    let data = reports.all();
-    let meta = {
-      "total-time": randomDuration()
-    };
-
-    page = page && parseInt(page);
-    if (page && limit) {
-      meta = {
-        ...meta,
-        pagination: {
-          pages: Math.ceil(data.length / limit),
-          page
-        }
+  this.get(
+    "/reports",
+    function (
+      { reports },
+      { queryParams: { "page[number]": page, "page[size]": limit } }
+    ) {
+      let data = reports.all();
+      let meta = {
+        "total-time": randomDuration(),
       };
 
-      data = data.slice((page - 1) * limit, page * limit);
-    }
+      page = page && parseInt(page);
+      if (page && limit) {
+        meta = {
+          ...meta,
+          pagination: {
+            pages: Math.ceil(data.length / limit),
+            page,
+          },
+        };
 
-    return { ...this.serialize(data), meta };
-  });
-  this.post("/reports", function({ reports, users }) {
+        data = data.slice((page - 1) * limit, page * limit);
+      }
+
+      return { ...this.serialize(data), meta };
+    }
+  );
+  this.post("/reports", function ({ reports, users }) {
     return reports.create({
       ...this.normalizedRequestAttrs(),
-      userId: users.first().id
+      userId: users.first().id,
     });
   });
   this.get("/reports/:id");
@@ -164,24 +167,24 @@ export default function() {
   this.get("/customers/:id");
 
   this.get("/projects");
-  this.get("/projects/:id", function({ projects }, request) {
+  this.get("/projects/:id", function ({ projects }, request) {
     return {
       ...this.serialize(projects.find(request.params.id)),
       meta: {
-        "spent-time": randomDuration()
-      }
+        "spent-time": randomDuration(),
+      },
     };
   });
 
   this.get("/tasks");
   this.post("/tasks");
   this.patch("/tasks/:id");
-  this.get("/tasks/:id", function({ tasks }, request) {
+  this.get("/tasks/:id", function ({ tasks }, request) {
     return {
       ...this.serialize(tasks.find(request.params.id)),
       meta: {
-        "spent-time": randomDuration()
-      }
+        "spent-time": randomDuration(),
+      },
     };
   });
 
@@ -189,9 +192,9 @@ export default function() {
   this.get("/project-assignees");
   this.get("/customer-assignees");
 
-  this.get("/users", function({ users }, { queryParams: { supervisor } }) {
+  this.get("/users", function ({ users }, { queryParams: { supervisor } }) {
     if (supervisor) {
-      return users.where(user => {
+      return users.where((user) => {
         return user.supervisorIds && user.supervisorIds.includes(supervisor);
       });
     }
@@ -201,35 +204,35 @@ export default function() {
   this.get("/users/:id");
   this.patch("/users/:id");
 
-  this.get("/public-holidays", function(
-    { publicHolidays },
-    { queryParams: { date } }
-  ) {
-    if (date) {
-      publicHolidays.where(l => {
-        return l.format("YYYY-MM-DD") === date;
-      });
-    }
+  this.get(
+    "/public-holidays",
+    function ({ publicHolidays }, { queryParams: { date } }) {
+      if (date) {
+        publicHolidays.where((l) => {
+          return l.format("YYYY-MM-DD") === date;
+        });
+      }
 
-    return publicHolidays.all();
-  });
+      return publicHolidays.all();
+    }
+  );
   this.get("/public-holidays/:id");
 
   this.get("/locations");
   this.get("/locations/:id");
 
-  this.get("/employments", function(
-    { employments },
-    { queryParams: { user } }
-  ) {
-    let all = employments.all();
+  this.get(
+    "/employments",
+    function ({ employments }, { queryParams: { user } }) {
+      let all = employments.all();
 
-    if (user) {
-      all = all.filter(e => e.userId === user);
+      if (user) {
+        all = all.filter((e) => e.userId === user);
+      }
+
+      return all;
     }
-
-    return all;
-  });
+  );
   this.get("/employments/:id");
 
   this.get("/absence-types");
@@ -259,20 +262,20 @@ export default function() {
   this.get("/worktime-balances", byUserAndDate("worktimeBalances"));
   this.get("/worktime-balances/:id");
 
-  this.get("/absences", function({ absences }, { queryParams: { user } }) {
+  this.get("/absences", function ({ absences }, { queryParams: { user } }) {
     let all = absences.all();
 
     if (user) {
-      all = all.filter(a => a.userId === user);
+      all = all.filter((a) => a.userId === user);
     }
 
     return all;
   });
-  this.post("/absences", function({ absences, users }) {
+  this.post("/absences", function ({ absences, users }) {
     return absences.create({
       ...this.normalizedRequestAttrs(),
       userId: users.first().id,
-      duration: "08:30:00"
+      duration: "08:30:00",
     });
   });
   this.get("/absences/:id");
@@ -287,28 +290,28 @@ export default function() {
   this.get("/user-statistics", statisticEndpoint("user"));
 
   this.post("/users/:id/transfer", () => new Response(201, {}));
-  this.get("/users/me", function({ users }) {
+  this.get("/users/me", function ({ users }) {
     return users.first();
   });
 
-  this.get("/reports/export", function(
-    _,
-    { queryParams: { file_type: type } }
-  ) {
-    return new Response(
-      200,
-      {
-        "Content-Disposition": `attachment; filename=testytesyexport.${type}`
-      },
-      new Blob()
-    );
-  });
+  this.get(
+    "/reports/export",
+    function (_, { queryParams: { file_type: type } }) {
+      return new Response(
+        200,
+        {
+          "Content-Disposition": `attachment; filename=testytesyexport.${type}`,
+        },
+        new Blob()
+      );
+    }
+  );
 
-  this.get("/reports/intersection", function({ reportIntersections }) {
+  this.get("/reports/intersection", function ({ reportIntersections }) {
     return reportIntersections.first();
   });
 
-  this.post("/reports/bulk", function() {
+  this.post("/reports/bulk", function () {
     return new Response(200, {});
   });
 }

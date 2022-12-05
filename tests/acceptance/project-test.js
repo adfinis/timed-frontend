@@ -6,20 +6,20 @@ import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test } from "qunit";
 
-module("Acceptance | projects", function(hooks) {
+module("Acceptance | projects", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user", { isReviewer: true });
     this.server.create("project-assignee", {
-      user
+      user,
     });
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: user.id });
   });
 
-  test("can visit /projects", async function(assert) {
+  test("can visit /projects", async function (assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
@@ -28,7 +28,7 @@ module("Acceptance | projects", function(hooks) {
     assert.dom("[data-test-none-selected]").exists();
   });
 
-  test("can select project", async function(assert) {
+  test("can select project", async function (assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
@@ -50,7 +50,7 @@ module("Acceptance | projects", function(hooks) {
     assert.dom("[data-test-task-table-row]").doesNotExist();
   });
 
-  test("can add task", async function(assert) {
+  test("can add task", async function (assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
@@ -89,7 +89,7 @@ module("Acceptance | projects", function(hooks) {
     assert.dom("[data-test-task-table-row]").exists({ count: 1 });
   });
 
-  test("can edit task", async function(assert) {
+  test("can edit task", async function (assert) {
     await visit("/projects");
     assert.equal(currentURL(), "/projects");
 
@@ -147,11 +147,11 @@ module("Acceptance | projects", function(hooks) {
     assert.dom("[data-test-table-archived]").hasClass("fa-check-square-o");
   });
 
-  test("shows all customers to superuser", async function(assert) {
+  test("shows all customers to superuser", async function (assert) {
     const user = this.server.create("user", { isSuperuser: true });
     this.server.create("project");
 
-    this.server.get("users/me", function() {
+    this.server.get("users/me", function () {
       return user;
     });
 
@@ -165,8 +165,8 @@ module("Acceptance | projects", function(hooks) {
     assert.dom(".ember-power-select-option").exists({ count: 2 });
   });
 
-  test("shows error while fetching projects", async function(assert) {
-    this.server.get("projects", function() {
+  test("shows error while fetching projects", async function (assert) {
+    this.server.get("projects", function () {
       return new Error();
     });
 
@@ -177,7 +177,7 @@ module("Acceptance | projects", function(hooks) {
           assert.step("error");
         },
         // Needed for mocking, throws error otherwise
-        setTarget() {}
+        setTarget() {},
       })
     );
 
@@ -185,8 +185,8 @@ module("Acceptance | projects", function(hooks) {
     assert.verifySteps(["error"]);
   });
 
-  test("shows error while fetching tasks", async function(assert) {
-    this.server.get("tasks", function() {
+  test("shows error while fetching tasks", async function (assert) {
+    this.server.get("tasks", function () {
       return new Error();
     });
 
@@ -197,7 +197,7 @@ module("Acceptance | projects", function(hooks) {
           assert.step("error");
         },
         // Needed for mocking, throws error otherwise
-        setTarget() {}
+        setTarget() {},
       })
     );
 

@@ -2,7 +2,7 @@
   <aside class="filter-sidebar {{if this.visible 'filter-sidebar--visible'}}">
     <div class="filter-sidebar-title">
       {{#if this.appliedCount}}
-        {{this.appliedCount}} Filter{{unless (eq this.appliedCount 1) 's'}} applied
+        {{this.appliedCount}} Filter{{if (not (eq this.appliedCount 1)) 's'}} applied
       {{else}}
         Filters
       {{/if}}
@@ -23,8 +23,7 @@
 
     <button
       title="{{if this.visible 'Hide' 'Show'}} filters"
-      class="filter-sidebar-toggle"
-      {{action (toggle 'visible' this)}}
+      class="filter-sidebar-toggle" type="button" {{action (toggle 'visible' this)}}
     >
       <span class="filter-sidebar-toggle-background"></span>
       <span class="filter-sidebar-toggle-icon">

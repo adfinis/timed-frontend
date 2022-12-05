@@ -1,12 +1,12 @@
-import classic from "ember-classic-decorator";
+import Component from "@ember/component";
 import { computed } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
 import { htmlSafe } from "@ember/string";
+import classic from "ember-classic-decorator";
 import { task } from "ember-concurrency";
 import { padStartTpl } from "ember-pad/utils/pad";
 import moment from "moment";
@@ -31,10 +31,8 @@ const Formatter = {
    * @public
    */
   to(value) {
-    return moment({ hour: 0 })
-      .minute(value)
-      .format("HH:mm");
-  }
+    return moment({ hour: 0 }).minute(value).format("HH:mm");
+  },
 };
 
 /**
@@ -81,7 +79,7 @@ export default class AttendanceSlider extends Component {
       // If the end time is 00:00 we need to clarify that this would be 00:00
       // of the next day
       this.get("attendance.to").hour() * 60 +
-        this.get("attendance.to").minute() || 24 * 60
+        this.get("attendance.to").minute() || 24 * 60,
     ];
   }
 
@@ -117,7 +115,7 @@ export default class AttendanceSlider extends Component {
         labels.push({
           value: padTpl2`${h}:${m}`,
           size: m === 0 ? "lg" : "sm",
-          style: htmlSafe(`left: ${offsetH + offsetM}%;`)
+          style: htmlSafe(`left: ${offsetH + offsetM}%;`),
         });
       }
     }
@@ -132,21 +130,14 @@ export default class AttendanceSlider extends Component {
    * @param {Number[]} values The time in minutes
    * @public
    */
-  @(task(function*([fromMin, toMin]) {
+  @(task(function* ([fromMin, toMin]) {
     const attendance = this.attendance;
 
     attendance.set(
       "from",
-      moment(attendance.get("from"))
-        .hour(0)
-        .minute(fromMin)
+      moment(attendance.get("from")).hour(0).minute(fromMin)
     );
-    attendance.set(
-      "to",
-      moment(attendance.get("to"))
-        .hour(0)
-        .minute(toMin)
-    );
+    attendance.set("to", moment(attendance.get("to")).hour(0).minute(toMin));
 
     yield this["on-save"](attendance);
   }).drop())
@@ -158,7 +149,7 @@ export default class AttendanceSlider extends Component {
    * @method delete
    * @public
    */
-  @(task(function*() {
+  @(task(function* () {
     yield this["on-delete"](this.attendance);
   }).drop())
   delete;

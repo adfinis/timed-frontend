@@ -3,5 +3,5 @@ import faker from "faker";
 
 export default Factory.extend({
   name: () => faker.lorem.word(),
-  fillWorktime: false
+  fillWorktime: false,
 });

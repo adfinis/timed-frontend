@@ -18,7 +18,6 @@ window.deprecationWorkflow.config = {
     { handler: "silence", matchId: "autotracking.mutation-after-consumption" },
     { handler: "silence", matchId: "manager-capabilities.modifiers-3-13" },
     { handler: "silence", matchId: "setting-on-hash" },
-    { handler: "silence", matchId: "routing.transition-methods" }
+    { handler: "silence", matchId: "routing.transition-methods" },
   ],
 };
-

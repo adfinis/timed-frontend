@@ -1,6 +1,6 @@
-import { hbs } from 'ember-cli-htmlbars';
 import EmberObject from "@ember/object";
 import { find, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 import { startMirage } from "timed/initializers/ember-cli-mirage";
@@ -10,21 +10,21 @@ const USER = EmberObject.create({
   firstName: "Hans",
   lastName: "Muster",
   username: "hansm",
-  longName: "Hans Muster (hansm)"
+  longName: "Hans Muster (hansm)",
 });
 
-module("Integration | Component | user selection", function(hooks) {
+module("Integration | Component | user selection", function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     this.server = startMirage();
   });
 
-  hooks.afterEach(function() {
+  hooks.afterEach(function () {
     this.server.shutdown();
   });
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     assert.expect(1);
     this.set("user", USER);
 

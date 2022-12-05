@@ -26,5 +26,5 @@ export default {
    * @property {Function} duration
    * @public
    */
-  duration: validatePresence(true)
+  duration: validatePresence(true),
 };

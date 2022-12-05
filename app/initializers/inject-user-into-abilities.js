@@ -12,10 +12,10 @@ export function initialize(application) {
   application.inject("ability", "session", "service:session");
 
   Ability.reopen({
-    user: reads("session.data.user")
+    user: reads("session.data.user"),
   });
 }
 
 export default {
-  initialize
+  initialize,
 };

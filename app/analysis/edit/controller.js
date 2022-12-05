@@ -8,7 +8,7 @@ import { task } from "ember-concurrency";
 import {
   underscoreQueryParams,
   serializeParachuteQueryParams,
-  filterQueryParams
+  filterQueryParams,
 } from "timed/utils/query-params";
 import { cleanParams, toQueryString } from "timed/utils/url";
 import IntersectionValidations from "timed/validations/intersection";
@@ -26,12 +26,12 @@ export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
     },
     deserialize(str) {
       return (str && str.split(",")) || [];
-    }
-  }
+    },
+  },
 });
 /* eslint-enable ember/avoid-leaking-state-in-ember-objects */
 
-const prepareParams = params =>
+const prepareParams = (params) =>
   cleanParams(
     underscoreQueryParams(
       serializeParachuteQueryParams(
@@ -71,47 +71,53 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     this.intersection.perform();
   },
 
-  intersection: task(function*() {
+  intersection: task(function* () {
     const res = yield this.ajax.request("/api/v1/reports/intersection", {
       method: "GET",
       data: {
         ...prepareParams(this.allQueryParams),
         editable: 1,
-        include: "task,project,customer,user"
-      }
+        include: "task,project,customer,user",
+      },
     });
 
     yield this.store.pushPayload("report-intersection", res);
 
     return {
       model: this.store.peekRecord("report-intersection", res.data.id),
-      meta: res.meta
+      meta: res.meta,
     };
   }),
 
-  _customer: computed("intersectionModel.customer.id", function() {
+  _customer: computed("intersectionModel.customer.id", "store", function () {
     const id = this.get("intersectionModel.customer.id");
     return id && this.store.peekRecord("customer", id);
   }),
 
-  _project: computed("intersectionModel.project.id", function() {
+  _project: computed("intersectionModel.project.id", "store", function () {
     const id = this.get("intersectionModel.project.id");
     return id && this.store.peekRecord("project", id);
   }),
 
-  _task: computed("intersectionModel.task.id", function() {
+  _task: computed("intersectionModel.task.id", "store", function () {
     const id = this.get("intersectionModel.task.id");
     return id && this.store.peekRecord("task", id);
   }),
 
-  hasSelectedOwnReports: computed("intersectionModel.user.id", function() {
-    return this.get("intersectionModel.user.id") === this.session.data.user.id;
-  }),
+  hasSelectedOwnReports: computed(
+    "intersectionModel.user.id",
+    "session.data.user.id",
+    function () {
+      return (
+        this.get("intersectionModel.user.id") === this.session.data.user.id
+      );
+    }
+  ),
 
   canVerify: computed(
     "allQueryParams.reviewer",
-    "session.data.user",
-    function() {
+    "session.data.user.{id,isSuperuser}",
+    function () {
       return (
         this.get("allQueryParams.reviewer") ===
           this.get("session.data.user.id") ||
@@ -120,21 +126,19 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     }
   ),
 
-  canBill: computed("session.data.user", function() {
-    return (
-      this.get("session.data.user.isAccountant") ||
-      this.get("session.data.user.isSuperuser")
-    );
-  }),
+  canBill: computed.or(
+    "session.data.user.isAccountant",
+    "session.data.user.isSuperuser"
+  ),
 
-  needsReview: computed("intersectionModel", function() {
+  needsReview: computed("intersectionModel.review", function () {
     return (
       this.get("intersectionModel.review") === null ||
       this.get("intersectionModel.review") === true
     );
   }),
 
-  toolTipText: computed("canVerify", "needsReview", function() {
+  toolTipText: computed("canVerify", "needsReview", function () {
     let result = "";
     if (this.needsReview && this.canVerify) {
       result = TOOLTIP_NEEDS_REVIEW;
@@ -146,7 +150,7 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
     return result;
   }),
 
-  save: task(function*(changeset) {
+  save: task(function* (changeset) {
     try {
       const params = prepareParams(this.allQueryParams);
 
@@ -155,27 +159,27 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       yield changeset.execute();
 
       const {
-        data: { attributes, relationships }
+        data: { attributes, relationships },
       } = this.intersectionModel.serialize();
 
       const data = {
         type: "report-bulks",
         attributes: filterUnchanged(attributes, changeset.get("changes")),
-        relationships: filterUnchanged(relationships, changeset.get("changes"))
+        relationships: filterUnchanged(relationships, changeset.get("changes")),
       };
 
       yield this.ajax.request(
         `/api/v1/reports/bulk?editable=1&${queryString}`,
         {
           method: "POST",
-          data: { data }
+          data: { data },
         }
       );
 
       this.transitionToRoute("analysis.index", {
         queryParams: {
-          ...this.allQueryParams
-        }
+          ...this.allQueryParams,
+        },
       });
 
       this.notify.success("Reports were saved");
@@ -202,8 +206,8 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
 
       this.transitionToRoute("analysis.index", {
         queryParams: {
-          ...this.allQueryParams
-        }
+          ...this.allQueryParams,
+        },
       }).then(() => {
         this.set("analysisIndexController.skipResetOnSetup", false);
       });
@@ -216,6 +220,6 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       later(() => {
         changeset.rollback();
       });
-    }
-  }
+    },
+  },
 });

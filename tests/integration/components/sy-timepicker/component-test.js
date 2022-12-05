@@ -1,19 +1,19 @@
-import { hbs } from 'ember-cli-htmlbars';
 import {
   fillIn,
   blur,
   render,
   triggerKeyEvent,
-  settled
+  settled,
 } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy timepicker", function(hooks) {
+module("Integration | Component | sy timepicker", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("value", moment());
 
     await render(hbs`<SyTimepicker @value={{this.value}} />`);
@@ -21,12 +21,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.dom("input").hasValue(moment().format("HH:mm"));
   });
 
-  test("can change the value", async function(assert) {
+  test("can change the value", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 30
+        m: 30,
       })
     );
 
@@ -41,12 +41,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 15);
   });
 
-  test("can't set an invalid value", async function(assert) {
+  test("can't set an invalid value", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 30
+        m: 30,
       })
     );
 
@@ -61,7 +61,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 30);
   });
 
-  test("can only input digits and colons", async function(assert) {
+  test("can only input digits and colons", async function (assert) {
     this.set("value", null);
 
     await render(
@@ -79,58 +79,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.notEqual(this.value, null);
   });
 
-  test("can increase minutes per arrow", async function(assert) {
+  test("can increase minutes per arrow", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 15
-      })
-    );
-
-    await render(
-      hbs`<SyTimepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
-    );
-
-    this.element
-      .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 38));
-
-    await settled();
-
-    assert.strictEqual(this.value.hour(), 12);
-    assert.strictEqual(this.value.minute(), 30);
-  });
-
-  test("can decrease minutes per arrow", async function(assert) {
-    this.set(
-      "value",
-      moment({
-        h: 12,
-        m: 15
-      })
-    );
-
-    await render(
-      hbs`<SyTimepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
-    );
-
-    this.element
-      .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 40));
-
-    await settled();
-
-    assert.strictEqual(this.value.hour(), 12);
-    assert.strictEqual(this.value.minute(), 0);
-  });
-
-  test("can increase hours per arrow with shift", async function(assert) {
-    this.set(
-      "value",
-      moment({
-        h: 12,
-        m: 15
+        m: 15,
       })
     );
 
@@ -141,7 +95,57 @@ module("Integration | Component | sy timepicker", function(hooks) {
     this.element
       .querySelectorAll("input")
       .forEach(
-        async element =>
+        async (element) => await triggerKeyEvent(element, "keydown", 38)
+      );
+
+    await settled();
+
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 30);
+  });
+
+  test("can decrease minutes per arrow", async function (assert) {
+    this.set(
+      "value",
+      moment({
+        h: 12,
+        m: 15,
+      })
+    );
+
+    await render(
+      hbs`<SyTimepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
+    );
+
+    this.element
+      .querySelectorAll("input")
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 40)
+      );
+
+    await settled();
+
+    assert.strictEqual(this.value.hour(), 12);
+    assert.strictEqual(this.value.minute(), 0);
+  });
+
+  test("can increase hours per arrow with shift", async function (assert) {
+    this.set(
+      "value",
+      moment({
+        h: 12,
+        m: 15,
+      })
+    );
+
+    await render(
+      hbs`<SyTimepicker @value={{this.value}} @onChange={{fn (mut this.value)}} />`
+    );
+
+    this.element
+      .querySelectorAll("input")
+      .forEach(
+        async (element) =>
           await triggerKeyEvent(element, "keydown", 38, { shiftKey: true })
       );
 
@@ -151,12 +155,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 15);
   });
 
-  test("can decrease minutes per arrow with shift", async function(assert) {
+  test("can decrease minutes per arrow with shift", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 15
+        m: 15,
       })
     );
 
@@ -167,7 +171,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     this.element
       .querySelectorAll("input")
       .forEach(
-        async element =>
+        async (element) =>
           await triggerKeyEvent(element, "keydown", 40, { shiftKey: true })
       );
 
@@ -177,12 +181,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 15);
   });
 
-  test("can increase hours per arrow with ctrl", async function(assert) {
+  test("can increase hours per arrow with ctrl", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 15
+        m: 15,
       })
     );
 
@@ -193,7 +197,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     this.element
       .querySelectorAll("input")
       .forEach(
-        async element =>
+        async (element) =>
           await triggerKeyEvent(element, "keydown", 38, { ctrlKey: true })
       );
 
@@ -203,12 +207,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 15);
   });
 
-  test("can decrease minutes per arrow with ctrl", async function(assert) {
+  test("can decrease minutes per arrow with ctrl", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 15
+        m: 15,
       })
     );
 
@@ -219,7 +223,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     this.element
       .querySelectorAll("input")
       .forEach(
-        async element =>
+        async (element) =>
           await triggerKeyEvent(element, "keydown", 40, { ctrlKey: true })
       );
 
@@ -229,12 +233,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 15);
   });
 
-  test("can't change day", async function(assert) {
+  test("can't change day", async function (assert) {
     this.set(
       "value",
       moment({
         h: 23,
-        m: 45
+        m: 45,
       })
     );
 
@@ -244,7 +248,9 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 38));
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 38)
+      );
 
     await settled();
 
@@ -252,12 +258,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 45);
   });
 
-  test("can't be bigger than max or smaller than min", async function(assert) {
+  test("can't be bigger than max or smaller than min", async function (assert) {
     this.set(
       "value",
       moment({
         h: 12,
-        m: 30
+        m: 30,
       })
     );
 
@@ -265,7 +271,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
       "min",
       moment({
         h: 12,
-        m: 30
+        m: 30,
       })
     );
 
@@ -273,7 +279,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
       "max",
       moment({
         h: 12,
-        m: 30
+        m: 30,
       })
     );
 
@@ -283,7 +289,9 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 38));
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 38)
+      );
 
     await settled();
 
@@ -292,7 +300,9 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 40));
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 40)
+      );
 
     await settled();
 
@@ -300,12 +310,12 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 30);
   });
 
-  test("respects the precision", async function(assert) {
+  test("respects the precision", async function (assert) {
     this.set(
       "value",
       moment({
         h: 10,
-        m: 0
+        m: 0,
       })
     );
 
@@ -315,7 +325,9 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 38));
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 38)
+      );
 
     await settled();
 
@@ -323,7 +335,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 5);
   });
 
-  test("can handle null values", async function(assert) {
+  test("can handle null values", async function (assert) {
     this.set("value", moment({ h: 12, m: 30 }));
 
     await render(
@@ -336,7 +348,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value, null);
   });
 
-  test("can handle null values with arrow up", async function(assert) {
+  test("can handle null values with arrow up", async function (assert) {
     this.set("value", null);
 
     await render(
@@ -345,7 +357,9 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 38));
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 38)
+      );
 
     await settled();
 
@@ -353,7 +367,7 @@ module("Integration | Component | sy timepicker", function(hooks) {
     assert.strictEqual(this.value.minute(), 15);
   });
 
-  test("can handle null values with arrow down", async function(assert) {
+  test("can handle null values with arrow down", async function (assert) {
     this.set("value", null);
 
     await render(
@@ -362,7 +376,9 @@ module("Integration | Component | sy timepicker", function(hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(async element => await triggerKeyEvent(element, "keydown", 40));
+      .forEach(
+        async (element) => await triggerKeyEvent(element, "keydown", 40)
+      );
 
     await settled();
 

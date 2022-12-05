@@ -1,6 +1,6 @@
-import { tracked } from '@glimmer/tracking';
 import { computed } from "@ember/object";
 import Service, { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 import Ember from "ember";
 import classic from "ember-classic-decorator";
 import moment from "moment";

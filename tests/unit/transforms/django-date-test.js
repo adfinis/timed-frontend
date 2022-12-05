@@ -2,24 +2,24 @@ import { setupTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Unit | Transform | django date", function(hooks) {
+module("Unit | Transform | django date", function (hooks) {
   setupTest(hooks);
 
-  test("serializes", function(assert) {
+  test("serializes", function (assert) {
     const transform = this.owner.lookup("transform:django-date");
 
     const result = transform.serialize(
       moment({
         y: 2017,
         M: 2, // moments months are zerobased
-        d: 11
+        d: 11,
       })
     );
 
     assert.equal(result, "2017-03-11");
   });
 
-  test("deserializes", function(assert) {
+  test("deserializes", function (assert) {
     const transform = this.owner.lookup("transform:django-date");
 
     assert.notOk(transform.deserialize(""));

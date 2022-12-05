@@ -3,7 +3,7 @@
 module.exports = {
   env: {
     embertest: true,
-    node: true
+    node: true,
   },
   globals: {
     server: true,
@@ -13,10 +13,10 @@ module.exports = {
     selectChoose: true,
     selectSearch: true,
     removeMultipleOption: true,
-    clearSelected: true
+    clearSelected: true,
   },
   rules: {
     "no-magic-numbers": "off",
-    "require-jsdoc": "off"
-  }
+    "require-jsdoc": "off",
+  },
 };

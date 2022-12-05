@@ -14,5 +14,5 @@ export default Factory.extend({
 
   afterCreate(report, server) {
     report.update({ taskId: server.create("task").id });
-  }
+  },
 });

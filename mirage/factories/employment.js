@@ -23,10 +23,10 @@ export default Factory.extend({
 
   active: trait({
     start: () => faker.date.recent(),
-    end: null
+    end: null,
   }),
 
   afterCreate(employment, server) {
     employment.update({ locationId: server.create("location").id });
-  }
+  },
 });
