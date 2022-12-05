@@ -17,6 +17,7 @@
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint . --cache",
     "prepare": "husky install",
+    "preinstall": "npx only-allow pnpm",
     "lint:js:fix": "eslint . --fix",
     "start": "ember server --proxy http://localhost:8000",
     "test": "npm-run-all lint test:*",
@@ -38,8 +39,6 @@
   "devDependencies": {
     "@adfinis-sygroup/eslint-config": "1.5.0",
     "@adfinis-sygroup/semantic-release-config": "3.4.0",
-    "@babel/helper-simple-access": "7.19.4",
-    "@babel/plugin-proposal-object-rest-spread": "7.18.9",
     "@commitlint/cli": "17.2.0",
     "@commitlint/config-conventional": "17.2.0",
     "@ember/jquery": "2.0.0",
@@ -56,17 +55,18 @@
     "ember-ajax": "5.1.2",
     "ember-auto-import": "2.4.3",
     "ember-basic-dropdown": "6.0.1",
-    "ember-classic-decorator": "3.0.1",
     "ember-can": "4.2.0",
     "ember-changeset": "4.1.1",
     "ember-changeset-validations": "4.1.0",
+    "ember-classic-decorator": "3.0.1",
     "ember-cli": "3.28.0",
     "ember-cli-app-version": "5.0.0",
     "ember-cli-babel": "7.26.11",
     "ember-cli-chart": "3.7.2",
     "ember-cli-code-coverage": "1.0.3",
+    "ember-cli-dependency-lint": "2.0.1",
     "ember-cli-deprecation-workflow": "2.1.0",
-    "ember-cli-htmlbars": "5.7.2",
+    "ember-cli-htmlbars": "6.0.0",
     "ember-cli-inject-live-reload": "2.1.0",
     "ember-cli-mirage": "2.4.0",
     "ember-cli-moment-shim": "3.8.0",
@@ -137,8 +137,15 @@
   "ember": {
     "edition": "octane"
   },
-  "resolutions": {
-    "@embroider/macros": "^1.0.0",
-    "ember-concurrency": "2.2.1"
+  "pnpm": {
+    "overrides": {
+      "ember-concurrency": "^2.1.1"
+    },
+    "peerDependencyRules": {
+      "ignoreMissing": [
+        "@babel/core",
+        "@types/node"
+      ]
+    }
   }
 }

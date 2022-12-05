@@ -11,7 +11,7 @@ on:
       - ember-octane
 
 env:
-  NODE_VERSION: 14
+  NODE_VERSION: 16
 
 jobs:
   lint:
@@ -26,23 +26,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.17.1
+
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
-
-      - uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: node-modules-v2-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            node-modules-v2-${{ hashFiles('yarn.lock') }}
-            node-modules-v2-
+          cache: "pnpm"
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Lint ${{ matrix.target }}
-        run: yarn lint:${{ matrix.target }}
+        run: pnpm lint:${{ matrix.target }}
 
   test:
     name: Tests
@@ -52,25 +51,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2.0.1
+        with:
+          version: 7.17.1
+
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ env.NODE_VERSION }}
+          cache: "pnpm"
 
-      - uses: actions/cache@v2
-        with:
-          path: node_modules
-          key: node-modules-v2-${{ hashFiles('yarn.lock') }}
-          restore-keys: |
-            node-modules-v2-${{ hashFiles('yarn.lock') }}
-            node-modules-v2-
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Run tests
-        run: yarn test
+        run: pnpm test
         env:
           COVERAGE: true
-
 
         # TODO enable this again after flaky tests are added back
 #       - name: Upload coverage report to Codecov
