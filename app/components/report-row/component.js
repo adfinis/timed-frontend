@@ -5,11 +5,8 @@
  */
 
 import { action } from "@ember/object";
-import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
-import Changeset from "ember-changeset";
-import lookupValidator from "ember-changeset-validations";
 import ReportValidations from "timed/validations/report";
 
 /**
@@ -22,6 +19,8 @@ import ReportValidations from "timed/validations/report";
 export default class ReportRowComponent extends Component {
   @service abilities;
 
+  ReportValidations = ReportValidations;
+
   get editable() {
     return this.abilities.can("edit report", this.args.report);
   }
@@ -33,34 +32,14 @@ export default class ReportRowComponent extends Component {
   }
 
   /**
-   * The changeset to edit
-   *
-   * @property {EmberChangeset.Changeset} changeset
-   * @public
-   */
-  get changeset() {
-    const c = new Changeset(
-      this.args.report,
-      lookupValidator(ReportValidations),
-      ReportValidations
-    );
-
-    later(() => {
-      c.validate();
-    });
-
-    return c;
-  }
-
-  /**
    * Save the row
    *
    * @method save
    * @public
    */
   @action
-  save() {
-    this.args.onSave(this.changeset);
+  save(changeset) {
+    this.args.onSave(changeset);
   }
   /**
    * Delete the row

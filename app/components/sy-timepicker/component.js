@@ -20,6 +20,9 @@ export default class SyTimepickerComponent extends Component {
     if (this.isProxiedDate(date)) {
       return date.unwrap();
     }
+    if (this.isProxiedDuration(date)) {
+      return moment.duration({ ...date.unwrap()._data });
+    }
     return date;
   }
 
@@ -27,7 +30,13 @@ export default class SyTimepickerComponent extends Component {
     return obj && obj.unwrap && obj.unwrap()._isAMomentObject;
   }
 
-  sanitize (value) {
+  isProxiedDuration(obj) {
+    return (
+      obj && obj.unwrap && obj.unwrap()._data && obj.unwrap()._milliseconds
+    );
+  }
+
+  sanitize(value) {
     return value.replace(/[^\d:]/, "");
   }
 
@@ -107,7 +116,6 @@ export default class SyTimepickerComponent extends Component {
    * @public
    */
   get displayValue() {
-
     return this.args.value && this.args.value.isValid()
       ? this.args.value.format("HH:mm")
       : "";

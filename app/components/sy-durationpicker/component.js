@@ -92,7 +92,7 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @private
    */
   _add(h, m) {
-    return moment.duration(this.args.value).add({ h, m });
+    return moment.duration(this.value).add({ h, m });
   }
 
   _isValid(duration) {
