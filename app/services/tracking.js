@@ -1,4 +1,3 @@
-import { tracked } from '@glimmer/tracking';
 /**
  * @module timed
  * @submodule timed-services
@@ -7,13 +6,14 @@ import { tracked } from '@glimmer/tracking';
 
 import { observes } from "@ember-decorators/object";
 import { getOwner } from "@ember/application";
-import { computed, get } from "@ember/object";
+import { get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize } from "@ember/string";
-import Ember from "ember";
-import classic from "ember-classic-decorator";
-import { task, timeout } from "ember-concurrency";
+import { isTesting, macroCondition } from "@embroider/macros";
+import { tracked } from "@glimmer/tracking";
+import { dropTask, task, timeout } from "ember-concurrency";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
 import moment from "moment";
 import formatDuration from "timed/utils/format-duration";
 
@@ -26,7 +26,6 @@ import formatDuration from "timed/utils/format-duration";
  * @extends Ember.Service
  * @public
  */
-@classic
 export default class TrackingService extends Service {
   /**
    * The store service
@@ -44,21 +43,28 @@ export default class TrackingService extends Service {
    */
   @service notify;
 
+  constructor(...args) {
+    super(...args);
+
+    this.fetchActiveActivity.perform();
+  }
+
   /**
    * Init hook, get the current activity
    *
    * @method init
    * @public
    */
-  async init() {
-    super.init();
+  @task
+  *fetchActiveActivity() {
+    yield Promise.resolve();
 
-    const actives = await this.store.query("activity", {
+    const actives = yield this.store.query("activity", {
       include: "task,task.project,task.project.customer",
       active: true,
     });
 
-    this.set("activity", actives.firstObject ?? null);
+    this.activity = actives.firstObject ?? null;
 
     this._computeTitle.perform();
   }
@@ -69,7 +75,6 @@ export default class TrackingService extends Service {
    * @property {Ember.Application} application
    * @public
    */
-  @computed
   get application() {
     return getOwner(this).lookup("application:main");
   }
@@ -80,7 +85,6 @@ export default class TrackingService extends Service {
    * @property {String} title
    * @public
    */
-  @computed("application.name")
   get title() {
     return capitalize(camelize(this.application.name || "Timed"));
   }
@@ -91,7 +95,6 @@ export default class TrackingService extends Service {
    * @method _triggerTitle
    * @private
    */
-  // eslint-disable-next-line ember/no-observers
   @observes("activity.active")
   _triggerTitle() {
     if (this.activity.active) {
@@ -127,7 +130,8 @@ export default class TrackingService extends Service {
    * @method _computeTitle
    * @private
    */
-  @task(function* () {
+  @task
+  *_computeTitle() {
     while (this.activity.active) {
       const duration = moment.duration(moment().diff(this.activity.from));
 
@@ -144,15 +148,14 @@ export default class TrackingService extends Service {
       this.setTitle(`${formatDuration(duration)} (${task})`);
 
       /* istanbul ignore else */
-      if (Ember.testing) {
+      if (macroCondition(isTesting())) {
         return;
       }
 
       /* istanbul ignore next */
       yield timeout(1000);
     }
-  })
-  _computeTitle;
+  }
 
   /**
    * The current activity
@@ -175,7 +178,7 @@ export default class TrackingService extends Service {
   set activity(value) {
     const newActivity = value || this.store.createRecord("activity");
 
-    this.set("_activity", newActivity);
+    this._activity = newActivity;
   }
 
   /**
@@ -184,18 +187,18 @@ export default class TrackingService extends Service {
    * @method startActivity
    * @public
    */
-  @(task(function* () {
+  @dropTask
+  *startActivity() {
     try {
       const activity = yield this.activity.start();
-      this.set("activity", activity);
+      this.activity = activity;
 
       this.notify.success("Activity was started");
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while starting the activity");
     }
-  }).drop())
-  startActivity;
+  }
 
   /**
    * Stop the activity
@@ -203,7 +206,8 @@ export default class TrackingService extends Service {
    * @method stopActivity
    * @public
    */
-  @(task(function* () {
+  @dropTask
+  *stopActivity() {
     try {
       if (!this.activity?.isNew) {
         yield this.activity.stop();
@@ -211,13 +215,24 @@ export default class TrackingService extends Service {
         this.notify.success("Activity was stopped");
       }
 
-      this.set("activity", null);
+      this.activity = null;
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while stopping the activity");
     }
-  }).drop())
-  stopActivity;
+  }
+
+  get activeCustomer() {
+    return this.activity?.task?.get("project.customer");
+  }
+
+  get activeProject() {
+    return this.activity?.task?.get("project");
+  }
+
+  get activeTask() {
+    return this.activity?.get("task");
+  }
 
   /**
    * The 10 last used tasks
@@ -225,13 +240,20 @@ export default class TrackingService extends Service {
    * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  @(task(function* () {
+  @dropTask
+  *fetchRecentTasks() {
+    yield Promise.resolve();
     return yield this.store.query("task", {
       my_most_frequent: 10, // eslint-disable-line camelcase
       include: "project,project.customer",
     });
-  }).drop())
-  recentTasks;
+  }
+
+  recentTasksData = trackedTask(this, this.fetchRecentTasks, () => []);
+
+  get recentTasks() {
+    return this.recentTasksData.value ?? [];
+  }
 
   /**
    * All users
@@ -239,10 +261,10 @@ export default class TrackingService extends Service {
    * @property {EmberConcurrency.Task} users
    * @public
    */
-  @task(function* () {
+  @task
+  *users() {
     return yield this.store.query("user", {});
-  })
-  users;
+  }
 
   /**
    * All customers
@@ -250,10 +272,17 @@ export default class TrackingService extends Service {
    * @property {EmberConcurrency.Task} customers
    * @public
    */
-  @(task(function* () {
+  @dropTask
+  *fetchCustomers() {
+    yield Promise.resolve();
     return yield this.store.query("customer", {});
-  }).drop())
-  customers;
+  }
+
+  customersData = trackedTask(this, this.fetchCustomers, () => {});
+
+  get customers() {
+    return this.customersData.value ?? [];
+  }
 
   /**
    * Projects filtered by customer
@@ -262,16 +291,15 @@ export default class TrackingService extends Service {
    * @param {Number} customer The customer id to filter by
    * @public
    */
-  @task(function* (customer) {
-    /* istanbul ignore next */
+  @task
+  *projects(customer) {
     if (!customer) {
       // We can't test this because the UI prevents it
       throw new Error("No customer selected");
     }
 
     return yield this.store.query("project", { customer });
-  })
-  projects;
+  }
 
   /**
    * Tasks filtered by project
@@ -280,14 +308,13 @@ export default class TrackingService extends Service {
    * @param {Number} project The project id to filter by
    * @public
    */
-  @task(function* (project) {
-    /* istanbul ignore next */
+  @task
+  *tasks(project) {
     if (!project) {
       // We can't test this because the UI prevents it
       throw new Error("No project selected");
     }
 
     return yield this.store.query("task", { project });
-  })
-  tasks;
+  }
 }

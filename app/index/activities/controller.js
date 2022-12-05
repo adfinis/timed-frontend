@@ -100,7 +100,9 @@ export default class ActivitiesIndexController extends Controller {
    * @public
    */
   @action
-  async startActivity(activity) {
+  async startActivity(activity, event) {
+    event.stopPropagation();
+
     if (!activity.get("date").isSame(moment(), "day")) {
       activity = this.store.createRecord("activity", {
         ...activity.getProperties("task", "comment"),
@@ -113,7 +115,7 @@ export default class ActivitiesIndexController extends Controller {
 
     await this.tracking.startActivity.perform();
 
-    await this.router.transitionTo("index.activities", {
+    this.router.transitionTo("index.activities", {
       queryParams: { day: moment().format("YYYY-MM-DD") },
     });
   }
@@ -126,7 +128,9 @@ export default class ActivitiesIndexController extends Controller {
    * @public
    */
   @action
-  stopActivity(activity) {
+  stopActivity(activity, event) {
+    event.stopPropagation();
+
     this.tracking.activity = activity;
 
     this.tracking.stopActivity.perform();

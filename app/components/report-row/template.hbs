@@ -1,35 +1,82 @@
-{{#task-selection disabled=(not this.editable) task=this.changeset.task as |t|}}
-  <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.customer}}</div>
-  <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.project}}</div>
-  <div class="form-list-cell form-group {{if this.changeset.error.task 'has-error'}}">{{t.task}}</div>
-{{/task-selection}}
-
-<div class="form-list-cell form-group">
-  <input
-    type="text"
-    class="form-control comment-field"
-    placeholder="Comment"
-    name="comment"
-    value={{this.changeset.comment}}
-    disabled={{not this.editable}}
-    onchange={{action (mut this.changeset.comment) value='target.value'}}
-    data-test-report-comment
+<form class="form-list-row" title={{this.title}}>
+  <TaskSelection
+    @disabled={{not this.editable}}
+    @task={{this.changeset.task}}
+    as |t|
   >
-  {{#if this.changeset.task.project.customerVisible }}
+    <div
+      class="form-list-cell form-group
+        {{if this.changeset.error.task 'has-error'}}"
+    >{{t.customer}}</div>
+    <div
+      class="form-list-cell form-group
+        {{if this.changeset.error.task 'has-error'}}"
+    >{{t.project}}</div>
+    <div
+      class="form-list-cell form-group
+        {{if this.changeset.error.task 'has-error'}}"
+    >{{t.task}}</div>
+  </TaskSelection>
+
+  <div class="form-list-cell form-group">
+    <input
+      type="text"
+      class="form-control comment-field"
+      placeholder="Comment"
+      name="comment"
+      value={{this.changeset.comment}}
+      disabled={{not this.editable}}
+      onchange={{action (mut this.changeset.comment) value="target.value"}}
+      data-test-report-comment
+    />
+    {{#if this.changeset.task.project.customerVisible}}
       <CustomerVisibleIcon class="customer-visible-icon" />
-  {{/if}}
-</div>
-<div class="form-list-cell form-group">
-  {{sy-durationpicker-day data-test-report-duration disabled=(not this.editable) value=this.changeset.duration on-change=(action (mut this.changeset.duration))}}</div>
-<div class="form-list-cell form-group">
-  {{sy-checkbox data-test-report-review disabled=(not this.editable) checked=this.changeset.review on-change=(action (mut this.changeset.review)) label='Needs review'}}
-</div>
-<div class="form-list-cell form-group">
-  {{sy-checkbox data-test-report-not-billable disabled=(not this.editable) checked=this.changeset.notBillable on-change=(action (mut this.changeset.notBillable)) label='Not billable'}}
-</div>
-<div class="form-list-cell form-group">
-  {{#if this.editable}}
-    <button type="button" data-test-delete-report class="btn btn-danger" disabled={{this.report.verifiedBy.id}} {{action 'delete'}}>{{fa-icon 'trash'}}</button>
-    <button type="submit" data-test-save-report class="btn btn-primary" disabled={{or (not this.changeset.isDirty) (not this.changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
-  {{/if}}
-</div>
+    {{/if}}
+  </div>
+  <div class="form-list-cell form-group">
+    {{sy-durationpicker-day
+      data-test-report-duration
+      disabled=(not this.editable)
+      value=this.changeset.duration
+      on-change=(action (mut this.changeset.duration))
+    }}</div>
+  <div class="form-list-cell form-group">
+    {{sy-checkbox
+      data-test-report-review
+      disabled=(not this.editable)
+      checked=this.changeset.review
+      on-change=(action (mut this.changeset.review))
+      label="Needs review"
+    }}
+  </div>
+  <div class="form-list-cell form-group">
+    {{sy-checkbox
+      data-test-report-not-billable
+      disabled=(not this.editable)
+      checked=this.changeset.notBillable
+      on-change=(action (mut this.changeset.notBillable))
+      label="Not billable"
+    }}
+  </div>
+  <div class="form-list-cell form-group">
+    {{#if this.editable}}
+      <button
+        type="button"
+        data-test-delete-report
+        class="btn btn-danger"
+        disabled={{this.report.verifiedBy.id}}
+        {{action "delete"}}
+      >{{fa-icon "trash"}}</button>
+      <button
+        type="submit"
+        data-test-save-report
+        class="btn btn-primary"
+        disabled={{or
+          (not this.changeset.isDirty)
+          (not this.changeset.isValid)
+        }}
+        {{action "save"}}
+      >{{fa-icon "save"}}</button>
+    {{/if}}
+  </div>
+</form>

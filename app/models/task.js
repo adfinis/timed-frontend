@@ -73,8 +73,8 @@ export default class Task extends Model {
 
   get longName() {
     const taskName = this.name;
-    const projectName = this.project?.name;
-    const customerName = this.project?.customer?.name;
+    const projectName = this.get("project.name");
+    const customerName = this.get("project.customer.name");
 
     return `${customerName} > ${projectName} > ${taskName}`;
   }

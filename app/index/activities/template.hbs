@@ -66,7 +66,7 @@
                     type="button"
                     data-test-stop-activity
                     class="btn btn-danger"
-                    {{on "click" (fn this.stopActivity activity bubbles=false)}}
+                    {{on "click" (fn this.stopActivity activity)}}
                   >
                     {{fa-icon 'stop'}}
                   </button>
@@ -75,7 +75,7 @@
                     type="button"
                     data-test-start-activity
                     class="btn btn-success"
-                    {{on "click" (fn this.startActivity activity bubbles=false)}}
+                    {{on "click" (fn this.startActivity activity)}}
                   >
                     {{fa-icon 'play'}}
                   </button>

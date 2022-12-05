@@ -1,35 +1,43 @@
 <div class="tracking-bar" ...attributes>
-  {{#task-selection
-    disabled    = this.tracking.activity.active
-    on-set-task = (action (mut this.tracking.activity.task))
-    initial     = (hash
-      task      = this.tracking.activity.task
-    )
-  as |t|}}
-    <form {{action 'start' on='submit'}}>
+  <TaskSelection
+    @disabled={{this.tracking.activity.active}}
+    @liveTracking={{true}}
+    @on-set-task={{fn (mut this.tracking.activity.task)}}
+    @initial={{hash task=this.tracking.activity.task}}
+    as |t|
+  >
+    <label hidden form="task-form">Select task</label>
+    <form id="task-form" {{on "submit" (optional this.start)}}>
       <div class="form-group" data-test-tracking-customer>
-        {{t.customer}}
+        <t.customer />
       </div>
       <div class="form-group" data-test-tracking-project>
-        {{t.project}}
+        <t.project />
       </div>
       <div class="form-group" data-test-tracking-task>
-        {{t.task}}
+        <t.task />
       </div>
       <div class="form-group" data-test-tracking-comment>
-        <Input @type="text" class="form-control" placeholder="Comment" @name="comment" @value={{this.tracking.activity.comment}} @disabled={{this.tracking.activity.active}} />
-        {{#if this.tracking.activity.task.project.customerVisible }}
+        <Input
+          @type="text"
+          class="form-control"
+          placeholder="Comment"
+          @name="comment"
+          @value={{this.tracking.activity.comment}}
+          @disabled={{this.tracking.activity.active}}
+        />
+        {{#if this.tracking.activity.task.project.customerVisible}}
           <CustomerVisibleIcon class="customer-visible-icon" />
         {{/if}}
       </div>
       <div class="form-group">
-        {{record-button
-          activity  = this.tracking.activity
-          recording = this.tracking.activity.active
-          on-start  = (action (perform this.tracking.startActivity))
-          on-stop   = (action (queue (action (perform this.tracking.stopActivity)) t.clear))
-        }}
+        <RecordButton
+          @activity={{this.tracking.activity}}
+          @recording={{this.tracking.activity.active}}
+          @on-start={{perform this.tracking.startActivity}}
+          @on-stop={{queue (perform this.tracking.stopActivity) t.clear}}
+        />
       </div>
     </form>
-  {{/task-selection}}
+  </TaskSelection>
 </div>
