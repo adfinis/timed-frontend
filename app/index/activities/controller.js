@@ -167,6 +167,7 @@ export default class ActivitiesIndexController extends Controller {
   async generateReports() {
     this.showUnknownWarning = false;
     this.showOverlappingWarning = false;
+    this.tracking.generatingReports = true;
 
     try {
       await this.activities
@@ -228,6 +229,8 @@ export default class ActivitiesIndexController extends Controller {
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while generating reports");
+    } finally {
+      this.tracking.generatingReports = false;
     }
   }
 }

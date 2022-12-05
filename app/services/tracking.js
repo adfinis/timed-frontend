@@ -43,6 +43,12 @@ export default class TrackingService extends Service {
    */
   @service notify;
 
+  /**
+   * Flag indicating it the the tracking reports is currently generated.
+   * This is used to prevent doubled time accumulation in task sum displays.
+   */
+  @tracked generatingReports = false;
+
   constructor(...args) {
     super(...args);
 
@@ -220,6 +226,10 @@ export default class TrackingService extends Service {
       /* istanbul ignore next */
       this.notify.error("Error while stopping the activity");
     }
+  }
+
+  get hasActiveActivity() {
+    return this.activity?.active;
   }
 
   get activeCustomer() {
