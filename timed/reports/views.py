@@ -112,6 +112,10 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
             start=Project,
             annotations={
                 "name": F("name"),
+                "amount_offered": F("amount_offered"),
+                "amount_offered_currency": F("amount_offered_currency"),
+                "amount_invoiced": F("amount_invoiced"),
+                "amount_invoiced_currency": F("amount_invoiced_currency"),
             },
         )
         return queryset
