@@ -6,3 +6,10 @@
     {{outlet}}
   </div>
 </main>
+
+<WelcomeModal
+  @visible={{this.visible}}
+  @on-never={{this.neverTour}}
+  @on-later={{this.laterTour}}
+  @on-start={{this.startTour}}
+/>

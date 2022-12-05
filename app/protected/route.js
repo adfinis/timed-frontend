@@ -88,15 +88,24 @@ export default class ProtectedRoute extends Route {
   loading(transition) {
     //eslint-disable-next-line ember/no-controller-access-in-routes
     const controller = this.controllerFor("protected");
-
     if (controller) {
-      controller.set("loading", true);
+      controller.loading = true;
 
       if (transition) {
         transition.promise.finally(function () {
-          controller.loading = false;
+          controller.send("finished");
         });
       }
+    }
+  }
+
+  @action
+  finished() {
+    //eslint-disable-next-line ember/no-controller-access-in-routes
+    const controller = this.controllerFor("protected");
+
+    if (controller) {
+      controller.loading = false;
     }
   }
 }
