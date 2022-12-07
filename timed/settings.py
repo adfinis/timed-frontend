@@ -73,6 +73,7 @@ INSTALLED_APPS = [
     "timed.reports",
     "timed.redmine",
     "timed.subscription",
+    "timed.notifications",
 ]
 
 if ENV == "dev":
@@ -396,3 +397,5 @@ DATA_UPLOAD_MAX_NUMBER_FIELDS = env.int(
 )
 CORS_ALLOWED_ORIGINS = env.list("DJANGO_CORS_ALLOWED_ORIGINS", default=[])
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
+BUILD_PROJECTS = env.str("DJANGO_BUILD_PROJECT", default="_BUILD")
