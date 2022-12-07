@@ -25,22 +25,15 @@
                 as |f|
               >
                 <TaskSelection
-                  @on-set-customer={{action
-                    (queue
-                      (action (mut f.model.customer))
-                      (action "validate" f.model)
-                    )
-                  }}
-                  @on-set-project={{action
-                    (queue
-                      (action (mut f.model.project)) (action "validate" f.model)
-                    )
-                  }}
-                  @on-set-task={{action
-                    (queue
-                      (action (mut f.model.task)) (action "validate" f.model)
-                    )
-                  }}
+                  @on-set-customer={{(queue
+                    (fn (mut f.model.customer)) (fn this.validate f.model)
+                  )}}
+                  @on-set-project={{(queue
+                    (fn (mut f.model.project)) (fn this.validate f.model)
+                  )}}
+                  @on-set-task={{(queue
+                    (fn (mut f.model.task)) (fn this.validate f.model)
+                  )}}
                   @initial={{hash
                     customer=this._customer
                     project=this._project
@@ -52,7 +45,7 @@
                   }}
                   as |t|
                 >
-                  <f.input @name="task" as |fi|>
+                  <f.input @name="task">
                     <div class="form-group" data-test-customer>
                       <label>
                         Customer
@@ -60,7 +53,9 @@
                           <NotIdenticalWarning />
                         {{/unless}}
                         {{#if
-                          (not (eq f.model.change.customer.id model.customer.id))
+                          (not
+                            (eq f.model.change.customer.id model.customer.id)
+                          )
                         }}
                           <ChangedWarning />
                         {{/if}}
@@ -104,18 +99,18 @@
                       {{#if (not (eq f.model.comment model.comment))}}
                         <ChangedWarning />
                       {{/if}}
+                      <input
+                        type="text"
+                        placeholder="Enter comment..."
+                        class="form-control comment-field"
+                        {{on "change" (pick "target.value" fi.update)}}
+                        value={{fi.value}}
+                        disabled={{and
+                          this.isAccountant
+                          (not this.hasSelectedOwnReports)
+                        }}
+                      />
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Enter comment..."
-                      class="form-control comment-field"
-                      onchange={{action fi.update value="target.value"}}
-                      value={{fi.value}}
-                      disabled={{and
-                        this.isAccountant
-                        (not this.hasSelectedOwnReports)
-                      }}
-                    />
                     {{#if model.task.project.customerVisible}}
                       <CustomerVisibleIcon class="customer-visible-icon" />
                     {{/if}}
@@ -201,13 +196,16 @@
                       data-test-cancel
                       type="button"
                       class="btn"
-                      {{action "cancel"}}
+                      {{on "click" this.cancel}}
                     >Cancel</button>
                     <button
                       data-test-reset
                       type="button"
                       class="btn"
-                      {{action (queue t.reset (action "reset" f.model))}}
+                      {{on
+                        "click"
+                        (queue t.reset (fn this.resetChangeset f.model))
+                      }}
                     >Reset</button>
                     <f.submit />
                   </div>
