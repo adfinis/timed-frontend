@@ -57,8 +57,6 @@ export default class AnalysisEditController extends Controller.extend(
   AnalysisEditQueryParams.Mixin
 ) {
   IntersectionValidations = IntersectionValidations;
-  TOOLTIP_CANNOT_VERIFY;
-  TOOLTIP_NEEDS_REVIEW;
 
   @service notify;
   @service router;
@@ -71,7 +69,7 @@ export default class AnalysisEditController extends Controller.extend(
   }
 
   get intersectionModel() {
-    return this.intersection.lastSuccessful.value.model;
+    return this.intersection.lastSuccessful?.value?.model;
   }
 
   get isAccountant() {
@@ -124,7 +122,7 @@ export default class AnalysisEditController extends Controller.extend(
     return get(this, "intersectionModel.user.id") === this.session.data.user.id;
   }
 
-  get canVerifyputed() {
+  get canVerify() {
     return (
       this.allQueryParams.reviewer === this.session.data.user.id ||
       this.isSuperuser
@@ -183,7 +181,7 @@ export default class AnalysisEditController extends Controller.extend(
 
       this.router.transitionTo("analysis.index", {
         queryParams: {
-          ...this.allQueryParams,
+          ...params,
         },
       });
 

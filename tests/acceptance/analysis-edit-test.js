@@ -36,7 +36,7 @@ module("Acceptance | analysis edit", function (hooks) {
       res = JSON.parse(requestBody);
     });
 
-    await fillIn("[data-test-comment] input", "test comment 123");
+    await fillIn("[data-test-comment]", "test comment 123");
     await click("[data-test-not-billable] input");
     await click("[data-test-review] input");
 
@@ -46,7 +46,7 @@ module("Acceptance | analysis edit", function (hooks) {
       data: { type, attributes, relationships },
     } = res;
 
-    assert.equal(type, "report-bulks");
+    assert.strictEqual(type, "report-bulks");
 
     // only changed attributes were sent
     assert.deepEqual(Object.keys(attributes), [
@@ -54,13 +54,10 @@ module("Acceptance | analysis edit", function (hooks) {
       "not-billable",
       "review",
     ]);
-    assert.deepEqual(Object.keys(relationships), [
-      "customer",
-      "project",
-      "task",
-    ]);
 
-    assert.equal(currentURL(), "/analysis");
+    assert.deepEqual(Object.keys(relationships), []);
+
+    assert.strictEqual(currentURL(), "/analysis");
   });
 
   test("can cancel", async function (assert) {

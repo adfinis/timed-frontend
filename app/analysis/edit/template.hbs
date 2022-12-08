@@ -90,7 +90,7 @@
                     </div>
                   </f.input>
 
-                  <f.input data-test-comment @name="comment" as |fi|>
+                  <f.input @name="comment" as |fi|>
                     <label>
                       Comment
                       {{#if (eq model.comment null)}}
@@ -100,6 +100,7 @@
                         <ChangedWarning />
                       {{/if}}
                       <input
+                        data-test-comment
                         type="text"
                         placeholder="Enter comment..."
                         class="form-control comment-field"
@@ -116,8 +117,9 @@
                     {{/if}}
                   </f.input>
 
-                  <f.input data-test-not-billable @name="notBillable" as |fi|>
+                  <f.input @name="notBillable" as |fi|>
                     <SyCheckbox
+                      data-test-not-billable
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
                       @disabled={{and
@@ -135,8 +137,9 @@
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input data-test-review @name="review" as |fi|>
+                  <f.input @name="review" as |fi|>
                     <SyCheckbox
+                      data-test-review
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
                       @disabled={{and
@@ -154,8 +157,9 @@
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input data-test-billed @name="billed" as |fi|>
+                  <f.input @name="billed" as |fi|>
                     <SyCheckbox
+                      data-test-billed
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
                       @title={{not
@@ -174,8 +178,9 @@
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input data-test-verified @name="verified" as |fi|>
+                  <f.input @name="verified" as |fi|>
                     <SyCheckbox
+                      data-test-verified
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
                       @title={{this.toolTipText}}

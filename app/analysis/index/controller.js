@@ -84,27 +84,27 @@ export const AnalysisQueryParams = new QueryParams({
     deserialize: deserializeMoment,
   },
   review: {
-    defaultValue: "",
+    defaultValue: null,
     replace: true,
     refresh: true,
   },
   notBillable: {
-    defaultValue: "",
+    defaultValue: null,
     replace: true,
     refresh: true,
   },
   verified: {
-    defaultValue: "",
+    defaultValue: null,
     replace: true,
     refresh: true,
   },
   editable: {
-    defaultValue: "",
+    defaultValue: null,
     replace: true,
     refresh: true,
   },
   billed: {
-    defaultValue: "",
+    defaultValue: null,
     replace: true,
     refresh: true,
   },
