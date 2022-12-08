@@ -45,12 +45,11 @@
     "@ember/optional-features": "2.0.0",
     "@ember/render-modifiers": "2.0.4",
     "@ember/test-helpers": "2.8.1",
-    "@embroider/macros": "^1.10.0",
+    "@embroider/macros": "^1.9.0",
     "@embroider/util": "^1.9.0",
     "@fontsource/source-sans-pro": "4.5.11",
     "@glimmer/component": "1.1.2",
     "@glimmer/tracking": "1.1.2",
-    "@glint/template": ">= 0.8.3",
     "@html-next/vertical-collection": "4.0.2",
     "babel-eslint": "10.1.0",
     "broccoli-asset-rev": "3.0.0",
@@ -84,6 +83,7 @@
     "ember-concurrency": "2.3.4",
     "ember-data": "3.28.0",
     "ember-decorators": "6.1.1",
+    "ember-event-helpers": "^0.1.1",
     "ember-export-application-global": "2.0.1",
     "ember-fetch": "8.1.2",
     "ember-font-awesome": "3.1.1",
@@ -148,6 +148,7 @@
     "peerDependencyRules": {
       "ignoreMissing": [
         "@babel/core",
+        "@glint/template",
         "@types/node"
       ]
     }

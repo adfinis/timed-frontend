@@ -1,0 +1,13 @@
+<input
+  aria-label="duration picker"
+  type="text"
+  class="form-control"
+  pattern={{this.pattern}}
+  value={{this.displayValue}}
+  maxlength={{this.maxlength}}
+  placeholder={{this.placeholder}}
+  autocomplete="off"
+  {{on "change" this.change}}
+  {{on "keydown" this.handleKeyPress}}
+  {{on "focusout" (optional @onFocusOut)}}
+/>

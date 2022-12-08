@@ -1,8 +1,21 @@
-<input
-  type="checkbox"
-  id={{this.checkboxElementId}}
-  checked={{this.checked}}
-  disabled={{this.disabled}}
-  onchange={{action this.on-change value='target.checked'}}
->
-<label for={{this.checkboxElementId}} title={{this.title}}>{{#if has-block}}{{~yield~}}{{else}}{{#if this.label}}{{~label~}}{{else}}&nbsp;{{/if}}{{/if}}</label>
+<div class="checkbox">
+  <input
+    type="checkbox"
+    id={{this.checkboxElementId}}
+    checked={{@checked}}
+    disabled={{@disabled}}
+    {{on "change" (pick "target.checked" (optional @onChange))}}
+    {{did-insert this.handleCheckBox}}
+  />
+  <label for={{this.checkboxElementId}} title={{@title}}>
+    {{#if (has-block)}}
+      {{yield}}
+    {{else}}
+      {{#if @label}}
+        {{@label}}
+      {{else}}
+        &nbsp;
+      {{/if}}
+    {{/if}}
+  </label>
+</div>

@@ -143,7 +143,7 @@ export default class TaskSelectionComponent extends Component {
   get customer() {
     // Without unwrapping of the proxy ember-power-select will stick to wrong reference after clearing
     return this.args.liveTracking
-      ? (this.tracking.activeCustomer?.content ?? this._customer)
+      ? this.tracking.activeCustomer?.content ?? this._customer
       : this._customer;
   }
 
@@ -159,7 +159,7 @@ export default class TaskSelectionComponent extends Component {
   get project() {
     // Without unwrapping of the proxy ember-power-select will stick to wrong reference after clearing
     return this.args.liveTracking
-      ? (this.tracking.activeProject?.content ?? this._project)
+      ? this.tracking.activeProject?.content ?? this._project
       : this._project;
   }
 
@@ -171,7 +171,7 @@ export default class TaskSelectionComponent extends Component {
    */
   get task() {
     return this.args.liveTracking
-      ? (this.tracking.activeTask?.content ?? this._task)
+      ? this.tracking.activeTask?.content ?? this._task
       : this._task;
   }
 
@@ -320,7 +320,7 @@ export default class TaskSelectionComponent extends Component {
     if (!options.preventAction && this._customer) {
       later(this, () => {
         (this.args["on-set-customer"] === undefined
-          ? () => { }
+          ? () => {}
           : this.args["on-set-customer"])(value);
       });
     }
@@ -349,7 +349,7 @@ export default class TaskSelectionComponent extends Component {
     if (!options.preventAction) {
       later(this, () => {
         (this.args["on-set-project"] === undefined
-          ? () => { }
+          ? () => {}
           : this.args["on-set-project"])(value);
       });
     }
@@ -370,7 +370,7 @@ export default class TaskSelectionComponent extends Component {
     if (!options.preventAction) {
       later(this, async () => {
         (this.args["on-set-task"] === undefined
-          ? () => { }
+          ? () => {}
           : this.args["on-set-task"])(value);
       });
     }

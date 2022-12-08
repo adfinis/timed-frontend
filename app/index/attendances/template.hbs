@@ -22,10 +22,10 @@
                 data-test-attendance-slider
                 data-test-attendance-slider-id={{attendance.id}}>
                 <td>
-                  {{sy-timepicker value=model.from on-change=(action (mut model.from))}}
+                  {{sy-timepicker value=model.from onChange=(action (mut model.from))}}
                 </td>
                 <td>
-                  {{sy-timepicker value=model.to on-change=(action (mut model.to))}}
+                  {{sy-timepicker value=model.to onChange=(action (mut model.to))}}
                 </td>
                 <td>
                   <button type="button" class="btn btn-danger" {{action 'deleteAttendance' model}}>{{fa-icon 'trash'}}</button>

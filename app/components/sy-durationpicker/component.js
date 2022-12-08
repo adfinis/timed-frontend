@@ -1,13 +1,15 @@
-import { tracked } from '@glimmer/tracking';
-import classic from "ember-classic-decorator";
-import { computed } from "@ember/object";
+/**
+ * @module timed
+ * @submodule timed-components
+ * @public
+ */
+import { action } from "@ember/object";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 import SyTimepickerComponent from "timed/components/sy-timepicker/component";
 import formatDuration from "timed/utils/format-duration";
 
 const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number;
-
 const { abs } = Math;
 
 /**
@@ -17,16 +19,8 @@ const { abs } = Math;
  * @extends Ember.Component
  * @public
  */
-@classic
 export default class SyDurationpicker extends SyTimepickerComponent {
-  name = "duration";
-  @tracked min = MIN_SAFE_INTEGER;
-  max = MAX_SAFE_INTEGER;
   maxlength = null;
-
-  sanitize(value) {
-    return value.replace(/[^\d:-]/, "");
-  }
 
   /**
    * The precision of the time
@@ -36,7 +30,15 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @property {Number} precision
    * @public
    */
-  @tracked precision = 15;
+  precision = 15;
+
+  get min() {
+    return this.args.min ?? MIN_SAFE_INTEGER;
+  }
+
+  get max() {
+    return this.args.max ?? MAX_SAFE_INTEGER;
+  }
 
   /**
    * The regex for the input
@@ -48,21 +50,9 @@ export default class SyDurationpicker extends SyTimepickerComponent {
     const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
-    return `${
-      this.min < 0 ? "-?" : ""
-    }\\d+:(${minutes.map(m => padStart(m, 2)).join("|")})`;
-  }
-
-  change({ target: { validity, value } }) {
-    if (validity.valid) {
-      const negative = /^-/.test(value);
-
-      const [h = NaN, m = NaN] = this.sanitize(value)
-        .split(":")
-        .map(n => abs(parseInt(n)) * (negative ? -1 : 1));
-
-      this._change([h, m].some(isNaN) ? null : this._set(h, m));
-    }
+    return `${this.min < 0 ? "-?" : ""}\\d+:(${minutes
+      .map((m) => padStart(m, 2))
+      .join("|")})`;
   }
 
   /**
@@ -73,9 +63,10 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @property {String} displayValue
    * @public
    */
-  @computed("value")
   get displayValue() {
-    return this.value ? formatDuration(this.value, false) : "";
+    return this.args.value
+      ? formatDuration(this.args.value.content ?? this.args.value, false)
+      : "";
   }
 
   /**
@@ -102,5 +93,27 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    */
   _add(h, m) {
     return moment.duration(this.value).add({ h, m });
+  }
+
+  _isValid(duration) {
+    return duration < this.max && duration > this.min;
+  }
+
+  @action
+  change({ target: { validity, value } }) {
+    if (validity.valid) {
+      const negative = /^-/.test(value);
+
+      const [h = NaN, m = NaN] = this.sanitize(value)
+        .split(":")
+        .map((n) => abs(parseInt(n)) * (negative ? -1 : 1));
+
+      this._change([h, m].some(isNaN) ? null : this._set(h, m));
+    }
+  }
+
+  @action
+  handleKeyPress(event) {
+    super.keyDown(event);
   }
 }

@@ -19,12 +19,13 @@ const DATE_FORMAT = "YYYY-MM-DD";
  * @public
  */
 export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
+  lastUpdateDate = null;
 
   queryParams = {
     day: {
-      refreshModel: true
-    }
-  }
+      refreshModel: true,
+    },
+  };
 
   /**
    * The session service
@@ -57,6 +58,13 @@ export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
    * @public
    */
   afterModel(model) {
+    const formattedDate = model.format();
+    if (formattedDate === this.lastUpdateDate) {
+      return;
+    }
+
+    this.lastUpdateDate = formattedDate;
+
     const userId = this.session.data.user.id;
     const day = model.format(DATE_FORMAT);
     const from = moment(model).subtract(20, "days").format(DATE_FORMAT);

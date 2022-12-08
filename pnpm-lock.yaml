@@ -12,12 +12,11 @@ specifiers:
   '@ember/optional-features': 2.0.0
   '@ember/render-modifiers': 2.0.4
   '@ember/test-helpers': 2.8.1
-  '@embroider/macros': ^1.10.0
+  '@embroider/macros': ^1.9.0
   '@embroider/util': ^1.9.0
   '@fontsource/source-sans-pro': 4.5.11
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
-  '@glint/template': '>= 0.8.3'
   '@html-next/vertical-collection': 4.0.2
   babel-eslint: 10.1.0
   broccoli-asset-rev: 3.0.0
@@ -51,6 +50,7 @@ specifiers:
   ember-concurrency: ^2.1.1
   ember-data: 3.28.0
   ember-decorators: 6.1.1
+  ember-event-helpers: ^0.1.1
   ember-export-application-global: 2.0.1
   ember-fetch: 8.1.2
   ember-font-awesome: 3.1.1
@@ -116,7 +116,6 @@ devDependencies:
   '@fontsource/source-sans-pro': 4.5.11
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
-  '@glint/template': 0.9.7_@glimmer+component@1.1.2
   '@html-next/vertical-collection': 4.0.2
   babel-eslint: 10.1.0_eslint@7.32.0
   broccoli-asset-rev: 3.0.0
@@ -150,6 +149,7 @@ devDependencies:
   ember-concurrency: 2.2.1
   ember-data: 3.28.0
   ember-decorators: 6.1.1
+  ember-event-helpers: 0.1.1
   ember-export-application-global: 2.0.1
   ember-fetch: 8.1.2
   ember-font-awesome: 3.1.1
@@ -166,7 +166,7 @@ devDependencies:
   ember-power-select: 6.0.1_ember-source@3.28.0
   ember-qunit: 6.0.0_qlun7vkcguccocg2zpe7gp5kwa
   ember-resolver: 8.0.3
-  ember-resources: 5.6.0_dbrt6eyp6y45rcwnqrscmaa2xy
+  ember-resources: 5.6.0_7agcew7zbr4wazpzfljptmrzjm
   ember-responsive: 5.0.0
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
@@ -2691,14 +2691,6 @@ packages:
       babel-plugin-debug-macros: 0.3.4
     transitivePeerDependencies:
       - '@babel/core'
-    dev: true
-
-  /@glint/template/0.9.7_@glimmer+component@1.1.2:
-    resolution: {integrity: sha512-MCp8GxQDIbH8ZzfNxHhVqCSKlydBgQfBEwJLDpN81lgFRCldSDPueIbk8sz3EhpGiZJVdNQbpGeYIDsUXe1ocg==}
-    peerDependencies:
-      '@glimmer/component': ^1.1.2
-    dependencies:
-      '@glimmer/component': 1.1.2
     dev: true
 
   /@handlebars/parser/2.0.0:
@@ -8698,6 +8690,15 @@ packages:
       - supports-color
     dev: true
 
+  /ember-event-helpers/0.1.1:
+    resolution: {integrity: sha512-fWcbWd4W4nRv8bbato8JB6oGRpATkR+oGYxMIqnfgTgPWaCS0ww7CuUVNpwg1TulojKMCuTXi8Fem2b1NSF1ZQ==}
+    engines: {node: 8.* || >= 10.*}
+    dependencies:
+      ember-cli-babel: 7.26.11
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /ember-export-application-global/2.0.1:
     resolution: {integrity: sha512-B7wiurPgsxsSGzJuPFkpBWnaeuCu2PGpG2BjyrfA1VcL7//o+5RSnZqiCEY326y7qmxb2GoCgo0ft03KBU0rRw==}
     engines: {node: '>= 4'}
@@ -9075,7 +9076,7 @@ packages:
       - supports-color
     dev: true
 
-  /ember-resources/5.6.0_dbrt6eyp6y45rcwnqrscmaa2xy:
+  /ember-resources/5.6.0_7agcew7zbr4wazpzfljptmrzjm:
     resolution: {integrity: sha512-yTI3u3JV7/WxdbX/+9lB3DoeHLiHg993F1vMw/3bVtr7i9f8f2TQUoeIxp+jzCk2Ozjm4zb+x+/DuSIx1FzyJA==}
     peerDependencies:
       '@ember/test-waiters': ^3.0.0
@@ -9089,6 +9090,8 @@ packages:
         optional: true
       '@glimmer/component':
         optional: true
+      '@glint/template':
+        optional: true
       ember-concurrency:
         optional: true
     dependencies:
@@ -9097,7 +9100,6 @@ packages:
       '@embroider/macros': 1.10.0
       '@glimmer/component': 1.1.2
       '@glimmer/tracking': 1.1.2
-      '@glint/template': 0.9.7_@glimmer+component@1.1.2
       ember-concurrency: 2.2.1
       ember-source: 3.28.0
     transitivePeerDependencies:
