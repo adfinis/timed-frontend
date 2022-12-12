@@ -108,15 +108,22 @@ export const AnalysisQueryParams = new QueryParams({
     replace: true,
     refresh: true,
   },
+  // We serialize the ordering as null if the
+  // value equals the defaultValue. For some reason
+  // if the serialized value is not null we had some
+  // weird query param behavior where the ordering
+  // param was set to the defaultValue when editing
+  // a report and due to that all other queryParams
+  // where reset.
   ordering: {
     defaultValue: "-date",
     replace: true,
     refresh: true,
     serialize(val) {
-      return `${val},id`;
+      return val === "-date" ? null : `${val},id`;
     },
     deserialize(val) {
-      return val.replace(",id", "");
+      return val === null ? "-date" : val.replace(",id", "");
     },
   },
 });
