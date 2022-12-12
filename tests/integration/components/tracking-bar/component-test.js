@@ -1,34 +1,18 @@
-import Service from "@ember/service";
 import { render } from "@ember/test-helpers";
 import { hbs } from "ember-cli-htmlbars";
-import { task } from "ember-concurrency";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
-
-export const trackingStub = Service.extend({
-  init(...args) {
-    this._super(...args);
-
-    this.set("activity", { comment: "asdf" });
-  },
-
-  customers: task(function* () {
-    return yield [];
-  }),
-  recentTasks: task(function* () {
-    return yield [];
-  }),
-});
+import { setup as setupTrackingService } from "timed/tests/helpers/tracking-mock";
 
 module("Integration | Component | tracking bar", function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
-    this.owner.register("service:tracking", trackingStub);
+    setupTrackingService(this, { activity: { comment: "asdf" } });
   });
 
   test("renders", async function (assert) {
-    await render(hbs`{{tracking-bar}}`);
+    await render(hbs`<TrackingBar />`);
 
     assert.dom("input[type=text]").hasValue("asdf");
   });

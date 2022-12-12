@@ -1,12 +1,12 @@
 import { setupTest } from "ember-qunit";
 import { module, test } from "qunit";
-import { trackingStub } from "timed/tests/integration/components/tracking-bar/component-test";
+import { setup as setupTrackingStub } from "timed/tests/helpers/tracking-mock";
 
 module("Unit | Controller | index", function (hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function () {
-    this.owner.register("service:tracking", trackingStub);
+    setupTrackingStub(this);
   });
 
   test("exists", function (assert) {

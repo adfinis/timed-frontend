@@ -35,7 +35,7 @@ export default class TaskSelectionComponent extends Component {
   }
 
   async _setInitial() {
-    await this.tracking.fetchActiveActivity.last;
+    await this.tracking.fetchActiveActivity?.last;
 
     const { customer, project, task } = this.args.initial ?? {
       customer: null,
