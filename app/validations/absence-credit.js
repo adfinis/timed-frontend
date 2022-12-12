@@ -1,11 +1,11 @@
 import {
   validatePresence,
-  validateNumber
+  validateNumber,
 } from "ember-changeset-validations/validators";
 
 export default {
   user: validatePresence(true),
   date: validatePresence(true),
   absenceType: validatePresence(true),
-  days: [validatePresence(true), validateNumber({ integer: true })]
+  days: [validatePresence(true), validateNumber({ integer: true })],
 };

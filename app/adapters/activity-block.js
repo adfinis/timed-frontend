@@ -39,5 +39,5 @@ export default ApplicationAdapter.extend({
    */
   urlForCreateRecord(...args) {
     return `${this._super(...args)}?include=activity`;
-  }
+  },
 });

@@ -7,5 +7,5 @@ export default Factory.extend({
 
   afterCreate(customerStatistic, server) {
     customerStatistic.update({ customerId: server.create("customer").id });
-  }
+  },
 });

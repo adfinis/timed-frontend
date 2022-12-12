@@ -89,9 +89,7 @@ export default Route.extend(RouteAutostartTourMixin, {
      */
     async addAttendance() {
       try {
-        const date = this.controllerFor("index")
-          .get("date")
-          .clone();
+        const date = this.controllerFor("index").get("date").clone();
 
         const from = date.clone().set({ h: 8, m: 0, s: 0, ms: 0 });
         const to = date.clone().set({ h: 11, m: 30, s: 0, ms: 0 });
@@ -99,7 +97,7 @@ export default Route.extend(RouteAutostartTourMixin, {
         const attendance = this.store.createRecord("attendance", {
           date,
           from,
-          to
+          to,
         });
 
         await attendance.save();
@@ -109,6 +107,6 @@ export default Route.extend(RouteAutostartTourMixin, {
         /* istanbul ignore next */
         this.notify.error("Error while adding the attendance");
       }
-    }
-  }
+    },
+  },
 });

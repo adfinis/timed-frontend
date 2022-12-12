@@ -1,13 +1,13 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | weekly overview", function(hooks) {
+module("Integration | Component | weekly overview", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set("expected", moment.duration({ h: 8 }));
 
     await render(hbs`{{weekly-overview expected=expected}}`);
@@ -15,7 +15,7 @@ module("Integration | Component | weekly overview", function(hooks) {
     assert.ok(this.element);
   });
 
-  test("renders the benchmarks", async function(assert) {
+  test("renders the benchmarks", async function (assert) {
     this.set("expected", moment.duration({ h: 8 }));
 
     await render(hbs`{{weekly-overview expected=expected}}`);
@@ -24,7 +24,7 @@ module("Integration | Component | weekly overview", function(hooks) {
     assert.dom("hr").exists({ count: 12 });
   });
 
-  test("renders the days", async function(assert) {
+  test("renders the days", async function (assert) {
     this.set("day", moment());
     this.set("expected", moment.duration({ h: 8 }));
     this.set("worktime", moment.duration({ h: 8 }));

@@ -10,10 +10,10 @@ export default Factory.extend({
 
   days: trait({
     credit: () => faker.random.number({ min: 10, max: 20 }),
-    usedDays: () => faker.random.number({ min: 5, max: 25 })
+    usedDays: () => faker.random.number({ min: 5, max: 25 }),
   }),
 
   duration: trait({
-    usedDuration: () => randomDuration()
-  })
+    usedDuration: () => randomDuration(),
+  }),
 });

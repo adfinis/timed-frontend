@@ -1,10 +1,10 @@
 import { setupTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Unit | Serializer | employment", function(hooks) {
+module("Unit | Serializer | employment", function (hooks) {
   setupTest(hooks);
 
-  test("serializes records", function(assert) {
+  test("serializes records", function (assert) {
     const record = this.owner
       .lookup("service:store")
       .createRecord("employment");

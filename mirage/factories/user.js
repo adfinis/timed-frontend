@@ -25,17 +25,17 @@ export default Factory.extend({
     server.db.absenceTypes.forEach(({ id: absenceTypeId }, i) => {
       server.create("absence-balance", i % 2 === 0 ? "days" : "duration", {
         user,
-        absenceTypeId
+        absenceTypeId,
       });
     });
 
     const days = [...new Array(10).keys()];
 
-    days.forEach(i => {
+    days.forEach((i) => {
       server.create("worktime-balance", {
         user,
-        date: moment().subtract(i, "days")
+        date: moment().subtract(i, "days"),
       });
     });
-  }
+  },
 });

@@ -14,6 +14,6 @@ import parseDjangoDuration from "timed/utils/parse-django-duration";
  * @return {moment.duration} The moment duration
  * @public
  */
-export const parseDjangoDurationFn = args => parseDjangoDuration(...args);
+export const parseDjangoDurationFn = (args) => parseDjangoDuration(...args);
 
 export default helper(parseDjangoDurationFn);

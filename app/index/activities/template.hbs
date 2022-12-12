@@ -108,8 +108,7 @@
   </modal.body>
   <modal.footer>
     <button
-      class="btn btn-primary"
-      {{on
+      class="btn btn-primary" type="button" {{on
         "click"
         (if
           this.showUnknownWarning
@@ -119,8 +118,7 @@
       }}
     >That's fine</button>
     <button
-      class="btn btn-default"
-      {{on
+      class="btn btn-default" type="button" {{on
         "click"
         (queue
           (fn (mut this.showOverlappingWarning) false)
@@ -140,8 +138,7 @@
   </modal.body>
   <modal.footer>
     <button
-      class="btn btn-primary"
-      {{on
+      class="btn btn-primary" type="button" {{on
         "click"
         (if
           this.showOverlappingWarning
@@ -151,8 +148,7 @@
       }}
     >That's fine</button>
     <button
-      class="btn btn-default"
-      {{on
+      class="btn btn-default" type="button" {{on
         "click"
         (queue
           (fn (mut this.showUnknownWarning) false)

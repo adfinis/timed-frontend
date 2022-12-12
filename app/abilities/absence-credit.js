@@ -3,7 +3,7 @@ import { Ability } from "ember-can";
 
 const AbsenceCreditAbility = Ability.extend({
   canEdit: reads("user.isSuperuser"),
-  canCreate: reads("user.isSuperuser")
+  canCreate: reads("user.isSuperuser"),
 });
 
 export default AbsenceCreditAbility;

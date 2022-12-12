@@ -116,7 +116,7 @@ export default Mixin.create(RouteTourMixin, {
         const tour = this.get("controller.tour");
 
         /* istanbul ignore next */
-        tour.on("tour.end", async event => {
+        tour.on("tour.end", async (event) => {
           if (event.currentStep + 1 !== event.tour._steps.length) {
             return;
           }
@@ -172,5 +172,5 @@ export default Mixin.create(RouteTourMixin, {
     this.startParentTour();
 
     this._super(...args);
-  }
+  },
 });

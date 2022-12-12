@@ -1,7 +1,7 @@
-import { hbs } from 'ember-cli-htmlbars';
 import Component from "@ember/component";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
+import { hbs } from "ember-cli-htmlbars";
 
 const SELECTED_TEMPLATE = hbs`{{selected.longName}}`;
 
@@ -42,11 +42,11 @@ export default Component.extend({
     }
   },
 
-  users: computed("queryOptions", async function() {
+  users: computed("queryOptions", "tracking.users.last", async function () {
     await this.get("tracking.users.last");
     const queryOptions = this.queryOptions || {};
 
     queryOptions.ordering = "username";
     return this.store.query("user", queryOptions);
-  })
+  }),
 });

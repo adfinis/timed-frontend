@@ -1,11 +1,11 @@
 <h1>Users</h1>
 
-{{#filter-sidebar on-reset=(perform this.resetFilter) as |fs|}}
+<FilterSidebar @on-reset={{perform this.resetFilter}} as |fs|>
   <fs.group @label="General" @expanded={{true}}>
     <fs.label>
       Search
       {{fs.filter 'search'
-        data-test-filter-search
+        data-test-filter-search=true
         selected = this.search
         on-change = (perform this.setSearchFilter)
       }}
@@ -14,20 +14,16 @@
       <fs.label>
         Supervisor
         <fs.filter>
-          {{#user-selection
-            user          = this.selectedSupervisor
-            on-change     = (perform this.setModelFilter 'supervisor')
-            queryOptions  = (hash is_supervisor=1 active=1)
-          as |u|}}
+          <UserSelection @user={{this.selectedSupervisor}} @on-change={{perform this.setModelFilter 'supervisor'}} @queryOptions={{hash is_supervisor=1 active=1}} as |u|>
             <u.user @placeholder="Select supervisor..." />
-          {{/user-selection}}
+          </UserSelection>
         </fs.filter>
       </fs.label>
     {{/if}}
     <fs.label>
       Active
       {{fs.filter 'button'
-        data-test-filter-active
+        data-test-filter-active=true
         selected  = this.active
         valuePath = 'value'
         labelPath = 'label'
@@ -40,7 +36,7 @@
       }}
     </fs.label>
   </fs.group>
-{{/filter-sidebar}}
+</FilterSidebar>
 
 {{#async-list this.data as |section data|}}
   {{#if (eq section 'empty')}}

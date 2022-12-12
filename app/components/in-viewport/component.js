@@ -1,6 +1,6 @@
-import classic from "ember-classic-decorator";
-import { get } from "@ember/object";
 import Component from "@ember/component";
+import { get } from "@ember/object";
+import classic from "ember-classic-decorator";
 
 @classic
 class InViewportComponent extends Component {
@@ -21,7 +21,7 @@ class InViewportComponent extends Component {
       },
       {
         root: document.querySelector(this.rootSelector),
-        rootMargin: `${this.rootMargin}px`
+        rootMargin: `${this.rootMargin}px`,
       }
     );
 

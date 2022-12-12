@@ -1,13 +1,13 @@
-import classic from "ember-classic-decorator";
 import { tagName } from "@ember-decorators/component";
-import { computed } from "@ember/object";
 import Component from "@ember/component";
+import { computed } from "@ember/object";
+import classic from "ember-classic-decorator";
 
-const getDirection = state => {
+const getDirection = (state) => {
   return state.startsWith("-") ? "desc" : "asc";
 };
 
-const getColname = state =>
+const getColname = (state) =>
   state.startsWith("-") ? state.substring(1) : state;
 
 @classic

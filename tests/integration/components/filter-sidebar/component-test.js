@@ -1,12 +1,12 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | filter sidebar", function(hooks) {
+module("Integration | Component | filter sidebar", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("can reset", async function(assert) {
+  test("can reset", async function (assert) {
     assert.expect(1);
     this.set("didReset", false);
 
@@ -20,7 +20,7 @@ module("Integration | Component | filter sidebar", function(hooks) {
     assert.ok(this.didReset);
   });
 
-  test("shows applied filter count", async function(assert) {
+  test("shows applied filter count", async function (assert) {
     this.set("count", 0);
 
     await render(hbs`

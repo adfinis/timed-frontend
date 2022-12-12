@@ -8,6 +8,6 @@ module.exports = {
     "ember/no-classic-classes": "warn",
     "ember/no-get": "warn",
     "ember/no-observers": "warn",
-    "qunit/no-assert-equal": "warn"
-  }
+    "qunit/no-assert-equal": "warn",
+  },
 };

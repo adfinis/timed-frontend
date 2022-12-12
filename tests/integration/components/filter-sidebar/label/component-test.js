@@ -1,12 +1,12 @@
-import { hbs } from 'ember-cli-htmlbars';
 import { render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | filter sidebar/label", function(hooks) {
+module("Integration | Component | filter sidebar/label", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`
       {{#filter-sidebar/label}}
         Some label

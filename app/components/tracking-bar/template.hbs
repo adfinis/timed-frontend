@@ -22,9 +22,9 @@
           @type="text"
           class="form-control"
           placeholder="Comment"
-          @name="comment"
+          name="comment"
           @value={{this.tracking.activity.comment}}
-          @disabled={{this.tracking.activity.active}}
+          disabled={{this.tracking.activity.active}}
         />
         {{#if this.tracking.activity.task.project.customerVisible}}
           <CustomerVisibleIcon class="customer-visible-icon" />

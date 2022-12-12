@@ -43,9 +43,7 @@
         </span>
         <span class="header-right">
           <button
-            class="btn btn-primary"
-            {{action (perform this.createTask)}}
-            data-test-add-task
+            class="btn btn-primary" data-test-add-task type="button" {{action (perform this.createTask)}}
           >Add Task</button>
         </span>
       </h3>
@@ -118,7 +116,7 @@
                     Estimated time
                   </label>
                   {{sy-durationpicker
-                    data-test-estimated-time
+                    data-test-estimated-time=true
                     value=fi.value
                     on-change=fi.update
                   }}
@@ -138,9 +136,7 @@
             </div>
             <div class="btn-toolbar btn-toolbar--right">
               <button
-                class="btn btn-primary"
-                {{action (mut this.selectedTask) null}}
-                data-test-cancel
+                class="btn btn-primary" data-test-cancel type="button" {{action (mut this.selectedTask) null}}
               >Cancel</button>
               <f.submit @disabled={{f.model.isInvalid}} />
             </div>

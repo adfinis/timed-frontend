@@ -1,6 +1,6 @@
 import { action } from "@ember/object";
-import Component from "@glimmer/component";
 import { macroCondition, isTesting } from "@embroider/macros";
+import Component from "@glimmer/component";
 
 const isTouchDevice = !!window && "ontouchstart" in window;
 if (typeof FastBoot === "undefined") {

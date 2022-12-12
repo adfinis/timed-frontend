@@ -4,11 +4,11 @@ import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test } from "qunit";
 
-module("Acceptance | notfound", function(hooks) {
+module("Acceptance | notfound", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test("displays a 404 page for undefined routes if logged in", async function(assert) {
+  test("displays a 404 page for undefined routes if logged in", async function (assert) {
     const user = this.server.create("user");
 
     // eslint-disable-next-line camelcase

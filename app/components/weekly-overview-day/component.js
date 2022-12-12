@@ -7,8 +7,8 @@ import {
   attributeBindings,
   classNameBindings,
 } from "@ember-decorators/component";
-import { computed } from "@ember/object";
 import Component from "@ember/component";
+import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
 import { tracked } from "@glimmer/tracking";
 import classic from "ember-classic-decorator";
@@ -74,7 +74,7 @@ export default class WeeklyOverviewDay extends Component {
    * @property {String} title
    * @public
    */
-  @computed("worktime", "prefix")
+  @computed("prefix.length", "worktime")
   get title() {
     const pre = this.prefix?.length ? `${this.prefix}, ` : "";
 

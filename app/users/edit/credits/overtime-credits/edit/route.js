@@ -8,5 +8,5 @@ export default Route.extend({
 
     controller.set("user", this.modelFor("users.edit"));
     controller.credit.perform();
-  }
+  },
 });

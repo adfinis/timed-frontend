@@ -3,8 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@glimmer/component";
 import { inject as service } from "@ember/service";
+import Component from "@glimmer/component";
 
 /**
  * The tracking bar component

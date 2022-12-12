@@ -1,6 +1,6 @@
 import moment from "moment";
 
-export default function(server) {
+export default function (server) {
   server.loadFixtures("absence-types");
 
   server.createList("billing-type", 3);
@@ -10,7 +10,7 @@ export default function(server) {
     firstName: "John",
     lastName: "Doe",
     password: "123qwe",
-    isSuperuser: true
+    isSuperuser: true,
   });
 
   server.createList("overtime-credit", 1, { user });
@@ -23,7 +23,7 @@ export default function(server) {
 
   server.createList("activity", 2, {
     date: moment().subtract(1, "days"),
-    userId: user.id
+    userId: user.id,
   });
 
   server.createList("activity", 3, { userId: user.id });

@@ -5,5 +5,5 @@ import { randomDuration } from "../helpers/duration";
 
 export default Factory.extend({
   date: () => moment(),
-  balance: () => randomDuration()
+  balance: () => randomDuration(),
 });

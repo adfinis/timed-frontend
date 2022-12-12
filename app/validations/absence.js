@@ -18,5 +18,5 @@ export default {
    * @property {Function} absenceType
    * @public
    */
-  absenceType: validatePresence(true)
+  absenceType: validatePresence(true),
 };

@@ -36,13 +36,9 @@
       <tr>
         {{#each this.columns as |column|}}
           {{#if column.ordering}}
-            {{#sort-header
-              current = this.ordering
-              update  = (action this.on-ordering-change)
-              by      = column.ordering
-            }}
+            <SortHeader @current={{this.ordering}} @update={{action this.on-ordering-change}} @by={{column.ordering}}>
               {{column.title}}
-            {{/sort-header}}
+            </SortHeader>
           {{else}}
             <th>{{column.title}}</th>
           {{/if}}

@@ -1,6 +1,6 @@
-import classic from "ember-classic-decorator";
-import { action } from "@ember/object";
 import Component from "@ember/component";
+import { action } from "@ember/object";
+import classic from "ember-classic-decorator";
 import moment from "moment";
 
 @classic
@@ -13,7 +13,7 @@ export default class DateButtons extends Component {
       "this year",
       "last week",
       "last month",
-      "last year"
+      "last year",
     ]);
   }
 
@@ -33,40 +33,16 @@ export default class DateButtons extends Component {
         this.onUpdateToDate(null);
         break;
       case "last week":
-        this.onUpdateFromDate(
-          moment()
-            .subtract(1, "week")
-            .day(1)
-        );
-        this.onUpdateToDate(
-          moment()
-            .subtract(1, "week")
-            .day(7)
-        );
+        this.onUpdateFromDate(moment().subtract(1, "week").day(1));
+        this.onUpdateToDate(moment().subtract(1, "week").day(7));
         break;
       case "last month":
-        this.onUpdateFromDate(
-          moment()
-            .subtract(1, "month")
-            .startOf("month")
-        );
-        this.onUpdateToDate(
-          moment()
-            .subtract(1, "month")
-            .endOf("month")
-        );
+        this.onUpdateFromDate(moment().subtract(1, "month").startOf("month"));
+        this.onUpdateToDate(moment().subtract(1, "month").endOf("month"));
         break;
       case "last year":
-        this.onUpdateFromDate(
-          moment()
-            .subtract(1, "year")
-            .startOf("year")
-        );
-        this.onUpdateToDate(
-          moment()
-            .subtract(1, "year")
-            .endOf("year")
-        );
+        this.onUpdateFromDate(moment().subtract(1, "year").startOf("year"));
+        this.onUpdateToDate(moment().subtract(1, "year").endOf("year"));
         break;
     }
   }

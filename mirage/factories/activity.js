@@ -31,23 +31,23 @@ export default Factory.extend({
         (activity.toTime ? moment(activity.toTime, "HH:mm:ss") : moment()).diff(
           moment(activity.fromTime, "HH:mm:ss")
         )
-      )
+      ),
     });
   },
 
   active: trait({
-    toTime: null
+    toTime: null,
   }),
 
   unknown: trait({
     afterCreate(activity) {
       activity.task.destroy();
-    }
+    },
   }),
 
   defineTask: trait({
     afterCreate(activity) {
       activity.update({ taskId: activity.definedTask });
-    }
-  })
+    },
+  }),
 });
