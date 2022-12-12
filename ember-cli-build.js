@@ -9,6 +9,12 @@ module.exports = function (defaults) {
     sassOptions: {
       onlyIncluded: true,
     },
+    "ember-fetch": {
+      preferNative: true,
+    },
+    "ember-simple-auth": {
+      useSessionSetupMethod: true,
+    },
     "ember-site-tour": {
       importHopscotchJS: true,
       importHopscotchCSS: true,
