@@ -418,7 +418,7 @@ export default class AnalysisController extends Controller.extend(
   }
 
   @action
-  edit(ids = []) {
+  edit(_, ids = []) {
     this.router.transitionTo("analysis.edit", {
       queryParams: {
         id: ids,

@@ -24,10 +24,13 @@ module("Acceptance | analysis edit", function (hooks) {
   test("can visit /analysis/edit", async function (assert) {
     await visit("/analysis/edit");
 
-    assert.equal(currentURL(), "/analysis/edit");
+    assert.strictEqual(currentURL(), "/analysis/edit");
   });
 
   test("can edit", async function (assert) {
+    const customer = this.server.create("customer");
+    this.server.create("report-intersection", { customer });
+
     await visit("/analysis/edit?id=1,2,3");
 
     let res = {};
@@ -65,23 +68,23 @@ module("Acceptance | analysis edit", function (hooks) {
 
     await click("[data-test-cancel]");
 
-    assert.equal(currentURL(), "/analysis");
+    assert.strictEqual(currentURL(), "/analysis");
   });
 
   test("can reset", async function (assert) {
     await visit("/analysis/edit");
 
     const initialValue = this.element.querySelector(
-      "[data-test-comment] input"
+      "[data-test-comment]"
     ).value;
 
-    await fillIn("[data-test-comment] input", "test");
+    await fillIn("[data-test-comment]", "test");
 
-    assert.dom("[data-test-comment] input").hasValue("test");
+    assert.dom("[data-test-comment]").hasValue("test");
 
     await click("[data-test-reset]");
 
-    assert.dom("[data-test-comment] input").hasValue(initialValue);
+    assert.dom("[data-test-comment]").hasValue(initialValue);
   });
 
   test("can not verify", async function (assert) {
