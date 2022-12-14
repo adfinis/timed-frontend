@@ -18,13 +18,14 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     });
 
     await render(hbs`
-      {{filter-sidebar/filter 'button'
-        selected=selected
-        options=options
-        valuePath='id'
-        labelPath='label'
-        on-change=(action (mut selected))
-      }}
+      <FilterSidebar::Filter 
+        @type='button'
+        @selected={{this.selected}}
+        @options={{this.options}}
+        @valuePath='id'
+        @labelPath='label'
+        @onChange={{fn (mut this.selected)}}
+      />
     `);
 
     assert.dom("button").exists({ count: 3 });
@@ -52,13 +53,14 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     });
 
     await render(hbs`
-      {{filter-sidebar/filter 'select'
-        selected=selected
-        options=options
-        valuePath='id'
-        labelPath='label'
-        on-change=(action (mut selected))
-      }}
+      <FilterSidebar::Filter 
+        @type='select'
+        @selected={{this.selected}}
+        @options={{this.options}}
+        @valuePath='id'
+        @labelPath='label'
+        @onChange={{fn (mut this.selected)}}
+      />
     `);
 
     assert.dom("option").exists({ count: 3 });
@@ -81,10 +83,11 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     this.set("selected", moment({ year: 2017, month: 10, day: 1 }));
 
     await render(hbs`
-      {{filter-sidebar/filter 'date'
-        selected=selected
-        on-change=(action (mut selected))
-      }}
+      <FilterSidebar::Filter 
+        @type='date'
+        @selected={{this.selected}}
+        @onChange={{fn (mut this.selected)}}
+      />
     `);
 
     assert.dom("input").hasValue(this.selected.format("DD.MM.YYYY"));
@@ -101,10 +104,11 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     this.set("selected", "foobar");
 
     await render(hbs`
-      {{filter-sidebar/filter 'search'
-        selected=selected
-        on-change=(action (mut selected))
-      }}
+      <FilterSidebar::Filter 
+        @type='search'
+        @selected={{this.selected}}
+        @onChange={{fn (mut this.selected)}}
+      />
     `);
 
     assert.dom("input").hasValue(this.selected);
@@ -116,9 +120,9 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
 
   test("works with block style", async function (assert) {
     await render(hbs`
-      {{#filter-sidebar/filter}}
+      <FilterSidebar::Filter>
         Works
-      {{/filter-sidebar/filter}}
+      </FilterSidebar::Filter>
     `);
 
     assert.dom("div").includesText("Works");

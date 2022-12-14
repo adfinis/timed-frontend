@@ -1,51 +1,61 @@
-{{#if (eq @type "button")}}
-  <div class="btn-group btn-group--auto">
-    {{#each @options as |opt|}}
-      <button
-        class="btn {{if (eq (get opt @valuePath) this.selected) 'active'}}"
-        type="button"
-        {{action (optional @onChange) (get opt this.valuePath)}}
+<div ...attributes>
+  {{#if (eq @type "button")}}
+    <div class="btn-group btn-group--auto">
+      {{#each @options as |opt|}}
+        <button
+          class="btn {{if (eq (get opt @valuePath) @selected) 'active'}}"
+          type="button"
+          {{on "click" (fn (optional @onChange) (get opt @valuePath))}}
+        >
+          {{get opt @labelPath}}
+        </button>
+        {{yield}}
+      {{/each}}
+    </div>
+  {{else if (eq @type "date")}}
+    <SyDatepicker
+      @value={{@selected}}
+      @onChange={{optional @onChange}}
+      @placeholder={{(or @placeholder)}}
+      @name={{(or @name "date")}}
+    />
+  {{else if (eq @type "search")}}
+    {{#let (unique-id) as |searchId|}}
+      <label for={{searchId}} hidden>{{or @name "search"}}</label>
+      <input
+        type="search"
+        class="form-control"
+        placeholder={{or @placeholder "Search"}}
+        name={{or @name "search"}}
+        id={{searchId}}
+        value={{@selected}}
+        {{on "input" (pick "target.value" (optional @onChange))}}
+        {{on "change" (pick "target.value" (optional @onChange))}}
+      />
+    {{/let}}
+  {{else if (eq @type "select")}}
+    {{#let (unique-id) as |selectId|}}
+      <label for={{selectId}} hidden>{{or @name "select"}}</label>
+      <select
+        id={{selectId}}
+        class="form-control"
+        {{on "change" (pick "target.value" (optional @onChange))}}
       >
-        {{get opt @labelPath}}
-      </button>
-      {{yield}}
-    {{/each}}
-  </div>
-{{else if (eq @type "date")}}
-  <SyDatepicker
-    @value={{@selected}}
-    @onChange={{optional @onChange}}
-    @placeholder={{(if @placeholder @placeholder)}}
-    @name={{(if @name @name "date")}}
-  />
-{{else if (eq @type "search")}}
-  <input
-    type="search"
-    class="form-control"
-    placeholder={{if @placeholder @placeholder "Search"}}
-    name={{if @name @name "search"}}
-    value={{@selected}}
-    {{on "input" (pick "target.value" (optional @onChange))}}
-    {{on "change" (pick "target.value" (optional @onCklhange))}}
-  />
-{{else if (eq @type "select")}}
-  <select
-    class="form-control"
-    {{on "change" (pick "target.value" (optional @onChange))}}
-  >
-    {{#if @prompt}}
-      <option value="">{{@prompt}}</option>
-    {{/if}}
-    {{#each @options as |opt|}}
-      <option
-        value={{get opt @valuePath}}
-        selected={{if (eq @selected (get opt @valuePath)) "selected"}}
-      >
-        {{get opt @labelPath}}
-      </option>
-    {{/each}}
+        {{#if @prompt}}
+          <option value="">{{@prompt}}</option>
+        {{/if}}
+        {{#each @options as |opt|}}
+          <option
+            value={{get opt @valuePath}}
+            selected={{if (eq @selected (get opt @valuePath)) "selected"}}
+          >
+            {{get opt @labelPath}}
+          </option>
+        {{/each}}
+        {{yield}}
+      </select>
+    {{/let}}
+  {{else}}
     {{yield}}
-  </select>
-{{else}}
-  {{yield}}
-{{/if}}
+  {{/if}}
+</div>
