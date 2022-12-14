@@ -35,76 +35,76 @@ const deserializeMoment = (momentString) =>
 
 export const AnalysisQueryParams = new QueryParams({
   customer: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   project: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   task: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   user: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   reviewer: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   billingType: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   costCenter: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   fromDate: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
     deserialize: deserializeMoment,
   },
   toDate: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
     deserialize: deserializeMoment,
   },
   review: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   notBillable: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   verified: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   editable: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   billed: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
@@ -418,10 +418,11 @@ export default class AnalysisController extends Controller.extend(
   }
 
   @action
-  edit(_, ids = []) {
+  edit(selectedIds = [], event) {
+    const ids = event ? selectedIds : [];
     this.router.transitionTo("analysis.edit", {
       queryParams: {
-        id: ids,
+        ...(ids && ids.length ? { id: ids } : {}),
         ...this.allQueryParams,
       },
     });

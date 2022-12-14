@@ -22,7 +22,7 @@ export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
     replace: true,
     refresh: true,
     serialize(arr) {
-      return (arr && arr.join(",")) || "";
+      return (arr && arr.join(",")) || null;
     },
     deserialize(str) {
       return (str && str.split(",")) || [];

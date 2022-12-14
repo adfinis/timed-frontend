@@ -4,17 +4,23 @@
   <fs.group @label="General" @expanded={{true}}>
     <fs.label>
       Search
-      {{fs.filter 'search'
+      {{fs.filter
+        "search"
         data-test-filter-search=true
-        selected = this.search
-        on-change = (perform this.setSearchFilter)
+        selected=this.search
+        on-change=(perform this.setSearchFilter)
       }}
     </fs.label>
     {{#if this.currentUser.isSuperuser}}
       <fs.label>
         Supervisor
         <fs.filter>
-          <UserSelection @user={{this.selectedSupervisor}} @on-change={{perform this.setModelFilter 'supervisor'}} @queryOptions={{hash is_supervisor=1 active=1}} as |u|>
+          <UserSelection
+            @user={{this.selectedSupervisor}}
+            @onChange={{perform this.setModelFilter "supervisor"}}
+            @queryOptions={{hash is_supervisor=1 active=1}}
+            as |u|
+          >
             <u.user @placeholder="Select supervisor..." />
           </UserSelection>
         </fs.filter>
@@ -22,32 +28,33 @@
     {{/if}}
     <fs.label>
       Active
-      {{fs.filter 'button'
+      {{fs.filter
+        "button"
         data-test-filter-active=true
-        selected  = this.active
-        valuePath = 'value'
-        labelPath = 'label'
-        options   = (array
-          (hash value='' label='All')
-          (hash value='1' label='Active')
-          (hash value='0' label='Inactive')
+        selected=this.active
+        valuePath="value"
+        labelPath="label"
+        options=(array
+          (hash value="" label="All")
+          (hash value="1" label="Active")
+          (hash value="0" label="Inactive")
         )
-        on-change = (action (mut this.active))
+        on-change=(action (mut this.active))
       }}
     </fs.label>
   </fs.group>
 </FilterSidebar>
 
 {{#async-list this.data as |section data|}}
-  {{#if (eq section 'empty')}}
+  {{#if (eq section "empty")}}
     <div class="empty">
       <div>
-        {{fa-icon 'users'}}
+        {{fa-icon "users"}}
         <h3>No users to display</h3>
         <p>Maybe try loosening your filters</p>
       </div>
     </div>
-  {{else if (eq section 'body')}}
+  {{else if (eq section "body")}}
     <table class="table table--striped table--hover">
       <thead>
         <tr>
@@ -57,22 +64,38 @@
           <th>Current worktime balance</th>
         </tr>
       </thead>
-      {{#vertical-collection data
-        tagName           = 'tbody'
-        estimateHeight    = 40
-        bufferSize        = 10
-        containerSelector = '.page-content--scroll'
-      as |user|}}
-        <LinkTo @route="users.edit" @model={{user.id}} @tagName="tr" class="pointer">
-          <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
+      {{#vertical-collection
+        data
+        tagName="tbody"
+        estimateHeight=40
+        bufferSize=10
+        containerSelector=".page-content--scroll"
+        as |user|
+      }}
+        <LinkTo
+          @route="users.edit"
+          @model={{user.id}}
+          @tagName="tr"
+          class="pointer"
+        >
+          <td
+            class={{unless user.isActive "color-danger"}}
+          >{{user.fullName}}</td>
           {{#if user.activeEmployment}}
             <td>{{user.activeEmployment.percentage}}%</td>
-            <td>{{format-duration user.activeEmployment.worktimePerDay false}}</td>
+            <td>{{format-duration
+                user.activeEmployment.worktimePerDay
+                false
+              }}</td>
           {{else}}
-            <td class={{unless user.isActive 'color-danger'}} colspan="2"><em>User has no active employment</em></td>
+            <td class={{unless user.isActive "color-danger"}} colspan="2"><em
+              >User has no active employment</em></td>
           {{/if}}
           <td>
-            <span class="worktime-balance {{balance-highlight-class user.currentWorktimeBalance.balance}}">
+            <span
+              class="worktime-balance
+                {{balance-highlight-class user.currentWorktimeBalance.balance}}"
+            >
               {{format-duration user.currentWorktimeBalance.balance false}}
             </span>
           </td>

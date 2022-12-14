@@ -1,42 +1,47 @@
-{{#if (eq this.type 'button')}}
+{{#if (eq @type "button")}}
   <div class="btn-group btn-group--auto">
-    {{#each this.options as |opt|}}
+    {{#each @options as |opt|}}
       <button
-        class="btn {{if (eq (get opt this.valuePath) this.selected) 'active'}}" type="button" {{action (optional this.on-change) (get opt this.valuePath)}}
+        class="btn {{if (eq (get opt @valuePath) this.selected) 'active'}}"
+        type="button"
+        {{action (optional @onChange) (get opt this.valuePath)}}
       >
-        {{get opt this.labelPath}}
+        {{get opt @labelPath}}
       </button>
       {{yield}}
     {{/each}}
   </div>
-{{else if (eq this.type 'date')}}
-  {{sy-datepicker
-    value=this.selected
-    on-change=(action (optional this.on-change))
-    placeholder=(if this.placeholder this.placeholder)
-    name=(if this.name this.name 'date')
-  }}
-{{else if (eq this.type 'search')}}
+{{else if (eq @type "date")}}
+  <SyDatepicker
+    @value={{@selected}}
+    @onChange={{optional @onChange}}
+    @placeholder={{(if @placeholder @placeholder)}}
+    @name={{(if @name @name "date")}}
+  />
+{{else if (eq @type "search")}}
   <input
     type="search"
     class="form-control"
-    placeholder={{if this.placeholder this.placeholder 'Search'}}
-    name={{if this.name this.name 'search'}}
-    value={{this.selected}}
-    oninput={{action (optional this.on-change) value='target.value'}}
-    onchange={{action (optional this.on-change) value='target.value'}}
+    placeholder={{if @placeholder @placeholder "Search"}}
+    name={{if @name @name "search"}}
+    value={{@selected}}
+    {{on "input" (pick "target.value" (optional @onChange))}}
+    {{on "change" (pick "target.value" (optional @onCklhange))}}
+  />
+{{else if (eq @type "select")}}
+  <select
+    class="form-control"
+    {{on "change" (pick "target.value" (optional @onChange))}}
   >
-{{else if (eq this.type 'select')}}
-  <select class="form-control" onchange={{action (optional this.on-change) value='target.value'}}>
-    {{#if this.prompt}}
-      <option value="">{{this.prompt}}</option>
+    {{#if @prompt}}
+      <option value="">{{@prompt}}</option>
     {{/if}}
-    {{#each this.options as |opt|}}
+    {{#each @options as |opt|}}
       <option
-        value={{get opt this.valuePath}}
-        selected={{if (eq this.selected (get opt this.valuePath)) 'selected'}}
+        value={{get opt @valuePath}}
+        selected={{if (eq @selected (get opt @valuePath)) "selected"}}
       >
-        {{get opt this.labelPath}}
+        {{get opt @labelPath}}
       </option>
     {{/each}}
     {{yield}}

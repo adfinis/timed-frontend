@@ -41,11 +41,6 @@ export default class SyDatepicker extends Component {
   }
 
   @action
-  handleFocus(dd) {
-    dd.actions.open();
-  }
-
-  @action
   checkValidity() {
     scheduleOnce("afterRender", this, this.deferredWork);
   }
@@ -83,7 +78,8 @@ export default class SyDatepicker extends Component {
   }
 
   @action
-  updateSelect({ moment }) {
+  updateSelect(dd, { moment }) {
+    (dd.actions.close ?? (() => {}))();
     this.args.onChange(moment);
     this.checkValidity();
   }

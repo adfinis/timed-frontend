@@ -1,52 +1,55 @@
-import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
-import { hbs } from "ember-cli-htmlbars";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
+import { restartableTask } from "ember-concurrency";
 
-const SELECTED_TEMPLATE = hbs`{{selected.longName}}`;
+import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/user-selection";
+import customOptionTemplate from "timed/components/optimized-power-select/custom-options/user-option";
 
-const OPTION_TEMPLATE = hbs`
-  <div class="{{unless option.isActive 'inactive'}}" title="{{option.longName}}{{unless option.isActive ' (inactive)'}}">
-    {{option.longName}}
-    {{#unless option.isActive}}
-      <i class="fa fa-ban"></i>
-    {{/unless}}
-  </div>
-`;
+export default class UserSelection extends Component {
+  selectedTemplate = customSelectedTemplate;
+  optionTemplate = customOptionTemplate;
 
-export default Component.extend({
-  tracking: service("tracking"),
-  store: service("store"),
+  @service tracking;
+  @service store;
 
-  tagName: "",
+  @tracked queryOptions = null;
 
-  selectedTemplate: SELECTED_TEMPLATE,
+  constructor(...args) {
+    super(...args);
+    this.fetchUsers();
+  }
 
-  optionTemplate: OPTION_TEMPLATE,
-
-  queryOptions: null,
-
-  async init(...args) {
-    this._super(...args);
-
+  async fetchUsers() {
     try {
-      await this.get("tracking.users").perform();
+      await this.tracking.users.perform();
     } catch (e) {
-      /* istanbul ignore next */
       if (e.taskInstance && e.taskInstance.isCanceling) {
         return;
       }
-
-      /* istanbul ignore next */
       throw e;
     }
-  },
+  }
 
-  users: computed("queryOptions", "tracking.users.last", async function () {
-    await this.get("tracking.users.last");
+  @restartableTask
+  *usersTask() {
+    // this yield is here 'cause we are modifying the store
+    yield Promise.resolve();
+    yield this.tracking.users.last;
+
     const queryOptions = this.queryOptions || {};
 
     queryOptions.ordering = "username";
-    return this.store.query("user", queryOptions);
-  }),
-});
+    return yield this.store.query("user", queryOptions);
+  }
+
+  _users = trackedTask(this, this.usersTask, () => [
+    this.tracking.users,
+    this.queryOptions,
+  ]);
+
+  get users() {
+    return this._users.value ?? [];
+  }
+}

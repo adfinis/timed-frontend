@@ -78,7 +78,7 @@ module("Acceptance | analysis edit", function (hooks) {
       "[data-test-comment]"
     ).value;
 
-    await fillIn("[data-test-comment]", "test");
+    await fillIn("[data-test-comment] ", "test");
 
     assert.dom("[data-test-comment]").hasValue("test");
 
