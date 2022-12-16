@@ -36,7 +36,7 @@ export default Factory.extend({
   },
 
   active: trait({
-    toTime: undefined,
+    toTime: null,
   }),
 
   unknown: trait({
