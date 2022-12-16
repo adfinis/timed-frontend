@@ -93,7 +93,7 @@ export default class ProtectedRoute extends Route {
 
       if (transition) {
         transition.promise.finally(function () {
-          controller.send("finished");
+          transition.send("finished");
         });
       }
     }
