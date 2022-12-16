@@ -45,6 +45,7 @@ module("Acceptance | index activities", function (hooks) {
 
   test("can start an activity of a past day", async function (assert) {
     const lastDay = moment().subtract(1, "day");
+    const today = moment();
 
     const activity = this.server.create("activity", {
       date: lastDay,
@@ -58,7 +59,7 @@ module("Acceptance | index activities", function (hooks) {
       `[data-test-activity-row-id="${activity.id}"] [data-test-start-activity]`
     );
 
-    assert.equal(currentURL(), "/");
+    assert.equal(currentURL(), `/?day=${today.format("YYYY-MM-DD")}`);
 
     assert
       .dom(findAll('[data-test-activity-row-id="7"] td')[2])
