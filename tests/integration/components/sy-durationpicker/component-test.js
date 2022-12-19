@@ -104,9 +104,7 @@ module("Integration | Component | sy durationpicker", function (hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(
-        async (element) => await triggerKeyEvent(element, "keydown", 38)
-      );
+      .forEach(async (element) => await triggerKeyEvent(element, "keyup", 38));
 
     await settled();
 
@@ -129,9 +127,7 @@ module("Integration | Component | sy durationpicker", function (hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(
-        async (element) => await triggerKeyEvent(element, "keydown", 40)
-      );
+      .forEach(async (element) => await triggerKeyEvent(element, "keyup", 40));
 
     await settled();
 
@@ -170,9 +166,7 @@ module("Integration | Component | sy durationpicker", function (hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(
-        async (element) => await triggerKeyEvent(element, "keydown", 38)
-      );
+      .forEach(async (element) => await triggerKeyEvent(element, "keyup", 38));
 
     await settled();
 
@@ -181,9 +175,7 @@ module("Integration | Component | sy durationpicker", function (hooks) {
 
     this.element
       .querySelectorAll("input")
-      .forEach(
-        async (element) => await triggerKeyEvent(element, "keydown", 40)
-      );
+      .forEach(async (element) => await triggerKeyEvent(element, "keyup", 40));
 
     await settled();
 
