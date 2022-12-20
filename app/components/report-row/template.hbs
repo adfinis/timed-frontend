@@ -67,14 +67,14 @@
           data-test-delete-report
           class="btn btn-danger"
           disabled={{this.report.verifiedBy.id}}
-          {{on "click" this.delete}}
+          {{on "click" (fn (optional @onDelete) @report)}}
         >{{fa-icon "trash"}}</button>
         <button
           type="submit"
           data-test-save-report
           class="btn btn-primary"
           disabled={{or (not cs.isDirty) (not cs.isValid)}}
-          {{on "click" (prevent-default (fn this.save cs))}}
+          {{on "click" (prevent-default (fn (optional @onSave) cs))}}
         >{{fa-icon "save"}}</button>
       {{/if}}
     </div>
