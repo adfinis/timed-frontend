@@ -327,7 +327,7 @@ export default class TaskSelectionComponent extends Component {
       this.onProjectChange(null);
     }
 
-    if (!options.preventAction && this._customer) {
+    if (!options.preventAction) {
       later(this, () => {
         (this.args["on-set-customer"] === undefined
           ? () => {}
@@ -345,7 +345,6 @@ export default class TaskSelectionComponent extends Component {
       (value === null || value.get("id") !== this.task.get("project.id"))
     ) {
       this.onTaskChange(null);
-      return;
     }
 
     if (!this.customer && value?.get("customer.id")) {
