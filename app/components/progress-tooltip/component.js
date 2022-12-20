@@ -1,8 +1,8 @@
-import Component from "@ember/component";
-import { computed } from "@ember/object";
-import { reads } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
-import { task, timeout } from "ember-concurrency";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { restartableTask, timeout } from "ember-concurrency";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
 import moment from "moment";
 
 /**
@@ -12,114 +12,43 @@ import moment from "moment";
  * @extends Ember.Component
  * @public
  */
-const ProgressTooltipComponent = Component.extend({
-  /**
-   * No tag name, since we attach the tooltip to a given target
-   *
-   * @property {String} tagName
-   * @public
-   */
-  tagName: "",
+export default class ProgressTooltipComponent extends Component {
+  // The delay between becoming 'visible' and fetching the data
+  delay = 300;
 
-  /**
-   * Init hook, check the required params
-   *
-   * @method init
-   * @public
-   */
-  init(...args) {
-    this._super(...args);
+  @tracked spent;
+  @tracked billable;
+
+  @service("metadata-fetcher") metadata;
+
+  constructor(...args) {
+    super(...args);
 
     /* istanbul ignore next */
-    if (!this.model) {
+    if (!this.args.model) {
       throw new Error("A model must be given");
     }
 
     /* istanbul ignore next */
-    if (!this.target) {
+    if (!this.args.target) {
       throw new Error("A target for the tooltip must be given");
     }
-  },
 
-  /**
-   * The delay between becoming 'visible' and fetching the data
-   *
-   * @property {Number} delay
-   * @public
-   */
-  delay: 300,
+    this.spent = moment.duration();
+  }
 
-  /**
-   * Metadata fetcher service
-   *
-   * @property {MetadataFetcherService} metadataFetcher
-   * @public
-   */
-  metadataFetcher: service("metadata-fetcher"),
+  get estimated() {
+    return this.args.model.estimatedTime;
+  }
 
-  /**
-   * The estimated time
-   *
-   * @property {moment.duration} estimated
-   * @public
-   */
-  estimated: reads("model.estimatedTime"),
-
-  /**
-   * The spent time
-   *
-   * @property {moment.duration} spent
-   * @public
-   */
-  spent: moment.duration(),
-
-  /**
-   * The current total progress
-   *
-   * @property {Number} progressTotal
-   * @public
-   */
-  progressTotal: computed("estimated", "spent", function () {
+  get progressTotal() {
     return this.estimated && this.estimated.asHours()
       ? this.spent / this.estimated
       : 0;
-  }),
+  }
 
-  /**
-   * The color of the badge and progress bar for total time spent
-   *
-   * @property {String} colorTotal
-   * @public
-   */
-  colorTotal: computed("progressTotal", function () {
-    if (this.progressTotal > 1) {
-      return "danger";
-    } else if (this.progressTotal >= 0.9) {
-      return "warning";
-    }
-
-    return "success";
-  }),
-
-  /**
-   * The current billable progress
-   *
-   * @property {Number} progressBillable
-   * @public
-   */
-  progressBillable: computed("estimated", "billable", function () {
-    return this.estimated && this.estimated.asHours()
-      ? this.billable / this.estimated
-      : 0;
-  }),
-
-  /**
-   * The color of the badge and progress bar for billable time spent
-   *
-   * @property {String} colorBillable
-   * @public
-   */
-  colorBillable: computed("progressBillable", function () {
+  // The color of the badge and progress bar for billable time spent
+  get colorBillable() {
     if (this.progressBillable > 1) {
       return "danger";
     } else if (this.progressBillable >= 0.9) {
@@ -127,45 +56,48 @@ const ProgressTooltipComponent = Component.extend({
     }
 
     return "success";
-  }),
+  }
 
-  /**
-   * Whether the tooltip is visible or not
-   *
-   * @property {EmberConcurrency.Task} tooltipVisible
-   * @public
-   */
-  tooltipVisible: computed("_computeTooltipVisible", "visible", function () {
-    const task = this._computeTooltipVisible;
+  // The color of the badge and progress bar for total time spent
+  get colorTotal() {
+    if (this.progressTotal > 1) {
+      return "danger";
+    } else if (this.progressTotal >= 0.9) {
+      return "warning";
+    }
 
-    task.perform(this.visible);
+    return "success";
+  }
 
-    return task;
-  }),
+  // The current billable progress
+  get progressBillable() {
+    return this.estimated && this.estimated.asHours()
+      ? this.billable / this.estimated
+      : 0;
+  }
 
-  /**
-   * Task to toggle the visibility and fetch the needed data
-   *
-   * @method _computeTooltipVisible
-   * @param {Boolean} visible Whether the tooltip needs to become visible
-   * @return {Boolean} Whether the tooltip is now visible
-   * @public
-   */
-  _computeTooltipVisible: task(function* (visible) {
+  get tooltipVisible() {
+    return this._toolTipVisible.value ?? false;
+  }
+
+  _toolTipVisible = trackedTask(this, this._computeTooltipVisible, () => [
+    this.args.visible,
+  ]);
+
+  @restartableTask
+  *_computeTooltipVisible(visible) {
     if (visible) {
       yield timeout(this.delay);
 
-      const { spentTime, spentBillable } = yield this.get(
-        "metadataFetcher.fetchSingleRecordMetadata"
-      )
-        .linked()
-        .perform(this.get("model.constructor.modelName"), this.get("model.id"));
+      const { spentTime, spentBillable } =
+        yield this.metadata.fetchSingleRecordMetadata
+          .linked()
+          .perform(this.args.model.constructor.modelName, this.args.model.id);
 
-      this.setProperties({ spent: spentTime, billable: spentBillable });
+      this.spent = spentTime;
+      this.billable = spentBillable;
     }
 
     return visible;
-  }).restartable(),
-});
-
-export default ProgressTooltipComponent;
+  }
+}

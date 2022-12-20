@@ -1,28 +1,35 @@
-{{#if this.tooltipVisible.lastSuccessful.value}}
-  <EmberTether @class="progress-tooltip" @target={{this.target}} @targetAttachment="middle left" @attachment="middle right" @offset="0 20px">
+{{#if this.tooltipVisible}}
+  <EmberTether
+    @class="progress-tooltip"
+    @target={{@target}}
+    @targetAttachment="middle left"
+    @attachment="middle right"
+    @offset="0 20px"
+  >
     <div class="time-info">
       <div class="time-info-durations">
         <p>Spent (Total): {{humanize-duration this.spent}}</p>
         <p>Spent (Billable): {{humanize-duration this.billable}}</p>
-        <p>Budget: {{if this.estimated (humanize-duration this.estimated) 'None'}}</p>
+        <p>Budget:
+          {{if this.estimated (humanize-duration this.estimated) "None"}}</p>
       </div>
       <div class="time-info-percentage">
-      {{#if this.progressTotal}}
-        <div class="time-info-percentage-total">
-          <span class="badge badge--{{this.colorTotal}}">
-            {{#if (gt this.progressTotal 1)}}{{fa-icon 'warning'}} {{/if}}
-            {{round (mult 100 this.progressTotal)}}%
-          </span>
-        </div>
-      {{/if}}
-      {{#if this.progressBillable}}
-        <div class="time-info-percentage-billable">
-          <span class="badge badge--{{this.colorBillable}}">
-            {{#if (gt this.progressBillable 1)}}{{fa-icon 'warning'}} {{/if}}
-            {{round (mult 100 this.progressBillable)}}%
-          </span>
-        </div>
-      {{/if}}
+        {{#if this.progressTotal}}
+          <div class="time-info-percentage-total">
+            <span class="badge badge--{{this.colorTotal}}">
+              {{#if (gt this.progressTotal 1)}}{{fa-icon "warning"}} {{/if}}
+              {{round (mult 100 this.progressTotal)}}%
+            </span>
+          </div>
+        {{/if}}
+        {{#if this.progressBillable}}
+          <div class="time-info-percentage-billable">
+            <span class="badge badge--{{this.colorBillable}}">
+              {{#if (gt this.progressBillable 1)}}{{fa-icon "warning"}} {{/if}}
+              {{round (mult 100 this.progressBillable)}}%
+            </span>
+          </div>
+        {{/if}}
       </div>
     </div>
   </EmberTether>

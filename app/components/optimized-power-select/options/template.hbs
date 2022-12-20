@@ -21,6 +21,7 @@
     @renderAll={{this.isTesting}}
     as |option index|
   >
+    {{!template-lint-disable  require-context-role}}
     <li
       class="ember-power-select-option"
       aria-selected="{{ember-power-select-is-selected option @select.selected}}"
@@ -33,10 +34,10 @@
         {{component
           (ensure-safe-component @extra.optionTemplate)
           option=option
-          current=(eq option this.select.highlighted)
+          current=(eq option @select.highlighted)
         }}
       {{else}}
-        {{yield option this.select}}
+        {{yield option @select}}
       {{/if}}
     </li>
   </VerticalCollection>
