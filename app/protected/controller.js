@@ -47,7 +47,8 @@ export default class ProtectedController extends Controller {
     const currentRoute = this.router.currentRouteName.replace(/\.index$/, "");
 
     if (this.autostartTour.tours.includes(currentRoute)) {
-      this.controllerFor(currentRoute).get("tour").close();
+      // TODO: How to refactor this shit?
+      this.controllerFor?.get("tour").close();
     }
   }
 
