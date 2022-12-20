@@ -1,33 +1,53 @@
-{{#with this.credit.lastSuccessful.value as |credit|}}
-  {{#if (or
-    (and credit.isNew (can 'create absence-credit'))
-    (and (not credit.isNew) (can 'edit absence-credit'))
-  )}}
+{{#let this.credit.lastSuccessful.value as |credit|}}
+  {{#if
+    (or
+      (and credit.isNew (can "create absence-credit"))
+      (and (not credit.isNew) (can "edit absence-credit"))
+    )
+  }}
     <div class="grid grid--12of12 grid-md--4of12">
       <div class="grid-cell"></div>
       <div class="grid-cell">
-        <ValidatedForm @model={{changeset credit this.AbsenceCreditValidations}} @on-submit={{perform this.save}} as |f|>
-        <h4 class="text-center">{{if credit.isNew 'New' 'Edit'}} absence credit</h4>
+        <ValidatedForm
+          @model={{changeset credit this.AbsenceCreditValidations}}
+          @on-submit={{perform this.save}}
+          as |f|
+        >
+          <h4 class="text-center">{{if credit.isNew "New" "Edit"}}
+            absence credit</h4>
           <div class="card">
             <div class="card-block">
               <f.input @label="Type" @name="absenceType" as |fi|>
                 <div class="btn-group btn-group--auto">
                   {{#each this.absenceTypes.lastSuccessful.value as |type|}}
-                    <button class="btn {{if (eq fi.value.id type.id) 'active'}}" type="button" {{action fi.update type}}>{{type.name}}</button>
+                    <button
+                      class="btn {{if (eq fi.value.id type.id) 'active'}}"
+                      type="button"
+                      {{on "click" (fn fi.update type)}}
+                    >{{type.name}}</button>
                   {{/each}}
                 </div>
               </f.input>
               <f.input @label="Date" @name="date" as |fi|>
-                {{sy-datepicker value=fi.value on-change=fi.update}}
+                <SyDatepicker @value={{fi.value}} @onChange={{fi.update}} />
               </f.input>
               <f.input @type="number" @label="Days" @name="days" />
               <f.input @type="text" @label="Comment" @name="comment" />
               <div class="text-right">
-                <LinkTo @route="users.edit.credits.index" @model={{this.user.id}} class="btn">Cancel</LinkTo>
+                <LinkTo
+                  @route="users.edit.credits.index"
+                  @model={{this.user.id}}
+                  class="btn"
+                >Cancel</LinkTo>
                 {{#unless credit.isNew}}
-                  <button type="button" class="btn btn-danger {{if this.delete.isRunning 'loading'}}" {{action (perform this.delete) credit}}>Delete</button>
+                  <button
+                    type="button"
+                    class="btn btn-danger
+                      {{if this.delete.isRunning 'loading'}}"
+                    {{on "click" (perform this.delete credit)}}
+                  >Delete</button>
                 {{/unless}}
-                <f.submit  @disabled={{f.model.isInvalid}} />
+                <f.submit @disabled={{f.model.isInvalid}} />
               </div>
             </div>
           </div>
@@ -42,4 +62,4 @@
       </div>
     </div>
   {{/if}}
-{{/with}}
+{{/let}}
