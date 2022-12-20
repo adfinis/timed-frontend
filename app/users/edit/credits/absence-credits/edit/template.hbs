@@ -47,7 +47,10 @@
                     {{on "click" (perform this.delete credit)}}
                   >Delete</button>
                 {{/unless}}
-                <f.submit @disabled={{f.model.isInvalid}} />
+                <f.submit
+                  data-test-absence-credit-save
+                  @disabled={{f.model.isInvalid}}
+                />
               </div>
             </div>
           </div>

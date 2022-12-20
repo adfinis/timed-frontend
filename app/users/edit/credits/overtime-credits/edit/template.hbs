@@ -39,7 +39,10 @@
                     data-test-overtime-credit-delete
                   >Delete</button>
                 {{/unless}}
-                <f.submit @disabled={{f.model.isInvalid}} />
+                <f.submit
+                  data-test-overtime-credit-save
+                  @disabled={{f.model.isInvalid}}
+                />
               </div>
             </div>
           </div>

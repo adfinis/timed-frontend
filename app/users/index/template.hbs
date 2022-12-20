@@ -4,17 +4,17 @@
   <fs.group @label="General" @expanded={{true}}>
     <fs.label>
       Search
-      {{fs.filter
-        "search"
-        data-test-filter-search=true
-        selected=this.search
-        on-change=(perform this.setSearchFilter)
-      }}
+      <fs.filter
+        @type="search"
+        data-test-filter-search="true"
+        @selected={{this.search}}
+        @onChange={{perform this.setSearchFilter}}
+      />
     </fs.label>
     {{#if this.currentUser.isSuperuser}}
       <fs.label>
         Supervisor
-        <fs.filter>
+        <fs.filter data-test-filter-user>
           <UserSelection
             @user={{this.selectedSupervisor}}
             @onChange={{perform this.setModelFilter "supervisor"}}
@@ -28,19 +28,19 @@
     {{/if}}
     <fs.label>
       Active
-      {{fs.filter
-        "button"
-        data-test-filter-active=true
-        selected=this.active
-        valuePath="value"
-        labelPath="label"
-        options=(array
+      <fs.filter
+        @type="button"
+        data-test-filter-active="true"
+        @selected={{this.active}}
+        @valuePath="value"
+        @labelPath="label"
+        @options={{array
           (hash value="" label="All")
           (hash value="1" label="Active")
           (hash value="0" label="Inactive")
-        )
-        on-change=(action (mut this.active))
-      }}
+        }}
+        @onChange={{fn (mut this.active)}}
+      />
     </fs.label>
   </fs.group>
 </FilterSidebar>
@@ -64,14 +64,14 @@
           <th>Current worktime balance</th>
         </tr>
       </thead>
-      {{#vertical-collection
-        data
-        tagName="tbody"
-        estimateHeight=40
-        bufferSize=10
-        containerSelector=".page-content--scroll"
+      <VerticalCollection
+        @items={{data}}
+        @tagName="tbody"
+        @estimateHeight={{40}}
+        @bufferSize={{10}}
+        @containerSelector=".page-content--scroll"
         as |user|
-      }}
+      >
         <LinkTo
           @route="users.edit"
           @model={{user.id}}
@@ -100,7 +100,7 @@
             </span>
           </td>
         </LinkTo>
-      {{/vertical-collection}}
+      </VerticalCollection>
     </table>
   {{/if}}
 {{/async-list}}
