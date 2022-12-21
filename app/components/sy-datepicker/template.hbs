@@ -35,7 +35,7 @@
 
   <DropDown.Content @class="sy-datepicker">
     <SyCalendar
-      @center={{this.center}}
+      @center={{(moment this.center)}}
       @selected={{@value}}
       class="sy-datepicker"
       @onCenterChange={{this.updateCenter}}
