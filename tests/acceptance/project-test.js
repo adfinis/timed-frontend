@@ -6,6 +6,16 @@ import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test } from "qunit";
 
+let _local_assert = { step: () => {} };
+
+class NotifyServiceStub extends Service {
+  error() {
+    _local_assert.step("error");
+  }
+  // Needed for mocking, throws error otherwise
+  setTarget() {}
+}
+
 module("Acceptance | projects", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
@@ -21,7 +31,7 @@ module("Acceptance | projects", function (hooks) {
 
   test("can visit /projects", async function (assert) {
     await visit("/projects");
-    assert.equal(currentURL(), "/projects");
+    assert.strictEqual(currentURL(), "/projects");
 
     assert.dom("[data-test-customer-selection]").exists();
     assert.dom("[data-test-project-selection]").exists();
@@ -30,7 +40,7 @@ module("Acceptance | projects", function (hooks) {
 
   test("can select project", async function (assert) {
     await visit("/projects");
-    assert.equal(currentURL(), "/projects");
+    assert.strictEqual(currentURL(), "/projects");
 
     await selectChoose(
       "[data-test-customer-selection]",
@@ -52,7 +62,7 @@ module("Acceptance | projects", function (hooks) {
 
   test("can add task", async function (assert) {
     await visit("/projects");
-    assert.equal(currentURL(), "/projects");
+    assert.strictEqual(currentURL(), "/projects");
 
     await selectChoose(
       "[data-test-customer-selection]",
@@ -73,25 +83,23 @@ module("Acceptance | projects", function (hooks) {
     assert.dom("[data-test-task-form]").exists();
     assert.dom("[data-test-save]").isDisabled();
 
-    await fillIn("[data-test-name] input", "FooBar Task 1");
+    await fillIn("[data-test-name]", "FooBar Task 1");
     assert.dom("[data-test-save]").isNotDisabled();
 
-    await fillIn("[data-test-reference] input", "Reference of FooBar Task 1");
+    await fillIn("[data-test-reference]", "Reference of FooBar Task 1");
     await fillIn("[data-test-estimated-time]", "02:15");
 
     await click("[data-test-save]");
 
-    assert.dom("[data-test-name] input").hasValue("FooBar Task 1");
-    assert
-      .dom("[data-test-reference] input")
-      .hasValue("Reference of FooBar Task 1");
+    assert.dom("[data-test-name]").hasValue("FooBar Task 1");
+    assert.dom("[data-test-reference]").hasValue("Reference of FooBar Task 1");
     assert.dom("[data-test-estimated-time]").hasValue("02:15");
     assert.dom("[data-test-task-table-row]").exists({ count: 1 });
   });
 
   test("can edit task", async function (assert) {
     await visit("/projects");
-    assert.equal(currentURL(), "/projects");
+    assert.strictEqual(currentURL(), "/projects");
 
     await selectChoose(
       "[data-test-customer-selection]",
@@ -112,10 +120,10 @@ module("Acceptance | projects", function (hooks) {
     assert.dom("[data-test-task-form]").exists();
     assert.dom("[data-test-save]").isDisabled();
 
-    await fillIn("[data-test-name] input", "FooBar Task 1");
+    await fillIn("[data-test-name]", "FooBar Task 1");
     assert.dom("[data-test-save]").isNotDisabled();
 
-    await fillIn("[data-test-reference] input", "Reference of FooBar Task 1");
+    await fillIn("[data-test-reference]", "Reference of FooBar Task 1");
     await fillIn("[data-test-estimated-time]", "02:15");
 
     await click("[data-test-save]");
@@ -132,8 +140,8 @@ module("Acceptance | projects", function (hooks) {
     await click("[data-test-task-table-row]");
 
     assert.dom("[data-test-task-form]").exists();
-    await fillIn("[data-test-name] input", "FooBar Task 1 updated");
-    await fillIn("[data-test-reference] input", "");
+    await fillIn("[data-test-name]", "FooBar Task 1 updated");
+    await fillIn("[data-test-reference]", "");
     await fillIn("[data-test-estimated-time]", "");
     await click("[data-test-archived] input");
 
@@ -159,47 +167,33 @@ module("Acceptance | projects", function (hooks) {
     await authenticateSession({ user_id: user.id });
 
     await visit("/projects");
-    assert.equal(currentURL(), "/projects");
+    assert.strictEqual(currentURL(), "/projects");
 
-    await click("[data-test-customer-selection] div");
+    await click("[data-test-customer-selection]");
     assert.dom(".ember-power-select-option").exists({ count: 2 });
   });
 
   test("shows error while fetching projects", async function (assert) {
+    _local_assert = assert;
+
     this.server.get("projects", function () {
       return new Error();
     });
 
-    this.owner.register(
-      "service:notify",
-      Service.extend({
-        error() {
-          assert.step("error");
-        },
-        // Needed for mocking, throws error otherwise
-        setTarget() {},
-      })
-    );
+    this.owner.register("service:notify", NotifyServiceStub);
 
     await visit("/projects");
     assert.verifySteps(["error"]);
   });
 
   test("shows error while fetching tasks", async function (assert) {
+    _local_assert = assert;
+
     this.server.get("tasks", function () {
       return new Error();
     });
 
-    this.owner.register(
-      "service:notify",
-      Service.extend({
-        error() {
-          assert.step("error");
-        },
-        // Needed for mocking, throws error otherwise
-        setTarget() {},
-      })
-    );
+    this.owner.register("service:notify", NotifyServiceStub);
 
     await visit("/projects");
 

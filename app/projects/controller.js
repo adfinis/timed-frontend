@@ -1,38 +1,52 @@
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
-import { reads } from "@ember/object/computed";
+import { action, get } from "@ember/object";
 import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency";
+import { tracked } from "@glimmer/tracking";
+import { dropTask, lastValue, task } from "ember-concurrency";
 import TaskValidations from "timed/validations/task";
 
-export default Controller.extend({
-  TaskValidations,
+export default class ProjectsController extends Controller {
+  TaskValidations = TaskValidations;
 
-  session: service(),
-  notify: service(),
-  user: reads("session.data.user"),
-  projects: reads("fetchProjectsByUser.lastSuccessful.value"),
-  filteredProjects: reads("filterProjects.lastSuccessful.value"),
-  tasks: reads("fetchTasksByProject.lastSuccessful.value"),
-  loading: reads("fetchTasksByProject.isRunning"),
+  @service session;
+  @service notify;
 
-  customers: computed("projects", function () {
+  @tracked selectedCustomer;
+  @tracked selectedProject;
+  @tracked selectedTask;
+
+  @lastValue("fetchProjectsByUser") projects;
+
+  @lastValue("filterProjects") filteredProjects;
+
+  @lastValue("fetchTasksByProject") tasks;
+
+  get loading() {
+    return this.fetchTasksByProject.isRunning;
+  }
+
+  get user() {
+    return this.session.data.user;
+  }
+
+  get customers() {
     return (
       this.projects
         ?.map((project) => project.get("customer"))
         .uniqBy("id")
         .sortBy("name") ?? []
     );
-  }),
+  }
 
-  fetchProjectsByUser: task(function* () {
+  @task
+  *fetchProjectsByUser() {
     try {
       let projects;
-      if (this.get("user.isSuperuser")) {
+      if (get(this, "user.isSuperuser")) {
         projects = yield this.store.findAll("project");
       } else {
         projects = yield this.store.query("project", {
-          has_manager: this.get("user.id"),
+          has_manager: get(this, "user.id"),
           include: "customer",
         });
       }
@@ -41,26 +55,30 @@ export default Controller.extend({
     } catch (error) {
       this.notify.error("Error while fetching projects");
     }
-  }),
+  }
 
-  filterProjects: task(function* () {
+  @task
+  *filterProjects() {
     return yield this.projects.filter(
       (project) =>
-        project.get("customer.id") === this.get("selectedCustomer.id")
+        project.get("customer.id") === get(this, "selectedCustomer.id")
     );
-  }),
+  }
 
-  fetchTasksByProject: task(function* () {
+  @dropTask
+  *fetchTasksByProject() {
     try {
+      const id = get(this, "selectedProject.id");
       return yield this.store.query("task", {
-        project: this.get("selectedProject.id"),
+        project: id,
       });
     } catch (error) {
       this.notify.error("Error while fetching tasks");
     }
-  }).drop(),
+  }
 
-  saveTask: task(function* (changeset) {
+  @dropTask
+  *saveTask(changeset) {
     try {
       yield changeset.save();
 
@@ -71,33 +89,31 @@ export default Controller.extend({
     }
 
     this.fetchTasksByProject.perform(this.selectedProject);
-  }).drop(),
+  }
 
-  createTask: task(function* () {
-    this.set(
-      "selectedTask",
-      yield this.store.createRecord("task", {
-        project: this.selectedProject,
-      })
-    );
-  }).drop(),
+  @dropTask
+  *createTask() {
+    this.selectedTask = yield this.store.createRecord("task", {
+      project: this.selectedProject,
+    });
+  }
 
-  actions: {
-    handleCustomerChange(customer) {
-      this.set("selectedCustomer", customer);
-      this.set("selectedProject", null);
-      this.set("selectedTask", null);
+  @action
+  handleCustomerChange(customer) {
+    this.selectedCustomer = customer;
+    this.selectedProject = null;
+    this.selectedTask = null;
 
-      this.filterProjects.perform();
-    },
+    this.filterProjects.perform();
+  }
 
-    handleProjectChange(project) {
-      this.set("selectedProject", project);
-      this.set("selectedTask", null);
+  @action
+  handleProjectChange(project) {
+    this.selectedProject = project;
+    this.selectedTask = null;
 
-      if (this.selectedProject !== null) {
-        this.fetchTasksByProject.perform();
-      }
-    },
-  },
-});
+    if (this.selectedProject !== null) {
+      this.fetchTasksByProject.perform();
+    }
+  }
+}

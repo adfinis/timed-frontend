@@ -107,10 +107,16 @@
           >
             <div class="task-form-container-row">
               <div class="task-form-container-column">
-                <f.input @label="Name" @name="name" @required={{true}} />
+                <f.input
+                  @label="Name"
+                  @name="name"
+                  data-test-name
+                  @required={{true}}
+                />
                 <f.input
                   @label="Reference"
                   @name="reference"
+                  data-test-reference
                   @required={{false}}
                 />
               </div>
@@ -131,6 +137,7 @@
                     Archived
                   </label>
                   <SyCheckbox
+                    data-test-archived
                     @checked={{this.selectedTask.archived}}
                     @value={{fi.value}}
                     @onChange={{fi.update}}
@@ -145,7 +152,7 @@
                 type="button"
                 {{on "click" (fn (mut this.selectedTask) null)}}
               >Cancel</button>
-              <f.submit @disabled={{f.model.isInvalid}} />
+              <f.submit data-test-save @disabled={{f.model.isInvalid}} />
             </div>
           </ValidatedForm>
         </div>
