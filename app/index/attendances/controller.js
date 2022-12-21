@@ -4,7 +4,8 @@
  * @public
  */
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
+import { action } from "@ember/object";
+import { inject as service } from "@ember/service";
 import AttendanceValidator from "timed/validations/attendance";
 
 /**
@@ -14,8 +15,11 @@ import AttendanceValidator from "timed/validations/attendance";
  * @extends Ember.Controller
  * @public
  */
-export default Controller.extend({
-  AttendanceValidator,
+export default class AttendanceController extends Controller {
+  @service notify;
+  @service tracking;
+
+  AttendacenValidator = AttendanceValidator;
 
   /**
    * All attendances currently in the store
@@ -23,9 +27,9 @@ export default Controller.extend({
    * @property {Attendance[]} _allAttendances
    * @private
    */
-  _allAttendances: computed("store", function () {
+  get _allAttendances() {
     return this.store.peekAll("attendance");
-  }),
+  }
 
   /**
    * The attendances filtered by the selected day
@@ -33,18 +37,80 @@ export default Controller.extend({
    * @property {Attendance[]} attendances
    * @public
    */
-  attendances: computed(
-    "_allAttendances.@each.{date,isDeleted,user}",
-    "model",
-    "user.id",
-    function () {
-      return this._allAttendances.filter((a) => {
-        return (
-          a.get("date").isSame(this.model, "day") &&
-          a.get("user.id") === this.get("user.id") &&
-          !a.get("isDeleted")
-        );
-      });
+  get attendances() {
+    return this._allAttendances.filter((a) => {
+      return (
+        a.get("date").isSame(this.model, "day") &&
+        a.get("user.id") === this.user.id &&
+        !a.get("isDeleted")
+      );
+    });
+  }
+
+  /**
+   * Save an attendance
+   *
+   * @method saveAttendance
+   * @param {Changeset} attendance The attendance to save
+   * @public
+   */
+  @action
+  async saveAttendance(attendance) {
+    try {
+      await attendance.save();
+
+      this.notify.success("Attendance was saved");
+    } catch (e) {
+      /* istanbul ignore next */
+      this.notify.error("Error while saving the attendance");
     }
-  ),
-});
+  }
+
+  /**
+   * Delete an attendance
+   *
+   * @method deleteAttendance
+   * @param {Attendance} attendance The attendance to delete
+   * @public
+   */
+  @action
+  async deleteAttendance(attendance) {
+    try {
+      await this.store.peekRecord("attendance", attendance.id).destroyRecord();
+
+      this.notify.success("Attendance was deleted");
+    } catch (e) {
+      /* istanbul ignore next */
+      this.notify.error("Error while deleting the attendance");
+    }
+  }
+
+  /**
+   * Add a new attendance
+   *
+   * @method addAttendance
+   * @public
+   */
+  @action
+  async addAttendance() {
+    try {
+      const date = this.tracking.date.clone();
+
+      const from = date.clone().set({ h: 8, m: 0, s: 0, ms: 0 });
+      const to = date.clone().set({ h: 11, m: 30, s: 0, ms: 0 });
+
+      const attendance = this.store.createRecord("attendance", {
+        date,
+        from,
+        to,
+      });
+
+      await attendance.save();
+
+      this.notify.success("Attendance was added");
+    } catch (e) {
+      /* istanbul ignore next */
+      this.notify.error("Error while adding the attendance");
+    }
+  }
+}

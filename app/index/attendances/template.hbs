@@ -3,7 +3,7 @@
     type="button"
     class="btn btn-success"
     data-test-add-attendance
-    {{on "click" (route-action "addAttendance")}}
+    {{on "click" this.addAttendance}}
   >Add attendance</button>
 </div>
 <div class="attendances">
@@ -14,8 +14,8 @@
           data-test-attendance-slider
           data-test-attendance-slider-id={{attendance.id}}
           @attendance={{(changeset attendance this.AttendanceValidator)}}
-          @onSave={{(route-action "saveAttendance")}}
-          @onDelete={{(route-action "deleteAttendance")}}
+          @onSave={{this.saveAttendance}}
+          @onDelete={{this.deleteAttendance}}
         />
       {{/each}}
     {{else}}
@@ -43,13 +43,13 @@
                   <button
                     type="button"
                     class="btn btn-danger"
-                    {{on "click" (route-action "deleteAttendance" model)}}
+                    {{on "click" (fn this.deleteAttendance model)}}
                   ><FaIcon @icon="trash" /></button>
                   <button
                     type="submit"
                     class="btn btn-primary"
                     disabled={{not (and model.isDirty model.isValid)}}
-                    {{on "click" (route-action "saveAttendance" model)}}
+                    {{on "click" (fn this.saveAttendance model)}}
                   ><FaIcon @icon="save" /></button>
                 </td>
               </tr>

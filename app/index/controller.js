@@ -291,6 +291,8 @@ export default class IndexController extends Controller {
 
   set date(value) {
     this.day = value.format("YYYY-MM-DD");
+    // share the newly selected date
+    this.tracking.date = value;
   }
 
   /**
