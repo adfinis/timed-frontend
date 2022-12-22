@@ -1,7 +1,6 @@
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize, dasherize } from "@ember/string";
-import classic from "ember-classic-decorator";
-import { task } from "ember-concurrency";
+import { restartableTask } from "ember-concurrency";
 import DjangoDurationTransform from "timed/transforms/django-duration";
 
 const DJANGO_DURATION_TRANSFORM = DjangoDurationTransform.create();
@@ -24,16 +23,14 @@ const META_MODELS = {
  * @extends Ember.Service
  * @public
  */
-@classic
 export default class MetadataFetcherService extends Service {
   /**
-   * Ajax service to handle HTTP requests
+   * fetch service to handle HTTP requests
    *
-   * @property {EmberAjax.AjaxService} ajax
+   * @property {Emberfetch} fetch
    * @public
    */
-  @service("ajax")
-  ajax;
+  @service fetch;
 
   /**
    * Task to fetch a single records metadata
@@ -44,13 +41,13 @@ export default class MetadataFetcherService extends Service {
    * @return {Object} An object with the parsed metadata
    * @public
    */
-  @(task(function* (type, id) {
-    /* istanbul ignore next */
+  @restartableTask
+  *fetchSingleRecordMetadata(type, id) {
     if (!id) {
       throw new Error(`${capitalize(type)} ID is missing`);
     }
 
-    const { meta = {} } = yield this.ajax.request(
+    const { meta = {} } = yield this.fetch.fetch(
       `/api/v1/${dasherize(type)}s/${id}`
     );
 
@@ -66,6 +63,5 @@ export default class MetadataFetcherService extends Service {
       },
       {}
     );
-  }).restartable())
-  fetchSingleRecordMetadata;
+  }
 }

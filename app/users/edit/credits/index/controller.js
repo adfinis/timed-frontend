@@ -17,7 +17,7 @@ const UsersEditCreditsQueryParams = new QueryParams({
 export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   notify: service("notify"),
 
-  ajax: service("ajax"),
+  fetch: service("fetch"),
 
   can: service("can"),
 
@@ -92,12 +92,9 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     }
 
     try {
-      yield this.ajax.request(
-        `/api/v1/users/${this.get("model.id")}/transfer`,
-        {
-          method: "POST",
-        }
-      );
+      yield this.fetch.fetch(`/api/v1/users/${this.get("model.id")}/transfer`, {
+        method: "POST",
+      });
 
       this.notify.success("Transfer was successful");
 

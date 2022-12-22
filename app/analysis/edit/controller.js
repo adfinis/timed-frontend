@@ -60,7 +60,7 @@ export default class AnalysisEditController extends Controller.extend(
 
   @service notify;
   @service router;
-  @service ajax;
+  @service fetch;
   @service session;
   @service unverifiedReports;
 
@@ -86,7 +86,7 @@ export default class AnalysisEditController extends Controller.extend(
 
   @task
   *intersection() {
-    const res = yield this.ajax.request("/api/v1/reports/intersection", {
+    const res = yield this.fetch.fetch("/api/v1/reports/intersection", {
       method: "GET",
       data: {
         ...prepareParams(this.allQueryParams),
@@ -171,13 +171,10 @@ export default class AnalysisEditController extends Controller.extend(
         relationships: filterUnchanged(relationships, changeset.get("changes")),
       };
 
-      yield this.ajax.request(
-        `/api/v1/reports/bulk?editable=1&${queryString}`,
-        {
-          method: "POST",
-          data: { data },
-        }
-      );
+      yield this.fetch.fetch(`/api/v1/reports/bulk?editable=1&${queryString}`, {
+        method: "POST",
+        data,
+      });
 
       this.router.transitionTo("analysis.index", {
         queryParams: {

@@ -22,7 +22,6 @@ specifiers:
   babel-eslint: 10.1.0
   broccoli-asset-rev: 3.0.0
   downloadjs: 1.4.7
-  ember-ajax: 5.1.2
   ember-auto-import: 2.4.3
   ember-basic-dropdown: 6.0.1
   ember-can: 4.2.0
@@ -123,7 +122,6 @@ devDependencies:
   babel-eslint: 10.1.0_eslint@7.32.0
   broccoli-asset-rev: 3.0.0
   downloadjs: 1.4.7
-  ember-ajax: 5.1.2
   ember-auto-import: 2.4.3_webpack@5.74.0
   ember-basic-dropdown: 6.0.1_ember-source@3.28.0
   ember-can: 4.2.0
@@ -7576,17 +7574,6 @@ packages:
       minimalistic-crypto-utils: 1.0.1
     dev: true
 
-  /ember-ajax/5.1.2:
-    resolution: {integrity: sha512-4pMrrJjZGpEGQEChWZ1+YO9TZocpjUVk2VdNv6nBgkU+C3UOYUkdzyeinWz5JLmRTL0ktrA6/EU9H+H0hsMgsQ==}
-    engines: {node: 6.* || 8.* || >= 10.*}
-    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
-    dependencies:
-      ember-cli-babel: 7.26.11
-      najax: 1.0.7
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /ember-assign-helper/0.4.0:
     resolution: {integrity: sha512-GKHhT4HD2fhtDnuBk6eCdCA8XGew9hY7TVs8zjrykegiI7weC0CGtpJscmIG3O0gEEb0d07UTkF2pjfNGLx4Nw==}
     engines: {node: '>= 12'}
@@ -12215,11 +12202,6 @@ packages:
       supports-color: 8.1.1
     dev: true
 
-  /jquery-deferred/0.3.1:
-    resolution: {integrity: sha512-YTzoTYR/yrjmNh6B6exK7lC1jlDazEzt9ZlZvdRscv+I1AJqN1SmU3ZAn4iMGiVhwAavCrbijDVyTc0lmr9ZCA==}
-    engines: {node: '>=0.4.0'}
-    dev: true
-
   /jquery/3.6.1:
     resolution: {integrity: sha512-opJeO4nCucVnsjiXOE+/PcCgYw9Gwpvs/a6B1LL/lQhwWwpbVEVYDZ1FokFr8PRc7ghYlrFPuyHuiiDNTQxmcw==}
     dev: true
@@ -13537,15 +13519,6 @@ packages:
 
   /mute-stream/0.0.8:
     resolution: {integrity: sha512-nnbWWOkoWyUsTjKrhgD0dcz22mdkSnpYqbEjIm2nhwhuxlSkpywJmBo8h0ZqJdkp73mb90SssHkN4rsRaBAfAA==}
-    dev: true
-
-  /najax/1.0.7:
-    resolution: {integrity: sha512-JqBMguf2plv1IDqhOE6eebnTivjS/ej0C/Sw831jVc+dRQIMK37oyktdQCGAQtwpl5DikOWI2xGfIlBPSSLgXg==}
-    engines: {node: '>= 4.4.3'}
-    dependencies:
-      jquery-deferred: 0.3.1
-      lodash: 4.17.21
-      qs: 6.11.0
     dev: true
 
   /nan/2.17.0:
