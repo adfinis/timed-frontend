@@ -1,14 +1,12 @@
-import Component from "@ember/component";
-import { get, computed } from "@ember/object";
+import { get } from "@ember/object";
 import { capitalize } from "@ember/string";
-import classic from "ember-classic-decorator";
-import { hbs } from "ember-cli-htmlbars";
+import Component from "@glimmer/component";
 import moment from "moment";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 
-const PLAIN_LAYOUT = hbs`{{value}}`;
-const DURATION_LAYOUT = hbs`{{humanize-duration value false}}`;
-const MONTH_LAYOUT = hbs`{{moment-format (moment value 'M') 'MMMM'}}`;
+const PLAIN_LAYOUT = "PLAIN";
+const DURATION_LAYOUT = "DURATION";
+const MONTH_LAYOUT = "MONTH";
 
 const COLUMN_MAP = {
   year: [
@@ -56,49 +54,42 @@ const COLUMN_MAP = {
   ],
 };
 
-@classic
 export default class StatisticList extends Component {
-  @computed("data.last.value.@each.duration")
   get maxDuration() {
     return (
-      this.get("data.last.value") &&
-      moment.duration(
-        Math.max(...this.get("data.last.value").mapBy("duration"))
-      )
+      this.args.data?.last?.value &&
+      moment.duration(Math.max(...this.args.data.last.value.mapBy("duration")))
     );
   }
 
-  @computed("data.last.value.meta.total-time")
   get total() {
     return parseDjangoDuration(
-      get(this, "data.last.value.meta.total-time") ?? null
+      this.args.data?.last?.value?.meta?.["total-time"] ?? null
     );
   }
 
-  @computed("type")
   get columns() {
-    return get(COLUMN_MAP, this.type).map((col) => ({
+    return get(COLUMN_MAP, this.args.type).map((col) => ({
       ...col,
       ordering: col.ordering || col.path.replace(/\./g, "__"),
     }));
   }
 
-  @computed("missingParams.[]")
   get missingParamsMessage() {
-    if (!this.get("missingParams.length")) {
+    if (!this.args.missingParams?.length) {
       return "";
     }
 
-    const text = this.missingParams
+    const text = this.args.missingParams
       .map((param, index) => {
         if (index === 0) {
           param = capitalize(param);
         }
 
-        if (this.get("missingParams.length") > 1) {
-          if (index + 1 === this.get("missingParams.length")) {
+        if (this.args.missingParams.length > 1) {
+          if (index + 1 === this.args.missingParams.length) {
             param = `and ${param}`;
-          } else if (index + 2 !== this.get("missingParams.length")) {
+          } else if (index + 2 !== this.args.missingParams.length) {
             param = `${param},`;
           }
         }
@@ -108,7 +99,7 @@ export default class StatisticList extends Component {
       .join(" ");
 
     const suffix =
-      this.get("missingParams.length") > 1
+      this.args.missingParams.length > 1
         ? "are required parameters"
         : "is a required parameter";
 

@@ -1,0 +1,9 @@
+<td ...attributes>
+  {{#if (eq @layout "DURATION")}}
+    {{humanize-duration @value false}}
+  {{else if (eq @layout "MONTH")}}
+    {{moment-format (moment @value "M") "MMMM"}}
+  {{else}}
+    {{@value}}
+  {{/if}}
+</td>

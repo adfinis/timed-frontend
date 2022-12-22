@@ -1,93 +1,98 @@
-{{#if this.data.isRunning}}
-  <div class="empty">
-    <LoadingIcon />
-  </div>
-{{else if this.data.last.isError}}
-  <div class="empty">
-    <div>
-      {{fa-icon "bolt"}}
-      <h3>Oops... Something went wrong</h3>
-      <p>
-        Have you tried turning it off and on again?
-        <br />
-        Please try refreshing the page.
-      </p>
+<div ...attributes>
+  {{#if @data.isRunning}}
+    <div class="empty">
+      <LoadingIcon />
     </div>
-  </div>
-{{else if this.missingParams}}
-  <div class="empty">
-    <div>
-      {{fa-icon "search"}}
-      <h3>Missing filter parameters</h3>
-      <p>{{this.missingParamsMessage}}</p>
+  {{else if @data.last.isError}}
+    <div class="empty">
+      <div>
+        {{fa-icon "bolt"}}
+        <h3>Oops... Something went wrong</h3>
+        <p>
+          Have you tried turning it off and on again?
+          <br />
+          Please try refreshing the page.
+        </p>
+      </div>
     </div>
-  </div>
-{{else if (not this.data.last.value)}}
-  <div class="empty">
-    <div>
-      {{fa-icon "bar-chart"}}
-      <h3>No statistics to display</h3>
-      <p>Maybe try loosening your filters</p>
+  {{else if @missingParams}}
+    <div class="empty">
+      <div>
+        {{fa-icon "search"}}
+        <h3>Missing filter parameters</h3>
+        <p>{{this.missingParamsMessage}}</p>
+      </div>
     </div>
-  </div>
-{{else}}
-  <table class="table table-striped table--statistics">
-    <thead>
-      <tr>
-        {{#each this.columns as |column|}}
-          {{#if column.ordering}}
-            <SortHeader
-              @current={{this.ordering}}
-              @update={{action this.on-ordering-change}}
-              @by={{column.ordering}}
-            >
-              {{column.title}}
-            </SortHeader>
-          {{else}}
-            <th>{{column.title}}</th>
-          {{/if}}
-        {{/each}}
-        <th></th>
-      </tr>
-    </thead>
-    <VerticalCollection
-      @items={{this.data.last.value}}
-      @tagName="tbody"
-      @estimateHeight={{40}}
-      @bufferSize={{10}}
-      @containerSelector=".page-content--scroll"
-      as |row|
-    >
-      <tr>
-        {{#each this.columns as |column|}}
-          <StatisticList::Column
-            @layout={{column.layout}}
-            @value={{(get row column.path)}}
-          />
-        {{/each}}
-        <td>
-          <StatisticList::Bar @value={{(div row.duration this.maxDuration)}} />
-        </td>
-      </tr>
-    </VerticalCollection>
-    <tfoot>
-      <tr>
-        {{#each this.columns as |column index|}}
+  {{else if (not @data.last.value)}}
+    <div class="empty">
+      <div>
+        {{fa-icon "bar-chart"}}
+        <h3>No statistics to display</h3>
+        <p>Maybe try loosening your filters</p>
+      </div>
+    </div>
+  {{else}}
+    <table class="table table-striped table--statistics">
+      <thead>
+        <tr>
+          {{#each this.columns as |column|}}
+            {{#if column.ordering}}
+              <SortHeader
+                @current={{@ordering}}
+                @update={{@onOrderingChange}}
+                @by={{column.ordering}}
+              >
+                {{column.title}}
+              </SortHeader>
+            {{else}}
+              <th>{{column.title}}</th>
+            {{/if}}
+          {{/each}}
+          <th></th>
+        </tr>
+      </thead>
+      <VerticalCollection
+        @items={{@data.last.value}}
+        @tagName="tbody"
+        @estimateHeight={{40}}
+        @bufferSize={{10}}
+        @containerSelector=".page-content--scroll"
+        as |row|
+      >
+        <tr data-test-statistic-list-row>
+          {{#each this.columns as |column|}}
+            <StatisticList::Column
+              data-test-statistic-list-column
+              @layout={{column.layout}}
+              @value={{(get row column.path)}}
+            />
+          {{/each}}
           <td>
-            <strong>
-              {{#if (not index)}}
-                Total:
-              {{else if (eq column.title "Duration")}}
-                <span class="total">{{humanize-duration
-                    this.total
-                    false
-                  }}</span>
-              {{/if}}
-            </strong>
+            <StatisticList::Bar
+              @value={{(div row.duration this.maxDuration)}}
+            />
           </td>
-        {{/each}}
-        <td></td>
-      </tr>
-    </tfoot>
-  </table>
-{{/if}}
+        </tr>
+      </VerticalCollection>
+      <tfoot>
+        <tr>
+          {{#each this.columns as |column index|}}
+            <td>
+              <strong>
+                {{#if (not index)}}
+                  Total:
+                {{else if (eq column.title "Duration")}}
+                  <span class="total">{{humanize-duration
+                      this.total
+                      false
+                    }}</span>
+                {{/if}}
+              </strong>
+            </td>
+          {{/each}}
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  {{/if}}
+</div>

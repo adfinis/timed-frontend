@@ -76,6 +76,7 @@ specifiers:
   ember-sinon-qunit: ^6.0.0
   ember-site-tour: 2.2.0
   ember-source: 3.28.0
+  ember-style-modifier: ^1.0.0
   ember-template-lint: 4.17.0
   ember-test-selectors: 6.0.0
   ember-tether: 2.0.1
@@ -177,6 +178,7 @@ devDependencies:
   ember-sinon-qunit: 6.0.0
   ember-site-tour: 2.2.0
   ember-source: 3.28.0
+  ember-style-modifier: 1.0.0
   ember-template-lint: 4.17.0_ember-cli-htmlbars@6.0.0
   ember-test-selectors: 6.0.0
   ember-tether: 2.0.1
@@ -9356,6 +9358,17 @@ packages:
   /ember-style-modifier/0.8.0:
     resolution: {integrity: sha512-I7M+oZ+poYYOP7n521rYv7kkYZbxotL8VbtHYxLQ3tasRZYQJ21qfu3vVjydSjwyE3w7EZRgKngBoMhKSAEZnw==}
     engines: {node: 12.* || 14.* || >= 16}
+    dependencies:
+      ember-cli-babel: 7.26.11
+      ember-modifier: 3.2.7
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
+    dev: true
+
+  /ember-style-modifier/1.0.0:
+    resolution: {integrity: sha512-ANkYpOeI3/tkRxVz750ymb8cQBqfBTKOUOz4RPRsNys8rlaBiaKEa95XLz1JWfCXCzjmqe8i2cIdnAMix+nb3A==}
+    engines: {node: 14.* || >= 16}
     dependencies:
       ember-cli-babel: 7.26.11
       ember-modifier: 3.2.7
