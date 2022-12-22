@@ -1,6 +1,6 @@
-import Controller, { inject as controller } from "@ember/controller";
-import { computed } from "@ember/object";
-import { reads } from "@ember/object/computed";
+import { getOwner } from "@ember/application";
+import Controller from "@ember/controller";
+import { action, get } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
@@ -22,7 +22,7 @@ export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
     replace: true,
     refresh: true,
     serialize(arr) {
-      return (arr && arr.join(",")) || "";
+      return (arr && arr.join(",")) || null;
     },
     deserialize(str) {
       return (str && str.split(",")) || [];
@@ -53,25 +53,39 @@ const TOOLTIP_CANNOT_VERIFY =
   "Please select yourself as 'reviewer' to verify reports.";
 const TOOLTIP_NEEDS_REVIEW = "Please review selected reports before verifying.";
 
-export default Controller.extend(AnalysisEditQueryParams.Mixin, {
-  IntersectionValidations,
-  TOOLTIP_CANNOT_VERIFY,
-  TOOLTIP_NEEDS_REVIEW,
+export default class AnalysisEditController extends Controller.extend(
+  AnalysisEditQueryParams.Mixin
+) {
+  IntersectionValidations = IntersectionValidations;
 
-  notify: service("notify"),
-  ajax: service("ajax"),
-  session: service("session"),
-  unverifiedReports: service(),
+  @service notify;
+  @service router;
+  @service ajax;
+  @service session;
+  @service unverifiedReports;
 
-  analysisIndexController: controller("analysis.index"),
-  intersectionModel: reads("intersection.lastSuccessful.value.model"),
-  isAccountant: reads("session.data.user.isAccountant"),
+  get analysisIndexController() {
+    return getOwner(this).lookup("controller:analysis.index");
+  }
+
+  get intersectionModel() {
+    return this.intersection.lastSuccessful?.value?.model;
+  }
+
+  get isAccountant() {
+    return this.session.data.user.isAccountant;
+  }
+
+  get isSuperuser() {
+    return this.session.data.user.isSuperuser;
+  }
 
   setup() {
     this.intersection.perform();
-  },
+  }
 
-  intersection: task(function* () {
+  @task
+  *intersection() {
     const res = yield this.ajax.request("/api/v1/reports/intersection", {
       method: "GET",
       data: {
@@ -87,58 +101,46 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       model: this.store.peekRecord("report-intersection", res.data.id),
       meta: res.meta,
     };
-  }),
+  }
 
-  _customer: computed("intersectionModel.customer.id", "store", function () {
-    const id = this.get("intersectionModel.customer.id");
+  get _customer() {
+    const id = get(this, "intersectionModel.customer.id");
     return id && this.store.peekRecord("customer", id);
-  }),
+  }
 
-  _project: computed("intersectionModel.project.id", "store", function () {
-    const id = this.get("intersectionModel.project.id");
+  get _project() {
+    const id = get(this, "intersectionModel.project.id");
     return id && this.store.peekRecord("project", id);
-  }),
+  }
 
-  _task: computed("intersectionModel.task.id", "store", function () {
-    const id = this.get("intersectionModel.task.id");
+  get _task() {
+    const id = get(this, "intersectionModel.task.id");
     return id && this.store.peekRecord("task", id);
-  }),
+  }
 
-  hasSelectedOwnReports: computed(
-    "intersectionModel.user.id",
-    "session.data.user.id",
-    function () {
-      return (
-        this.get("intersectionModel.user.id") === this.session.data.user.id
-      );
-    }
-  ),
+  get hasSelectedOwnReports() {
+    return get(this, "intersectionModel.user.id") === this.session.data.user.id;
+  }
 
-  canVerify: computed(
-    "allQueryParams.reviewer",
-    "session.data.user.{id,isSuperuser}",
-    function () {
-      return (
-        this.get("allQueryParams.reviewer") ===
-          this.get("session.data.user.id") ||
-        this.get("session.data.user.isSuperuser")
-      );
-    }
-  ),
-
-  canBill: computed.or(
-    "session.data.user.isAccountant",
-    "session.data.user.isSuperuser"
-  ),
-
-  needsReview: computed("intersectionModel.review", function () {
+  get canVerify() {
     return (
-      this.get("intersectionModel.review") === null ||
-      this.get("intersectionModel.review") === true
+      this.allQueryParams.reviewer === this.session.data.user.id ||
+      this.isSuperuser
     );
-  }),
+  }
 
-  toolTipText: computed("canVerify", "needsReview", function () {
+  get canBill() {
+    return this.session.data.user.isAccountant || this.isSuperuser;
+  }
+
+  get needsReview() {
+    return (
+      this.intersectionModel.review === null ||
+      this.intersectionModel.review === true
+    );
+  }
+
+  get toolTipText() {
     let result = "";
     if (this.needsReview && this.canVerify) {
       result = TOOLTIP_NEEDS_REVIEW;
@@ -148,9 +150,10 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
       result = `${TOOLTIP_CANNOT_VERIFY} ${TOOLTIP_NEEDS_REVIEW}`;
     }
     return result;
-  }),
+  }
 
-  save: task(function* (changeset) {
+  @task
+  *save(changeset) {
     try {
       const params = prepareParams(this.allQueryParams);
 
@@ -176,50 +179,51 @@ export default Controller.extend(AnalysisEditQueryParams.Mixin, {
         }
       );
 
-      this.transitionToRoute("analysis.index", {
+      this.router.transitionTo("analysis.index", {
         queryParams: {
-          ...this.allQueryParams,
+          ...params,
         },
       });
 
       this.notify.success("Reports were saved");
     } catch (e) {
-      /* istanbul ignore next */
       this.notify.error("Error while saving the reports");
     }
 
     this.unverifiedReports.pollReports();
-  }),
+  }
 
-  actions: {
-    validate(changeset) {
-      changeset.validate();
-    },
+  @action
+  validate(changeset) {
+    changeset.validate();
+  }
 
-    cancel() {
-      const task = this.get("analysisIndexController.data");
+  @action
+  cancel() {
+    const task = this.analysisIndexController.data;
 
-      /* istanbul ignore next */
-      if (task.get("lastSuccessful")) {
-        this.set("analysisIndexController.skipResetOnSetup", true);
-      }
+    if (task.lastSuccessful) {
+      this.analysisIndexController.skipResetOnSetup = true;
+    }
 
-      this.transitionToRoute("analysis.index", {
+    this.router
+      .transitionTo("analysis.index", {
         queryParams: {
           ...this.allQueryParams,
         },
-      }).then(() => {
-        this.set("analysisIndexController.skipResetOnSetup", false);
+      })
+      .then(() => {
+        this.analysisIndexController.skipResetOnSetup = false;
       });
-    },
+  }
 
-    reset(changeset) {
-      // We have to defer the rollback for some milliseconds since the combobox
-      // reset action triggers mutation of customer, task, and project which
-      // would be run after this rollback and therefore trigger changes
-      later(() => {
-        changeset.rollback();
-      });
-    },
-  },
-});
+  @action
+  resetChangeset(changeset) {
+    // We have to defer the rollback for some milliseconds since the combobox
+    // reset action triggers mutation of customer, task, and project which
+    // would be run after this rollback and therefore trigger changes
+    later(() => {
+      changeset.rollback();
+    });
+  }
+}

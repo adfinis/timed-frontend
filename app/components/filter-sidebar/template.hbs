@@ -1,39 +1,52 @@
-{{#-in-element this.destination}}
+{{#in-element this.destination}}
   <aside class="filter-sidebar {{if this.visible 'filter-sidebar--visible'}}">
     <div class="filter-sidebar-title">
-      {{#if this.appliedCount}}
-        {{this.appliedCount}} Filter{{if (not (eq this.appliedCount 1)) 's'}} applied
+      {{#if @appliedCount}}
+        {{@appliedCount}}
+        Filter{{if (not (eq @appliedCount 1)) "s"}}
+        applied
       {{else}}
         Filters
       {{/if}}
-      {{#if this.on-reset}}
-        <a href="#" class="filter-sidebar-reset" {{action this.on-reset on='click'}}>
+      {{#if @onReset}}
+        <a href="#" class="filter-sidebar-reset" {{on "click" @onReset}}>
           Reset
         </a>
       {{/if}}
     </div>
 
     <div class="filter-sidebar-content">
-      {{yield (hash
-        group  = (component 'filter-sidebar/group')
-        label  = (component 'filter-sidebar/label')
-        filter = (component 'filter-sidebar/filter')
-      )}}
+      {{yield
+        (hash
+          group=(component "filter-sidebar/group")
+          label=(component "filter-sidebar/label")
+          filter=(component "filter-sidebar/filter")
+        )
+      }}
     </div>
 
     <button
       title="{{if this.visible 'Hide' 'Show'}} filters"
-      class="filter-sidebar-toggle" type="button" {{action (toggle 'visible' this)}}
+      class="filter-sidebar-toggle"
+      type="button"
+      {{on "click" (toggle "visible" this)}}
     >
       <span class="filter-sidebar-toggle-background"></span>
       <span class="filter-sidebar-toggle-icon">
-        {{fa-icon 'sliders'}}
-        {{#if this.appliedCount}}
-          <span class="filter-sidebar-toggle-icon-badge">{{this.appliedCount}}</span>
+        <FaIcon @icon="sliders" />
+        {{#if @appliedCount}}
+          <span
+            class="filter-sidebar-toggle-icon-badge"
+          >{{@appliedCount}}</span>
         {{/if}}
       </span>
       <span class="filter-sidebar-toggle-text">Filters</span>
     </button>
   </aside>
-  <div class="filter-sidebar-overlay {{if this.visible 'filter-sidebar-overlay--visible'}}" {{action (mut this.visible) false}}></div>
-{{/-in-element}}
+  <div
+    class="filter-sidebar-overlay
+      {{if this.visible 'filter-sidebar-overlay--visible'}}"
+    {{! template-lint-disable}}
+    {{on "click" (fn (mut this.visible) false)}}
+  ></div>
+{{/in-element}}

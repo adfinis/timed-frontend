@@ -31,17 +31,13 @@ export default class IndexController extends Controller {
   @tracked showAddModal = false;
   @tracked showEditModal = false;
   @tracked day = moment().format("YYYY-MM-DD");
+  @tracked _activeActivityDuration = moment.duration();
   @trackedWrapper center = moment();
   @trackedWrapper disabledDates = [];
 
   @service session;
   @service notify;
-
-  constructor(...args) {
-    super(...args);
-
-    this._activeActivityDuration = moment.duration();
-  }
+  @service tracking;
 
   AbsenceValidations = AbsenceValidations;
   MultipleAbsenceValidations = MultipleAbsenceValidations;
@@ -67,16 +63,34 @@ export default class IndexController extends Controller {
     return activitiesThen;
   }
 
+  get activitySum() {
+    // Prevents wrong activity sum, while saving reports.
+    // It would otherwise double the currently not transferred durations
+    // while store is updating.
+    if (this.tracking.generatingReports) {
+      return this._lastActivitySum;
+    }
+
+    if (!this.tracking.hasActiveActivity) {
+      return this.storedActivitiesDuration;
+    }
+
+    return moment
+      .duration()
+      .add(this.storedActivitiesDuration)
+      .add(this._activeActivityDuration);
+  }
+
   /**
-   * The duration sum of all activities of the selected day
+   * The duration sum of all stored activities of the selected day
    *
    * @property {moment.duration} activitySum
    * @public
    */
-  get activitySum() {
+  get storedActivitiesDuration() {
     return this._activities.rejectBy("active").reduce((total, current) => {
       return total.add(current.get("duration"));
-    }, this._activeActivityDuration);
+    }, moment.duration());
   }
 
   /**
@@ -86,6 +100,14 @@ export default class IndexController extends Controller {
    * @private
    */
   _activitySum() {
+    // Do not trigger updates whne there is no active activity, but let it run once to
+    // null the duration.
+    if (
+      !this.tracking.hasActiveActivity &&
+      this._activeActivityDuration.get("seconds") === 0
+    ) {
+      return;
+    }
     const duration = this._activities
       .filterBy("active")
       .reduce((total, current) => {
@@ -93,7 +115,16 @@ export default class IndexController extends Controller {
       }, moment.duration());
 
     this._activeActivityDuration = duration;
+
+    // Save latest activitySum for display while reports are generated.
+    // See activitySum getter.
+    scheduleOnce("afterRender", this, "_storeLastActivitySum");
+
     return duration;
+  }
+
+  _storeLastActivitySum() {
+    this._lastActivitySum = this.activitySum;
   }
 
   /**

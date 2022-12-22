@@ -12,7 +12,7 @@ module("Integration | Component | filter sidebar", function (hooks) {
 
     await render(hbs`
       <div id="filter-sidebar-target"></div>
-      {{filter-sidebar on-reset=(action (mut didReset) true)}}
+      <FilterSidebar @onReset={{fn (mut this.didReset) true}} />
     `);
 
     await click(".filter-sidebar-reset");
@@ -25,7 +25,7 @@ module("Integration | Component | filter sidebar", function (hooks) {
 
     await render(hbs`
       <div id="filter-sidebar-target"></div>
-      {{filter-sidebar appliedCount=count}}
+      <FilterSidebar @appliedCount={{this.count}} />
     `);
 
     assert.dom(".filter-sidebar-title").includesText("Filters");

@@ -47,7 +47,6 @@ export default class IndexActivitiesEditController extends Controller {
   async save(e) {
     e.preventDefault();
 
-    /* istanbul ignore next */
     if (!this.saveEnabled) {
       /* UI prevents this, but could be executed by pressing enter */
       return;
@@ -61,7 +60,6 @@ export default class IndexActivitiesEditController extends Controller {
       this.router.transitionTo("index.activities");
     } catch (e) {
       console.error(e);
-      /* istanbul ignore next */
       this.notify.error("Error while saving the activity");
     }
   }
@@ -74,7 +72,6 @@ export default class IndexActivitiesEditController extends Controller {
    */
   @action
   async delete() {
-    /* istanbul ignore next */
     if (this.model.active) {
       // We can't test this because the UI already prevents this by disabling
       // the save button..
@@ -92,7 +89,6 @@ export default class IndexActivitiesEditController extends Controller {
       this.router.transitionTo("index.activities");
     } catch (e) {
       console.error(e);
-      /* istanbul ignore next */
       this.notify.error("Error while deleting the activity");
     }
   }

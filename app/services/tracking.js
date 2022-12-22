@@ -1,10 +1,3 @@
-/**
- * @module timed
- * @submodule timed-services
- * @public
- */
-
-import { observes } from "@ember-decorators/object";
 import { getOwner } from "@ember/application";
 import { get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
@@ -42,6 +35,12 @@ export default class TrackingService extends Service {
    * @public
    */
   @service notify;
+
+  /**
+   * Flag indicating if the tracking reports is currently generated.
+   * This is used to prevent doubled time accumulation in task sum displays.
+   */
+  @tracked generatingReports = false;
 
   constructor(...args) {
     super(...args);
@@ -90,21 +89,6 @@ export default class TrackingService extends Service {
   }
 
   /**
-   * Trigger a reload of the title because the activity has changed
-   *
-   * @method _triggerTitle
-   * @private
-   */
-  @observes("activity.active")
-  _triggerTitle() {
-    if (this.activity.active) {
-      this._computeTitle.perform();
-    } else {
-      this.setTitle(this.title);
-    }
-  }
-
-  /**
    * Set the doctitle
    *
    * @method setTitle
@@ -147,12 +131,10 @@ export default class TrackingService extends Service {
 
       this.setTitle(`${formatDuration(duration)} (${task})`);
 
-      /* istanbul ignore else */
       if (macroCondition(isTesting())) {
         return;
       }
 
-      /* istanbul ignore next */
       yield timeout(1000);
     }
   }
@@ -195,8 +177,9 @@ export default class TrackingService extends Service {
 
       this.notify.success("Activity was started");
     } catch (e) {
-      /* istanbul ignore next */
       this.notify.error("Error while starting the activity");
+    } finally {
+      this._computeTitle.perform();
     }
   }
 
@@ -217,9 +200,14 @@ export default class TrackingService extends Service {
 
       this.activity = null;
     } catch (e) {
-      /* istanbul ignore next */
       this.notify.error("Error while stopping the activity");
+    } finally {
+      this.setTitle(this.title);
     }
+  }
+
+  get hasActiveActivity() {
+    return this.activity?.active;
   }
 
   get activeCustomer() {

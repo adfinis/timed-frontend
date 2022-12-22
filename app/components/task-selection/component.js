@@ -3,7 +3,7 @@ import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { restartableTask } from "ember-concurrency";
+import { dropTask, restartableTask } from "ember-concurrency";
 import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { resolve } from "rsvp";
 import customerOptionTemplate from "timed/components/optimized-power-select/custom-options/customer-option";
@@ -35,7 +35,7 @@ export default class TaskSelectionComponent extends Component {
   }
 
   async _setInitial() {
-    await this.tracking.fetchActiveActivity.last;
+    await this.tracking.fetchActiveActivity?.last;
 
     const { customer, project, task } = this.args.initial ?? {
       customer: null,
@@ -181,7 +181,10 @@ export default class TaskSelectionComponent extends Component {
    * @property {Array} customersAndRecentTasks
    * @public
    */
-  get customersAndRecentTasks() {
+  @dropTask
+  *customersAndRecentTasksTask() {
+    yield Promise.resolve();
+
     let ids = [];
 
     if (this.history) {
@@ -193,18 +196,25 @@ export default class TaskSelectionComponent extends Component {
     const customers = this.store
       .peekAll("customer")
       .filter((customer) => {
-        return this.archived ? true : !customer.get("archived");
+        return this.archived ? true : !customer.archived;
       })
       .sortBy("name");
 
     const tasks = this.store.peekAll("task").filter((task) => {
-      return (
-        ids.includes(task.get("id")) &&
-        (this.archived ? true : !task.get("archived"))
-      );
+      return ids.includes(task.id) && (this.archived ? true : !task.archived);
     });
 
     return [...tasks.toArray(), ...customers.toArray()];
+  }
+
+  _customersAndRecentTasks = trackedTask(
+    this,
+    this.customersAndRecentTasksTask,
+    () => [this.history, this.tracking.recentTasks, this.archived]
+  );
+
+  get customersAndRecentTasks() {
+    return this._customersAndRecentTasks.value ?? [];
   }
 
   /**

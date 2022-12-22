@@ -1,11 +1,11 @@
 import { A } from "@ember/array";
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
-import { reads } from "@ember/object/computed";
+import { action, set } from "@ember/object";
 import { inject as service } from "@ember/service";
+import { isTesting, macroCondition } from "@embroider/macros";
+import { tracked } from "@glimmer/tracking";
 import download from "downloadjs";
-import Ember from "ember";
-import { task, hash } from "ember-concurrency";
+import { dropTask, enqueueTask, task, hash } from "ember-concurrency";
 import QueryParams from "ember-parachute";
 import fetch from "fetch";
 import moment from "moment";
@@ -35,228 +35,202 @@ const deserializeMoment = (momentString) =>
 
 export const AnalysisQueryParams = new QueryParams({
   customer: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   project: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   task: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   user: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   reviewer: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   billingType: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   costCenter: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   fromDate: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
     deserialize: deserializeMoment,
   },
   toDate: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
     deserialize: deserializeMoment,
   },
   review: {
-    defaultValue: "",
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   notBillable: {
-    defaultValue: "",
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   verified: {
-    defaultValue: "",
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   editable: {
-    defaultValue: "",
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
   billed: {
-    defaultValue: "",
+    defaultValue: undefined,
     replace: true,
     refresh: true,
   },
+  // We serialize the ordering as null if the
+  // value equals the defaultValue. For some reason
+  // if the serialized value is not null we had some
+  // weird query param behavior where the ordering
+  // param was set to the defaultValue when editing
+  // a report and due to that all other queryParams
+  // where reset.
   ordering: {
     defaultValue: "-date",
     replace: true,
     refresh: true,
     serialize(val) {
-      return `${val},id`;
+      return val === "-date" ? null : `${val},id`;
     },
     deserialize(val) {
-      return val.replace(",id", "");
+      return val === null ? "-date" : val.replace(",id", "");
     },
   },
 });
 
-const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
-  billingTypes: computed(
-    "prefetchData.lastSuccessful.value.billingTypes",
-    "store",
-    function () {
-      return this.store.findAll("billing-type");
-    }
-  ),
+export default class AnalysisController extends Controller.extend(
+  AnalysisQueryParams.Mixin
+) {
+  exportLinks = config.APP.REPORTEXPORTS;
 
-  costCenters: computed(
-    "prefetchData.lastSuccessful.value.costCenters",
-    "store",
-    function () {
-      return this.store.findAll("cost-center");
-    }
-  ),
+  exportLimit = config.APP.EXPORT_LIMIT;
 
-  selectedCustomer: computed(
-    "customer",
-    "prefetchData.lastSuccessful.value.customer",
-    "store",
-    function () {
-      return this.customer && this.store.peekRecord("customer", this.customer);
-    }
-  ),
+  @service session;
+  @service store;
+  @service router;
+  @service notify;
+  @service can;
 
-  selectedProject: computed(
-    "prefetchData.lastSuccessful.value.project",
-    "project",
-    "store",
-    function () {
-      return this.project && this.store.peekRecord("project", this.project);
-    }
-  ),
+  @tracked _scrollOffset = 0;
+  @tracked _shouldLoadMore = false;
+  @tracked _canLoadMore = true;
+  @tracked _lastPage = 0;
+  @tracked selectedReportIds;
 
-  selectedTask: computed(
-    "prefetchData.lastSuccessful.value.task",
-    "store",
-    "task",
-    function () {
-      return this.task && this.store.peekRecord("task", this.task);
-    }
-  ),
+  get billingTypes() {
+    return this.store.findAll("billing-type");
+  }
 
-  selectedUser: computed(
-    "prefetchData.lastSuccessful.value.user",
-    "store",
-    "user",
-    function () {
-      return this.user && this.store.peekRecord("user", this.user);
-    }
-  ),
+  get costCenters() {
+    return this.store.findAll("cost-center");
+  }
 
-  selectedReviewer: computed(
-    "prefetchData.lastSuccessful.value.reviewer",
-    "reviewer",
-    "store",
-    function () {
-      return this.reviewer && this.store.peekRecord("user", this.reviewer);
-    }
-  ),
+  get selectedCustomer() {
+    return this.customer && this.store.peekRecord("customer", this.customer);
+  }
 
-  exportLimitExceeded: computed("exportLimit", "totalItems", function () {
+  get selectedProject() {
+    return this.project && this.store.peekRecord("project", this.project);
+  }
+
+  get selectedTask() {
+    return this.task && this.store.peekRecord("task", this.task);
+  }
+
+  get selectedUser() {
+    return this.user && this.store.peekRecord("user", this.user);
+  }
+
+  get selectedReviewer() {
+    return this.reviewer && this.store.peekRecord("user", this.reviewer);
+  }
+
+  get exportLimitExceeded() {
     return this.totalItems > this.exportLimit;
-  }),
+  }
 
-  exportLimitMessage: computed("exportLimit", function () {
+  get exportLimitMessage() {
     return `The export limit is ${this.exportLimit}. Please use filters to reduce the amount of reports.`;
-  }),
+  }
 
-  canBill: computed.or(
-    "session.data.user.isAccountant",
-    "session.data.user.isSuperuser"
-  ),
-
-  exportLinks: config.APP.REPORTEXPORTS,
-
-  exportLimit: config.APP.EXPORT_LIMIT,
-
-  session: service("session"),
-
-  notify: service("notify"),
-
-  can: service("can"),
-
-  jwt: reads("session.data.authenticated.access_token"),
-
-  _scrollOffset: 0,
-
-  init(...args) {
-    this._super(...args);
-
-    this.set("_dataCache", A());
-    this.set("selectedReportIds", A());
-  },
+  get canBill() {
+    return (
+      this.session.data.user.isAccountant || this.session.data.user.isSuperuser
+    );
+  }
 
   setup() {
+    this._dataCache = A();
+    this.selectedReportIds = A();
+
     this.prefetchData.perform();
 
     if (!this.skipResetOnSetup) {
       this._reset();
     }
-  },
+  }
 
   _reset() {
     this.data.cancelAll();
     this.loadNext.cancelAll();
 
-    this.setProperties({
-      _lastPage: 0,
-      _canLoadMore: true,
-      _shouldLoadMore: false,
-      _dataCache: A(),
-      selectedReportIds: A(),
-    });
+    this._lastPage = 0;
+    this._canLoadMore = true;
+    this._shouldLoadMore = false;
+    this._dataCache = A();
+    this.selectedReportIds = A();
 
     this.data.perform();
-  },
+  }
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
       this._reset();
     }
-  },
+  }
 
-  _shouldLoadMore: false,
-  _canLoadMore: true,
-  _lastPage: 0,
-
-  appliedFilters: computed("queryParamsState", function () {
+  get appliedFilters() {
     return Object.keys(this.queryParamsState).filter((key) => {
-      return key !== "ordering" && this.get(`queryParamsState.${key}.changed`);
+      return key !== "ordering" && this.queryParamsState?.[key]?.changed;
     });
-  }),
+  }
 
-  prefetchData: task(function* () {
+  get jwt() {
+    return this.session.data.authenticated.access_token;
+  }
+
+  @task
+  *prefetchData() {
     const {
       customer: customerId,
       project: projectId,
@@ -274,64 +248,67 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       billingTypes: this.store.findAll("billing-type"),
       costCenters: this.store.findAll("cost-center"),
     });
-  }),
+  }
 
-  data: task(function* () {
+  @enqueueTask
+  *data() {
     const params = underscoreQueryParams(
       serializeParachuteQueryParams(this.allQueryParams, AnalysisQueryParams)
     );
 
-    const data = yield this.store.query("report", {
-      page: {
-        number: this._lastPage + 1,
-        size: 20,
-      },
-      ...params,
-      include: "task,task.project,task.project.customer,user",
-    });
+    if (this._canLoadMore) {
+      const data = yield this.store.query("report", {
+        page: {
+          number: this._lastPage + 1,
+          size: 20,
+        },
+        ...params,
+        include: "task,task.project,task.project.customer,user",
+      });
 
-    const assignees = yield this.fetchAssignees.perform(data);
+      const assignees = yield this.fetchAssignees.perform(data);
 
-    const mappedReports = data.map((report) => {
-      report.set(
-        "taskAssignees",
-        assignees.taskAssignees.filter(
-          (taskAssignee) =>
-            report.get("task.id") === taskAssignee.get("task.id")
-        )
-      );
-      report.set(
-        "projectAssignees",
-        assignees.projectAssignees.filter(
-          (projectAssignee) =>
-            report.get("task.project.id") === projectAssignee.get("project.id")
-        )
-      );
-      report.set(
-        "customerAssignees",
-        assignees.customerAssignees.filter(
-          (customerAssignee) =>
-            report.get("task.project.customer.id") ===
-            customerAssignee.get("customer.id")
-        )
-      );
-      return report;
-    });
+      const mappedReports = data.map((report) => {
+        report.set(
+          "taskAssignees",
+          assignees.taskAssignees.filter(
+            (taskAssignee) =>
+              report.get("task.id") === taskAssignee.get("task.id")
+          )
+        );
+        report.set(
+          "projectAssignees",
+          assignees.projectAssignees.filter(
+            (projectAssignee) =>
+              report.get("task.project.id") ===
+              projectAssignee.get("project.id")
+          )
+        );
+        report.set(
+          "customerAssignees",
+          assignees.customerAssignees.filter(
+            (customerAssignee) =>
+              report.get("task.project.customer.id") ===
+              customerAssignee.get("customer.id")
+          )
+        );
+        return report;
+      });
 
-    this.setProperties({
-      totalTime: parseDjangoDuration(data.get("meta.total-time")),
-      totalItems: parseInt(data.get("meta.pagination.count")),
-      _canLoadMore:
-        data.get("meta.pagination.pages") !== data.get("meta.pagination.page"),
-      _lastPage: data.get("meta.pagination.page"),
-    });
+      this.totalTime = parseDjangoDuration(data.get("meta.total-time"));
+      this.totalItems = parseInt(data.get("meta.pagination.count"));
+      this._canLoadMore =
+        data.get("meta.pagination.pages") !== data.get("meta.pagination.page");
+      this._lastPage = data.get("meta.pagination.page");
 
-    this._dataCache.pushObjects(mappedReports.toArray());
+      this._dataCache.pushObjects(mappedReports.toArray());
+    }
 
     return this._dataCache;
-  }).enqueue(),
+  }
 
-  fetchAssignees: task(function* (data) {
+  @task
+  *fetchAssignees(data) {
     const projectIds = data
       .map((report) => report.get("task.project.id"))
       .uniq()
@@ -368,117 +345,114 @@ const AnalysisController = Controller.extend(AnalysisQueryParams.Mixin, {
       : [];
 
     return { projectAssignees, taskAssignees, customerAssignees };
-  }),
+  }
 
-  loadNext: task(function* () {
-    this.set("_shouldLoadMore", true);
+  @dropTask
+  *loadNext() {
+    this._shouldLoadMore = true;
 
     while (this._shouldLoadMore && this._canLoadMore) {
       yield this.data.perform();
 
       yield rAF();
     }
-  }).drop(),
+  }
 
-  download: task({
-    url: null,
-    params: {},
+  @task
+  *download(notify, allQueryParams, jwt, { url = null, params = {} }) {
+    try {
+      this.url = url;
+      this.params = params;
 
-    *perform(notify, allQueryParams, jwt, { url, params }) {
-      try {
-        this.setProperties({ url, params });
+      const queryString = toQueryString(
+        underscoreQueryParams(
+          cleanParams({
+            ...params,
+            ...serializeParachuteQueryParams(
+              allQueryParams,
+              AnalysisQueryParams
+            ),
+          })
+        )
+      );
 
-        const queryString = toQueryString(
-          underscoreQueryParams(
-            cleanParams({
-              ...params,
-              ...serializeParachuteQueryParams(
-                allQueryParams,
-                AnalysisQueryParams
-              ),
-            })
-          )
-        );
-
-        const res = yield fetch(`${url}?${queryString}`, {
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          },
-        });
-
-        /* istanbul ignore next */
-        if (!res.ok) {
-          throw new Error(res.statusText);
-        }
-
-        const file = yield res.blob();
-
-        // filename      match filename, followed by
-        // [^;=\n]*      anything but a ;, a = or a newline
-        // =
-        // (             first capturing group
-        //     (['"])    either single or double quote, put it in capturing group 2
-        //     .*?       anything up until the first...
-        //     \2        matching quote (single if we found single, double if we find double)
-        // |
-        //     [^;\n]*   anything but a ; or a newline
-        // )
-        const filename =
-          res.headers.map["content-disposition"]
-            .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
-            .replace("filename=", "") || "Unknown file";
-
-        // ignore since we can't really test this..
-        /* istanbul ignore next */
-        if (!Ember.testing) {
-          download(file, filename, file.type);
-        }
-
-        notify.success("File was downloaded");
-      } catch (e) {
-        /* istanbul ignore next */
-        notify.error(
-          "Error while downloading, try again or try reducing results"
-        );
-      }
-    },
-  }),
-
-  actions: {
-    edit(ids = []) {
-      this.transitionToRoute("analysis.edit", {
-        queryParams: {
-          id: ids,
-          ...this.allQueryParams,
+      const res = yield fetch(`${url}?${queryString}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
         },
       });
-    },
 
-    selectRow(report) {
-      if (this.can.can("edit report", report) || this.canBill) {
-        const selected = this.selectedReportIds;
-
-        if (selected.includes(report.id)) {
-          this.set(
-            "selectedReportIds",
-            A([...selected.filter((id) => id !== report.id)])
-          );
-        } else {
-          this.set("selectedReportIds", A([...selected, report.id]));
-        }
+      if (!res.ok) {
+        throw new Error(res.statusText);
       }
-    },
 
-    setModelFilter(key, value) {
-      this.set(key, value && value.id);
-    },
+      const file = yield res.blob();
 
-    reset() {
-      this.resetQueryParams(
-        Object.keys(this.allQueryParams).filter((k) => k !== "ordering")
+      // filename      match filename, followed by
+      // [^;=\n]*      anything but a ;, a = or a newline
+      // =
+      // (             first capturing group
+      //     (['"])    either single or double quote, put it in capturing group 2
+      //     .*?       anything up until the first...
+      //     \2        matching quote (single if we found single, double if we find double)
+      // |
+      //     [^;\n]*   anything but a ; or a newline
+      // )
+      const filename =
+        res.headers.map["content-disposition"]
+          .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
+          .replace("filename=", "") || "Unknown file";
+
+      // ignore since we can't really test this..
+      if (macroCondition(isTesting())) {
+        return;
+      }
+      download(file, filename, file.type);
+
+      notify.success("File was downloaded");
+    } catch (e) {
+      /* istanbul ignore next */
+      notify.error(
+        "Error while downloading, try again or try reducing results"
       );
-    },
-  },
-});
+    }
+  }
 
-export default AnalysisController;
+  @action
+  edit(selectedIds = [], event) {
+    const ids = event ? selectedIds : [];
+    this.router.transitionTo("analysis.edit", {
+      queryParams: {
+        ...(ids && ids.length ? { id: ids } : {}),
+        ...this.allQueryParams,
+      },
+    });
+  }
+
+  @action
+  selectRow(report) {
+    if (this.can.can("edit report", report) || this.canBill) {
+      const selected = this.selectedReportIds;
+
+      if (selected.includes(report.id)) {
+        this.selectedReportIds = A([
+          ...selected.filter((id) => id !== report.id),
+        ]);
+      } else {
+        this.selectedReportIds = A([...selected, report.id]);
+      }
+    }
+  }
+
+  @action
+  setModelFilter(key, value) {
+    set(this, key, value && value.id);
+  }
+
+  @action
+  reset() {
+    this.resetQueryParams(
+      Object.keys(this.allQueryParams).filter((k) => k !== "ordering")
+    );
+  }
+}

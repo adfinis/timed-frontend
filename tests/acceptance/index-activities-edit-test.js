@@ -78,7 +78,7 @@ module("Acceptance | index activities edit", function (hooks) {
 
     await visit(`/edit/${id}`);
 
-    await click("[data-test-activity-edit-form-delete]");
+    // we can not click the delete button via test helper click since it would throw
 
     assert.dom("[data-test-activity-edit-form-delete]").isDisabled();
     assert.dom(`[data-test-activity-row-id="${id}"]`).exists();

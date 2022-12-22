@@ -1,5 +1,5 @@
-{{#if (or (media 'isMo') (media 'isXs') (media 'isSm'))}}
-  <NoMobileMessage/>
+{{#if (or (media "isMo") (media "isXs") (media "isSm"))}}
+  <NoMobileMessage />
 {{else}}
   <PagePermission>
     <h1>Analysis</h1>
@@ -7,201 +7,205 @@
     <TaskSelection
       @history={{false}}
       @archived={{true}}
-      @on-set-customer={{action 'setModelFilter' 'customer'}}
-      @on-set-project={{action 'setModelFilter' 'project'}}
-      @on-set-task={{action 'setModelFilter' 'task'}}
+      @on-set-customer={{fn this.setModelFilter "customer"}}
+      @on-set-project={{fn this.setModelFilter "project"}}
+      @on-set-task={{fn this.setModelFilter "task"}}
       @initial={{hash
-        customer      = this.selectedCustomer
-        project       = this.selectedProject
-        task          = this.selectedTask
+        customer=this.selectedCustomer
+        project=this.selectedProject
+        task=this.selectedTask
       }}
       as |t|
     >
       <FilterSidebar
         @appliedCount={{this.appliedFilters.length}}
-        @on-reset={{action (queue t.clear (action 'reset'))}}
+        @onReset={{(queue t.clear this.reset)}}
         as |fs|
       >
-        <fs.group @label='Task' @expanded={{true}}>
-          <fs.label>
-            Customer
-            <fs.filter data-test-filter-customer>
-              <t.customer />
-            </fs.filter>
-          </fs.label>
-          <fs.label>
-            Project
-            <fs.filter data-test-filter-project>
-              <t.project />
-            </fs.filter>
-          </fs.label>
-          <fs.label>
-            Task
-            <fs.filter data-test-filter-task>
-              <t.task />
-            </fs.filter>
-          </fs.label>
-        </fs.group>
-        <fs.group @label='Responsibility'>
-          <fs.label>
-            User
-            <fs.filter data-test-filter-user>
-              <UserSelection
-                @user={{this.selectedUser}}
-                @on-change={{action 'setModelFilter' 'user'}}
-                as |u|
-              >
-                <u.user />
-              </UserSelection>
-            </fs.filter>
-          </fs.label>
-          <fs.label>
-            Reviewer
-            <fs.filter data-test-filter-reviewer>
-              <UserSelection
-                @user={{this.selectedReviewer}}
-                @on-change={{action 'setModelFilter' 'reviewer'}}
-                @queryOptions={{hash is_reviewer=1}}
-                as |u|
-              >
-                <u.user @placeholder='Select reviewer...' />
-              </UserSelection>
-            </fs.filter>
-          </fs.label>
-        </fs.group>
-        <fs.group @label='Finances'>
-          <fs.label>
-            Billing type
-            <fs.filter
-              data-test-filter-billing-type
-              @type='select'
-              @selected={{this.billingType}}
-              @valuePath='id'
-              @labelPath='name'
-              @prompt='All billing types'
-              @options={{this.billingTypes}}
-              @on-change={{fn (mut this.billingType)}}
+        {{#if this.prefetchData.isRunning}}
+          <LoadingIcon />
+        {{else}}
+          <fs.group @label="Task" @expanded={{true}}>
+            <fs.label>
+              Customer
+              <fs.filter data-test-filter-customer>
+                <t.customer />
+              </fs.filter>
+            </fs.label>
+            <fs.label>
+              Project
+              <fs.filter data-test-filter-project>
+                <t.project />
+              </fs.filter>
+            </fs.label>
+            <fs.label>
+              Task
+              <fs.filter data-test-filter-task>
+                <t.task />
+              </fs.filter>
+            </fs.label>
+          </fs.group>
+          <fs.group @label="Responsibility">
+            <fs.label>
+              User
+              <fs.filter data-test-filter-user>
+                <UserSelection
+                  @user={{this.selectedUser}}
+                  @onChange={{fn this.setModelFilter "user"}}
+                  as |u|
+                >
+                  <u.user />
+                </UserSelection>
+              </fs.filter>
+            </fs.label>
+            <fs.label>
+              Reviewer
+              <fs.filter data-test-filter-reviewer>
+                <UserSelection
+                  @user={{this.selectedReviewer}}
+                  @onChange={{fn this.setModelFilter "reviewer"}}
+                  @queryOptions={{hash is_reviewer=1}}
+                  as |u|
+                >
+                  <u.user @placeholder="Select reviewer..." />
+                </UserSelection>
+              </fs.filter>
+            </fs.label>
+          </fs.group>
+          <fs.group @label="Finances">
+            <fs.label>
+              Billing type
+              <fs.filter
+                data-test-filter-billing-type
+                @type="select"
+                @selected={{this.billingType}}
+                @valuePath="id"
+                @labelPath="name"
+                @prompt="All billing types"
+                @options={{this.billingTypes}}
+                @onChange={{fn (mut this.billingType)}}
+              />
+            </fs.label>
+            <fs.label>
+              Cost center
+              <fs.filter
+                data-test-filter-cost-center
+                @type="select"
+                @selected={{this.costCenter}}
+                @valuePath="id"
+                @labelPath="name"
+                @prompt="All cost centers"
+                @options={{this.costCenters}}
+                @onChange={{fn (mut this.costCenter)}}
+              />
+            </fs.label>
+          </fs.group>
+          <fs.group @label="Time range">
+            <fs.label>
+              From
+              <fs.filter
+                data-test-filter-from-date
+                @type="date"
+                @selected={{this.fromDate}}
+                @onChange={{fn (mut this.fromDate)}}
+              />
+            </fs.label>
+            <fs.label>
+              To
+              <fs.filter
+                data-test-filter-to-date
+                @type="date"
+                @selected={{this.toDate}}
+                @onChange={{fn (mut this.toDate)}}
+              />
+            </fs.label>
+            <DateButtons
+              @onUpdateFromDate={{fn (mut this.fromDate)}}
+              @onUpdateToDate={{fn (mut this.toDate)}}
             />
-          </fs.label>
-          <fs.label>
-            Cost center
-            <fs.filter
-              data-test-filter-cost-center
-              @type='select'
-              @selected={{this.costCenter}}
-              @valuePath='id'
-              @labelPath='name'
-              @prompt='All cost centers'
-              @options={{this.costCenters}}
-              @on-change={{fn (mut this.costCenter)}}
-            />
-          </fs.label>
-        </fs.group>
-        <fs.group @label='Time range'>
-          <fs.label>
-            From
-            <fs.filter
-              data-test-filter-from-date
-              @type='date'
-              @selected={{this.fromDate}}
-              @on-change={{fn (mut this.fromDate)}}
-            />
-          </fs.label>
-          <fs.label>
-            To
-            <fs.filter
-              data-test-filter-to-date
-              @type='date'
-              @selected={{this.toDate}}
-              @on-change={{fn (mut this.toDate)}}
-            />
-          </fs.label>
-          <DateButtons
-            @onUpdateFromDate={{fn (mut this.fromDate)}}
-            @onUpdateToDate={{fn (mut this.toDate)}}
-          />
-        </fs.group>
-        <fs.group @label='State'>
-          <fs.label>
-            Review
-            <fs.filter
-              data-test-filter-review
-              @type='button'
-              @selected={{this.review}}
-              @valuePath='value'
-              @labelPath='label'
-              @options={{array
-                (hash label='All' value='')
-                (hash label='Needed' value='1')
-                (hash label='Not needed' value='0')
-              }}
-              @on-change={{fn (mut this.review)}}
-            />
-          </fs.label>
-          <fs.label>
-            Billability
-            <fs.filter
-              data-test-filter-not-billable
-              @type='button'
-              @selected={{this.notBillable}}
-              @valuePath='value'
-              @labelPath='label'
-              @options={{array
-                (hash label='All' value='')
-                (hash label='Billable' value='0')
-                (hash label='Not billable' value='1')
-              }}
-              @on-change={{fn (mut this.notBillable)}}
-            />
-          </fs.label>
-          <fs.label>
-            Verified
-            <fs.filter
-              data-test-filter-verified
-              @type='button'
-              @selected={{this.verified}}
-              @valuePath='value'
-              @labelPath='label'
-              @options={{array
-                (hash label='All' value='')
-                (hash label='Verified' value='1')
-                (hash label='Not verified' value='0')
-              }}
-              @on-change={{fn (mut this.verified)}}
-            />
-          </fs.label>
-          <fs.label>
-            Billed
-            <fs.filter
-              data-test-filter-billed
-              @type='button'
-              @selected={{this.billed}}
-              @valuePath='value'
-              @labelPath='label'
-              @options={{array
-                (hash label='All' value='')
-                (hash label='Billed' value='1')
-                (hash label='Not Billed' value='0')
-              }}
-              @on-change={{fn (mut this.billed)}}
-            />
-          </fs.label>
-          <fs.label>
-            Editable
-            <fs.filter
-              data-test-filter-editable
-              @type='button'
-              @selected={{this.editable}}
-              @valuePath='value'
-              @labelPath='label'
-              @options={{array
-                (hash label='All' value='')
-                (hash label='Editable' value='1')
-              }}
-              @on-change={{fn (mut this.editable)}}
-            />
-          </fs.label>
-        </fs.group>
+          </fs.group>
+          <fs.group @label="State">
+            <fs.label>
+              Review
+              <fs.filter
+                data-test-filter-review
+                @type="button"
+                @selected={{this.review}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Needed" value="1")
+                  (hash label="Not needed" value="0")
+                }}
+                @onChange={{fn (mut this.review)}}
+              />
+            </fs.label>
+            <fs.label>
+              Billability
+              <fs.filter
+                data-test-filter-not-billable
+                @type="button"
+                @selected={{this.notBillable}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Billable" value="0")
+                  (hash label="Not billable" value="1")
+                }}
+                @onChange={{fn (mut this.notBillable)}}
+              />
+            </fs.label>
+            <fs.label>
+              Verified
+              <fs.filter
+                data-test-filter-verified
+                @type="button"
+                @selected={{this.verified}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Verified" value="1")
+                  (hash label="Not verified" value="0")
+                }}
+                @onChange={{fn (mut this.verified)}}
+              />
+            </fs.label>
+            <fs.label>
+              Billed
+              <fs.filter
+                data-test-filter-billed
+                @type="button"
+                @selected={{this.billed}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Billed" value="1")
+                  (hash label="Not Billed" value="0")
+                }}
+                @onChange={{fn (mut this.billed)}}
+              />
+            </fs.label>
+            <fs.label>
+              Editable
+              <fs.filter
+                data-test-filter-editable
+                @type="button"
+                @selected={{this.editable}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Editable" value="1")
+                }}
+                @onChange={{fn (mut this.editable)}}
+              />
+            </fs.label>
+          </fs.group>
+        {{/if}}
       </FilterSidebar>
     </TaskSelection>
 
@@ -221,15 +225,23 @@
                   class="btn btn-success"
                   {{on "click" (fn this.edit this.selectedReportIds)}}
                 >
-                  Edit {{this.selectedReportIds.length}} selected report{{if (not (eq this.selectedReportIds.length 1)) 's'}}
+                  Edit
+                  {{this.selectedReportIds.length}}
+                  selected report{{if
+                    (not (eq this.selectedReportIds.length 1))
+                    "s"
+                  }}
                 </button>
               {{/if}}
               <button
                 data-test-edit-all
                 type="button"
                 class="btn"
-                title={{unless this.editable 'Please enable the "editable" filter to modify all entries at once.'}}
-                disabled={{unless this.editable 'true'}}
+                title={{unless
+                  this.editable
+                  'Please enable the "editable" filter to modify all entries at once.'
+                }}
+                disabled={{unless this.editable "true"}}
                 {{on "click" this.edit}}
               >
                 Edit all
@@ -238,103 +250,184 @@
 
             <table class="table table--striped table--analysis">
               <colgroup>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
               </colgroup>
               <thead>
                 <tr>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='user__username'>User</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='date'>Date</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='duration'>Duration</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='task__project__customer__name'>Customer</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='task__project__name'>Project</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='task__name'>Task</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='comment'>Comment</SortHeader>
-                  <SortHeader @update={{fn (mut this.ordering)}} @current={{this.ordering}} @by='verified_by__username'>Verified by</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="user__username"
+                  >User</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="date"
+                  >Date</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="duration"
+                  >Duration</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="task__project__customer__name"
+                  >Customer</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="task__project__name"
+                  >Project</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="task__name"
+                  >Task</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="comment"
+                  >Comment</SortHeader>
+                  <SortHeader
+                    @update={{fn (mut this.ordering)}}
+                    @current={{this.ordering}}
+                    @by="verified_by__username"
+                  >Verified by</SortHeader>
                   <th>Review</th>
                   <th>Not billable</th>
                   <th>Billed</th>
                 </tr>
               </thead>
             </table>
-              <EmberScrollable @class="analysis-scrollable-container">
-                <table class="table table--striped table--analysis">
-                  <colgroup>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                    <col>
-                  </colgroup>
-                  <tbody>
-                    {{#each reports as |report|}}
-                      <tr class="{{if (contains report.id this.selectedReportIds) 'selected'}} {{if (or this.canBill (can 'edit report' report)) 'pointer'}}" {{action 'selectRow' report}}>
-                        <td>{{report.user.username}}</td>
-                        <td>{{moment-format report.date 'DD.MM.YYYY'}}</td>
-                        <td>{{format-duration report.duration false}}</td>
-                        <td>{{report.task.project.customer.name}}</td>
-                        <td>{{report.task.project.name}}</td>
-                        <td>{{report.task.name}}</td>
-                        <td><span title="{{report.comment}}">{{report.comment}}</span></td>
-                        <td>{{if report.verifiedBy report.verifiedBy.username}}</td>
-                        <td><SyCheckmark @checked={{report.review}} /></td>
-                        <td><SyCheckmark @checked={{report.notBillable}} /></td>
-                        <td><SyCheckmark @checked={{report.billed}} /></td>
-                      </tr>
-                    {{/each}}
-                    {{#if this._canLoadMore}}
-                      <tr>
-                        <td colspan="11" class="text-center">
-                          <InViewport @rootSelector="analysis-scrollable-container" @on-enter-viewport={{perform this.loadNext}} @on-exit-viewport={{action (mut this._shouldLoadMore) false}}>
-                            Loading<span class="loading-dots"><i>.</i><i>.</i><i>.</i></span>
-                          </InViewport>
-                        </td>
-                      </tr>
-                    {{/if}}
-                  </tbody>
-                </table>
-              </EmberScrollable>
+            <EmberScrollable @class="analysis-scrollable-container">
+              <table class="table table--striped table--analysis">
+                <colgroup>
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                  <col />
+                </colgroup>
+                <tbody>
+                  {{#each reports as |report|}}
+                    {{! template-lint-disable}}
+                    <tr
+                      class="{{if
+                          (includes report.id this.selectedReportIds)
+                          'selected'
+                        }}
+                        {{if
+                          (or this.canBill (can 'edit report' report))
+                          'pointer'
+                        }}"
+                      {{on "click" (fn this.selectRow report)}}
+                    >
+                      <td>{{report.user.username}}</td>
+                      <td>{{moment-format report.date "DD.MM.YYYY"}}</td>
+                      <td>{{format-duration report.duration false}}</td>
+                      <td>{{report.task.project.customer.name}}</td>
+                      <td>{{report.task.project.name}}</td>
+                      <td>{{report.task.name}}</td>
+                      <td><span
+                          title="{{report.comment}}"
+                        >{{report.comment}}</span></td>
+                      <td>{{if
+                          report.verifiedBy
+                          report.verifiedBy.username
+                        }}</td>
+                      <td><SyCheckmark @checked={{report.review}} /></td>
+                      <td><SyCheckmark @checked={{report.notBillable}} /></td>
+                      <td><SyCheckmark @checked={{report.billed}} /></td>
+                    </tr>
+                  {{/each}}
+                  {{#if this._canLoadMore}}
+                    <tr>
+                      <td colspan="11" class="text-center">
+                        <InViewport
+                          @rootSelector="analysis-scrollable-container"
+                          @on-enter-viewport={{perform this.loadNext}}
+                          @on-exit-viewport={{fn
+                            (mut this._shouldLoadMore)
+                            false
+                          }}
+                        >
+                          Loading<span class="loading-dots"><i>.</i><i>.</i><i
+                            >.</i></span>
+                        </InViewport>
+                      </td>
+                    </tr>
+                  {{/if}}
+                </tbody>
+              </table>
+            </EmberScrollable>
             <table class="table table--striped table--analysis">
               <colgroup>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
-                <col>
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
+                <col />
               </colgroup>
               <tfoot>
                 <tr>
                   <td colspan="2"><strong>Total:</strong></td>
-                  <td colspan="2"><strong class="total">{{format-duration this.totalTime false}}</strong></td>
-                  <td colspan="6" class="text-right"><em>Displaying {{this.reports.length}} of {{this.totalItems}} reports</em></td>
+                  <td colspan="2"><strong class="total">{{format-duration
+                        this.totalTime
+                        false
+                      }}</strong></td>
+                  <td colspan="6" class="text-right"><em>Displaying
+                      {{this.reports.length}}
+                      of
+                      {{this.totalItems}}
+                      reports</em></td>
                 </tr>
               </tfoot>
             </table>
             <div class="export-buttons">
               {{#each this.exportLinks as |link|}}
-                <button {{on "click" (fn (perform this.download) this.notify this.allQueryParams this.jwt link)}}
+                <button
+                  {{on
+                    "click"
+                    (fn
+                      (perform this.download)
+                      this.notify
+                      this.allQueryParams
+                      this.jwt
+                      link
+                    )
+                  }}
                   type="button"
                   data-download-count="{{this.download.performCount}}"
-                  class="btn btn-primary {{if (and (eq this.download.last.url link.url) (eq this.download.last.params link.params) this.download.isRunning) 'loading'}}"
+                  class="btn btn-primary
+                    {{if
+                      (and
+                        (eq this.download.last.url link.url)
+                        (eq this.download.last.params link.params)
+                        this.download.isRunning
+                      )
+                      'loading'
+                    }}"
                   disabled={{this.exportLimitExceeded}}
                   title={{if this.exportLimitExceeded this.exportLimitMessage}}
                 >

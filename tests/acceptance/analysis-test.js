@@ -213,7 +213,7 @@ module("Acceptance | analysis", function (hooks) {
 
     await visit(`/analysis?user=${this.user.id}`);
 
-    await find(".table--analysis tbody tr:last-child").scrollIntoView();
+    find(".table--analysis tbody tr:last-child").scrollIntoView();
     await click("tbody > tr:last-child");
 
     assert.notOk(find("tbody > tr:last-child.selected"));
@@ -237,7 +237,6 @@ module("Acceptance | analysis", function (hooks) {
       ".ember-power-select-option",
       0
     );
-
     await click("tbody > tr:nth-child(1)");
     await click("tbody > tr:nth-child(2)");
     await click("[data-test-edit-selected]");
@@ -245,19 +244,19 @@ module("Acceptance | analysis", function (hooks) {
     assert.ok(currentURL().includes("id=1%2C2"));
 
     assert
-      .dom("[data-test-customer] div > div")
+      .dom("[data-test-customer] .ember-power-select-trigger")
       .hasAttribute("aria-disabled", "true");
     assert
-      .dom("[data-test-project] div > div")
+      .dom("[data-test-project] .ember-power-select-trigger")
       .hasAttribute("aria-disabled", "true");
     assert
-      .dom("[data-test-task] div > div")
+      .dom("[data-test-task] .ember-power-select-trigger")
       .hasAttribute("aria-disabled", "true");
 
-    assert.dom("[data-test-comment] input").isDisabled();
-    assert.dom("[data-test-not-billable] div > input").isDisabled();
-    assert.dom("[data-test-review] div > input").isDisabled();
-    assert.dom("[data-test-billed] div > input").isNotDisabled();
-    assert.dom("[data-test-verified] div > input").isDisabled();
+    assert.dom("[data-test-comment]").isDisabled();
+    assert.dom("[data-test-not-billable] input").isDisabled();
+    assert.dom("[data-test-review] input").isDisabled();
+    assert.dom("[data-test-billed] input").isNotDisabled();
+    assert.dom("[data-test-verified] input").isDisabled();
   });
 });

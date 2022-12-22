@@ -7,5 +7,6 @@ export const cleanParams = (params) =>
 
 export const toQueryString = (params) =>
   Object.keys(params)
+    .filter((key) => Boolean(params[key]))
     .map((key) => `${key}=${params[key]}`)
     .join("&");

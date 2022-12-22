@@ -1,6 +1,7 @@
-<BasicDropdown @horizontalPosition='auto-right' as |DropDown| >
-  <DropDown.Trigger tabindex="-1">
+<BasicDropdown @horizontalPosition="auto-right" as |DropDown|>
+  <DropDown.Trigger @tabindex="-1">
     <input
+      autocomplete="off"
       id={{this.uniqueId}}
       name="date"
       type="text"
@@ -8,20 +9,19 @@
       pattern="\d{1,2}\.\d{1,2}\.\d{2,4}"
       value={{this.displayValue}}
       placeholder={{this.placeholder}}
-      {{on "focus" (fn this.handleFocus DropDown)}}
       {{on "blur" (fn this.handleBlur DropDown)}}
       {{on "change" this.handleChange}}
       {{on "input" this.checkValidity}}
-    >
+    />
   </DropDown.Trigger>
 
   <DropDown.Content>
     <SyCalendar
       @center={{this.center}}
       @selected={{@value}}
-      class='sy-datepicker'
+      class="sy-datepicker"
       @onCenterChange={{this.updateCenter}}
-      @onSelect={{this.updateSelect}}
+      @onSelect={{(fn this.updateSelect DropDown)}}
     />
   </DropDown.Content>
 </BasicDropdown>
