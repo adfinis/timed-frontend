@@ -131,6 +131,22 @@ export const AnalysisQueryParams = new QueryParams({
 export default class AnalysisController extends Controller.extend(
   AnalysisQueryParams.Mixin
 ) {
+  exportLinks = config.APP.REPORTEXPORTS;
+
+  exportLimit = config.APP.EXPORT_LIMIT;
+
+  @service session;
+  @service store;
+  @service router;
+  @service notify;
+  @service can;
+
+  @tracked _scrollOffset = 0;
+  @tracked _shouldLoadMore = false;
+  @tracked _canLoadMore = true;
+  @tracked _lastPage = 0;
+  @tracked selectedReportIds;
+
   get billingTypes() {
     return this.store.findAll("billing-type");
   }
@@ -172,22 +188,6 @@ export default class AnalysisController extends Controller.extend(
       this.session.data.user.isAccountant || this.session.data.user.isSuperuser
     );
   }
-
-  exportLinks = config.APP.REPORTEXPORTS;
-
-  exportLimit = config.APP.EXPORT_LIMIT;
-
-  @service session;
-  @service store;
-  @service router;
-  @service notify;
-  @service can;
-
-  @tracked _scrollOffset = 0;
-  @tracked _shouldLoadMore = false;
-  @tracked _canLoadMore = true;
-  @tracked _lastPage = 0;
-  @tracked selectedReportIds;
 
   setup() {
     this._dataCache = A();
@@ -259,7 +259,7 @@ export default class AnalysisController extends Controller.extend(
     if (this._canLoadMore) {
       const data = yield this.store.query("report", {
         page: {
-          number: this._canLoadMore ? this._lastPage + 1 : this._lastPage,
+          number: this._lastPage + 1,
           size: 20,
         },
         ...params,
@@ -411,6 +411,7 @@ export default class AnalysisController extends Controller.extend(
 
       notify.success("File was downloaded");
     } catch (e) {
+      /* istanbul ignore next */
       notify.error(
         "Error while downloading, try again or try reducing results"
       );

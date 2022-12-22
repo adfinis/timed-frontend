@@ -16,7 +16,7 @@
     <SyDatepicker
       @value={{@selected}}
       @onChange={{optional @onChange}}
-      @placeholder={{(or @placeholder)}}
+      @placeholder={{@placeholder}}
       @name={{(or @name "date")}}
     />
   {{else if (eq @type "search")}}
