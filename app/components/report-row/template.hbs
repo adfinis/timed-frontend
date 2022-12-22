@@ -1,5 +1,5 @@
 {{#let (changeset @report this.ReportValidations) as |cs|}}
-  <form class="form-list-row" title={{this.title}}>
+  <form ...attributes class="form-list-row" title={{this.title}}>
     <TaskSelection
       @disabled={{not this.editable}}
       @task={{cs.task}}

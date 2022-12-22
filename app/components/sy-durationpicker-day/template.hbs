@@ -1,5 +1,6 @@
 <input
   aria-label="day picker"
+  name="duration"
   type="text"
   class="form-control"
   pattern={{this.pattern}}
@@ -7,6 +8,6 @@
   maxlength={{this.maxlength}}
   placeholder={{this.placeholder}}
   autocomplete="off"
-  {{on "keydown" this.handleKeyPress}}
+  {{on "keyup" this.handleKeyPress}}
   {{on "focusout" (optional @onFocusOut)}}
 />

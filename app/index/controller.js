@@ -42,25 +42,25 @@ export default class IndexController extends Controller {
   AbsenceValidations = AbsenceValidations;
   MultipleAbsenceValidations = MultipleAbsenceValidations;
 
+  constructor(...args) {
+    super(...args);
+    // this kicks off the activity sum loop
+    scheduleOnce("afterRender", this, this._activitySumTask.perform);
+  }
+
   get _allActivities() {
     return this.store.peekAll("activity");
   }
 
   get _activities() {
-    const activitiesThen = this._allActivities.filter((a) => {
+    return this._allActivities.filter((a) => {
       return (
         a.get("date") &&
         a.get("date").isSame(this.date, "day") &&
-        a.get("user.id") === this.user.id &&
+        a.get("user.id") === this.user?.id &&
         !a.get("isDeleted")
       );
     });
-
-    if (activitiesThen.get("length")) {
-      scheduleOnce("afterRender", this, this._activitySumTask.perform);
-    }
-
-    return activitiesThen;
   }
 
   get activitySum() {
@@ -100,7 +100,7 @@ export default class IndexController extends Controller {
    * @private
    */
   _activitySum() {
-    // Do not trigger updates whne there is no active activity, but let it run once to
+    // Do not trigger updates when there is no active activity, but let it run once to
     // null the duration.
     if (
       !this.tracking.hasActiveActivity &&
@@ -139,7 +139,7 @@ export default class IndexController extends Controller {
       this._activitySum();
 
       if (macroCondition(isTesting())) {
-        return;
+        break;
       }
 
       yield timeout(1000);
@@ -167,7 +167,7 @@ export default class IndexController extends Controller {
       return (
         attendance.get("date") &&
         attendance.get("date").isSame(this.date, "day") &&
-        attendance.get("user.id") === this.user.id &&
+        attendance.get("user.id") === this.user?.id &&
         !attendance.get("isDeleted")
       );
     });
@@ -215,7 +215,7 @@ export default class IndexController extends Controller {
     return this._allReports.filter((report) => {
       return (
         report.date.isSame(this.date, "day") &&
-        report.get("user.id") === this.user.id &&
+        report.get("user.id") === this.user?.id &&
         !report.isNew &&
         !report.isDeleted
       );
@@ -232,7 +232,7 @@ export default class IndexController extends Controller {
     return this._allAbsences.filter((absence) => {
       return (
         absence.date.isSame(this.date, "day") &&
-        absence.get("user.id") === this.user.id &&
+        absence.get("user.id") === this.user?.id &&
         !absence.isNew &&
         !absence.isDeleted
       );
@@ -438,7 +438,7 @@ export default class IndexController extends Controller {
     const params = {
       from_date: from.format("YYYY-MM-DD"),
       to_date: to.format("YYYY-MM-DD"),
-      user: this.user.id,
+      user: this.user?.id,
     };
 
     const absences = yield this.store.query("absence", params);

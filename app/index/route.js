@@ -45,7 +45,7 @@ export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
    * @public
    */
   model({ day }) {
-    return moment(day, DATE_FORMAT);
+    return day ? moment(day, DATE_FORMAT) : moment(DATE_FORMAT);
   }
 
   /**

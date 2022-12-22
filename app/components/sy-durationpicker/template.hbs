@@ -1,5 +1,6 @@
 <input
   aria-label="duration picker"
+  name="duration"
   type="text"
   class="form-control"
   pattern={{this.pattern}}
@@ -8,6 +9,6 @@
   placeholder={{this.placeholder}}
   autocomplete="off"
   {{on "change" this.change}}
-  {{on "keydown" this.handleKeyPress}}
+  {{on "keyup" this.handleKeyPress}}
   {{on "focusout" (optional @onFocusOut)}}
 />
