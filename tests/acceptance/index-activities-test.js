@@ -299,7 +299,7 @@ module("Acceptance | index activities", function (hooks) {
     assert.dom("[data-test-report-row]").exists({ count: 7 });
 
     assert
-      .dom(`${`[data-test-report-row-id="${id}"]`} [name=duration]`)
+      .dom(`${`[data-test-report-row-id="${id}"]`} [name=duration-day]`)
       .hasValue(formatDuration(duration, false));
     //TODO: The expected ID of the generated activity is incorrect and leads to this test failing.
     // The created activity should have the ID: "6" or "7" but it will internally get the ID "1"
@@ -330,7 +330,7 @@ module("Acceptance | index activities", function (hooks) {
     assert.dom("[data-test-report-row]").exists({ count: 7 });
 
     assert
-      .dom(`[data-test-report-row-id="6"] [name=duration]`)
+      .dom(`[data-test-report-row-id="6"] [name=duration-day]`)
       .hasValue(formatDuration(duration, false));
   });
 });
