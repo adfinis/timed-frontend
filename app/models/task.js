@@ -4,6 +4,7 @@
  * @public
  */
 import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
+import { get } from "@ember/object";
 
 /**
  * The task model
@@ -73,8 +74,8 @@ export default class Task extends Model {
 
   get longName() {
     const taskName = this.name;
-    const projectName = this.get("project.name");
-    const customerName = this.get("project.customer.name");
+    const projectName = get(this, "project.name");
+    const customerName = get(this, "project.customer.name");
 
     return `${customerName} > ${projectName} > ${taskName}`;
   }

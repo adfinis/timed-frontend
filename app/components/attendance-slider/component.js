@@ -4,13 +4,13 @@
  * @public
  */
 
-import Component from "@glimmer/component";
 import { htmlSafe } from "@ember/string";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { dropTask } from "ember-concurrency";
 import { padStartTpl } from "ember-pad/utils/pad";
 import moment from "moment";
 import formatDuration from "timed/utils/format-duration";
-import { tracked } from "@glimmer/tracking";
-import { dropTask } from "ember-concurrency";
 
 const padTpl2 = padStartTpl(2);
 

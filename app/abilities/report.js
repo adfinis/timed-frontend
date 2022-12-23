@@ -3,6 +3,7 @@ import { Ability } from "ember-can";
 
 export default Ability.extend({
   canEdit: computed(
+    // eslint-disable-next-line ember/use-brace-expansion
     "model.user.{id,supervisors}",
     "model.verifiedBy.id",
     "model.{billed,customerAssignees,projectAssignees,taskAssignees}",

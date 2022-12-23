@@ -1,11 +1,10 @@
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { restartableTask } from "ember-concurrency";
-
-import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/user-selection";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
 import customOptionTemplate from "timed/components/optimized-power-select/custom-options/user-option";
+import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/user-selection";
 
 export default class UserSelection extends Component {
   selectedTemplate = customSelectedTemplate;

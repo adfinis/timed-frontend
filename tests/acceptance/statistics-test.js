@@ -1,11 +1,4 @@
-import {
-  click,
-  fillIn,
-  currentURL,
-  visit,
-  find,
-  settled,
-} from "@ember/test-helpers";
+import { click, fillIn, currentURL, visit, find } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
