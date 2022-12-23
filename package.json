@@ -13,9 +13,10 @@
     "build": "ember build --environment=production",
     "lint": "npm-run-all --aggregate-output --continue-on-error --parallel \"lint:!(fix)\"",
     "lint:fix": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*:fix",
-    "lint:hbs": "ember-template-lint .",
+    "lint:hbs": "ember-template-lint . --config-path .template-lintrc-ci.js",
     "lint:hbs:fix": "ember-template-lint . --fix",
-    "lint:js": "eslint . --cache",
+    "lint:js": "eslint --config .eslintrc.js .",
+    "lint:js:fix": "eslint --config .eslintrc.js . --fix",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
     "lint:js:fix": "eslint . --fix",
@@ -29,7 +30,7 @@
     ]
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
+    "*.js": "eslint --config .eslintrc.js --cache --fix",
     "*.hbs": "ember-template-lint --fix",
     "*.{scss,graphql,json,md,yml}": "prettier --write"
   },
