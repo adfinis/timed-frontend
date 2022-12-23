@@ -41,11 +41,20 @@ export default class TrackingService extends Service {
    * This is used to prevent doubled time accumulation in task sum displays.
    */
   @tracked generatingReports = false;
+  @tracked _date;
 
   constructor(...args) {
     super(...args);
 
     this.fetchActiveActivity.perform();
+  }
+
+  get date() {
+    return this._date ?? moment();
+  }
+
+  set date(date) {
+    this._date = date;
   }
 
   /**

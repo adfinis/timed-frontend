@@ -1,16 +1,16 @@
-import Component from "@ember/component";
-import { computed } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
+
+import Component from "@glimmer/component";
 import { htmlSafe } from "@ember/string";
-import classic from "ember-classic-decorator";
-import { task } from "ember-concurrency";
 import { padStartTpl } from "ember-pad/utils/pad";
 import moment from "moment";
 import formatDuration from "timed/utils/format-duration";
+import { tracked } from "@glimmer/tracking";
+import { dropTask } from "ember-concurrency";
 
 const padTpl2 = padStartTpl(2);
 
@@ -42,7 +42,6 @@ const Formatter = {
  * @extends Ember.Component
  * @public
  */
-@classic
 export default class AttendanceSlider extends Component {
   /**
    * The attendance
@@ -50,7 +49,8 @@ export default class AttendanceSlider extends Component {
    * @property {Attendance} attendance
    * @public
    */
-  attendance = null;
+  @tracked values;
+  @tracked tooltips;
 
   /**
    * Initialize the component
@@ -58,11 +58,11 @@ export default class AttendanceSlider extends Component {
    * @method init
    * @public
    */
-  init(...args) {
-    super.init(...args);
+  constructor(...args) {
+    super(...args);
 
-    this.set("tooltips", [Formatter, Formatter]);
-    this.set("values", this.start);
+    this.tooltips = [Formatter, Formatter];
+    this.values = this.start;
   }
 
   /**
@@ -71,15 +71,14 @@ export default class AttendanceSlider extends Component {
    * @property {Number[]} start
    * @public
    */
-  @computed("attendance.{from,to}")
   get start() {
     return [
-      this.get("attendance.from").hour() * 60 +
-        this.get("attendance.from").minute(),
+      this.args.attendance.from.hour() * 60 +
+        this.args.attendance.from.minute(),
       // If the end time is 00:00 we need to clarify that this would be 00:00
       // of the next day
-      this.get("attendance.to").hour() * 60 +
-        this.get("attendance.to").minute() || 24 * 60,
+      this.args.attendance.to.hour() * 60 + this.args.attendance.to.minute() ||
+        24 * 60,
     ];
   }
 
@@ -89,7 +88,6 @@ export default class AttendanceSlider extends Component {
    * @property {String} duration
    * @public
    */
-  @computed("values")
   get duration() {
     const from = moment({ hour: 0 }).minute(this.values[0]);
     const to = moment({ hour: 0 }).minute(this.values[1]);
@@ -103,7 +101,6 @@ export default class AttendanceSlider extends Component {
    * @property {String[]} labels
    * @public
    */
-  @computed
   get labels() {
     const labels = [];
 
@@ -130,8 +127,9 @@ export default class AttendanceSlider extends Component {
    * @param {Number[]} values The time in minutes
    * @public
    */
-  @(task(function* ([fromMin, toMin]) {
-    const attendance = this.attendance;
+  @dropTask
+  *save([fromMin, toMin]) {
+    const attendance = this.args.attendance;
 
     attendance.set(
       "from",
@@ -139,9 +137,8 @@ export default class AttendanceSlider extends Component {
     );
     attendance.set("to", moment(attendance.get("to")).hour(0).minute(toMin));
 
-    yield this["on-save"](attendance);
-  }).drop())
-  save;
+    yield this.args.onSave(attendance);
+  }
 
   /**
    * Delete the attendance
@@ -149,8 +146,8 @@ export default class AttendanceSlider extends Component {
    * @method delete
    * @public
    */
-  @(task(function* () {
-    yield this["on-delete"](this.attendance);
-  }).drop())
-  delete;
+  @dropTask
+  *delete() {
+    yield this.args.onDelete(this.args.attendance);
+  }
 }

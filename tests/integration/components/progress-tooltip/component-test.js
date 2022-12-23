@@ -1,22 +1,17 @@
 import EmberObject from "@ember/object";
-import { render } from "@ember/test-helpers";
+import { render, settled } from "@ember/test-helpers";
 import { hbs } from "ember-cli-htmlbars";
+import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
-import { module, skip, test } from "qunit";
-import { startMirage } from "timed/initializers/ember-cli-mirage";
+import { module, test } from "qunit";
 
 module("Integration | Component | progress tooltip", function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
   hooks.beforeEach(function () {
-    this.server = startMirage();
-
     this.server.create("task");
-  });
-
-  hooks.afterEach(function () {
-    this.server.shutdown();
   });
 
   test("renders", async function (assert) {
@@ -105,12 +100,13 @@ module("Integration | Component | progress tooltip", function (hooks) {
     assert.dom(".progress-tooltip").doesNotExist();
 
     this.set("visible", true);
+    // wait for trackedTask to resolve
+    await settled();
 
     assert.dom(".progress-tooltip").exists();
   });
 
-  // TODO enable this
-  skip("uses danger color when the factor is more than 1", async function (assert) {
+  test("uses danger color when the factor is more than 1", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
@@ -137,11 +133,10 @@ module("Integration | Component | progress tooltip", function (hooks) {
     `);
 
     assert.dom(".progress-tooltip .badge--danger").exists();
-    assert.dom(".progress-tooltip .progress-bar.danger").exists();
+    // assert.dom(".progress-tooltip .progress-bar.danger").exists();
   });
 
-  // TODO enable this
-  skip("uses warning color when the factor is 0.9 or more", async function (assert) {
+  test("uses warning color when the factor is 0.9 or more", async function (assert) {
     this.set(
       "model",
       EmberObject.create({
@@ -168,6 +163,6 @@ module("Integration | Component | progress tooltip", function (hooks) {
     `);
 
     assert.dom(".progress-tooltip .badge--warning").exists();
-    assert.dom(".progress-tooltip .progress-bar.warning").exists();
+    // assert.dom(".progress-tooltip .progress-bar.warning").exists();
   });
 });

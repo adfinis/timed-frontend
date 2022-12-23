@@ -1,6 +1,7 @@
 import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import { scheduleOnce } from "@ember/runloop";
+import { isTesting, macroCondition } from "@embroider/macros";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import moment from "moment";
@@ -27,6 +28,13 @@ export default class SyDatepicker extends Component {
     return this.args.value && this.args.value.isValid()
       ? this.args.value.format(DISPLAY_FORMAT)
       : null;
+  }
+
+  @action
+  handleFocus(dd) {
+    if (macroCondition(isTesting())) {
+      dd.actions.open();
+    }
   }
 
   @action
@@ -82,5 +90,12 @@ export default class SyDatepicker extends Component {
     (dd.actions.close ?? (() => {}))();
     this.args.onChange(moment);
     this.checkValidity();
+  }
+
+  @action
+  clear(dd) {
+    dd.actions.close();
+
+    this.args.onChange(null);
   }
 }

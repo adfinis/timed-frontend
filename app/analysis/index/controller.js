@@ -147,6 +147,12 @@ export default class AnalysisController extends Controller.extend(
   @tracked _lastPage = 0;
   @tracked selectedReportIds;
 
+  @tracked user;
+  @tracked reviewer;
+  @tracked customer;
+  @tracked project;
+  @tracked task;
+
   get billingTypes() {
     return this.store.findAll("billing-type");
   }

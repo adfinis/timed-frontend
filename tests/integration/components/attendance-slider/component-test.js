@@ -17,7 +17,7 @@ module("Integration | Component | attendance slider", function (hooks) {
     this.set("attendance", ATTENDANCE);
 
     await render(hbs`
-      {{attendance-slider attendance=attendance}}
+      <AttendanceSlider @attendance={{this.attendance}} />
     `);
 
     assert.dom(".noUi-connect").exists();
@@ -32,10 +32,10 @@ module("Integration | Component | attendance slider", function (hooks) {
     });
 
     await render(hbs`
-      {{attendance-slider
-        attendance = attendance
-        on-delete  = deleteAction
-      }}
+      <AttendanceSlider
+        @attendance = {{this.attendance}}
+        @onDelete  = {{this.deleteAction}}
+      />
     `);
 
     await click(".fa-trash");
@@ -51,7 +51,7 @@ module("Integration | Component | attendance slider", function (hooks) {
     );
 
     await render(hbs`
-      {{attendance-slider attendance=attendance}}
+      <AttendanceSlider @attendance={{this.attendance}} />
     `);
 
     assert.dom("span").hasText("24:00");

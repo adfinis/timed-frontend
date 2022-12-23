@@ -148,7 +148,7 @@ module("Acceptance | index reports", function (hooks) {
     await visit("/reports");
 
     await click("[data-test-edit-absence]");
-    assert.dom("[data-test-edit-absence-form] textarea").hasText(comment);
+    assert.dom("[data-test-edit-absence-form] textarea").hasValue(comment);
     await click("[data-test-edit-absence-form] button.close");
 
     await fillIn(

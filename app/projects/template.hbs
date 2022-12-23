@@ -43,7 +43,10 @@
         </span>
         <span class="header-right">
           <button
-            class="btn btn-primary" data-test-add-task type="button" {{action (perform this.createTask)}}
+            class="btn btn-primary"
+            data-test-add-task
+            type="button"
+            {{on "click" (perform this.createTask)}}
           >Add Task</button>
         </span>
       </h3>
@@ -65,7 +68,8 @@
               {{#each this.tasks as |task|}}
                 <tr
                   class="pointer {{if (eq this.selectedTask task) 'selected'}}"
-                  {{action (mut this.selectedTask) task}}
+                  {{! template-lint-disable }}
+                  {{on "click" (fn (mut this.selectedTask) task)}}
                   data-test-task-table-row
                 >
                   <td data-test-table-name>{{task.name}}</td>
@@ -115,11 +119,11 @@
                   <label>
                     Estimated time
                   </label>
-                  {{sy-durationpicker
-                    data-test-estimated-time=true
-                    value=fi.value
-                    on-change=fi.update
-                  }}
+                  <SyDurationpicker
+                    data-test-estimated-time={{true}}
+                    @value={{fi.value}}
+                    @onChange={{fi.update}}
+                  />
                 </f.input>
 
                 <f.input @name="archived" as |fi|>
@@ -136,7 +140,10 @@
             </div>
             <div class="btn-toolbar btn-toolbar--right">
               <button
-                class="btn btn-primary" data-test-cancel type="button" {{action (mut this.selectedTask) null}}
+                class="btn btn-primary"
+                data-test-cancel
+                type="button"
+                {{on "click" (fn (mut this.selectedTask) null)}}
               >Cancel</button>
               <f.submit @disabled={{f.model.isInvalid}} />
             </div>

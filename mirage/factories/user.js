@@ -8,8 +8,22 @@ export default Factory.extend({
   email: () => faker.internet.email(),
   password: () => faker.internet.password(),
 
+  fullName() {
+    if (!this.firstName || !this.lastName) {
+      return "";
+    }
+
+    return `${this.firstName} ${this.lastName}`;
+  },
+
   username() {
     return `${this.firstName}${this.lastName.charAt(0)}`.toLowerCase();
+  },
+
+  longName() {
+    return this.fullName
+      ? `${this.fullName} (${this.username})`
+      : this.username;
   },
 
   isStaff: true,

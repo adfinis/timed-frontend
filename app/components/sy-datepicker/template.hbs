@@ -1,5 +1,9 @@
 <BasicDropdown @horizontalPosition="auto-right" as |DropDown|>
-  <DropDown.Trigger @tabindex="-1">
+  <DropDown.Trigger
+    @tabIndex="-1"
+    @stopPropagation={{true}}
+    class="sy-datepicker-trigger"
+  >
     <input
       autocomplete="off"
       id={{this.uniqueId}}
@@ -9,15 +13,29 @@
       pattern="\d{1,2}\.\d{1,2}\.\d{2,4}"
       value={{this.displayValue}}
       placeholder={{this.placeholder}}
+      {{on
+        "focus"
+        (prevent-default (stop-propagation (fn this.handleFocus DropDown)))
+      }}
       {{on "blur" (fn this.handleBlur DropDown)}}
       {{on "change" this.handleChange}}
       {{on "input" this.checkValidity}}
     />
+    {{#if @value}}
+      <span
+        class="clear ember-power-select-clear-btn"
+        role="button"
+        {{on
+          "click"
+          (prevent-default (stop-propagation (fn this.clear DropDown)))
+        }}
+      >×</span>
+    {{/if}}
   </DropDown.Trigger>
 
-  <DropDown.Content>
+  <DropDown.Content @class="sy-datepicker">
     <SyCalendar
-      @center={{this.center}}
+      @center={{(moment this.center)}}
       @selected={{@value}}
       class="sy-datepicker"
       @onCenterChange={{this.updateCenter}}
