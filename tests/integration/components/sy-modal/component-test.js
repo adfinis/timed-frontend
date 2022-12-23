@@ -1,25 +1,25 @@
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy modal", function(hooks) {
+module("Integration | Component | sy modal", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`
-      {{sy-modal-target}}
-      {{#sy-modal visible=true as |m|}}
-        {{#m.header}}
+      <SyModalTarget />
+      <SyModal @visible={{true}} as |m| >
+        <m.header >
           Header
-        {{/m.header}}
-        {{#m.body}}
+        </m.header>
+        <m.body>
           Body
-        {{/m.body}}
-        {{#m.footer}}
+        </m.body>
+        <m.footer>
           Footer
-        {{/m.footer}}
-      {{/sy-modal}}
+        </m.footer>
+      </SyModal>
     `);
 
     assert.dom("#sy-modals > *").exists({ count: 1 });
@@ -29,20 +29,20 @@ module("Integration | Component | sy modal", function(hooks) {
     assert.dom("#sy-modals .modal-footer").includesText("Footer");
   });
 
-  test("closes on click of the close icon", async function(assert) {
+  test("closes on click of the close icon", async function (assert) {
     this.set("visible", true);
 
     await render(hbs`
-      {{sy-modal-target}}
-      {{#sy-modal visible=visible as |m|}}
-        {{m.header}}
-      {{/sy-modal}}
+      <SyModalTarget />
+      <SyModal @visible={{this.visible}} @on-close={{fn (mut this.visible)}} as |m|>
+        <m.header />
+      </SyModal>
     `);
 
-    assert.ok(this.get("visible"));
+    assert.ok(this.visible);
 
     await click("#sy-modals .modal-header button");
 
-    assert.notOk(this.get("visible"));
+    assert.notOk(this.visible);
   });
 });

@@ -1,26 +1,45 @@
-{{#basic-dropdown horizontalPosition='auto-right' as |dd|}}
-  {{#dd.trigger tabindex=-1}}
+<BasicDropdown @horizontalPosition="auto-right" as |DropDown|>
+  <DropDown.Trigger
+    @tabIndex="-1"
+    @stopPropagation={{true}}
+    class="sy-datepicker-trigger"
+  >
     <input
+      autocomplete="off"
+      id={{this.uniqueId}}
+      name="date"
       type="text"
       class="form-control"
       pattern="\d{1,2}\.\d{1,2}\.\d{2,4}"
-      name={{name}}
-      value={{displayValue}}
-      placeholder={{placeholder}}
-      onfocus={{action 'handleFocus' dd}}
-      onblur={{action 'handleBlur' dd}}
-      onchange={{action 'handleChange'}}
-      oninput={{action 'checkValidity'}}
-    >
-  {{/dd.trigger}}
+      value={{this.displayValue}}
+      placeholder={{this.placeholder}}
+      {{on
+        "focus"
+        (prevent-default (stop-propagation (fn this.handleFocus DropDown)))
+      }}
+      {{on "blur" (fn this.handleBlur DropDown)}}
+      {{on "change" this.handleChange}}
+      {{on "input" this.checkValidity}}
+    />
+    {{#if @value}}
+      <span
+        class="clear ember-power-select-clear-btn"
+        role="button"
+        {{on
+          "click"
+          (prevent-default (stop-propagation (fn this.clear DropDown)))
+        }}
+      >×</span>
+    {{/if}}
+  </DropDown.Trigger>
 
-  {{#dd.content}}
-    {{sy-calendar
-      center         = center
-      selected       = value
-      class          = 'sy-datepicker'
-      onCenterChange = (action (mut center) value='moment')
-      onSelect       = (action (queue (action on-change) (action 'checkValidity')) value='moment')
-    }}
-  {{/dd.content}}
-{{/basic-dropdown}}
+  <DropDown.Content @class="sy-datepicker">
+    <SyCalendar
+      @center={{(moment this.center)}}
+      @selected={{@value}}
+      class="sy-datepicker"
+      @onCenterChange={{this.updateCenter}}
+      @onSelect={{(fn this.updateSelect DropDown)}}
+    />
+  </DropDown.Content>
+</BasicDropdown>

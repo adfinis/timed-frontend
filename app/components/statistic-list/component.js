@@ -1,27 +1,26 @@
-import Component from "@ember/component";
-import { get, computed } from "@ember/object";
+import { get } from "@ember/object";
 import { capitalize } from "@ember/string";
-import hbs from "htmlbars-inline-precompile";
+import Component from "@glimmer/component";
 import moment from "moment";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 
-const PLAIN_LAYOUT = hbs`{{value}}`;
-const DURATION_LAYOUT = hbs`{{humanize-duration value false}}`;
-const MONTH_LAYOUT = hbs`{{moment-format (moment value 'M') 'MMMM'}}`;
+const PLAIN_LAYOUT = "PLAIN";
+const DURATION_LAYOUT = "DURATION";
+const MONTH_LAYOUT = "MONTH";
 
 const COLUMN_MAP = {
   year: [
     { title: "Year", path: "year", layout: PLAIN_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   month: [
     { title: "Year", path: "year", layout: PLAIN_LAYOUT },
     { title: "Month", path: "month", layout: MONTH_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   customer: [
     { title: "Customer", path: "customer.name", layout: PLAIN_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   project: [
     { title: "Customer", path: "project.customer.name", layout: PLAIN_LAYOUT },
@@ -29,70 +28,68 @@ const COLUMN_MAP = {
     {
       title: "Estimated",
       path: "project.estimatedTime",
-      layout: DURATION_LAYOUT
+      layout: DURATION_LAYOUT,
     },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   task: [
     {
       title: "Customer",
       path: "task.project.customer.name",
-      layout: PLAIN_LAYOUT
+      layout: PLAIN_LAYOUT,
     },
     { title: "Project", path: "task.project.name", layout: PLAIN_LAYOUT },
     { title: "Task", path: "task.name", layout: PLAIN_LAYOUT },
     { title: "Estimated", path: "task.estimatedTime", layout: DURATION_LAYOUT },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   user: [
     {
       title: "User",
       path: "user.fullName",
       ordering: "user__username",
-      layout: PLAIN_LAYOUT
+      layout: PLAIN_LAYOUT,
     },
-    { title: "Duration", path: "duration", layout: DURATION_LAYOUT }
-  ]
+    { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
+  ],
 };
 
-export default Component.extend({
-  maxDuration: computed("data.last.value.@each.duration", function() {
+export default class StatisticList extends Component {
+  get maxDuration() {
     return (
-      this.get("data.last.value") &&
-      moment.duration(
-        Math.max(...this.get("data.last.value").mapBy("duration"))
-      )
+      this.args.data?.last?.value &&
+      moment.duration(Math.max(...this.args.data.last.value.mapBy("duration")))
     );
-  }),
+  }
 
-  total: computed("data.last.value", function() {
+  get total() {
     return parseDjangoDuration(
-      this.getWithDefault("data.last.value.meta.total-time", null)
+      this.args.data?.last?.value?.meta?.["total-time"] ?? null
     );
-  }),
+  }
 
-  columns: computed("type", function() {
-    return get(COLUMN_MAP, this.get("type")).map(col => ({
+  get columns() {
+    return get(COLUMN_MAP, this.args.type).map((col) => ({
       ...col,
-      ordering: col.ordering || col.path.replace(/\./g, "__")
+      ordering: col.ordering || col.path.replace(/\./g, "__"),
     }));
-  }),
+  }
 
-  missingParamsMessage: computed("missingParams.[]", function() {
-    if (!this.get("missingParams.length")) {
+  get missingParamsMessage() {
+    if (!this.args.missingParams?.length) {
       return "";
     }
 
-    const text = this.get("missingParams")
+    const text = this.args.missingParams
       .map((param, index) => {
         if (index === 0) {
           param = capitalize(param);
         }
 
-        if (this.get("missingParams.length") > 1) {
-          if (index + 1 === this.get("missingParams.length")) {
+        if (this.args.missingParams.length > 1) {
+          if (index + 1 === this.args.missingParams.length) {
             param = `and ${param}`;
-          } else if (index + 2 !== this.get("missingParams.length")) {
+          } else if (index + 2 !== this.args.missingParams.length) {
             param = `${param},`;
           }
         }
@@ -102,10 +99,10 @@ export default Component.extend({
       .join(" ");
 
     const suffix =
-      this.get("missingParams.length") > 1
+      this.args.missingParams.length > 1
         ? "are required parameters"
         : "is a required parameter";
 
     return `${text} ${suffix} for this statistic`;
-  })
-});
+  }
+}

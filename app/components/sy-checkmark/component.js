@@ -1,10 +1,7 @@
-import { computed } from "@ember/object";
-import FaIconComponent from "ember-font-awesome/components/fa-icon";
+import Component from "@glimmer/component";
 
-export default FaIconComponent.extend({
-  checked: false,
-
-  icon: computed("checked", function() {
-    return this.get("checked") ? "check-square-o" : "square-o";
-  })
-});
+export default class SyCheckmark extends Component {
+  get icon() {
+    return this.args.checked ? "check-square-o" : "square-o";
+  }
+}

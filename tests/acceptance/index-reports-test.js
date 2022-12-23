@@ -4,7 +4,7 @@ import {
   find,
   currentURL,
   visit,
-  waitFor
+  waitFor,
 } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
@@ -15,11 +15,11 @@ import { module, test } from "qunit";
 
 import taskSelect from "../helpers/task-select";
 
-module("Acceptance | index reports", function(hooks) {
+module("Acceptance | index reports", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
@@ -30,20 +30,20 @@ module("Acceptance | index reports", function(hooks) {
     this.user = user;
   });
 
-  test("can visit /reports", async function(assert) {
+  test("can visit /reports", async function (assert) {
     await visit("/reports");
 
     assert.equal(currentURL(), "/reports");
   });
 
-  test("can list reports", async function(assert) {
+  test("can list reports", async function (assert) {
     await visit("/reports");
 
     // one row is for adding a new report
     assert.dom("[data-test-report-row]").exists({ count: 6 });
   });
 
-  test("can add report", async function(assert) {
+  test("can add report", async function (assert) {
     await visit("/reports");
 
     await waitFor(".customer-select");
@@ -81,7 +81,7 @@ module("Acceptance | index reports", function(hooks) {
       .hasValue("Test comment report");
   });
 
-  test("can edit report", async function(assert) {
+  test("can edit report", async function (assert) {
     const { id } = this.server.create("report", { userId: this.user.id });
 
     await visit("/reports");
@@ -117,7 +117,7 @@ module("Acceptance | index reports", function(hooks) {
       .hasValue("Testyy");
   });
 
-  test("can delete report", async function(assert) {
+  test("can delete report", async function (assert) {
     const { id } = this.server.create("report", { userId: this.user.id });
 
     await visit("/reports");
@@ -129,7 +129,7 @@ module("Acceptance | index reports", function(hooks) {
     assert.dom(`[data-test-report-row-id="${id}"]`).doesNotExist();
   });
 
-  test("reloads absences after saving or deleting a report", async function(assert) {
+  test("reloads absences after saving or deleting a report", async function (assert) {
     this.server.loadFixtures("absence-types");
 
     const absence = this.server.create("absence", { userId: this.user.id });
@@ -148,7 +148,7 @@ module("Acceptance | index reports", function(hooks) {
     await visit("/reports");
 
     await click("[data-test-edit-absence]");
-    assert.dom("[data-test-edit-absence-form] textarea").hasText(comment);
+    assert.dom("[data-test-edit-absence-form] textarea").hasValue(comment);
     await click("[data-test-edit-absence-form] button.close");
 
     await fillIn(
@@ -172,10 +172,8 @@ module("Acceptance | index reports", function(hooks) {
     assert.notEqual(c2, c1);
   });
 
-  test("can reschedule reports", async function(assert) {
-    const tomorrow = moment()
-      .add(1, "days")
-      .format("YYYY-MM-DD");
+  test("can reschedule reports", async function (assert) {
+    const tomorrow = moment().add(1, "days").format("YYYY-MM-DD");
 
     await visit("/reports");
     assert.dom("[data-test-report-row]").exists({ count: 6 });

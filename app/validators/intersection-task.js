@@ -12,7 +12,7 @@ export default function validateIntersectionTask() {
       (get(changes, "project.id") || null) !==
         (get(content, "project.id") || null);
 
-    const hasTask = !!(newValue && get(newValue, "id"));
+    const hasTask = !!(newValue && newValue.id);
 
     return (
       hasTask ||

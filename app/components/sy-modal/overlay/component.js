@@ -1,9 +1,11 @@
+import { classNames, classNameBindings } from "@ember-decorators/component";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
 import Component from "@ember/component";
+import classic from "ember-classic-decorator";
 
 /**
  * Overlay component for sy modal
@@ -12,23 +14,10 @@ import Component from "@ember/component";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * CSS classes
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["modal"],
-
-  /**
-   * Classes which are bound to a property
-   *
-   * @property {String[]} classNameBindings
-   * @public
-   */
-  classNameBindings: ["visible:modal--visible"],
-
+@classic
+@classNames("modal")
+@classNameBindings("visible:modal--visible")
+export default class Overlay extends Component {
   /**
    * Close the modal if the user clicks on the overlay, not a child of it
    *
@@ -37,8 +26,8 @@ export default Component.extend({
    * @public
    */
   click(e) {
-    if (e.target === this.get("element")) {
-      this.get("on-close")();
+    if (e.target === this.element) {
+      this["on-close"]();
     }
   }
-});
+}

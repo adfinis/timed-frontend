@@ -1,57 +1,60 @@
 <h1>Users</h1>
 
-{{#filter-sidebar on-reset=(perform resetFilter) as |fs|}}
-  {{#fs.group label='General' expanded=true}}
-    {{#fs.label}}
+<FilterSidebar @onReset={{perform this.resetFilter}} as |fs|>
+  <fs.group @label="General" @expanded={{true}}>
+    <fs.label>
       Search
-      {{fs.filter 'search'
-        data-test-filter-search
-        selected = search
-        on-change = (perform setSearchFilter)
-      }}
-    {{/fs.label}}
-    {{#if currentUser.isSuperuser}}
-      {{#fs.label}}
+      <fs.filter
+        @type="search"
+        data-test-filter-search="true"
+        @selected={{this.search}}
+        @onChange={{perform this.setSearchFilter}}
+      />
+    </fs.label>
+    {{#if this.currentUser.isSuperuser}}
+      <fs.label>
         Supervisor
-        {{#fs.filter data-test-filter-user}}
-          {{#user-selection
-            user          = selectedSupervisor
-            on-change     = (perform setModelFilter 'supervisor')
-            queryOptions  = (hash is_supervisor=1 active=1)
-          as |u|}}
-            {{u.user placeholder='Select supervisor...'}}
-          {{/user-selection}}
-        {{/fs.filter}}
-      {{/fs.label}}
+        <fs.filter data-test-filter-user>
+          <UserSelection
+            @user={{this.selectedSupervisor}}
+            @onChange={{perform this.setModelFilter "supervisor"}}
+            @queryOptions={{hash is_supervisor=1 active=1}}
+            as |u|
+          >
+            <u.user @placeholder="Select supervisor..." />
+          </UserSelection>
+        </fs.filter>
+      </fs.label>
     {{/if}}
-    {{#fs.label}}
+    <fs.label>
       Active
-      {{fs.filter 'button'
-        data-test-filter-active
-        selected  = active
-        valuePath = 'value'
-        labelPath = 'label'
-        options   = (array
-          (hash value='' label='All')
-          (hash value='1' label='Active')
-          (hash value='0' label='Inactive')
-        )
-        on-change = (action (mut active))
-      }}
-    {{/fs.label}}
-  {{/fs.group}}
-{{/filter-sidebar}}
+      <fs.filter
+        @type="button"
+        data-test-filter-active="true"
+        @selected={{this.active}}
+        @valuePath="value"
+        @labelPath="label"
+        @options={{array
+          (hash value="" label="All")
+          (hash value="1" label="Active")
+          (hash value="0" label="Inactive")
+        }}
+        @onChange={{fn (mut this.active)}}
+      />
+    </fs.label>
+  </fs.group>
+</FilterSidebar>
 
-{{#async-list data as |section data|}}
-  {{#if (eq section 'empty')}}
+{{#async-list this.data as |section data|}}
+  {{#if (eq section "empty")}}
     <div class="empty">
       <div>
-        {{fa-icon 'users'}}
+        {{fa-icon "users"}}
         <h3>No users to display</h3>
         <p>Maybe try loosening your filters</p>
       </div>
     </div>
-  {{else if (eq section 'body')}}
+  {{else if (eq section "body")}}
     <table class="table table--striped table--hover">
       <thead>
         <tr>
@@ -61,27 +64,43 @@
           <th>Current worktime balance</th>
         </tr>
       </thead>
-      {{#vertical-collection data
-        tagName           = 'tbody'
-        estimateHeight    = 40
-        bufferSize        = 10
-        containerSelector = '.page-content--scroll'
-      as |user|}}
-        {{#link-to 'users.edit' user.id tagName='tr' class='pointer'}}
-          <td class={{unless user.isActive 'color-danger'}}>{{user.fullName}}</td>
+      <VerticalCollection
+        @items={{data}}
+        @tagName="tbody"
+        @estimateHeight={{40}}
+        @bufferSize={{10}}
+        @containerSelector=".page-content--scroll"
+        as |user|
+      >
+        <LinkTo
+          @route="users.edit"
+          @model={{user.id}}
+          @tagName="tr"
+          class="pointer"
+        >
+          <td
+            class={{unless user.isActive "color-danger"}}
+          >{{user.fullName}}</td>
           {{#if user.activeEmployment}}
             <td>{{user.activeEmployment.percentage}}%</td>
-            <td>{{format-duration user.activeEmployment.worktimePerDay false}}</td>
+            <td>{{format-duration
+                user.activeEmployment.worktimePerDay
+                false
+              }}</td>
           {{else}}
-            <td class={{unless user.isActive 'color-danger'}} colspan="2"><em>User has no active employment</em></td>
+            <td class={{unless user.isActive "color-danger"}} colspan="2"><em
+              >User has no active employment</em></td>
           {{/if}}
           <td>
-            <span class="worktime-balance {{balance-highlight-class user.currentWorktimeBalance.balance}}">
+            <span
+              class="worktime-balance
+                {{balance-highlight-class user.currentWorktimeBalance.balance}}"
+            >
               {{format-duration user.currentWorktimeBalance.balance false}}
             </span>
           </td>
-        {{/link-to}}
-      {{/vertical-collection}}
+        </LinkTo>
+      </VerticalCollection>
     </table>
   {{/if}}
 {{/async-list}}

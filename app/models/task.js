@@ -3,19 +3,17 @@
  * @submodule timed-models
  * @public
  */
-import { computed } from "@ember/object";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo, hasMany } from "ember-data/relationships";
+import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
+import { get } from "@ember/object";
 
 /**
  * The task model
  *
  * @class Task
- * @extends DS.Model
+ * @extends Model
  * @public
  */
-export default Model.extend({
+export default class Task extends Model {
   /**
    * The name
    *
@@ -23,7 +21,7 @@ export default Model.extend({
    * @type {String}
    * @public
    */
-  name: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) name;
 
   /**
    * The estimated time
@@ -31,7 +29,7 @@ export default Model.extend({
    * @property {moment.duration} estimatedTime
    * @public
    */
-  estimatedTime: attr("django-duration"),
+  @attr("django-duration") estimatedTime;
 
   /**
    * Whether the task is archived
@@ -40,9 +38,9 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  archived: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) archived;
 
-  reference: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) reference;
 
   /**
    * The project
@@ -51,7 +49,7 @@ export default Model.extend({
    * @type {Project}
    * @public
    */
-  project: belongsTo("project"),
+  @belongsTo("project") project;
 
   /**
    * Assigned users to this task
@@ -60,7 +58,7 @@ export default Model.extend({
    * @type {TaskAssignee[]}
    * @public
    */
-  assignees: hasMany("task-assignee"),
+  @hasMany("task-assignee") assignees;
 
   /**
    * Flag saying that this is a task.
@@ -72,13 +70,13 @@ export default Model.extend({
    * @type {Project}
    * @public
    */
-  isTask: true,
+  isTask = true;
 
-  longName: computed("project", function() {
-    const taskName = this.get("name");
-    const projectName = this.get("project.name");
-    const customerName = this.get("project.customer.name");
+  get longName() {
+    const taskName = this.name;
+    const projectName = get(this, "project.name");
+    const customerName = get(this, "project.customer.name");
 
     return `${customerName} > ${projectName} > ${taskName}`;
-  })
-});
+  }
+}

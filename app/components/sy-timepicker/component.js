@@ -3,12 +3,10 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
+import { action } from "@ember/object";
+import Component from "@glimmer/component";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
-
-const noop = () => {};
 
 /**
  * Timepicker component
@@ -17,43 +15,50 @@ const noop = () => {};
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
+export default class SyTimepickerComponent extends Component {
+  optionalUnwrap(date) {
+    if (this.isProxiedDate(date)) {
+      return date.unwrap();
+    }
+    if (this.isProxiedDuration(date)) {
+      return moment.duration({ ...date.unwrap()._data });
+    }
+    return date;
+  }
+
+  isProxiedDate(obj) {
+    return obj && obj.unwrap && obj.unwrap()._isAMomentObject;
+  }
+
+  isProxiedDuration(obj) {
+    return (
+      obj && obj.unwrap && obj.unwrap()._data && obj.unwrap()._milliseconds
+    );
+  }
+
   sanitize(value) {
     return value.replace(/[^\d:]/, "");
-  },
+  }
 
-  /**
-   * Tag name, use input so we don't have an additional element in the DOM
-   *
-   * @property {String} tagName
-   * @public
-   */
-  tagName: "input",
+  get value() {
+    return this.optionalUnwrap(this.args.value) ?? moment();
+  }
 
-  /**
-   * CSS class names
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["form-control"],
+  get max() {
+    // unwrap proxy to get the moment instance
+    // https://github.com/poteto/ember-changeset/pull/636
+    return (
+      this.optionalUnwrap(this.args.max) ??
+      moment(this.value).set({ h: 23, m: 59 })
+    );
+  }
 
-  /**
-   * Attribute bindings
-   *
-   * @property {String[]} attributeBindings
-   * @public
-   */
-  attributeBindings: [
-    "pattern",
-    "displayValue:value",
-    "name",
-    "maxlength",
-    "placeholder",
-    "type",
-    "disabled",
-    "autocomplete"
-  ],
+  get min() {
+    return (
+      this.optionalUnwrap(this.args.min) ??
+      moment(this.value).set({ h: 0, m: 0 })
+    );
+  }
 
   /**
    * The input placeholder
@@ -61,15 +66,9 @@ export default Component.extend({
    * @property {String} placeholder
    * @public
    */
-  placeholder: "00:00",
-
-  /**
-   * The input type
-   *
-   * @property {String} type
-   * @public
-   */
-  type: "text",
+  get placeholder() {
+    return this.args.placeholder ?? "00:00";
+  }
 
   /**
    * The maximal length of the value
@@ -77,7 +76,9 @@ export default Component.extend({
    * @property {Number} maxlength
    * @public
    */
-  maxlength: 5,
+  get maxlength() {
+    return this.args.maxLength ?? 5;
+  }
 
   /**
    * The precision of the time
@@ -87,23 +88,9 @@ export default Component.extend({
    * @property {Number} precision
    * @public
    */
-  precision: 15,
-
-  /**
-   * Whether the picker is disabled
-   *
-   * @property {Boolean} disabled
-   * @public
-   */
-  disabled: false,
-
-  /**
-   * Whether to autocomplete this field
-   *
-   * @property {String} autocomplete
-   * @public
-   */
-  autocomplete: "off",
+  get precision() {
+    return this.args.precision ?? 15;
+  }
 
   /**
    * The regex for the input
@@ -111,14 +98,14 @@ export default Component.extend({
    * @property {String} pattern
    * @public
    */
-  pattern: computed("precision", function() {
-    const count = 60 / this.get("precision");
+  get pattern() {
+    const count = 60 / this.precision;
     const minutes = Array.from({ length: count }, (v, i) => (60 / count) * i);
 
     return `([01]?[0-9]|2[0-3]):(${minutes
-      .map(m => padStart(m, 2))
+      .map((m) => padStart(m, 2))
       .join("|")})`;
-  }),
+  }
 
   /**
    * The display representation of the value
@@ -128,41 +115,11 @@ export default Component.extend({
    * @property {String} displayValue
    * @public
    */
-  displayValue: computed("value", function() {
-    const value = this.get("value");
-    return value && value.isValid() ? value.format("HH:mm") : "";
-  }),
-
-  /**
-   * Init hook, set min and max if not passed
-   *
-   * @method init
-   * @public
-   */
-  init(...args) {
-    const value = this.get("value") || moment();
-
-    if (!this.get("min")) {
-      this.set("min", moment(value).set({ h: 0, m: 0 }));
-    }
-
-    if (!this.get("max")) {
-      this.set("max", moment(value).set({ h: 23, m: 59 }));
-    }
-
-    this._super(...args);
-  },
-
-  /**
-   * Handle focus out
-   *
-   * @event focusOut
-   * @param {jQuery.Event} e The jquery focus out event
-   * @public
-   */
-  focusOut() {
-    this.getWithDefault("on-focus-out", noop)();
-  },
+  get displayValue() {
+    return this.args.value && this.args.value.isValid()
+      ? this.args.value.format("HH:mm")
+      : "";
+  }
 
   /**
    * Handle input event
@@ -171,15 +128,16 @@ export default Component.extend({
    * @param {jQuery.Event} e The jquery change event
    * @public
    */
+  @action
   change(e) {
     if (e.target.validity.valid) {
       const [h = NaN, m = NaN] = this.sanitize(e.target.value)
         .split(":")
-        .map(n => parseInt(n));
+        .map((n) => parseInt(n));
 
       this._change([h, m].some(isNaN) ? null : this._set(h, m));
     }
-  },
+  }
 
   /**
    * Handle keydown event
@@ -189,11 +147,12 @@ export default Component.extend({
    * @return {Boolean} Whether to bubble the event or not
    * @public
    */
+  @action
   keyDown(e) {
     this._handleArrows(e);
 
     return true;
-  },
+  }
 
   /**
    * Set the current value
@@ -205,8 +164,8 @@ export default Component.extend({
    * @private
    */
   _set(h, m) {
-    return moment(this.get("value") || this.get("min")).set({ h, m });
-  },
+    return moment(this.value || this.min).set({ h, m });
+  }
 
   /**
    * Add hours and minutes to the current value
@@ -218,16 +177,14 @@ export default Component.extend({
    * @private
    */
   _add(h, m) {
-    let base = this.get("value");
+    let base = this.value;
 
-    if (!base) {
-      base = [h, m].any(n => n < 0)
-        ? this.get("max").add(1, "minute")
-        : this.get("min");
+    if (!this.args.value) {
+      base = [h, m].any((n) => n < 0) ? this.max.add(1, "minute") : this.min;
     }
 
     return moment(base).add({ h, m });
-  },
+  }
 
   /**
    * Get the validity status of a value
@@ -237,9 +194,12 @@ export default Component.extend({
    * @return {Boolean} Whether the value is valid
    * @private
    */
-  _isValid(value) {
-    return value < this.get("max") && value > this.get("min");
-  },
+  _isValid(momentOrDuration) {
+    const value = momentOrDuration._isAMomentObject
+      ? momentOrDuration
+      : moment(momentOrDuration);
+    return value.isBefore(moment(this.max)) && value.isAfter(moment(this.min));
+  }
 
   /**
    * Add minutes to the current value
@@ -254,7 +214,7 @@ export default Component.extend({
     if (this._isValid(newValue)) {
       this._change(newValue);
     }
-  },
+  }
 
   /**
    * Add hours to the current value
@@ -269,7 +229,7 @@ export default Component.extend({
     if (this._isValid(newValue)) {
       this._change(newValue);
     }
-  },
+  }
 
   /**
    * Ensure that the new value is valid and trigger a change
@@ -279,8 +239,8 @@ export default Component.extend({
    * @private
    */
   _change(value) {
-    this.get("on-change")(value);
-  },
+    this.args.onChange(value);
+  }
 
   /**
    * Increase or decrease the current value
@@ -298,16 +258,16 @@ export default Component.extend({
         if (e.ctrlKey || e.shiftKey) {
           this._addHours(1);
         } else {
-          this._addMinutes(this.get("precision"));
+          this._addMinutes(this.precision);
         }
         break;
       case 40:
         if (e.ctrlKey || e.shiftKey) {
           this._addHours(-1);
         } else {
-          this._addMinutes(-this.get("precision"));
+          this._addMinutes(-this.precision);
         }
         break;
     }
   }
-});
+}

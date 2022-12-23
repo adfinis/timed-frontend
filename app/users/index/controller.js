@@ -10,23 +10,23 @@ const UsersQueryParams = new QueryParams({
   search: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   supervisor: {
     defaultValue: null,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   active: {
     defaultValue: "1",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   ordering: {
     defaultValue: "username",
     replace: true,
-    refresh: true
-  }
+    refresh: true,
+  },
 });
 
 const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
@@ -35,19 +35,17 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   currentUser: reads("session.data.user"),
 
   selectedSupervisor: computed(
-    "supervisor",
     "prefetchData.lastSuccessful.value.supervisor",
-    function() {
-      return (
-        this.get("supervisor") &&
-        this.store.peekRecord("user", this.get("supervisor"))
-      );
+    "store",
+    "supervisor",
+    function () {
+      return this.supervisor && this.store.peekRecord("user", this.supervisor);
     }
   ),
 
   setup() {
-    this.get("prefetchData").perform();
-    this.get("data").perform();
+    this.prefetchData.perform();
+    this.data.perform();
   },
 
   reset() {
@@ -57,47 +55,47 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
 
   queryParamsDidChange({ shouldRefresh }) {
     if (shouldRefresh) {
-      this.get("data").perform();
+      this.data.perform();
     }
   },
 
-  prefetchData: task(function*() {
-    const supervisorId = this.get("supervisor");
+  prefetchData: task(function* () {
+    const supervisorId = this.supervisor;
 
     return yield hash({
-      supervisor: supervisorId && this.store.findRecord("user", supervisorId)
+      supervisor: supervisorId && this.store.findRecord("user", supervisorId),
     });
   }).restartable(),
 
-  data: task(function*() {
+  data: task(function* () {
     const date = moment().format("YYYY-MM-DD");
 
     yield this.store.query("employment", { date });
     yield this.store.query("worktime-balance", { date });
 
     return yield this.store.query("user", {
-      ...this.get("allQueryParams"),
+      ...this.allQueryParams,
       ...(this.get("currentUser.isSuperuser")
         ? {}
         : {
-            supervisor: this.get("currentUser.id")
-          })
+            supervisor: this.get("currentUser.id"),
+          }),
     });
   }).restartable(),
 
-  setSearchFilter: task(function*(value) {
+  setSearchFilter: task(function* (value) {
     yield timeout(500);
 
     this.set("search", value);
   }).restartable(),
 
-  setModelFilter: task(function*(key, value) {
+  setModelFilter: task(function* (key, value) {
     yield this.set(key, value && value.id);
   }),
 
-  resetFilter: task(function*() {
+  resetFilter: task(function* () {
     yield this.resetQueryParams();
-  })
+  }),
 });
 
 export default UsersIndexController;

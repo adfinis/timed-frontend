@@ -1,19 +1,20 @@
 import Controller from "@ember/controller";
-import { get, computed } from "@ember/object";
-import { task, hash } from "ember-concurrency";
+import { action, get, set } from "@ember/object";
+import { tracked } from "@glimmer/tracking";
+import { restartableTask, hash } from "ember-concurrency";
 import QueryParams from "ember-parachute";
 import moment from "moment";
 import {
   underscoreQueryParams,
-  serializeParachuteQueryParams
+  serializeParachuteQueryParams,
 } from "timed/utils/query-params";
 
 const DATE_FORMAT = "YYYY-MM-DD";
 
-const serializeMoment = momentObject =>
+const serializeMoment = (momentObject) =>
   (momentObject && momentObject.format(DATE_FORMAT)) || null;
 
-const deserializeMoment = momentString =>
+const deserializeMoment = (momentString) =>
   (momentString && moment(momentString, DATE_FORMAT)) || null;
 
 const TYPES = {
@@ -22,225 +23,193 @@ const TYPES = {
   customer: { include: "customer", requiredParams: [] },
   project: {
     include: "project,project.customer",
-    requiredParams: ["customer"]
+    requiredParams: ["customer"],
   },
   task: {
     include: "task,task.project,task.project.customer",
-    requiredParams: ["customer", "project"]
+    requiredParams: ["customer", "project"],
   },
-  user: { include: "user", requiredParams: [] }
+  user: { include: "user", requiredParams: [] },
 };
 
 export const StatisticsQueryParams = new QueryParams({
   customer: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   project: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   task: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   user: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   reviewer: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   billingType: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   costCenter: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
-    refresh: true
+    refresh: true,
   },
   fromDate: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
-    deserialize: deserializeMoment
+    deserialize: deserializeMoment,
   },
   toDate: {
-    defaultValue: null,
+    defaultValue: undefined,
     replace: true,
     refresh: true,
     serialize: serializeMoment,
-    deserialize: deserializeMoment
+    deserialize: deserializeMoment,
   },
   review: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   notBillable: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   verified: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   billed: {
     defaultValue: "",
     replace: true,
-    refresh: true
+    refresh: true,
   },
   type: {
     defaultValue: Object.keys(TYPES)[0],
     replace: true,
-    refresh: true
+    refresh: true,
   },
   ordering: {
     defaultValue: "",
     replace: true,
-    refresh: true
-  }
+    refresh: true,
+  },
 });
 
-export default Controller.extend(StatisticsQueryParams.Mixin, {
-  types: Object.keys(TYPES),
+export default class StatisticsController extends Controller.extend(
+  StatisticsQueryParams.Mixin
+) {
+  types = Object.keys(TYPES);
 
-  billingTypes: computed(
-    "prefetchData.lastSuccessful.value.billingTypes",
-    function() {
-      return this.store.findAll("billing-type");
-    }
-  ),
+  @tracked customer;
+  @tracked project;
+  @tracked task;
+  @tracked user;
+  @tracked reviewer;
+  @tracked type = Object.keys(TYPES)[0];
+  @tracked observed;
 
-  costCenters: computed(
-    "prefetchData.lastSuccessful.value.costCenters",
-    function() {
-      return this.store.findAll("cost-center");
-    }
-  ),
+  get billingTypes() {
+    return this.store.findAll("billing-type");
+  }
 
-  selectedCustomer: computed(
-    "customer",
-    "prefetchData.lastSuccessful.value.customer",
-    function() {
-      return (
-        this.get("customer") &&
-        this.store.peekRecord("customer", this.get("customer"))
-      );
-    }
-  ),
+  get costCenters() {
+    return this.store.findAll("cost-center");
+  }
 
-  selectedProject: computed(
-    "project",
-    "prefetchData.lastSuccessful.value.project",
-    function() {
-      return (
-        this.get("project") &&
-        this.store.peekRecord("project", this.get("project"))
-      );
-    }
-  ),
+  get selectedCustomer() {
+    return this.customer && this.store.peekRecord("customer", this.customer);
+  }
 
-  selectedTask: computed(
-    "task",
-    "prefetchData.lastSuccessful.value.task",
-    function() {
-      return (
-        this.get("task") && this.store.peekRecord("task", this.get("task"))
-      );
-    }
-  ),
+  get selectedProject() {
+    return this.project && this.store.peekRecord("project", this.project);
+  }
 
-  selectedUser: computed(
-    "user",
-    "prefetchData.lastSuccessful.value.user",
-    function() {
-      return (
-        this.get("user") && this.store.peekRecord("user", this.get("user"))
-      );
-    }
-  ),
+  get selectedTask() {
+    return this.task && this.store.peekRecord("task", this.task);
+  }
 
-  selectedReviewer: computed(
-    "reviewer",
-    "prefetchData.lastSuccessful.value.reviewer",
-    function() {
-      return (
-        this.get("reviewer") &&
-        this.store.peekRecord("user", this.get("reviewer"))
-      );
-    }
-  ),
+  get selectedUser() {
+    return this.user && this.store.peekRecord("user", this.user);
+  }
 
-  missingParams: computed(
-    "requiredParams.[]",
-    `queryParamsState.{observed}.changed`,
-    function() {
-      return this.get("requiredParams").filter(
-        param => !this.get(`queryParamsState.${param}.changed`)
-      );
-    }
-  ),
+  get selectedReviewer() {
+    return this.reviewer && this.store.peekRecord("user", this.reviewer);
+  }
+
+  get missingParams() {
+    return this.requiredParams.filter(
+      (param) => !this.queryParamsState[param].changed
+    );
+  }
 
   setup() {
     const observed = Object.keys(TYPES).reduce((set, key) => {
       return [
         ...set,
-        ...get(TYPES, `${key}.requiredParams`).filter(p => !set.includes(p))
+        ...get(TYPES, `${key}.requiredParams`).filter((p) => !set.includes(p)),
       ];
     }, []);
-    this.set("observed", observed.join(","));
+    this.observed = observed.join(",");
 
-    this.get("prefetchData").perform();
-    this.get("data").perform();
-  },
+    this.prefetchData.perform();
+    this.data.perform();
+  }
 
   reset(_, isExiting) {
     /* istanbul ignore next */
     if (isExiting) {
       this.resetQueryParams();
     }
-  },
+  }
 
   queryParamsDidChange({ shouldRefresh, changed }) {
     if (shouldRefresh) {
-      this.get("data").perform();
+      this.data.perform();
     }
 
     if (Object.keys(changed).includes("type")) {
       this.resetQueryParams("ordering");
     }
-  },
+  }
 
-  appliedFilters: computed("queryParamsState", function() {
-    return Object.keys(this.get("queryParamsState")).filter(key => {
-      return this.get(`queryParamsState.${key}.changed`) && key !== "type";
+  get appliedFilters() {
+    return Object.keys(this.queryParamsState).filter((key) => {
+      return this.queryParamsState[key]?.changed && key !== "type";
     });
-  }),
+  }
 
-  requiredParams: computed("type", function() {
-    return TYPES[this.get("type")].requiredParams;
-  }),
+  get requiredParams() {
+    return TYPES[this.type].requiredParams;
+  }
 
-  prefetchData: task(function*() {
+  @restartableTask
+  *prefetchData() {
     const {
       customer: customerId,
       project: projectId,
       task: taskId,
       user: userId,
-      reviewer: reviewerId
-    } = this.get("allQueryParams");
+      reviewer: reviewerId,
+    } = this.allQueryParams;
 
     return yield hash({
       customer: customerId && this.store.findRecord("customer", customerId),
@@ -249,22 +218,20 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
       user: userId && this.store.findRecord("user", userId),
       reviewer: reviewerId && this.store.findRecord("user", reviewerId),
       billingTypes: this.store.findAll("billing-type"),
-      costCenters: this.store.findAll("cost-center")
+      costCenters: this.store.findAll("cost-center"),
     });
-  }).restartable(),
+  }
 
-  data: task(function*() {
-    if (this.get("missingParams.length")) {
+  @restartableTask
+  *data() {
+    if (this.missingParams.length) {
       return null;
     }
 
-    const type = this.get("type");
+    const type = this.type;
 
     let params = underscoreQueryParams(
-      serializeParachuteQueryParams(
-        this.get("allQueryParams"),
-        StatisticsQueryParams
-      )
+      serializeParachuteQueryParams(this.allQueryParams, StatisticsQueryParams)
     );
 
     params = Object.keys(params).reduce((obj, key) => {
@@ -273,19 +240,19 @@ export default Controller.extend(StatisticsQueryParams.Mixin, {
 
     return yield this.store.query(`${type}-statistic`, {
       include: TYPES[type].include,
-      ...params
+      ...params,
     });
-  }).restartable(),
-
-  actions: {
-    setModelFilter(key, value) {
-      this.set(key, value && value.id);
-    },
-
-    reset() {
-      this.resetQueryParams(
-        Object.keys(this.get("allQueryParams")).filter(qp => qp !== "type")
-      );
-    }
   }
-});
+
+  @action
+  setModelFilter(key, value) {
+    set(this, key, value && value.id);
+  }
+
+  @action
+  resetQP() {
+    this.resetQueryParams(
+      Object.keys(this.allQueryParams).filter((qp) => qp !== "type")
+    );
+  }
+}

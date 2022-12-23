@@ -1,130 +1,166 @@
 <PagePermission>
-  {{#if loading}}
+  {{#if this.loading}}
     <div class="empty">
-      {{loading-icon}}
+      <LoadingIcon />
     </div>
   {{else}}
     <div class="header">
-      {{#power-select
+      <PowerSelect
         data-test-customer-selection
-        tagName="div"
+        @tagName="div"
         class="header-item"
-        options=customers
-        placeholder="Select customer..."
-        searchField="name"
-        onchange=(action "handleCustomerChange")
-        selected=selectedCustomer
-        allowClear=true
-      as |customer|
-      }}
+        @options={{this.customers}}
+        @placeholder="Select customer..."
+        @searchField="name"
+        @onChange={{this.handleCustomerChange}}
+        @selected={{this.selectedCustomer}}
+        @allowClear={{true}}
+        as |customer|
+      >
         <div>{{customer.name}}</div>
-      {{/power-select}}
-      {{#power-select
+      </PowerSelect>
+      <PowerSelect
         data-test-project-selection
-        tagName="div"
+        @tagName="div"
         class="header-item"
-        options=filteredProjects
+        @options={{this.filteredProjects}}
         placeholder="Select project..."
-        searchField="name"
-        onchange=(action "handleProjectChange")
-        selected=selectedProject
-        allowClear=true
-        disabled=(not selectedCustomer)
-      as |project|
-      }}
+        @searchField="name"
+        @onChange={{this.handleProjectChange}}
+        @selected={{this.selectedProject}}
+        @allowClear={{true}}
+        @disabled={{not this.selectedCustomer}}
+        as |project|
+      >
         <div>{{project.name}}</div>
-      {{/power-select}}
+      </PowerSelect>
     </div>
-    {{#if selectedProject}}
+    {{#if this.selectedProject}}
       <h3>
         <span class="header-left">
-          Tasks of {{selectedProject.name}}
+          Tasks of
+          {{this.selectedProject.name}}
         </span>
         <span class="header-right">
-          <button class="btn btn-primary" {{action (perform createTask)}} data-test-add-task>Add Task</button>
+          <button
+            class="btn btn-primary"
+            data-test-add-task
+            type="button"
+            {{on "click" (perform this.createTask)}}
+          >Add Task</button>
         </span>
       </h3>
       <div class="task-table-container">
-        {{#ember-scrollable class='projects-scrollable-container'}}
-          <table class="table table--striped table--projects" data-test-tasks-table>
+        <EmberScrollable @class="projects-scrollable-container">
+          <table
+            class="table table--striped table--projects"
+            data-test-tasks-table
+          >
             <thead>
-            <tr>
-              <th>Name</th>
-              <th>Reference</th>
-              <th>Estimated time</th>
-              <th>Archived</th>
-            </tr>
+              <tr>
+                <th>Name</th>
+                <th>Reference</th>
+                <th>Estimated time</th>
+                <th>Archived</th>
+              </tr>
             </thead>
             <tbody>
-            {{#each tasks as |task|}}
-              <tr class="pointer {{if (eq selectedTask task) "selected"}}" {{action (mut selectedTask) task}} data-test-task-table-row>
-                <td data-test-table-name>{{task.name}}</td>
-                <td data-test-table-reference>{{if task.reference task.reference "-"}}</td>
-                <td data-test-table-estimated-time>{{if task.estimatedTime (humanize-duration task.estimatedTime) "-"}}</td>
-                <td>{{sy-checkmark data-test-table-archived checked=task.archived}}</td>
-              </tr>
-            {{/each}}
+              {{#each this.tasks as |task|}}
+                <tr
+                  class="pointer {{if (eq this.selectedTask task) 'selected'}}"
+                  {{! template-lint-disable }}
+                  {{on "click" (fn (mut this.selectedTask) task)}}
+                  data-test-task-table-row
+                >
+                  <td data-test-table-name>{{task.name}}</td>
+                  <td data-test-table-reference>{{if
+                      task.reference
+                      task.reference
+                      "-"
+                    }}</td>
+                  <td data-test-table-estimated-time>{{if
+                      task.estimatedTime
+                      (humanize-duration task.estimatedTime)
+                      "-"
+                    }}</td>
+                  <td><SyCheckmark
+                      data-test-table-archived
+                      @checked={{task.archived}}
+                    /></td>
+                </tr>
+              {{/each}}
             </tbody>
           </table>
-        {{/ember-scrollable}}
+        </EmberScrollable>
       </div>
-      {{#if selectedTask}}
+      {{#if this.selectedTask}}
         <div class="task-form-container" data-test-task-form>
-          <h2>{{if selectedTask.isNew "Add task" selectedTask.name}}</h2>
-          {{#validated-form
-            model     = (changeset selectedTask TaskValidations)
-            on-submit = (perform saveTask)
-          as |f|}}
+          <h2>{{if
+              this.selectedTask.isNew
+              "Add task"
+              this.selectedTask.name
+            }}</h2>
+          <ValidatedForm
+            @model={{changeset this.selectedTask this.TaskValidations}}
+            @on-submit={{perform this.saveTask}}
+            as |f|
+          >
             <div class="task-form-container-row">
               <div class="task-form-container-column">
-                {{f.input
+                <f.input
+                  @label="Name"
+                  @name="name"
                   data-test-name
-                  label="Name"
-                  name="name"
-                  required=true
-                }}
-                {{f.input
+                  @required={{true}}
+                />
+                <f.input
+                  @label="Reference"
+                  @name="reference"
                   data-test-reference
-                  label="Reference"
-                  name="reference"
-                  required=false
-                }}
+                  @required={{false}}
+                />
               </div>
               <div class="task-form-container-column">
-                {{#f.input name='estimatedTime' as |fi|}}
+                <f.input @name="estimatedTime" as |fi|>
                   <label>
                     Estimated time
                   </label>
-                  {{sy-durationpicker
-                    data-test-estimated-time
-                    value=fi.value
-                    on-change=fi.update
-                  }}
-                {{/f.input}}
+                  <SyDurationpicker
+                    data-test-estimated-time={{true}}
+                    @value={{fi.value}}
+                    @onChange={{fi.update}}
+                  />
+                </f.input>
 
-                {{#f.input data-test-archived name='archived' as |fi|}}
+                <f.input @name="archived" as |fi|>
                   <label>
                     Archived
                   </label>
-                  {{sy-checkbox
-                    checked=selectedTask.archived
-                    value=fi.value
-                    on-change=fi.update
-                  }}
-                {{/f.input}}
+                  <SyCheckbox
+                    data-test-archived
+                    @checked={{this.selectedTask.archived}}
+                    @value={{fi.value}}
+                    @onChange={{fi.update}}
+                  />
+                </f.input>
               </div>
             </div>
             <div class="btn-toolbar btn-toolbar--right">
-              <button class="btn btn-primary" {{action (mut selectedTask) null}} data-test-cancel>Cancel</button>
-              {{f.submit data-test-save disabled=f.model.isInvalid}}
+              <button
+                class="btn btn-primary"
+                data-test-cancel
+                type="button"
+                {{on "click" (fn (mut this.selectedTask) null)}}
+              >Cancel</button>
+              <f.submit data-test-save @disabled={{f.model.isInvalid}} />
             </div>
-          {{/validated-form}}
+          </ValidatedForm>
         </div>
       {{/if}}
     {{else}}
       <div class="empty" data-test-none-selected>
         <div>
-          {{fa-icon 'search'}}
+          {{fa-icon "search"}}
           <h3>Please select a customer and a project</h3>
         </div>
       </div>

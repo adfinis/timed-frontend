@@ -3,9 +3,11 @@
  * @submodule timed-components
  * @public
  */
+import { classNameBindings } from "@ember-decorators/component";
 import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
+import { tracked } from "@glimmer/tracking";
+import classic from "ember-classic-decorator";
 
 /**
  * Component to show a benchmark (reached worktime) in the weekly overview
@@ -14,15 +16,9 @@ import { htmlSafe } from "@ember/string";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * Class name bindings
-   *
-   * @property {String[]} classNameBindings
-   * @public
-   */
-  classNameBindings: ["expected"],
-
+@classic
+@classNameBindings("expected")
+export default class WeeklyOverviewBenchmark extends Component {
   /**
    * Maximum worktime
    *
@@ -31,7 +27,7 @@ export default Component.extend({
    * @property {Number} max
    * @public
    */
-  max: 20,
+  @tracked max = 20;
 
   /**
    * Hours of the benchmark
@@ -39,7 +35,7 @@ export default Component.extend({
    * @property {Number} hours
    * @public
    */
-  hours: 0,
+  @tracked hours = 0;
 
   /**
    * Whether it is the expected worktime
@@ -47,7 +43,7 @@ export default Component.extend({
    * @property {Boolean} expected
    * @public
    */
-  expected: false,
+  expected = false;
 
   /**
    * Whether to show the hour label
@@ -55,7 +51,7 @@ export default Component.extend({
    * @property {Boolean} showLabel
    * @public
    */
-  showLabel: false,
+  showLabel = false;
 
   /**
    * The offset to the bottom
@@ -63,9 +59,7 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed("max", "hours", function() {
-    return htmlSafe(
-      `bottom: calc(100% / ${this.get("max")} * ${this.get("hours")})`
-    );
-  })
-});
+  get style() {
+    return htmlSafe(`bottom: calc(100% / ${this.max} * ${this.hours})`);
+  }
+}

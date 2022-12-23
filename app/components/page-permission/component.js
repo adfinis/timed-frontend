@@ -1,5 +1,7 @@
+import { tagName } from "@ember-decorators/component";
 import Component from "@ember/component";
+import classic from "ember-classic-decorator";
 
-export default Component.extend({
-  tagName: ""
-});
+@classic
+@tagName("")
+export default class PagePermission extends Component {}

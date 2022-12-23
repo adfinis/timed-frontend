@@ -1,4 +1,6 @@
+import { tagName } from "@ember-decorators/component";
 import Component from "@ember/component";
+import classic from "ember-classic-decorator";
 
 /**
  * Paginated table foot component
@@ -7,12 +9,6 @@ import Component from "@ember/component";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * The tagName of the component
-   *
-   * @property {string} tagName
-   * @public
-   */
-  tagName: "tfoot"
-});
+@classic
+@tagName("tfoot")
+export default class Foot extends Component {}

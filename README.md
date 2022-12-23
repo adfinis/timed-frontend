@@ -10,7 +10,7 @@ You will need the following things properly installed on your computer.
 
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/)
-- [Yarn](https://yarnpkg.com/)
+- [pnpm](https://pnpm.io/)
 - [Ember CLI](https://ember-cli.com/)
 - [Chrome](https://www.google.com/chrome/)
 - [Firefox](https://www.mozilla.org/firefox/)
@@ -24,7 +24,7 @@ Optional:
 
 - `git clone git@github.com/adfinis-sygroup/timed-frontend`
 - `cd timed-frontend`
-- `yarn`
+- `pnpm i`
 
 ## Running / Development
 
@@ -35,7 +35,7 @@ If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend
 
 - `ember server --proxy=http://localhost:8000`
   or
-- `yarn start`
+- `pnpm start`
 
 If you are using docker-compose you can start a static frontend and the backend by following the instructions in the [backend](https://github.com/adfinis-sygroup/timed-backend)
 

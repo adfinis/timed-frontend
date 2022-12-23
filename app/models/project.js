@@ -3,9 +3,7 @@
  * @submodule timed-models
  * @public
  */
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo, hasMany } from "ember-data/relationships";
+import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 
 /**
  * The project model
@@ -83,5 +81,5 @@ export default Model.extend({
    * @type {ProjectAssignee[]}
    * @public
    */
-  assignees: hasMany("project-assignee")
+  assignees: hasMany("project-assignee"),
 });

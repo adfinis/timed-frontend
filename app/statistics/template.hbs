@@ -1,5 +1,5 @@
-{{#if (or (media 'isMo') (media 'isXs') (media 'isSm'))}}
-  <NoMobileMessage/>
+{{#if (or (media "isMo") (media "isXs") (media "isSm"))}}
+  <NoMobileMessage />
 {{else}}
   <PagePermission>
     <h1>Statistics</h1>
@@ -7,48 +7,51 @@
     <TaskSelection
       @history={{false}}
       @archived={{true}}
-      @on-set-customer={{action 'setModelFilter' 'customer'}}
-      @on-set-project={{action 'setModelFilter' 'project'}}
-      @on-set-task={{action 'setModelFilter' 'task'}}
+      @on-set-customer={{fn this.setModelFilter "customer"}}
+      @on-set-project={{fn this.setModelFilter "project"}}
+      @on-set-task={{fn this.setModelFilter "task"}}
       @initial={{hash
-        customer      = selectedCustomer
-        project       = selectedProject
-        task          = selectedTask
+        customer=this.selectedCustomer
+        project=this.selectedProject
+        task=this.selectedTask
       }}
-    as |t|>
+      as |t|
+    >
       <FilterSidebar
         @appliedCount={{this.appliedFilters.length}}
-        @on-reset={{action (queue t.clear (action 'reset'))}}
-      as |fs|>
-        <fs.group @label='Task' @expanded={{true}}>
+        @onReset={{(queue t.clear this.resetQP)}}
+        as |fs|
+      >
+        <fs.group @label="Task" @expanded={{true}}>
           <fs.label>
             Customer
             <fs.filter data-test-filter-customer>
-              <t.customer/>
+              <t.customer />
             </fs.filter>
           </fs.label>
           <fs.label>
             Project
             <fs.filter data-test-filter-project>
-              <t.project/>
+              <t.project />
             </fs.filter>
           </fs.label>
           <fs.label>
             Task
             <fs.filter data-test-filter-task>
-              <t.task/>
+              <t.task />
             </fs.filter>
           </fs.label>
         </fs.group>
-        <fs.group @label='Responsibility'>
+        <fs.group @label="Responsibility">
           <fs.label>
             User
             <fs.filter data-test-filter-user>
               <UserSelection
                 @user={{this.selectedUser}}
-                @on-change={{action 'setModelFilter' 'user'}}
-              as |u|>
-                <u.user/>
+                @onChange={{fn this.setModelFilter "user"}}
+                as |u|
+              >
+                <u.user />
               </UserSelection>
             </fs.filter>
           </fs.label>
@@ -57,129 +60,130 @@
             <fs.filter data-test-filter-reviewer>
               <UserSelection
                 @user={{this.selectedReviewer}}
-                @on-change={{action 'setModelFilter' 'reviewer'}}
+                @onChange={{fn this.setModelFilter "reviewer"}}
                 @queryOptions={{hash is_reviewer=1}}
-              as |u|>
-                <u.user @placeholder='Select reviewer...'/>
+                as |u|
+              >
+                <u.user @placeholder="Select reviewer..." />
               </UserSelection>
             </fs.filter>
           </fs.label>
         </fs.group>
-        <fs.group @label='Finances'>
+        <fs.group @label="Finances">
           <fs.label>
             Billing type
             <fs.filter
               data-test-filter-billing-type
-              @type='select'
+              @type="select"
               @selected={{this.billingType}}
-              @valuePath='id'
-              @labelPath='name'
-              @prompt='All billing types'
+              @valuePath="id"
+              @labelPath="name"
+              @prompt="All billing types"
               @options={{this.billingTypes}}
-              @on-change={{fn (mut billingType)}}
+              @onChange={{fn (mut this.billingType)}}
             />
           </fs.label>
           <fs.label>
             Cost center
             <fs.filter
               data-test-filter-cost-center
-              @type='select'
+              @type="select"
               @selected={{this.costCenter}}
-              @valuePath='id'
-              @labelPath='name'
-              @prompt='All cost centers'
+              @valuePath="id"
+              @labelPath="name"
+              @prompt="All cost centers"
               @options={{this.costCenters}}
-              @on-change={{fn (mut costCenter)}}
+              @onChange={{fn (mut this.costCenter)}}
             />
           </fs.label>
         </fs.group>
-        <fs.group @label='Time range'>
+        <fs.group @label="Time range">
           <fs.label>
             From
             <fs.filter
               data-test-filter-from-date
-              @type='date'
+              @type="date"
               @selected={{this.fromDate}}
-              @on-change={{fn (mut fromDate)}}
+              @onChange={{fn (mut this.fromDate)}}
             />
           </fs.label>
           <fs.label>
             To
             <fs.filter
               data-test-filter-to-date
-              @type='date'
+              @type="date"
               @selected={{this.toDate}}
-              @on-change={{fn (mut toDate)}}
+              @onChange={{fn (mut this.toDate)}}
             />
           </fs.label>
           <DateButtons
-              @onUpdateFromDate={{fn (mut fromDate)}}
-              @onUpdateToDate={{fn (mut toDate)}}
+            @onUpdateFromDate={{fn (mut this.fromDate)}}
+            @onUpdateToDate={{fn (mut this.toDate)}}
           />
         </fs.group>
-        <fs.group @label='State'>
+        <fs.group @label="State">
           <fs.label>
             Review
             <fs.filter
               data-test-filter-review
-              @type='button'
+              @type="button"
               @selected={{this.review}}
-              @valuePath='value'
-              @labelPath='label'
+              @valuePath="value"
+              @labelPath="label"
               @options={{array
-                (hash label='All' value='')
-                (hash label='Needed' value='1')
-                (hash label='Not needed' value='0')
+                (hash label="All" value="")
+                (hash label="Needed" value="1")
+                (hash label="Not needed" value="0")
               }}
-              @on-change={{fn (mut review)}}
+              @onChange={{fn (mut this.review)}}
             />
           </fs.label>
           <fs.label>
             Billability
             <fs.filter
               data-test-filter-not-billable
-              @type='button'
+              @type="button"
               @selected={{this.notBillable}}
-              @valuePath='value'
-              @labelPath='label'
+              @valuePath="value"
+              @labelPath="label"
               @options={{array
-                (hash label='All' value='')
-                (hash label='Billable' value='0')
-                (hash label='Not billable' value='1')
+                (hash label="All" value="")
+                (hash label="Billable" value="0")
+                (hash label="Not billable" value="1")
               }}
-              @on-change={{fn (mut notBillable)}}
+              @onChange={{fn (mut this.notBillable)}}
             />
           </fs.label>
           <fs.label>
             Verified
             <fs.filter
               data-test-filter-verified
-              @type='button'
+              @type="button"
               @selected={{this.verified}}
-              @valuePath='value'
-              @labelPath='label'
+              @valuePath="value"
+              @labelPath="label"
               @options={{array
-                (hash label='All' value='')
-                (hash label='Verified' value='1')
-                (hash label='Not verified' value='0')
+                (hash label="All" value="")
+                (hash label="Verified" value="1")
+                (hash label="Not verified" value="0")
               }}
-              @on-change={{fn (mut verified)}}
+              @onChange={{fn (mut this.verified)}}
             />
           </fs.label>
           <fs.label>
             Billed
             <fs.filter
               data-test-filter-billed
-              @type='button'
+              @type="button"
               @selected={{this.billed}}
-              @valuePath='value'
-              @labelPath='label'
+              @valuePath="value"
+              @labelPath="label"
               @options={{array
-                (hash label='All' value='')
-                (hash label='Billed' value='1')
-                (hash label='Not Billed' value='0')
+                (hash label="All" value="")
+                (hash label="Billed" value="1")
+                (hash label="Not Billed" value="0")
               }}
-              @on-change={{fn (mut billed)}}
+              @onChange={{fn (mut this.billed)}}
             />
           </fs.label>
         </fs.group>
@@ -188,10 +192,15 @@
 
     <div>
       <ul class="nav-tabs">
-        {{#each types as |t|}}
+        {{#each this.types as |t|}}
           <li>
-            <a href="#" class={{if (eq t type) 'active'}} {{on 'click' (fn (mut type) t)}}>
-              By {{t}}
+            <a
+              href="#"
+              class={{if (eq t this.type) "active"}}
+              {{on "click" (fn (mut this.type) t)}}
+            >
+              By
+              {{t}}
             </a>
           </li>
         {{/each}}
@@ -200,12 +209,12 @@
 
     <div class="tab-content grid">
       <StatisticList
-        class='grid-cell'
+        class="grid-cell"
         @data={{this.data}}
         @type={{this.type}}
         @missingParams={{this.missingParams}}
         @ordering={{this.ordering}}
-        @on-ordering-change={{fn (mut ordering)}}
+        @on-ordering-change={{fn (mut this.ordering)}}
       />
     </div>
   </PagePermission>

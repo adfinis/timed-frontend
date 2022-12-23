@@ -14,6 +14,6 @@ import formatDuration from "timed/utils/format-duration";
  * @return {String} The formatted duration
  * @public
  */
-export const formatDurationFn = args => formatDuration(...args);
+export const formatDurationFn = (args) => formatDuration(...args);
 
 export default helper(formatDurationFn);

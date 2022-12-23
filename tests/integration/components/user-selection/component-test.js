@@ -1,46 +1,27 @@
-import EmberObject from "@ember/object";
 import { find, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
+import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupRenderingTest } from "ember-qunit";
-import wait from "ember-test-helpers/wait";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
-import { startMirage } from "timed/initializers/ember-cli-mirage";
 
-const USER = EmberObject.create({
-  id: 1,
-  firstName: "Hans",
-  lastName: "Muster",
-  username: "hansm",
-  longName: "Hans Muster (hansm)"
-});
-
-module("Integration | Component | user selection", function(hooks) {
+module("Integration | Component | user selection", function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    this.server = startMirage();
-  });
-
-  hooks.afterEach(function() {
-    this.server.shutdown();
-  });
-
-  test("renders", async function(assert) {
-    this.set("user", USER);
+  test("renders", async function (assert) {
+    assert.expect(1);
+    const user = this.server.create("user");
+    this.set("user", user);
 
     await render(hbs`
-      {{#user-selection user=user on-change=(action (mut user)) as |u|}}
+      <UserSelection @user={{this.user}} @onChange={{fn (mut this.user)}} as |u|>
         {{u.user}}
-      {{/user-selection}}
+      </UserSelection>
     `);
 
-    return wait().then(() => {
-      assert.equal(
-        find(
-          ".user-select .ember-power-select-selected-item"
-        ).textContent.trim(),
-        USER.longName
-      );
-    });
+    assert.strictEqual(
+      find(".user-select .ember-power-select-selected-item").textContent.trim(),
+      user.longName
+    );
   });
 });

@@ -4,5 +4,5 @@
 # skip in CI
 [ -n "$CI" ] && exit 0
 
-# lint commit message
-yarn commitlint --edit $1
+# lint staged files
+pnpm lint-staged

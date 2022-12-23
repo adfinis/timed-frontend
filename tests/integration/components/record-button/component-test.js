@@ -1,17 +1,17 @@
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
 
-module("Integration | Component | record button", function(hooks) {
+module("Integration | Component | record button", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     await render(hbs`{{record-button}}`);
     assert.dom("[data-test-record-stop]").doesNotExist();
   });
 
-  test("can stop", async function(assert) {
+  test("can stop", async function (assert) {
     this.set("recording", true);
     this.set("activity", { id: 1 });
 
@@ -32,7 +32,7 @@ module("Integration | Component | record button", function(hooks) {
     await click("[data-test-record-stop]");
   });
 
-  test("can start", async function(assert) {
+  test("can start", async function (assert) {
     this.set("recording", false);
     this.set("activity", { id: 1 });
 

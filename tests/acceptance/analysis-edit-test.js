@@ -4,11 +4,11 @@ import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test } from "qunit";
 
-module("Acceptance | analysis edit", function(hooks) {
+module("Acceptance | analysis edit", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user", { isSuperuser: true });
     this.user = user;
 
@@ -17,17 +17,20 @@ module("Acceptance | analysis edit", function(hooks) {
 
     this.reportIntersection = this.server.create("report-intersection", {
       verified: false,
-      review: true
+      review: true,
     });
   });
 
-  test("can visit /analysis/edit", async function(assert) {
+  test("can visit /analysis/edit", async function (assert) {
     await visit("/analysis/edit");
 
-    assert.equal(currentURL(), "/analysis/edit");
+    assert.strictEqual(currentURL(), "/analysis/edit");
   });
 
-  test("can edit", async function(assert) {
+  test("can edit", async function (assert) {
+    const customer = this.server.create("customer");
+    this.server.create("report-intersection", { customer });
+
     await visit("/analysis/edit?id=1,2,3");
 
     let res = {};
@@ -36,63 +39,61 @@ module("Acceptance | analysis edit", function(hooks) {
       res = JSON.parse(requestBody);
     });
 
-    await fillIn("[data-test-comment] input", "test comment 123");
+    await fillIn("[data-test-comment]", "test comment 123");
     await click("[data-test-not-billable] input");
     await click("[data-test-review] input");
 
     await click(".btn-primary");
 
     const {
-      data: { type, attributes, relationships }
+      data: { type, attributes, relationships },
     } = res;
 
-    assert.equal(type, "report-bulks");
+    assert.strictEqual(type, "report-bulks");
 
     // only changed attributes were sent
     assert.deepEqual(Object.keys(attributes), [
       "comment",
       "not-billable",
-      "review"
-    ]);
-    assert.deepEqual(Object.keys(relationships), [
-      "customer",
-      "project",
-      "task"
+      "review",
     ]);
 
-    assert.equal(currentURL(), "/analysis");
+    assert.deepEqual(Object.keys(relationships), []);
+
+    assert.strictEqual(currentURL(), "/analysis");
   });
 
-  test("can cancel", async function(assert) {
+  test("can cancel", async function (assert) {
     await visit("/analysis/edit");
 
     await click("[data-test-cancel]");
 
-    assert.equal(currentURL(), "/analysis");
+    assert.strictEqual(currentURL(), "/analysis");
   });
 
-  test("can reset", async function(assert) {
+  test("can reset", async function (assert) {
     await visit("/analysis/edit");
 
-    const initialValue = this.element.querySelector("[data-test-comment] input")
-      .value;
+    const initialValue = this.element.querySelector(
+      "[data-test-comment]"
+    ).value;
 
-    await fillIn("[data-test-comment] input", "test");
+    await fillIn("[data-test-comment] ", "test");
 
-    assert.dom("[data-test-comment] input").hasValue("test");
+    assert.dom("[data-test-comment]").hasValue("test");
 
     await click("[data-test-reset]");
 
-    assert.dom("[data-test-comment] input").hasValue(initialValue);
+    assert.dom("[data-test-comment]").hasValue(initialValue);
   });
 
-  test("can not verify", async function(assert) {
+  test("can not verify", async function (assert) {
     await visit("/analysis/edit");
 
     assert.dom("[data-test-verified] input").isDisabled();
   });
 
-  test("cannot verify unreviewed reports", async function(assert) {
+  test("cannot verify unreviewed reports", async function (assert) {
     await visit("/analysis/edit?id=1,2,3");
 
     assert.dom("[data-test-verified] input").isDisabled();
@@ -104,7 +105,7 @@ module("Acceptance | analysis edit", function(hooks) {
       );
   });
 
-  test("can verify reviewed reports", async function(assert) {
+  test("can verify reviewed reports", async function (assert) {
     this.reportIntersection.update({ review: false });
     await visit("/analysis/edit?id=1,2,3");
 
@@ -112,11 +113,11 @@ module("Acceptance | analysis edit", function(hooks) {
     assert.dom("[data-test-verified] label").hasAttribute("title", "");
   });
 
-  test("cannot verify report if no reviewer or superuser", async function(assert) {
+  test("cannot verify report if no reviewer or superuser", async function (assert) {
     this.reportIntersection.update({ review: false });
     const user = this.server.create("user");
 
-    this.server.get("users/me", function() {
+    this.server.get("users/me", function () {
       return user;
     });
 
@@ -131,11 +132,11 @@ module("Acceptance | analysis edit", function(hooks) {
       );
   });
 
-  test("cannot verify report if user is not reviewer or superuser and report needs review", async function(assert) {
+  test("cannot verify report if user is not reviewer or superuser and report needs review", async function (assert) {
     this.reportIntersection.update({ review: true });
     const user = this.server.create("user");
 
-    this.server.get("users/me", function() {
+    this.server.get("users/me", function () {
       return user;
     });
 

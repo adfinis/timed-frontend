@@ -2,8 +2,8 @@ import moment from "moment";
 import { module, test } from "qunit";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 
-module("Unit | Utility | parse django duration", function() {
-  test("works", function(assert) {
+module("Unit | Utility | parse django duration", function () {
+  test("works", function (assert) {
     assert.notOk(parseDjangoDuration(""));
     assert.notOk(parseDjangoDuration(null));
 
@@ -13,7 +13,7 @@ module("Unit | Utility | parse django duration", function() {
         .duration({
           hours: 1,
           minutes: 2,
-          seconds: 3
+          seconds: 3,
         })
         .asMilliseconds()
     );
@@ -25,7 +25,7 @@ module("Unit | Utility | parse django duration", function() {
           days: 1,
           hours: 2,
           minutes: 3,
-          seconds: 4
+          seconds: 4,
         })
         .asMilliseconds()
     );
@@ -37,7 +37,7 @@ module("Unit | Utility | parse django duration", function() {
           hours: 1,
           minutes: 2,
           seconds: 3,
-          milliseconds: 4
+          milliseconds: 4,
         })
         .asMilliseconds()
     );
@@ -50,7 +50,7 @@ module("Unit | Utility | parse django duration", function() {
           hours: 2,
           minutes: 3,
           seconds: 4,
-          milliseconds: 5
+          milliseconds: 5,
         })
         .asMilliseconds()
     );
@@ -61,7 +61,7 @@ module("Unit | Utility | parse django duration", function() {
         .duration({
           hours: -1,
           minutes: -2,
-          seconds: -3
+          seconds: -3,
         })
         .asMilliseconds()
     );
@@ -73,7 +73,7 @@ module("Unit | Utility | parse django duration", function() {
           days: -9,
           hours: -1,
           minutes: -2,
-          seconds: -3
+          seconds: -3,
         })
         .asMilliseconds()
     );

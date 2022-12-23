@@ -4,32 +4,32 @@ import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test, skip } from "qunit";
 
-module("Acceptance | auth", function(hooks) {
+module("Acceptance | auth", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(function() {
+  hooks.beforeEach(function () {
     const user = this.server.create("user", {
       firstName: "John",
       lastName: "Doe",
-      password: "123qwe"
+      password: "123qwe",
     });
 
     this.user = user;
 
-    this.server.get("users/me", function() {
+    this.server.get("users/me", function () {
       return user;
     });
   });
 
-  test("can authenticate", async function(assert) {
+  test("can authenticate", async function (assert) {
     await authenticateSession();
 
     await visit("/");
     assert.equal(currentURL(), "/");
   });
 
-  skip("can logout", async function(assert) {
+  skip("can logout", async function (assert) {
     // eslint-disable-next-line camelcase
     await authenticateSession({ user_id: this.user.id });
 

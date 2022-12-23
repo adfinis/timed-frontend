@@ -1,4 +1,6 @@
+import { classNames, tagName } from "@ember-decorators/component";
 import Component from "@ember/component";
+import classic from "ember-classic-decorator";
 
 /**
  * Paginated table component
@@ -7,20 +9,7 @@ import Component from "@ember/component";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * The tagName of the component
-   *
-   * @property {string} tagName
-   * @public
-   */
-  tagName: "table",
-
-  /**
-   * Classes of the component
-   *
-   * @property {string[]} classNames
-   * @public
-   */
-  classNames: ["table", "table--striped", "table--hover"]
-});
+@classic
+@tagName("table")
+@classNames("table", "table--striped", "table--hover")
+export default class PaginatedTable extends Component {}

@@ -25,7 +25,7 @@ export default Component.extend({
     this.setProperties({ second, minute, hour });
   },
 
-  timer: task(function*() {
+  timer: task(function* () {
     for (;;) {
       this._update();
 
@@ -37,5 +37,5 @@ export default Component.extend({
       /* istanbul ignore next */
       yield timeout(1000);
     }
-  }).on("didInsertElement")
+  }).on("didInsertElement"),
 });

@@ -1,10 +1,10 @@
 {{yield}}
 <tr>
   <td colspan="42">
-    {{#if (gt pages 1)}}
-      {{pagination-pager current=page count=pages class='pagination-nav'}}
+    {{#if (gt this.pages 1)}}
+      <PaginationPager @current={{this.page}} @count={{this.pages}} @class="pagination-nav" />
     {{/if}}
-    {{pagination-limit page=page page_size=page_size}}
+    {{pagination-limit page=this.page page_size=this.page_size}}
   </td>
 </tr>
 {{yield to='inverse'}}

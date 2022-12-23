@@ -1,13 +1,15 @@
-<div class="btn-group">
-  <button type="button" data-test-previous title="Previous day" class="btn btn-default" {{action 'setPrevious'}}>
-    {{fa-icon 'arrow-left'}}
-  </button>
-  <button type="button" data-test-today title="Today" class="btn btn-default" {{action 'setToday'}}>
-    Today
-  </button>
-  <button type="button" data-test-next title="Next day" class="btn btn-default" {{action 'setNext'}}>
-    {{fa-icon 'arrow-right'}}
-  </button>
-</div>
+<div class="date-navigation btn-toolbar" ...attributes >
+  <div class="btn-group">
+    <button type="button" data-test-previous title="Previous day" class="btn btn-default" {{on "click" this.setPrevious}}>
+      <FaIcon @icon='arrow-left'/>
+    </button>
+    <button type="button" data-test-today title="Today" class="btn btn-default" {{on "click" this.setToday}}>
+      Today
+    </button>
+    <button type="button" data-test-next title="Next day" class="btn btn-default" {{on "click" this.setNext}}>
+      <FaIcon @icon='arrow-right'/>
+    </button>
+  </div>
 
-{{sy-datepicker-btn value=current on-change=(action on-change)}}
+  <SyDatepickerBtn @value={{@current}} @onChange={{@onChange}} />
+</div>

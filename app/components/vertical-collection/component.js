@@ -1,9 +1,14 @@
+import { isTesting, macroCondition } from "@embroider/macros";
 import VerticalCollectionComponent from "@html-next/vertical-collection/components/vertical-collection/component";
-import Ember from "ember";
+import classic from "ember-classic-decorator";
 
-export default VerticalCollectionComponent.extend({
+@classic
+export default class VerticalCollection extends VerticalCollectionComponent {
   init(...args) {
-    this._super(...args);
-    this.set("renderAll", Ember.testing);
+    super.init(...args);
+
+    if (macroCondition(isTesting())) {
+      this.renderAll = true;
+    }
   }
-});
+}

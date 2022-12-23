@@ -1,41 +1,60 @@
 <div class="btn-toolbar btn-toolbar--right form-group">
-  <button type="button" class="btn btn-success" title="Move all entries to another date" data-test-report-reschedule {{action (mut showReschedule) true}}>Reschedule</button>
+  <button
+    type="button"
+    class="btn btn-success"
+    title="Move all entries to another date"
+    data-test-report-reschedule
+    {{on "click" (fn (mut this.showReschedule) true)}}
+  >Reschedule</button>
 </div>
 
 <div class="form-list form-list--reports">
   <div class="form-list-body">
-    {{#each reports as |report|}}
-      {{report-row
-        report
+    {{#each this.reports as |report|}}
+      <ReportRow
+        @report={{report}}
+        @onSave={{this.saveReport}}
+        @onDelete={{this.deleteReport}}
+        data-test-report-row-id={{report.id}}
         data-test-report-row
-        data-test-report-row-id = report.id
-        on-save                 = (route-action 'saveReport')
-        on-delete               = (route-action 'deleteReport')
-      }}
+      />
     {{/each}}
   </div>
 </div>
 
-{{#sy-modal visible=showReschedule size="small" as |modal|}}
-  {{#modal.header}}
+<SyModal
+  @visible={{this.showReschedule}}
+  @on-close={{toggle "showReschedule" this}}
+  @size="small"
+  as |modal|
+>
+  <modal.header>
     Reschedule timesheet
-  {{/modal.header}}
-  {{#modal.body}}
-    {{#power-calendar
-      class = 'calendar'
-      center = center
-      selected = rescheduleDate
-      onCenterChange = (action (mut center) value='moment')
-      onSelect       = (action (mut rescheduleDate) value='moment')
+  </modal.header>
+  <modal.body>
+    <PowerCalendar
+      class="calendar"
+      @center={{this.center}}
+      @selected={{this.rescheduleDate}}
+      @onCenterChange={{(pick "moment" (fn (mut this.center)))}}
+      @onSelect={{(pick "moment" (fn (mut this.rescheduleDate)))}}
       as |calendar|
-      }}
-      <div class={{if calendar.loading 'loading-mask'}}>
-        {{calendar.nav}}
-        {{calendar.days disabledDates=disabledDates startOfWeek=1}}
+    >
+      <div class={{if calendar.loading "loading-mask"}}>
+        {{calendar.Nav}}
+        <calendar.Days
+          @disabledDates={{this.disabledDates}}
+          @startOfWeek={{1}}
+        />
       </div>
-    {{/power-calendar}}
-  {{/modal.body}}
-  {{#modal.footer}}
-    <button type="submit" class="btn btn-primary" data-test-report-save {{action 'reschedule' rescheduleDate}}>Save</button>
-  {{/modal.footer}}
-{{/sy-modal}}
+    </PowerCalendar>
+  </modal.body>
+  <modal.footer>
+    <button
+      type="submit"
+      class="btn btn-primary"
+      data-test-report-save
+      {{on "click" (prevent-default (fn this.reschedule this.rescheduleDate))}}
+    >Save</button>
+  </modal.footer>
+</SyModal>

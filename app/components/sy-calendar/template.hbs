@@ -1,28 +1,45 @@
-{{#let (assign publicAPI (hash
-  nav=(component navComponent calendar=(readonly publicAPI) onCenterChange=(readonly onCenterChange))
-  days=(component daysComponent calendar=(readonly publicAPI) onSelect=(readonly onSelect))
-)) as |calendar|}}
-  <calendar.nav>
+<PowerCalendar
+  ...attributes
+  class="sy-calendar"
+  @onSelect={{@onSelect}}
+  @selected={{@selected}}
+  @center={{@center}}
+  @onCenterChange={{@onCenterChange}}
+  as |calendar|
+>
+  <calendar.Nav>
     <span class="nav-select-month">
-      {{#let (moment-format calendar.center 'MMMM') as |currentMonth|}}
+      {{#let (moment-format calendar.center "MMMM") as |currentMonth|}}
         {{currentMonth}}
-        <select onchange={{action 'changeCenter' 'month'}}>
-          {{#each months as |month|}}
-            <option value={{month}} selected={{eq month currentMonth}}>{{month}}</option>
+        <select
+          aria-label="Month"
+          {{on "change" (fn this.changeCenter "month" calendar)}}
+        >
+          {{#each this.months as |month|}}
+            <option
+              value={{month}}
+              selected={{eq month currentMonth}}
+            >{{month}}</option>
           {{/each}}
         </select>
       {{/let}}
     </span>
     <span class="nav-select-year">
-      {{#let (moment-format calendar.center 'YYYY') as |currentYear|}}
+      {{#let (moment-format calendar.center "YYYY") as |currentYear|}}
         {{currentYear}}
-        <select onchange={{action 'changeCenter' 'year'}}>
-          {{#each years as |year|}}
-            <option value={{year}} selected={{eq year currentYear}}>{{year}}</option>
+        <select
+          aria-label="Year"
+          {{on "change" (fn this.changeCenter "year" calendar)}}
+        >
+          {{#each this.years as |year|}}
+            <option
+              value={{year}}
+              selected={{eq year currentYear}}
+            >{{year}}</option>
           {{/each}}
         </select>
       {{/let}}
     </span>
-  </calendar.nav>
-  {{calendar.days}}
-{{/let}}
+  </calendar.Nav>
+  <calendar.Days />
+</PowerCalendar>

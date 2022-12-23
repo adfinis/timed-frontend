@@ -71,7 +71,7 @@ const DurationSinceComponent = Component.extend({
   _compute() {
     this.set(
       "duration",
-      moment.duration(moment().diff(this.get("from"))).add(this.get("elapsed"))
+      moment.duration(moment().diff(this.from)).add(this.elapsed)
     );
   },
 
@@ -81,7 +81,7 @@ const DurationSinceComponent = Component.extend({
    * @proprety {*} timer
    * @public
    */
-  timer: task(function*() {
+  timer: task(function* () {
     for (;;) {
       this._compute();
 
@@ -93,11 +93,11 @@ const DurationSinceComponent = Component.extend({
       /* istanbul ignore next */
       yield timeout(1000);
     }
-  }).on("init")
+  }).on("init"),
 });
 
 DurationSinceComponent.reopenClass({
-  positionalParams: ["from"]
+  positionalParams: ["from"],
 });
 
 export default DurationSinceComponent;

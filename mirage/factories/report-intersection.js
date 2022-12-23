@@ -13,7 +13,7 @@ export default Factory.extend({
     intersection.update({
       customerId: task.project.customer.id,
       projectId: task.project.id,
-      taskId: task.id
+      taskId: task.id,
     });
-  }
+  },
 });

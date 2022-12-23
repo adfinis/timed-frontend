@@ -1,6 +1,8 @@
 import { computed } from "@ember/object";
 import Service, { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 import Ember from "ember";
+import classic from "ember-classic-decorator";
 import moment from "moment";
 
 const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
@@ -15,24 +17,30 @@ const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
  * @extends Ember.Service
  * @public
  */
-export default Service.extend({
-  store: service(),
-  session: service(),
-  notify: service(),
-  amountReports: 0,
+@classic
+export default class UnverifiedReportsService extends Service {
+  @service
+  store;
 
-  hasReports: computed("amountReports", function() {
-    return this.get("amountReports") > 0;
-  }),
+  @service
+  session;
 
-  reportsToDate: computed(function() {
-    return moment()
-      .subtract(1, "month")
-      .endOf("month");
-  }),
+  @service
+  notify;
+
+  @tracked amountReports = 0;
+
+  get hasReports() {
+    return this.amountReports > 0;
+  }
+
+  @computed
+  get reportsToDate() {
+    return moment().subtract(1, "month").endOf("month");
+  }
 
   init() {
-    this._super();
+    super.init();
     this.pollReports();
 
     this.set(
@@ -41,25 +49,25 @@ export default Service.extend({
         ? null
         : setInterval(this.pollReports.bind(this), INTERVAL_DELAY)
     );
-  },
+  }
 
   async pollReports() {
     try {
-      const reports = await this.get("store").query("report", {
-        to_date: this.get("reportsToDate").format("YYYY-MM-DD"),
+      const reports = await this.store.query("report", {
+        to_date: this.reportsToDate.format("YYYY-MM-DD"),
         reviewer: this.session.data.user.id,
         editable: 1,
         verified: 0,
-        page: { number: 1, size: 1 }
+        page: { number: 1, size: 1 },
       });
 
       this.set("amountReports", reports.meta.pagination.count);
     } catch (e) {
       this.notify.error("Error while polling reports");
     }
-  },
+  }
 
   willDestroy() {
     clearInterval(this.intervalId);
   }
-});
+}

@@ -7,60 +7,59 @@ const UsersEditQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditQueryParams.Mixin, {
   setup() {
-    this.get("data").perform(this.get("model.id"));
+    this.data.perform(this.get("model.id"));
   },
 
-  data: task(function*(uid) {
+  data: task(function* (uid) {
     return yield hash({
-      worktimeBalanceLastValidTimesheet: this.get(
-        "worktimeBalanceLastValidTimesheet"
-      ).perform(uid),
-      worktimeBalanceToday: this.get("worktimeBalanceToday").perform(uid),
-      worktimeBalances: this.get("worktimeBalances").perform(uid),
-      absenceBalances: this.get("absenceBalances").perform(uid)
+      worktimeBalanceLastValidTimesheet:
+        this.worktimeBalanceLastValidTimesheet.perform(uid),
+      worktimeBalanceToday: this.worktimeBalanceToday.perform(uid),
+      worktimeBalances: this.worktimeBalances.perform(uid),
+      absenceBalances: this.absenceBalances.perform(uid),
     });
   }),
 
-  worktimeBalanceLastValidTimesheet: task(function*(user) {
+  worktimeBalanceLastValidTimesheet: task(function* (user) {
     const worktimeBalance = yield this.store.query("worktime-balance", {
       user,
-      last_reported_date: 1 // eslint-disable-line camelcase
+      last_reported_date: 1, // eslint-disable-line camelcase
     });
 
     return worktimeBalance.get("firstObject");
   }),
 
-  worktimeBalanceToday: task(function*(user) {
+  worktimeBalanceToday: task(function* (user) {
     const worktimeBalance = yield this.store.query("worktime-balance", {
       user,
-      date: moment().format("YYYY-MM-DD")
+      date: moment().format("YYYY-MM-DD"),
     });
 
     return worktimeBalance.get("firstObject");
   }),
 
-  absenceBalances: task(function*(user) {
+  absenceBalances: task(function* (user) {
     return yield this.store.query("absence-balance", {
       user,
       date: moment().format("YYYY-MM-DD"),
-      include: "absence_type"
+      include: "absence_type",
     });
   }),
 
-  worktimeBalances: task(function*(user) {
+  worktimeBalances: task(function* (user) {
     const dates = [...Array(10).keys()]
-      .map(i => moment().subtract(i, "days"))
+      .map((i) => moment().subtract(i, "days"))
       .reverse();
 
     return yield all(
-      dates.map(async date => {
+      dates.map(async (date) => {
         const balance = await this.store.query("worktime-balance", {
           user,
-          date: date.format("YYYY-MM-DD")
+          date: date.format("YYYY-MM-DD"),
         });
 
         return balance.get("firstObject");
       })
     );
-  })
+  }),
 });

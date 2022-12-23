@@ -3,7 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
+import { action } from "@ember/object";
+import Component from "@glimmer/component";
 
 /**
  * Main component for sy modal
@@ -30,32 +31,15 @@ import Component from "@ember/component";
  * @class SyModalComponent
  * @public
  */
-export default Component.extend({
+export default class SyModal extends Component {
   /**
-   * Whether the modal is visible
+   * Close the modal
    *
-   * @property {Boolean} visible
+   * @method close
    * @public
    */
-  visible: false,
-
-  /**
-   * Actions of the modal component
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Close the modal
-     *
-     * @method close
-     * @public
-     */
-    close() {
-      this.set("visible", false);
-
-      this.getWithDefault("on-close", () => {})();
-    }
+  @action
+  close() {
+    (this.args["on-close"] ?? (() => {}))();
   }
-});
+}

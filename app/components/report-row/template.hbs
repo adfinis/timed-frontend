@@ -1,35 +1,82 @@
-{{#task-selection disabled=(not editable) task=changeset.task as |t|}}
-  <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.customer}}</div>
-  <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.project}}</div>
-  <div class="form-list-cell form-group {{if changeset.error.task 'has-error'}}">{{t.task}}</div>
-{{/task-selection}}
+{{#let (changeset @report this.ReportValidations) as |cs|}}
+  <form ...attributes class="form-list-row" title={{this.title}}>
+    <TaskSelection
+      @disabled={{not this.editable}}
+      @task={{cs.task}}
+      @on-set-task={{fn (mut cs.task)}}
+      as |t|
+    >
+      <div
+        class="form-list-cell form-group {{if cs.error.task 'has-error'}}"
+      >{{t.customer}}</div>
+      <div
+        class="form-list-cell form-group {{if cs.error.task 'has-error'}}"
+      >{{t.project}}</div>
+      <div
+        class="form-list-cell form-group {{if cs.error.task 'has-error'}}"
+      >{{t.task}}</div>
+    </TaskSelection>
 
-<div class="form-list-cell form-group">
-  <input
-    type="text"
-    class="form-control comment-field"
-    placeholder="Comment"
-    name="comment"
-    value={{changeset.comment}}
-    disabled={{not editable}}
-    onchange={{action (mut changeset.comment) value='target.value'}}
-    data-test-report-comment
-  >
-  {{#if changeset.task.project.customerVisible }}
-      <CustomerVisibleIcon class="customer-visible-icon" />
-  {{/if}}
-</div>
-<div class="form-list-cell form-group">
-  {{sy-durationpicker-day data-test-report-duration disabled=(not editable) value=changeset.duration on-change=(action (mut changeset.duration))}}</div>
-<div class="form-list-cell form-group">
-  {{sy-checkbox data-test-report-review disabled=(not editable) checked=changeset.review on-change=(action (mut changeset.review)) label='Needs review'}}
-</div>
-<div class="form-list-cell form-group">
-  {{sy-checkbox data-test-report-not-billable disabled=(not editable) checked=changeset.notBillable on-change=(action (mut changeset.notBillable)) label='Not billable'}}
-</div>
-<div class="form-list-cell form-group">
-  {{#if editable}}
-    <button type="button" data-test-delete-report class="btn btn-danger" disabled={{report.verifiedBy.id}} {{action 'delete'}}>{{fa-icon 'trash'}}</button>
-    <button type="submit" data-test-save-report class="btn btn-primary" disabled={{or (not changeset.isDirty) (not changeset.isValid)}} {{action 'save'}}>{{fa-icon 'save'}}</button>
-  {{/if}}
-</div>
+    <div class="form-list-cell form-group">
+      <label for="row-comment" hidden>Comment</label>
+      <input
+        type="text"
+        class="form-control comment-field"
+        placeholder="Comment"
+        name="comment"
+        id="row-comment"
+        value={{cs.comment}}
+        disabled={{not this.editable}}
+        {{on "change" (pick "target.value" (fn (mut cs.comment)))}}
+        data-test-report-comment
+      />
+      {{#if cs.task.project.customerVisible}}
+        <CustomerVisibleIcon class="customer-visible-icon" />
+      {{/if}}
+    </div>
+    <div class="form-list-cell form-group">
+      <SyDurationpickerDay
+        data-test-report-duration
+        @disabled={{(not this.editable)}}
+        @value={{cs.duration}}
+        @onChange={{fn (mut cs.duration)}}
+      />
+    </div>
+    <div class="form-list-cell form-group">
+      <SyCheckbox
+        data-test-report-review
+        @disabled={{(not this.editable)}}
+        @checked={{cs.review}}
+        @onChange={{fn (mut cs.review)}}
+        @label="Needs review"
+      />
+    </div>
+    <div class="form-list-cell form-group">
+      <SyCheckbox
+        data-test-report-not-billable
+        @disabled={{(not this.editable)}}
+        @checked={{cs.notBillable}}
+        @onChange={{fn (mut cs.notBillable)}}
+        @label="Not billable"
+      />
+    </div>
+    <div class="form-list-cell form-group">
+      {{#if this.editable}}
+        <button
+          type="button"
+          data-test-delete-report
+          class="btn btn-danger"
+          disabled={{this.report.verifiedBy.id}}
+          {{on "click" (fn (optional @onDelete) @report)}}
+        >{{fa-icon "trash"}}</button>
+        <button
+          type="submit"
+          data-test-save-report
+          class="btn btn-primary"
+          disabled={{or (not cs.isDirty) (not cs.isValid)}}
+          {{on "click" (prevent-default (fn (optional @onSave) cs))}}
+        >{{fa-icon "save"}}</button>
+      {{/if}}
+    </div>
+  </form>
+{{/let}}

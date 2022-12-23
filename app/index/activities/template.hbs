@@ -3,7 +3,7 @@
     type="button"
     class="btn btn-success"
     title="Generate timesheet for all the activities listed above"
-    {{action 'generateReportsCheck'}}
+    {{on "click" this.generateReportsCheck}}
     data-test-activity-generate-timesheet
   >
     Generate timesheet
@@ -14,29 +14,35 @@
   <div class="activities-edit">{{outlet}}</div>
 
   <div class="activities-list">
-    {{#if activities}}
+    {{#if this.activities}}
       <table class="table table--striped table--activities">
         <tbody>
-          {{#each sortedActivities as |activity|}}
-          <tr
-            title={{unless activity.transferred "Click to edit"}}
-            data-test-activity-row
-            data-test-activity-row-id={{activity.id}}
-            class="{{if activity.transferred 'transferred' 'pointer'}} {{if activity.active 'primary'}} {{if (eq activity.id editId) 'selected'}}"
-            {{action 'editActivity' activity}}
-          >
+          {{#each this.sortedActivities as |activity|}}
+            <tr
+              title={{unless activity.transferred "Click to edit"}}
+              data-test-activity-row
+              data-test-activity-row-id={{activity.id}}
+              class="{{if activity.transferred 'transferred' 'pointer'}}
+                {{if activity.active 'primary'}}
+                {{if (eq activity.id this.editId) 'selected'}}"
+              {{on "click" (fn this.editActivity activity)}}
+            >
               <td>
-                {{moment-format activity.from 'HH:mm'}}
+                {{moment-format activity.from "HH:mm"}}
                 -
                 {{#unless activity.active}}
-                  {{moment-format activity.to 'HH:mm'}}
+                  {{moment-format activity.to "HH:mm"}}
                 {{/unless}}
               </td>
-              <td title='{{activity.task.project.customer.name}} > {{activity.task.project.name}} > {{activity.task.name}}'>
+              <td
+                title="{{activity.task.project.customer.name}} > {{activity.task.project.name}} > {{activity.task.name}}"
+              >
                 {{#if activity.task}}
                   <div>
-                    {{activity.task.project.customer.name}} <strong>&gt;</strong>
-                    {{activity.task.project.name}} <strong>&gt;</strong>
+                    {{activity.task.project.customer.name}}
+                    <strong>&gt;</strong>
+                    {{activity.task.project.name}}
+                    <strong>&gt;</strong>
                     {{activity.task.name}}
                   </div>
                 {{else}}
@@ -45,13 +51,15 @@
               </td>
               <td title={{activity.comment}}>
                 <div class="comment-field">{{activity.comment}}</div>
-                {{#if activity.task.project.customerVisible }}
+                {{#if activity.task.project.customerVisible}}
                   <CustomerVisibleIcon class="activity-customer-visible-icon" />
                 {{/if}}
               </td>
               <td>
-                <div>{{sy-checkmark checked=activity.review}} Needs review</div>
-                <div>{{sy-checkmark checked=activity.notBillable}} Not billable</div>
+                <div><SyCheckmark @checked={{activity.review}} />
+                  Needs review</div>
+                <div><SyCheckmark @checked={{activity.notBillable}} />
+                  Not billable</div>
               </td>
               <td>
                 {{#if activity.active}}
@@ -66,18 +74,18 @@
                     type="button"
                     data-test-stop-activity
                     class="btn btn-danger"
-                    {{action 'stopActivity' activity bubbles=false}}
+                    {{on "click" (fn this.stopActivity activity)}}
                   >
-                    {{fa-icon 'stop'}}
+                    {{fa-icon "stop"}}
                   </button>
                 {{else}}
                   <button
                     type="button"
                     data-test-start-activity
                     class="btn btn-success"
-                    {{action 'startActivity' activity bubbles=false}}
+                    {{on "click" (fn this.startActivity activity)}}
                   >
-                    {{fa-icon 'play'}}
+                    {{fa-icon "play"}}
                   </button>
                 {{/if}}
               </td>
@@ -91,28 +99,70 @@
   </div>
 </div>
 
-{{#sy-modal visible=showOverlappingWarning as |modal|}}
-  {{#modal.header}}
+<SyModal @visible={{this.showOverlappingWarning}} as |modal|>
+  <modal.header>
     Activities overlap
-  {{/modal.header}}
-  {{#modal.body}}
+  </modal.header>
+  <modal.body>
     Overlapping activities will not be taken into account for the timesheet.
-  {{/modal.body}}
-  {{#modal.footer data-test-overlapping-warning}}
-   <button class="btn btn-primary" {{action (if showUnknownWarning (action (mut showOverlappingWarning) false) 'generateReports')}}>That's fine</button>
-   <button class="btn btn-default" {{action (queue (action (mut showOverlappingWarning) false) (action (mut showUnknownWarning) false))}}>Cancel</button>
-  {{/modal.footer}}
-{{/sy-modal}}
+  </modal.body>
+  <modal.footer data-test-overlapping-warning>
+    <button
+      class="btn btn-primary"
+      type="button"
+      {{on
+        "click"
+        (if
+          this.showUnknownWarning
+          (fn (mut this.showOverlappingWarning) false)
+          this.generateReports
+        )
+      }}
+    >That's fine</button>
+    <button
+      class="btn btn-default"
+      type="button"
+      {{on
+        "click"
+        (queue
+          (fn (mut this.showOverlappingWarning) false)
+          (fn (mut this.showUnknownWarning) false)
+        )
+      }}
+    >Cancel</button>
+  </modal.footer>
+</SyModal>
 
-{{#sy-modal visible=showUnknownWarning as |modal|}}
-  {{#modal.header}}
+<SyModal @visible={{this.showUnknownWarning}} as |modal|>
+  <modal.header>
     Activities contain unknown tasks
-  {{/modal.header}}
-  {{#modal.body}}
+  </modal.header>
+  <modal.body>
     Unknown tasks will not be taken into account for the timesheet.
-  {{/modal.body}}
-  {{#modal.footer data-test-unknown-warning}}
-   <button class="btn btn-primary" {{action (if showOverlappingWarning (action (mut showUnknownWarning) false) 'generateReports')}}>That's fine</button>
-   <button class="btn btn-default" {{action (queue (action (mut showUnknownWarning) false) (action (mut showOverlappingWarning) false))}}>Cancel</button>
-  {{/modal.footer}}
-{{/sy-modal}}
+  </modal.body>
+  <modal.footer data-test-unknown-warning>
+    <button
+      class="btn btn-primary"
+      type="button"
+      {{on
+        "click"
+        (if
+          this.showOverlappingWarning
+          (fn (mut this.showUnknownWarning) false)
+          this.generateReports
+        )
+      }}
+    >That's fine</button>
+    <button
+      class="btn btn-default"
+      type="button"
+      {{on
+        "click"
+        (queue
+          (fn (mut this.showUnknownWarning) false)
+          (fn (mut this.showOverlappingWarning) false)
+        )
+      }}
+    >Cancel</button>
+  </modal.footer>
+</SyModal>

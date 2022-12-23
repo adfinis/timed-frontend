@@ -1,10 +1,8 @@
-{{#if unverifiedReports.hasReports}}
+{{#if this.unverifiedReports.hasReports}}
   <li class="nav-top-list-item" title="You have reports to verify">
-    {{#link-to "analysis.index"
-               (query-params
-                 fromDate=null
-                 toDate=unverifiedReports.reportsToDate
-                 reviewer=session.data.user.id
+    <LinkTo @route="analysis.index" @query={{hash fromDate=null
+                 toDate=this.unverifiedReports.reportsToDate
+                 reviewer=this.session.data.user.id
                  editable=1
                  verified=0
                  customer=null
@@ -14,11 +12,9 @@
                  billingType=null
                  costCenter=null
                  review=""
-                 notBillable=""
-               )
-    }}
+                 notBillable=""}}>
       {{fa-icon "exclamation-triangle"}}
-      {{unverifiedReports.amountReports}}
-    {{/link-to}}
+      {{this.unverifiedReports.amountReports}}
+    </LinkTo>
   </li>
 {{/if}}

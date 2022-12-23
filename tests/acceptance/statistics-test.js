@@ -1,22 +1,15 @@
-import {
-  click,
-  fillIn,
-  currentURL,
-  visit,
-  find,
-  settled
-} from "@ember/test-helpers";
+import { click, fillIn, currentURL, visit, find } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import moment from "moment";
 import { module, test, skip } from "qunit";
 
-module("Acceptance | statistics", function(hooks) {
+module("Acceptance | statistics", function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  hooks.beforeEach(async function() {
+  hooks.beforeEach(async function () {
     const user = this.server.create("user");
 
     // eslint-disable-next-line camelcase
@@ -30,70 +23,56 @@ module("Acceptance | statistics", function(hooks) {
     this.server.createList("user-statistic", 5);
   });
 
-  test("can view statistics by year", async function(assert) {
+  test("can view statistics by year", async function (assert) {
     await visit("/statistics");
-
-    await settled();
 
     assert.dom("thead > tr > th").exists({ count: 3 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });
 
-  test("can view statistics by month", async function(assert) {
+  test("can view statistics by month", async function (assert) {
     await visit("/statistics?type=month");
-
-    await settled();
 
     assert.dom("thead > tr > th").exists({ count: 4 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });
 
-  test("can view statistics by customer", async function(assert) {
+  test("can view statistics by customer", async function (assert) {
     await visit("/statistics?type=customer");
-
-    await settled();
 
     assert.dom("thead > tr > th").exists({ count: 3 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });
 
-  test("can view statistics by project", async function(assert) {
+  test("can view statistics by project", async function (assert) {
     await visit("/statistics?type=project&customer=1");
-
-    await settled();
 
     assert.dom("thead > tr > th").exists({ count: 5 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });
 
-  skip("can view statistics by task", async function(assert) {
+  skip("can view statistics by task", async function (assert) {
     await visit("/statistics?type=task&customer=1&project=1");
-
-    await settled();
 
     assert.dom("thead > tr > th").exists({ count: 6 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });
 
-  test("can view statistics by user", async function(assert) {
+  test("can view statistics by user", async function (assert) {
     await visit("/statistics?type=user");
-
-    await settled();
 
     assert.dom("thead > tr > th").exists({ count: 3 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });
 
-  test("can filter and reset filter", async function(assert) {
+  test("can filter and reset filter", async function (assert) {
     await visit("/statistics");
-
-    await settled();
 
     const from = moment();
     const to = moment().subtract(10, "days");
@@ -113,20 +92,16 @@ module("Acceptance | statistics", function(hooks) {
     assert.notOk(currentURL().includes(`toDate=${to}`));
   });
 
-  test("shows missing parameters message", async function(assert) {
+  test("shows missing parameters message", async function (assert) {
     await visit("/statistics?type=task");
-
-    await settled();
 
     assert
       .dom(".empty")
       .includesText("Customer and project are required parameters");
   });
 
-  test("resets ordering on type change", async function(assert) {
+  test("resets ordering on type change", async function (assert) {
     await visit("/statistics?type=month&ordering=year");
-
-    await settled();
 
     await click(".nav-tabs li a:first-child");
 
@@ -135,7 +110,7 @@ module("Acceptance | statistics", function(hooks) {
     );
   });
 
-  test("can have initial filters", async function(assert) {
+  test("can have initial filters", async function (assert) {
     await this.server.createList("billing-type", 3);
 
     const params = {
@@ -145,22 +120,18 @@ module("Acceptance | statistics", function(hooks) {
       user: 1,
       reviewer: 1,
       billingType: 1,
-      fromDate: moment()
-        .subtract(10, "days")
-        .format("YYYY-MM-DD"),
+      fromDate: moment().subtract(10, "days").format("YYYY-MM-DD"),
       toDate: moment().format("YYYY-MM-DD"),
       review: 1,
       notBillable: 0,
-      verified: 0
+      verified: 0,
     };
 
     await visit(
       `/statistics?${Object.keys(params)
-        .map(k => `${k}=${params[k]}`)
+        .map((k) => `${k}=${params[k]}`)
         .join("&")}`
     );
-
-    await settled();
 
     assert
       .dom("[data-test-filter-customer] .ember-power-select-selected-item")

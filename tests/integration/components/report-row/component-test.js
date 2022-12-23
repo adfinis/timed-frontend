@@ -1,28 +1,21 @@
 import EmberObject from "@ember/object";
 import { click, render } from "@ember/test-helpers";
+import { hbs } from "ember-cli-htmlbars";
+import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import { module, test } from "qunit";
-import { startMirage } from "timed/initializers/ember-cli-mirage";
 
-module("Integration | Component | report row", function(hooks) {
+module("Integration | Component | report row", function (hooks) {
   setupRenderingTest(hooks);
+  setupMirage(hooks);
 
-  hooks.beforeEach(function() {
-    this.server = startMirage();
-  });
-
-  hooks.afterEach(function() {
-    this.server.shutdown();
-  });
-
-  test("renders", async function(assert) {
+  test("renders", async function (assert) {
     this.set(
       "report",
       EmberObject.create({ verifiedBy: EmberObject.create() })
     );
 
-    await render(hbs`{{report-row report}}`);
+    await render(hbs`<ReportRow @report={{this.report}}/>`);
 
     assert.dom("form").exists({ count: 1 });
     assert.dom(".form-group").exists({ count: 8 });
@@ -30,7 +23,7 @@ module("Integration | Component | report row", function(hooks) {
     assert.dom(".btn-primary").exists({ count: 1 });
   });
 
-  test("can delete row", async function(assert) {
+  test("can delete row", async function (assert) {
     this.set(
       "report",
       EmberObject.create({ verifiedBy: EmberObject.create() })
@@ -38,30 +31,30 @@ module("Integration | Component | report row", function(hooks) {
     this.set("didDelete", false);
 
     await render(hbs`
-      {{report-row
-        report
-        on-delete=(action (mut didDelete) true)
-      }}
+      <ReportRow
+        @report={{this.report}}
+        @onDelete={{(fn (mut this.didDelete) true)}}
+      />
     `);
 
     await click(".btn-danger");
 
-    assert.ok(this.get("didDelete"));
+    assert.ok(this.didDelete);
   });
 
-  test("can be read-only", async function(assert) {
+  test("can be read-only", async function (assert) {
     this.set(
       "report",
       EmberObject.create({
         verifiedBy: EmberObject.create({
           id: 1,
-          fullName: "John Doe"
+          fullName: "John Doe",
         }),
-        billed: true
+        billed: true,
       })
     );
 
-    await render(hbs`{{report-row report}}`);
+    await render(hbs`<ReportRow @report={{this.report}} />`);
 
     assert.dom("input").isDisabled();
     assert.dom("form").hasAttribute("title", /John Doe/);

@@ -1,0 +1,14 @@
+<input
+  aria-label="time picker"
+  type="text"
+  class="form-control"
+  pattern={{this.pattern}}
+  value={{this.displayValue}}
+  maxlength={{this.maxlength}}
+  placeholder={{this.placeholder}}
+  autocomplete="off"
+  {{!template-lint-disable no-down-event-binding}}
+  {{on "keydown" this.keyDown}}
+  {{on "change" this.change}}
+  {{on "focusout" (optional @onFocusOut)}}
+/>

@@ -3,11 +3,10 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
+
+import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
-import Changeset from "ember-changeset";
-import lookupValidator from "ember-changeset-validations";
+import Component from "@glimmer/component";
 import ReportValidations from "timed/validations/report";
 
 /**
@@ -17,84 +16,39 @@ import ReportValidations from "timed/validations/report";
  * @extends Ember.Component
  * @public
  */
-const ReportRowComponent = Component.extend({
-  can: service(),
+export default class ReportRowComponent extends Component {
+  @service abilities;
 
-  /**
-   * The element tag name
-   *
-   * @property {String} tagName
-   * @public
-   */
-  tagName: "form",
+  ReportValidations = ReportValidations;
 
-  /**
-   * CSS class names
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["form-list-row"],
+  get editable() {
+    return this.abilities.can("edit report", this.args.report);
+  }
 
-  attributeBindings: ["title"],
-
-  editable: computed("report.{verifiedBy,billed}", {
-    get() {
-      return this.can.can("edit report", this.get("report"));
-    }
-  }),
-
-  title: computed("editable", function() {
+  get title() {
     return this.editable
       ? ""
-      : `This entry was already verified by ${this.get(
-          "report.verifiedBy.fullName"
-        )} and therefore not editable anymore`;
-  }),
+      : `This entry was already verified by ${this.args.report.verifiedBy.fullName} and therefore not editable anymore`;
+  }
 
   /**
-   * The changeset to edit
+   * Save the row
    *
-   * @property {EmberChangeset.Changeset} changeset
+   * @method save
    * @public
    */
-  changeset: computed("report.{id,verifiedBy}", function() {
-    const c = new Changeset(
-      this.get("report"),
-      lookupValidator(ReportValidations),
-      ReportValidations
-    );
-
-    c.validate();
-
-    return c;
-  }),
-
-  actions: {
-    /**
-     * Save the row
-     *
-     * @method save
-     * @public
-     */
-    save() {
-      this.get("on-save")(this.get("changeset"));
-    },
-
-    /**
-     * Delete the row
-     *
-     * @method delete
-     * @public
-     */
-    delete() {
-      this.get("on-delete")(this.get("report"));
-    }
+  @action
+  save(changeset) {
+    this.args.onSave(changeset);
   }
-});
-
-ReportRowComponent.reopenClass({
-  positionalParams: ["report"]
-});
-
-export default ReportRowComponent;
+  /**
+   * Delete the row
+   *
+   * @method delete
+   * @public
+   */
+  @action
+  delete() {
+    this.args.onDelete(this.args.report);
+  }
+}

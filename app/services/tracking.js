@@ -1,15 +1,12 @@
-/**
- * @module timed
- * @submodule timed-services
- * @public
- */
 import { getOwner } from "@ember/application";
-import { computed, observer } from "@ember/object";
+import { get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize } from "@ember/string";
-import Ember from "ember";
-import { task, timeout } from "ember-concurrency";
+import { isTesting, macroCondition } from "@embroider/macros";
+import { tracked } from "@glimmer/tracking";
+import { dropTask, task, timeout } from "ember-concurrency";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
 import moment from "moment";
 import formatDuration from "timed/utils/format-duration";
 
@@ -22,14 +19,14 @@ import formatDuration from "timed/utils/format-duration";
  * @extends Ember.Service
  * @public
  */
-export default Service.extend({
+export default class TrackingService extends Service {
   /**
    * The store service
    *
    * @property {Ember.Store} store
    * @public
    */
-  store: service("store"),
+  @service store;
 
   /**
    * The notify service
@@ -37,7 +34,28 @@ export default Service.extend({
    * @property {EmberNotify.NotifyService} notify
    * @public
    */
-  notify: service("notify"),
+  @service notify;
+
+  /**
+   * Flag indicating if the tracking reports is currently generated.
+   * This is used to prevent doubled time accumulation in task sum displays.
+   */
+  @tracked generatingReports = false;
+  @tracked _date;
+
+  constructor(...args) {
+    super(...args);
+
+    this.fetchActiveActivity.perform();
+  }
+
+  get date() {
+    return this._date ?? moment();
+  }
+
+  set date(date) {
+    this._date = date;
+  }
 
   /**
    * Init hook, get the current activity
@@ -45,18 +63,19 @@ export default Service.extend({
    * @method init
    * @public
    */
-  async init() {
-    this._super();
+  @task
+  *fetchActiveActivity() {
+    yield Promise.resolve();
 
-    const actives = await this.get("store").query("activity", {
+    const actives = yield this.store.query("activity", {
       include: "task,task.project,task.project.customer",
-      active: true
+      active: true,
     });
 
-    this.set("activity", actives.getWithDefault("firstObject", null));
+    this.activity = actives.firstObject ?? null;
 
-    this.get("_computeTitle").perform();
-  },
+    this._computeTitle.perform();
+  }
 
   /**
    * The application
@@ -64,9 +83,9 @@ export default Service.extend({
    * @property {Ember.Application} application
    * @public
    */
-  application: computed(function() {
+  get application() {
     return getOwner(this).lookup("application:main");
-  }),
+  }
 
   /**
    * The default application title
@@ -74,24 +93,9 @@ export default Service.extend({
    * @property {String} title
    * @public
    */
-  title: computed("application.name", function() {
-    return capitalize(camelize(this.get("application.name") || "Timed"));
-  }),
-
-  /**
-   * Trigger a reload of the title because the activity has changed
-   *
-   * @method _triggerTitle
-   * @private
-   */
-  // eslint-disable-next-line ember/no-observers
-  _triggerTitle: observer("activity.active", function() {
-    if (this.get("activity.active")) {
-      this.get("_computeTitle").perform();
-    } else {
-      this.setTitle(this.get("title"));
-    }
-  }),
+  get title() {
+    return capitalize(camelize(this.application.name || "Timed"));
+  }
 
   /**
    * Set the doctitle
@@ -104,12 +108,13 @@ export default Service.extend({
     scheduleOnce(
       "afterRender",
       this,
-      t => {
-        document.title = t;
-      },
-      title
+      this.scheduleDocumentTitle.bind(this, title)
     );
-  },
+  }
+
+  scheduleDocumentTitle(t) {
+    document.title = t;
+  }
 
   /**
    * Set the title of the application to show the current tracking time and
@@ -118,33 +123,30 @@ export default Service.extend({
    * @method _computeTitle
    * @private
    */
-  _computeTitle: task(function*() {
-    while (this.get("activity.active")) {
-      const duration = moment.duration(
-        moment().diff(this.get("activity.from"))
-      );
+  @task
+  *_computeTitle() {
+    while (this.activity.active) {
+      const duration = moment.duration(moment().diff(this.activity.from));
 
       let task = "Unknown Task";
 
-      if (this.get("activity.task.content")) {
-        const c = this.get("activity.task.project.customer.name");
-        const p = this.get("activity.task.project.name");
-        const t = this.get("activity.task.name");
+      if (get(this, "activity.task.content")) {
+        const c = get(this, "activity.task.project.customer.name");
+        const p = get(this, "activity.task.project.name");
+        const t = get(this, "activity.task.name");
 
         task = `${c} > ${p} > ${t}`;
       }
 
       this.setTitle(`${formatDuration(duration)} (${task})`);
 
-      /* istanbul ignore else */
-      if (Ember.testing) {
+      if (macroCondition(isTesting())) {
         return;
       }
 
-      /* istanbul ignore next */
       yield timeout(1000);
     }
-  }),
+  }
 
   /**
    * The current activity
@@ -152,7 +154,7 @@ export default Service.extend({
    * @property {Activity} currentActivity
    * @public
    */
-  _activity: null,
+  @tracked _activity = null;
 
   /**
    * The currenty activity or create a new one if none is set
@@ -160,18 +162,15 @@ export default Service.extend({
    * @property {Activity} activity
    * @public
    */
-  activity: computed("_activity", {
-    get() {
-      return this.get("_activity");
-    },
-    set(key, value) {
-      const newActivity = value || this.get("store").createRecord("activity");
+  get activity() {
+    return this._activity;
+  }
 
-      this.set("_activity", newActivity);
+  set activity(value) {
+    const newActivity = value || this.store.createRecord("activity");
 
-      return newActivity;
-    }
-  }),
+    this._activity = newActivity;
+  }
 
   /**
    * Start the activity
@@ -179,17 +178,19 @@ export default Service.extend({
    * @method startActivity
    * @public
    */
-  startActivity: task(function*() {
+  @dropTask
+  *startActivity() {
     try {
-      const activity = yield this.get("activity").start();
-      this.set("activity", activity);
+      const activity = yield this.activity.start();
+      this.activity = activity;
 
-      this.get("notify").success("Activity was started");
+      this.notify.success("Activity was started");
     } catch (e) {
-      /* istanbul ignore next */
-      this.get("notify").error("Error while starting the activity");
+      this.notify.error("Error while starting the activity");
+    } finally {
+      this._computeTitle.perform();
     }
-  }).drop(),
+  }
 
   /**
    * Stop the activity
@@ -197,20 +198,38 @@ export default Service.extend({
    * @method stopActivity
    * @public
    */
-  stopActivity: task(function*() {
+  @dropTask
+  *stopActivity() {
     try {
-      if (!this.get("activity.isNew")) {
-        yield this.get("activity").stop();
+      if (!this.activity?.isNew) {
+        yield this.activity.stop();
 
-        this.get("notify").success("Activity was stopped");
+        this.notify.success("Activity was stopped");
       }
 
-      this.set("activity", null);
+      this.activity = null;
     } catch (e) {
-      /* istanbul ignore next */
-      this.get("notify").error("Error while stopping the activity");
+      this.notify.error("Error while stopping the activity");
+    } finally {
+      this.setTitle(this.title);
     }
-  }).drop(),
+  }
+
+  get hasActiveActivity() {
+    return this.activity?.active;
+  }
+
+  get activeCustomer() {
+    return this.activity?.task?.get("project.customer");
+  }
+
+  get activeProject() {
+    return this.activity?.task?.get("project");
+  }
+
+  get activeTask() {
+    return this.activity?.get("task");
+  }
 
   /**
    * The 10 last used tasks
@@ -218,12 +237,20 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} recentTasks
    * @public
    */
-  recentTasks: task(function*() {
-    return yield this.get("store").query("task", {
+  @dropTask
+  *fetchRecentTasks() {
+    yield Promise.resolve();
+    return yield this.store.query("task", {
       my_most_frequent: 10, // eslint-disable-line camelcase
-      include: "project,project.customer"
+      include: "project,project.customer",
     });
-  }).drop(),
+  }
+
+  recentTasksData = trackedTask(this, this.fetchRecentTasks, () => []);
+
+  get recentTasks() {
+    return this.recentTasksData.value ?? [];
+  }
 
   /**
    * All users
@@ -231,9 +258,10 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} users
    * @public
    */
-  users: task(function*() {
-    return yield this.get("store").query("user", {});
-  }),
+  @task
+  *users() {
+    return yield this.store.query("user", {});
+  }
 
   /**
    * All customers
@@ -241,9 +269,17 @@ export default Service.extend({
    * @property {EmberConcurrency.Task} customers
    * @public
    */
-  customers: task(function*() {
-    return yield this.get("store").query("customer", {});
-  }).drop(),
+  @dropTask
+  *fetchCustomers() {
+    yield Promise.resolve();
+    return yield this.store.query("customer", {});
+  }
+
+  customersData = trackedTask(this, this.fetchCustomers, () => {});
+
+  get customers() {
+    return this.customersData.value ?? [];
+  }
 
   /**
    * Projects filtered by customer
@@ -252,15 +288,15 @@ export default Service.extend({
    * @param {Number} customer The customer id to filter by
    * @public
    */
-  projects: task(function*(customer) {
-    /* istanbul ignore next */
+  @task
+  *projects(customer) {
     if (!customer) {
       // We can't test this because the UI prevents it
       throw new Error("No customer selected");
     }
 
-    return yield this.get("store").query("project", { customer });
-  }),
+    return yield this.store.query("project", { customer });
+  }
 
   /**
    * Tasks filtered by project
@@ -269,13 +305,13 @@ export default Service.extend({
    * @param {Number} project The project id to filter by
    * @public
    */
-  tasks: task(function*(project) {
-    /* istanbul ignore next */
+  @task
+  *tasks(project) {
     if (!project) {
       // We can't test this because the UI prevents it
       throw new Error("No project selected");
     }
 
-    return yield this.get("store").query("task", { project });
-  })
-});
+    return yield this.store.query("task", { project });
+  }
+}

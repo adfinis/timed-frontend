@@ -1,0 +1,15 @@
+.sy-datepicker-trigger.ember-basic-dropdown-trigger {
+  position: relative;
+
+  span.clear {
+    cursor: pointer;
+    color: #555;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    background-color: #fff;
+    padding: 0 2px;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}

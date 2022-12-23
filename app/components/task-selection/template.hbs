@@ -1,50 +1,54 @@
-{{yield (hash
-  customer             = (component 'power-select'
-    options            = customersAndRecentTasks
-    disabled           = disabled
-    selected           = customer
-    placeholder        = 'Select customer...'
-    searchField        = 'longName'
-    allowClear         = true
-    tagName            = 'div'
-    class              = 'customer-select'
-    onchange           = (action (mut customer))
-    extra              = (hash
-      lazy             = true
-      selectedTemplate = selectedTemplate
-      optionTemplate   = customerOptionTemplate
+{{yield
+  (hash
+    customer=(component
+      (ensure-safe-component "optimized-power-select")
+      options=this.customersAndRecentTasks
+      disabled=@disabled
+      selected=this.customer
+      placeholder="Select customer..."
+      searchField="longName"
+      allowClear=true
+      tagName="div"
+      class="customer-select"
+      onChange=this.onCustomerChange
+      extra=(hash
+        selectedTemplate=this.selectedTemplate
+        optionTemplate=this.customerOptionTemplate
+      )
     )
-  )
-  project              = (component 'power-select'
-    options            = projects
-    disabled           = (or disabled (not customer))
-    selected           = project
-    placeholder        = 'Select project...'
-    searchField        = 'name'
-    allowClear         = true
-    tagName            = 'div'
-    class              = 'project-select'
-    onchange           = (action (mut project))
-    extra              = (hash
-      selectedTemplate = selectedTemplate
-      optionTemplate   = projectOptionTemplate
+    project=(component
+      (ensure-safe-component "optimized-power-select")
+      options=this.projects
+      disabled=(or @disabled (not this.customer))
+      selected=this.project
+      placeholder="Select project..."
+      searchField="name"
+      allowClear=true
+      tagName="div"
+      class="project-select"
+      onChange=this.onProjectChange
+      extra=(hash
+        selectedTemplate=this.selectedTemplate
+        optionTemplate=this.projectOptionTemplate
+      )
     )
-  )
-  task                 = (component 'power-select'
-    options            = tasks
-    disabled           = (or disabled (not project))
-    selected           = task
-    placeholder        = 'Select task...'
-    searchField        = 'name'
-    allowClear         = true
-    tagName            = 'div'
-    class              = 'task-select'
-    onchange           = (action (mut task))
-    extra              = (hash
-      selectedTemplate = selectedTemplate
-      optionTemplate   = taskOptionTemplate
+    task=(component
+      (ensure-safe-component "optimized-power-select")
+      options=this.tasks
+      disabled=(or @disabled (not this.project))
+      selected=this.task
+      placeholder="Select task..."
+      searchField="name"
+      allowClear=true
+      tagName="div"
+      class="task-select"
+      onChange=this.onTaskChange
+      extra=(hash
+        selectedTemplate=this.selectedTemplate
+        optionTemplate=this.taskOptionTemplate
+      )
     )
+    clear=this.clear
+    reset=this.reset
   )
-  clear                = (action 'clear')
-  reset                = (action 'reset')
-)}}
+}}

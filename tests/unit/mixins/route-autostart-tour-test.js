@@ -2,8 +2,8 @@ import EmberObject from "@ember/object";
 import { module, test } from "qunit";
 import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
-module("Unit | Mixin | route autostart tour", function() {
-  test("works", function(assert) {
+module("Unit | Mixin | route autostart tour", function () {
+  test("works", function (assert) {
     const RouteAutostartTourObject = EmberObject.extend(
       RouteAutostartTourMixin
     );
@@ -11,12 +11,12 @@ module("Unit | Mixin | route autostart tour", function() {
     assert.ok(subject);
   });
 
-  test("can get parent route name", function(assert) {
+  test("can get parent route name", function (assert) {
     const RouteAutostartTourObject = EmberObject.extend(
       RouteAutostartTourMixin
     );
     const subject = RouteAutostartTourObject.create({
-      routeName: "foo.bar.baz"
+      routeName: "foo.bar.baz",
     });
 
     assert.equal(subject._getParentRouteName(), "foo.bar");
@@ -26,19 +26,19 @@ module("Unit | Mixin | route autostart tour", function() {
     assert.equal(subject._getParentRouteName(), "");
   });
 
-  test("can check if a tour is wanted", function(assert) {
+  test("can check if a tour is wanted", function (assert) {
     const RouteAutostartTourObject = EmberObject.extend(
       RouteAutostartTourMixin
     );
     const subject = RouteAutostartTourObject.create({
       routeName: "foo.bar.baz",
-      autostartTour: EmberObject.create({ done: [] })
+      autostartTour: EmberObject.create({ done: [] }),
     });
 
     subject.set("media", {
       isMd: false,
       isLg: false,
-      isXl: false
+      isXl: false,
     });
 
     assert.notOk(
@@ -48,7 +48,7 @@ module("Unit | Mixin | route autostart tour", function() {
     subject.set("media", {
       isMd: true,
       isLg: false,
-      isXl: false
+      isXl: false,
     });
 
     assert.ok(

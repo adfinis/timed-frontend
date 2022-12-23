@@ -1,11 +1,11 @@
-const notNullOrUndefined = value => value !== null && value !== undefined;
+const notNullOrUndefined = (value) => value !== null && value !== undefined;
 
-export const cleanParams = params =>
+export const cleanParams = (params) =>
   Object.keys(params)
-    .filter(key => notNullOrUndefined(params[key]))
+    .filter((key) => notNullOrUndefined(params[key]))
     .reduce((cleaned, key) => ({ ...cleaned, [key]: params[key] }), {});
 
-export const toQueryString = params =>
+export const toQueryString = (params) =>
   Object.keys(params)
-    .map(key => `${key}=${params[key]}`)
+    .map((key) => `${key}=${params[key]}`)
     .join("&");

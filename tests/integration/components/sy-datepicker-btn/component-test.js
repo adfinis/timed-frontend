@@ -1,18 +1,18 @@
 import { find, render } from "@ember/test-helpers";
 import { clickTrigger } from "ember-basic-dropdown/test-support/helpers";
+import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
-import hbs from "htmlbars-inline-precompile";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy datepicker btn", function(hooks) {
+module("Integration | Component | sy datepicker btn", function (hooks) {
   setupRenderingTest(hooks);
 
-  test("toggles the calendar on click of the button", async function(assert) {
+  test("toggles the calendar on click of the button", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepickerBtn @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     assert.dom(".sy-datepicker").doesNotExist();
@@ -22,11 +22,11 @@ module("Integration | Component | sy datepicker btn", function(hooks) {
     assert.dom(".sy-datepicker").exists();
   });
 
-  test("changes value on selection", async function(assert) {
+  test("changes value on selection", async function (assert) {
     this.set("value", moment());
 
     await render(
-      hbs`{{sy-datepicker-btn value=value on-change=(action (mut value))}}`
+      hbs`<SyDatepickerBtn @value={{this.value}} @onChange={{fn (mut this.value)}} />`
     );
 
     await clickTrigger();
@@ -37,10 +37,8 @@ module("Integration | Component | sy datepicker btn", function(hooks) {
 
     target.click();
 
-    const expected = moment()
-      .endOf("month")
-      .endOf("week");
+    const expected = moment().endOf("month").endOf("week");
 
-    assert.ok(this.get("value").isSame(expected, "day"));
+    assert.ok(this.value.isSame(expected, "day"));
   });
 });

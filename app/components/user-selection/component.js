@@ -1,52 +1,54 @@
-import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
-import hbs from "htmlbars-inline-precompile";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
+import { restartableTask } from "ember-concurrency";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
+import customOptionTemplate from "timed/components/optimized-power-select/custom-options/user-option";
+import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/user-selection";
 
-const SELECTED_TEMPLATE = hbs`{{selected.longName}}`;
+export default class UserSelection extends Component {
+  selectedTemplate = customSelectedTemplate;
+  optionTemplate = customOptionTemplate;
 
-const OPTION_TEMPLATE = hbs`
-  <div class="{{unless option.isActive 'inactive'}}" title="{{option.longName}}{{unless option.isActive ' (inactive)'}}">
-    {{option.longName}}
-    {{#unless option.isActive}}
-      <i class="fa fa-ban"></i>
-    {{/unless}}
-  </div>
-`;
+  @service tracking;
+  @service store;
 
-export default Component.extend({
-  tracking: service("tracking"),
-  store: service("store"),
+  @tracked queryOptions = null;
 
-  tagName: "",
+  constructor(...args) {
+    super(...args);
+    this.fetchUsers();
+  }
 
-  selectedTemplate: SELECTED_TEMPLATE,
-
-  optionTemplate: OPTION_TEMPLATE,
-
-  queryOptions: null,
-
-  async init(...args) {
-    this._super(...args);
-
+  async fetchUsers() {
     try {
-      await this.get("tracking.users").perform();
+      await this.tracking.users.perform();
     } catch (e) {
-      /* istanbul ignore next */
       if (e.taskInstance && e.taskInstance.isCanceling) {
         return;
       }
-
-      /* istanbul ignore next */
       throw e;
     }
-  },
+  }
 
-  users: computed("queryOptions", async function() {
-    await this.get("tracking.users.last");
-    const queryOptions = this.get("queryOptions") || {};
+  @restartableTask
+  *usersTask() {
+    // this yield is here 'cause we are modifying the store
+    yield Promise.resolve();
+    yield this.tracking.users.last;
+
+    const queryOptions = this.queryOptions || {};
 
     queryOptions.ordering = "username";
-    return this.get("store").query("user", queryOptions);
-  })
-});
+    return yield this.store.query("user", queryOptions);
+  }
+
+  _users = trackedTask(this, this.usersTask, () => [
+    this.tracking.users,
+    this.queryOptions,
+  ]);
+
+  get users() {
+    return this._users.value ?? [];
+  }
+}

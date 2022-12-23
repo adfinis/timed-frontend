@@ -13,7 +13,7 @@ export default Route.extend({
     this._super(controller, ...args);
 
     controller.set("user", this.modelFor("users.edit"));
-    controller.get("absenceTypes").perform();
-    controller.get("credit").perform();
-  }
+    controller.absenceTypes.perform();
+    controller.credit.perform();
+  },
 });

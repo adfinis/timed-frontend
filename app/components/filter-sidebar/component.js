@@ -1,13 +1,12 @@
-import Component from "@ember/component";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 
-export default Component.extend({
-  tagName: "",
+export default class FilterSidebar extends Component {
+  @tracked visible = false;
+  @tracked destination;
 
-  visible: false,
-
-  didInsertElement(...args) {
-    this._super(...args);
-
-    this.set("destination", document.getElementById("filter-sidebar-target"));
+  constructor(...args) {
+    super(...args);
+    this.destination = document.getElementById("filter-sidebar-target");
   }
-});
+}

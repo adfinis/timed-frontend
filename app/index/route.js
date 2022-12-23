@@ -18,17 +18,14 @@ const DATE_FORMAT = "YYYY-MM-DD";
  * @extends Ember.Route
  * @public
  */
-export default Route.extend(RouteAutostartTourMixin, {
-  /**
-   * The query params
-   *
-   * @property {Object} queryParams
-   * @property {Object} queryParams.day
-   * @public
-   */
-  queryParams: {
-    day: { refreshModel: true }
-  },
+export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
+  lastUpdateDate = null;
+
+  queryParams = {
+    day: {
+      refreshModel: true,
+    },
+  };
 
   /**
    * The session service
@@ -36,15 +33,7 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @property {EmberSimpleAuth.SessionService} session
    * @public
    */
-  session: service(),
-
-  /**
-   * The notify service
-   *
-   * @property {EmberNotify.NotifyService} notify
-   * @public
-   */
-  notify: service("notify"),
+  @service session;
 
   /**
    * Model hook, return the selected day as moment object
@@ -56,8 +45,8 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   model({ day }) {
-    return moment(day, DATE_FORMAT);
-  },
+    return day ? moment(day, DATE_FORMAT) : moment(DATE_FORMAT);
+  }
 
   /**
    * After model hook, fetch all activities, attendances and reports of the
@@ -69,14 +58,17 @@ export default Route.extend(RouteAutostartTourMixin, {
    * @public
    */
   afterModel(model) {
-    const userId = this.get("session.data.user.id");
+    const formattedDate = model.format();
+    if (formattedDate === this.lastUpdateDate) {
+      return;
+    }
+
+    this.lastUpdateDate = formattedDate;
+
+    const userId = this.session.data.user.id;
     const day = model.format(DATE_FORMAT);
-    const from = moment(model)
-      .subtract(20, "days")
-      .format(DATE_FORMAT);
-    const to = moment(model)
-      .add(10, "days")
-      .format(DATE_FORMAT);
+    const from = moment(model).subtract(20, "days").format(DATE_FORMAT);
+    const to = moment(model).add(10, "days").format(DATE_FORMAT);
     const location = this.store
       .peekRecord("user", userId)
       .get("activeEmployment.location.id");
@@ -84,122 +76,43 @@ export default Route.extend(RouteAutostartTourMixin, {
     return all([
       this.store.query("activity", {
         include: "task,task.project,task.project.customer",
-        day
+        day,
       }),
       this.store.query("attendance", { date: day }),
       this.store.query("absence-type", {}),
       this.store.query("report", {
         include: "task,task.project,task.project.customer",
         date: day,
-        user: userId
+        user: userId,
       }),
-      /* eslint-disable camelcase */
       this.store.query("report", {
         from_date: from,
         to_date: to,
-        user: userId
+        user: userId,
       }),
       this.store.query("absence", {
         from_date: from,
         to_date: to,
-        user: userId
+        user: userId,
       }),
       this.store.query("public-holiday", {
         from_date: from,
         to_date: to,
-        location
-      })
-      /* eslint-enable camelcase */
+        location,
+      }),
     ]);
-  },
+  }
 
   setupController(controller, model, ...args) {
-    this._super(controller, model, ...args);
+    super.setupController(controller, model, ...args);
 
     controller.set("user", this.modelFor("protected"));
-    controller.get("setCenter").perform({ moment: model });
+    controller.setCenter.perform({ moment: model });
 
     controller.set("newAbsence", {
       dates: [model],
       comment: "",
-      absenceType: null
+      absenceType: null,
     });
-  },
-
-  actions: {
-    /**
-     * Edit an existing absence
-     *
-     * @method editAbsence
-     * @param {EmberChangeset.Changeset} changeset The changeset containing the absence data
-     * @public
-     */
-    async saveAbsence(changeset) {
-      try {
-        this.send("loading");
-
-        await changeset.save();
-
-        this.set("controller.showEditModal", false);
-      } catch (e) {
-        /* istanbul ignore next */
-        this.get("notify").error("Error while saving the absence");
-      } finally {
-        this.send("finished");
-      }
-    },
-
-    /**
-     * Delete an absence
-     *
-     * @method deleteAbsence
-     * @param {Absence} absence The absence to delete
-     * @public
-     */
-    async deleteAbsence(absence) {
-      try {
-        this.send("loading");
-
-        await absence.destroyRecord();
-      } catch (e) {
-        /* istanbul ignore next */
-        this.get("notify").error("Error while deleting the absence");
-      } finally {
-        this.send("finished");
-      }
-    },
-
-    /**
-     * Add one or more absences
-     *
-     * @method addAbsence
-     * @param {EmberChangeset.Changeset} changeset The changeset containing the absence data
-     * @public
-     */
-    async addAbsence(changeset) {
-      try {
-        const absenceType = changeset.get("absenceType");
-        const comment = changeset.get("comment");
-
-        changeset.get("dates").forEach(async date => {
-          const absence = this.store.createRecord("absence", {
-            absenceType,
-            date,
-            comment
-          });
-
-          await absence.save();
-        });
-
-        changeset.rollback();
-
-        this.set("controller.showAddModal", false);
-      } catch (e) {
-        /* istanbul ignore next */
-        this.get("notify").error("Error while adding the absence");
-      } finally {
-        this.send("finished");
-      }
-    }
   }
-});
+}

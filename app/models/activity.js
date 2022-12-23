@@ -3,11 +3,9 @@
  * @submodule timed-models
  * @public
  */
+import Model, { attr, belongsTo } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
-import attr from "ember-data/attr";
-import Model from "ember-data/model";
-import { belongsTo } from "ember-data/relationships";
 import moment from "moment";
 import { all } from "rsvp";
 
@@ -91,52 +89,50 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  active: computed("toTime", function() {
-    return !this.get("toTime") && !!this.get("id");
+  active: computed("id", "toTime", function () {
+    return !this.toTime && !!this.id;
   }),
 
-  duration: computed("fromTime", "toTime", function() {
-    return moment.duration(
-      (this.get("to") ? this.get("to") : moment()).diff(this.get("from"))
-    );
+  duration: computed("from", "fromTime", "to", "toTime", function () {
+    return moment.duration((this.to ? this.to : moment()).diff(this.from));
   }),
 
   from: computed("date", "fromTime", {
     get() {
-      const time = this.get("fromTime");
+      const time = this.fromTime;
       return (
         time &&
-        moment(this.get("date")).set({
+        moment(this.date).set({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
-          ms: time.milliseconds()
+          ms: time.milliseconds(),
         })
       );
     },
     set(key, val) {
       this.set("fromTime", val);
       return val;
-    }
+    },
   }),
 
   to: computed("date", "toTime", {
     get() {
-      const time = this.get("toTime");
+      const time = this.toTime;
       return (
         time &&
-        moment(this.get("date")).set({
+        moment(this.date).set({
           h: time.hours(),
           m: time.minutes(),
           s: time.seconds(),
-          ms: time.milliseconds()
+          ms: time.milliseconds(),
         })
       );
     },
     set(key, val) {
       this.set("toTime", val);
       return val;
-    }
+    },
   }),
 
   /**
@@ -146,13 +142,13 @@ export default Model.extend({
    * @public
    */
   async start() {
-    const activity = this.get("store").createRecord("activity", {
+    const activity = this.store.createRecord("activity", {
       date: moment(),
       fromTime: moment(),
-      task: this.get("task"),
-      comment: this.get("comment"),
-      review: this.get("review"),
-      notBillable: this.get("notBillable")
+      task: this.task,
+      comment: this.comment,
+      review: this.review,
+      notBillable: this.notBillable,
     });
 
     await activity.save();
@@ -174,28 +170,28 @@ export default Model.extend({
    */
   async stop() {
     /* istanbul ignore next */
-    if (!this.get("active")) {
+    if (!this.active) {
       return;
     }
 
     const activities = [this];
 
-    if (moment().diff(this.get("date"), "days") === 1) {
+    if (moment().diff(this.date, "days") === 1) {
       activities.push(
-        this.get("store").createRecord("activity", {
-          task: this.get("task"),
-          comment: this.get("comment"),
-          user: this.get("user"),
-          date: moment(this.get("date")).add(1, "days"),
-          review: this.get("review"),
-          notBillable: this.get("notBillable"),
-          fromTime: moment({ h: 0, m: 0, s: 0 })
+        this.store.createRecord("activity", {
+          task: this.task,
+          comment: this.comment,
+          user: this.user,
+          date: moment(this.date).add(1, "days"),
+          review: this.review,
+          notBillable: this.notBillable,
+          fromTime: moment({ h: 0, m: 0, s: 0 }),
         })
       );
     }
 
     await all(
-      activities.map(async activity => {
+      activities.map(async (activity) => {
         if (activity.get("isNew")) {
           await activity.save();
         }
@@ -207,7 +203,7 @@ export default Model.extend({
               moment(activity.get("date")).set({
                 h: 23,
                 m: 59,
-                s: 59
+                s: 59,
               }),
               moment()
             )
@@ -218,13 +214,11 @@ export default Model.extend({
       })
     );
 
-    if (moment().diff(this.get("date"), "days") > 1) {
-      this.get(
-        "notify"
-      ).info(
+    if (moment().diff(this.date, "days") > 1) {
+      this.notify.info(
         "The activity overlapped multiple days, which is not possible. The activity was stopped at midnight of the day it was started.",
         { closeAfter: 5000 }
       );
     }
-  }
+  },
 });

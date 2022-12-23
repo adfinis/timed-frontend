@@ -9,5 +9,5 @@ export default Factory.extend({
 
   afterCreate(absenceCredit, server) {
     absenceCredit.update({ absenceTypeId: server.db.absenceTypes[0].id });
-  }
+  },
 });

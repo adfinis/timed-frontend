@@ -1,11 +1,14 @@
+import { attributeBindings } from "@ember-decorators/component";
+import Component from "@ember/component";
+import { computed } from "@ember/object";
 /**
  * @module timed
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
 import { htmlSafe } from "@ember/string";
+import { tracked } from "@glimmer/tracking";
+import classic from "ember-classic-decorator";
 
 /**
  * The weekly overview
@@ -14,22 +17,16 @@ import { htmlSafe } from "@ember/string";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  /**
-   * Attribute bindings
-   *
-   * @property {String[]} attributeBindings
-   * @public
-   */
-  attributeBindings: ["style"],
-
+@classic
+@attributeBindings("style")
+export default class WeeklyOverview extends Component {
   /**
    * The height of the overview in pixels
    *
    * @property {Number} height
    * @public
    */
-  height: 150,
+  @tracked height = 150;
 
   /**
    * The expected worktime in hours
@@ -37,9 +34,10 @@ export default Component.extend({
    * @property {Number} hours
    * @public
    */
-  hours: computed("expected", function() {
-    return this.get("expected").asHours();
-  }),
+  @computed("expected")
+  get hours() {
+    return this.expected.asHours();
+  }
 
   /**
    * The style of the element
@@ -49,7 +47,7 @@ export default Component.extend({
    * @property {String} style
    * @public
    */
-  style: computed("height", function() {
-    return htmlSafe(`height: ${this.get("height")}px;`);
-  })
-});
+  get style() {
+    return htmlSafe(`height: ${this.height}px;`);
+  }
+}

@@ -17,5 +17,5 @@ export default Factory.extend({
 
   afterCreate(publicHoliday, server) {
     publicHoliday.update({ locationId: server.create("location").id });
-  }
+  },
 });

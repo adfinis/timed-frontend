@@ -8,5 +8,5 @@ export default Factory.extend({
     const user = server.create("user");
     projectAssignee.update({ project });
     projectAssignee.update({ user });
-  }
+  },
 });

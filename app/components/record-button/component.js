@@ -39,9 +39,7 @@ export default Component.extend({
    */
   recording: false,
 
-  active: computed("recording", "activity.id", function() {
-    return this.get("recording") && this.get("activity.id");
-  }),
+  active: computed.and("recording", "activity.id"),
 
   /**
    * The actions for the record button component
@@ -57,7 +55,7 @@ export default Component.extend({
      * @public
      */
     start() {
-      this.get("on-start")();
+      this["on-start"]();
     },
 
     /**
@@ -67,7 +65,7 @@ export default Component.extend({
      * @public
      */
     stop() {
-      this.get("on-stop")();
-    }
-  }
+      this["on-stop"]();
+    },
+  },
 });

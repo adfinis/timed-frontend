@@ -1,60 +1,60 @@
 <header class="nav-top-header">
-  <button class="nav-toggle nav-top-toggle" {{action (toggle 'expand' this) on='click'}}>
+  <button class="nav-toggle nav-top-toggle" type="button" {{action (toggle 'expand' this) on='click'}}>
     <span class="nav-toggle-icon"></span>
   </button>
-  {{#link-to 'index'}}
-    {{timed-clock}}
+  <LinkTo @route="index">
+    {{this.timed-clock}}
     <div class="nav-top-header-title">
       Timed
       <div class="nav-top-header-title-version">
         v{{app-version hideSha=true}}
       </div>
     </div>
-  {{/link-to}}
+  </LinkTo>
 </header>
 <section class="nav-top-body">
   <ul class="nav-top-list">
     <li class="nav-top-list-item">
-      {{#link-to 'index'}}
+      <LinkTo @route="index">
         {{fa-icon 'clock-o'}} Tracking
-      {{/link-to}}
+      </LinkTo>
     </li>
-    {{#unless navMobile}}
+    {{#unless this.navMobile}}
       {{#if (can "access page")}}
         <li class="nav-top-list-item">
-          {{#link-to 'analysis'}}
+          <LinkTo @route="analysis">
             {{fa-icon 'line-chart'}} Analysis
-          {{/link-to}}
+          </LinkTo>
         </li>
         <li class="nav-top-list-item">
-          {{#link-to 'statistics'}}
+          <LinkTo @route="statistics">
             {{fa-icon 'bar-chart'}} Statistics
-          {{/link-to}}
+          </LinkTo>
         </li>
         <li class="nav-top-list-item">
-          {{#link-to 'projects'}}
+          <LinkTo @route="projects">
             {{fa-icon 'briefcase'}} Projects
-          {{/link-to}}
+          </LinkTo>
         </li>
       {{/if}}
     {{/unless}}
-    {{#if session.data.user.isSuperuser}}
+    {{#if this.session.data.user.isSuperuser}}
       <li class="nav-top-list-item">
-        {{#link-to 'users.index'}}
+        <LinkTo @route="users.index">
           {{fa-icon 'users'}} Users
-        {{/link-to}}
+        </LinkTo>
       </li>
     {{/if}}
   </ul>
   <ul class="nav-top-list nav-top-list--right">
-    {{report-review-warning}}
+    {{this.report-review-warning}}
     <li class="nav-top-list-item">
-      {{#link-to 'users.edit' session.data.user.id}}
-        {{fa-icon 'user'}} {{session.data.user.fullName}}
-      {{/link-to}}
+      <LinkTo @route="users.edit" @model={{this.session.data.user.id}}>
+        {{fa-icon 'user'}} {{this.session.data.user.fullName}}
+      </LinkTo>
     </li>
     <li class="nav-top-list-item">
-      <a href="#" data-test-logout {{action (optional on-logout)}}>
+      <a href="#" data-test-logout {{action (optional this.on-logout)}}>
         {{fa-icon 'power-off'}}
         Logout
       </a>

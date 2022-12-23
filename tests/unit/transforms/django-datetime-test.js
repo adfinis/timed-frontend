@@ -2,10 +2,10 @@ import { setupTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-module("Unit | Transform | django datetime", function(hooks) {
+module("Unit | Transform | django datetime", function (hooks) {
   setupTest(hooks);
 
-  test("serializes", function(assert) {
+  test("serializes", function (assert) {
     const transform = this.owner.lookup("transform:django-datetime");
 
     const zone = moment().utcOffset();
@@ -17,7 +17,7 @@ module("Unit | Transform | django datetime", function(hooks) {
       h: 15,
       m: 30,
       s: 50,
-      ms: 11
+      ms: 11,
     }).utcOffset(zone);
 
     const result = transform.serialize(datetime);
@@ -25,7 +25,7 @@ module("Unit | Transform | django datetime", function(hooks) {
     assert.equal(result, datetime.format("YYYY-MM-DDTHH:mm:ss.SSSSZ"));
   });
 
-  test("deserializes", function(assert) {
+  test("deserializes", function (assert) {
     const transform = this.owner.lookup("transform:django-datetime");
 
     const datetime = moment({
@@ -35,7 +35,7 @@ module("Unit | Transform | django datetime", function(hooks) {
       h: 15,
       m: 30,
       s: 50,
-      ms: 11
+      ms: 11,
     }).utc();
 
     assert.notOk(transform.deserialize(""));

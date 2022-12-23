@@ -2,48 +2,63 @@
   <div class="grid grid--12of12 grid-md--4of12">
     <div class="grid-cell"></div>
     <div class="grid-cell">
-      {{#if intersection.isRunning}}
+      {{#if this.intersection.isRunning}}
         <div class="empty">
           <LoadingIcon />
         </div>
       {{else}}
         <h1 class="text-center">
-          {{#unless (eq intersection.lastSuccessful.value.meta.count 1)}}
-            Bulk edit {{intersection.lastSuccessful.value.meta.count}} reports
-          {{else}}
+          {{#if (eq this.intersection.lastSuccessful.value.meta.count 1)}}
             Edit report
-          {{/unless}}
+          {{else}}
+            Bulk edit
+            {{this.intersection.lastSuccessful.value.meta.count}}
+            reports
+          {{/if}}
         </h1>
         <div class="card">
           <div class="card-block">
-            {{#let intersection.lastSuccessful.value.model as |model|}}
+            {{#let this.intersection.lastSuccessful.value.model as |model|}}
               <ValidatedForm
-                @model={{changeset model IntersectionValidations}}
-                @on-submit={{perform save}}
+                @model={{changeset model this.IntersectionValidations}}
+                @on-submit={{perform this.save}}
                 as |f|
               >
                 <TaskSelection
-                  @on-set-customer={{action (queue (action (mut f.model.customer)) (action 'validate' f.model))}}
-                  @on-set-project={{action (queue (action (mut f.model.project)) (action 'validate' f.model))}}
-                  @on-set-task={{action (queue (action (mut f.model.task)) (action 'validate' f.model))}}
+                  @on-set-customer={{(queue
+                    (fn (mut f.model.customer)) (fn this.validate f.model)
+                  )}}
+                  @on-set-project={{(queue
+                    (fn (mut f.model.project)) (fn this.validate f.model)
+                  )}}
+                  @on-set-task={{(queue
+                    (fn (mut f.model.task)) (fn this.validate f.model)
+                  )}}
                   @initial={{hash
-                    customer=_customer
-                    project=_project
-                    task=_task
+                    customer=this._customer
+                    project=this._project
+                    task=this._task
                   }}
-                  @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
+                  @disabled={{and
+                    this.isAccountant
+                    (not this.hasSelectedOwnReports)
+                  }}
                   as |t|
                 >
-                  <f.input @name='task' as |fi|>
+                  <f.input @name="task">
                     <div class="form-group" data-test-customer>
                       <label>
                         Customer
                         {{#unless model.customer}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.customer.id model.customer.id)}}
+                        {{#if
+                          (not
+                            (eq f.model.change.customer.id model.customer.id)
+                          )
+                        }}
                           <ChangedWarning />
-                        {{/unless}}
+                        {{/if}}
                       </label>
                       <t.customer />
                     </div>
@@ -53,9 +68,11 @@
                         {{#unless model.project}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.project.id model.project.id)}}
+                        {{#if
+                          (not (eq f.model.change.project.id model.project.id))
+                        }}
                           <ChangedWarning />
-                        {{/unless}}
+                        {{/if}}
                       </label>
                       <t.project />
                     </div>
@@ -65,126 +82,136 @@
                         {{#unless model.task}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#unless (eq f.model.change.task.id model.task.id)}}
+                        {{#if (not (eq f.model.change.task.id model.task.id))}}
                           <ChangedWarning />
-                        {{/unless}}
+                        {{/if}}
                       </label>
                       <t.task />
                     </div>
                   </f.input>
 
-                  <f.input
-                    data-test-comment
-                    @name='comment'
-                    as |fi|
-                  >
+                  <f.input @name="comment" as |fi|>
                     <label>
                       Comment
                       {{#if (eq model.comment null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.comment model.comment)}}
+                      {{#if (not (eq f.model.comment model.comment))}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
+                      <input
+                        data-test-comment
+                        type="text"
+                        placeholder="Enter comment..."
+                        class="form-control comment-field"
+                        {{on "change" (pick "target.value" fi.update)}}
+                        value={{fi.value}}
+                        disabled={{and
+                          this.isAccountant
+                          (not this.hasSelectedOwnReports)
+                        }}
+                      />
                     </label>
-                    <input
-                      type="text"
-                      placeholder="Enter comment..."
-                      class="form-control comment-field"
-                      onchange={{action fi.update value='target.value'}}
-                      value={{fi.value}}
-                      disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
-                    >
                     {{#if model.task.project.customerVisible}}
                       <CustomerVisibleIcon class="customer-visible-icon" />
                     {{/if}}
                   </f.input>
 
-                  <f.input
-                    data-test-not-billable
-                    @name='notBillable'
-                    as |fi|
-                  >
+                  <f.input @name="notBillable" as |fi|>
                     <SyCheckbox
+                      data-test-not-billable
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
+                      @onChange={{fi.update}}
+                      @disabled={{and
+                        this.isAccountant
+                        (not this.hasSelectedOwnReports)
+                      }}
                     >
                       Not billable
                       {{#if (eq model.notBillable null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.notBillable model.notBillable)}}
+                      {{#if (not (eq f.model.notBillable model.notBillable))}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input
-                    data-test-review
-                    @name='review'
-                    as |fi|
-                  >
+                  <f.input @name="review" as |fi|>
                     <SyCheckbox
+                      data-test-review
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @disabled={{and this.isAccountant (not this.hasSelectedOwnReports)}}
+                      @onChange={{fi.update}}
+                      @disabled={{and
+                        this.isAccountant
+                        (not this.hasSelectedOwnReports)
+                      }}
                     >
                       Needs Review
                       {{#if (eq model.review null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.review model.review)}}
+                      {{#if (not (eq f.model.review model.review))}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input
-                    data-test-billed
-                    @name='billed'
-                    as |fi|
-                  >
+                  <f.input @name="billed" as |fi|>
                     <SyCheckbox
+                      data-test-billed
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @title={{not canBill "You do not have appropriate roles for this action."}}
-                      @disabled={{not canBill}}
+                      @onChange={{fi.update}}
+                      @title={{not
+                        this.canBill
+                        "You do not have appropriate roles for this action."
+                      }}
+                      @disabled={{not this.canBill}}
                     >
                       Billed
                       {{#if (eq model.billed null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.billed model.billed)}}
+                      {{#if (not (eq f.model.billed model.billed))}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
-                  <f.input
-                    data-test-verified
-                    @name='verified'
-                    as |fi|
-                  >
+                  <f.input @name="verified" as |fi|>
                     <SyCheckbox
+                      data-test-verified
                       @checked={{fi.value}}
-                      @on-change={{fi.update}}
-                      @title={{toolTipText}}
-                      @disabled={{or (not canVerify) needsReview}}
+                      @onChange={{fi.update}}
+                      @title={{this.toolTipText}}
+                      @disabled={{or (not this.canVerify) this.needsReview}}
                     >
                       Verified
                       {{#if (eq model.verified null)}}
                         <NotIdenticalWarning />
                       {{/if}}
-                      {{#unless (eq f.model.verified model.verified)}}
+                      {{#if (not (eq f.model.verified model.verified))}}
                         <ChangedWarning />
-                      {{/unless}}
+                      {{/if}}
                     </SyCheckbox>
                   </f.input>
 
                   <div class="text-right">
-                    <button data-test-cancel type="button" class="btn" {{action 'cancel'}}>Cancel</button>
-                    <button data-test-reset type="button" class="btn" {{action (queue t.reset (action 'reset' f.model))}}>Reset</button>
+                    <button
+                      data-test-cancel
+                      type="button"
+                      class="btn"
+                      {{on "click" this.cancel}}
+                    >Cancel</button>
+                    <button
+                      data-test-reset
+                      type="button"
+                      class="btn"
+                      {{on
+                        "click"
+                        (queue t.reset (fn this.resetChangeset f.model))
+                      }}
+                    >Reset</button>
                     <f.submit />
                   </div>
                 </TaskSelection>

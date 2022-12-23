@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
-import { scheduleOnce } from "@ember/runloop";
+import { action } from "@ember/object";
+import { guidFor } from "@ember/object/internals";
+import Component from "@glimmer/component";
 
 /**
  * Component for an adcssy styled checkbox
@@ -14,60 +14,21 @@ import { scheduleOnce } from "@ember/runloop";
  * @extends Ember.Component
  * @public
  */
-export default Component.extend({
-  checkboxElementId: computed("elementId", function() {
-    return `${this.get("elementId")}-checkbox`;
-  }),
+export default class SyCheckbox extends Component {
+  constructor(...args) {
+    super(...args);
 
-  didReceiveAttrs() {
-    scheduleOnce("afterRender", () => {
-      if (this.get("checked") === null) {
-        const cb = this.get("element").querySelector(
-          `#${this.get("checkboxElementId")}`
-        );
+    this._checkboxElementId = guidFor(this);
+  }
 
-        cb.indeterminate = true;
-      }
-    });
-  },
+  get checkboxElementId() {
+    return this._checkboxElementId;
+  }
 
-  /**
-   * The CSS class names
-   *
-   * @property {String[]} classNames
-   * @public
-   */
-  classNames: ["checkbox"],
-
-  /**
-   * Action to call if the checked state has changed
-   *
-   * @method on-change
-   * @public
-   */
-  "on-change"() {},
-
-  /**
-   * The label of the checkbox
-   *
-   * @property {String} label
-   * @public
-   */
-  label: "",
-
-  /**
-   * Whether the checkbox is checked
-   *
-   * @property {Boolean} checked
-   * @public
-   */
-  checked: false,
-
-  /**
-   * Whether the checkbox is disabled
-   *
-   * @property {Boolean} disabled
-   * @public
-   */
-  disabled: false
-});
+  @action
+  handleCheckBox(element) {
+    if (this.args.checked === null) {
+      element.indeterminate = true;
+    }
+  }
+}
