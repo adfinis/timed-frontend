@@ -1,20 +1,10 @@
-import Service from "@ember/service";
 import { click, fillIn, visit, currentURL } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { selectChoose } from "ember-power-select/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { authenticateSession } from "ember-simple-auth/test-support";
 import { module, test } from "qunit";
-
-let _local_assert = { step: () => {} };
-
-class NotifyServiceStub extends Service {
-  error() {
-    _local_assert.step("error");
-  }
-  // Needed for mocking, throws error otherwise
-  setTarget() {}
-}
+import sinon from "sinon";
 
 module("Acceptance | projects", function (hooks) {
   setupApplicationTest(hooks);
@@ -174,26 +164,24 @@ module("Acceptance | projects", function (hooks) {
   });
 
   test("shows error while fetching projects", async function (assert) {
-    _local_assert = assert;
+    const notifyService = this.owner.lookup("service:notify");
+    const notifyErrorFunction = sinon.spy(notifyService, "error");
 
     this.server.get("projects", function () {
       return new Error();
     });
 
-    this.owner.register("service:notify", NotifyServiceStub);
-
     await visit("/projects");
-    assert.verifySteps(["error"]);
+    assert.ok(notifyErrorFunction.calledOnce);
   });
 
   test("shows error while fetching tasks", async function (assert) {
-    _local_assert = assert;
+    const notifyService = this.owner.lookup("service:notify");
+    const notifyErrorFunction = sinon.spy(notifyService, "error");
 
     this.server.get("tasks", function () {
       return new Error();
     });
-
-    this.owner.register("service:notify", NotifyServiceStub);
 
     await visit("/projects");
 
@@ -209,6 +197,6 @@ module("Acceptance | projects", function (hooks) {
       0
     );
 
-    assert.verifySteps(["error"]);
+    assert.ok(notifyErrorFunction.calledOnce);
   });
 });

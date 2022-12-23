@@ -106,6 +106,7 @@
     "ember-scrollable": "1.0.2",
     "ember-simple-auth": "4.2.2",
     "ember-simple-auth-oidc": "5.0.1",
+    "ember-sinon-qunit": "^6.0.0",
     "ember-site-tour": "2.2.0",
     "ember-source": "3.28.0",
     "ember-template-lint": "4.17.0",
