@@ -7,13 +7,13 @@ module("Integration | Component | statistic list/bar", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{statistic-list/bar 0.5}}`);
+    await render(hbs`<StatisticList::Bar @value={{0.5}} />`);
 
     const element = this.element.querySelector(".statistic-list-bar");
 
     assert.ok(element);
 
-    assert.equal(
+    assert.strictEqual(
       window.getComputedStyle(element).getPropertyValue("--value").trim(),
       "0.5"
     );
