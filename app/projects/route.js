@@ -1,14 +1,9 @@
-import { reads } from "@ember/object/computed";
 import Route from "@ember/routing/route";
-import { inject as service } from "@ember/service";
 
-export default Route.extend({
-  session: service(),
-  user: reads("session.data.user"),
-
+export default class ProjectsRoute extends Route {
   setupController(controller, ...args) {
-    this._super(...args);
+    super.setupController(controller, ...args);
 
     controller.fetchProjectsByUser.perform();
-  },
-});
+  }
+}
