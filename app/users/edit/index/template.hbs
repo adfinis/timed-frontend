@@ -20,7 +20,11 @@
               </tr>
               <tr>
                 <td>Contract type:</td>
-                <td>{{if this.model.activeEmployment.isExternal "External" "Internal"}}</td>
+                <td>{{if
+                    this.model.activeEmployment.isExternal
+                    "External"
+                    "Internal"
+                  }}</td>
               </tr>
               <tr>
                 <td>Percentage:</td>
@@ -28,7 +32,10 @@
               </tr>
               <tr>
                 <td>Worktime:</td>
-                <td>{{humanize-duration this.model.activeEmployment.worktimePerDay false}}</td>
+                <td>{{humanize-duration
+                    this.model.activeEmployment.worktimePerDay
+                    false
+                  }}</td>
               </tr>
             {{/if}}
           </tbody>
@@ -61,16 +68,20 @@
                   <tr>
                     <td>{{employment.location.name}}</td>
                     <td>{{employment.percentage}}%</td>
-                    <td>{{moment-format employment.start 'DD.MM.YYYY'}}</td>
-                    <td>{{if employment.end (moment-format employment.end 'DD.MM.YYYY') '-'}}</td>
+                    <td>{{moment-format employment.start "DD.MM.YYYY"}}</td>
+                    <td>{{if
+                        employment.end
+                        (moment-format employment.end "DD.MM.YYYY")
+                        "-"
+                      }}</td>
                   </tr>
                 {{/each}}
               </tbody>
             </table>
-          {{^}}
+          {{else}}
             <div class="card-block empty">
               <div>
-                {{fa-icon 'briefcase'}}
+                {{fa-icon "briefcase"}}
                 <p>
                   No employments found...
                 </p>
@@ -101,19 +112,19 @@
                 </tr>
               </thead>
               <tbody>
-                {{#each absences as |absence index|}}
+                {{#each absences as |absence|}}
                   <tr>
                     <td>{{absence.absenceType.name}}</td>
-                    <td>{{moment-format absence.date 'DD.MM.YYYY'}}</td>
+                    <td>{{moment-format absence.date "DD.MM.YYYY"}}</td>
                     <td>{{absence.comment}}</td>
                   </tr>
                 {{/each}}
               </tbody>
             </table>
-          {{^}}
+          {{else}}
             <div class="card-block empty">
               <div>
-                {{fa-icon 'calendar-times-o'}}
+                {{fa-icon "calendar-times-o"}}
                 <p>
                   No absences found...
                 </p>

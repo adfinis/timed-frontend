@@ -5,7 +5,7 @@ module.exports = {
   disable_watching: true,
   parallel: -1,
   launch_in_dev: [],
-  launch_in_ci: ["chrome", "firefox"],
+  launch_in_ci: ["chrome"],
   browser_start_timeout: 120,
   browser_args: {
     Chrome: {
@@ -20,7 +20,6 @@ module.exports = {
         "--remote-debugging-port=9222",
         "--window-size=1440,900",
       ].filter(Boolean),
-      firefox: ["--headless"],
     },
   },
 };

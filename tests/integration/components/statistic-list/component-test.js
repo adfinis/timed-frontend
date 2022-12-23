@@ -1,6 +1,6 @@
 import { A } from "@ember/array";
 import ArrayProxy from "@ember/array/proxy";
-import { render } from "@ember/test-helpers";
+import { render, waitFor } from "@ember/test-helpers";
 import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
@@ -98,6 +98,8 @@ module("Integration | Component | statistic list", function (hooks) {
         />
       </div>
     `);
+
+    await waitFor("table tbody tr");
 
     assert.dom("[data-test-statistic-list-column]").exists({ count: 4 });
     assert.dom("[data-test-statistic-list-row]").exists({ count: 2 });
