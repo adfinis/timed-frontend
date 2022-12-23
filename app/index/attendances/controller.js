@@ -17,6 +17,7 @@ import AttendanceValidator from "timed/validations/attendance";
  */
 export default class AttendanceController extends Controller {
   @service notify;
+  @service store;
   @service tracking;
 
   AttendacenValidator = AttendanceValidator;

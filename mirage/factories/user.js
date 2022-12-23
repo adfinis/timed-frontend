@@ -9,7 +9,7 @@ export default Factory.extend({
   password: () => faker.internet.password(),
 
   fullName() {
-    if (!this.firstName && !this.lastName) {
+    if (!this.firstName || !this.lastName) {
       return "";
     }
 
