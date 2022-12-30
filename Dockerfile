@@ -1,12 +1,16 @@
-FROM danlynn/ember-cli:latest as build
+FROM danlynn/ember-cli:3.28.0 as build
 
-COPY package.json yarn.lock /myapp/
+RUN npm install -g pnpm
 
-RUN yarn install
+COPY package.json pnpm-lock.yaml /myapp/
+
+RUN pnpm fetch
 
 COPY . /myapp/
 
-RUN yarn build --environment=production
+RUN pnpm install --frozen-lockfile --offline
+
+RUN pnpm run build --environment=production
 
 FROM nginx:alpine
 
