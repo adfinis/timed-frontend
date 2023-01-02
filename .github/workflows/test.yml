@@ -2,13 +2,9 @@ name: Test
 
 on:
   push:
-    branches:
-      - master
+    branches: [ $default-branch ]
   pull_request:
-    branches:
-      - master
-      # TODO: delete when upgrade is done
-      - ember-octane
+    branches: [ $default-branch ]
 
 env:
   NODE_VERSION: 16
@@ -38,7 +34,7 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Lint ${{ matrix.target }}
         run: pnpm lint:${{ matrix.target }}
@@ -63,15 +59,16 @@ jobs:
           cache: "pnpm"
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Run tests
         run: pnpm test
         env:
           COVERAGE: true
 
-        # TODO enable this again after flaky tests are added back
-#       - name: Upload coverage report to Codecov
-#         uses: codecov/codecov-action@v1
-#         with:
-#           file: ./coverage/lcov.info
+      - name: upload coverage report to codecov
+        uses: codecov/codecov-action@v1
+        with:
+          file: ./coverage/lcov.info
+
+
