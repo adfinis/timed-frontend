@@ -2,12 +2,12 @@
   <button
     class="nav-toggle nav-top-toggle"
     type="button"
-    {{action (toggle "expand" this) on="click"}}
+    {{on "click" (toggle "expand" this)}}
   >
     <span class="nav-toggle-icon"></span>
   </button>
   <LinkTo @route="index">
-    {{timed-clock}}
+    <TimedClock />
     <div class="nav-top-header-title">
       Timed
       <div class="nav-top-header-title-version">
@@ -20,7 +20,7 @@
   <ul class="nav-top-list">
     <li class="nav-top-list-item">
       <LinkTo @route="index">
-        {{fa-icon "clock-o"}}
+        <FaIcon @icon="clock-o" />
         Tracking
       </LinkTo>
     </li>
@@ -28,19 +28,19 @@
       {{#if (can "access page")}}
         <li class="nav-top-list-item">
           <LinkTo @route="analysis">
-            {{fa-icon "line-chart"}}
+            <FaIcon @icon="line-chart" />
             Analysis
           </LinkTo>
         </li>
         <li class="nav-top-list-item">
           <LinkTo @route="statistics">
-            {{fa-icon "bar-chart"}}
+            <FaIcon @icon="bar-chart" />
             Statistics
           </LinkTo>
         </li>
         <li class="nav-top-list-item">
           <LinkTo @route="projects">
-            {{fa-icon "briefcase"}}
+            <FaIcon @icon="briefcase" />
             Projects
           </LinkTo>
         </li>
@@ -49,23 +49,23 @@
     {{#if this.session.data.user.isSuperuser}}
       <li class="nav-top-list-item">
         <LinkTo @route="users.index">
-          {{fa-icon "users"}}
+          <FaIcon @icon="users" />
           Users
         </LinkTo>
       </li>
     {{/if}}
   </ul>
   <ul class="nav-top-list nav-top-list--right">
-    {{this.report-review-warning}}
+    <ReportReviewWarning />
     <li class="nav-top-list-item">
       <LinkTo @route="users.edit" @model={{this.session.data.user.id}}>
-        {{fa-icon "user"}}
+        <FaIcon @icon="user" />
         {{this.session.data.user.fullName}}
       </LinkTo>
     </li>
     <li class="nav-top-list-item">
-      <a href="#" data-test-logout {{action (optional this.on-logout)}}>
-        {{fa-icon "power-off"}}
+      <a href="#" data-test-logout {{on "click" (optional this.on-logout)}}>
+        <FaIcon @icon="power-off" />
         Logout
       </a>
     </li>
