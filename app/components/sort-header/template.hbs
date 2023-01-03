@@ -1,6 +1,9 @@
-{{yield}}
-{{#if this.active}}
-  <i class="fa fa-sort-{{this.direction}}"></i>
-{{else}}
-  <i class="fa fa-sort"></i>
-{{/if}}
+{{! template-lint-disable}}
+<th class="sort-header" {{on "click" this.click}}>
+  {{yield}}
+  {{#if this.active}}
+    <i class="fa fa-sort-{{this.direction}}"></i>
+  {{else}}
+    <i class="fa fa-sort"></i>
+  {{/if}}
+</th>

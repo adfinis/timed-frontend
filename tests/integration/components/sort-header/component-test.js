@@ -7,7 +7,7 @@ module("Integration | Component | sort header", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{sort-header current='-test' by='foo'}}`);
+    await render(hbs`<SortHeader @current='-test' @by='foo' />`);
     assert.dom(".fa-sort").exists({ count: 1 });
   });
 
@@ -17,7 +17,9 @@ module("Integration | Component | sort header", function (hooks) {
       this.set("current", sort);
     });
 
-    await render(hbs`{{sort-header current=current by='test' update=update}}`);
+    await render(
+      hbs`<SortHeader @current={{this.current}} @by='test' @update={{this.update}} />`
+    );
     assert.dom(".fa-sort-desc").exists({ count: 1 });
 
     await click("i");

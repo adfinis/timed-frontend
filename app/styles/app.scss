@@ -27,12 +27,13 @@
 @import "users";
 
 /* Component styles */
+@import "components/attendance-slider";
 @import "components/date-navigation";
-@import "components/tracking-bar";
+@import "components/sort-header";
+@import "components/statistic-list-bar";
 @import "components/sy-calendar";
 @import "components/sy-datepicker";
-@import "components/attendance-slider";
-@import "components/statistic-list-bar";
+@import "components/tracking-bar";
 @import "components/welcome-modal";
 
 html {
