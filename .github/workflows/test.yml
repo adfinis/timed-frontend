@@ -17,8 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        # TODO add hbs
-        target: [js]
+        target: [js, hbs]
 
     steps:
       - uses: actions/checkout@v3
