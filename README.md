@@ -1,7 +1,7 @@
 ![Timed Logo](/public/assets/logo_text.png)
 
 [![Build Status](https://github.com/adfinis-sygroup/timed-frontend/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/adfinis-sygroup/timed-frontend/actions/workflows/test.yml)
-[![Codecov](https://codecov.io/gh/adfinis-sygroup/timed-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/timed-frontend)
+[![Codecov](https://codecov.io/gh/adfinis/timed-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/timed-frontend)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 ## Requirements
