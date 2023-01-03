@@ -120,10 +120,10 @@ export const AnalysisQueryParams = new QueryParams({
     replace: true,
     refresh: true,
     serialize(val) {
-      return val === "-date" ? null : `${val},id`;
+      return val?.endsWith(",id") ? val : `${val},id`;
     },
     deserialize(val) {
-      return val === null ? "-date" : val.replace(",id", "");
+      return val.replace(",id", "");
     },
   },
 });
