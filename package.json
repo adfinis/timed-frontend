@@ -19,9 +19,8 @@
     "lint:js:fix": "eslint --config .eslintrc.js . --fix",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
-    "lint:js:fix": "eslint . --fix",
     "start": "ember server --proxy http://localhost:8000",
-    "test": "npm-run-all lint test:*",
+    "test": "npm-run-all test:*",
     "test:ember": "ember test"
   },
   "commitlint": {
