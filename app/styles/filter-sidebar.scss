@@ -8,13 +8,13 @@
   min-width: 300px;
   max-width: 340px;
   flex-direction: column;
-  background: rgb(255,255,255);
+  background: rgb(255, 255, 255);
   transform: translateX(100%);
   transition: transform 300ms ease;
 }
 
 .filter-sidebar--visible {
-  box-shadow: 0 0 10px rgba(0,0,0,.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   transform: translateX(0);
 }
 
@@ -23,7 +23,9 @@
   flex-grow: 1;
 }
 
-.filter-sidebar-content > .filter-sidebar-group:first-child > .filter-sidebar-group-label {
+.filter-sidebar-content
+  > .filter-sidebar-group:first-child
+  > .filter-sidebar-group-label {
   border-top: none;
 }
 
@@ -48,9 +50,9 @@
   width: 6.5rem;
   height: 4rem;
   text-align: right;
-  color: rgb(255,255,255);
+  color: rgb(255, 255, 255);
   overflow: hidden;
-  padding: .5rem 0;
+  padding: 0.5rem 0;
   outline: none;
 }
 
@@ -62,16 +64,16 @@
   justify-content: center;
   position: absolute;
   right: 0;
-  top: .5rem;
+  top: 0.5rem;
   height: 3rem;
 }
 
 .filter-sidebar-toggle-background {
   width: 100%;
   background-color: $color-primary;
-  box-shadow: 0 0 10px rgba(0,0,0,.2);
-  border-top-left-radius: .3rem;
-  border-bottom-left-radius: .3rem;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
   transform: translateX(3.5rem);
   transition: transform 300ms ease;
 }
@@ -86,20 +88,20 @@
 
 .filter-sidebar-toggle-icon-badge {
   position: absolute;
-  top: .5rem;
-  right: .5rem;
-  font-size: .6rem;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.6rem;
   font-weight: bold;
   background-color: $color-success;
-  padding: .1rem .3rem;
+  padding: 0.1rem 0.3rem;
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0,0,0,.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .filter-sidebar-toggle-text {
   flex-shrink: 1;
   width: 3rem;
-  left: .75rem;
+  left: 0.75rem;
   right: auto;
   opacity: 0;
   transform: translateX(3.5rem);
@@ -121,7 +123,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0,0,0,.2);
+  background-color: rgba(0, 0, 0, 0.2);
   opacity: 0;
   pointer-events: none;
   transition: opacity 300ms ease;
@@ -130,4 +132,5 @@
 .filter-sidebar-overlay--visible {
   pointer-events: all;
   opacity: 1;
+  z-index: 1;
 }
