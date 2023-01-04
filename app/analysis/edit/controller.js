@@ -180,7 +180,7 @@ export default class AnalysisEditController extends Controller.extend(
 
       this.router.transitionTo("analysis.index", {
         queryParams: {
-          ...params,
+          ...this.allQueryParams,
         },
       });
 
