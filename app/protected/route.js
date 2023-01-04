@@ -29,12 +29,14 @@ export default class ProtectedRoute extends Route {
   }
 
   async model() {
-    const user = await this.fetch.fetch("/api/v1/users/me", {
-      method: "GET",
-      data: {
+    const user = await this.fetch.fetch(
+      `/api/v1/users/me?${new URLSearchParams({
         include: "supervisors,supervisees",
-      },
-    });
+      })}`,
+      {
+        method: "GET",
+      }
+    );
 
     await this.store.pushPayload("user", user);
 
