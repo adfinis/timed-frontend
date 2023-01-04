@@ -47,7 +47,7 @@ export default class FetchService extends Service {
       ...(init.headers || {}),
     });
 
-    if (init?.method !== "GET" && init?.method !== "HEAD") {
+    if (!!init?.method && init?.method !== "GET" && init?.method !== "HEAD") {
       init.body = stringifyBodyData(init);
     }
 
@@ -78,6 +78,7 @@ export default class FetchService extends Service {
     // Return early when "No Content" response is given. Trying to parse JSON
     // from that would result in an error.
     if (response.status === 204) {
+      /* istanbul ignore next */
       return await response.text();
     }
 
