@@ -70,6 +70,13 @@ export default class SyDurationpicker extends SyTimepickerComponent {
   }
 
   /**
+   * Unwraps the passed value or creates a fresh duration object.
+   */
+  get value() {
+    return this.optionalUnwrap(this.args.value) ?? moment.duration();
+  }
+
+  /**
    * Set the current value
    *
    * @method _set
