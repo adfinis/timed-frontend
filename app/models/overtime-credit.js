@@ -1,8 +1,8 @@
 import Model, { attr, belongsTo } from "@ember-data/model";
 
-export default Model.extend({
-  date: attr("django-date"),
-  duration: attr("django-duration"),
-  comment: attr("string", { defaultValue: "" }),
-  user: belongsTo("user"),
-});
+export default class OvertimeCredit extends Model {
+  @attr("django-date") date;
+  @attr("django-duration") duration;
+  @attr("string", { defaultValue: "" }) comment;
+  @belongsTo("user") user;
+}

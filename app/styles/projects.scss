@@ -42,7 +42,7 @@
 // Scroll container
 .projects-scrollable-container::after,
 .projects-scrollable-container::before {
-  content: '';
+  content: "";
   position: absolute;
   z-index: 1;
   left: 0;

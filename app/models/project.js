@@ -12,7 +12,7 @@ import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class Project extends Model {
   /**
    * The name
    *
@@ -20,7 +20,7 @@ export default Model.extend({
    * @type {String}
    * @public
    */
-  name: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) name;
 
   /**
    * Whether the project is archived
@@ -29,7 +29,7 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  archived: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) archived;
 
   /**
    * The estimated time for this project
@@ -37,7 +37,22 @@ export default Model.extend({
    * @property {moment.duration} estimatedTime
    * @public
    */
-  estimatedTime: attr("django-duration"),
+  @attr("django-duration") estimatedTime;
+
+  /**
+   * Boolean indicating if the remainig effort should be trackable
+   * for this project.
+   * @type {Boolean}
+   * @public
+   */
+  @attr("boolean", { defaultValue: false }) remainingEffortTracking;
+
+  /**
+   * Total remainig effort for this project
+   * @property {moment.duration} estimatedtime
+   * @public
+   */
+  @attr("django-duration") totalRemainingEffort;
 
   /**
    * The customer
@@ -46,7 +61,7 @@ export default Model.extend({
    * @type {Customer}
    * @public
    */
-  customer: belongsTo("customer"),
+  @belongsTo("customer") customer;
 
   /**
    * Whether the project's comments are visible to the customer
@@ -55,7 +70,7 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  customerVisible: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) customerVisible;
 
   /**
    * The billing
@@ -63,7 +78,7 @@ export default Model.extend({
    * @property {BillingType} billingType
    * @public
    */
-  billingType: belongsTo("billing-type"),
+  @belongsTo("billing-type") billingType;
 
   /**
    * The tasks
@@ -72,7 +87,7 @@ export default Model.extend({
    * @type {Task[]}
    * @public
    */
-  tasks: hasMany("task"),
+  @hasMany("task") tasks;
 
   /**
    * Assigned users to this project
@@ -81,5 +96,5 @@ export default Model.extend({
    * @type {ProjectAssignee[]}
    * @public
    */
-  assignees: hasMany("project-assignee"),
-});
+  @hasMany("project-assignee") assignees;
+}
