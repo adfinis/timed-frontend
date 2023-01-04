@@ -8,7 +8,7 @@ from rest_framework_json_api.serializers import (
     Serializer,
 )
 
-from timed.projects.models import Project
+from timed.projects.models import Customer, Project
 from timed.serializers import TotalTimeRootMetaMixin
 
 
@@ -33,8 +33,6 @@ class CustomerStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     duration = DurationField()
     name = CharField(read_only=True)
 
-    included_serializers = {"customer": "timed.projects.serializers.CustomerSerializer"}
-
     class Meta:
         resource_name = "customer-statistics"
 
@@ -46,6 +44,9 @@ class ProjectStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     amount_offered_currency = CharField()
     amount_invoiced = DecimalField(max_digits=None, decimal_places=2)
     amount_invoiced_currency = CharField()
+    customer = relations.ResourceRelatedField(model=Customer, read_only=True)
+
+    included_serializers = {"customer": "timed.projects.serializers.CustomerSerializer"}
 
     class Meta:
         resource_name = "project-statistics"
