@@ -75,8 +75,8 @@ class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     serializer_class = serializers.CustomerStatisticSerializer
     filterset_class = TaskStatisticFilterSet
-    ordering_fields = ("project__customer__name", "duration")
-    ordering = ("project__customer__name",)
+    ordering_fields = ("name", "duration")
+    ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
         (IsInternal | IsSuperUser)
@@ -99,8 +99,8 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     serializer_class = serializers.ProjectStatisticSerializer
     filterset_class = TaskStatisticFilterSet
-    ordering_fields = ("project__name", "duration")
-    ordering = ("project__name",)
+    ordering_fields = ("name", "duration")
+    ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
         (IsInternal | IsSuperUser)
@@ -116,6 +116,7 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
                 "amount_offered_currency": F("amount_offered_currency"),
                 "amount_invoiced": F("amount_invoiced"),
                 "amount_invoiced_currency": F("amount_invoiced_currency"),
+                "customer": F("customer"),
             },
         )
         return queryset
