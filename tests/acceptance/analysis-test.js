@@ -181,7 +181,7 @@ module("Acceptance | analysis", function (hooks) {
 
     await click("[data-test-edit-all]");
 
-    assert.equal(currentURL(), "/analysis/edit?editable=1");
+    assert.equal(currentURL(), "/analysis/edit?editable=1&ordering=-date%2Cid");
   });
 
   test("can edit selected reports", async function (assert) {

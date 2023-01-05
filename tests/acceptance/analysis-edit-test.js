@@ -60,7 +60,7 @@ module("Acceptance | analysis edit", function (hooks) {
 
     assert.deepEqual(Object.keys(relationships), []);
 
-    assert.strictEqual(currentURL(), "/analysis");
+    assert.strictEqual(currentURL(), "/analysis?ordering=-date%2Cid");
   });
 
   test("can cancel", async function (assert) {
@@ -68,7 +68,7 @@ module("Acceptance | analysis edit", function (hooks) {
 
     await click("[data-test-cancel]");
 
-    assert.strictEqual(currentURL(), "/analysis");
+    assert.strictEqual(currentURL(), "/analysis?ordering=-date%2Cid");
   });
 
   test("can reset", async function (assert) {

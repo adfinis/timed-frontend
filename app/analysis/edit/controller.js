@@ -86,14 +86,16 @@ export default class AnalysisEditController extends Controller.extend(
 
   @task
   *intersection() {
-    const res = yield this.fetch.fetch("/api/v1/reports/intersection", {
-      method: "GET",
-      data: {
+    const res = yield this.fetch.fetch(
+      `/api/v1/reports/intersection?${new URLSearchParams({
         ...prepareParams(this.allQueryParams),
         editable: 1,
         include: "task,project,customer,user",
-      },
-    });
+      })}`,
+      {
+        method: "GET",
+      }
+    );
 
     yield this.store.pushPayload("report-intersection", res);
 
@@ -135,8 +137,8 @@ export default class AnalysisEditController extends Controller.extend(
 
   get needsReview() {
     return (
-      this.intersectionModel.review === null ||
-      this.intersectionModel.review === true
+      this.intersectionModel?.review === null ||
+      this.intersectionModel?.review === true
     );
   }
 
@@ -178,7 +180,7 @@ export default class AnalysisEditController extends Controller.extend(
 
       this.router.transitionTo("analysis.index", {
         queryParams: {
-          ...params,
+          ...this.allQueryParams,
         },
       });
 
