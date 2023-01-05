@@ -1,26 +1,15 @@
-import {
-  classNames,
-  classNameBindings,
-  tagName,
-} from "@ember-decorators/component";
-import Component from "@ember/component";
-import { or } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
-import classic from "ember-classic-decorator";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 
-@classic
-@tagName("nav")
-@classNames("nav-top", "nav-top--fixed")
-@classNameBindings("expand:nav-top--expand")
 export default class SyTopnav extends Component {
-  @service("session")
-  session;
+  @service session;
 
-  @service("media")
-  media;
+  @service media;
 
-  expand = false;
+  @tracked expand = false;
 
-  @or("media.isMo", "media.isXs", "media.isSm")
-  navMobile;
+  get navMobile() {
+    return this.media.isMo || this.media.isXs || this.media.isSm;
+  }
 }
