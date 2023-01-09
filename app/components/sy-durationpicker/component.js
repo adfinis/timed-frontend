@@ -8,6 +8,7 @@ import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 import SyTimepickerComponent from "timed/components/sy-timepicker/component";
 import formatDuration from "timed/utils/format-duration";
+import { localCopy } from "tracked-toolbox";
 
 const { MIN_SAFE_INTEGER, MAX_SAFE_INTEGER } = Number;
 const { abs } = Math;
@@ -31,6 +32,8 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @public
    */
   precision = 15;
+
+  @localCopy("args.value") _value;
 
   get min() {
     return this.args.min ?? MIN_SAFE_INTEGER;
@@ -64,8 +67,8 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * @public
    */
   get displayValue() {
-    return this.args.value
-      ? formatDuration(this.args.value.content ?? this.args.value, false)
+    return this.value
+      ? formatDuration(this.value.content ?? this.value, false)
       : "";
   }
 
@@ -73,7 +76,7 @@ export default class SyDurationpicker extends SyTimepickerComponent {
    * Unwraps the passed value or creates a fresh duration object.
    */
   get value() {
-    return this.optionalUnwrap(this.args.value) ?? moment.duration();
+    return this.optionalUnwrap(this._value) ?? moment.duration();
   }
 
   /**

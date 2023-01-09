@@ -9,6 +9,7 @@
   maxlength={{this.maxlength}}
   placeholder={{this.placeholder}}
   autocomplete="off"
+  title={{@title}}
   {{on "change" this.change}}
   {{on "keyup" this.handleKeyPress}}
   {{on "focusout" (optional @onFocusOut)}}

@@ -11,11 +11,11 @@
       margin: 0;
     }
 
-    &:nth-child(6) {
+    &:nth-child(7) {
       padding-left: 1rem;
     }
 
-    &:nth-child(8) {
+    &:nth-child(9) {
       text-align: right;
       flex-grow: 1;
 
@@ -45,12 +45,16 @@
         width: 75px;
       }
 
-      &:nth-child(6),
-      &:nth-child(7) {
+      &:nth-child(6) {
+        width: 90px;
+      }
+
+      &:nth-child(7),
+      &:nth-child(8) {
         width: 140px;
       }
 
-      &:nth-child(8) {
+      &:nth-child(9) {
         width: 110px;
       }
     }

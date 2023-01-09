@@ -3,7 +3,7 @@
     <TaskSelection
       @disabled={{not this.editable}}
       @task={{cs.task}}
-      @on-set-task={{fn (mut cs.task)}}
+      @on-set-task={{queue (fn (mut cs.task)) this.setTask}}
       as |t|
     >
       <div
@@ -40,8 +40,24 @@
         @disabled={{(not this.editable)}}
         @value={{cs.duration}}
         @onChange={{fn (mut cs.duration)}}
+        @title="Task duration"
       />
     </div>
+    {{#if cs.task.project.remainingEffortTracking}}
+      <div class="form-list-cell form-group">
+        <SyDurationpicker
+          data-test-report-remaining-effort
+          @disabled={{(or
+            (gt (get (filter-by "key" "task" cs.changes) "length") 0)
+            (not this.editable)
+          )}}
+          @value={{changeset-get cs "task.mostRecentRemainingEffort"}}
+          @onChange={{changeset-set cs "task.mostRecentRemainingEffort"}}
+          @title="Remaining estimated effort"
+        ><FaIcon @icon="circle-o-notch" /></SyDurationpicker>
+      </div>
+    {{/if}}
+
     <div class="form-list-cell form-group">
       <SyCheckbox
         data-test-report-review
