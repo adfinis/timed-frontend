@@ -99,16 +99,7 @@ export default class IndexReportController extends Controller {
     try {
       this.send("loading");
 
-      const hasFilterKey = (item) =>
-        item.key === "task" || item.key === "task.mostRecentRemainingEffort";
-
-      const saveTaskFlag = report.changes.any(hasFilterKey);
-
       await report.save();
-
-      if (saveTaskFlag) {
-        await report.task.save();
-      }
 
       if (this.absence) {
         await this.absence.reload();

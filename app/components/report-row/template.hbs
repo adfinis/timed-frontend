@@ -3,7 +3,7 @@
     <TaskSelection
       @disabled={{not this.editable}}
       @task={{cs.task}}
-      @on-set-task={{queue (fn (mut cs.task)) this.setTask}}
+      @on-set-task={{queue (fn (mut cs.task)) (fn this.syncRemainingEffort cs)}}
       as |t|
     >
       <div
@@ -34,7 +34,7 @@
         <CustomerVisibleIcon class="customer-visible-icon" />
       {{/if}}
     </div>
-    <div class="form-list-cell form-group">
+    <div class="form-list-cell form-group cell-duration">
       <SyDurationpickerDay
         data-test-report-duration
         @disabled={{(not this.editable)}}
@@ -44,39 +44,59 @@
       />
     </div>
     {{#if cs.task.project.remainingEffortTracking}}
-      <div class="form-list-cell form-group">
+      <div class="form-list-cell form-group cell-remaining-effort">
         <SyDurationpicker
           data-test-report-remaining-effort
-          @disabled={{(or
-            (gt (get (filter-by "key" "task" cs.changes) "length") 0)
-            (not this.editable)
-          )}}
-          @value={{changeset-get cs "task.mostRecentRemainingEffort"}}
-          @onChange={{changeset-set cs "task.mostRecentRemainingEffort"}}
+          @disabled={{(not this.editable)}}
+          @value={{cs.remainingEffort}}
+          @onChange={{fn (mut cs.remainingEffort)}}
           @title="Remaining estimated effort"
         ><FaIcon @icon="circle-o-notch" /></SyDurationpicker>
       </div>
+
+      <div
+        class="form-list-cell form-list-cell-flex cell-review-billable-icons"
+      >
+        <SyToggle
+          class="margin-small-right"
+          data-test-report-review
+          @disabled={{(not this.editable)}}
+          @hint="Needs review"
+          @icon="eye"
+          @onToggle={{toggle "review" cs}}
+          @value={{cs.review}}
+        />
+        <SyToggle
+          data-test-report-not-billable
+          @disabled={{(not this.editable)}}
+          @hint="Not billable"
+          @icon="dollar"
+          @onToggle={{toggle "notBillable" cs}}
+          @value={{cs.notBillable}}
+        />
+      </div>
+    {{else}}
+      <div class="form-list-cell form-group cell-review">
+        <SyCheckbox
+          data-test-report-review
+          @disabled={{(not this.editable)}}
+          @checked={{cs.review}}
+          @onChange={{fn (mut cs.review)}}
+          @label="Needs review"
+        />
+      </div>
+      <div class="form-list-cell form-group cell-not-billable">
+        <SyCheckbox
+          data-test-report-not-billable
+          @disabled={{(not this.editable)}}
+          @checked={{cs.notBillable}}
+          @onChange={{fn (mut cs.notBillable)}}
+          @label="Not billable"
+        />
+      </div>
     {{/if}}
 
-    <div class="form-list-cell form-group">
-      <SyCheckbox
-        data-test-report-review
-        @disabled={{(not this.editable)}}
-        @checked={{cs.review}}
-        @onChange={{fn (mut cs.review)}}
-        @label="Needs review"
-      />
-    </div>
-    <div class="form-list-cell form-group">
-      <SyCheckbox
-        data-test-report-not-billable
-        @disabled={{(not this.editable)}}
-        @checked={{cs.notBillable}}
-        @onChange={{fn (mut cs.notBillable)}}
-        @label="Not billable"
-      />
-    </div>
-    <div class="form-list-cell form-group">
+    <div class="form-list-cell form-group cell-buttons">
       {{#if this.editable}}
         <button
           type="button"

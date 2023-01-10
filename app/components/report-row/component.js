@@ -56,7 +56,7 @@ export default class ReportRowComponent extends Component {
   }
 
   @action
-  setTask(task) {
-    this.task = task;
+  syncRemainingEffort(cs, task) {
+    cs.remainingEffort = task.mostRecentRemainingEffort;
   }
 }

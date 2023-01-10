@@ -18,5 +18,6 @@ module.exports = {
     "no-yield-only": "warn",
     "require-input-label": "warn",
     "require-has-block-helper": "warn",
+    "require-presentational-children": "warn",
   },
 };

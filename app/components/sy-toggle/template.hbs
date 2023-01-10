@@ -1,0 +1,15 @@
+<div
+  ...attributes
+  class="sy-toggle"
+  title={{@hint}}
+  tabindex="0"
+  role="button"
+  {{on "click" (unless @disabled (fn (optional @onToggle)))}}
+>
+  <FaIcon
+    @icon={{@icon}}
+    @class="{{if @value 'active' 'inactive'}}"
+    @fixedWidth={{true}}
+    @size="1.5x"
+  />
+</div>
