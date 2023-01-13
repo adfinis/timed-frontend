@@ -104,14 +104,14 @@
           class="btn btn-danger"
           disabled={{this.report.verifiedBy.id}}
           {{on "click" (fn (optional @onDelete) @report)}}
-        >{{fa-icon "trash"}}</button>
+        ><FaIcon @icon="trash" /></button>
         <button
           type="submit"
           data-test-save-report
           class="btn btn-primary"
           disabled={{or (not cs.isDirty) (not cs.isValid)}}
           {{on "click" (prevent-default (fn (optional @onSave) cs))}}
-        >{{fa-icon "save"}}</button>
+        ><FaIcon @icon="save" /></button>
       {{/if}}
     </div>
   </form>

@@ -25,10 +25,10 @@
                 {{/each}}
               </tbody>
             </table>
-          {{^}}
+          {{else}}
             <div class="card-block empty">
               <div>
-                {{fa-icon "folder-open-o"}}
+                <FaIcon @icon="folder-open" />
                 <p>
                   No projects found...
                 </p>
@@ -60,27 +60,40 @@
               </thead>
               <tbody>
                 {{#each supervisees as |supervisee|}}
-                  <LinkTo @route="users.edit" @model={{supervisee.id}} @tagName="tr" class="pointer">
+                  <LinkTo
+                    @route="users.edit"
+                    @model={{supervisee.id}}
+                    @tagName="tr"
+                    class="pointer"
+                  >
                     <td>{{supervisee.fullName}}</td>
                     <td>
-                      <span class="worktime-balance {{balance-highlight-class supervisee.currentWorktimeBalance.balance}}">
-                        {{format-duration supervisee.currentWorktimeBalance.balance false}}
+                      <span
+                        class="worktime-balance
+                          {{balance-highlight-class
+                            supervisee.currentWorktimeBalance.balance
+                          }}"
+                      >
+                        {{format-duration
+                          supervisee.currentWorktimeBalance.balance
+                          false
+                        }}
                       </span>
                     </td>
 
-                    {{!--
+                    {{!
                       absenceBalances has to be an array but will always only
                       contain one element. This is why we use firstObject here.
-                    --}}
+                    }}
                     <td>{{supervisee.absenceBalances.firstObject.balance}}</td>
                   </LinkTo>
                 {{/each}}
               </tbody>
             </table>
-          {{^}}
+          {{else}}
             <div class="card-block empty">
               <div>
-                {{fa-icon "users"}}
+                <FaIcon @icon="users" />
                 <p>No supervisees found...</p>
               </div>
             </div>

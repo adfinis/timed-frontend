@@ -76,7 +76,7 @@
                     class="btn btn-danger"
                     {{on "click" (fn this.stopActivity activity)}}
                   >
-                    {{fa-icon "stop"}}
+                    <FaIcon @icon="stop" />
                   </button>
                 {{else}}
                   <button
@@ -85,7 +85,7 @@
                     class="btn btn-success"
                     {{on "click" (fn this.startActivity activity)}}
                   >
-                    {{fa-icon "play"}}
+                    <FaIcon @icon="play" />
                   </button>
                 {{/if}}
               </td>

@@ -12,7 +12,10 @@
       <div class="progress-badge">
         {{#if this.progressTotal}}
           <span class="badge badge--{{this.colorTotal}}">
-            {{#if (gt this.progressTotal 1)}}{{fa-icon "warning"}} {{/if}}
+            {{#if (gt this.progressTotal 1)}}<FaIcon
+                @icon="exclamation-triangle"
+              />
+            {{/if}}
             {{round (mult 100 this.progressTotal)}}%
           </span>
         {{/if}}
@@ -22,7 +25,10 @@
       <div class="progress-badge">
         {{#if this.progressBillable}}
           <span class="badge badge--{{this.colorBillable}}">
-            {{#if (gt this.progressBillable 1)}}{{fa-icon "warning"}} {{/if}}
+            {{#if (gt this.progressBillable 1)}}<FaIcon
+                @icon="exclamation-triangle"
+              />
+            {{/if}}
             {{round (mult 100 this.progressBillable)}}%
           </span>
         {{/if}}
@@ -39,7 +45,9 @@
         <div class="progress-badge">
           {{#if this.progressRemainingEffort}}
             <span class="badge badge--{{this.colorRemainingEffort}}">
-              {{#if (gt this.progressRemainingEffort 1)}}{{fa-icon "warning"}}
+              {{#if (gt this.progressRemainingEffort 1)}}<FaIcon
+                  @icon="exclamation-triangle"
+                />
               {{/if}}
               {{round (mult 100 this.progressRemainingEffort)}}%
             </span>
