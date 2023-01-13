@@ -51,7 +51,11 @@
           @value={{cs.remainingEffort}}
           @onChange={{fn (mut cs.remainingEffort)}}
           @title="Remaining estimated effort"
-        ><FaIcon @icon="circle-o-notch" /></SyDurationpicker>
+        ><span class="fa-layers fa-fw color-secondary">
+            <FaIcon @icon="clock" @prefix="far" />
+            <FaIcon @icon="plus" @transform="shrink-6 right-10 up-6" />
+          </span>
+        </SyDurationpicker>
       </div>
 
       <div
@@ -65,7 +69,12 @@
           @icon="eye"
           @onToggle={{toggle "review" cs}}
           @value={{cs.review}}
-        />
+        >
+          <span class="fa-layers fa-fw">
+            <FaIcon @icon="user" />
+            <FaIcon @icon="question" @transform="shrink-6 up-7 right-8" />
+          </span>
+        </SyToggle>
         <SyToggle
           data-test-report-not-billable
           @disabled={{(not this.editable)}}
@@ -73,7 +82,12 @@
           @icon="dollar"
           @onToggle={{toggle "notBillable" cs}}
           @value={{cs.notBillable}}
-        />
+        >
+          <span class="fa-layers fa-fw">
+            <FaIcon @icon="dollar" />
+            <FaIcon @icon="slash" />
+          </span>
+        </SyToggle>
       </div>
     {{else}}
       <div class="form-list-cell form-group cell-review">

@@ -19,15 +19,15 @@ const COLUMN_MAP = {
     { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   customer: [
-    { title: "Customer", path: "customer.name", layout: PLAIN_LAYOUT },
+    { title: "Customer", path: "name", layout: PLAIN_LAYOUT },
     { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
   ],
   project: [
-    { title: "Customer", path: "project.customer.name", layout: PLAIN_LAYOUT },
-    { title: "Project", path: "project.name", layout: PLAIN_LAYOUT },
+    { title: "Customer", path: "customer.name", layout: PLAIN_LAYOUT },
+    { title: "Project", path: "name", layout: PLAIN_LAYOUT },
     {
       title: "Estimated",
-      path: "project.estimatedTime",
+      path: "estimatedTime",
       layout: DURATION_LAYOUT,
     },
     { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
@@ -35,13 +35,18 @@ const COLUMN_MAP = {
   task: [
     {
       title: "Customer",
-      path: "task.project.customer.name",
+      path: "project.customer.name",
       layout: PLAIN_LAYOUT,
     },
-    { title: "Project", path: "task.project.name", layout: PLAIN_LAYOUT },
-    { title: "Task", path: "task.name", layout: PLAIN_LAYOUT },
-    { title: "Estimated", path: "task.estimatedTime", layout: DURATION_LAYOUT },
+    { title: "Project", path: "project.name", layout: PLAIN_LAYOUT },
+    { title: "Task", path: "name", layout: PLAIN_LAYOUT },
+    { title: "Estimated", path: "estimatedTime", layout: DURATION_LAYOUT },
     { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
+    {
+      title: "Remaining effort",
+      path: "mostRecentRemainingEffort",
+      layout: DURATION_LAYOUT,
+    },
   ],
   user: [
     {
@@ -55,17 +60,32 @@ const COLUMN_MAP = {
 };
 
 export default class StatisticList extends Component {
+  get value() {
+    return this.args.data?.last?.value;
+  }
+
   get maxDuration() {
-    return (
-      this.args.data?.last?.value &&
-      moment.duration(Math.max(...this.args.data.last.value.mapBy("duration")))
+    if (!this.value) {
+      return null;
+    }
+
+    const maxEstimated = moment.duration(
+      Math.max(0, ...this.value.mapBy("estimatedTime"))
     );
+    const maxDurationWithRemainingEffort = moment.duration(
+      Math.max(
+        ...this.value.map((task) =>
+          moment
+            .duration(task.duration)
+            .add(moment.duration(task.mostRecentRemainingEffort))
+        )
+      )
+    );
+    return Math.max(maxEstimated, maxDurationWithRemainingEffort);
   }
 
   get total() {
-    return parseDjangoDuration(
-      this.args.data?.last?.value?.meta?.["total-time"] ?? null
-    );
+    return parseDjangoDuration(this.value.meta?.["total-time"] ?? null);
   }
 
   get columns() {

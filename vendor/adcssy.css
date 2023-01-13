@@ -2562,6 +2562,7 @@ code {
         display: -webkit-inline-box;
         display: -ms-inline-flexbox;
         display: inline-flex;
+        align-items: flex-start;
         min-height: 2rem;
     }
 }

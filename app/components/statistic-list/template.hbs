@@ -68,9 +68,16 @@
             />
           {{/each}}
           <td>
-            <StatisticList::Bar
-              @value={{(div row.duration this.maxDuration)}}
-            />
+            {{#let
+              (add row.duration row.mostRecentRemainingEffort)
+              as |allotted|
+            }}
+              <StatisticList::Bar
+                @value={{(div row.duration this.maxDuration)}}
+                @remaining={{(div allotted this.maxDuration)}}
+                @goal={{(min "0.99" (div row.estimatedTime this.maxDuration))}}
+              />
+            {{/let}}
           </td>
         </tr>
       </VerticalCollection>
