@@ -1,8 +1,18 @@
 .extendend-durationpicker-day {
-  i {
-    color: $color-secondary;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  * {
+    flex: 0 0 30%;
   }
+
   input {
     width: 80%;
+    flex: 1 0 70%;
+  }
+
+  :nth-child(2) {
+    margin-left: 0.5rem;
   }
 }

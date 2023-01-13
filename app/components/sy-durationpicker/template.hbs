@@ -1,11 +1,16 @@
 {{#if (has-block)}}
-  <div class="form-control extendend-durationpicker-day">
+  <div
+    class="form-control extendend-durationpicker-day"
+    {{!template-lint-disable no-invalid-interactive}}
+    {{on "click" this.focusInput}}
+  >
     {{yield}}
     <input
       ...attributes
       aria-label="duration picker"
       name="duration"
       type="text"
+      id={{this.elementId}}
       title={{@title}}
       disabled={{@disabled}}
       pattern={{this.pattern}}
@@ -25,6 +30,7 @@
     name="duration"
     type="text"
     class="form-control"
+    id={{this.elementId}}
     disabled={{@disabled}}
     pattern={{this.pattern}}
     value={{this.displayValue}}

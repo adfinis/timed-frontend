@@ -4,6 +4,7 @@
  * @public
  */
 import { action } from "@ember/object";
+import { guidFor } from "@ember/object/internals";
 import { padStart } from "ember-pad/utils/pad";
 import moment from "moment";
 import SyTimepickerComponent from "timed/components/sy-timepicker/component";
@@ -34,6 +35,16 @@ export default class SyDurationpicker extends SyTimepickerComponent {
   precision = 15;
 
   @localCopy("args.value") _value;
+
+  constructor(...args) {
+    super(...args);
+
+    this._ElementId = guidFor(this);
+  }
+
+  get elementId() {
+    return this._ElementId;
+  }
 
   get min() {
     return this.args.min ?? MIN_SAFE_INTEGER;
@@ -125,5 +136,10 @@ export default class SyDurationpicker extends SyTimepickerComponent {
   @action
   handleKeyPress(event) {
     super.keyDown(event);
+  }
+
+  @action
+  focusInput() {
+    document.getElementById(this.elementId)?.focus();
   }
 }
