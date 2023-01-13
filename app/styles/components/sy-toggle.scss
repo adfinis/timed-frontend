@@ -2,11 +2,11 @@
   cursor: pointer;
   margin: auto;
 
-  .active {
+  &.active {
     color: $color-primary;
   }
 
-  .inactive {
+  &.inactive {
     color: $color-secondary;
   }
 }

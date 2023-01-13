@@ -1,15 +1,14 @@
 <div
   ...attributes
-  class="sy-toggle"
+  class="sy-toggle {{if @value 'active' 'inactive'}}"
   title={{@hint}}
   tabindex="0"
   role="button"
   {{on "click" (unless @disabled (fn (optional @onToggle)))}}
 >
-  <FaIcon
-    @icon={{@icon}}
-    @class="{{if @value 'active' 'inactive'}}"
-    @fixedWidth={{true}}
-    @size="1.5x"
-  />
+  {{#if (has-block)}}
+    {{yield}}
+  {{else}}
+    <FaIcon @icon={{@icon}} @fixedWidth={{true}} @size={{or @size "1x"}} />
+  {{/if}}
 </div>
