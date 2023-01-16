@@ -65,6 +65,8 @@ def test_project_statistic_list(
                     "amount-offered-currency": project_2.amount_offered_currency,
                     "amount-invoiced": str(project_2.amount_invoiced.amount),
                     "amount-invoiced-currency": project_2.amount_invoiced_currency,
+                    "estimated-time": "00:00:00",
+                    "total-remaining-effort": "00:00:00",
                 },
                 "relationships": {
                     "customer": {
@@ -85,6 +87,8 @@ def test_project_statistic_list(
                     "amount-offered-currency": project.amount_offered_currency,
                     "amount-invoiced": str(project.amount_invoiced.amount),
                     "amount-invoiced-currency": project.amount_invoiced_currency,
+                    "estimated-time": "00:00:00",
+                    "total-remaining-effort": "00:00:00",
                 },
                 "relationships": {
                     "customer": {
