@@ -46,12 +46,12 @@ export default class ProjectsController extends Controller {
       let projects;
       if (get(this, "user.isSuperuser")) {
         projects = yield this.store.findAll("project", {
-          include: ["customer"],
+          include: "customer",
         });
       } else {
         projects = yield this.store.query("project", {
           has_manager: get(this, "user.id"),
-          include: ["customer"],
+          include: "customer",
         });
       }
 
