@@ -22,12 +22,12 @@ module("Integration | Component | sy durationpicker", function (hooks) {
     assert.dom("input").hasValue("01:30");
   });
 
-  test("renders without value", async function (assert) {
+  test("renders default duration when none passed", async function (assert) {
     this.set("value", null);
 
     await render(hbs`<SyDurationpicker @value={{this.value}} />`);
 
-    assert.dom("input").hasNoValue();
+    assert.dom("input").hasValue("00:00");
   });
 
   test("can change the value", async function (assert) {
