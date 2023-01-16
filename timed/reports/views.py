@@ -117,6 +117,8 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
                 "amount_invoiced": F("amount_invoiced"),
                 "amount_invoiced_currency": F("amount_invoiced_currency"),
                 "customer": F("customer"),
+                "estimated_time": F("estimated_time"),
+                "total_remaining_effort": F("total_remaining_effort"),
             },
         )
         return queryset
@@ -141,6 +143,7 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
             annotations={
                 "name": F("name"),
                 "project": F("project"),
+                "estimated_time": F("estimated_time"),
                 "most_recent_remaining_effort": F("most_recent_remaining_effort"),
             },
         )

@@ -45,6 +45,8 @@ class ProjectStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     amount_invoiced = DecimalField(max_digits=None, decimal_places=2)
     amount_invoiced_currency = CharField()
     customer = relations.ResourceRelatedField(model=Customer, read_only=True)
+    estimated_time = DurationField(read_only=True)
+    total_remaining_effort = DurationField(read_only=True)
 
     included_serializers = {"customer": "timed.projects.serializers.CustomerSerializer"}
 
@@ -57,6 +59,7 @@ class TaskStatisticSerializer(TotalTimeRootMetaMixin, Serializer):
     most_recent_remaining_effort = DurationField(read_only=True)
     duration = DurationField(read_only=True)
     project = relations.ResourceRelatedField(model=Project, read_only=True)
+    estimated_time = DurationField(read_only=True)
 
     included_serializers = {"project": "timed.projects.serializers.ProjectSerializer"}
 
