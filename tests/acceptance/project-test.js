@@ -125,7 +125,7 @@ module("Acceptance | projects", function (hooks) {
       .dom("[data-test-table-reference]")
       .hasText("Reference of FooBar Task 1");
     assert.dom("[data-test-table-estimated-time]").hasText("2h 15m");
-    assert.dom("[data-test-table-archived]").hasClass("fa-square-o");
+    assert.dom("[data-test-table-archived]").hasClass("fa-square");
 
     await click("[data-test-task-table-row]");
 
@@ -142,7 +142,7 @@ module("Acceptance | projects", function (hooks) {
     assert.dom("[data-test-table-name]").hasText("FooBar Task 1 updated");
     assert.dom("[data-test-table-reference]").hasText("-");
     assert.dom("[data-test-table-estimated-time]").hasText("-");
-    assert.dom("[data-test-table-archived]").hasClass("fa-check-square-o");
+    assert.dom("[data-test-table-archived]").hasClass("fa-square-check");
   });
 
   test("shows all customers to superuser", async function (assert) {

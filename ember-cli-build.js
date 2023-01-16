@@ -9,7 +9,7 @@ module.exports = function (defaults) {
     fontawesome: {
       icons: {
         "free-solid-svg-icons": "all",
-        "free-regular-svg-icons": ["clock"],
+        "free-regular-svg-icons": ["check-square", "clock", "square"],
       },
     },
     sassOptions: {
