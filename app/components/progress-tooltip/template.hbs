@@ -8,7 +8,8 @@
   >
     <div class="time-info">
 
-      <span>Spent (Total): {{humanize-duration this.spent}}</span>
+      <span data-test-spent-total>Spent (Total):
+        {{humanize-duration this.spent}}</span>
       <div class="progress-badge">
         {{#if this.progressTotal}}
           <span class="badge badge--{{this.colorTotal}}">
@@ -21,7 +22,8 @@
         {{/if}}
       </div>
 
-      <span>Spent (Billable): {{humanize-duration this.billable}}</span>
+      <span data-test-spent-billable>Spent (Billable):
+        {{humanize-duration this.billable}}</span>
       <div class="progress-badge">
         {{#if this.progressBillable}}
           <span class="badge badge--{{this.colorBillable}}">
@@ -34,11 +36,11 @@
         {{/if}}
       </div>
 
-      <span>Budget:
+      <span data-test-budget>Budget:
         {{if this.estimated (humanize-duration this.estimated) "None"}}</span>
 
       {{#if this.remainingEffort}}
-        <span>{{concat
+        <span data-test-remaining-effort>{{concat
             "Remaining effort: "
             (humanize-duration this.remainingEffort)
           }}</span>
