@@ -55,7 +55,8 @@ module("Integration | Component | progress tooltip", function (hooks) {
         constructor: EmberObject.create({
           modelName: "project",
         }),
-        remainingEffort: moment.duration({ h: 2 }),
+        totalRemainingEffort: moment.duration({ h: 2 }),
+        remainingEffortTracking: true,
       })
     );
 
@@ -99,6 +100,29 @@ module("Integration | Component | progress tooltip", function (hooks) {
     assert
       .dom(".progress-tooltip .time-info [data-test-budget]")
       .hasText("Budget: 100h 30m");
+  });
+
+  test("renders with tasks with remaining effort", async function (assert) {
+    this.set(
+      "model",
+      EmberObject.create({
+        id: 1,
+        estimatedTime: moment.duration({ h: 100, m: 30 }),
+        mostRecentRemainingEffort: moment.duration({ h: 2, m: 15 }),
+        constructor: EmberObject.create({
+          modelName: "task",
+        }),
+      })
+    );
+
+    await render(hbs`
+      <span id='target'></span>
+      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+    `);
+
+    assert
+      .dom(".progress-tooltip .time-info [data-test-remaining-effort]")
+      .hasText(/Remaining effort:\n*\s*\d+h \d+m/);
   });
 
   test("toggles correctly", async function (assert) {
