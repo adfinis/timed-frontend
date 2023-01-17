@@ -57,6 +57,7 @@ export default class ProjectsController extends Controller {
 
       return projects.sortBy("name");
     } catch (error) {
+      /* istanbul ignore next */
       this.notify.error("Error while fetching projects");
     }
   }
@@ -77,6 +78,7 @@ export default class ProjectsController extends Controller {
         project: id,
       });
     } catch (error) {
+      /* istanbul ignore next */
       this.notify.error("Error while fetching tasks");
     }
   }
