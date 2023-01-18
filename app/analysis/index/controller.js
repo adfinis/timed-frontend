@@ -88,6 +88,11 @@ export const AnalysisQueryParams = new QueryParams({
     replace: true,
     refresh: true,
   },
+  rejected: {
+    defaultValue: undefined,
+    replace: true,
+    refresh: true,
+  },
   notBillable: {
     defaultValue: undefined,
     replace: true,

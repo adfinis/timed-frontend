@@ -55,6 +55,10 @@ strong {
   font-weight: bold;
 }
 
+.flex {
+  display: flex;
+}
+
 .pointer {
   cursor: pointer;
 }
@@ -322,6 +326,7 @@ strong {
   color: darken($color-border, 25%);
   height: 100%;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;

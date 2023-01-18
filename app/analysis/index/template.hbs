@@ -126,6 +126,23 @@
           </fs.group>
           <fs.group @label="State">
             <fs.label>
+              Rejected
+              <fs.filter
+                data-test-filter-rejected
+                @type="button"
+                @selected={{this.rejected}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Rejected" value="1")
+                  (hash label="Not rejected" value="0")
+                }}
+                @onChange={{fn (mut this.rejected)}}
+              />
+            </fs.label>
+
+            <fs.label>
               Review
               <fs.filter
                 data-test-filter-review
@@ -260,6 +277,9 @@
                 <col />
                 <col />
                 <col />
+                <col />
+                <col />
+                <col />
               </colgroup>
               <thead>
                 <tr>
@@ -303,6 +323,7 @@
                     @current={{this.ordering}}
                     @by="verified_by__username"
                   >Verified by</SortHeader>
+                  <th>Rejected</th>
                   <th>Review</th>
                   <th>Not billable</th>
                   <th>Billed</th>
@@ -312,6 +333,8 @@
             <EmberScrollable @class="analysis-scrollable-container">
               <table class="table table--striped table--analysis">
                 <colgroup>
+                  <col />
+                  <col />
                   <col />
                   <col />
                   <col />
@@ -351,6 +374,7 @@
                           report.verifiedBy
                           report.verifiedBy.username
                         }}</td>
+                      <td><SyCheckmark @checked={{report.rejected}} /></td>
                       <td><SyCheckmark @checked={{report.review}} /></td>
                       <td><SyCheckmark @checked={{report.notBillable}} /></td>
                       <td><SyCheckmark @checked={{report.billed}} /></td>
@@ -378,13 +402,6 @@
             </EmberScrollable>
             <table class="table table--striped table--analysis">
               <colgroup>
-                <col />
-                <col />
-                <col />
-                <col />
-                <col />
-                <col />
-                <col />
                 <col />
                 <col />
                 <col />
