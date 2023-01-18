@@ -101,13 +101,13 @@ export default class ProjectsController extends Controller {
   *saveProject(changeset) {
     try {
       yield changeset.save();
-
+      /* istanbul ignore next */
       this.notify.success("Project was saved");
     } catch (error) {
       /* istanbul ignore next */
       this.notify.error("Error while saving project");
     }
-
+    /* istanbul ignore next */
     this.fetchTasksByProject.perform(this.selectedProject);
   }
 

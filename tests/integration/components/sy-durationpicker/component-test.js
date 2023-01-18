@@ -1,4 +1,5 @@
 import {
+  click,
   fillIn,
   blur,
   render,
@@ -28,6 +29,13 @@ module("Integration | Component | sy durationpicker", function (hooks) {
     await render(hbs`<SyDurationpicker @value={{this.value}} />`);
 
     assert.dom("input").hasValue("00:00");
+  });
+
+  test("focus input on wrapper click", async function (assert) {
+    await render(hbs`<SyDurationpicker>Click me</SyDurationpicker>`);
+    await click(".extendend-durationpicker-day");
+
+    assert.dom("input").isFocused();
   });
 
   test("can change the value", async function (assert) {
