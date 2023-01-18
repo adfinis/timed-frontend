@@ -6,6 +6,9 @@ module.exports = function (environment) {
     environment,
     rootURL: "/",
     locationType: "auto",
+    fontawesome: {
+      defaultPrefix: "far", // regular icons
+    },
     moment: {
       includeTimezone: "all",
     },

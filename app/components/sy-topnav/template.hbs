@@ -29,19 +29,19 @@
         {{#if (can "access page")}}
           <li class="nav-top-list-item">
             <LinkTo @route="analysis">
-              <FaIcon @icon="line-chart" />
+              <FaIcon @icon="chart-line" @prefix="fas" />
               Analysis
             </LinkTo>
           </li>
           <li class="nav-top-list-item">
             <LinkTo @route="statistics">
-              <FaIcon @icon="bar-chart" />
+              <FaIcon @icon="chart-bar" />
               Statistics
             </LinkTo>
           </li>
           <li class="nav-top-list-item">
             <LinkTo @route="projects">
-              <FaIcon @icon="briefcase" />
+              <FaIcon @icon="briefcase" @prefix="fas" />
               Projects
             </LinkTo>
           </li>

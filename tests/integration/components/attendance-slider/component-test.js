@@ -38,7 +38,7 @@ module("Integration | Component | attendance slider", function (hooks) {
       />
     `);
 
-    await click(".fa-trash");
+    await click(".fa-trash-can");
   });
 
   test("can handle attendances until 00:00", async function (assert) {

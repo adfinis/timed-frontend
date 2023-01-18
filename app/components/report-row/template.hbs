@@ -52,7 +52,7 @@
           @onChange={{fn (mut cs.remainingEffort)}}
           @title="Remaining estimated effort"
         ><span class="fa-layers fa-fw color-secondary">
-            <FaIcon @icon="clock" @prefix="far" />
+            <FaIcon @icon="clock" />
             <FaIcon @icon="plus" @transform="shrink-6 right-10 up-6" />
           </span>
         </SyDurationpicker>
@@ -118,7 +118,7 @@
           class="btn btn-danger"
           disabled={{this.report.verifiedBy.id}}
           {{on "click" (fn (optional @onDelete) @report)}}
-        ><FaIcon @icon="trash" /></button>
+        ><FaIcon @icon="trash-can" /></button>
         <button
           type="submit"
           data-test-save-report

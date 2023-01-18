@@ -8,8 +8,8 @@ module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
     fontawesome: {
       icons: {
+        "free-regular-svg-icons": "all",
         "free-solid-svg-icons": "all",
-        "free-regular-svg-icons": ["check-square", "clock", "square"],
       },
     },
     sassOptions: {
