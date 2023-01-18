@@ -17,18 +17,7 @@ export default class UserSelection extends Component {
 
   constructor(...args) {
     super(...args);
-    this.fetchUsers();
-  }
-
-  async fetchUsers() {
-    try {
-      await this.tracking.users.perform();
-    } catch (e) {
-      if (e.taskInstance && e.taskInstance.isCanceling) {
-        return;
-      }
-      throw e;
-    }
+    this.tracking.users.perform();
   }
 
   @restartableTask

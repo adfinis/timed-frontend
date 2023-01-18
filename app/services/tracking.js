@@ -258,7 +258,7 @@ export default class TrackingService extends Service {
    * @property {EmberConcurrency.Task} users
    * @public
    */
-  @task
+  @dropTask
   *users() {
     return yield this.store.query("user", {});
   }
@@ -288,7 +288,7 @@ export default class TrackingService extends Service {
    * @param {Number} customer The customer id to filter by
    * @public
    */
-  @task
+  @dropTask
   *projects(customer) {
     if (!customer) {
       // We can't test this because the UI prevents it
@@ -305,7 +305,7 @@ export default class TrackingService extends Service {
    * @param {Number} project The project id to filter by
    * @public
    */
-  @task
+  @dropTask
   *tasks(project) {
     if (!project) {
       // We can't test this because the UI prevents it
