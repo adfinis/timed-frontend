@@ -1,12 +1,15 @@
-{{!template-lint-disable no-invalid-interactive}}
-<div class="filter-sidebar-group-label" {{on "click" (toggle "expanded" this)}}>
-  {{label}}
+<a
+  href="#"
+  class="filter-sidebar-group-label"
+  {{on "click" (toggle "expanded" this)}}
+>
+  {{@label}}
   <FaIcon
     @icon="angle-right"
     @prefix="fas"
     @transform="{{if this.expanded 'rotate-90'}}"
   />
-</div>
+</a>
 
 <div class="filter-sidebar-group-body">
   <div class="filter-sidebar-group-content">
