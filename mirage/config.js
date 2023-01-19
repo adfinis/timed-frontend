@@ -175,6 +175,7 @@ export default function () {
       },
     };
   });
+  this.patch("/projects/:id");
 
   this.get("/tasks");
   this.post("/tasks");
