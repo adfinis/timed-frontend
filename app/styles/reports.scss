@@ -21,9 +21,10 @@
 
     &.cell-review-billable-icons {
       display: flex;
+      justify-content: space-evenly;
 
       > .sy-toggle {
-        flex: 0 0 30px;
+        flex: 0 0 1.5rem;
       }
     }
 
@@ -70,8 +71,7 @@
       }
 
       &.cell-remaining-effort {
-        width: 145px;
-        padding-right: 50px;
+        width: 100px;
       }
     }
   }

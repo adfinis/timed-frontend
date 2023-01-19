@@ -4,15 +4,15 @@
   align-items: center;
 
   * {
-    flex: 0 0 30%;
+    flex: 0 0 1.25rem;
   }
 
   input {
-    width: 80%;
+    width: 100%;
     flex: 1 0 70%;
   }
 
   :nth-child(2) {
-    margin-left: 0.5rem;
+    margin-left: 0.25rem;
   }
 }

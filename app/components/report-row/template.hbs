@@ -61,61 +61,39 @@
           </span>
         </SyDurationpicker>
       </div>
-
-      <div
-        class="form-list-cell form-list-cell-flex cell-review-billable-icons"
-      >
-        <SyToggle
-          class="margin-small-right"
-          data-test-report-review
-          @disabled={{(not this.editable)}}
-          @hint="Needs review"
-          @onToggle={{toggle "review" cs}}
-          @value={{cs.review}}
-        >
-          <span class="fa-layers fa-fw">
-            <FaIcon @icon="user" />
-            <FaIcon
-              @icon="question"
-              @prefix="fas"
-              @transform="shrink-6 up-7 right-8"
-            />
-          </span>
-        </SyToggle>
-        <SyToggle
-          data-test-report-not-billable
-          @disabled={{(not this.editable)}}
-          @hint="Not billable"
-          @onToggle={{toggle "notBillable" cs}}
-          @value={{cs.notBillable}}
-        >
-          <span class="fa-layers fa-fw">
-            <FaIcon @icon="dollar-sign" />
-            <FaIcon @icon="slash" @prefix="fas" />
-          </span>
-        </SyToggle>
-      </div>
-    {{else}}
-      <div class="form-list-cell form-group cell-review">
-        <SyCheckbox
-          data-test-report-review
-          @disabled={{(not this.editable)}}
-          @checked={{cs.review}}
-          @onChange={{fn (mut cs.review)}}
-          @label="Needs review"
-        />
-      </div>
-      <div class="form-list-cell form-group cell-not-billable">
-        <SyCheckbox
-          data-test-report-not-billable
-          @disabled={{(not this.editable)}}
-          @checked={{cs.notBillable}}
-          @onChange={{fn (mut cs.notBillable)}}
-          @label="Not billable"
-        />
-      </div>
     {{/if}}
 
+    <div class="form-list-cell form-group cell-review-billable-icons">
+      <SyToggle
+        class="margin-small-right"
+        data-test-report-review
+        @disabled={{(not this.editable)}}
+        @hint="Needs review"
+        @onToggle={{toggle "review" cs}}
+        @value={{cs.review}}
+      >
+        <span class="fa-layers fa-fw">
+          <FaIcon @icon="user" />
+          <FaIcon
+            @icon="question"
+            @prefix="fas"
+            @transform="shrink-6 up-7 right-8"
+          />
+        </span>
+      </SyToggle>
+      <SyToggle
+        data-test-report-not-billable
+        @disabled={{(not this.editable)}}
+        @hint="Not billable"
+        @onToggle={{toggle "notBillable" cs}}
+        @value={{cs.notBillable}}
+      >
+        <span class="fa-layers fa-fw">
+          <FaIcon @icon="dollar-sign" @prefix="fas" />
+          <FaIcon @icon="slash" @prefix="fas" />
+        </span>
+      </SyToggle>
+    </div>
     <div class="form-list-cell form-group cell-buttons">
       {{#if this.editable}}
         <button

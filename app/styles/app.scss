@@ -146,6 +146,15 @@ strong {
       0 0 8px opacify($color-primary, 0.6);
   }
 
+  &.duration-day {
+    text-align: center;
+  }
+
+  &.extendend-durationpicker-day {
+    padding-bottom: unset;
+    padding-top: unset;
+  }
+
   input {
     border: none;
     outline: none;
