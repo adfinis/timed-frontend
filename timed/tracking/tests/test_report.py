@@ -83,6 +83,7 @@ def test_report_intersection_full(
                 "verified": False,
                 "review": False,
                 "billed": False,
+                "rejected": False,
             },
             "relationships": {
                 "customer": {
@@ -129,6 +130,7 @@ def test_report_intersection_partial(
                 "verified": None,
                 "review": None,
                 "billed": None,
+                "rejected": False,
             },
             "relationships": {
                 "customer": {"data": None},
@@ -173,6 +175,7 @@ def test_report_intersection_accountant_editable(
                 "verified": False,
                 "review": True,
                 "billed": None,
+                "rejected": False,
             },
             "relationships": {
                 "customer": {"data": None},
@@ -217,6 +220,7 @@ def test_report_intersection_accountant_not_editable(
                 "verified": None,
                 "review": None,
                 "billed": None,
+                "rejected": None,
             },
             "relationships": {
                 "customer": {"data": None},

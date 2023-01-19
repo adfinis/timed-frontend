@@ -303,6 +303,7 @@ class ReportIntersectionSerializer(Serializer):
     not_billable = SerializerMethodField()
     billed = SerializerMethodField()
     verified = SerializerMethodField()
+    rejected = SerializerMethodField()
 
     def _intersection(self, instance, field, model=None):
         """Get intersection of given field.
@@ -355,6 +356,9 @@ class ReportIntersectionSerializer(Serializer):
         )
         instance["queryset"] = queryset
         return self._intersection(instance, "verified")
+
+    def get_rejected(self, instance):
+        return self._intersection(instance, "rejected")
 
     def get_root_meta(self, resource, many):
         """Add number of results to meta."""
