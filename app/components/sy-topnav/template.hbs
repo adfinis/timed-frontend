@@ -50,7 +50,7 @@
       {{#if this.session.data.user.isSuperuser}}
         <li class="nav-top-list-item">
           <LinkTo @route="users.index">
-            <FaIcon @icon="users" />
+            <FaIcon @icon="users" @prefix="fas" />
             Users
           </LinkTo>
         </li>
@@ -66,7 +66,7 @@
       </li>
       <li class="nav-top-list-item">
         <a href="#" data-test-logout {{on "click" (optional this.on-logout)}}>
-          <FaIcon @icon="power-off" />
+          <FaIcon @icon="power-off" @prefix="fas" />
           Logout
         </a>
       </li>

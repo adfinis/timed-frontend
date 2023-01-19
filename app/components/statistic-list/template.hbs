@@ -18,7 +18,7 @@
   {{else if @missingParams}}
     <div class="empty">
       <div>
-        <FaIcon @icon="search" />
+        <FaIcon @icon="magnifying-glass" @prefix="fas" />
         <h3>Missing filter parameters</h3>
         <p>{{this.missingParamsMessage}}</p>
       </div>
@@ -26,7 +26,7 @@
   {{else if (not @data.last.value)}}
     <div class="empty">
       <div>
-        <FaIcon @icon="bar-chart" />
+        <FaIcon @icon="chart-bar" />
         <h3>No statistics to display</h3>
         <p>Maybe try loosening your filters</p>
       </div>

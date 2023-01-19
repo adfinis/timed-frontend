@@ -431,7 +431,10 @@
                   disabled={{this.exportLimitExceeded}}
                   title={{if this.exportLimitExceeded this.exportLimitMessage}}
                 >
-                  <FaIcon @icon="download" />&nbsp;{{link.label}}
+                  <FaIcon
+                    @icon="download"
+                    @prefix="fas"
+                  />&nbsp;{{link.label}}
                 </button>
               {{/each}}
             </div>
@@ -439,7 +442,7 @@
         {{else}}
           <div class="empty" data-test-widen-filters>
             <div>
-              <FaIcon @icon="search" />
+              <FaIcon @icon="magnifying-glass" @prefix="fas" />
               <h3>0 Results</h3>
               <p>Maybe widen your filters</p>
             </div>
@@ -449,7 +452,7 @@
     {{else}}
       <div class="empty" data-test-apply-filters>
         <div>
-          <FaIcon @icon="search" />
+          <FaIcon @icon="magnifying-glass" @prefix="fas" />
           <h3>Apply filters to display reports</h3>
         </div>
       </div>
