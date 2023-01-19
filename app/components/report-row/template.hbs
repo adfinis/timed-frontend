@@ -3,7 +3,7 @@
     <TaskSelection
       @disabled={{not this.editable}}
       @task={{cs.task}}
-      @on-set-task={{queue (fn (mut cs.task)) (fn this.syncRemainingEffort cs)}}
+      @on-set-task={{(fn this.updateTask cs)}}
       as |t|
     >
       <div
