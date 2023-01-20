@@ -1,10 +1,10 @@
 <div
   ...attributes
   class="sy-toggle {{if @value 'active' 'inactive'}}"
-  title={{@hint}}
+  title={{concat @hint (if @disabled " (disabled)")}}
   tabindex="0"
   role="button"
-  {{on "click" (unless @disabled (fn (optional @onToggle)))}}
+  {{on "click" (optional (unless @disabled (fn (optional @onToggle))))}}
 >
   {{#if (has-block)}}
     {{yield}}

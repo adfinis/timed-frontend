@@ -15,7 +15,7 @@ module("Integration | Component | report row", function (hooks) {
       EmberObject.create({ verifiedBy: EmberObject.create() })
     );
 
-    await render(hbs`<ReportRow @report={{this.report}}/>`);
+    await render(hbs`<ReportRow @report={{this.report}} />`);
 
     assert.dom("form").exists({ count: 1 });
     assert.dom(".form-group").exists({ count: 7 });

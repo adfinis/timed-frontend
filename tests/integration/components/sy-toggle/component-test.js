@@ -38,8 +38,15 @@ module("Integration | Component | sy-toggle", function (hooks) {
   });
 
   test("it includes the hint", async function (assert) {
-    await render(hbs`<SyToggle @icon="eye" @hint="test"/>`);
+    this.set("disabled", false);
+    await render(
+      hbs`<SyToggle @icon="eye" @hint="test" @disabled={{this.disabled}}/>`
+    );
 
     assert.dom(".sy-toggle").hasAttribute("title", "test");
+
+    this.set("disabled", true);
+
+    assert.dom(".sy-toggle").hasAttribute("title", "test (disabled)");
   });
 });
