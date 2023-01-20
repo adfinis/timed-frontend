@@ -29,20 +29,14 @@ module("Acceptance | projects", function (hooks) {
   });
 
   test("can select project", async function (assert) {
+    const project = this.server.create("project", "withBillingType");
+
     await visit("/projects");
     assert.strictEqual(currentURL(), "/projects");
 
-    await selectChoose(
-      "[data-test-customer-selection]",
-      ".ember-power-select-option",
-      0
-    );
+    await selectChoose("[data-test-customer-selection]", project.customer.name);
 
-    await selectChoose(
-      "[data-test-project-selection]",
-      ".ember-power-select-option",
-      0
-    );
+    await selectChoose("[data-test-project-selection]", project.name);
 
     assert.dom("[data-test-none-selected]").doesNotExist();
     assert.dom("[data-test-tasks-table]").exists();
