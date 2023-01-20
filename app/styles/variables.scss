@@ -17,10 +17,10 @@ $color-info: rgb(91, 192, 222);
 $color-warning: rgb(240, 173, 78);
 $color-danger: rgb(217, 83, 79);
 
-$color-success-lighter: lighten(rgb(92, 184, 92), 20%);
-$color-success-darker: darker(rgb(92, 184, 92), 5%);
-$color-danger-lighter: lighten(rgb(217, 83, 79), 20%);
-$color-danger-darker: darken(rgb(217, 83, 79), 5%);
+$color-success-lighter: lighten($color-success, 20%);
+$color-success-darker: darker($color-success, 5%);
+$color-danger-lighter: lighten($color-danger, 20%);
+$color-danger-darker: darken($color-danger, 5%);
 
 $font-family-sans-serif: "TheSansLT", "Open Sans", sans-serif;
 $font-family-serif: "Merriweather", "Times New Roman", serif;

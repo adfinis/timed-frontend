@@ -50,7 +50,7 @@
                     <tbody>
                       {{#each absenceCredits as |absenceCredit|}}
                         <tr
-                          class="{{if (can 'edit absence-credit') 'pointer'}}"
+                          class={{if (can "edit absence-credit") "pointer"}}
                           {{on
                             "click"
                             (perform this.editAbsenceCredit absenceCredit.id)

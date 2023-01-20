@@ -75,7 +75,7 @@
               <StatisticList::Bar
                 @value={{(div row.duration this.maxDuration)}}
                 @remaining={{(div allotted this.maxDuration)}}
-                @goal={{(min "0.99" (div row.estimatedTime this.maxDuration))}}
+                @goal={{min "0.99" (div row.estimatedTime this.maxDuration)}}
               />
             {{/let}}
           </td>

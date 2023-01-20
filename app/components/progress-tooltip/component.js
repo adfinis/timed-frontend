@@ -42,29 +42,24 @@ export default class ProgressTooltipComponent extends Component {
   }
 
   get remainingEffort() {
-    return this.args.model.constructor.modelName === "project" &&
-      this.args.model.remainingEffortTracking
-      ? this.args.model.totalRemainingEffort
-      : this.args.model.mostRecentRemainingEffort;
+    const model = this.args.model;
+    return model.constructor.modelName === "project" &&
+      model.remainingEffortTracking
+      ? model.totalRemainingEffort
+      : model.mostRecentRemainingEffort;
   }
 
   // The current billable progress
   get progressBillable() {
-    return this.estimated && this.estimated.asHours()
-      ? this.billable / this.estimated
-      : 0;
+    return this.estimated?.asHours() ? this.billable / this.estimated : 0;
   }
 
   get progressTotal() {
-    return this.estimated && this.estimated.asHours()
-      ? this.spent / this.estimated
-      : 0;
+    return this.estimated?.asHours() ? this.spent / this.estimated : 0;
   }
 
   get progressRemainingEffort() {
-    return this.estimated &&
-      this.remainingEffort &&
-      this.remainingEffort.asMinutes()
+    return this.estimated && this.remainingEffort?.asMinutes()
       ? (this.remainingEffort.asMinutes() + this.spent.asMinutes()) /
           this.estimated.asMinutes()
       : 0;

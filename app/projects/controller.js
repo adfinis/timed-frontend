@@ -106,7 +106,6 @@ export default class ProjectsController extends Controller {
       /* istanbul ignore next */
       this.notify.error("Error while saving project");
     }
-    /* istanbul ignore next */
     this.fetchTasksByProject.perform(this.selectedProject);
   }
 
