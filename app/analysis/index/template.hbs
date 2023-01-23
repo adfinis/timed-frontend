@@ -397,7 +397,7 @@
                         false
                       }}</strong></td>
                   <td colspan="6" class="text-right"><em>Displaying
-                      {{this.reports.length}}
+                      {{reports.length}}
                       of
                       {{this.totalItems}}
                       reports</em></td>
@@ -431,10 +431,7 @@
                   disabled={{this.exportLimitExceeded}}
                   title={{if this.exportLimitExceeded this.exportLimitMessage}}
                 >
-                  <FaIcon
-                    @icon="download"
-                    @prefix="fas"
-                  />&nbsp;{{link.label}}
+                  <FaIcon @icon="download" @prefix="fas" />&nbsp;{{link.label}}
                 </button>
               {{/each}}
             </div>
