@@ -3,10 +3,12 @@ import { action, get } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { dropTask, lastValue, task } from "ember-concurrency";
+import ProjectValidations from "timed/validations/project";
 import TaskValidations from "timed/validations/task";
 
 export default class ProjectsController extends Controller {
-  TaskValidations = TaskValidations;
+  taskValidations = TaskValidations;
+  projectValidations = ProjectValidations;
 
   @service session;
   @service notify;
@@ -43,7 +45,9 @@ export default class ProjectsController extends Controller {
     try {
       let projects;
       if (get(this, "user.isSuperuser")) {
-        projects = yield this.store.findAll("project");
+        projects = yield this.store.findAll("project", {
+          include: "customer",
+        });
       } else {
         projects = yield this.store.query("project", {
           has_manager: get(this, "user.id"),
@@ -53,6 +57,7 @@ export default class ProjectsController extends Controller {
 
       return projects.sortBy("name");
     } catch (error) {
+      /* istanbul ignore next */
       this.notify.error("Error while fetching projects");
     }
   }
@@ -73,6 +78,7 @@ export default class ProjectsController extends Controller {
         project: id,
       });
     } catch (error) {
+      /* istanbul ignore next */
       this.notify.error("Error while fetching tasks");
     }
   }
@@ -88,6 +94,18 @@ export default class ProjectsController extends Controller {
       this.notify.error("Error while saving task");
     }
 
+    this.fetchTasksByProject.perform(this.selectedProject);
+  }
+
+  @dropTask
+  *saveProject(changeset) {
+    try {
+      yield changeset.save();
+      this.notify.success("Project was saved");
+    } catch (error) {
+      /* istanbul ignore next */
+      this.notify.error("Error while saving project");
+    }
     this.fetchTasksByProject.perform(this.selectedProject);
   }
 
@@ -114,6 +132,16 @@ export default class ProjectsController extends Controller {
 
     if (this.selectedProject !== null) {
       this.fetchTasksByProject.perform();
+    }
+  }
+
+  @action
+  updateRemainingEffort(changeset) {
+    if (!changeset.get("mostRecentRemainingEffort")) {
+      changeset.set(
+        "mostRecentRemainingEffort",
+        changeset.get("estimatedTime")
+      );
     }
   }
 }

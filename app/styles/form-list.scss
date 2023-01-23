@@ -24,7 +24,7 @@
     flex: 1 0 100%;
   }
 
-  .form-list-body > .form-list-row:nth-of-type(2n+1) {
+  .form-list-body > .form-list-row:nth-of-type(2n + 1) {
     background-color: darken($body-background-color, 5%);
   }
 
@@ -75,6 +75,10 @@
     padding: 0.5rem;
     vertical-align: top;
     border-top: 1px solid $color-border;
+  }
+
+  .form-list-cell-flex {
+    display: flex;
   }
 
   .form-list-caption {

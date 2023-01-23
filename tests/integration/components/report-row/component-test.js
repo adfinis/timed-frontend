@@ -15,10 +15,10 @@ module("Integration | Component | report row", function (hooks) {
       EmberObject.create({ verifiedBy: EmberObject.create() })
     );
 
-    await render(hbs`<ReportRow @report={{this.report}}/>`);
+    await render(hbs`<ReportRow @report={{this.report}} />`);
 
     assert.dom("form").exists({ count: 1 });
-    assert.dom(".form-group").exists({ count: 8 });
+    assert.dom(".form-group").exists({ count: 7 });
     assert.dom(".btn-danger").exists({ count: 1 });
     assert.dom(".btn-primary").exists({ count: 1 });
   });

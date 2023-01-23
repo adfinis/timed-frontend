@@ -6,7 +6,7 @@
   {{else if @data.last.isError}}
     <div class="empty">
       <div>
-        {{fa-icon "bolt"}}
+        <FaIcon @icon="bolt" @prefix="fas" />
         <h3>Oops... Something went wrong</h3>
         <p>
           Have you tried turning it off and on again?
@@ -18,7 +18,7 @@
   {{else if @missingParams}}
     <div class="empty">
       <div>
-        {{fa-icon "search"}}
+        <FaIcon @icon="magnifying-glass" @prefix="fas" />
         <h3>Missing filter parameters</h3>
         <p>{{this.missingParamsMessage}}</p>
       </div>
@@ -26,7 +26,7 @@
   {{else if (not @data.last.value)}}
     <div class="empty">
       <div>
-        {{fa-icon "bar-chart"}}
+        <FaIcon @icon="chart-bar" />
         <h3>No statistics to display</h3>
         <p>Maybe try loosening your filters</p>
       </div>
@@ -68,9 +68,16 @@
             />
           {{/each}}
           <td>
-            <StatisticList::Bar
-              @value={{(div row.duration this.maxDuration)}}
-            />
+            {{#let
+              (add row.duration row.mostRecentRemainingEffort)
+              as |allotted|
+            }}
+              <StatisticList::Bar
+                @value={{(div row.duration this.maxDuration)}}
+                @remaining={{(div allotted this.maxDuration)}}
+                @goal={{min "0.99" (div row.estimatedTime this.maxDuration)}}
+              />
+            {{/let}}
           </td>
         </tr>
       </VerticalCollection>

@@ -1,13 +1,31 @@
-<div class="date-navigation btn-toolbar" ...attributes >
+<div class="date-navigation btn-toolbar" ...attributes>
   <div class="btn-group">
-    <button type="button" data-test-previous title="Previous day" class="btn btn-default" {{on "click" this.setPrevious}}>
-      <FaIcon @icon='arrow-left'/>
+    <button
+      type="button"
+      data-test-previous
+      title="Previous day"
+      class="btn btn-default"
+      {{on "click" this.setPrevious}}
+    >
+      <FaIcon @icon="arrow-left" @prefix="fas" />
     </button>
-    <button type="button" data-test-today title="Today" class="btn btn-default" {{on "click" this.setToday}}>
+    <button
+      type="button"
+      data-test-today
+      title="Today"
+      class="btn btn-default"
+      {{on "click" this.setToday}}
+    >
       Today
     </button>
-    <button type="button" data-test-next title="Next day" class="btn btn-default" {{on "click" this.setNext}}>
-      <FaIcon @icon='arrow-right'/>
+    <button
+      type="button"
+      data-test-next
+      title="Next day"
+      class="btn btn-default"
+      {{on "click" this.setNext}}
+    >
+      <FaIcon @icon="arrow-right" @prefix="fas" />
     </button>
   </div>
 

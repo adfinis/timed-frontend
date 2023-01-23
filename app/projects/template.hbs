@@ -36,10 +36,46 @@
       </PowerSelect>
     </div>
     {{#if this.selectedProject}}
+      <h2>
+        <span class="header-left">
+          {{this.selectedProject.name}}
+        </span>
+      </h2>
+      <ValidatedForm
+        @model={{changeset this.selectedProject this.projectValidations}}
+        @on-submit={{perform this.saveProject}}
+        as |f|
+      >
+        <f.input @name="remainingEffortTracking" as |fi|>
+          <SyCheckbox
+            data-test-remaing-effort-tracking
+            @checked={{this.selectedProject.remainingEffortTracking}}
+            @value={{fi.value}}
+            @onChange={{fi.update}}
+          >Remaining Effort Tracking</SyCheckbox>
+        </f.input>
+        {{#if
+          (and
+            this.selectedProject.remainingEffortTracking
+            this.selectedProject.totalRemainingEffort
+          )
+        }}
+          Total remaing effort:
+          {{humanize-duration this.selectedProject.totalRemainingEffort}}
+        {{/if}}
+
+        <div class="btn-toolbar btn-toolbar--right">
+          <f.submit
+            data-test-project-save
+            @disabled={{f.model.isInvalid}}
+          >Update</f.submit>
+        </div>
+      </ValidatedForm>
+
+      <hr />
       <h3>
         <span class="header-left">
-          Tasks of
-          {{this.selectedProject.name}}
+          Tasks
         </span>
         <span class="header-right">
           <button
@@ -95,13 +131,13 @@
       </div>
       {{#if this.selectedTask}}
         <div class="task-form-container" data-test-task-form>
-          <h2>{{if
+          <h3>{{if
               this.selectedTask.isNew
               "Add task"
               this.selectedTask.name
-            }}</h2>
+            }}</h3>
           <ValidatedForm
-            @model={{changeset this.selectedTask this.TaskValidations}}
+            @model={{changeset this.selectedTask this.taskValidations}}
             @on-submit={{perform this.saveTask}}
             as |f|
           >
@@ -122,26 +158,47 @@
               </div>
               <div class="task-form-container-column">
                 <f.input @name="estimatedTime" as |fi|>
-                  <label>
-                    Estimated time
-                  </label>
-                  <SyDurationpicker
-                    data-test-estimated-time={{true}}
-                    @value={{fi.value}}
-                    @onChange={{fi.update}}
-                  />
+                  <div class="form-group">
+                    <label>
+                      Estimated time
+                    </label>
+                    <SyDurationpicker
+                      data-test-estimated-time={{true}}
+                      @value={{fi.value}}
+                      @onChange={{(queue
+                        fi.update (fn this.updateRemainingEffort f.model)
+                      )}}
+                    />
+                  </div>
                 </f.input>
 
+                {{#if this.selectedProject.remainingEffortTracking}}
+                  <f.input @name="mostRecentRemainingEffort" as |fi|>
+                    <div class="form-group">
+                      <label>
+                        Remaing effort
+                      </label>
+                      <SyDurationpicker
+                        data-test-remaining-effort={{true}}
+                        @value={{fi.value}}
+                        @onChange={{fi.update}}
+                      />
+                    </div>
+                  </f.input>
+                {{/if}}
+
                 <f.input @name="archived" as |fi|>
-                  <label>
-                    Archived
-                  </label>
-                  <SyCheckbox
-                    data-test-archived
-                    @checked={{this.selectedTask.archived}}
-                    @value={{fi.value}}
-                    @onChange={{fi.update}}
-                  />
+                  <div class="form-group">
+                    <label>
+                      Archived
+                    </label>
+                    <SyCheckbox
+                      data-test-archived
+                      @checked={{this.selectedTask.archived}}
+                      @value={{fi.value}}
+                      @onChange={{fi.update}}
+                    />
+                  </div>
                 </f.input>
               </div>
             </div>
@@ -160,7 +217,7 @@
     {{else}}
       <div class="empty" data-test-none-selected>
         <div>
-          {{fa-icon "search"}}
+          <FaIcon @icon="magnifying-glass" @prefix="fas" />
           <h3>Please select a customer and a project</h3>
         </div>
       </div>

@@ -1,0 +1,14 @@
+<div
+  ...attributes
+  class="sy-toggle {{if @value 'active' 'inactive'}}"
+  title={{concat @hint (if @disabled " (disabled)")}}
+  tabindex="0"
+  role="button"
+  {{on "click" (optional (unless @disabled (fn (optional @onToggle))))}}
+>
+  {{#if (has-block)}}
+    {{yield}}
+  {{else}}
+    <FaIcon @icon={{@icon}} @fixedWidth={{true}} @size={{or @size "1x"}} />
+  {{/if}}
+</div>

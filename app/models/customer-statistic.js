@@ -1,6 +1,6 @@
-import Model, { attr, belongsTo } from "@ember-data/model";
+import Model, { attr } from "@ember-data/model";
 
-export default Model.extend({
-  duration: attr("django-duration"),
-  customer: belongsTo("customer"),
-});
+export default class CustomerStatistics extends Model {
+  @attr("django-duration") duration;
+  @attr name;
+}

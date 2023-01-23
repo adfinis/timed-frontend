@@ -5,21 +5,26 @@ $lg-viewport: "only screen and (min-width: 1200px)";
 $xl-viewport: "only screen and (min-width: 1440px)";
 $nav-top-mobile-width: "only screen and (min-width: 768px)";
 
-$color-primary:   rgb( 91, 142, 219);
+$color-primary: rgb(91, 142, 219);
 $color-secondary: rgb(162, 155, 150);
-$color-tertiary:  rgb(134, 127, 124);
-$color-border:    rgb(225, 225, 225);
-$color-menu:      rgb(246, 246, 246);
-$color-modal:     rgb(255, 255, 255);
+$color-tertiary: rgb(134, 127, 124);
+$color-border: rgb(225, 225, 225);
+$color-menu: rgb(246, 246, 246);
+$color-modal: rgb(255, 255, 255);
 
-$color-success: rgb( 92, 184,  92);
-$color-info:    rgb( 91, 192, 222);
-$color-warning: rgb(240, 173,  78);
-$color-danger:  rgb(217,  83,  79);
+$color-success: rgb(92, 184, 92);
+$color-info: rgb(91, 192, 222);
+$color-warning: rgb(240, 173, 78);
+$color-danger: rgb(217, 83, 79);
 
-$font-family-sans-serif: 'TheSansLT', 'Open Sans', sans-serif;
-$font-family-serif: 'Merriweather', 'Times New Roman', serif;
-$font-family-mono: Menlo, Monaco, Consolas, 'Courier New', monospace;
+$color-success-lighter: lighten($color-success, 20%);
+$color-success-darker: darker($color-success, 5%);
+$color-danger-lighter: lighten($color-danger, 20%);
+$color-danger-darker: darken($color-danger, 5%);
+
+$font-family-sans-serif: "TheSansLT", "Open Sans", sans-serif;
+$font-family-serif: "Merriweather", "Times New Roman", serif;
+$font-family-mono: Menlo, Monaco, Consolas, "Courier New", monospace;
 $font-family-base: $font-family-sans-serif;
 $font-weight-base: 300;
 $font-size-base: 16px;

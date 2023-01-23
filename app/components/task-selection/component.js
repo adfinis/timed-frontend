@@ -301,7 +301,6 @@ export default class TaskSelectionComponent extends Component {
       preventAction: true,
     };
     this.onCustomerChange(null, options);
-    // this.onTaskChange(null, options);
   }
 
   @action
@@ -324,7 +323,7 @@ export default class TaskSelectionComponent extends Component {
       this.project &&
       (!value || value.get("id") !== this.project.get("customer.id"))
     ) {
-      this.onProjectChange(null);
+      this.onProjectChange(null, options);
     }
 
     if (!options.preventAction) {
@@ -344,7 +343,7 @@ export default class TaskSelectionComponent extends Component {
       this.task &&
       (value === null || value.get("id") !== this.task.get("project.id"))
     ) {
-      this.onTaskChange(null);
+      this.onTaskChange(null, options);
     }
 
     if (!this.customer && value?.get("customer.id")) {

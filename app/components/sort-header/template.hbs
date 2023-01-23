@@ -2,8 +2,8 @@
 <th class="sort-header" {{on "click" this.click}}>
   {{yield}}
   {{#if this.active}}
-    <i class="fa fa-sort-{{this.direction}}"></i>
+    <FaIcon @prefix="fas" @icon="sort-{{this.direction}}" />
   {{else}}
-    <i class="fa fa-sort"></i>
+    <FaIcon @prefix="fas" @icon="sort" />
   {{/if}}
 </th>

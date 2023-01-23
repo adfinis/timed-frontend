@@ -41,9 +41,27 @@ export default class ProgressTooltipComponent extends Component {
     return this.args.model.estimatedTime;
   }
 
+  get remainingEffort() {
+    const model = this.args.model;
+    return model.constructor.modelName === "project" &&
+      model.remainingEffortTracking
+      ? model.totalRemainingEffort
+      : model.mostRecentRemainingEffort;
+  }
+
+  // The current billable progress
+  get progressBillable() {
+    return this.estimated?.asHours() ? this.billable / this.estimated : 0;
+  }
+
   get progressTotal() {
-    return this.estimated && this.estimated.asHours()
-      ? this.spent / this.estimated
+    return this.estimated?.asHours() ? this.spent / this.estimated : 0;
+  }
+
+  get progressRemainingEffort() {
+    return this.estimated && this.remainingEffort?.asMinutes()
+      ? (this.remainingEffort.asMinutes() + this.spent.asMinutes()) /
+          this.estimated.asMinutes()
       : 0;
   }
 
@@ -69,11 +87,15 @@ export default class ProgressTooltipComponent extends Component {
     return "success";
   }
 
-  // The current billable progress
-  get progressBillable() {
-    return this.estimated && this.estimated.asHours()
-      ? this.billable / this.estimated
-      : 0;
+  // The color of the badge and progress bar for remaining effort
+  get colorRemainingEffort() {
+    if (this.progressRemainingEffort > 1) {
+      return "danger";
+    } else if (this.progressRemainingEffort >= 0.9) {
+      return "warning";
+    }
+
+    return "success";
   }
 
   get tooltipVisible() {

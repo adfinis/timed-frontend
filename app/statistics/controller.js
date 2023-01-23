@@ -20,13 +20,13 @@ const deserializeMoment = (momentString) =>
 const TYPES = {
   year: { include: "", requiredParams: [] },
   month: { include: "", requiredParams: [] },
-  customer: { include: "customer", requiredParams: [] },
+  customer: { include: "", requiredParams: [] },
   project: {
-    include: "project,project.customer",
+    include: "customer",
     requiredParams: ["customer"],
   },
   task: {
-    include: "task,task.project,task.project.customer",
+    include: "project,project.customer",
     requiredParams: ["customer", "project"],
   },
   user: { include: "user", requiredParams: [] },
@@ -136,23 +136,43 @@ export default class StatisticsController extends Controller.extend(
   }
 
   get selectedCustomer() {
-    return this.customer && this.store.peekRecord("customer", this.customer);
+    return (
+      this.customer &&
+      !this.prefetchData.isRunning &&
+      this.store.peekRecord("customer", this.customer)
+    );
   }
 
   get selectedProject() {
-    return this.project && this.store.peekRecord("project", this.project);
+    return (
+      this.project &&
+      !this.prefetchData.isRunning &&
+      this.store.peekRecord("project", this.project)
+    );
   }
 
   get selectedTask() {
-    return this.task && this.store.peekRecord("task", this.task);
+    return (
+      this.task &&
+      !this.prefetchData.isRunning &&
+      this.store.peekRecord("task", this.task)
+    );
   }
 
   get selectedUser() {
-    return this.user && this.store.peekRecord("user", this.user);
+    return (
+      this.user &&
+      !this.prefetchData.isRunning &&
+      this.store.peekRecord("user", this.user)
+    );
   }
 
   get selectedReviewer() {
-    return this.reviewer && this.store.peekRecord("user", this.reviewer);
+    return (
+      this.reviewer &&
+      !this.prefetchData.isRunning &&
+      this.store.peekRecord("user", this.reviewer)
+    );
   }
 
   get missingParams() {

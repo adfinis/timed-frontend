@@ -1,29 +1,25 @@
 import { action } from "@ember/object";
 import Component from "@glimmer/component";
 
-const getDirection = (state) => {
-  return state?.startsWith("-") ? "desc" : "asc";
-};
-
-const getColname = (state) =>
-  state?.startsWith("-") ? state.substring(1) : state;
-
 export default class SortHeader extends Component {
   get direction() {
-    return getDirection(this.args.current);
+    return this.args.current?.startsWith("-") ? "down" : "up";
+  }
+
+  get getColname() {
+    return this.args.current?.startsWith("-")
+      ? this.args.current.substring(1)
+      : this.args.current;
   }
 
   get active() {
-    const by = this.args.by;
-    const current = this.args.current;
-
-    return getColname(current) === by;
+    return this.getColname === this.args.by;
   }
 
   @action
   click() {
     const by = this.args.by;
-    const sort = this.active && this.direction === "desc" ? by : `-${by}`;
+    const sort = this.active && this.direction === "down" ? by : `-${by}`;
 
     this.args.update(sort);
   }

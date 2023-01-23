@@ -1,7 +1,15 @@
-<div class="filter-sidebar-group-label" {{action (toggle 'expanded' this) on='click'}}>
-  {{label}}
-  {{fa-icon 'angle-right'}}
-</div>
+<a
+  href="#"
+  class="filter-sidebar-group-label"
+  {{on "click" (toggle "expanded" this)}}
+>
+  {{@label}}
+  <FaIcon
+    @icon="angle-right"
+    @prefix="fas"
+    @transform="{{if this.expanded 'rotate-90'}}"
+  />
+</a>
 
 <div class="filter-sidebar-group-body">
   <div class="filter-sidebar-group-content">

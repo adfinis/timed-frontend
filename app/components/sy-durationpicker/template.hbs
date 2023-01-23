@@ -1,15 +1,46 @@
-<input
-  ...attributes
-  aria-label="duration picker"
-  name="duration"
-  type="text"
-  class="form-control"
-  pattern={{this.pattern}}
-  value={{this.displayValue}}
-  maxlength={{this.maxlength}}
-  placeholder={{this.placeholder}}
-  autocomplete="off"
-  {{on "change" this.change}}
-  {{on "keyup" this.handleKeyPress}}
-  {{on "focusout" (optional @onFocusOut)}}
-/>
+{{#if (has-block)}}
+  <div
+    class="form-control extendend-durationpicker-day"
+    title={{@title}}
+    {{!template-lint-disable no-invalid-interactive}}
+    {{on "click" this.focusInput}}
+  >
+    {{yield}}
+    <input
+      ...attributes
+      aria-label="duration picker"
+      name="duration"
+      type="text"
+      id={{this.elementId}}
+      title={{@title}}
+      disabled={{@disabled}}
+      pattern={{this.pattern}}
+      value={{this.displayValue}}
+      maxlength={{this.maxlength}}
+      placeholder={{this.placeholder}}
+      autocomplete="off"
+      {{on "change" this.change}}
+      {{on "keyup" this.handleKeyPress}}
+      {{on "focusout" (optional @onFocusOut)}}
+    />
+  </div>
+{{else}}
+  <input
+    ...attributes
+    aria-label="duration picker"
+    name="duration"
+    type="text"
+    class="form-control"
+    id={{this.elementId}}
+    disabled={{@disabled}}
+    pattern={{this.pattern}}
+    value={{this.displayValue}}
+    maxlength={{this.maxlength}}
+    placeholder={{this.placeholder}}
+    autocomplete="off"
+    title={{@title}}
+    {{on "change" this.change}}
+    {{on "keyup" this.handleKeyPress}}
+    {{on "focusout" (optional @onFocusOut)}}
+  />
+{{/if}}

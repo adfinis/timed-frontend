@@ -1,0 +1,18 @@
+.extendend-durationpicker-day {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  * {
+    flex: 0 0 1.25rem;
+  }
+
+  input {
+    width: 100%;
+    flex: 1 0 70%;
+  }
+
+  :nth-child(2) {
+    margin-left: 0.25rem;
+  }
+}

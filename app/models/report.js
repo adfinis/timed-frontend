@@ -39,6 +39,16 @@ export default class Report extends Model {
   @attr("django-duration", { defaultValue: () => moment.duration() }) duration;
 
   /**
+   * The remaining effort for the underlying task
+   *
+   * @property {moment.duration} remainingEffort
+   * @public
+   */
+
+  @attr("django-duration", { defaultValue: () => moment.duration() })
+  remainingEffort;
+
+  /**
    * Whether the report needs to be reviewed
    *
    * @property {Boolean} review

@@ -1,0 +1,23 @@
+.sy-toggle {
+  cursor: pointer;
+  margin: auto;
+
+  &.active {
+    color: $color-primary;
+  }
+
+  &.inactive {
+    color: $color-secondary;
+  }
+}
+@media #{$lg-viewport} {
+  .sy-toggle {
+    margin: unset;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.form-list-cell > .margin-small-right {
+  margin-right: 0.5rem;
+}

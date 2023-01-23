@@ -34,16 +34,40 @@ module("Integration | Component | progress tooltip", function (hooks) {
     assert.dom(".progress-tooltip").exists();
 
     assert
-      .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(1)")
-      .hasText(/^Spent \(Total\): \d+h \d+m$/);
+      .dom(".progress-tooltip .time-info [data-test-spent-total]")
+      .hasText(/Spent \(Total\):\n\s*\d+h \d+m/);
 
     assert
-      .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(2)")
-      .hasText(/^Spent \(Billable\): \d+h \d+m$/);
+      .dom(".progress-tooltip .time-info [data-test-spent-billable]")
+      .hasText(/Spent \(Billable\):\n\s*\d+h \d+m/);
 
     assert
-      .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(3)")
+      .dom(".progress-tooltip .time-info [data-test-budget]")
       .hasText("Budget: 50h 0m");
+  });
+
+  test("renders on project with remaining effort", async function (assert) {
+    this.set(
+      "model",
+      EmberObject.create({
+        id: 1,
+        estimatedTime: moment.duration({ h: 50 }),
+        constructor: EmberObject.create({
+          modelName: "project",
+        }),
+        totalRemainingEffort: moment.duration({ h: 2 }),
+        remainingEffortTracking: true,
+      })
+    );
+
+    await render(hbs`
+      <span id='target'></span>
+      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+    `);
+
+    assert
+      .dom(".progress-tooltip .time-info [data-test-remaining-effort]")
+      .hasText(/Remaining effort:\n*\s*\d+h \d+m/);
   });
 
   test("renders with tasks", async function (assert) {
@@ -66,16 +90,39 @@ module("Integration | Component | progress tooltip", function (hooks) {
     assert.dom(".progress-tooltip").exists();
 
     assert
-      .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(1)")
-      .hasText(/^Spent \(Total\): \d+h \d+m$/);
+      .dom(".progress-tooltip .time-info [data-test-spent-total]")
+      .hasText(/Spent \(Total\):\n*\s*\d+h \d+m/);
 
     assert
-      .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(2)")
-      .hasText(/^Spent \(Billable\): \d+h \d+m$/);
+      .dom(".progress-tooltip .time-info [data-test-spent-billable]")
+      .hasText(/Spent \(Billable\):\n\s*\d+h \d+m/);
 
     assert
-      .dom(".progress-tooltip .time-info .time-info-durations p:nth-child(3)")
+      .dom(".progress-tooltip .time-info [data-test-budget]")
       .hasText("Budget: 100h 30m");
+  });
+
+  test("renders with tasks with remaining effort", async function (assert) {
+    this.set(
+      "model",
+      EmberObject.create({
+        id: 1,
+        estimatedTime: moment.duration({ h: 100, m: 30 }),
+        mostRecentRemainingEffort: moment.duration({ h: 2, m: 15 }),
+        constructor: EmberObject.create({
+          modelName: "task",
+        }),
+      })
+    );
+
+    await render(hbs`
+      <span id='target'></span>
+      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+    `);
+
+    assert
+      .dom(".progress-tooltip .time-info [data-test-remaining-effort]")
+      .hasText(/Remaining effort:\n*\s*\d+h \d+m/);
   });
 
   test("toggles correctly", async function (assert) {

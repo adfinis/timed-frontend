@@ -3,7 +3,7 @@
     <TaskSelection
       @disabled={{not this.editable}}
       @task={{cs.task}}
-      @on-set-task={{fn (mut cs.task)}}
+      @on-set-task={{(fn this.updateTask cs)}}
       as |t|
     >
       <div
@@ -34,33 +34,68 @@
         <CustomerVisibleIcon class="customer-visible-icon" />
       {{/if}}
     </div>
-    <div class="form-list-cell form-group">
+    <div class="form-list-cell form-group cell-duration">
       <SyDurationpickerDay
         data-test-report-duration
         @disabled={{(not this.editable)}}
         @value={{cs.duration}}
         @onChange={{fn (mut cs.duration)}}
+        @title="Task duration"
       />
     </div>
-    <div class="form-list-cell form-group">
-      <SyCheckbox
+    {{#if cs.task.project.remainingEffortTracking}}
+      <div class="form-list-cell form-group cell-remaining-effort">
+        <SyDurationpicker
+          data-test-report-remaining-effort
+          @disabled={{(not this.editable)}}
+          @value={{cs.remainingEffort}}
+          @onChange={{fn (mut cs.remainingEffort)}}
+          @title="Remaining estimated effort"
+        >
+          <span class="fa-layers fa-fw color-secondary">
+            <FaIcon @icon="clock" />
+            <FaIcon
+              @icon="plus"
+              @prefix="fas"
+              @transform="shrink-6 right-10 up-6"
+            />
+          </span>
+        </SyDurationpicker>
+      </div>
+    {{/if}}
+
+    <div class="form-list-cell form-group cell-review-billable-icons">
+      <SyToggle
+        class="margin-small-right"
         data-test-report-review
         @disabled={{(not this.editable)}}
-        @checked={{cs.review}}
-        @onChange={{fn (mut cs.review)}}
-        @label="Needs review"
-      />
-    </div>
-    <div class="form-list-cell form-group">
-      <SyCheckbox
+        @hint="Needs review"
+        @onToggle={{toggle "review" cs}}
+        @value={{cs.review}}
+      >
+        <span class="fa-layers fa-fw">
+          <FaIcon @icon="user" />
+          <FaIcon
+            @icon="question"
+            @prefix="fas"
+            @transform="shrink-6 up-7 right-8"
+          />
+        </span>
+      </SyToggle>
+      <SyToggle
         data-test-report-not-billable
         @disabled={{(not this.editable)}}
-        @checked={{cs.notBillable}}
-        @onChange={{fn (mut cs.notBillable)}}
-        @label="Not billable"
-      />
+        @hint="Not billable"
+        @onToggle={{toggle "notBillable" cs}}
+        @value={{cs.notBillable}}
+      >
+        <span class="fa-layers fa-fw">
+          <FaIcon @icon="dollar-sign" @prefix="fas" />
+          <FaIcon @icon="slash" @prefix="fas" />
+        </span>
+      </SyToggle>
     </div>
-    <div class="form-list-cell form-group">
+    <div class="form-list-cell form-group cell-buttons">
       {{#if this.editable}}
         <button
           type="button"
@@ -68,14 +103,14 @@
           class="btn btn-danger"
           disabled={{this.report.verifiedBy.id}}
           {{on "click" (fn (optional @onDelete) @report)}}
-        >{{fa-icon "trash"}}</button>
+        ><FaIcon @icon="trash-can" /></button>
         <button
           type="submit"
           data-test-save-report
           class="btn btn-primary"
           disabled={{or (not cs.isDirty) (not cs.isValid)}}
           {{on "click" (prevent-default (fn (optional @onSave) cs))}}
-        >{{fa-icon "save"}}</button>
+        ><FaIcon @icon="floppy-disk" /></button>
       {{/if}}
     </div>
   </form>

@@ -8,33 +8,35 @@
             <LoadingIcon />
           </div>
         {{else}}
-          {{#with this.projects.lastSuccessful.value as |projects|}}
-            <table class="table table--striped">
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Project</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each projects as |project|}}
+          {{#let this.projects.lastSuccessful.value as |projects|}}
+            {{#if projects}}
+              <table class="table table--striped">
+                <thead>
                   <tr>
-                    <td>{{project.customer.name}}</td>
-                    <td>{{project.name}}</td>
+                    <th>Customer</th>
+                    <th>Project</th>
                   </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          {{^}}
-            <div class="card-block empty">
-              <div>
-                {{fa-icon "folder-open-o"}}
-                <p>
-                  No projects found...
-                </p>
+                </thead>
+                <tbody>
+                  {{#each projects as |project|}}
+                    <tr>
+                      <td>{{project.customer.name}}</td>
+                      <td>{{project.name}}</td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            {{else}}
+              <div class="card-block empty">
+                <div>
+                  <FaIcon @icon="folder-open" />
+                  <p>
+                    No projects found...
+                  </p>
+                </div>
               </div>
-            </div>
-          {{/with}}
+            {{/if}}
+          {{/let}}
         {{/if}}
       </div>
     </div>
@@ -49,42 +51,58 @@
             <LoadingIcon />
           </div>
         {{else}}
-          {{#with this.supervisees.lastSuccessful.value as |supervisees|}}
-            <table class="table table--striped">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Current worktime balance</th>
-                  <th>Remaining vacation days</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each supervisees as |supervisee|}}
-                  <LinkTo @route="users.edit" @model={{supervisee.id}} @tagName="tr" class="pointer">
-                    <td>{{supervisee.fullName}}</td>
-                    <td>
-                      <span class="worktime-balance {{balance-highlight-class supervisee.currentWorktimeBalance.balance}}">
-                        {{format-duration supervisee.currentWorktimeBalance.balance false}}
-                      </span>
-                    </td>
+          {{#let this.supervisees.lastSuccessful.value as |supervisees|}}
+            {{#if supervisees}}
+              <table class="table table--striped">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Current worktime balance</th>
+                    <th>Remaining vacation days</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {{#each supervisees as |supervisee|}}
+                    <LinkTo
+                      @route="users.edit"
+                      @model={{supervisee.id}}
+                      @tagName="tr"
+                      class="pointer"
+                    >
+                      <td>{{supervisee.fullName}}</td>
+                      <td>
+                        <span
+                          class="worktime-balance
+                            {{balance-highlight-class
+                              supervisee.currentWorktimeBalance.balance
+                            }}"
+                        >
+                          {{format-duration
+                            supervisee.currentWorktimeBalance.balance
+                            false
+                          }}
+                        </span>
+                      </td>
 
-                    {{!--
+                      {{!
                       absenceBalances has to be an array but will always only
                       contain one element. This is why we use firstObject here.
-                    --}}
-                    <td>{{supervisee.absenceBalances.firstObject.balance}}</td>
-                  </LinkTo>
-                {{/each}}
-              </tbody>
-            </table>
-          {{^}}
-            <div class="card-block empty">
-              <div>
-                {{fa-icon "users"}}
-                <p>No supervisees found...</p>
+                    }}
+                      <td
+                      >{{supervisee.absenceBalances.firstObject.balance}}</td>
+                    </LinkTo>
+                  {{/each}}
+                </tbody>
+              </table>
+            {{else}}
+              <div class="card-block empty">
+                <div>
+                  <FaIcon @icon="users" @prefix="fas" />
+                  <p>No supervisees found...</p>
+                </div>
               </div>
-            </div>
-          {{/with}}
+            {{/if}}
+          {{/let}}
         {{/if}}
       </div>
     </div>

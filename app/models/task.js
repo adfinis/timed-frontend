@@ -32,6 +32,11 @@ export default class Task extends Model {
   @attr("django-duration") estimatedTime;
 
   /**
+   * Remaining effort for this task
+   */
+  @attr("django-duration") mostRecentRemainingEffort;
+
+  /**
    * Whether the task is archived
    *
    * @property archived

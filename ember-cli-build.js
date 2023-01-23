@@ -6,6 +6,52 @@ const EmberApp = require("ember-cli/lib/broccoli/ember-app");
 
 module.exports = function (defaults) {
   const app = new EmberApp(defaults, {
+    fontawesome: {
+      icons: {
+        "free-regular-svg-icons": [
+          "calendar",
+          "calendar-xmark",
+          "chart-bar",
+          "clock",
+          "eye",
+          "floppy-disk",
+          "folder-open",
+          "hand",
+          "square",
+          "square-check",
+          "trash-can",
+          "user",
+        ],
+        "free-solid-svg-icons": [
+          "angle-right",
+          "angle-left",
+          "arrow-left",
+          "arrow-right",
+          "ban",
+          "bolt",
+          "briefcase",
+          "chart-line",
+          "chevron-left",
+          "dollar-sign",
+          "download",
+          "exclamation-triangle",
+          "info-circle",
+          "magnifying-glass",
+          "mobile-screen-button",
+          "power-off",
+          "slash",
+          "sliders",
+          "sort",
+          "sort-down",
+          "sort-up",
+          "stop",
+          "play",
+          "plus",
+          "users",
+          "question",
+        ],
+      },
+    },
     sassOptions: {
       onlyIncluded: true,
     },
@@ -24,7 +70,6 @@ module.exports = function (defaults) {
     },
   });
 
-  app.import("vendor/adcssy.min.css");
   app.import("node_modules/@fontsource/source-sans-pro/index.css");
 
   app.import("node_modules/downloadjs/download.min.js", {

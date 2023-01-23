@@ -16,6 +16,10 @@ specifiers:
   '@embroider/macros': ^1.9.0
   '@embroider/util': ^1.9.0
   '@fontsource/source-sans-pro': 4.5.11
+  '@fortawesome/ember-fontawesome': ^0.4.1
+  '@fortawesome/fontawesome-svg-core': ^6.2.1
+  '@fortawesome/free-regular-svg-icons': ^6.2.1
+  '@fortawesome/free-solid-svg-icons': ^6.2.1
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
   '@html-next/vertical-collection': 4.0.2
@@ -53,7 +57,6 @@ specifiers:
   ember-event-helpers: ^0.1.1
   ember-export-application-global: 2.0.1
   ember-fetch: 8.1.2
-  ember-font-awesome: 3.1.1
   ember-load-initializers: 2.1.2
   ember-math-helpers: 2.18.2
   ember-maybe-import-regenerator: 1.0.0
@@ -118,6 +121,10 @@ devDependencies:
   '@embroider/macros': 1.10.0
   '@embroider/util': 1.9.0_ember-source@3.28.0
   '@fontsource/source-sans-pro': 4.5.11
+  '@fortawesome/ember-fontawesome': 0.4.1
+  '@fortawesome/fontawesome-svg-core': 6.2.1
+  '@fortawesome/free-regular-svg-icons': 6.2.1
+  '@fortawesome/free-solid-svg-icons': 6.2.1
   '@glimmer/component': 1.1.2
   '@glimmer/tracking': 1.1.2
   '@html-next/vertical-collection': 4.0.2
@@ -155,7 +162,6 @@ devDependencies:
   ember-event-helpers: 0.1.1
   ember-export-application-global: 2.0.1
   ember-fetch: 8.1.2
-  ember-font-awesome: 3.1.1
   ember-load-initializers: 2.1.2
   ember-math-helpers: 2.18.2
   ember-maybe-import-regenerator: 1.0.0
@@ -2629,8 +2635,71 @@ packages:
     resolution: {integrity: sha512-f7iw44q1EjBv3MNcHCGAgrW/QVyweaEouFsJzykPhTOGnZFSwFJRISToXornOmuAy7xUUGiVdqOLiykgZoYB8A==}
     dev: true
 
+  /@fortawesome/ember-fontawesome/0.4.1:
+    resolution: {integrity: sha512-drBupV++kJP2rmyfxg55e4NeaezGEk1Ng9QMTFvEURIkFQfd3QPAxBdC9CLuAWKtzgF6zACGyv/9D2AzF45juQ==}
+    engines: {node: 12.* || 14.* || >= 16}
+    dependencies:
+      '@fortawesome/fontawesome-svg-core': 6.2.1
+      broccoli-file-creator: 2.1.1
+      broccoli-merge-trees: 4.2.0
+      broccoli-plugin: 4.0.7
+      broccoli-rollup: 4.1.1
+      broccoli-source: 3.0.1
+      camel-case: 4.1.2
+      ember-ast-helpers: 0.3.5
+      ember-cli-babel: 7.26.11
+      ember-cli-htmlbars: 5.7.2
+      ember-get-config: 2.1.1
+      find-yarn-workspace-root: 2.0.0
+      glob: 7.2.0
+      rollup-plugin-node-resolve: 5.2.0
+    transitivePeerDependencies:
+      - rollup
+      - supports-color
+    dev: true
+
+  /@fortawesome/fontawesome-common-types/6.2.1:
+    resolution: {integrity: sha512-Sz07mnQrTekFWLz5BMjOzHl/+NooTdW8F8kDQxjWwbpOJcnoSg4vUDng8d/WR1wOxM0O+CY9Zw0nR054riNYtQ==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dev: true
+
+  /@fortawesome/fontawesome-svg-core/6.2.1:
+    resolution: {integrity: sha512-HELwwbCz6C1XEcjzyT1Jugmz2NNklMrSPjZOWMlc+ZsHIVk+XOvOXLGGQtFBwSyqfJDNgRq4xBCwWOaZ/d9DEA==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.2.1
+    dev: true
+
+  /@fortawesome/free-regular-svg-icons/6.2.1:
+    resolution: {integrity: sha512-wiqcNDNom75x+pe88FclpKz7aOSqS2lOivZeicMV5KRwOAeypxEYWAK/0v+7r+LrEY30+qzh8r2XDaEHvoLsMA==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.2.1
+    dev: true
+
+  /@fortawesome/free-solid-svg-icons/6.2.1:
+    resolution: {integrity: sha512-oKuqrP5jbfEPJWTij4sM+/RvgX+RMFwx3QZCZcK9PrBDgxC35zuc7AOFsyMjMd/PIFPeB2JxyqDr5zs/DZFPPw==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      '@fortawesome/fontawesome-common-types': 6.2.1
+    dev: true
+
   /@gar/promisify/1.1.3:
     resolution: {integrity: sha512-k2Ty1JcVojjJFwrg/ThKi2ujJ7XNLYaFGNB/bWT9wGR+oSMJHMa5w+CUq6p/pVrKeNNgA7pCqEcjSnHVoqJQFw==}
+    dev: true
+
+  /@glimmer/compiler/0.27.0:
+    resolution: {integrity: sha512-SJUUEpkFCL+GTpEK6c2EhZQJant67ahGLF6M1xRmIsq6E+AtbHgu+y8mWvFbtpb7lx4gqNKpXSEwlHUTTuxVGw==}
+    dependencies:
+      '@glimmer/interfaces': 0.27.0
+      '@glimmer/syntax': 0.27.0
+      '@glimmer/util': 0.27.0
+      '@glimmer/wire-format': 0.27.0
+      simple-html-tokenizer: 0.3.0
     dev: true
 
   /@glimmer/component/1.1.2:
@@ -2670,6 +2739,12 @@ packages:
       '@glimmer/env': 0.1.7
     dev: true
 
+  /@glimmer/interfaces/0.27.0:
+    resolution: {integrity: sha512-Uz9txXB0Agnac6vUOAk6uZIB7SeS/fFrdjyNsNJnge5XeojvOQs1YyIFqOhky3G7NHO/mcx3Tdt8PXggFakVtQ==}
+    dependencies:
+      '@glimmer/wire-format': 0.27.0
+    dev: true
+
   /@glimmer/interfaces/0.83.1:
     resolution: {integrity: sha512-rjAztghzX97v8I4rk3+NguM3XGYcFjc/GbJ8qrEj19KF2lUDoDBW1sB7f0tov3BD5HlrGXei/vOh4+DHfjeB5w==}
     dependencies:
@@ -2686,6 +2761,15 @@ packages:
       '@glimmer/validator': 0.83.1
     dev: true
 
+  /@glimmer/syntax/0.27.0:
+    resolution: {integrity: sha512-IC+JaGkfF+J3e5jUXrW4SkVAAgI6WyN4kzfJKqWEnjMAa6pB8XGEDkaaMhoMrxjfK+R0Us2PO45CWhGB3FqsKg==}
+    dependencies:
+      '@glimmer/interfaces': 0.27.0
+      '@glimmer/util': 0.27.0
+      handlebars: 4.7.7
+      simple-html-tokenizer: 0.3.0
+    dev: true
+
   /@glimmer/syntax/0.83.1:
     resolution: {integrity: sha512-n3vEd0GtjtgkOsd2gqkSimp8ecqq5KrHyana/s1XJZvVAPD5rMWT9WvAVWG8XAktns8BxjwLIUoj/vkOfA+eHg==}
     dependencies:
@@ -2700,6 +2784,10 @@ packages:
     dependencies:
       '@glimmer/env': 0.1.7
       '@glimmer/validator': 0.44.0
+    dev: true
+
+  /@glimmer/util/0.27.0:
+    resolution: {integrity: sha512-GxER83ZuyEyZ5Phn86VkHcjjN/3MagK0MMr91S5t62IVSW/zyFevpaVV26YKmisDqOe4918nvwGqn543O5gGXw==}
     dev: true
 
   /@glimmer/util/0.44.0:
@@ -2731,6 +2819,12 @@ packages:
       babel-plugin-debug-macros: 0.3.4
     transitivePeerDependencies:
       - '@babel/core'
+    dev: true
+
+  /@glimmer/wire-format/0.27.0:
+    resolution: {integrity: sha512-gNhityUr9HODYH9GydHVk7C6NZ57MqSbdGzC5TM8VdPibtd72N3+3Zggrm12Faw4E4zTvTM1692Sz/bNwMxLNw==}
+    dependencies:
+      '@glimmer/util': 0.27.0
     dev: true
 
   /@graphql-typed-document-node/core/3.1.1_graphql@16.6.0:
@@ -3420,6 +3514,12 @@ packages:
 
   /@types/range-parser/1.2.4:
     resolution: {integrity: sha512-EEhsLsD6UsDM1yFhAvy0Cjr6VwmpMWqFBCb9w07wVugF7w9nfajxLuVmngTIpgS6svCnm6Vaw+MZhoDCKnOfsw==}
+    dev: true
+
+  /@types/resolve/0.0.8:
+    resolution: {integrity: sha512-auApPaJf3NPfe18hSoJkp8EbZzer2ISk7o8mCC3M9he/a04+gbMF97NkpD2S8riMGvm4BMRI59/SZQSaLTKpsQ==}
+    dependencies:
+      '@types/node': 17.0.8
     dev: true
 
   /@types/responselike/1.0.0:
@@ -6108,6 +6208,11 @@ packages:
       ieee754: 1.2.1
     dev: true
 
+  /builtin-modules/3.3.0:
+    resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
+    engines: {node: '>=6'}
+    dev: true
+
   /builtin-status-codes/3.0.0:
     resolution: {integrity: sha512-HpGFw18DgFWlncDfjTa2rcQ4W88O1mC8e8yZ2AvQY5KDaktSTwo+KRf6nHK6FRI5FyRyb/5T6+TSxfP7QyGsmQ==}
     dev: true
@@ -6221,6 +6326,13 @@ packages:
   /callsites/3.1.0:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
+    dev: true
+
+  /camel-case/4.1.2:
+    resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
+    dependencies:
+      pascal-case: 3.1.2
+      tslib: 2.4.1
     dev: true
 
   /camelcase-keys/6.2.2:
@@ -7612,6 +7724,14 @@ packages:
       - supports-color
     dev: true
 
+  /ember-ast-helpers/0.3.5:
+    resolution: {integrity: sha512-ZtaGAUDvRX13G9D4t4WbTMhcUzqsw6KqhcHreIiZi3ZhRFlSZ3BumgyJ6buDZj+tCBLiQsxRv7l5AY6imqNR6Q==}
+    engines: {node: '>= 6'}
+    dependencies:
+      '@glimmer/compiler': 0.27.0
+      '@glimmer/syntax': 0.27.0
+    dev: true
+
   /ember-auto-import/1.12.2:
     resolution: {integrity: sha512-gLqML2k77AuUiXxWNon1FSzuG1DV7PEPpCLCU5aJvf6fdL6rmFfElsZRh+8ELEB/qP9dT+LHjNEunVzd2dYc8A==}
     engines: {node: '>= 10.*'}
@@ -8813,20 +8933,6 @@ packages:
       whatwg-fetch: 3.6.2
     transitivePeerDependencies:
       - encoding
-      - supports-color
-    dev: true
-
-  /ember-font-awesome/3.1.1:
-    resolution: {integrity: sha512-wJqTUEyldMZ54m3KhTHq6GQt9zjkLOBVEsrrMLrmo14ZxgLonWP2vM+C6mynm9dYPM45vqEXsegK+6/Yg7aIXA==}
-    engines: {node: ^4.5 || 6.* || >= 7.*}
-    dependencies:
-      broccoli-funnel: 1.2.0
-      chalk: 1.1.3
-      ember-cli-babel: 6.18.0
-      ember-cli-htmlbars: 2.0.5
-      font-awesome: 4.7.0
-    transitivePeerDependencies:
-      - '@babel/core'
       - supports-color
     dev: true
 
@@ -10630,11 +10736,6 @@ packages:
         optional: true
     dev: true
 
-  /font-awesome/4.7.0:
-    resolution: {integrity: sha512-U6kGnykA/6bFmg1M/oT9EkFeIYv7JlX3bozwQJWiiLz6L0w3F5vBVPxHlwyX/vtNq1ckcpRKOB9f2Qal/VtFpg==}
-    engines: {node: '>=0.10.3'}
-    dev: true
-
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
     dependencies:
@@ -11963,6 +12064,10 @@ packages:
 
   /is-map/2.0.2:
     resolution: {integrity: sha512-cOZFQQozTha1f4MxLFzlgKYPTyj26picdZTx82hbc/Xf4K/tZOOXSCkMvU4pKioRXGDLJRn0GM7Upe7kR721yg==}
+    dev: true
+
+  /is-module/1.0.0:
+    resolution: {integrity: sha512-51ypPSPCoTEIN9dy5Oy+h4pShgJmPCygKfyRCISBI+JoWT/2oJvK8QPxmwv7b/p239jXrm9M1mlQbyKJ5A152g==}
     dev: true
 
   /is-negative-zero/2.0.2:
@@ -14668,6 +14773,13 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
+  /pascal-case/3.1.2:
+    resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
+    dependencies:
+      no-case: 3.0.4
+      tslib: 2.4.1
+    dev: true
+
   /pascalcase/0.1.1:
     resolution: {integrity: sha512-XHXfu/yOQRy9vYOtUDVMN60OEJjW013GoObG1o+xwQTpB9eYJX/BjXMsdW13ZDPruFhYYn0AG22w0xgQMwl3Nw==}
     engines: {node: '>=0.10.0'}
@@ -15708,6 +15820,19 @@ packages:
       inherits: 2.0.4
     dev: true
 
+  /rollup-plugin-node-resolve/5.2.0:
+    resolution: {integrity: sha512-jUlyaDXts7TW2CqQ4GaO5VJ4PwwaV8VUGA7+km3n6k6xtOEacf61u0VXwN80phY/evMcaS+9eIeJ9MOyDxt5Zw==}
+    deprecated: This package has been deprecated and is no longer maintained. Please use @rollup/plugin-node-resolve.
+    peerDependencies:
+      rollup: '>=1.11.0'
+    dependencies:
+      '@types/resolve': 0.0.8
+      builtin-modules: 3.3.0
+      is-module: 1.0.0
+      resolve: 1.22.1
+      rollup-pluginutils: 2.8.2
+    dev: true
+
   /rollup-pluginutils/2.8.2:
     resolution: {integrity: sha512-EEp9NhnUkwY8aif6bxgovPHMoMoNr2FulJziTndpt5H9RdwC47GSGuII9XxpSdzVGM0GWrNPHV6ie1LTNJPaLQ==}
     dependencies:
@@ -16114,6 +16239,10 @@ packages:
       debug: 2.6.9
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /simple-html-tokenizer/0.3.0:
+    resolution: {integrity: sha512-cuUWLyKJbCExtBmxJWhmIk/KIbMF1yOuNaansJiPEdxqitM7r7So3a1M4Sw2uqfNYWjBTiVVdJjb7vtYIaEjhw==}
     dev: true
 
   /simple-html-tokenizer/0.5.11:

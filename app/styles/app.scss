@@ -1,4 +1,5 @@
 /* AdCSSy variables */
+@import "adcssy"; /* TODO: Pick only relevant styles and delete duplicate color variables */
 @import "variables";
 
 /* Plugin customizations */
@@ -17,7 +18,6 @@
 @import "filter-sidebar";
 @import "form-list";
 @import "loader";
-@import "progress-tooltip";
 @import "projects";
 @import "reports";
 @import "statistics";
@@ -35,10 +35,20 @@
 @import "components/statistic-list-bar";
 @import "components/sy-calendar";
 @import "components/sy-datepicker";
+@import "components/sy-durationpicker-day";
+@import "components/sy-toggle";
+@import "components/progress-tooltip";
 @import "components/welcome-modal";
 
 html {
   hyphens: auto;
+}
+
+hr {
+  border: none;
+  width: 100%;
+  height: 7px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0));
 }
 
 strong {
@@ -121,11 +131,34 @@ strong {
   .form-control {
     border-color: lighten($color-danger, 20%);
 
-    &:focus {
+    &:focus,
+    &:focus-within {
       border-color: lighten($color-danger, 20%);
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
         0 0 8px opacify($color-danger, 0.6);
     }
+  }
+}
+
+.form-control {
+  &:focus-within {
+    border-color: lighten($color-primary, 20%);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset,
+      0 0 8px opacify($color-primary, 0.6);
+  }
+
+  &.duration-day {
+    text-align: center;
+  }
+
+  &.extendend-durationpicker-day {
+    padding-bottom: unset;
+    padding-top: unset;
+  }
+
+  input {
+    border: none;
+    outline: none;
   }
 }
 
@@ -293,7 +326,7 @@ strong {
   justify-content: center;
   text-align: center;
 
-  .fa {
+  .svg-inline--fa {
     margin-bottom: 1rem;
     font-size: 10rem;
     color: $color-border;

@@ -21,7 +21,7 @@
     <ul class="nav-top-list">
       <li class="nav-top-list-item">
         <LinkTo @route="index">
-          <FaIcon @icon="clock-o" />
+          <FaIcon @icon="clock" />
           Tracking
         </LinkTo>
       </li>
@@ -29,19 +29,19 @@
         {{#if (can "access page")}}
           <li class="nav-top-list-item">
             <LinkTo @route="analysis">
-              <FaIcon @icon="line-chart" />
+              <FaIcon @icon="chart-line" @prefix="fas" />
               Analysis
             </LinkTo>
           </li>
           <li class="nav-top-list-item">
             <LinkTo @route="statistics">
-              <FaIcon @icon="bar-chart" />
+              <FaIcon @icon="chart-bar" />
               Statistics
             </LinkTo>
           </li>
           <li class="nav-top-list-item">
             <LinkTo @route="projects">
-              <FaIcon @icon="briefcase" />
+              <FaIcon @icon="briefcase" @prefix="fas" />
               Projects
             </LinkTo>
           </li>
@@ -50,7 +50,7 @@
       {{#if this.session.data.user.isSuperuser}}
         <li class="nav-top-list-item">
           <LinkTo @route="users.index">
-            <FaIcon @icon="users" />
+            <FaIcon @icon="users" @prefix="fas" />
             Users
           </LinkTo>
         </li>
@@ -66,7 +66,7 @@
       </li>
       <li class="nav-top-list-item">
         <a href="#" data-test-logout {{on "click" (optional this.on-logout)}}>
-          <FaIcon @icon="power-off" />
+          <FaIcon @icon="power-off" @prefix="fas" />
           Logout
         </a>
       </li>

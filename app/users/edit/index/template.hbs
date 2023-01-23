@@ -53,41 +53,43 @@
             <LoadingIcon />
           </div>
         {{else}}
-          {{#with this.employments.lastSuccessful.value as |employments|}}
-            <table class="table table--striped">
-              <thead>
-                <tr>
-                  <th>Location</th>
-                  <th>Percentage</th>
-                  <th>Start</th>
-                  <th>End</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each employments as |employment|}}
+          {{#let this.employments.lastSuccessful.value as |employments|}}
+            {{#if employments}}
+              <table class="table table--striped">
+                <thead>
                   <tr>
-                    <td>{{employment.location.name}}</td>
-                    <td>{{employment.percentage}}%</td>
-                    <td>{{moment-format employment.start "DD.MM.YYYY"}}</td>
-                    <td>{{if
-                        employment.end
-                        (moment-format employment.end "DD.MM.YYYY")
-                        "-"
-                      }}</td>
+                    <th>Location</th>
+                    <th>Percentage</th>
+                    <th>Start</th>
+                    <th>End</th>
                   </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          {{else}}
-            <div class="card-block empty">
-              <div>
-                {{fa-icon "briefcase"}}
-                <p>
-                  No employments found...
-                </p>
+                </thead>
+                <tbody>
+                  {{#each employments as |employment|}}
+                    <tr>
+                      <td>{{employment.location.name}}</td>
+                      <td>{{employment.percentage}}%</td>
+                      <td>{{moment-format employment.start "DD.MM.YYYY"}}</td>
+                      <td>{{if
+                          employment.end
+                          (moment-format employment.end "DD.MM.YYYY")
+                          "-"
+                        }}</td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            {{else}}
+              <div class="card-block empty">
+                <div>
+                  <FaIcon @icon="briefcase" @prefix="fas" />
+                  <p>
+                    No employments found...
+                  </p>
+                </div>
               </div>
-            </div>
-          {{/with}}
+            {{/if}}
+          {{/let}}
         {{/if}}
       </div>
     </div>
@@ -102,35 +104,37 @@
             <LoadingIcon />
           </div>
         {{else}}
-          {{#with this.absences.lastSuccessful.value as |absences|}}
-            <table class="table table--striped">
-              <thead>
-                <tr>
-                  <th>Type</th>
-                  <th>Date</th>
-                  <th>Comment</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each absences as |absence|}}
+          {{#let this.absences.lastSuccessful.value as |absences|}}
+            {{#if absences}}
+              <table class="table table--striped">
+                <thead>
                   <tr>
-                    <td>{{absence.absenceType.name}}</td>
-                    <td>{{moment-format absence.date "DD.MM.YYYY"}}</td>
-                    <td>{{absence.comment}}</td>
+                    <th>Type</th>
+                    <th>Date</th>
+                    <th>Comment</th>
                   </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          {{else}}
-            <div class="card-block empty">
-              <div>
-                {{fa-icon "calendar-times-o"}}
-                <p>
-                  No absences found...
-                </p>
+                </thead>
+                <tbody>
+                  {{#each absences as |absence|}}
+                    <tr>
+                      <td>{{absence.absenceType.name}}</td>
+                      <td>{{moment-format absence.date "DD.MM.YYYY"}}</td>
+                      <td>{{absence.comment}}</td>
+                    </tr>
+                  {{/each}}
+                </tbody>
+              </table>
+            {{else}}
+              <div class="card-block empty">
+                <div>
+                  <FaIcon @icon="calendar-xmark" />
+                  <p>
+                    No absences found...
+                  </p>
+                </div>
               </div>
-            </div>
-          {{/with}}
+            {{/if}}
+          {{/let}}
         {{/if}}
       </div>
     </div>

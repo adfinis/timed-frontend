@@ -20,9 +20,9 @@ module("Integration | Component | sort header", function (hooks) {
     await render(
       hbs`<SortHeader @current={{this.current}} @by='test' @update={{this.update}} />`
     );
-    assert.dom(".fa-sort-desc").exists({ count: 1 });
+    assert.dom(".fa-sort-down").exists({ count: 1 });
 
-    await click("i");
-    assert.dom(".fa-sort-asc").exists({ count: 1 });
+    await click(".sort-header");
+    assert.dom(".fa-sort-up").exists({ count: 1 });
   });
 });
