@@ -30,10 +30,11 @@ export default class ProtectedController extends Controller {
    * @public
    */
   @action
-  invalidateSession() {
+  async invalidateSession() {
     this.autostartTour.done = [];
 
-    this.session.invalidate();
+    await this.session.invalidate();
+
     this.router.transitionTo("login");
   }
 
