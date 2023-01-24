@@ -137,6 +137,8 @@ export default class AnalysisController extends Controller.extend(
   @tracked _shouldLoadMore = false;
   @tracked _canLoadMore = true;
   @tracked _lastPage = 0;
+  @tracked totalTime = moment.duration();
+  @tracked totalItems = A();
   @tracked selectedReportIds;
 
   @tracked user;
@@ -207,6 +209,8 @@ export default class AnalysisController extends Controller.extend(
     this._shouldLoadMore = false;
     this._dataCache = A();
     this.selectedReportIds = A();
+    this.totalTime = moment.duration();
+    this.totalItems = A();
 
     this.data.perform();
   }
