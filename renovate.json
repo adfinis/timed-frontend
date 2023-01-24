@@ -1,12 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
+  "extends": ["config:base", ":rebaseStalePrs"],
   "packageRules": [
     {
       "packageNames": [
         "@embroider/macros",
         "@embroider/util",
-        "@ember/test-helpers",
         "broccoli-asset-rev",
         "ember-auto-import",
         "ember-cli",
@@ -14,17 +13,9 @@
         "ember-export-application-global",
         "ember-load-initializers",
         "ember-maybe-import-regenerator",
-        "ember-qunit",
         "ember-resolver",
         "ember-source",
-        "ember-try",
-        "eslint",
-        "eslint-plugin-ember",
-        "eslint-plugin-node",
-        "faker",
         "loader.js",
-        "qunit",
-        "qunit-dom",
         "webpack"
       ],
       "groupName": "ember infrastructure",
@@ -34,6 +25,24 @@
     {
       "matchPackagePatterns": ["ember-cli-S+"],
       "groupName": "ember-cli-plugins"
+    },
+    {
+      "packageNames": [
+        "@ember/test-helpers",
+        "ember-qunit",
+        "ember-test-selectors",
+        "ember-try",
+        "faker",
+        "qunit",
+        "qunit-dom"
+      ],
+      "groupName": "ember test suite"
+    },
+    {
+      "matchPackagePatterns": ["(w+-)*eslint(-w+)*"],
+      "groupName": "eslint-suite",
+      "schedule": ["on the first day of the month"],
+      "automerge": false
     },
     {
       "packageNames": [
@@ -51,7 +60,11 @@
     }
   ],
   "automerge": true,
+  "automergeSchedule": ["after 12am on monday"],
+  "automergeType": "branch",
   "major": {
     "automerge": false
-  }
+  },
+  "schedule": ["before 2am on monday"],
+  "stabilityDays": 3
 }
