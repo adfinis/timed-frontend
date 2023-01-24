@@ -18,7 +18,7 @@ services:
       - 4200:80
 
   backend:
-    image: adfinissygroup/timed-backend:latest
+    image: ghcr.io/adfinis/timed-backend:latest
     ports:
       - 8000:80
     depends_on:
