@@ -5,13 +5,15 @@
     class="statistic-list-bar"
     {{style --value=(concat @value)}}
   ></div>
-  {{#if @remaining}}
+  {{#if (and @remaining (lt @remaining 1))}}
     <div
       ...attributes
       class="statistic-list-bar remaining
         {{if (gt @remaining @goal) 'danger' 'success'}}"
       {{style --value=(concat @remaining)}}
     ></div>
+  {{/if}}
+  {{#if @goal}}
     <div
       ...attributes
       class="statistic-list-bar-goal"
