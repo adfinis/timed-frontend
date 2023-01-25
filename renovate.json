@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base", ":rebaseStalePrs"],
+  "automerge": true,
+  "automergeSchedule": ["after 12am on monday"],
+  "automergeType": "branch",
+  "major": {
+    "automerge": false
+  },
+  "schedule": ["before 2am on monday"],
+  "stabilityDays": 3
+}
