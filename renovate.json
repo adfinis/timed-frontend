@@ -1,64 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:base", ":rebaseStalePrs"],
-  "packageRules": [
-    {
-      "packageNames": [
-        "@embroider/macros",
-        "@embroider/util",
-        "broccoli-asset-rev",
-        "ember-auto-import",
-        "ember-cli",
-        "ember-data",
-        "ember-export-application-global",
-        "ember-load-initializers",
-        "ember-maybe-import-regenerator",
-        "ember-resolver",
-        "ember-source",
-        "loader.js",
-        "webpack"
-      ],
-      "groupName": "ember infrastructure",
-      "groupSlug": "ember-infra",
-      "automerge": false
-    },
-    {
-      "matchPackagePatterns": ["ember-cli-S+"],
-      "groupName": "ember-cli-plugins"
-    },
-    {
-      "packageNames": [
-        "@ember/test-helpers",
-        "ember-qunit",
-        "ember-test-selectors",
-        "ember-try",
-        "faker",
-        "qunit",
-        "qunit-dom"
-      ],
-      "groupName": "ember test suite"
-    },
-    {
-      "matchPackagePatterns": ["(w+-)*eslint(-w+)*"],
-      "groupName": "eslint-suite",
-      "schedule": ["on the first day of the month"],
-      "automerge": false
-    },
-    {
-      "packageNames": [
-        "@adfinis-sygroup/eslint-config",
-        "@adfinis-sygroup/semantic-release-config",
-        "@commitlint/cli",
-        "@commitlint/config-conventional",
-        "husky",
-        "lint-staged",
-        "npm-run-all",
-        "prettier",
-        "sass"
-      ],
-      "groupName": "tooling"
-    }
-  ],
   "automerge": true,
   "automergeSchedule": ["after 12am on monday"],
   "automergeType": "branch",
