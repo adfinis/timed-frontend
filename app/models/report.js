@@ -57,6 +57,14 @@ export default class Report extends Model {
   @attr("boolean", { defaultValue: false }) review;
 
   /**
+   * Whether the report got rejected by the reviewer
+   *
+   * @property {Boolean} reject
+   * @public
+   */
+  @attr("boolean", { defaultValue: false }) rejected;
+
+  /**
    * Whether the report is not billable
    *
    * @property {Boolean} notBillable

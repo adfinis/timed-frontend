@@ -157,6 +157,26 @@
                     </SyCheckbox>
                   </f.input>
 
+                  <f.input @name="rejected" as |fi|>
+                    <SyCheckbox
+                      data-test-rejected
+                      @checked={{fi.value}}
+                      @onChange={{fi.update}}
+                      @disabled={{or
+                        (not this.canVerify)
+                        this.hasSelectedOwnReports
+                      }}
+                    >
+                      Reject report
+                      {{#if (eq model.rejected null)}}
+                        <NotIdenticalWarning />
+                      {{/if}}
+                      {{#if (not (eq f.model.rejected model.rejected))}}
+                        <ChangedWarning />
+                      {{/if}}
+                    </SyCheckbox>
+                  </f.input>
+
                   <f.input @name="billed" as |fi|>
                     <SyCheckbox
                       data-test-billed

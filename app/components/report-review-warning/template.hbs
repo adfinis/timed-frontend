@@ -1,25 +1,53 @@
-{{#if this.unverifiedReports.hasReports}}
-  <li class="nav-top-list-item" title="You have reports to verify">
-    <LinkTo
-      @route="analysis.index"
-      @query={{hash
-        fromDate=null
-        toDate=this.unverifiedReports.reportsToDate
-        reviewer=this.session.data.user.id
-        editable=1
-        verified=0
-        customer=null
-        project=null
-        task=null
-        user=null
-        billingType=null
-        costCenter=null
-        review=""
-        notBillable=""
-      }}
-    >
-      <FaIcon @icon="exclamation-triangle" @prefix="fas" />
-      {{this.unverifiedReports.amountReports}}
-    </LinkTo>
-  </li>
-{{/if}}
+<div class="flex">
+  {{#if this.unverifiedReports.hasReports}}
+    <li class="nav-top-list-item" title="You have reports to verify">
+      <LinkTo
+        @route="analysis.index"
+        @query={{hash
+          fromDate=null
+          toDate=this.unverifiedReports.reportsToDate
+          reviewer=this.session.data.user.id
+          editable=1
+          verified=0
+          customer=null
+          project=null
+          task=null
+          user=null
+          billingType=null
+          costCenter=null
+          review=""
+          notBillable=""
+        }}
+      >
+        <FaIcon @icon="exclamation-triangle" @prefix="fas" />
+        {{this.unverifiedReports.amountReports}}
+      </LinkTo>
+    </li>
+  {{/if}}
+  {{#if this.rejectedReports.hasReports}}
+    <li class="nav-top-list-item" title="You have rejected reports">
+      <LinkTo
+        @route="analysis.index"
+        @query={{hash
+          fromDate=null
+          toDate=this.unverifiedReports.reportsToDate
+          reviewer=this.session.data.user.id
+          editable=1
+          rejected=1
+          verified=0
+          customer=null
+          project=null
+          task=null
+          user=null
+          billingType=null
+          costCenter=null
+          review=""
+          notBillable=""
+        }}
+      >
+        <FaIcon @icon="times-circle" />
+        {{this.rejectedReports.amountReports}}
+      </LinkTo>
+    </li>
+  {{/if}}
+</div>
