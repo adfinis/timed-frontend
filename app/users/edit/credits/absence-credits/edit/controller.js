@@ -1,25 +1,27 @@
 import Controller, { inject as controller } from "@ember/controller";
 import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency";
+import { dropTask, task } from "ember-concurrency";
 import AbsenceCreditValidations from "timed/validations/absence-credit";
 
-export default Controller.extend({
-  AbsenceCreditValidations,
+export default class UsersEditCreditsAbsenceCreditsEditController extends Controller {
+  AbsenceCreditValidations = AbsenceCreditValidations;
 
-  userController: controller("users.edit"),
+  @controller("users.edit") userController;
 
-  userCreditsController: controller("users.edit.credits.index"),
+  @controller("users.edit.credits.index") userCreditsController;
 
-  notify: service("notify"),
-  router: service("router"),
+  @service notify;
+  @service router;
 
-  absenceTypes: task(function* () {
+  @task
+  *absenceTypes() {
     return yield this.store.query("absence-type", {
       fill_worktime: 0, // eslint-disable-line camelcase
     });
-  }),
+  }
 
-  credit: task(function* () {
+  @task
+  *credit() {
     const id = this.model;
 
     return id
@@ -29,9 +31,10 @@ export default Controller.extend({
       : yield this.store.createRecord("absence-credit", {
           user: this.user,
         });
-  }),
+  }
 
-  save: task(function* (changeset) {
+  @dropTask
+  *save(changeset) {
     try {
       yield changeset.save();
 
@@ -39,12 +42,10 @@ export default Controller.extend({
 
       this.get("userController.data").perform(this.get("user.id"));
 
-      let allYears = this.get(
-        "userCreditsController.years.lastSuccessful.value"
-      );
+      let allYears = this.get("userCreditsController.years.value");
 
       if (!allYears) {
-        allYears = yield this.get("userCreditsController.years").perform();
+        allYears = yield this.get("userCreditsController._years").perform();
       }
 
       const year =
@@ -61,9 +62,10 @@ export default Controller.extend({
       /* istanbul ignore next */
       this.notify.error("Error while saving the absence credit");
     }
-  }).drop(),
+  }
 
-  delete: task(function* (credit) {
+  @dropTask
+  *delete(credit) {
     try {
       yield credit.destroyRecord();
 
@@ -76,5 +78,5 @@ export default Controller.extend({
       /* istanbul ignore next */
       this.notify.error("Error while deleting the absence credit");
     }
-  }).drop(),
-});
+  }
+}

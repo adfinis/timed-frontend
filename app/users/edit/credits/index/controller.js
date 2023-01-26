@@ -1,30 +1,34 @@
 import Controller, { inject as controller } from "@ember/controller";
-import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
+import { action } from "@ember/object";
 import { ability } from "ember-can/computed";
+import { dropTask } from "ember-concurrency";
 import { task } from "ember-concurrency";
-import QueryParams from "ember-parachute";
+import { trackedTask } from "ember-resources/util/ember-concurrency";
 import moment from "moment";
 
-const UsersEditCreditsQueryParams = new QueryParams({
-  year: {
-    defaultValue: `${moment().year()}`,
-    replace: true,
-    refresh: true,
-  },
-});
+export default class UsersEditCreditsController extends Controller {
+  @service notify;
+  @service fetch;
+  @service can;
+  @service router;
 
-export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
-  notify: service("notify"),
+  @controller("users.edit") userController;
 
-  fetch: service("fetch"),
+  queryParams = {
+    year: {
+      refreshModel: true,
+      replace: true,
+    },
+  };
 
-  can: service("can"),
-  router: service("router"),
+  year = moment().year();
+  years = trackedTask(this, this._years, () => [this.model?.id]);
 
-  userController: controller("users.edit"),
+  @task
+  *_years() {
+    yield Promise.resolve();
 
-  years: task(function* () {
     const employments = yield this.store.query("employment", {
       user: this.get("model.id"),
       ordering: "start_date",
@@ -34,38 +38,25 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
     const to = moment().add(1, "year").year();
 
     return [...new Array(to + 1 - from).keys()].map((i) => `${from + i}`);
-  }),
+  }
 
-  overtimeCreditAbility: ability("overtime-credit"),
-  absenceCreditAbility: ability("absence-credit"),
+  @ability("overtime-credit") overtimeCreditAbility;
+  @ability("absence-credit") absenceCreditAbility;
 
-  allowTransfer: computed(
-    "year",
-    "overtimeCreditAbility.canCreate",
-    "absenceCreditAbility.canCreate",
-    function () {
-      return (
-        parseInt(this.year) === moment().year() - 1 &&
-        this.get("overtimeCreditAbility.canCreate") &&
-        this.get("absenceCreditAbility.canCreate")
-      );
-    }
-  ),
+  get allowTransfer() {
+    return (
+      parseInt(this.year) === moment().year() - 1 &&
+      this.get("overtimeCreditAbility.canCreate") &&
+      this.get("absenceCreditAbility.canCreate")
+    );
+  }
 
-  setup() {
-    this.years.perform();
-    this.absenceCredits.perform();
-    this.overtimeCredits.perform();
-  },
+  absenceCredits = trackedTask(this, this._absenceCredits, () => [this.year]);
 
-  queryParamsDidChange({ shouldRefresh }) {
-    if (shouldRefresh) {
-      this.absenceCredits.perform();
-      this.overtimeCredits.perform();
-    }
-  },
+  @task
+  *_absenceCredits() {
+    yield Promise.resolve();
 
-  absenceCredits: task(function* () {
     const year = this.year;
 
     return yield this.store.query("absence-credit", {
@@ -74,9 +65,14 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
       ordering: "-date",
       ...(year ? { year } : {}),
     });
-  }),
+  }
 
-  overtimeCredits: task(function* () {
+  overtimeCredits = trackedTask(this, this._overtimeCredits, () => [this.year]);
+
+  @task
+  *_overtimeCredits() {
+    yield Promise.resolve();
+
     const year = this.year;
 
     return yield this.store.query("overtime-credit", {
@@ -84,9 +80,10 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
       ordering: "-date",
       ...(year ? { year } : {}),
     });
-  }),
+  }
 
-  transfer: task(function* () {
+  @dropTask
+  *transfer() {
     /* istanbul ignore next */
     if (!this.allowTransfer) {
       return;
@@ -101,28 +98,35 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
       this.get("userController.data").perform(this.get("model.id"));
 
-      this.resetQueryParams("year");
+      this.year = `${moment().year()}`;
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while transfering");
     }
-  }).drop(),
+  }
 
-  editAbsenceCredit: task(function* (id) {
+  @dropTask
+  *editAbsenceCredit(id) {
     if (this.can.can("edit absence-credit")) {
       yield this.router.transitionTo(
         "users.edit.credits.absence-credits.edit",
         id
       );
     }
-  }).drop(),
+  }
 
-  editOvertimeCredit: task(function* (id) {
+  @task
+  *editOvertimeCredit(id) {
     if (this.can.can("edit overtime-credit")) {
       yield this.router.transitionTo(
         "users.edit.credits.overtime-credits.edit",
         id
       );
     }
-  }).drop(),
-});
+  }
+
+  @action
+  transitionTo(route) {
+    this.router.transitionTo(route);
+  }
+}

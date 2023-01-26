@@ -13,6 +13,8 @@ export default Controller.extend({
   notify: service("notify"),
   router: service("router"),
 
+  router: service("router"),
+
   credit: task(function* () {
     const id = this.model;
 
@@ -31,12 +33,10 @@ export default Controller.extend({
 
       this.get("userController.data").perform(this.get("user.id"));
 
-      let allYears = this.get(
-        "userCreditsController.years.lastSuccessful.value"
-      );
+      let allYears = this.get("userCreditsController.years.value");
 
       if (!allYears) {
-        allYears = yield this.get("userCreditsController.years").perform();
+        allYears = yield this.get("userCreditsController._years").perform();
       }
 
       const year =

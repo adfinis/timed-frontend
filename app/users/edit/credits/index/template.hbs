@@ -8,7 +8,7 @@
       >Transfer</button>
     {{/if}}
 
-    {{#let this.years.lastSuccessful.value as |years|}}
+    {{#let this.years.value as |years|}}
       <label for="credit-year-select" hidden>
         Select year
       </label>
@@ -33,7 +33,7 @@
           <LoadingIcon />
         </div>
       {{else}}
-        {{#let this.absenceCredits.lastSuccessful.value as |absenceCredits|}}
+        {{#let this.absenceCredits.value as |absenceCredits|}}
           {{#if absenceCredits}}
             <div class="card-block">
               <div class="grid">
@@ -50,7 +50,7 @@
                     <tbody>
                       {{#each absenceCredits as |absenceCredit|}}
                         <tr
-                        role="link"
+                          role="link"
                           class={{if (can "edit absence-credit") "pointer"}}
                           {{on
                             "click"
@@ -88,10 +88,17 @@
                   {{#if (can "create absence-credit")}}
                     Add a new credit by clicking the button below!<br />
                     <br />
-                    <LinkTo
-                      @route="users.edit.credits.absence-credits.new"
+                    <button
+                      {{on
+                        "click"
+                        (fn
+                          this.router.transitionTo
+                          "users.edit.credits.absence-credits.new"
+                        )
+                      }}
                       class="btn btn-success"
-                    >Add new credit</LinkTo>
+                      type="button"
+                    >Add new credit</button>
                   {{/if}}
                 </p>
               </div>
@@ -112,7 +119,7 @@
           <LoadingIcon />
         </div>
       {{else}}
-        {{#let this.overtimeCredits.lastSuccessful.value as |overtimeCredits|}}
+        {{#let this.overtimeCredits.value as |overtimeCredits|}}
           {{#if overtimeCredits}}
             <div class="card-block">
               <div class="grid">
@@ -128,7 +135,7 @@
                     <tbody>
                       {{#each overtimeCredits as |overtimeCredit|}}
                         <tr
-                        role="link"
+                          role="link"
                           class="{{if (can 'edit overtime-credit') 'pointer'}}"
                           {{on
                             "click"
@@ -168,10 +175,17 @@
                   {{#if (can "create overtime-credit")}}
                     Add a new credit by clicking the button below!<br />
                     <br />
-                    <LinkTo
-                      @route="users.edit.credits.overtime-credits.new"
+                    <button
+                      {{on
+                        "click"
+                        (fn
+                          this.transitionTo
+                          "users.edit.credits.overtime-credits.new"
+                        )
+                      }}
                       class="btn btn-success"
-                    >Add new credit</LinkTo>
+                      type="button"
+                    >Add new credit</button>
                   {{/if}}
                 </p>
               </div>
