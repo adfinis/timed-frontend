@@ -43,8 +43,8 @@
         @title="Task duration"
       />
     </div>
-    {{#if cs.task.project.remainingEffortTracking}}
-      <div class="form-list-cell form-group cell-remaining-effort">
+    <div class="form-list-cell form-group cell-remaining-effort">
+      {{#if cs.task.project.remainingEffortTracking}}
         <SyDurationpicker
           data-test-report-remaining-effort
           @disabled={{(not this.editable)}}
@@ -61,8 +61,8 @@
             />
           </span>
         </SyDurationpicker>
-      </div>
-    {{/if}}
+      {{/if}}
+    </div>
 
     <div class="form-list-cell form-group cell-review-billable-icons">
       <SyToggle
