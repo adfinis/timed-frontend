@@ -71,7 +71,10 @@ export default class StatisticList extends Component {
     }
 
     const maxEstimated = moment.duration(
-      Math.max(0, ...this.value.mapBy("estimatedTime"))
+      Math.max(
+        0,
+        ...this.value.filterBy("estimatedTime").mapBy("estimatedTime")
+      )
     );
     const maxDurationWithRemainingEffort = moment.duration(
       Math.max(
