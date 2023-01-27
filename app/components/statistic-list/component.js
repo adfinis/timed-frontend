@@ -65,7 +65,7 @@ export default class StatisticList extends Component {
   }
 
   get maxDuration() {
-    /* instanbul ignore if*/
+    /* istanbul ignore if*/
     if (!this.value) {
       return null;
     }
