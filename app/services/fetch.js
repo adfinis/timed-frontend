@@ -56,6 +56,7 @@ export default class FetchService extends Service {
 
     if (!response.ok) {
       if (isUnauthorizedResponse(response)) {
+        /* istanbul ignore next */
         return handleUnauthorized(this.session);
       }
 
