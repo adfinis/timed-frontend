@@ -66,7 +66,7 @@
 
     <div class="form-list-cell form-group cell-review-billable-icons">
       <SyToggle
-        class="margin-small-right"
+        class="margin-small-right form-control"
         data-test-report-review
         @disabled={{(not this.editable)}}
         @hint="Needs review"
@@ -83,6 +83,7 @@
         </span>
       </SyToggle>
       <SyToggle
+        class="form-control"
         data-test-report-not-billable
         @disabled={{(not this.editable)}}
         @hint="Not billable"

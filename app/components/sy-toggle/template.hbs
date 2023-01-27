@@ -5,6 +5,11 @@
   tabindex="0"
   role="button"
   {{on "click" (optional (unless @disabled (fn (optional @onToggle))))}}
+  {{on-key
+    "Space"
+    (optional (unless @disabled (fn (optional @onToggle))))
+    onlyWhenFocused=true
+  }}
 >
   {{#if (has-block)}}
     {{yield}}
