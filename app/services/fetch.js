@@ -1,6 +1,7 @@
 import Service, { inject as service } from "@ember/service";
 import { isEmpty } from "@ember/utils";
 import { isUnauthorizedResponse } from "ember-fetch/errors";
+import { handleUnauthorized } from "ember-simple-auth-oidc";
 import fetch from "fetch";
 
 const CONTENT_TYPE = "application/vnd.api+json";
@@ -52,9 +53,11 @@ export default class FetchService extends Service {
     }
 
     const response = await fetch(resource, init);
+
     if (!response.ok) {
       if (isUnauthorizedResponse(response)) {
-        return this.session.invalidate();
+        /* istanbul ignore next */
+        return handleUnauthorized(this.session);
       }
 
       const contentType = response.headers.get("content-type");

@@ -185,6 +185,12 @@ export default class TaskSelectionComponent extends Component {
   *customersAndRecentTasksTask() {
     yield Promise.resolve();
 
+    /* istanbul ignore if*/
+    if (!this.tracking.customers || !this.tracking.recentTasks) {
+      yield this.tracking.fetchRecentTasks.last;
+      yield this.tracking.fetchCustomers.last;
+    }
+
     let ids = [];
 
     if (this.history) {

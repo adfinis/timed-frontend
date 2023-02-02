@@ -4,7 +4,8 @@
   title={{concat @hint (if @disabled " (disabled)")}}
   tabindex="0"
   role="button"
-  {{on "click" (optional (unless @disabled (fn (optional @onToggle))))}}
+  {{on "click" (optional (unless @disabled @onToggle))}}
+  {{on "keyup" this.handleKeyUp}}
 >
   {{#if (has-block)}}
     {{yield}}

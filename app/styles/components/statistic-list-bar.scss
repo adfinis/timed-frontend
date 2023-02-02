@@ -34,6 +34,7 @@
     }
 
     &.remaining {
+      // align on the same level as progress bar
       top: -20px;
       z-index: 2;
     }
@@ -41,7 +42,6 @@
 
   .statistic-list-bar-goal {
     position: relative;
-    top: -45px;
     height: 30px;
     width: 100%;
     overflow: hidden;
@@ -61,6 +61,16 @@
       transition: transform 0.5s cubic-bezier(0.86, 0, 0.07, 1);
       animation: slide-in-statistic-bar 0.5s cubic-bezier(0.86, 0, 0.07, 1);
     }
+  }
+
+  // case: remaining effort tracking is disabled
+  :nth-child(2).statistic-list-bar-goal {
+    top: -25px;
+  }
+
+  // case: remaining effort tracking is enabled
+  :nth-child(3).statistic-list-bar-goal {
+    top: -45px;
   }
 
   @keyframes slide-in-statistic-bar {

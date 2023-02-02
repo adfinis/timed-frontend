@@ -31,7 +31,7 @@ export default class RejectedReportsService extends Service {
 
     this.pollReports();
 
-    /* instanbul ignore next */
+    /* istanbul ignore next */
     if (macroCondition(isTesting())) {
       this.intervalId = null;
     } else {
