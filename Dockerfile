@@ -1,4 +1,4 @@
-FROM danlynn/ember-cli:3.28.0 as build
+FROM danlynn/ember-cli:3.28.5 as build
 
 RUN npm install -g pnpm
 
