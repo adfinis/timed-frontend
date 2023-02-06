@@ -12,7 +12,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from timed.employment.models import Employment
+from timed.employment.models import Employment, PublicHoliday
 from timed.permissions import (
     IsAccountant,
     IsAuthenticated,
@@ -371,13 +371,23 @@ class AbsenceViewSet(ModelViewSet):
     ]
 
     def get_queryset(self):
-        """Get absences only for internal employees."""
+        """Get absences only for internal employees.
+
+        User should be able to create an absence on a public holiday if the
+        public holiday is only on user's previous employment location.
+        """
         user = self.request.user
         if user.is_superuser:
             queryset = models.Absence.objects.select_related("absence_type", "user")
             return queryset
 
-        queryset = models.Absence.objects.select_related("absence_type", "user").filter(
-            Q(user=user) | Q(user__in=user.supervisees.all())
+        queryset = (
+            models.Absence.objects.select_related("absence_type", "user")
+            .filter(Q(user=user) | Q(user__in=user.supervisees.all()))
+            .exclude(
+                date__in=PublicHoliday.objects.filter(
+                    location=user.get_active_employment().location
+                ).values("date")
+            )
         )
         return queryset
