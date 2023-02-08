@@ -27,7 +27,7 @@ specifiers:
   broccoli-asset-rev: 3.0.0
   downloadjs: 1.4.7
   ember-auto-import: 2.4.3
-  ember-basic-dropdown: 6.0.1
+  ember-basic-dropdown: 6.0.2
   ember-can: 4.2.0
   ember-changeset: 4.1.1
   ember-changeset-validations: 4.1.0
@@ -132,7 +132,7 @@ devDependencies:
   broccoli-asset-rev: 3.0.0
   downloadjs: 1.4.7
   ember-auto-import: 2.4.3_webpack@5.74.0
-  ember-basic-dropdown: 6.0.1_ember-source@3.28.11
+  ember-basic-dropdown: 6.0.2_ember-source@3.28.11
   ember-can: 4.2.0
   ember-changeset: 4.1.1_n6diiut26uavhn2w32fdxg7yne
   ember-changeset-validations: 4.1.0_webpack@5.74.0
@@ -2325,7 +2325,7 @@ packages:
     dependencies:
       '@commitlint/top-level': 17.0.0
       '@commitlint/types': 17.0.0
-      fs-extra: 10.0.0
+      fs-extra: 10.1.0
       git-raw-commits: 2.0.11
       minimist: 1.2.7
     dev: true
@@ -3382,7 +3382,7 @@ packages:
       bottleneck: 2.19.5
       debug: 4.3.4
       dir-glob: 3.0.1
-      fs-extra: 10.0.0
+      fs-extra: 10.1.0
       globby: 11.1.0
       http-proxy-agent: 5.0.0
       https-proxy-agent: 5.0.0
@@ -3407,7 +3407,7 @@ packages:
       '@semantic-release/error': 3.0.0
       aggregate-error: 3.1.0
       execa: 5.1.1
-      fs-extra: 10.0.0
+      fs-extra: 10.1.0
       lodash: 4.17.21
       nerf-dart: 1.0.0
       normalize-url: 6.1.0
@@ -7935,7 +7935,7 @@ packages:
     engines: {node: '>= 12'}
     dependencies:
       ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 6.1.1
+      ember-cli-htmlbars: 6.0.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8026,8 +8026,8 @@ packages:
       - webpack
     dev: true
 
-  /ember-basic-dropdown/6.0.1_ember-source@3.28.11:
-    resolution: {integrity: sha512-8cmqHvho7fToAv2pauzLd3y9fUVtMu0+eBwsevjiuTdWUPLvkIvn745NbT5aempVmxfMq0oQLhjzK8VUd4gxaw==}
+  /ember-basic-dropdown/6.0.2_ember-source@3.28.11:
+    resolution: {integrity: sha512-JgI/cy7eS/Y2WoQl7B2Mko/1aFTAlxr5d+KpQeH7rBKOFml7IQtLvhiDQrpU/FLkrQ9aLNEJtzwtDZV1xQxAKA==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
       '@ember/render-modifiers': 2.0.5_ember-source@3.28.11
@@ -8042,7 +8042,7 @@ packages:
       ember-get-config: 2.1.1
       ember-maybe-in-element: 2.0.3
       ember-modifier: 3.2.7
-      ember-style-modifier: 0.8.0
+      ember-style-modifier: 1.0.0
       ember-truth-helpers: 3.1.1
     transitivePeerDependencies:
       - '@babel/core'
@@ -8655,7 +8655,7 @@ packages:
       resolve: 1.22.1
       rsvp: 4.8.5
       semver: 6.3.0
-      stagehand: 1.0.0
+      stagehand: 1.0.1
       walk-sync: 2.2.0
     transitivePeerDependencies:
       - '@babel/core'
@@ -9316,7 +9316,7 @@ packages:
       ember-cli-normalize-entity-name: 1.0.0
       ember-cli-string-utils: 1.1.0
       ember-cli-typescript: 5.2.1
-      ember-compatibility-helpers: 1.2.5
+      ember-compatibility-helpers: 1.2.6
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -9422,7 +9422,7 @@ packages:
       '@glimmer/component': 1.1.2
       '@glimmer/tracking': 1.1.2
       ember-assign-helper: 0.4.0
-      ember-basic-dropdown: 6.0.1_ember-source@3.28.11
+      ember-basic-dropdown: 6.0.2_ember-source@3.28.11
       ember-cli-babel: 7.26.11
       ember-cli-htmlbars: 6.1.1
       ember-cli-typescript: 4.2.1
@@ -9686,17 +9686,6 @@ packages:
       resolve: 1.22.1
       semver: 7.3.8
       silent-error: 1.1.1
-    transitivePeerDependencies:
-      - '@babel/core'
-      - supports-color
-    dev: true
-
-  /ember-style-modifier/0.8.0:
-    resolution: {integrity: sha512-I7M+oZ+poYYOP7n521rYv7kkYZbxotL8VbtHYxLQ3tasRZYQJ21qfu3vVjydSjwyE3w7EZRgKngBoMhKSAEZnw==}
-    engines: {node: 12.* || 14.* || >= 16}
-    dependencies:
-      ember-cli-babel: 7.26.11
-      ember-modifier: 3.2.7
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
