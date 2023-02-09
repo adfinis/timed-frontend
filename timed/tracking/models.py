@@ -101,7 +101,7 @@ class Report(models.Model):
     added = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     rejected = models.BooleanField(default=False)
-    remaining_effort = models.DurationField(default=timedelta(0))
+    remaining_effort = models.DurationField(default=timedelta(0), null=True)
 
     def save(self, *args, **kwargs):
         """Save the report with some custom functionality.
