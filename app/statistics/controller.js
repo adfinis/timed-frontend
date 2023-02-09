@@ -20,7 +20,7 @@ const deserializeMoment = (momentString) =>
 const TYPES = {
   year: { include: "", requiredParams: [] },
   month: { include: "", requiredParams: [] },
-  customer: { include: "", requiredParams: [] },
+  customer: { include: "", requiredParams: ["fromDate"] },
   project: {
     include: "customer",
     requiredParams: ["customer"],

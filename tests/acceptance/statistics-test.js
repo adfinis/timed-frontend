@@ -40,7 +40,7 @@ module("Acceptance | statistics", function (hooks) {
   });
 
   test("can view statistics by customer", async function (assert) {
-    await visit("/statistics?type=customer");
+    await visit("/statistics?type=customer&fromDate=1900-01-01");
 
     assert.dom("thead > tr > th").exists({ count: 3 });
     assert.dom("tbody > tr").exists({ count: 5 });
