@@ -37,6 +37,7 @@ module.exports = function () {
       "sort-down",
       "sort-up",
       "stop",
+      "square",
       "play",
       "plus",
       "users",

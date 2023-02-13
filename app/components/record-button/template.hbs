@@ -1,10 +1,27 @@
-<div class="record-button-container record-button-container--start-stop">
+<div
+  class="record-button-container record-button-container--start-stop
+    {{if this.active 'recording'}}"
+>
   {{#if this.active}}
-    <button data-test-record-stop type="submit" class="record-button record-button--stop" {{action 'stop'}}></button>
+    <button
+      data-test-record-stop
+      type="submit"
+      class="record-button record-button--stop"
+      {{on "click" (prevent-default (optional @onStop))}}
+    >
+      <FaIcon @icon="square" @prefix="fas" />
+    </button>
     <div class="record-button-timer">
-      {{duration-since this.activity.from}}
+      {{duration-since @activity.from}}
     </div>
   {{else}}
-    <button data-test-record-start type="submit" class="record-button record-button--start" {{action 'start'}}></button>
+    <button
+      data-test-record-start
+      type="submit"
+      class="record-button record-button--start"
+      {{on "click" (prevent-default (optional @onStart))}}
+    >
+      <FaIcon @icon="play" @prefix="fas" />
+    </button>
   {{/if}}
 </div>

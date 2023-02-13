@@ -34,8 +34,8 @@
         <RecordButton
           @activity={{this.tracking.activity}}
           @recording={{this.tracking.activity.active}}
-          @on-start={{perform this.tracking.startActivity}}
-          @on-stop={{queue (perform this.tracking.stopActivity) t.clear}}
+          @onStart={{perform this.tracking.startActivity}}
+          @onStop={{queue (perform this.tracking.stopActivity) t.clear}}
         />
       </div>
     </form>

@@ -1,17 +1,25 @@
-& {
+.record-button-container {
   display: flex;
   justify-content: center;
-}
-
-.record-button-container {
   position: relative;
   background: rgb(80, 80, 80);
   border-radius: 1.5rem;
   height: 3rem;
   width:  3rem;
-  transition: width 500ms ease;
+  transition: width 300ms ease;
   font-family: $font-family-mono;
   font-size: 14px;
+
+
+  .record-button-container--start-stop {
+  width: 9.5rem;
+}
+
+  .record-button-timer {
+    opacity: 1;
+    pointer-events: all;
+    transition: opacity 100ms ease 200ms;
+  }
 }
 
 .record-button {
@@ -29,26 +37,16 @@
     rgb(240, 240, 240) 50%,
     rgb(180, 180, 180) 80%
   );
+  z-index: 2;
+
+  svg {
+    vertical-align: middle;
+  }
 }
 
-.record-button::after {
-  position: absolute;
-  left: 50%;
-  top:  50%;
-  font-family: FontAwesome;
-  font-size: 16px;
+.record-button--start,
+.record-button--stop {
   color: $color-danger;
-  z-index: 1;
-}
-
-.record-button--start::after {
-  content: '\f04b';
-  transform: translate(-35%, -50%);
-}
-
-.record-button--stop::after {
-  content: '\f04d';
-  transform: translate(-50%, -50%);
 }
 
 .record-button-timer {
@@ -64,25 +62,20 @@
   text-align: right;
 }
 
-&.recording .record-button-container--start-stop {
-  width: 9.5rem;
-}
-
-&.recording .record-button-timer {
-  opacity: 1;
-  pointer-events: all;
-  transition: opacity 200ms ease 300ms;
-}
 
 @media #{$lg-viewport} {
-  & {
-    width: 7rem;
-    justify-content: flex-start;
-  }
-
   .record-button-container {
+    justify-content: flex-start;
     height: 2rem;
     width: 2rem;
+
+    &.recording {
+      width: 7rem;
+    }
+
+    .record-button-container--start-stop {
+      width: 7rem;
+    }
   }
 
   .record-button {
@@ -90,9 +83,5 @@
     width: 1.6rem;
     top: 0.2rem;
     left: 0.2rem;
-  }
-
-  &.recording .record-button-container--start-stop {
-    width: 7rem;
   }
 }

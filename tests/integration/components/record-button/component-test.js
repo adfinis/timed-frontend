@@ -7,7 +7,8 @@ module("Integration | Component | record button", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{record-button}}`);
+    await render(hbs`<RecordButton />`);
+    assert.dom("[data-test-record-start]").exists();
     assert.dom("[data-test-record-stop]").doesNotExist();
   });
 
@@ -18,18 +19,21 @@ module("Integration | Component | record button", function (hooks) {
     this.set("stopAction", () => {
       this.set("recording", false);
 
+      assert.step("stop");
       assert.dom("[data-test-record-stop]").doesNotExist();
     });
 
     await render(hbs`
-      {{record-button
-        recording=recording
-        activity=activity
-        on-stop=stopAction
-      }}
+      <RecordButton
+        @recording={{this.recording}}
+        @activity={{this.activity}}
+        @onStop={{this.stopAction}}
+      />
     `);
 
     await click("[data-test-record-stop]");
+
+    assert.verifySteps(["stop"]);
   });
 
   test("can start", async function (assert) {
@@ -39,17 +43,20 @@ module("Integration | Component | record button", function (hooks) {
     this.set("startAction", () => {
       this.set("recording", true);
 
+      assert.step("start");
       assert.dom("[data-test-record-stop]").exists({ count: 1 });
     });
 
     await render(hbs`
-      {{record-button
-        recording=recording
-        activity=activity
-        on-start=startAction
-      }}
+      <RecordButton
+        @recording={{this.recording}}
+        @activity={{this.activity}}
+        @onStart={{this.startAction}}
+      />
     `);
 
     await click("[data-test-record-start]");
+
+    assert.verifySteps(["start"]);
   });
 });
