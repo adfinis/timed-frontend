@@ -12,7 +12,7 @@ from timed.redmine.models import RedmineProject
 
 @pytest.mark.parametrize(
     "duration, percentage_exceeded, notification_count",
-    [(1, 0, 0), (3, 0, 0), (4, 30, 1), (8, 70, 2)],
+    [(1, 0, 0), (3, 0, 0), (4, 30, 1), (8, 70, 2), (0, 0, 0)],
 )
 def test_budget_check_1(
     db, mocker, report_factory, duration, percentage_exceeded, notification_count
@@ -30,6 +30,9 @@ def test_budget_check_1(
     project.save()
     project.cost_center.name = "DEV_BUILD"
     project.cost_center.save()
+
+    if duration == 0:
+        report.delete()
 
     if percentage_exceeded == 70:
         NotificationFactory(
@@ -98,8 +101,7 @@ def test_budget_check_no_estimated_timed(db, mocker, capsys, report_factory):
 
     call_command("budget_check")
 
-    out, _ = capsys.readouterr()
-    assert f"Project {project.name} has no estimated time!" in out
+    assert Notification.objects.count() == 0
 
 
 def test_budget_check_invalid_issue(db, mocker, capsys, report_factory):

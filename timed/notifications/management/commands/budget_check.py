@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import redminelib
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -27,6 +29,7 @@ class Command(BaseCommand):
                 cost_center__name__contains=settings.BUILD_PROJECTS,
                 redmine_project__isnull=False,
                 estimated_time__isnull=False,
+                estimated_time__gt=timedelta(hours=0),
             )
             .exclude(notifications__notification_type=Notification.BUDGET_CHECK_70)
             .order_by("name")
@@ -37,16 +40,14 @@ class Command(BaseCommand):
                 Report.objects.filter(task__project=project, not_billable=False)
                 .aggregate(billable_hours=Sum("duration"))
                 .get("billable_hours")
-            ).total_seconds() / 3600
-            estimated_hours = project.estimated_time.total_seconds() / 3600
+            )
 
-            try:
-                budget_percentage = billable_hours / estimated_hours
-            except ZeroDivisionError:
-                self.stdout.write(
-                    self.style.WARNING(f"Project {project.name} has no estimated time!")
-                )
+            if not billable_hours:
                 continue
+
+            billable_hours = billable_hours.total_seconds() / 3600
+            estimated_hours = project.estimated_time.total_seconds() / 3600
+            budget_percentage = billable_hours / estimated_hours
 
             if budget_percentage <= 0.3:
                 continue
