@@ -8,6 +8,13 @@ from timed.projects.models import Project
 class Command(BaseCommand):  # pragma: no cover
     help = "Update projects"
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--pretend",
+            action="store_true",
+            help="Pretend mode for testing",
+        )
+
     def handle(self, *args, **options):
         redmine = redminelib.Redmine(
             settings.REDMINE_URL,
@@ -29,6 +36,8 @@ class Command(BaseCommand):  # pragma: no cover
         )
 
         redmine_projects = open_redmine_projects + closed_redmine_projects
+
+        pretend = options["pretend"]
 
         for redmine_project in redmine_projects:
             timed_project = Project.objects.filter(
@@ -58,4 +67,10 @@ class Command(BaseCommand):  # pragma: no cover
                 if amount_invoiced != ""
                 else timed_project.amount_invoiced
             )
-            timed_project.save()
+            if not pretend:
+                timed_project.save()
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Updating project {timed_project.name} with amount offered {timed_project.amount_offered} and amount invoiced {timed_project.amount_invoiced}"
+                )
+            )
