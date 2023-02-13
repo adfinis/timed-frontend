@@ -8,7 +8,11 @@ module("Integration | Component | tracking bar", function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
-    setupTrackingService(this, { activity: { comment: "asdf" } });
+    setupTrackingService(this, {
+      activity: { comment: "asdf" },
+      fetchRecentTasks: { last: Promise.resolve() },
+      fetchCustomers: { last: Promise.resolve() },
+    });
   });
 
   test("renders", async function (assert) {

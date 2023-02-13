@@ -24,8 +24,15 @@ class TrackingServiceStub extends Service {
 
 export function setup(context, overrides) {
   context.owner.register("service:tracking", TrackingServiceStub);
+
+  const service = context.owner.lookup("service:tracking");
+
   Object.keys(overrides).forEach((key) => {
-    LOCAL_OVERRIDES[key] = overrides[key];
+    if (LOCAL_OVERRIDES[key]) {
+      LOCAL_OVERRIDES[key] = overrides[key];
+    } else {
+      service[key] = overrides[key];
+    }
   });
 }
 

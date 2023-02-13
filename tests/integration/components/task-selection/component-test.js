@@ -1,5 +1,5 @@
 import EmberObject from "@ember/object";
-import { click, render } from "@ember/test-helpers";
+import { click, render, tab, triggerEvent } from "@ember/test-helpers";
 import { hbs } from "ember-cli-htmlbars";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupRenderingTest } from "ember-qunit";
@@ -185,5 +185,27 @@ module("Integration | Component | task selection", function (hooks) {
       .dom(".project-select .ember-power-select-selected-item")
       .doesNotExist();
     assert.dom(".task-select .ember-power-select-selected-item").doesNotExist();
+  });
+
+  test("opens on tab-key navigation", async function (assert) {
+    this.set("customer", CUSTOMER);
+    this.set("project", PROJECT);
+
+    await render(hbs`
+      <TaskSelection 
+        @initial={{(hash
+          customer = customer
+          project = project
+        )}}
+        as |t|>
+          {{t.customer}}
+          {{t.project}}
+      </TaskSelection>
+    `);
+
+    await triggerEvent(".customer-select", "focus");
+    await tab();
+
+    assert.dom(".ember-power-select-dropdown").isVisible();
   });
 });
