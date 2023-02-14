@@ -1,71 +1,7 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
-import moment from "moment";
+import Component from "@glimmer/component";
 
-/**
- * The record button component
- *
- * @class RecordButtonComponent
- * @extends Ember.Component
- * @public
- */
-export default Component.extend({
-  /**
-   * Class name bindings
-   *
-   * @property {String[]} classNameBindings
-   * @public
-   */
-  classNameBindings: ["active:recording"],
-
-  /**
-   * The start time
-   *
-   * @property {moment} startTime
-   * @public
-   */
-  startTime: moment(),
-
-  /**
-   * Whether it is currently recording
-   *
-   * @property {Boolean} recording
-   * @public
-   */
-  recording: false,
-
-  active: computed.and("recording", "activity.id"),
-
-  /**
-   * The actions for the record button component
-   *
-   * @property {Object} actions
-   * @public
-   */
-  actions: {
-    /**
-     * Start recording
-     *
-     * @method start
-     * @public
-     */
-    start() {
-      this["on-start"]();
-    },
-
-    /**
-     * Stop recording
-     *
-     * @method stop
-     * @public
-     */
-    stop() {
-      this["on-stop"]();
-    },
-  },
-});
+export default class RecordButton extends Component {
+  get active() {
+    return this.args.recording && this.args.activity?.id;
+  }
+}

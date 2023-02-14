@@ -409,15 +409,17 @@
               <tfoot>
                 <tr>
                   <td colspan="2"><strong>Total:</strong></td>
-                  <td colspan="2"><strong class="total">{{format-duration
-                        this.totalTime
-                        false
-                      }}</strong></td>
-                  <td colspan="6" class="text-right"><em>Displaying
-                      {{reports.length}}
-                      of
-                      {{this.totalItems}}
-                      reports</em></td>
+                  {{#unless this.data.isRunning}}
+                    <td colspan="2"><strong class="total">{{format-duration
+                          this.totalTime
+                          false
+                        }}</strong></td>
+                    <td colspan="6" class="text-right"><em>Displaying
+                        {{reports.length}}
+                        of
+                        {{this.totalItems}}
+                        reports</em></td>
+                  {{/unless}}
                 </tr>
               </tfoot>
             </table>
