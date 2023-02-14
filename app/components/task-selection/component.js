@@ -186,7 +186,10 @@ export default class TaskSelectionComponent extends Component {
     yield Promise.resolve();
 
     /* istanbul ignore if*/
-    if (!this.tracking.customers || !this.tracking.recentTasks) {
+    if (
+      !this.tracking.customers?.length ||
+      !this.tracking.recentTasks?.length
+    ) {
       yield this.tracking.fetchRecentTasks.last;
       yield this.tracking.fetchCustomers.last;
     }
