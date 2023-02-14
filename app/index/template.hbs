@@ -26,15 +26,15 @@
     </div>
     <div class="grid-cell hidden-sm">
       <div class="btn-group btn-group--vertical">
-        <LinkTo @route="index.activities" @tagName="button" class="btn">
+        <LinkTo @route="index.activities" class="btn">
           Activities
           <span class="badge">{{humanize-duration this.activitySum true}}</span>
         </LinkTo>
-        <LinkTo @route="index.attendances" @tagName="button" class="btn">
+        <LinkTo @route="index.attendances" class="btn">
           Attendances
           <span class="badge">{{humanize-duration this.attendanceSum}}</span>
         </LinkTo>
-        <LinkTo @route="index.reports" @tagName="button" class="btn">
+        <LinkTo @route="index.reports" class="btn">
           Timesheet
           <span class="badge">{{humanize-duration this.reportSum}}</span>
         </LinkTo>
@@ -115,20 +115,17 @@
 </div>
 
 {{#if this.absence}}
-  {{#let (changeset this.absence this.AbsenceValidations) as |changeset|}}
+  {{#let (changeset this.absence this.AbsenceValidations) as |cs|}}
     <SyModal
       @size="auto"
       @visible={{this.showEditModal}}
-      @on-close={{queue
-        (toggle "showEditModal" this)
-        (fn this.rollback changeset)
-      }}
+      @onClose={{queue (toggle "showEditModal" this) (fn this.rollback cs)}}
       as |modal|
     >
       <div data-test-edit-absence-form>
         <ValidatedForm
-          @model={{changeset}}
-          @on-submit={{fn this.saveAbsence changeset}}
+          @model={{cs}}
+          @on-submit={{fn this.saveAbsence cs}}
           as |f|
         >
           <modal.header>
@@ -137,25 +134,25 @@
           <modal.body>
             <f.input @name="absenceType" as |fi|>
               <div class="btn-group btn-group--auto">
-                {{#each absenceTypes as |at|}}
+                {{#each this.absenceTypes as |at|}}
                   <button
                     type="button"
                     class={{concat
                       "btn btn-default"
-                      (if (eq at.id changeset.absenceType.id) " active")
+                      (if (eq at.id cs.absenceType.id) " active")
                     }}
                     {{on "click" (fn fi.update at)}}
                   >{{at.name}}</button>
                 {{/each}}
               </div>
             </f.input>
-            <f.input @name="date" as |fi|>
+            <f.input @name="date">
               <PowerCalendar
                 class="calendar"
-                @selected={{get changeset "date.content"}}
+                @selected={{cs.date}}
                 @center={{(or this.center this.date)}}
                 @onCenterChange={{perform this.setCenter}}
-                @onSelect={{action fi.update value="moment"}}
+                @onSelect={{pick "moment" (changeset-set cs "date")}}
                 as |calendar|
               >
                 <div class={{if calendar.loading "loading-mask"}}>
@@ -188,25 +185,15 @@
   {{/let}}
 {{/if}}
 
-{{#let
-  (changeset this.newAbsence this.MultipleAbsenceValidations)
-  as |changeset|
-}}
+{{#let (changeset this.newAbsence this.MultipleAbsenceValidations) as |cs|}}
   <SyModal
     @size="auto"
     @visible={{this.showAddModal}}
-    @on-close={{queue
-      (toggle "showAddModal" this)
-      (fn this.rollback changeset)
-    }}
+    @onClose={{queue (toggle "showAddModal" this) (fn this.rollback cs)}}
     as |modal|
   >
     <div data-test-add-absence-form>
-      <ValidatedForm
-        @model={{changeset}}
-        @on-submit={{fn this.addAbsence changeset}}
-        as |f|
-      >
+      <ValidatedForm @model={{cs}} @on-submit={{fn this.addAbsence cs}} as |f|>
         <modal.header>
           New absence
         </modal.header>
@@ -218,7 +205,7 @@
                   type="button"
                   class={{concat
                     "btn btn-default"
-                    (if (eq at.id changeset.absenceType.id) " active")
+                    (if (eq at.id cs.absenceType.id) " active")
                   }}
                   {{on "click" (fn fi.update at)}}
                 >{{at.name}}</button>
@@ -228,10 +215,10 @@
           <f.input @name="dates">
             <PowerCalendarMultiple
               class="calendar"
-              @selected={{changeset.dates}}
+              @selected={{cs.dates}}
               @center={{this.center}}
               @onCenterChange={{perform this.setCenter}}
-              @onSelect={{fn this.updateSelection changeset "dates"}}
+              @onSelect={{fn this.updateSelection cs "dates"}}
               as |calendar|
             >
               <div class={{if calendar.loading "loading-mask"}}>

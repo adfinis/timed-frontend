@@ -1,33 +1,23 @@
-import { classNames, classNameBindings } from "@ember-decorators/component";
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
-import Component from "@ember/component";
-import classic from "ember-classic-decorator";
+import { registerDestructor } from "@ember/destroyable";
+import { action } from "@ember/object";
+import Component from "@glimmer/component";
 
-/**
- * Overlay component for sy modal
- *
- * @class SyModalOverlayComponent
- * @extends Ember.Component
- * @public
- */
-@classic
-@classNames("modal")
-@classNameBindings("visible:modal--visible")
-export default class Overlay extends Component {
-  /**
-   * Close the modal if the user clicks on the overlay, not a child of it
-   *
-   * @event click
-   * @param {jQuery.Event} e The jquery click event
-   * @public
-   */
-  click(e) {
+export default class SyModalOverlay extends Component {
+  @action
+  setupClickHandler(element) {
+    this.element = element;
+
+    element.addEventListener("click", this.handleClick);
+
+    registerDestructor(this, () => {
+      element.removeEventListener("click", this.handleClick);
+    });
+  }
+
+  @action
+  handleClick(e) {
     if (e.target === this.element) {
-      this["on-close"]();
+      this.args.onClose();
     }
   }
 }

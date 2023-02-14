@@ -3,7 +3,7 @@ import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy modal", function (hooks) {
+module("Integration | Component | SyModal", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
@@ -34,7 +34,7 @@ module("Integration | Component | sy modal", function (hooks) {
 
     await render(hbs`
       <SyModalTarget />
-      <SyModal @visible={{this.visible}} @on-close={{fn (mut this.visible)}} as |m|>
+      <SyModal @visible={{this.visible}} @onClose={{fn (mut this.visible) false}} as |m|>
         <m.header />
       </SyModal>
     `);

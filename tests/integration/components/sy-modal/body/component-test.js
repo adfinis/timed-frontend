@@ -7,7 +7,7 @@ module("Integration | Component | sy modal/body", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{#sy-modal/body}}Test{{/sy-modal/body}}`);
+    await render(hbs`<SyModal::Body>Test</SyModal::Body>`);
 
     assert.dom(this.element).hasText("Test");
   });

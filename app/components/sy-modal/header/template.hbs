@@ -1,6 +1,11 @@
 <div ...attributes class="modal-header">
   {{yield}}
-  <button type="button" class="close" aria-label="Close" {{on "click" @close}}>
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    {{on "click" (optional @close)}}
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>

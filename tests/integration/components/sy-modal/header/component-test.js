@@ -3,18 +3,18 @@ import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy modal/header", function (hooks) {
+module("Integration | Component | SyModal::Header", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
     this.set("visible", true);
 
     await render(hbs`
-      {{#sy-modal/header
-        close=(action (mut visible) false)
-      }}
+      <SyModal::Header
+        @close={{(fn (mut this.visible) false)}}
+      >
         Test
-      {{/sy-modal/header}}
+      </SyModal::Header>
     `);
 
     assert.dom(this.element).hasText("Test ×");
@@ -24,11 +24,11 @@ module("Integration | Component | sy modal/header", function (hooks) {
     this.set("visible", true);
 
     await render(hbs`
-      {{#sy-modal/header
-        close=(action (mut visible) false)
-      }}
+      <SyModal::Header
+        @close={{(fn (mut this.visible) false)}}
+      >
         Test
-      {{/sy-modal/header}}
+      </SyModal::Header>
     `);
 
     assert.ok(this.visible);
