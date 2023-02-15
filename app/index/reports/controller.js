@@ -140,7 +140,19 @@ export default class IndexReportController extends Controller {
   @action
   async reschedule(date) {
     try {
-      const reports = this.reports.filterBy("isNew", false);
+      const reports = this.reports
+        .filterBy("isNew", false)
+        .rejectBy("verifiedBy.id");
+
+      // The magic number "-1" is the placeholder report row which we filter out
+      // via the filterBy("isNew") line above.
+      if (reports.length < this.reports.length - 1) {
+        /* istanbul ignore next */
+        this.notify.warning(
+          "Reports that got verified already can not get transferred."
+        );
+      }
+
       await all(
         reports.map(async (report) => {
           report.set("date", date);
