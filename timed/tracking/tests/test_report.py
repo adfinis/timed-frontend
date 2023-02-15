@@ -1954,3 +1954,71 @@ def test_report_remaining_effort_total(
     task_2.refresh_from_db()
     assert task_2.most_recent_remaining_effort == timedelta(hours=3)
     assert task_2.project.total_remaining_effort == timedelta(hours=4)
+
+
+def test_report_remaining_effort_update(
+    internal_employee_client,
+    report_factory,
+):
+    user = internal_employee_client.user
+    report = report_factory.create(user=user, date="2022-02-01")
+    report_2 = report_factory.create(user=user, task=report.task, date="2022-02-01")
+    report.task.project.remaining_effort_tracking = True
+    report.task.project.save()
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {
+                "remaining_effort": "01:00:00",
+            },
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+
+    response = internal_employee_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    report.task.refresh_from_db()
+    assert report.task.most_recent_remaining_effort == timedelta(hours=1)
+    assert report.task.project.total_remaining_effort == timedelta(hours=1)
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report_2.id,
+            "attributes": {
+                "remaining_effort": "03:00:00",
+            },
+        }
+    }
+
+    url = reverse("report-detail", args=[report_2.id])
+
+    response = internal_employee_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    report.task.refresh_from_db()
+    assert report.task.most_recent_remaining_effort == timedelta(hours=3)
+    assert report.task.project.total_remaining_effort == timedelta(hours=3)
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {
+                "comment": "foo bar",
+            },
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+
+    response = internal_employee_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+
+    report.task.refresh_from_db()
+    assert report.task.most_recent_remaining_effort == timedelta(hours=3)
+    assert report.task.project.total_remaining_effort == timedelta(hours=3)
