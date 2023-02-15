@@ -46,7 +46,7 @@ export default class RejectedReportsService extends Service {
     try {
       const reports = await this.store.query("report", {
         to_date: this.reportsToDate.format("YYYY-MM-DD"),
-        reviewer: this.session.data.user.id,
+        user: this.session.data.user.id,
         editable: 1,
         rejected: 1,
         page: { number: 1, size: 1 },

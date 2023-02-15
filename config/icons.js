@@ -11,6 +11,7 @@ module.exports = function () {
       "hand",
       "square",
       "square-check",
+      "circle-xmark",
       "trash-can",
       "user",
     ],
