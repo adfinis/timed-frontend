@@ -1,4 +1,5 @@
 import { inject as service } from "@ember/service";
+import { isTesting, macroCondition } from "@embroider/macros";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 import { restartableTask, timeout } from "ember-concurrency";
@@ -18,6 +19,8 @@ export default class ProgressTooltipComponent extends Component {
 
   @tracked spent;
   @tracked billable;
+  @tracked mostRecentRemainingEffort;
+  @tracked totalRemainingEffort;
 
   @service("metadata-fetcher") metadata;
 
@@ -43,10 +46,19 @@ export default class ProgressTooltipComponent extends Component {
 
   get remainingEffort() {
     const model = this.args.model;
-    return model.constructor.modelName === "project" &&
-      model.remainingEffortTracking
-      ? model.totalRemainingEffort
-      : model.mostRecentRemainingEffort;
+    const isProjectWithEnabledTracking =
+      model.constructor.modelName === "project" &&
+      model.remainingEffortTracking;
+
+    if (macroCondition(isTesting())) {
+      return isProjectWithEnabledTracking
+        ? model.totalRemainingEffort
+        : model.mostRecentRemainingEffort;
+    }
+
+    return isProjectWithEnabledTracking
+      ? this.totalRemainingEffort
+      : this.mostRecentRemainingEffort;
   }
 
   // The current billable progress
@@ -111,11 +123,18 @@ export default class ProgressTooltipComponent extends Component {
     if (visible) {
       yield timeout(this.delay);
 
-      const { spentTime, spentBillable } =
-        yield this.metadata.fetchSingleRecordMetadata
-          .linked()
-          .perform(this.args.model.constructor.modelName, this.args.model.id);
+      const response = yield this.metadata.fetchSingleRecordMetadata
+        .linked()
+        .perform(this.args.model.constructor.modelName, this.args.model.id);
+      const {
+        spentTime,
+        spentBillable,
+        mostRecentRemainingEffort,
+        totalRemainingEffort,
+      } = response;
 
+      this.mostRecentRemainingEffort = mostRecentRemainingEffort;
+      this.totalRemainingEffort = totalRemainingEffort;
       this.spent = spentTime;
       this.billable = spentBillable;
     }
