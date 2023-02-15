@@ -9,6 +9,13 @@ from timed.projects.models import Project
 class Command(BaseCommand):
     help = "Update expenditures on associated Redmine projects."
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--pretend",
+            action="store_true",
+            help="Pretend mode for testing",
+        )
+
     def handle(self, *args, **options):
         redmine = redminelib.Redmine(
             settings.REDMINE_URL,
@@ -28,6 +35,8 @@ class Command(BaseCommand):
                 )
             )
         )
+
+        pretend = options["pretend"]
 
         for project in affected_projects.iterator():
             estimated_hours = (
@@ -65,11 +74,19 @@ class Command(BaseCommand):
                     "value": project.amount_invoiced.amount,
                 },
             ]
-            try:
-                issue.save()
-            except redminelib.exceptions.BaseRedmineError as e:  # pragma: no cover
-                self.stdout.write(
-                    self.style.ERROR(
-                        f"Failed to save Project {project.name} with Redmine issue {issue.id}!\n{e}"
+            if not pretend:
+                try:
+                    issue.save()
+                    continue
+                except redminelib.exceptions.BaseRedmineError as e:  # pragma: no cover
+                    self.stdout.write(
+                        self.style.ERROR(
+                            f"Failed to save Project {project.name} with Redmine issue {issue.id}!\n{e}"
+                        )
                     )
+
+            self.stdout.write(
+                self.style.SUCCESS(
+                    f"Updating Redmine issue {project.redmine_project.issue_id} with total spent hours {total_spent_hours}, amount offered {project.amount_offered.amount}, amount invoiced {project.amount_invoiced.amount}"
                 )
+            )
