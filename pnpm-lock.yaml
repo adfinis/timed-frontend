@@ -30,7 +30,7 @@ specifiers:
   ember-basic-dropdown: 6.0.2
   ember-can: 4.2.0
   ember-changeset: 4.1.2
-  ember-changeset-validations: 4.1.0
+  ember-changeset-validations: 4.1.1
   ember-classic-decorator: 3.0.1
   ember-cli: 3.28.6
   ember-cli-app-version: 5.0.0
@@ -135,7 +135,7 @@ devDependencies:
   ember-basic-dropdown: 6.0.2_ember-source@3.28.11
   ember-can: 4.2.0
   ember-changeset: 4.1.2_n6diiut26uavhn2w32fdxg7yne
-  ember-changeset-validations: 4.1.0_webpack@5.74.0
+  ember-changeset-validations: 4.1.1_webpack@5.74.0
   ember-classic-decorator: 3.0.1
   ember-cli: 3.28.6
   ember-cli-app-version: 5.0.0
@@ -8087,20 +8087,6 @@ packages:
       - supports-color
     dev: true
 
-  /ember-changeset-validations/4.1.0_webpack@5.74.0:
-    resolution: {integrity: sha512-pK7zLXsfkHxXHFf5ahmTH8A50B/YCa7KARJtLp0Myvay7tNjq3VZ9TNM1YOMFgrNaNyvAZKWsZ4IFmvC5pf3+w==}
-    engines: {node: 12.* || 14.* || >= 16}
-    dependencies:
-      ember-auto-import: 2.4.3_webpack@5.74.0
-      ember-cli-babel: 7.26.11
-      ember-get-config: 1.1.0
-      ember-validators: 4.1.2
-      validated-changeset: 1.3.4
-    transitivePeerDependencies:
-      - supports-color
-      - webpack
-    dev: true
-
   /ember-changeset-validations/4.1.1_webpack@5.74.0:
     resolution: {integrity: sha512-lRT+LOwY+kTMRC/op85L6+FFHDuOkoQvqgexexTiLFECiTNw4vQbOrcAqhfe6n/QJBr5uypZ+bg4W1Ng34dkMg==}
     engines: {node: 12.* || 14.* || >= 16}
@@ -9153,16 +9139,6 @@ packages:
       broccoli-file-creator: 1.2.0
       ember-cli-babel: 7.26.11
       ember-cli-htmlbars: 5.7.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /ember-get-config/1.1.0:
-    resolution: {integrity: sha512-diD+HwwY8QqpEk5DnDYfH7onYwl6NOgr1qv1ENbXih+/iiWYUVS/e0S/PlM7A4gdorD9spn1bnisnTLTf49Wpw==}
-    engines: {node: 12.* || 14.* || >= 16}
-    dependencies:
-      '@embroider/macros': 1.10.0
-      ember-cli-babel: 7.26.11
     transitivePeerDependencies:
       - supports-color
     dev: true
