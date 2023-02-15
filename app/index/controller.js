@@ -400,7 +400,15 @@ export default class IndexController extends Controller {
   trackedTaskWeeklyOverviewData = trackedTask(
     this,
     this._weeklyOverviewData,
-    () => [this._allReports, this._allAbsences, this.date, this.user, this.day]
+    () => [
+      this._allReports,
+      this._allAbsences,
+      this.date,
+      this.user,
+      this.day,
+      this.showAddModal,
+      this.showEditModal,
+    ]
   );
 
   /**

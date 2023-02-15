@@ -3,11 +3,11 @@ import { hbs } from "ember-cli-htmlbars";
 import { setupRenderingTest } from "ember-qunit";
 import { module, test } from "qunit";
 
-module("Integration | Component | sy modal/overlay", function (hooks) {
+module("Integration | Component | SyModal::Overlay", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{sy-modal/overlay}}`);
+    await render(hbs`<SyModal::Overlay />`);
     assert.ok(this.element);
   });
 
@@ -16,10 +16,10 @@ module("Integration | Component | sy modal/overlay", function (hooks) {
     this.set("closeAction", () => this.set("visible", false));
 
     await render(hbs`
-      {{sy-modal/overlay
-        visible=visible
-        on-close=closeAction
-      }}
+      <SyModal::Overlay
+        @visible={{this.visible}}
+        @onClose={{this.closeAction}}
+      />
     `);
 
     assert.ok(this.visible);
@@ -34,9 +34,9 @@ module("Integration | Component | sy modal/overlay", function (hooks) {
     this.set("closeAction", () => this.set("visible", false));
 
     await render(hbs`
-      {{#sy-modal/overlay visible=visible on-close=closeAction}}
+      <SyModal::Overlay @visible={{this.visible}} @onClose={{this.closeAction}}>
         <div id="some-child">Test</div>
-      {{/sy-modal/overlay}}
+      </SyModal::Overlay>
     `);
 
     assert.ok(this.visible);

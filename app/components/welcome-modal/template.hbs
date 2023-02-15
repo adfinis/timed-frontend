@@ -1,4 +1,4 @@
-<SyModal @visible={{this.visible}} as |modal|>
+<SyModal @visible={{@visible}} as |modal|>
   <modal.body>
     <div class="text-center welcome-modal-body">
       <h1>Welcome to Timed!</h1>
@@ -12,7 +12,7 @@
       type="button"
       class="btn btn-never"
       data-test-tour-never
-      {{action this.on-never}}
+      {{on "click" (optional @onNever)}}
     >
       Never
     </button>
@@ -21,7 +21,7 @@
       type="button"
       class="btn btn-default"
       data-test-tour-later
-      {{action this.on-later}}
+      {{on "click" (optional @onLater)}}
     >
       Later
     </button>
@@ -30,7 +30,7 @@
       type="submit"
       class="btn btn-primary"
       data-test-tour-start
-      {{action this.on-start}}
+      {{on "click" (optional @onStart)}}
     >
       Sure
     </button>
