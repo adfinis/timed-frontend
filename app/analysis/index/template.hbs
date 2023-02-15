@@ -126,23 +126,6 @@
           </fs.group>
           <fs.group @label="State">
             <fs.label>
-              Rejected
-              <fs.filter
-                data-test-filter-rejected
-                @type="button"
-                @selected={{this.rejected}}
-                @valuePath="value"
-                @labelPath="label"
-                @options={{array
-                  (hash label="All" value="")
-                  (hash label="Rejected" value="1")
-                  (hash label="Not rejected" value="0")
-                }}
-                @onChange={{fn (mut this.rejected)}}
-              />
-            </fs.label>
-
-            <fs.label>
               Review
               <fs.filter
                 data-test-filter-review
@@ -221,6 +204,23 @@
                 @onChange={{fn (mut this.editable)}}
               />
             </fs.label>
+            <fs.label>
+              Rejected
+              <fs.filter
+                data-test-filter-rejected
+                @type="button"
+                @selected={{this.rejected}}
+                @valuePath="value"
+                @labelPath="label"
+                @options={{array
+                  (hash label="All" value="")
+                  (hash label="Rejected" value="1")
+                  (hash label="Not rejected" value="0")
+                }}
+                @onChange={{fn (mut this.rejected)}}
+              />
+            </fs.label>
+
           </fs.group>
         {{/if}}
       </FilterSidebar>
