@@ -65,10 +65,18 @@
         {{/if}}
 
         <div class="btn-toolbar btn-toolbar--right">
+          {{#each f.model.errors as |error|}}
+            <div class="validation-error-icon" title={{error.validation}}>
+              <FaIcon @icon="exclamation-triangle" @prefix="fas" />
+            </div>
+          {{/each}}
+
           <f.submit
             data-test-project-save
             @disabled={{f.model.isInvalid}}
-          >Update</f.submit>
+            @triggerValidations={{true}}
+          >Update
+          </f.submit>
         </div>
       </ValidatedForm>
 
