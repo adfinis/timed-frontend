@@ -16,6 +16,21 @@ const META_MODELS = {
   },
 };
 
+const ATTRIBUTE_MODELS = {
+  project: {
+    totalRemainingEffort: {
+      defaultValue: null,
+      transform: DJANGO_DURATION_TRANSFORM,
+    },
+  },
+  task: {
+    mostRecentRemainingEffort: {
+      defaultValue: null,
+      transform: DJANGO_DURATION_TRANSFORM,
+    },
+  },
+};
+
 /**
  * Service to fetch metadata and transform it if necessary
  *
@@ -47,11 +62,12 @@ export default class MetadataFetcherService extends Service {
       throw new Error(`${capitalize(type)} ID is missing`);
     }
 
-    const { meta = {} } = yield this.fetch.fetch(
-      `/api/v1/${dasherize(type)}s/${id}`
-    );
+    const {
+      data: { attributes = {} },
+      meta = {},
+    } = yield this.fetch.fetch(`/api/v1/${dasherize(type)}s/${id}`);
 
-    return Object.keys(META_MODELS[camelize(type)]).reduce(
+    const metaValues = Object.keys(META_MODELS[camelize(type)]).reduce(
       (parsedMeta, key) => {
         const { defaultValue, transform } = META_MODELS[camelize(type)][key];
         const value = meta[dasherize(key)];
@@ -63,5 +79,19 @@ export default class MetadataFetcherService extends Service {
       },
       {}
     );
+
+    const attributesValues = Object.keys(
+      ATTRIBUTE_MODELS[camelize(type)]
+    ).reduce((parsedAttribute, key) => {
+      const { defaultValue, transform } = ATTRIBUTE_MODELS[camelize(type)][key];
+      const value = attributes[dasherize(key)];
+
+      return {
+        ...parsedAttribute,
+        [key]: value ? transform.deserialize(value) : defaultValue,
+      };
+    }, {});
+
+    return { ...attributesValues, ...metaValues };
   }
 }
