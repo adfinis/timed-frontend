@@ -45,7 +45,6 @@ export default class RejectedReportsService extends Service {
   async pollReports() {
     try {
       const reports = await this.store.query("report", {
-        to_date: this.reportsToDate.format("YYYY-MM-DD"),
         user: this.session.data.user.id,
         editable: 1,
         rejected: 1,
