@@ -50,7 +50,7 @@ module("Acceptance | statistics", function (hooks) {
   test("can view statistics by project", async function (assert) {
     await visit("/statistics?type=project&customer=1");
 
-    assert.dom("thead > tr > th").exists({ count: 5 });
+    assert.dom("thead > tr > th").exists({ count: 6 });
     assert.dom("tbody > tr").exists({ count: 5 });
     assert.dom("tfoot").includesText("Total");
   });

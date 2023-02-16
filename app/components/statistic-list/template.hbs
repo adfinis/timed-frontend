@@ -69,14 +69,19 @@
           {{/each}}
           <td>
             {{#let
-              (add row.duration row.mostRecentRemainingEffort)
-              as |allotted|
+              (or row.totalRemainingEffort row.mostRecentRemainingEffort)
+              as |remainingEffort|
             }}
-              <StatisticList::Bar
-                @value={{div row.duration this.maxDuration}}
-                @remaining={{div allotted this.maxDuration}}
-                @goal={{min "0.99" (div row.estimatedTime this.maxDuration)}}
-              />
+              {{#let
+                (if remainingEffort (add row.duration remainingEffort) 0)
+                as |allotted|
+              }}
+                <StatisticList::Bar
+                  @value={{div row.duration this.maxDuration}}
+                  @remaining={{div allotted this.maxDuration}}
+                  @goal={{div row.estimatedTime this.maxDuration}}
+                />
+              {{/let}}
             {{/let}}
           </td>
         </tr>
