@@ -5,7 +5,7 @@
     class="statistic-list-bar"
     {{style --value=(concat @value)}}
   ></div>
-  {{#if (and @remaining (lt @remaining 1))}}
+  {{#if (and @remaining (lte @remaining 1))}}
     <div
       ...attributes
       class="statistic-list-bar remaining
@@ -17,7 +17,7 @@
     <div
       ...attributes
       class="statistic-list-bar-goal"
-      {{style --goal=(concat @goal)}}
+      {{style --goal=(concat (min "0.99" @goal))}}
     ></div>
   {{/if}}
 </div>
