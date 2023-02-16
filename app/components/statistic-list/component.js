@@ -31,6 +31,11 @@ const COLUMN_MAP = {
       layout: DURATION_LAYOUT,
     },
     { title: "Duration", path: "duration", layout: DURATION_LAYOUT },
+    {
+      title: "Remaining Effort",
+      path: "totalRemainingEffort",
+      layout: DURATION_LAYOUT,
+    },
   ],
   task: [
     {

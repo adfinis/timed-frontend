@@ -69,7 +69,10 @@
           {{/each}}
           <td>
             {{#let
-              (add row.duration row.mostRecentRemainingEffort)
+              (add
+                row.duration
+                (or row.totalRemainingEffort row.mostRecentRemainingEffort)
+              )
               as |allotted|
             }}
               <StatisticList::Bar
