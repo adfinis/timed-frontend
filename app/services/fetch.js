@@ -89,19 +89,10 @@ export default class FetchService extends Service {
   }
 
   get headers() {
-    const headers = {
+    return {
       accept: CONTENT_TYPE,
       "content-type": CONTENT_TYPE,
+      ...this.session.headers,
     };
-
-    if (this.token) {
-      headers.authorization = `Bearer ${this.token}`;
-    }
-
-    return headers;
-  }
-
-  get token() {
-    return this.session.data.authenticated?.access_token;
   }
 }

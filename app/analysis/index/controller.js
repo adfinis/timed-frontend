@@ -20,6 +20,7 @@ import { cleanParams, toQueryString } from "timed/utils/url";
 import config from "../../config/environment";
 
 const rAF = () => {
+  /* istanbul ignore next */
   return new Promise((resolve) => {
     window.requestAnimationFrame(resolve);
   });
