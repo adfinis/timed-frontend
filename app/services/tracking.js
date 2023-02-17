@@ -288,12 +288,21 @@ export default class TrackingService extends Service {
    * @param {Number} customer The customer id to filter by
    * @public
    */
-  @dropTask
+  @task
   *projects(customer) {
     if (!customer) {
       // We can't test this because the UI prevents it
       throw new Error("No customer selected");
     }
+
+    const original = this.filterDuplicateTasks(this.projects, customer);
+    if (original) {
+      return yield original;
+    }
+
+    // Give it 100ms to "collect" similar requests and
+    // increases the efficiency even more.
+    yield timeout(100);
 
     return yield this.store.query("project", { customer });
   }
@@ -305,13 +314,38 @@ export default class TrackingService extends Service {
    * @param {Number} project The project id to filter by
    * @public
    */
-  @dropTask
+  @task
   *tasks(project) {
     if (!project) {
       // We can't test this because the UI prevents it
       throw new Error("No project selected");
     }
 
+    const original = this.filterDuplicateTasks(this.tasks, project);
+    if (original) {
+      return yield original;
+    }
+
+    // Give it 100ms to "collect" similar requests and
+    // increases the efficiency even more.
+    yield timeout(100);
+
     return yield this.store.query("task", { project });
+  }
+
+  /**
+   * Filters running tasks with the same arguments and returns the first
+   * task with matching arguments if there is more than one concurrent
+   * instance of it. Otherwise returns undefined.
+   */
+  filterDuplicateTasks(task, argument) {
+    const taskInstances = task.scheduler.taskInstances;
+    if (
+      taskInstances.length > 1 &&
+      taskInstances.filter((task) => task.args[0] === argument).length > 1
+    ) {
+      /* istanbul ignore next */
+      return taskInstances.find((task) => task.args[0] === argument);
+    }
   }
 }
