@@ -229,3 +229,17 @@ def test_task_list_no_employment(auth_client, is_customer, customer_visible, exp
 
     json = response.json()
     assert len(json["data"]) == expected
+
+
+def test_task_multi_number_value_filter(internal_employee_client):
+    task1, task2, *_ = TaskFactory.create_batch(4)
+
+    url = reverse("task-list")
+
+    response = internal_employee_client.get(
+        url, {"project": (",").join([str(task1.project.id), str(task2.project.id)])}
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json["data"]) == 2
