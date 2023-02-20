@@ -26,21 +26,30 @@ def update_most_recent_remaining_effort(sender, instance, **kwargs):
     if kwargs.get("raw", False):  # pragma: no cover
         return
 
-    if not instance.pk:
-        return
     if instance.task.project.remaining_effort_tracking is not True:
         return
 
-    if instance.remaining_effort != Report.objects.get(id=instance.id).remaining_effort:
-        task = instance.task
-        task.most_recent_remaining_effort = instance.remaining_effort
-        task.save()
+    # update most_recent_remaining_effort and total_remaining_effort on report creation
+    if not instance.pk:
+        update_remaining_effort(instance)
+        return
 
-        project = task.project
-        total_remaining_effort = (
-            project.tasks.all()
-            .aggregate(sum_remaining=Sum("most_recent_remaining_effort"))
-            .get("sum_remaining")
-        )
-        project.total_remaining_effort = total_remaining_effort
-        project.save()
+    # check if remaining effort has changed on report update
+    if instance.remaining_effort != Report.objects.get(id=instance.id).remaining_effort:
+        update_remaining_effort(instance)
+
+
+def update_remaining_effort(report):
+    task = report.task
+    project = task.project
+
+    task.most_recent_remaining_effort = report.remaining_effort
+    task.save()
+
+    total_remaining_effort = (
+        task.project.tasks.all()
+        .aggregate(sum_remaining=Sum("most_recent_remaining_effort"))
+        .get("sum_remaining")
+    )
+    project.total_remaining_effort = total_remaining_effort
+    project.save()
