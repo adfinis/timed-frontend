@@ -18,7 +18,7 @@
     )
     project=(component
       (ensure-safe-component "optimized-power-select")
-      options=this.projects
+      options=this.customer.projects
       disabled=(or @disabled (not this.customer))
       selected=this.project
       placeholder="Select project..."
@@ -34,7 +34,7 @@
     )
     task=(component
       (ensure-safe-component "optimized-power-select")
-      options=this.tasks
+      options=this.project.tasks
       disabled=(or @disabled (not this.project))
       selected=this.task
       placeholder="Select task..."

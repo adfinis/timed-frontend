@@ -3,7 +3,7 @@ import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { dropTask, restartableTask } from "ember-concurrency";
+import { dropTask } from "ember-concurrency";
 import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { resolve } from "rsvp";
 import customerOptionTemplate from "timed/components/optimized-power-select/custom-options/customer-option";
@@ -227,77 +227,6 @@ export default class TaskSelectionComponent extends Component {
   }
 
   /**
-   * All projects which are selectable in the dropdown
-   *
-   * Those depend on the selected customer
-   *
-   * @property {Project[]} projects
-   * @public
-   */
-  @restartableTask
-  *getProjectsByCustomer() {
-    yield Promise.resolve();
-
-    if (this.customer?.id) {
-      yield this.tracking.projects.perform(this.customer.id);
-    }
-
-    return yield this.store
-      .peekAll("project")
-      .filter((project) => {
-        return (
-          project.get("customer.id") === this.customer?.id &&
-          (this.archived ? true : !project.get("archived"))
-        );
-      })
-      .sortBy("name");
-  }
-
-  _getProjectsByCustomer = trackedTask(this, this.getProjectsByCustomer, () => [
-    this.customer,
-  ]);
-
-  get projects() {
-    return this._getProjectsByCustomer.value ?? [];
-  }
-
-  /**
-   * All tasks which are selectable in the dropdown
-   *
-   * Those depend on the selected project
-   *
-   * @property {Task[]} tasks
-   * @public
-   */
-  @restartableTask
-  *getTasksByProjects() {
-    yield Promise.resolve();
-
-    if (this.project?.id) {
-      yield this.tracking.tasks.perform(this.project.id);
-    }
-
-    return yield this.store
-      .peekAll("task")
-      .filter((t) => {
-        return (
-          t.get("project.id") === this.project?.id &&
-          (this.archived ? true : !t.get("archived"))
-        );
-      })
-      .sortBy("name");
-  }
-
-  _getTasksByProjects = trackedTask(this, this.getTasksByProjects, () => [
-    this.customer,
-    this.project,
-  ]);
-
-  get tasks() {
-    return this._getTasksByProjects.value ?? [];
-  }
-
-  /**
    * Clear all comboboxes
    *
    * @method clear
@@ -328,6 +257,10 @@ export default class TaskSelectionComponent extends Component {
 
     this._customer = value;
 
+    if (this.customer?.id) {
+      this.tracking.projects.perform(this.customer.id);
+    }
+
     if (
       this.project &&
       (!value || value.get("id") !== this.project.get("customer.id"))
@@ -347,6 +280,10 @@ export default class TaskSelectionComponent extends Component {
   @action
   onProjectChange(value, options = {}) {
     this._project = value;
+
+    if (this.project?.id) {
+      this.tracking.tasks.perform(this.project.id);
+    }
 
     if (
       this.task &&

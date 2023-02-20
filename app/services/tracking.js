@@ -43,6 +43,11 @@ export default class TrackingService extends Service {
   @tracked generatingReports = false;
   @tracked _date;
 
+  // collected request arguments for fetching tasks
+  projectQueue = new Set();
+  // collected request arguments for fetching projects
+  customerQueue = new Set();
+
   constructor(...args) {
     super(...args);
 
@@ -295,16 +300,28 @@ export default class TrackingService extends Service {
       throw new Error("No customer selected");
     }
 
-    const original = this.filterDuplicateTasks(this.projects, customer);
-    if (original) {
-      return yield original;
+    if (this.customerQueue.has(customer)) {
+      /* istanbul ignore next */
+      return;
+    }
+
+    this.customerQueue.add(customer);
+
+    if (this.customerQueue.size > 1) {
+      return;
     }
 
     // Give it 100ms to "collect" similar requests and
     // increases the efficiency even more.
     yield timeout(100);
 
-    return yield this.store.query("project", { customer });
+    yield this.store.query("project", {
+      customer: [...this.customerQueue].join(","),
+    });
+
+    this.customerQueue.clear();
+
+    return;
   }
 
   /**
@@ -321,31 +338,27 @@ export default class TrackingService extends Service {
       throw new Error("No project selected");
     }
 
-    const original = this.filterDuplicateTasks(this.tasks, project);
-    if (original) {
-      return yield original;
+    if (this.projectQueue.has(project)) {
+      /* istanbul ignore next */
+      return;
+    }
+
+    this.projectQueue.add(project);
+
+    if (this.projectQueue.size > 1) {
+      return;
     }
 
     // Give it 100ms to "collect" similar requests and
     // increases the efficiency even more.
     yield timeout(100);
 
-    return yield this.store.query("task", { project });
-  }
+    yield this.store.query("task", {
+      project: [...this.projectQueue].join(","),
+    });
 
-  /**
-   * Filters running tasks with the same arguments and returns the first
-   * task with matching arguments if there is more than one concurrent
-   * instance of it. Otherwise returns undefined.
-   */
-  filterDuplicateTasks(task, argument) {
-    const taskInstances = task.scheduler.taskInstances;
-    if (
-      taskInstances.length > 1 &&
-      taskInstances.filter((task) => task.args[0] === argument).length > 1
-    ) {
-      /* istanbul ignore next */
-      return taskInstances.find((task) => task.args[0] === argument);
-    }
+    this.projectQueue.clear();
+
+    return;
   }
 }
