@@ -154,6 +154,20 @@ def test_project_filter(internal_employee_client):
     assert len(json["data"]) == 1
 
 
+def test_project_multi_number_value_filter(internal_employee_client):
+    proj1, proj2, *_ = ProjectFactory.create_batch(4)
+
+    url = reverse("project-list")
+
+    response = internal_employee_client.get(
+        url, {"customer": (",").join([str(proj1.customer.id), str(proj2.customer.id)])}
+    )
+    assert response.status_code == status.HTTP_200_OK
+
+    json = response.json()
+    assert len(json["data"]) == 2
+
+
 def test_project_update_billed_flag(internal_employee_client, report_factory):
     report = report_factory.create()
     project = report.task.project
