@@ -1905,6 +1905,10 @@ def test_report_create_remaining_effort(
         assert json["data"]["relationships"]["user"]["data"]["id"] == str(user.id)
         assert json["data"]["relationships"]["task"]["data"]["id"] == str(task.id)
 
+        task.refresh_from_db()
+        assert task.most_recent_remaining_effort == timedelta(hours=1)
+        assert task.project.total_remaining_effort == timedelta(hours=1)
+
 
 def test_report_remaining_effort_total(
     internal_employee_client,
