@@ -407,7 +407,8 @@ export default class AnalysisController extends Controller.extend(
       //     [^;\n]*   anything but a ; or a newline
       // )
       const filename =
-        res.headers.map["content-disposition"]
+        res.headers
+          .get("content-disposition")
           .match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/g)[0]
           .replace("filename=", "") || "Unknown file";
 
