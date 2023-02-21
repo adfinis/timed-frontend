@@ -1,7 +1,6 @@
 import Service, { inject as service } from "@ember/service";
 import { macroCondition, isTesting } from "@embroider/macros";
 import { tracked } from "@glimmer/tracking";
-import moment from "moment";
 
 const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
 
@@ -20,10 +19,6 @@ export default class RejectedReportsService extends Service {
 
   get hasReports() {
     return this.amountReports > 0;
-  }
-
-  get reportsToDate() {
-    return moment().subtract(1, "month").endOf("month");
   }
 
   constructor(...args) {
