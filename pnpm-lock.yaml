@@ -27,7 +27,7 @@ specifiers:
   broccoli-asset-rev: 3.0.0
   downloadjs: 1.4.7
   ember-auto-import: 2.6.0
-  ember-basic-dropdown: 6.0.2
+  ember-basic-dropdown: 7.0.0
   ember-can: 4.2.0
   ember-changeset: 4.1.2
   ember-changeset-validations: 4.1.1
@@ -132,7 +132,7 @@ devDependencies:
   broccoli-asset-rev: 3.0.0
   downloadjs: 1.4.7
   ember-auto-import: 2.6.0_webpack@5.75.0
-  ember-basic-dropdown: 6.0.2_ember-source@3.28.11
+  ember-basic-dropdown: 7.0.0_zfl5w7g4cqci4ew2fw3a5ic7my
   ember-can: 4.2.0
   ember-changeset: 4.1.2_owt6px2bh22pyyxsve6sliadxy
   ember-changeset-validations: 4.1.1_webpack@5.75.0
@@ -9550,7 +9550,7 @@ packages:
       ember-cli-typescript: 4.2.1
       ember-element-helper: 0.6.1_ember-source@3.28.11
       ember-get-config: 2.1.1
-      ember-maybe-in-element: 2.0.3
+      ember-maybe-in-element: 2.1.0
       ember-modifier: 3.2.7
       ember-style-modifier: 1.0.0
       ember-truth-helpers: 3.1.1
@@ -9559,6 +9559,33 @@ packages:
       - '@glint/template'
       - ember-source
       - supports-color
+    dev: true
+
+  /ember-basic-dropdown/7.0.0_zfl5w7g4cqci4ew2fw3a5ic7my:
+    resolution: {integrity: sha512-AAxe06PBqR9K3tASGtCOdDgLcsaBvElnAUOTQvqiAerfjddG5OuYE8RptfOrYgXLYDyFX7HH3eqsKXiG7uJroQ==}
+    engines: {node: 14.* || >= 16}
+    dependencies:
+      '@ember/render-modifiers': 2.0.5_ember-source@3.28.11
+      '@embroider/macros': 1.10.0
+      '@embroider/util': 1.10.0_ember-source@3.28.11
+      '@glimmer/component': 1.1.2
+      '@glimmer/tracking': 1.1.2
+      ember-auto-import: 2.6.0_webpack@5.75.0
+      ember-cli-babel: 7.26.11
+      ember-cli-htmlbars: 6.2.0
+      ember-cli-typescript: 5.2.1
+      ember-element-helper: 0.6.1_ember-source@3.28.11
+      ember-get-config: 2.1.1
+      ember-maybe-in-element: 2.1.0
+      ember-modifier: 3.2.7
+      ember-style-modifier: 1.0.0
+      ember-truth-helpers: 3.1.1
+    transitivePeerDependencies:
+      - '@babel/core'
+      - '@glint/template'
+      - ember-source
+      - supports-color
+      - webpack
     dev: true
 
   /ember-cache-primitive-polyfill/1.0.1:
@@ -10666,18 +10693,6 @@ packages:
       - supports-color
     dev: true
 
-  /ember-in-element-polyfill/1.0.1:
-    resolution: {integrity: sha512-eHs+7D7PuQr8a1DPqsJTsEyo3FZ1XuH6WEZaEBPDa9s0xLlwByCNKl8hi1EbXOgvgEZNHHi9Rh0vjxyfakrlgg==}
-    engines: {node: 10.* || >= 12}
-    dependencies:
-      debug: 4.3.4
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 5.7.2
-      ember-cli-version-checker: 5.1.2
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /ember-inflector/4.0.2:
     resolution: {integrity: sha512-+oRstEa52mm0jAFzhr51/xtEWpCEykB3SEBr7vUg8YnXUZJ5hKNBppP938q8Zzr9XfJEbzrtDSGjhKwJCJv6FQ==}
     engines: {node: 10.* || 12.* || >= 14}
@@ -10732,14 +10747,13 @@ packages:
       - supports-color
     dev: true
 
-  /ember-maybe-in-element/2.0.3:
-    resolution: {integrity: sha512-XKuBYPYELwsEmDnJXI7aNSZtt/SKGgRZNMFhASODLz7j0OHSNrcJtjo5Wam/alxIjUIYVjEnMnOzqBLMfJnQkQ==}
+  /ember-maybe-in-element/2.1.0:
+    resolution: {integrity: sha512-6WAzPbf4BNQIQzkur2+zRJJJ/PKQoujIYgFjrpj3fOPy8iRlxVUm0/B41qbFyg1LE6bVbg0cWbuESWEvJ9Rswg==}
     engines: {node: 10.* || >= 12}
     dependencies:
       ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 5.7.2
+      ember-cli-htmlbars: 6.2.0
       ember-cli-version-checker: 5.1.2
-      ember-in-element-polyfill: 1.0.1
     transitivePeerDependencies:
       - supports-color
     dev: true
