@@ -50,7 +50,7 @@ module("Acceptance | index", function (hooks) {
     assert.dom("[data-test-record-start]").doesNotExist();
     assert.dom("[data-test-record-stop]").exists({ count: 1 });
 
-    assert.dom(".recording").exists();
+    assert.dom(".record-button-container--recording").exists();
     assert
       .dom("[data-test-activity-row]:first-child td:nth-child(2) div")
       .containsText(task.name);
@@ -70,7 +70,9 @@ module("Acceptance | index", function (hooks) {
 
     assert.dom("[data-test-record-start]").doesNotExist();
     assert.dom("[data-test-record-stop]").exists({ count: 1 });
-    assert.dom(".recording [data-test-record-stop]").exists();
+    assert
+      .dom(".record-button-container--recording [data-test-record-stop]")
+      .exists();
     assert
       .dom("[data-test-activity-row]:first-child td:nth-child(2) div")
       .containsText(task.name);
@@ -83,7 +85,9 @@ module("Acceptance | index", function (hooks) {
 
     await visit("/");
 
-    assert.dom(".recording [data-test-record-stop]").exists();
+    assert
+      .dom(".record-button-container--recording [data-test-record-stop]")
+      .exists();
     assert.dom("[data-test-record-stop]").exists({ count: 1 });
     assert.dom("[data-test-tracking-comment] input").hasValue(activity.comment);
 
@@ -91,7 +95,9 @@ module("Acceptance | index", function (hooks) {
 
     assert.dom("[data-test-record-start]").exists({ count: 1 });
     assert.dom("[data-test-record-stop]").doesNotExist();
-    assert.dom(".recording [data-test-record-start]").doesNotExist();
+    assert
+      .dom(".record-button-container--recording [data-test-record-start]")
+      .doesNotExist();
     assert.dom("[data-test-tracking-comment] input").hasNoValue();
   });
 

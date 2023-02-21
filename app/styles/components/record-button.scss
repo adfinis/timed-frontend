@@ -5,63 +5,60 @@
   background: rgb(80, 80, 80);
   border-radius: 1.5rem;
   height: 3rem;
-  width:  3rem;
+  width: 3rem;
+  margin: 0 auto;
   transition: width 300ms ease;
   font-family: $font-family-mono;
   font-size: 14px;
 
+  &--recording {
+    width: 10rem;
+  }
 
-  .record-button-container--start-stop {
-  width: 9.5rem;
-}
+  .record-button {
+    position: absolute;
+    top: 0.4rem;
+    left: 0.4rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    padding: 0;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    background: radial-gradient(
+      circle at center,
+      rgb(240, 240, 240) 50%,
+      rgb(180, 180, 180) 80%
+    );
+    z-index: 2;
+
+    svg {
+      vertical-align: middle;
+    }
+
+    &--start,
+    &--stop {
+      color: $color-danger;
+    }
+  }
 
   .record-button-timer {
-    opacity: 1;
-    pointer-events: all;
-    transition: opacity 100ms ease 200ms;
+    position: absolute;
+    right: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: white;
+    overflow: hidden;
+    pointer-events: none;
+    text-align: right;
   }
 }
 
-.record-button {
-  position: absolute;
-  top: 0.4rem;
-  left: 0.4rem;
-  width:  2.2rem;
-  height: 2.2rem;
-  padding: 0;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background: radial-gradient(
-    circle at center,
-    rgb(240, 240, 240) 50%,
-    rgb(180, 180, 180) 80%
-  );
-  z-index: 2;
-
-  svg {
-    vertical-align: middle;
+@media #{$md-viewport} {
+  .record-button-container--recording {
+    width: 9rem;
   }
 }
-
-.record-button--start,
-.record-button--stop {
-  color: $color-danger;
-}
-
-.record-button-timer {
-  position: absolute;
-  right: 0.8rem;
-  top: 50%;
-  transform: translateY(-50%);
-  color: rgb(255, 255, 255);
-  overflow: hidden;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 200ms ease;
-  text-align: right;
-}
-
 
 @media #{$lg-viewport} {
   .record-button-container {
@@ -69,19 +66,15 @@
     height: 2rem;
     width: 2rem;
 
-    &.recording {
-      width: 7rem;
+    &--recording {
+      width: 7.5rem;
     }
 
-    .record-button-container--start-stop {
-      width: 7rem;
+    .record-button {
+      height: 1.6rem;
+      width: 1.6rem;
+      top: 0.2rem;
+      left: 0.2rem;
     }
-  }
-
-  .record-button {
-    height: 1.6rem;
-    width: 1.6rem;
-    top: 0.2rem;
-    left: 0.2rem;
   }
 }

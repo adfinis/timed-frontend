@@ -1,6 +1,6 @@
 <div
-  class="record-button-container record-button-container--start-stop
-    {{if this.active 'recording'}}"
+  class="record-button-container
+    {{if this.active 'record-button-container--recording'}}"
 >
   {{#if this.active}}
     <button
@@ -21,7 +21,7 @@
       class="record-button record-button--start"
       {{on "click" (prevent-default (optional @onStart))}}
     >
-      <FaIcon @icon="play" @prefix="fas" />
+      <FaIcon @icon="play" @prefix="fas" @transform="right-1" />
     </button>
   {{/if}}
 </div>
