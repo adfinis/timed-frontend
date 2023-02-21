@@ -3,9 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import Model, { attr, belongsTo } from "@ember-data/model";
 import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
+import Model, { attr, belongsTo } from "@ember-data/model";
 import moment from "moment";
 import { all } from "rsvp";
 

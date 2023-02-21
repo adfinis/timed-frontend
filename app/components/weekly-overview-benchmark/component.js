@@ -3,9 +3,9 @@
  * @submodule timed-components
  * @public
  */
-import { classNameBindings } from "@ember-decorators/component";
 import Component from "@ember/component";
 import { htmlSafe } from "@ember/string";
+import { classNameBindings } from "@ember-decorators/component";
 import { tracked } from "@glimmer/tracking";
 import classic from "ember-classic-decorator";
 

@@ -1,9 +1,9 @@
+import Component from "@ember/component";
 import {
   classNames,
   attributeBindings,
   tagName,
 } from "@ember-decorators/component";
-import Component from "@ember/component";
 import classic from "ember-classic-decorator";
 
 @classic

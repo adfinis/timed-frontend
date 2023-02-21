@@ -3,8 +3,8 @@
  * @submodule timed-models
  * @public
  */
-import Model, { attr, hasMany } from "@ember-data/model";
 import { reads } from "@ember/object/computed";
+import Model, { attr, hasMany } from "@ember-data/model";
 
 /**
  * The customer model

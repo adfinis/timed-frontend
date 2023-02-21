@@ -1,4 +1,3 @@
-import { attributeBindings } from "@ember-decorators/component";
 import Component from "@ember/component";
 import { computed } from "@ember/object";
 /**
@@ -7,6 +6,7 @@ import { computed } from "@ember/object";
  * @public
  */
 import { htmlSafe } from "@ember/string";
+import { attributeBindings } from "@ember-decorators/component";
 import { tracked } from "@glimmer/tracking";
 import classic from "ember-classic-decorator";
 
