@@ -30,6 +30,7 @@ class ProjectFilterSet(FilterSet):
     archived = NumberFilter(field_name="archived")
     has_manager = NumberFilter(method="filter_has_manager")
     has_reviewer = NumberFilter(method="filter_has_reviewer")
+    customer = NumberInFilter(field_name="customer")
 
     def filter_has_manager(self, queryset, name, value):
         if not value:  # pragma: no cover
@@ -115,6 +116,7 @@ class TaskFilterSet(FilterSet):
 
     my_most_frequent = MyMostFrequentTaskFilter()
     archived = NumberFilter(field_name="archived")
+    project = NumberInFilter(field_name="project")
 
     class Meta:
         """Meta information for the task filter set."""
