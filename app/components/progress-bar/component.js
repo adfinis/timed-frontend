@@ -1,10 +1,10 @@
+import Component from "@ember/component";
 import {
   classNames,
   attributeBindings,
   classNameBindings,
   tagName,
 } from "@ember-decorators/component";
-import Component from "@ember/component";
 import { tracked } from "@glimmer/tracking";
 import classic from "ember-classic-decorator";
 

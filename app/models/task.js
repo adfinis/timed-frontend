@@ -3,8 +3,8 @@
  * @submodule timed-models
  * @public
  */
-import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 import { get } from "@ember/object";
+import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 
 /**
  * The task model

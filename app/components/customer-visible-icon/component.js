@@ -1,5 +1,5 @@
-import { attributeBindings } from "@ember-decorators/component";
 import Component from "@ember/component";
+import { attributeBindings } from "@ember-decorators/component";
 import classic from "ember-classic-decorator";
 
 @classic

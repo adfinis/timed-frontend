@@ -3,13 +3,13 @@
  * @submodule timed-components
  * @public
  */
+import Component from "@ember/component";
+import { computed } from "@ember/object";
+import { htmlSafe } from "@ember/string";
 import {
   attributeBindings,
   classNameBindings,
 } from "@ember-decorators/component";
-import Component from "@ember/component";
-import { computed } from "@ember/object";
-import { htmlSafe } from "@ember/string";
 import { tracked } from "@glimmer/tracking";
 import classic from "ember-classic-decorator";
 

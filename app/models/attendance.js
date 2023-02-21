@@ -3,8 +3,8 @@
  * @submodule timed-models
  * @public
  */
-import Model, { attr, belongsTo } from "@ember-data/model";
 import { computed } from "@ember/object";
+import Model, { attr, belongsTo } from "@ember-data/model";
 import moment from "moment";
 
 /**
