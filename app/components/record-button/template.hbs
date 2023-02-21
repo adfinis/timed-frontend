@@ -1,4 +1,7 @@
-<div class="record-button-container {{if this.active 'recording'}}">
+<div
+  class="record-button-container
+    {{if this.active 'record-button-container--recording'}}"
+>
   {{#if this.active}}
     <button
       data-test-record-stop
