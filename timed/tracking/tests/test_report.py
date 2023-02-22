@@ -1810,6 +1810,38 @@ def test_report_automatic_unreject(internal_employee_client, report_factory, tas
     assert not report.rejected
 
 
+def test_report_bulk_automatic_unreject(
+    internal_employee_client, user_factory, report_factory, task
+):
+    reviewer = internal_employee_client.user
+
+    user = user_factory.create()
+
+    report = report_factory.create(user=user, rejected=True)
+    ProjectAssigneeFactory.create(
+        user=reviewer, project=report.task.project, is_reviewer=True
+    )
+
+    url = reverse("report-bulk")
+
+    data = {
+        "data": {
+            "type": "report-bulks",
+            "id": None,
+            "relationships": {
+                "task": {"data": {"type": "tasks", "id": task.id}},
+            },
+        }
+    }
+
+    query_params = f"?editable=1&reviewer={reviewer.id}&id={report.id}"
+    response = internal_employee_client.post(url + query_params, data)
+    assert response.status_code == status.HTTP_204_NO_CONTENT
+
+    report.refresh_from_db()
+    assert not report.rejected
+
+
 @pytest.mark.parametrize(
     "is_external, remaining_effort_active, is_superuser, expected",
     [
