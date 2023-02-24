@@ -263,16 +263,18 @@ class ReportViewSet(ModelViewSet):
             )
 
         if "task" in fields:
+            # unreject report if task has changed
+            fields["rejected"] = False
             if fields["task"].project.billed:
                 fields["billed"] = fields["task"].project.billed
 
         if fields:
-            if "rejected" in fields:
+            # send notification if report was rejected
+            if fields.get("rejected"):
                 tasks.notify_user_rejected_reports(queryset, fields, user)
-                queryset.update(**fields)
             else:
                 tasks.notify_user_changed_reports(queryset, fields, user)
-                queryset.update(**fields)
+            queryset.update(**fields)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
