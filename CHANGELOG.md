@@ -1,3 +1,37 @@
+# v3.0.0
+
+### Feature
+* **filters:** Add number multi value filter ([`4688e41`](https://github.com/adfinis/timed-backend/commit/4688e41da5300d789ed50bdd6af34d7d481767c8))
+* **redmine:** Add pretend mode to redmine commands ([`abc5083`](https://github.com/adfinis/timed-backend/commit/abc50834feb3f84d3018abaa31073ab68e79dd76))
+* **notifications:** Project budget check notifications ([`b81e28e`](https://github.com/adfinis/timed-backend/commit/b81e28e9d0b8386e54caf57b90960e392d5811c0))
+* **statistics:** Show amount offered and invoiced in project statistics ([`144444b`](https://github.com/adfinis/timed-backend/commit/144444b298f2139f44a8ca291ca34ccfb3f66899))
+* **redmine:** Import project expenditure from redmine ([`766f79b`](https://github.com/adfinis/timed-backend/commit/766f79bc17ce927a05217e9bacc18c478404e6f6))
+* **redmine:** Update expenditures on redmine projects ([`0aa9da6`](https://github.com/adfinis/timed-backend/commit/0aa9da69e8432a4d9537b65dd935bebe23fd4c72))
+* **filters:** Allow filtering of tasks and reports in statistics ([`b5b9c8d`](https://github.com/adfinis/timed-backend/commit/b5b9c8d633a4d6fc8633594349feec7ee59fb8d0))
+* **employment:** Add is_external filter for user endpoint ([`8a1b272`](https://github.com/adfinis/timed-backend/commit/8a1b2723147c9775cb06abd090ec307610a2d254))
+* **admin:** Add searchable dropdowns for user lists in admin ([`4c01054`](https://github.com/adfinis/timed-backend/commit/4c010542ce3b3544c3e87f1dd2ca7ff8ec4df245))
+* Track remaining effort on tasks ([`3d045f2`](https://github.com/adfinis/timed-backend/commit/3d045f21ed7fd2147b49c6190dc3e1474c69decb))
+* **tracking:** Reject reports ([`a4e8983`](https://github.com/adfinis/timed-backend/commit/a4e8983265d0b87101a6151982fbb8a802e4cd9a))
+
+### Fix
+* **tracking:** Fix automatic unreject when bulk updating ([`f110eb0`](https://github.com/adfinis/timed-backend/commit/f110eb0ea864a7115f7ed1d24e868aafb6c038f2))
+* **tracking:** Fix remaining effort on report creation ([`abceb32`](https://github.com/adfinis/timed-backend/commit/abceb322e042df5c34b04e685c331527848c898f))
+* **tracking:** Fix setting of remaining effort ([`16f1dbb`](https://github.com/adfinis/timed-backend/commit/16f1dbb54f625a8468fd33066a685ac1cfae7fec))
+* **notifications:** Omit projects with no reports ([`91a6dd5`](https://github.com/adfinis/timed-backend/commit/91a6dd5ec2d128d6df3994c78eebbb295ec9a2f5))
+* **tracking:** Allow null values on remaining effort for reports ([`08a5aa4`](https://github.com/adfinis/timed-backend/commit/08a5aa429eac6d25cec0699a42919ee8f959ed12))
+* **tracking:** Fix  absence for users with multiple employments ([`d884ef6`](https://github.com/adfinis/timed-backend/commit/d884ef6a4463e5095fcecc6cd999aa6b595f5530))
+* Add missing rejected field to ReportIntersectionSerializer ([`ee8f79a`](https://github.com/adfinis/timed-backend/commit/ee8f79a1a724763bdd51222010f47ec40ef71622))
+* **auth:** Let failing auth requests return 401 ([`8454601`](https://github.com/adfinis/timed-backend/commit/8454601019f33272a39814ac8e3fe033c758e7e7))
+* **dev:** Remove deprecated flag from pre-commit isort ([`50e5da2`](https://github.com/adfinis/timed-backend/commit/50e5da2ad5ef12098e0128ba907ac40ac2fa1773))
+* **tracking:** Fix remaining effort check when creating report ([`fc7c92c`](https://github.com/adfinis/timed-backend/commit/fc7c92cf0f3cb937100616abb24bd06804408a51))
+* **statistics:** Add missing fields for project and task statistics ([`89fb718`](https://github.com/adfinis/timed-backend/commit/89fb718901f41914323a60d99a2983ba0454daa0))
+* **reports:** Fix project and customer statistics ([`a3ab8ac`](https://github.com/adfinis/timed-backend/commit/a3ab8acb5be4107ea7f4f6677cdbdb57dd0b95c2))
+* **projects:** Ignore signal when loading a fixture ([`21e5dd7`](https://github.com/adfinis/timed-backend/commit/21e5dd7861a52793cf4b40e94c04de78a64ca3ec))
+* **container:** Executable bit for cmd.sh ([`34f2751`](https://github.com/adfinis/timed-backend/commit/34f27517c896577ddca3e1355cdc3ba5b8233d29))
+* **filters:** Allow Q filtering for MultiQS querysets ([`b629c9d`](https://github.com/adfinis/timed-backend/commit/b629c9d97cec7d4779baaa94f6eb628b394a3c53))
+* **reports:** Refactor statistics ([`21d3677`](https://github.com/adfinis/timed-backend/commit/21d36774816467977f6a45bab0641d7abf4d6ec5))
+
+
 # v2.0.0
 
 ### Breaking
