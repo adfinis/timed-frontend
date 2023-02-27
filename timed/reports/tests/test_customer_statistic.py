@@ -10,6 +10,7 @@ from timed.projects.factories import CostCenterFactory, TaskAssigneeFactory, Tas
 from timed.tracking.factories import ReportFactory
 
 
+@pytest.mark.xfail(reason="Endpoint disabled")
 @pytest.mark.parametrize(
     "is_employed, is_customer_assignee, is_customer, expected, status_code",
     [
@@ -71,6 +72,7 @@ def test_customer_statistic_list(
         assert json["meta"]["total-time"] == "07:00:00"
 
 
+@pytest.mark.xfail(reason="Endpoint disabled")
 @pytest.mark.parametrize(
     "filter, expected_result",
     [("from_date", 5), ("customer", 3), ("cost_center", 3), ("reviewer", 3)],
@@ -114,6 +116,7 @@ def test_customer_statistic_filtered(auth_client, filter, expected_result):
     assert json["meta"]["total-time"] == f"{expected_result:02}:00:00"
 
 
+@pytest.mark.xfail(reason="Endpoint disabled")
 @pytest.mark.parametrize(
     "is_employed, expected, status_code",
     [
