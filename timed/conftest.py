@@ -148,11 +148,21 @@ def _autoclear_cache():
 def setup_customer_and_employment_status(
     user, is_assignee, is_customer, is_employed, is_external
 ):
+    """
+    Set up customer and employment status.
+
+    Return a 2-tuple of assignee and employment, if they
+    were created
+    """
+    assignee = None
+    employment = None
     if is_assignee:
-        projects_factories.CustomerAssigneeFactory.create(
+        assignee = projects_factories.CustomerAssigneeFactory.create(
             user=user, is_customer=is_customer
         )
     if is_employed:
-        employment_factories.EmploymentFactory.create(
+
+        employment = employment_factories.EmploymentFactory.create(
             user=user, is_external=is_external
         )
+    return assignee, employment

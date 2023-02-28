@@ -130,7 +130,7 @@ def test_project_statistic_filtered(auth_client, filter, expected_result):
     filter_values = {
         "from_date": "2022-08-20",  # last two reports
         "customer": str(task_test.project.customer.pk),  # first two
-        "cost_center": str(cost_center.pk),  # first two
+        "cost_center": str(cost_center.pk),  # last one
         "reviewer": str(reviewer.user.pk),  # first two
     }
     the_filter = {filter: filter_values[filter]}

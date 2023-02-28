@@ -29,14 +29,21 @@ def test_customer_statistic_list(
     status_code,
     django_assert_num_queries,
 ):
+
     user = auth_client.user
-    setup_customer_and_employment_status(
+
+    assignee, employment = setup_customer_and_employment_status(
         user=user,
         is_assignee=is_customer_assignee,
         is_customer=is_customer,
         is_employed=is_employed,
         is_external=False,
     )
+
+    # Statistics returns all the customers, not only those
+    # with reports. So we must get this one into the expected
+    # list as well
+    third_customer = assignee.customer if assignee else None
 
     report = ReportFactory.create(duration=timedelta(hours=1))
     ReportFactory.create(duration=timedelta(hours=2), task=report.task)
@@ -67,6 +74,17 @@ def test_customer_statistic_list(
                 },
             },
         ]
+        if third_customer:
+            expected_data.append(
+                {
+                    "type": "customer-statistics",
+                    "id": str(third_customer.pk),
+                    "attributes": {
+                        "duration": None,
+                        "name": third_customer.name,
+                    },
+                }
+            )
         assert json["data"] == expected_data
         assert json["meta"]["total-time"] == "07:00:00"
 
