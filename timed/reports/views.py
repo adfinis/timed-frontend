@@ -144,7 +144,12 @@ class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     serializer_class = serializers.CustomerStatisticSerializer
     filterset_class = filters.CustomerStatisticFilterSet
-    ordering_fields = ("name", "duration")
+    ordering_fields = [
+        "name",
+        "duration",
+        "estimated_time",
+        "remaining_effort",
+    ]
     ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
@@ -161,7 +166,12 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     serializer_class = serializers.ProjectStatisticSerializer
     filterset_class = filters.ProjectStatisticFilterSet
-    ordering_fields = ("name", "duration")
+    ordering_fields = [
+        "name",
+        "duration",
+        "estimated_time",
+        "remaining_effort",
+    ]
     ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
@@ -178,7 +188,12 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
 
     serializer_class = serializers.TaskStatisticSerializer
     filterset_class = filters.TaskStatisticFilterSet
-    ordering_fields = ("name", "duration")
+    ordering_fields = [
+        "name",
+        "duration",
+        "estimated_time",
+        "remaining_effort",
+    ]
     ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
