@@ -1,3 +1,16 @@
+# v3.0.1
+
+### Feature
+* Empty sums in correcr ordering ([`757de4e`](https://github.com/adfinis/timed-backend/commit/757de4e263cd42bb8521bccdd51dc6bf2207e761))
+* **statistics:** Support ordering in new queryset wrapper ([`fb5a2dc`](https://github.com/adfinis/timed-backend/commit/fb5a2dc6480936004d90c067161905196aad58e0))
+
+### Fix
+* **tracking:** Fix report update notifactions ([`8d0d0fd`](https://github.com/adfinis/timed-backend/commit/8d0d0fd62896652a15ed00b840090cccdc4eaac8))
+* **tests:** Customer statistic test had a missing customer ([`c99b512`](https://github.com/adfinis/timed-backend/commit/c99b5120fce4f3dc8bddf21346eb46bb8ba72239))
+* **pytest:** Ignore "invalid escape sequence" deprecation warning ([`4e08672`](https://github.com/adfinis/timed-backend/commit/4e086727a1e69e658e5c044930ce1248aa9c1435))
+* **statistics:** Refactor multiqs to use filtering aggregates ([`345b8df`](https://github.com/adfinis/timed-backend/commit/345b8df559593b03f69dcc1b81c590a4277d8fda))
+* **makefile:** Use aliases for debug backend ([`9c47123`](https://github.com/adfinis/timed-backend/commit/9c47123af4cab3ab2095b9ff1b0e63ca973ee6ac))
+
 # v3.0.0
 
 ### Feature
