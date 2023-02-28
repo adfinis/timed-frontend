@@ -11,6 +11,7 @@
         class="header-item"
         @options={{this.customers}}
         @placeholder="Select customer..."
+        @searchEnabled={{true}}
         @searchField="name"
         @onChange={{this.handleCustomerChange}}
         @selected={{this.selectedCustomer}}
@@ -25,6 +26,7 @@
         class="header-item"
         @options={{this.filteredProjects}}
         placeholder="Select project..."
+        @searchEnabled={{true}}
         @searchField="name"
         @onChange={{this.handleProjectChange}}
         @selected={{this.selectedProject}}

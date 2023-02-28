@@ -118,11 +118,16 @@ export default class ProjectsController extends Controller {
 
   @action
   handleCustomerChange(customer) {
-    this.selectedCustomer = customer;
+    // If customer is null, we return a Promise. EPS has a bug, where promise
+    // based selections can not get reset with a non-promise value.
+    // See: https://github.com/cibernox/ember-power-select/issues/1467
+    this.selectedCustomer = customer ?? Promise.resolve();
     this.selectedProject = null;
     this.selectedTask = null;
 
-    this.filterProjects.perform();
+    if (this.selectedCustomer !== null) {
+      this.filterProjects.perform();
+    }
   }
 
   @action
