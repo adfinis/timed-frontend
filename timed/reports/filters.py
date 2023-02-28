@@ -1,4 +1,5 @@
-from django.db.models import F, Q, Sum
+from django.db.models import DurationField, F, Q, Sum, Value
+from django.db.models.functions import Coalesce
 from django_filters.rest_framework import (
     BaseInFilter,
     DateFilter,
@@ -82,7 +83,11 @@ class StatisticFiltersetBase:
         duration_ref = self._refs["reports_ref"] + "__duration"
 
         full_qs = qs._base.annotate(
-            duration=Sum(duration_ref, filter=qs._agg_filters), pk=F("id")
+            duration=Coalesce(
+                Sum(duration_ref, filter=qs._agg_filters),
+                Value("00:00:00", DurationField(null=False)),
+            ),
+            pk=F("id"),
         )
         result = full_qs.values()
         # Useful for QS debugging
