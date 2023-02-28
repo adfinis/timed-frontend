@@ -173,7 +173,7 @@ class ReportViewSet(ModelViewSet):
         }
         if fields and request.user != instance.user:
             tasks.notify_user_changed_report(instance, fields, request.user)
-        if "rejected" in fields:
+        if fields.get("rejected"):
             tasks.notify_user_rejected_report(instance, request.user)
 
         return super().update(request, *args, **kwargs)
