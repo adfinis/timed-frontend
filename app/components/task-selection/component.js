@@ -204,13 +204,11 @@ export default class TaskSelectionComponent extends Component {
 
     const customers = this.store
       .peekAll("customer")
-      .filter((customer) => {
-        return this.archived ? true : !customer.archived;
-      })
+      ?.filter(this.filterByArchived)
       .sortBy("name");
 
     const tasks = this.store.peekAll("task").filter((task) => {
-      return ids.includes(task.id) && (this.archived ? true : !task.archived);
+      return ids.includes(task.id) && this.filterByArchived(task);
     });
 
     return [...tasks.toArray(), ...customers.toArray()];
@@ -224,6 +222,22 @@ export default class TaskSelectionComponent extends Component {
 
   get customersAndRecentTasks() {
     return this._customersAndRecentTasks.value ?? [];
+  }
+
+  get projects() {
+    return this.customer?.projects
+      ?.filter(this.filterByArchived)
+      .sortBy("name");
+  }
+
+  get tasks() {
+    return this.project?.tasks?.filter(this.filterByArchived).sortBy("name");
+  }
+
+  @action
+  filterByArchived(filterable) {
+    //using the action decorator to bind the context for this
+    return this.archived ? true : !filterable?.archived;
   }
 
   /**
