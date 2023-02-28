@@ -1,32 +1,59 @@
-name: Release npm package
+name: Release
 
-on: workflow_dispatch
+on:
+  workflow_dispatch:
+    inputs:
+      prerelease:
+        type: boolean
+        description: Prelease (beta)
 
 jobs:
   release:
     name: Release
     runs-on: ubuntu-latest
+
+    if: github.event.ref == 'refs/heads/beta' || github.event.ref == 'refs/heads/master'
+
     steps:
       - uses: actions/checkout@v3
         with:
+          ref: ${{ github.event.ref }}
           fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
           persist-credentials: false
+      - uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+          cache: "pnpm"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2.2.4
         with:
           version: ^7.17.1
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "16"
-          cache: "pnpm"
-
       - name: Install dependencies
         run: pnpm install
 
-      - name: Release on NPM
-        run: pnpm semantic-release
+      - name: Configure git
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Configure pnpm
+        run: |
+          pnpm config set registry https://registry.npmjs.org
+          pnpm config set //registry.npmjs.org/:_authToken=${NPM_TOKEN}
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Release package (beta)
+        if: ${{ github.event.inputs.prerelease == 'true' }}
+        run: pnpm run release -- --ci --preRelease=beta
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Release package
+        if: ${{ github.event.inputs.prerelease == 'false' }}
+        run: pnpm run release -- --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -21,7 +21,8 @@
     "preinstall": "npx only-allow pnpm",
     "start": "ember server --proxy http://localhost:8000",
     "test": "npm-run-all test:*",
-    "test:ember": "ember test"
+    "test:ember": "ember test",
+    "release": "release-it"
   },
   "commitlint": {
     "extends": [
@@ -56,6 +57,7 @@
     "@glimmer/component": "1.1.2",
     "@glimmer/tracking": "1.1.2",
     "@html-next/vertical-collection": "4.0.2",
+    "@release-it/conventional-changelog": "^5.1.1",
     "babel-eslint": "10.1.0",
     "broccoli-asset-rev": "3.0.0",
     "downloadjs": "1.4.7",
@@ -136,6 +138,7 @@
     "prettier": "2.8.4",
     "qunit": "2.19.4",
     "qunit-dom": "2.0.0",
+    "release-it": "^15.6.0",
     "sass": "1.58.3",
     "tracked-built-ins": "3.1.1",
     "tracked-toolbox": "2.0.0",
@@ -157,6 +160,28 @@
         "@glint/template",
         "@types/node"
       ]
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "release-it": {
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "conventionalcommits"
+      }
+    },
+    "npm": false,
+    "git": {
+      "requireBranch": "master",
+      "tagName": "v${version}",
+      "commitMessage": "chore(release): v${version}",
+      "tagAnnotation": "Release v${version}"
+    },
+    "github": {
+      "release": true,
+      "releaseName": "v${version}"
     }
   }
 }
