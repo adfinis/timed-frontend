@@ -46,7 +46,7 @@ migrate: ## Migrate django
 
 .PHONY: debug-backend
 debug-backend: ## Start backend container with service ports for debugging
-	@docker-compose run --service-ports backend
+	@docker-compose run --use-aliases --service-ports backend
 
 .PHONY: flush
 flush: ## Flush database contents

@@ -21,7 +21,7 @@ services:
       - timed.local
 
   frontend:
-    image: adfinissygroup/timed-frontend:latest
+    image: ghcr.io/adfinis/timed-frontend:latest
     ports:
       - 4200:80
     environment:

@@ -5,7 +5,7 @@ from io import BytesIO
 from zipfile import ZipFile
 
 from django.conf import settings
-from django.db.models import DurationField, F, OuterRef, QuerySet, Subquery, Sum
+from django.db.models import F, Q, QuerySet, Sum
 from django.db.models.functions import ExtractMonth, ExtractYear
 from django.http import HttpResponse
 from ezodf import Cell, opendoc
@@ -17,10 +17,11 @@ from timed.mixins import AggregateQuerysetMixin
 from timed.permissions import IsAuthenticated, IsInternal, IsSuperUser
 from timed.projects.models import Customer, Project, Task
 from timed.reports import serializers
-from timed.reports.filters import TaskStatisticFilterSet
 from timed.tracking.filters import ReportFilterSet
 from timed.tracking.models import Report
 from timed.tracking.views import ReportViewSet
+
+from . import filters
 
 
 class YearStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
@@ -70,12 +71,85 @@ class MonthStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
         return queryset
 
 
+class StatisticQueryset(QuerySet):
+    def __init__(self, catch_prefixes, *args, base_qs=None, agg_filters=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if base_qs is None:
+            base_qs = self.model.objects.all()
+        self._base = base_qs
+        self._agg_filters = agg_filters
+        self._catch_prefixes = catch_prefixes
+
+    def filter(self, *args, **kwargs):
+
+        if args:  # pragma: no cover
+            # This is a check against programming errors, no need to test
+            raise RuntimeError(
+                "Unable to detect statistics filter type form Q objects. use "
+                "filter_aggregate() or filter_base() instead"
+            )
+        my_filters = {
+            k: v for k, v in kwargs.items() if not k.startswith(self._catch_prefixes)
+        }
+
+        agg_filters = {
+            k: v for k, v in kwargs.items() if k.startswith(self._catch_prefixes)
+        }
+
+        new_qs = self
+        if my_filters:
+            new_qs = self.filter_base(**my_filters)
+        if agg_filters:
+            new_qs = new_qs.filter_aggregate(**agg_filters)
+
+        return new_qs
+
+    def filter_base(self, *args, **kwargs):
+        return StatisticQueryset(
+            model=self.model,
+            base_qs=self._base.filter(*args, **kwargs),
+            catch_prefixes=self._catch_prefixes,
+            agg_filters=self._agg_filters,
+        )
+
+    def _clone(self):
+        return StatisticQueryset(
+            model=self.model,
+            base_qs=self._base._clone(),
+            catch_prefixes=self._catch_prefixes,
+            agg_filters=self._agg_filters,
+        )
+
+    def __str__(self):
+        return f"StatisticQueryset({str(self._base)} | {str(self._agg_filters)})"
+
+    def __repr__(self):
+        return f"StatisticQueryset({repr(self._base)} | {repr(self._agg_filters)})"
+
+    def filter_aggregate(self, *args, **kwargs):
+        filter_q = Q(*args, **kwargs)
+
+        new_filters = self._agg_filters & filter_q if self._agg_filters else filter_q
+
+        return StatisticQueryset(
+            model=self.model,
+            base_qs=self._base,
+            catch_prefixes=self._catch_prefixes,
+            agg_filters=new_filters,
+        )
+
+
 class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Customer statistics calculates total reported time per customer."""
 
     serializer_class = serializers.CustomerStatisticSerializer
-    filterset_class = TaskStatisticFilterSet
-    ordering_fields = ("name", "duration")
+    filterset_class = filters.CustomerStatisticFilterSet
+    ordering_fields = [
+        "name",
+        "duration",
+        "estimated_time",
+        "remaining_effort",
+    ]
     ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
@@ -84,22 +158,20 @@ class CustomerStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self):
-        queryset = MultiQS(
-            start=Customer,
-            annotations={
-                "customer_id": F("pk"),
-                "name": F("name"),
-            },
-        )
-        return queryset
+        return StatisticQueryset(model=Customer, catch_prefixes="projects__")
 
 
 class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Project statistics calculates total reported time per project."""
 
     serializer_class = serializers.ProjectStatisticSerializer
-    filterset_class = TaskStatisticFilterSet
-    ordering_fields = ("name", "duration")
+    filterset_class = filters.ProjectStatisticFilterSet
+    ordering_fields = [
+        "name",
+        "duration",
+        "estimated_time",
+        "remaining_effort",
+    ]
     ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
@@ -108,28 +180,20 @@ class ProjectStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self):
-        queryset = MultiQS(
-            start=Project,
-            annotations={
-                "name": F("name"),
-                "amount_offered": F("amount_offered"),
-                "amount_offered_currency": F("amount_offered_currency"),
-                "amount_invoiced": F("amount_invoiced"),
-                "amount_invoiced_currency": F("amount_invoiced_currency"),
-                "customer": F("customer"),
-                "estimated_time": F("estimated_time"),
-                "total_remaining_effort": F("total_remaining_effort"),
-            },
-        )
-        return queryset
+        return StatisticQueryset(model=Project, catch_prefixes="tasks__")
 
 
 class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     """Task statistics calculates total reported time per task."""
 
     serializer_class = serializers.TaskStatisticSerializer
-    filterset_class = TaskStatisticFilterSet
-    ordering_fields = ("name", "duration")
+    filterset_class = filters.TaskStatisticFilterSet
+    ordering_fields = [
+        "name",
+        "duration",
+        "estimated_time",
+        "remaining_effort",
+    ]
     ordering = ("name",)
     permission_classes = [
         # internal employees or super users may read all customer statistics
@@ -138,107 +202,7 @@ class TaskStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):
     ]
 
     def get_queryset(self):
-        queryset = MultiQS(
-            start=Task,
-            annotations={
-                "name": F("name"),
-                "project": F("project"),
-                "estimated_time": F("estimated_time"),
-                "most_recent_remaining_effort": F("most_recent_remaining_effort"),
-            },
-        )
-        return queryset
-
-
-class MultiQS(QuerySet):
-    def __init__(self, start, annotations):
-        self.model = Task  # just to make filterset happy
-
-        self._start = start
-
-        self._tasks = Task.objects.all()
-        self._reports = Report.objects.all()
-
-        self._annotations = annotations
-
-    def _clone(self):
-        new_self = MultiQS(
-            start=self._start,
-            annotations=self._annotations,
-        )
-        new_self._tasks = self._tasks
-        new_self._reports = self._reports
-
-        return new_self
-
-    def _validate_q(self, q_object):
-        if isinstance(q_object, tuple):
-            assert not q_object[0].startswith(
-                "reports__"
-            ), "Filtering of reports not possible"
-        else:
-            for child in q_object.children:
-                self._validate_q(child)
-
-    def _apply(self, method, *args, **kwargs):
-        for arg in args:
-            self._validate_q(arg)
-
-        new_self = self._clone()
-        task_filters = {}
-        report_filters = {}
-        for kw, val in kwargs.items():
-            if kw.startswith("reports__"):
-                kw = kw.replace("reports__", "")
-                report_filters[kw] = val
-            else:
-                task_filters[kw] = val
-
-        if report_filters:
-            new_self._reports = getattr(new_self._reports, method)(**report_filters)
-        if task_filters:
-            new_self._tasks = getattr(new_self._tasks, method)(**task_filters)
-        if args:
-            new_self._tasks = getattr(new_self._tasks, method)(*args)
-        return new_self
-
-    def filter(self, *args, **kwargs):
-        return self._apply("filter", *args, **kwargs)
-
-    def exclude(self, *args, **kwargs):  # pragma: no cover
-        return self._apply("exclude", *args, **kwargs)
-
-    def all(self):
-        return self._clone()
-
-    def _finalize(self):
-        task_lookup = {
-            "Customer": "projects__tasks__id__in",
-            "Project": "tasks__id__in",
-            "Task": "pk__in",
-        }
-        base_qs = self._start.objects.all().values("pk")
-        task_lookup = task_lookup[self._start.__name__]
-
-        back_ref_lookups = {
-            "Customer": "task__project__customer_id",
-            "Project": "task__project_id",
-            "Task": "task_id",
-        }
-        back_ref = back_ref_lookups[self._start.__name__]
-
-        base_qs = base_qs.filter(**{task_lookup: self._tasks.values("pk")})
-
-        report_qs = (
-            self._reports.values(back_ref)
-            .annotate(report_duration=Sum("duration", output_field=DurationField()))
-            .filter(**{back_ref: OuterRef("pk")})
-            .values("report_duration")
-        )
-        queryset = base_qs.annotate(
-            duration=Subquery(report_qs), **self._annotations
-        ).distinct()
-        return queryset
+        return StatisticQueryset(model=Task, catch_prefixes="tasks__")
 
 
 class UserStatisticViewSet(AggregateQuerysetMixin, ReadOnlyModelViewSet):

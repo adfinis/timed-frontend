@@ -76,7 +76,7 @@ class AggregateQuerysetMixin(object):
                 **{
                     **entry,
                     **{
-                        field: objects[entry[field]]
+                        field: objects[entry.get(field) or entry.get(f"{field}_id")]
                         for field, objects in prefetch_per_field.items()
                     },
                 }
