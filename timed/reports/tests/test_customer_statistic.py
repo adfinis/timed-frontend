@@ -75,16 +75,16 @@ def test_customer_statistic_list(
             },
         ]
         if third_customer:
-            expected_data.append(
+            expected_data = [
                 {
                     "type": "customer-statistics",
                     "id": str(third_customer.pk),
                     "attributes": {
-                        "duration": None,
+                        "duration": "00:00:00",
                         "name": third_customer.name,
                     },
                 }
-            )
+            ] + expected_data
         assert json["data"] == expected_data
         assert json["meta"]["total-time"] == "07:00:00"
 
