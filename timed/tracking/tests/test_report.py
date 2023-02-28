@@ -718,7 +718,9 @@ def test_report_update_verified_as_non_staff_but_owner(
     assert response.status_code == status.HTTP_403_FORBIDDEN
 
 
-def test_report_update_owner(internal_employee_client, report_factory, task_factory):
+def test_report_update_owner(
+    internal_employee_client, report_factory, task_factory, mailoutbox
+):
     """Should update an existing report."""
     user = internal_employee_client.user
     report = report_factory.create(user=user)
@@ -731,6 +733,7 @@ def test_report_update_owner(internal_employee_client, report_factory, task_fact
             "attributes": {
                 "comment": "foobar",
                 "duration": "01:00:00",
+                "rejected": False,
                 "date": "2017-02-04",
             },
             "relationships": {"task": {"data": {"type": "tasks", "id": task.id}}},
@@ -753,6 +756,7 @@ def test_report_update_owner(internal_employee_client, report_factory, task_fact
     assert json["data"]["relationships"]["task"]["data"]["id"] == str(
         data["data"]["relationships"]["task"]["data"]["id"]
     )
+    assert len(mailoutbox) == 0
 
 
 def test_report_update_date_reviewer(
@@ -874,6 +878,7 @@ def test_report_set_verified_by_user(
 def test_report_update_reviewer(
     internal_employee_client,
     report_factory,
+    mailoutbox,
 ):
     user = internal_employee_client.user
     report = report_factory.create(user=user)
@@ -885,7 +890,7 @@ def test_report_update_reviewer(
         "data": {
             "type": "reports",
             "id": report.id,
-            "attributes": {"comment": "foobar"},
+            "attributes": {"comment": "foobar", "rejected": False},
             "relationships": {
                 "verified-by": {"data": {"id": user.id, "type": "users"}}
             },
@@ -896,6 +901,7 @@ def test_report_update_reviewer(
 
     response = internal_employee_client.patch(url, data)
     assert response.status_code == status.HTTP_200_OK
+    assert len(mailoutbox) == 0
 
 
 def test_report_update_supervisor(
