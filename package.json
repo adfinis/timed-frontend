@@ -3,7 +3,7 @@
   "version": "3.0.0-rc.12",
   "private": true,
   "description": "A time tracking software written in Ember.js",
-  "repository": "https://github.com/adfinis-sygroup/timed-frontend",
+  "repository": "https://github.com/adfinis/timed-frontend",
   "license": "AGPL-3.0",
   "author": "Adfinis AG <info@adfinis.com>",
   "directories": {
