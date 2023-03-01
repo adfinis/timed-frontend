@@ -81,7 +81,7 @@ export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
       this.store.query("attendance", { date: day }),
       this.store.query("absence-type", {}),
       this.store.query("report", {
-        include: "task,task.project,task.project.customer",
+        include: "task,task.project,task.project.customer,user",
         date: day,
         user: userId,
       }),
