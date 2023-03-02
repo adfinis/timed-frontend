@@ -1,8 +1,3 @@
-/**
- * @module timed
- * @submodule timed-controllers
- * @public
- */
 import Controller from "@ember/controller";
 import { action, get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
@@ -10,8 +5,8 @@ import { inject as service } from "@ember/service";
 import { camelize } from "@ember/string";
 import { isTesting, macroCondition } from "@embroider/macros";
 import { tracked } from "@glimmer/tracking";
-import { dropTask, restartableTask, timeout } from "ember-concurrency";
-import { trackedTask } from "ember-resources/util/ember-concurrency";
+import { dropTask, timeout } from "ember-concurrency";
+import { trackedFunction } from "ember-resources/util/function";
 import moment from "moment";
 import AbsenceValidations from "timed/validations/absence";
 import MultipleAbsenceValidations from "timed/validations/multiple-absence";
@@ -32,7 +27,10 @@ export default class IndexController extends Controller {
   @tracked showEditModal = false;
   @tracked day = moment().format("YYYY-MM-DD");
   @tracked _activeActivityDuration = moment.duration();
+
+  /* istanbul ignore next */
   @trackedWrapper center = moment();
+  /* istanbul ignore next */
   @trackedWrapper disabledDates = [];
 
   @service session;
@@ -142,6 +140,7 @@ export default class IndexController extends Controller {
         break;
       }
 
+      /* istanbul ignore next */
       yield timeout(1000);
     }
   }
@@ -188,10 +187,10 @@ export default class IndexController extends Controller {
   /**
    * All reports
    *
-   * @property {Report[]} _allReports
+   * @property {Report[]} allReports
    * @private
    */
-  get _allReports() {
+  get allReports() {
     return this.store.peekAll("report");
   }
 
@@ -201,7 +200,7 @@ export default class IndexController extends Controller {
    * @property {Absence[]} _allAbsences
    * @private
    */
-  get _allAbsences() {
+  get allAbsences() {
     return this.store.peekAll("absence");
   }
 
@@ -212,7 +211,7 @@ export default class IndexController extends Controller {
    * @private
    */
   get _reports() {
-    return this._allReports.filter((report) => {
+    return this.allReports.filter((report) => {
       return (
         report.date.isSame(this.date, "day") &&
         report.get("user.id") === this.user?.id &&
@@ -229,7 +228,7 @@ export default class IndexController extends Controller {
    * @private
    */
   get _absences() {
-    return this._allAbsences.filter((absence) => {
+    return this.allAbsences.filter((absence) => {
       return (
         absence.date.isSame(this.date, "day") &&
         absence.get("user.id") === this.user?.id &&
@@ -322,20 +321,17 @@ export default class IndexController extends Controller {
    * @property {EmberConcurrency.Task} _weeklyOverviewData
    * @private
    */
-  @restartableTask
-  *_weeklyOverviewData(allReports, allAbsences, date, user) {
-    yield timeout(200);
-
-    allReports = allReports.filter(
+  weeklyOverviewData = trackedFunction(this, {}, async () => {
+    const allReports = this.allReports.filter(
       (report) =>
-        report.get("user.id") === user.get("id") &&
+        report.get("user.id") === this.user.get("id") &&
         !report.get("isDeleted") &&
         !report.get("isNew")
     );
 
-    allAbsences = allAbsences.filter(
+    const allAbsences = this.allAbsences.filter(
       (absence) =>
-        absence.get("user.id") === user.get("id") &&
+        absence.get("user.id") === this.user.get("id") &&
         !absence.get("isDeleted") &&
         !absence.get("isNew")
     );
@@ -366,7 +362,7 @@ export default class IndexController extends Controller {
     }, {});
 
     return Array.from({ length: 31 }, (value, index) =>
-      moment(date).add(index - 20, "days")
+      moment(this.date).add(index - 20, "days")
     ).map((d) => {
       const {
         reports = [],
@@ -384,7 +380,7 @@ export default class IndexController extends Controller {
 
       return {
         day: d,
-        active: d.isSame(date, "day"),
+        active: d.isSame(this.date, "day"),
         absence: !!absences.length,
         workday: this.workdays.includes(d.isoWeekday()),
         worktime: [
@@ -395,31 +391,7 @@ export default class IndexController extends Controller {
         prefix,
       };
     });
-  }
-
-  trackedTaskWeeklyOverviewData = trackedTask(
-    this,
-    this._weeklyOverviewData,
-    () => [
-      this._allReports,
-      this._allAbsences,
-      this.date,
-      this.user,
-      this.day,
-      this.showAddModal,
-      this.showEditModal,
-    ]
-  );
-
-  /**
-   * The data for the weekly overview
-   *
-   * @property {Object[]} weeklyOverviewData
-   * @public
-   */
-  get weeklyOverviewData() {
-    return this.trackedTaskWeeklyOverviewData.value;
-  }
+  });
 
   /**
    * Set a new center for the calendar and load all disabled dates

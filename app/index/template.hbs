@@ -9,7 +9,7 @@
     </div>
     <div class="grid-cell visible-md">
       <WeeklyOverview @expected={{this.expectedWorktime}}>
-        {{#each this.weeklyOverviewData as |d|}}
+        {{#each this.weeklyOverviewData.value as |d|}}
           <WeeklyOverviewDay
             @day={{d.day}}
             @active={{d.active}}
