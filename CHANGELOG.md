@@ -1,3 +1,8 @@
+# v3.0.2
+
+### Fix
+* **redmine:** Fix NoneType for amount offered/invoiced for projects ([`6e1f4c8`](https://github.com/adfinis/timed-backend/commit/6e1f4c89672a991ce1765bbed7c5e71f02a119e2))
+
 # v3.0.1
 
 ### Feature
