@@ -12,11 +12,9 @@ module("Integration | Component | progress tooltip", function (hooks) {
 
   hooks.beforeEach(function () {
     this.server.create("task");
-  });
 
-  test("renders", async function (assert) {
     this.set(
-      "model",
+      "project",
       EmberObject.create({
         id: 1,
         estimatedTime: moment.duration({ h: 50 }),
@@ -26,9 +24,24 @@ module("Integration | Component | progress tooltip", function (hooks) {
       })
     );
 
+    this.set(
+      "project_with_remaining_effort",
+      EmberObject.create({
+        id: 1,
+        estimatedTime: moment.duration({ h: 50 }),
+        constructor: EmberObject.create({
+          modelName: "project",
+        }),
+        totalRemainingEffort: moment.duration({ h: 2 }),
+        remainingEffortTracking: true,
+      })
+    );
+  });
+
+  test("renders", async function (assert) {
     await render(hbs`
       <span id='target'></span>
-      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+      <ProgressTooltip @target='#target' @model={{this.project}} @visible={{true}} />
     `);
 
     assert.dom(".progress-tooltip").exists();
@@ -47,22 +60,9 @@ module("Integration | Component | progress tooltip", function (hooks) {
   });
 
   test("renders on project with remaining effort", async function (assert) {
-    this.set(
-      "model",
-      EmberObject.create({
-        id: 1,
-        estimatedTime: moment.duration({ h: 50 }),
-        constructor: EmberObject.create({
-          modelName: "project",
-        }),
-        totalRemainingEffort: moment.duration({ h: 2 }),
-        remainingEffortTracking: true,
-      })
-    );
-
     await render(hbs`
       <span id='target'></span>
-      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+      <ProgressTooltip @target='#target' @model={{this.project_with_remaining_effort}} @visible={{true}} />
     `);
 
     assert
@@ -112,6 +112,7 @@ module("Integration | Component | progress tooltip", function (hooks) {
         constructor: EmberObject.create({
           modelName: "task",
         }),
+        project: this.project_with_remaining_effort,
       })
     );
 
@@ -154,16 +155,7 @@ module("Integration | Component | progress tooltip", function (hooks) {
   });
 
   test("uses danger color when the factor is more than 1", async function (assert) {
-    this.set(
-      "model",
-      EmberObject.create({
-        id: 1,
-        estimatedTime: moment.duration({ h: 100 }),
-        constructor: EmberObject.create({
-          modelName: "project",
-        }),
-      })
-    );
+    this.project.estimatedTime = moment.duration({ h: 100 });
 
     this.server.get("/projects/:id", function ({ projects }, request) {
       return {
@@ -176,24 +168,14 @@ module("Integration | Component | progress tooltip", function (hooks) {
 
     await render(hbs`
       <span id='target'></span>
-      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+      <ProgressTooltip @target='#target' @model={{this.project}} @visible={{true}} />
     `);
 
     assert.dom(".progress-tooltip .badge--danger").exists();
-    // assert.dom(".progress-tooltip .progress-bar.danger").exists();
   });
 
   test("uses warning color when the factor is 0.9 or more", async function (assert) {
-    this.set(
-      "model",
-      EmberObject.create({
-        id: 1,
-        estimatedTime: moment.duration({ h: 100 }),
-        constructor: EmberObject.create({
-          modelName: "project",
-        }),
-      })
-    );
+    this.project.estimatedTime = moment.duration({ h: 100 });
 
     this.server.get("/projects/:id", function ({ projects }, request) {
       return {
@@ -206,10 +188,9 @@ module("Integration | Component | progress tooltip", function (hooks) {
 
     await render(hbs`
       <span id='target'></span>
-      <ProgressTooltip @target='#target' @model={{this.model}} @visible={{true}} />
+      <ProgressTooltip @target='#target' @model={{this.project}} @visible={{true}} />
     `);
 
     assert.dom(".progress-tooltip .badge--warning").exists();
-    // assert.dom(".progress-tooltip .progress-bar.warning").exists();
   });
 });
