@@ -142,7 +142,10 @@ export default class ProjectsController extends Controller {
 
   @action
   updateRemainingEffort(changeset) {
-    if (!changeset.get("mostRecentRemainingEffort")) {
+    if (
+      changeset.get("project.remainingEffortTracking") &&
+      !changeset.get("mostRecentRemainingEffort")
+    ) {
       changeset.set(
         "mostRecentRemainingEffort",
         changeset.get("estimatedTime")

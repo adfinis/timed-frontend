@@ -115,7 +115,7 @@ export default class SyDurationpicker extends SyTimepickerComponent {
   }
 
   _isValid(duration) {
-    return duration < this.max && duration > this.min;
+    return duration <= this.max && duration >= this.min;
   }
 
   @action
