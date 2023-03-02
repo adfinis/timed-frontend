@@ -11,7 +11,10 @@ module("Integration | Component | tracking bar", function (hooks) {
     setupTrackingService(this, {
       activity: { comment: "asdf" },
       fetchRecentTasks: { last: Promise.resolve() },
-      fetchCustomers: { last: Promise.resolve() },
+      fetchCustomers: {
+        perform: () => {},
+        last: Promise.resolve(),
+      },
     });
   });
 

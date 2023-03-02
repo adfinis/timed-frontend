@@ -49,6 +49,8 @@ export default class TaskSelectionComponent extends Component {
       this.onProjectChange(project);
     } else if (customer && !this.customer) {
       this.onCustomerChange(customer);
+    } else {
+      this.tracking.fetchCustomers.perform();
     }
   }
 
