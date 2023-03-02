@@ -2,6 +2,7 @@ module.exports = function () {
   return {
     "free-regular-svg-icons": [
       "calendar",
+      "calendar-plus",
       "calendar-xmark",
       "chart-bar",
       "clock",

@@ -49,6 +49,8 @@ export default class TaskSelectionComponent extends Component {
       this.onProjectChange(project);
     } else if (customer && !this.customer) {
       this.onCustomerChange(customer);
+    } else {
+      this.tracking.fetchCustomers.perform();
     }
   }
 
@@ -266,10 +268,9 @@ export default class TaskSelectionComponent extends Component {
     if (value && value.get("constructor.modelName") === "task") {
       this._customer = await value.get("project.customer");
       this.onTaskChange(value);
-      return;
+    } else {
+      this._customer = value;
     }
-
-    this._customer = value;
 
     if (this.customer?.id) {
       this.tracking.projects.perform(this.customer.id);
