@@ -94,29 +94,20 @@
 }
 
 .table--projects > colgroup > col {
-  &:nth-child(1),
-  &:nth-child(2),
-  &:nth-child(3) {
-    width: 8%;
+  &.title {
+    width: 10%;
   }
 
-  &:nth-child(4),
-  &:nth-child(5),
-  &:nth-child(6) {
-    width: 11%;
-  }
-
-  &:nth-child(8) {
-    width: 8%;
-  }
-
-  &:nth-child(9),
-  &:nth-child(10) {
-    width: 7%;
-  }
-
-  &:nth-child(7) {
+  &.reference {
     width: 20%;
+  }
+
+  &.duration {
+    width: 8%;
+  }
+
+  &.archived {
+    width: 5%;
   }
 }
 
