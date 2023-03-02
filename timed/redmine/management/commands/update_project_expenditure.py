@@ -59,6 +59,14 @@ class Command(BaseCommand):
                 )
                 continue
             issue.estimated_hours = estimated_hours
+
+            amount_offered = (
+                project.amount_offered and project.amount_offered.amount
+            ) or "0.00"
+            amount_invoiced = (
+                project.amount_invoiced and project.amount_invoiced.amount
+            ) or "0.00"
+
             # fields not active in Redmine projects settings won't be saved
             issue.custom_fields = [
                 {
@@ -67,11 +75,11 @@ class Command(BaseCommand):
                 },
                 {
                     "id": settings.REDMINE_AMOUNT_OFFERED_FIELD,
-                    "value": project.amount_offered.amount,
+                    "value": amount_offered,
                 },
                 {
                     "id": settings.REDMINE_AMOUNT_INVOICED_FIELD,
-                    "value": project.amount_invoiced.amount,
+                    "value": amount_invoiced,
                 },
             ]
             if not pretend:
@@ -87,6 +95,6 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Updating Redmine issue {project.redmine_project.issue_id} with total spent hours {total_spent_hours}, amount offered {project.amount_offered.amount}, amount invoiced {project.amount_invoiced.amount}"
+                    f"Updating Redmine issue {project.redmine_project.issue_id} with total spent hours {total_spent_hours}, amount offered {amount_offered}, amount invoiced {amount_invoiced}"
                 )
             )
