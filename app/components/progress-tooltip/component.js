@@ -46,17 +46,22 @@ export default class ProgressTooltipComponent extends Component {
 
   get remainingEffort() {
     const model = this.args.model;
-    const isProjectWithEnabledTracking =
-      model.constructor.modelName === "project" &&
-      model.remainingEffortTracking;
+    const isProject = model.constructor.modelName === "project";
+    const hasRemainingEffortTracking = isProject
+      ? model.remainingEffortTracking
+      : model.get("project.remainingEffortTracking");
+
+    if (!hasRemainingEffortTracking) {
+      return null;
+    }
 
     if (macroCondition(isTesting())) {
-      return isProjectWithEnabledTracking
+      return isProject
         ? model.totalRemainingEffort
         : model.mostRecentRemainingEffort;
     }
 
-    return isProjectWithEnabledTracking
+    return isProject
       ? this.totalRemainingEffort
       : this.mostRecentRemainingEffort;
   }
