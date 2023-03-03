@@ -53,8 +53,11 @@
                           <NotIdenticalWarning />
                         {{/unless}}
                         {{#if
-                          (not
-                            (eq f.model.change.customer.id model.customer.id)
+                          (and
+                            f.model.change.customer
+                            (not
+                              (eq f.model.change.customer.id model.customer.id)
+                            )
                           )
                         }}
                           <ChangedWarning />
@@ -69,7 +72,12 @@
                           <NotIdenticalWarning />
                         {{/unless}}
                         {{#if
-                          (not (eq f.model.change.project.id model.project.id))
+                          (and
+                            f.model.change.project
+                            (not
+                              (eq f.model.change.project.id model.project.id)
+                            )
+                          )
                         }}
                           <ChangedWarning />
                         {{/if}}
@@ -82,7 +90,12 @@
                         {{#unless model.task}}
                           <NotIdenticalWarning />
                         {{/unless}}
-                        {{#if (not (eq f.model.change.task.id model.task.id))}}
+                        {{#if
+                          (and
+                            f.model.change.task
+                            (not (eq f.model.change.task.id model.task.id))
+                          )
+                        }}
                           <ChangedWarning />
                         {{/if}}
                       </label>
