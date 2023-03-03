@@ -1,3 +1,20 @@
+## [3.0.2](https://github.com/adfinis/timed-frontend/compare/v3.0.1...v3.0.2) (2023-03-03)
+
+
+### Bug Fixes
+
+* **activity-edit-form:** update task selection on model change ([72815a2](https://github.com/adfinis/timed-frontend/commit/72815a2dce3aed6edcd728687b95e2dc01f4d650))
+* **bulk-report-edit:** reset query params after exit ([89bef0c](https://github.com/adfinis/timed-frontend/commit/89bef0c737ca08ba92ef3f6893d1f47d349d6c8c))
+* **bulk-report-edit:** show change warning only if changed ([b210014](https://github.com/adfinis/timed-frontend/commit/b210014fc274e6b23ee57f9d00f6fc6b611d9916))
+* **font-awesome:** add missing calendar-plus icon ([f8a0a7f](https://github.com/adfinis/timed-frontend/commit/f8a0a7f6d7de49f5add29204cfe2d534dd77a1d7))
+* **progress-tooltip:** respect remaing effort flag ([0ff1cb8](https://github.com/adfinis/timed-frontend/commit/0ff1cb8c1df0c3f23c966647355952687c1f2d5d))
+* **projects:** modifying estimated time without sideeffects ([ca5b08b](https://github.com/adfinis/timed-frontend/commit/ca5b08b5cf2c44838b1ac232478e03bf08ef405b))
+* **reports:** fetch available customers if no pre-selection is given ([9449d76](https://github.com/adfinis/timed-frontend/commit/9449d76aaeb3d003761f439fd995a5a4e476b732))
+* **reports:** include user to resolve name of verifier ([8de845e](https://github.com/adfinis/timed-frontend/commit/8de845e037146c8b4a5e85e32573fc7dad7ea0f8))
+* **sy-durationpicker:** allow equal to max and min values ([6cac404](https://github.com/adfinis/timed-frontend/commit/6cac4046e7e77b13ceadf0c47b186f11cb8bd6e8))
+* **task-selection:** fetch projects if customer is given ([452c467](https://github.com/adfinis/timed-frontend/commit/452c467ef2ca0401225af418fd03f52b4c81c056))
+* **weekly-overview:** refresh weekly overview graph ([733bc5c](https://github.com/adfinis/timed-frontend/commit/733bc5cf29b4e1bc9e9177135671046b2daefff9))
+
 ## [2.1.3](https://github.com/adfinis-sygroup/timed-frontend/compare/v2.1.2...v2.1.3) (2022-06-23)
 
 
