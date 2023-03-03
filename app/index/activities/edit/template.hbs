@@ -10,13 +10,17 @@
     </div>
     <div class="card-block">
       <TaskSelection
+        @initial={{hash task=this.changeset.task}}
         @task={{this.changeset.task}}
         @on-set-task={{fn (mut this.changeset.task)}}
         as |t|
       >
         <div class="form-group">{{t.customer}}</div>
         <div class="form-group">{{t.project}}</div>
-        <div class="form-group">{{t.task}}</div>
+        <div
+          class="form-group"
+          {{did-update t.reset @model.task}}
+        >{{t.task}}</div>
       </TaskSelection>
     </div>
     <div class="card-footer text-right">
