@@ -225,4 +225,9 @@ export default class AnalysisEditController extends Controller.extend(
       changeset.rollback();
     });
   }
+
+  @action
+  resetController() {
+    this.resetQueryParams();
+  }
 }
