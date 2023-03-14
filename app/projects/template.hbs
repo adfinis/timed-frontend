@@ -34,7 +34,7 @@
         @disabled={{not this.selectedCustomer}}
         as |project|
       >
-        <div>{{project.name}}</div>
+        <div class={{if project.archived "archived-background-color"}}>{{project.name}}</div>
       </PowerSelect>
     </div>
     {{#if this.selectedProject}}
