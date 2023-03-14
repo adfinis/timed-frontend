@@ -58,14 +58,10 @@ class Command(BaseCommand):  # pragma: no cover
             )
 
             timed_project.amount_offered = (
-                amount_offered["value"]
-                if amount_offered != ""
-                else timed_project.amount_offered
+                amount_offered.get("value") or timed_project.amount_offered
             )
             timed_project.amount_invoiced = (
-                amount_invoiced["value"]
-                if amount_invoiced != ""
-                else timed_project.amount_invoiced
+                amount_invoiced.get("value") or timed_project.amount_invoiced
             )
             if not pretend:
                 timed_project.save()
