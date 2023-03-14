@@ -6,6 +6,7 @@
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
+import { tracked } from "@glimmer/tracking";
 
 /**
  * Controller to edit an activity
@@ -17,6 +18,7 @@ import { inject as service } from "@ember/service";
 export default class IndexActivitiesEditController extends Controller {
   @service notify;
   @service router;
+  @tracked changeset;
 
   /**
    * Whether the save button is enabled
@@ -90,6 +92,13 @@ export default class IndexActivitiesEditController extends Controller {
     } catch (e) {
       console.error(e);
       this.notify.error("Error while deleting the activity");
+    }
+  }
+
+  @action
+  setTask(task) {
+    if (task.id !== this.changeset.task.id) {
+      this.changeset.task = task;
     }
   }
 }

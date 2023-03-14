@@ -12,14 +12,14 @@
       <TaskSelection
         @initial={{hash task=this.changeset.task}}
         @task={{this.changeset.task}}
-        @on-set-task={{fn (mut this.changeset.task)}}
+        @on-set-task={{fn this.setTask this.changeset.task}}
         as |t|
       >
         <div class="form-group">{{t.customer}}</div>
         <div class="form-group">{{t.project}}</div>
         <div
           class="form-group"
-          {{did-update t.reset @model.task}}
+          {{did-update t.reset @model.task.id}}
         >{{t.task}}</div>
       </TaskSelection>
     </div>
