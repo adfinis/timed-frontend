@@ -1,3 +1,8 @@
+# v3.0.3
+
+### Fix
+* **redmine:** Fix value check for custom fields ([`5f6bc53`](https://github.com/adfinis/timed-backend/commit/5f6bc532c6e0d76c9dae07b423afa6ea7c2ab52c))
+
 # v3.0.2
 
 ### Fix
