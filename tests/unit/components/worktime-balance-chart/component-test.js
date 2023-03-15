@@ -35,10 +35,10 @@ module("Unit | Component | worktime balance chart", function (hooks) {
     const titleFn = component.get("options.tooltips.callbacks.title");
     const labelFn = component.get("options.tooltips.callbacks.label");
 
-    assert.equal(
+    assert.strictEqual(
       titleFn([{ index: 0 }], { labels: [moment()] }),
       moment().format("DD.MM.YYYY")
     );
-    assert.equal(labelFn({ yLabel: 10.5 }), "10h 30m");
+    assert.strictEqual(labelFn({ yLabel: 10.5 }), "10h 30m");
   });
 });

@@ -47,7 +47,7 @@ module("Integration | Component | sy checkbox", function (hooks) {
     );
 
     assert.ok(find("input").indeterminate);
-    assert.equal(this.checked, null);
+    assert.strictEqual(this.checked, null);
 
     await click("label");
 

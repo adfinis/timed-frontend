@@ -5,6 +5,6 @@ module("Unit | Validator | null or not blank", function () {
   test("works", function (assert) {
     assert.true(validateNullOrNotBlank()("key", "test"));
     assert.true(validateNullOrNotBlank()("key", null));
-    assert.equal(typeof validateNullOrNotBlank()("key", ""), "string");
+    assert.strictEqual(typeof validateNullOrNotBlank()("key", ""), "string");
   });
 });

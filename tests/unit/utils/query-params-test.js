@@ -18,7 +18,7 @@ module("Unit | Utility | query params", function () {
 
     const result = serializeParachuteQueryParams(params, qp);
 
-    assert.equal(result.foo, 100);
+    assert.strictEqual(result.foo, 100);
   });
 
   test("can underline query params", function (assert) {

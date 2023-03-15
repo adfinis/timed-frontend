@@ -18,7 +18,7 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     });
 
     await render(hbs`
-      <FilterSidebar::Filter 
+      <FilterSidebar::Filter
         @type='button'
         @selected={{this.selected}}
         @options={{this.options}}
@@ -35,11 +35,11 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
       ["test 1", "test 2", "test 3"]
     );
 
-    assert.equal(find("button.active").innerHTML.trim(), "test 2");
+    assert.strictEqual(find("button.active").innerHTML.trim(), "test 2");
 
     await click("button:nth-child(1)");
 
-    assert.equal(this.selected, 1);
+    assert.strictEqual(this.selected, 1);
   });
 
   test("works with type select", async function (assert) {
@@ -53,7 +53,7 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     });
 
     await render(hbs`
-      <FilterSidebar::Filter 
+      <FilterSidebar::Filter
         @type='select'
         @selected={{this.selected}}
         @options={{this.options}}
@@ -69,21 +69,21 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
       findAll("option").map((b) => b.innerHTML.trim()),
       ["test 1", "test 2", "test 3"]
     );
-    assert.equal(
+    assert.strictEqual(
       findAll("option")[find("select").options.selectedIndex].innerHTML.trim(),
       "test 2"
     );
 
     await fillIn("select", "1");
 
-    assert.equal(this.selected, "1");
+    assert.strictEqual(this.selected, "1");
   });
 
   test("works with type date", async function (assert) {
     this.set("selected", moment({ year: 2017, month: 10, day: 1 }));
 
     await render(hbs`
-      <FilterSidebar::Filter 
+      <FilterSidebar::Filter
         @type='date'
         @selected={{this.selected}}
         @onChange={{fn (mut this.selected)}}
@@ -94,7 +94,7 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
 
     await fillIn("input", "10.10.2010");
 
-    assert.equal(
+    assert.strictEqual(
       this.selected.format(),
       moment({ year: 2010, month: 9, day: 10 }).format()
     );
@@ -104,7 +104,7 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
     this.set("selected", "foobar");
 
     await render(hbs`
-      <FilterSidebar::Filter 
+      <FilterSidebar::Filter
         @type='search'
         @selected={{this.selected}}
         @onChange={{fn (mut this.selected)}}
@@ -115,7 +115,7 @@ module("Integration | Component | filter sidebar/filter", function (hooks) {
 
     await fillIn("input", "foobarbaz");
 
-    assert.equal(this.selected, "foobarbaz");
+    assert.strictEqual(this.selected, "foobarbaz");
   });
 
   test("works with block style", async function (assert) {

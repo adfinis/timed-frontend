@@ -12,7 +12,7 @@ module("Unit | Utility | format duration", function () {
 
     const result = formatDuration(duration);
 
-    assert.equal(result, "11:50:15");
+    assert.strictEqual(result, "11:50:15");
   });
 
   test("converts days into hours", function (assert) {
@@ -24,7 +24,7 @@ module("Unit | Utility | format duration", function () {
 
     const result = formatDuration(duration);
 
-    assert.equal(result, "44:24:19");
+    assert.strictEqual(result, "44:24:19");
   });
 
   test("zeropads all numbers", function (assert) {
@@ -36,7 +36,7 @@ module("Unit | Utility | format duration", function () {
 
     const result = formatDuration(duration);
 
-    assert.equal(result, "01:01:01");
+    assert.strictEqual(result, "01:01:01");
   });
 
   test("can hide seconds", function (assert) {
@@ -47,7 +47,7 @@ module("Unit | Utility | format duration", function () {
 
     const result = formatDuration(duration, false);
 
-    assert.equal(result, "22:12");
+    assert.strictEqual(result, "22:12");
   });
 
   test("can be negative", function (assert) {
@@ -59,17 +59,17 @@ module("Unit | Utility | format duration", function () {
 
     const result = formatDuration(duration);
 
-    assert.equal(result, "-01:01:01");
+    assert.strictEqual(result, "-01:01:01");
   });
 
   test("has a fallback", function (assert) {
     const result1 = formatDuration(null);
 
-    assert.equal(result1, "--:--:--");
+    assert.strictEqual(result1, "--:--:--");
 
     const result2 = formatDuration(null, false);
 
-    assert.equal(result2, "--:--");
+    assert.strictEqual(result2, "--:--");
   });
 
   test("works with a number instead of a duration", function (assert) {
@@ -77,10 +77,10 @@ module("Unit | Utility | format duration", function () {
 
     const result1 = formatDuration(num);
 
-    assert.equal(result1, "11:12:13");
+    assert.strictEqual(result1, "11:12:13");
 
     const result2 = formatDuration(num, false);
 
-    assert.equal(result2, "11:12");
+    assert.strictEqual(result2, "11:12");
   });
 });

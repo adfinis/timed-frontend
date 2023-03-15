@@ -84,7 +84,7 @@ module("Acceptance | analysis", function (hooks) {
     await click(".filter-sidebar-reset");
 
     // ordering should not be resetted
-    assert.equal(currentURL(), "/analysis?ordering=-user__username%2Cid");
+    assert.strictEqual(currentURL(), "/analysis?ordering=-user__username%2Cid");
   });
 
   test("can have initial filters", async function (assert) {
@@ -124,11 +124,11 @@ module("Acceptance | analysis", function (hooks) {
     assert
       .dom("[data-test-filter-reviewer] .ember-power-select-selected-item")
       .exists();
-    assert.equal(
+    assert.strictEqual(
       find("[data-test-filter-billing-type] select").selectedIndex,
       1
     );
-    assert.equal(
+    assert.strictEqual(
       find("[data-test-filter-cost-center] select").selectedIndex,
       1
     );
@@ -136,19 +136,19 @@ module("Acceptance | analysis", function (hooks) {
     assert.dom("[data-test-filter-from-date] input").hasValue("01.12.2016");
     assert.dom("[data-test-filter-to-date] input").hasValue("01.12.2017");
 
-    assert.equal(
+    assert.strictEqual(
       findAll("[data-test-filter-review] button").indexOf(
         find("[data-test-filter-review] button.active")
       ),
       0
     );
-    assert.equal(
+    assert.strictEqual(
       findAll("[data-test-filter-not-billable] button").indexOf(
         find("[data-test-filter-not-billable] button.active")
       ),
       0
     );
-    assert.equal(
+    assert.strictEqual(
       findAll("[data-test-filter-verified] button").indexOf(
         find("[data-test-filter-verified] button.active")
       ),
@@ -181,7 +181,10 @@ module("Acceptance | analysis", function (hooks) {
 
     await click("[data-test-edit-all]");
 
-    assert.equal(currentURL(), "/analysis/edit?editable=1&ordering=-date%2Cid");
+    assert.strictEqual(
+      currentURL(),
+      "/analysis/edit?editable=1&ordering=-date%2Cid"
+    );
   });
 
   test("can edit selected reports", async function (assert) {

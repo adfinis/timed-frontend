@@ -16,7 +16,7 @@ module("Unit | Transform | django time", function (hooks) {
       })
     );
 
-    assert.equal(result, "12:12:12");
+    assert.strictEqual(result, "12:12:12");
 
     const result2 = transform.serialize(
       moment({
@@ -26,7 +26,7 @@ module("Unit | Transform | django time", function (hooks) {
       })
     );
 
-    assert.equal(result2, "08:08:08");
+    assert.strictEqual(result2, "08:08:08");
   });
 
   test("deserializes", function (assert) {
@@ -34,14 +34,14 @@ module("Unit | Transform | django time", function (hooks) {
 
     const result = transform.deserialize("12:12:12");
 
-    assert.equal(result.hour(), 12);
-    assert.equal(result.minute(), 12);
-    assert.equal(result.second(), 12);
+    assert.strictEqual(result.hour(), 12);
+    assert.strictEqual(result.minute(), 12);
+    assert.strictEqual(result.second(), 12);
 
     const result2 = transform.deserialize("08:08:08");
 
-    assert.equal(result2.hour(), 8);
-    assert.equal(result2.minute(), 8);
-    assert.equal(result2.second(), 8);
+    assert.strictEqual(result2.hour(), 8);
+    assert.strictEqual(result2.minute(), 8);
+    assert.strictEqual(result2.second(), 8);
   });
 });

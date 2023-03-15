@@ -16,7 +16,7 @@ module("Unit | Transform | django date", function (hooks) {
       })
     );
 
-    assert.equal(result, "2017-03-11");
+    assert.strictEqual(result, "2017-03-11");
   });
 
   test("deserializes", function (assert) {
@@ -27,8 +27,8 @@ module("Unit | Transform | django date", function (hooks) {
 
     const result = transform.deserialize("2017-03-11");
 
-    assert.equal(result.year(), 2017);
-    assert.equal(result.month(), 2); // moments months are zerobased
-    assert.equal(result.date(), 11);
+    assert.strictEqual(result.year(), 2017);
+    assert.strictEqual(result.month(), 2); // moments months are zerobased
+    assert.strictEqual(result.date(), 11);
   });
 });

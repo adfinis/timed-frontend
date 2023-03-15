@@ -62,18 +62,18 @@ module("Integration | Component | sy datepicker", function (hooks) {
     find("input").value = "1.2.2018";
     await triggerEvent("input", "change");
 
-    assert.equal(this.value.format("YYYY-MM-DD"), "2018-02-01");
+    assert.strictEqual(this.value.format("YYYY-MM-DD"), "2018-02-01");
 
     find("input").value = "";
     await triggerEvent("input", "change");
 
-    assert.equal(this.value, null);
+    assert.strictEqual(this.value, null);
 
     find("input").value = "somewrongthing";
     await triggerEvent("input", "change");
 
     // value stays unchanged
-    assert.equal(this.value, null);
+    assert.strictEqual(this.value, null);
   });
 
   test("changes value on selection", async function (assert) {

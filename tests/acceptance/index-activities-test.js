@@ -26,7 +26,7 @@ module("Acceptance | index activities", function (hooks) {
   test("can visit /", async function (assert) {
     await visit("/");
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
   });
 
   test("can list activities", async function (assert) {
@@ -59,7 +59,7 @@ module("Acceptance | index activities", function (hooks) {
       `[data-test-activity-row-id="${activity.id}"] [data-test-start-activity]`
     );
 
-    assert.equal(currentURL(), `/?day=${today.format("YYYY-MM-DD")}`);
+    assert.strictEqual(currentURL(), `/?day=${today.format("YYYY-MM-DD")}`);
 
     assert
       .dom(findAll('[data-test-activity-row-id="7"] td')[2])
@@ -90,7 +90,7 @@ module("Acceptance | index activities", function (hooks) {
 
     await click("[data-test-activity-generate-timesheet]");
 
-    assert.equal(currentURL(), "/reports");
+    assert.strictEqual(currentURL(), "/reports");
 
     assert.dom("[data-test-report-row]").exists({ count: 7 });
 
@@ -120,7 +120,7 @@ module("Acceptance | index activities", function (hooks) {
 
     await click("[data-test-activity-generate-timesheet]");
 
-    assert.equal(currentURL(), "/reports");
+    assert.strictEqual(currentURL(), "/reports");
 
     assert.dom("[data-test-report-row]").exists({ count: 6 });
 
@@ -128,7 +128,7 @@ module("Acceptance | index activities", function (hooks) {
 
     await click("[data-test-activity-generate-timesheet]");
 
-    assert.equal(currentURL(), "/reports");
+    assert.strictEqual(currentURL(), "/reports");
 
     assert.dom("[data-test-report-row]").exists({ count: 6 });
   });
@@ -141,12 +141,12 @@ module("Acceptance | index activities", function (hooks) {
     await click("[data-test-activity-generate-timesheet]");
     await click("[data-test-unknown-warning] button.btn-default");
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
 
     await click("[data-test-activity-generate-timesheet]");
     await click("[data-test-unknown-warning] button.btn-primary");
 
-    assert.equal(currentURL(), "/reports");
+    assert.strictEqual(currentURL(), "/reports");
   });
 
   test("shows a warning when generating reports from day overlapping activities", async function (assert) {
@@ -325,7 +325,7 @@ module("Acceptance | index activities", function (hooks) {
 
     await click("[data-test-activity-generate-timesheet]");
 
-    assert.equal(currentURL(), "/reports");
+    assert.strictEqual(currentURL(), "/reports");
 
     assert.dom("[data-test-report-row]").exists({ count: 7 });
 

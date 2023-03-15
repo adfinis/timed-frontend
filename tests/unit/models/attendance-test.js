@@ -19,7 +19,7 @@ module("Unit | Model | attendance", function (hooks) {
         to: moment({ h: 17, m: 0, s: 0 }),
       });
 
-    assert.equal(model.get("duration").asHours(), 9);
+    assert.strictEqual(model.get("duration").asHours(), 9);
   });
 
   test("calculates the duration when the end time is 00:00", function (assert) {
@@ -30,6 +30,6 @@ module("Unit | Model | attendance", function (hooks) {
         to: moment({ h: 0, m: 0, s: 0 }),
       });
 
-    assert.equal(model.get("duration").asHours(), 24);
+    assert.strictEqual(model.get("duration").asHours(), 24);
   });
 });

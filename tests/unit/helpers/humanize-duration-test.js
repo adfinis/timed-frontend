@@ -12,7 +12,7 @@ module("Unit | Helper | humanize duration", function () {
 
     const result = humanizeDurationFn([duration]);
 
-    assert.equal(result, "3h 56m");
+    assert.strictEqual(result, "3h 56m");
   });
 
   test("works with seconds", function (assert) {
@@ -24,6 +24,6 @@ module("Unit | Helper | humanize duration", function () {
 
     const result = humanizeDurationFn([duration, true]);
 
-    assert.equal(result, "3h 56m 59s");
+    assert.strictEqual(result, "3h 56m 59s");
   });
 });

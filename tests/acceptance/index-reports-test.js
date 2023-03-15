@@ -33,7 +33,7 @@ module("Acceptance | index reports", function (hooks) {
   test("can visit /reports", async function (assert) {
     await visit("/reports");
 
-    assert.equal(currentURL(), "/reports");
+    assert.strictEqual(currentURL(), "/reports");
   });
 
   test("can list reports", async function (assert) {
@@ -182,7 +182,7 @@ module("Acceptance | index reports", function (hooks) {
     await click(`button[data-date="${tomorrow}"]`);
     await click("[data-test-report-save]");
 
-    assert.equal(currentURL(), `/reports?day=${tomorrow}`);
+    assert.strictEqual(currentURL(), `/reports?day=${tomorrow}`);
     assert.dom("[data-test-report-row]").exists({ count: 6 });
   });
 });

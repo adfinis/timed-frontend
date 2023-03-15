@@ -15,7 +15,7 @@ module("Unit | Service | fetch", function (hooks) {
     const service = this.owner.lookup("service:fetch");
     const session = this.owner.lookup("service:session");
 
-    assert.equal(
+    assert.strictEqual(
       service.get("headers.authorization"),
       session.headers.authorization
     );

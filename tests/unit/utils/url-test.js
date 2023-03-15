@@ -29,6 +29,6 @@ module("Unit | Utility | url", function () {
 
     const result = toQueryString(params);
 
-    assert.equal(result, "foo=&bar=0&baz=test");
+    assert.strictEqual(result, "foo=&bar=0&baz=test");
   });
 });
