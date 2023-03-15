@@ -26,7 +26,7 @@ module("Acceptance | users edit credits absence credit", function (hooks) {
     await fillIn("input[name=comment]", "Comment");
     await click("[data-test-absence-credit-save]");
 
-    assert.equal(currentURL(), `/users/${this.user.id}/credits`);
+    assert.strictEqual(currentURL(), `/users/${this.user.id}/credits`);
 
     assert.dom("[data-test-absence-credits] tbody > tr").exists({ count: 1 });
   });
@@ -38,7 +38,7 @@ module("Acceptance | users edit credits absence credit", function (hooks) {
 
     await click("[data-test-absence-credits] tbody > tr:first-child");
 
-    assert.equal(
+    assert.strictEqual(
       currentURL(),
       `/users/${this.user.id}/credits/absence-credits/${id}`
     );
@@ -49,7 +49,7 @@ module("Acceptance | users edit credits absence credit", function (hooks) {
 
     await click(".btn-primary");
 
-    assert.equal(currentURL(), `/users/${this.user.id}/credits`);
+    assert.strictEqual(currentURL(), `/users/${this.user.id}/credits`);
 
     assert.dom("[data-test-absence-credits] tbody > tr").exists({ count: 1 });
 
@@ -79,7 +79,7 @@ module("Acceptance | users edit credits absence credit", function (hooks) {
 
     await click(".btn-danger");
 
-    assert.equal(currentURL(), `/users/${this.user.id}/credits`);
+    assert.strictEqual(currentURL(), `/users/${this.user.id}/credits`);
 
     assert.dom("[data-test-absence-credits] tr").doesNotExist();
   });
@@ -97,7 +97,7 @@ module("Acceptance | users edit credits absence credit", function (hooks) {
 
     await click("[data-test-absence-credit-save]");
 
-    assert.equal(
+    assert.strictEqual(
       currentURL(),
       `/users/${this.user.id}/credits?year=${moment().year() + 1}`
     );

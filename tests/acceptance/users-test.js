@@ -69,6 +69,6 @@ module("Acceptance | users", function (hooks) {
 
     await click(".filter-sidebar-reset");
 
-    assert.equal(currentURL(), "/users");
+    assert.strictEqual(currentURL(), "/users");
   });
 });

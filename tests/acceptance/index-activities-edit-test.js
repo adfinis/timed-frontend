@@ -33,7 +33,7 @@ module("Acceptance | index activities edit", function (hooks) {
 
     await click('[data-test-activity-row-id="1"]');
 
-    assert.equal(currentURL(), "/edit/1");
+    assert.strictEqual(currentURL(), "/edit/1");
 
     await waitFor(".customer-select");
     await taskSelect("[data-test-activity-edit-form]");
@@ -51,7 +51,7 @@ module("Acceptance | index activities edit", function (hooks) {
 
     await click("[data-test-activity-edit-form-save]");
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
 
     assert.dom('[data-test-activity-row-id="1"]').includesText("Test");
   });
@@ -61,11 +61,11 @@ module("Acceptance | index activities edit", function (hooks) {
 
     await click('[data-test-activity-row-id="1"]');
 
-    assert.equal(currentURL(), "/edit/1");
+    assert.strictEqual(currentURL(), "/edit/1");
 
     await click("[data-test-activity-edit-form-delete]");
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
 
     assert.dom('[data-test-activity-row-id="1"]').doesNotExist();
     assert.dom("[data-test-activity-row]").exists({ count: 4 });
@@ -89,15 +89,15 @@ module("Acceptance | index activities edit", function (hooks) {
 
     await click('[data-test-activity-row-id="1"]');
 
-    assert.equal(currentURL(), "/edit/1");
+    assert.strictEqual(currentURL(), "/edit/1");
 
     await click('[data-test-activity-row-id="2"]');
 
-    assert.equal(currentURL(), "/edit/2");
+    assert.strictEqual(currentURL(), "/edit/2");
 
     await click('[data-test-activity-row-id="2"]');
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
   });
 
   test("validates time on blur", async function (assert) {
@@ -136,6 +136,6 @@ module("Acceptance | index activities edit", function (hooks) {
       transferred: true,
     });
     await visit(`/edit/${id}`);
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
   });
 });

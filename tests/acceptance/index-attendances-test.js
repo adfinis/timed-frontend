@@ -24,7 +24,7 @@ module("Acceptance | index attendances", function (hooks) {
   test("can visit /attendances", async function (assert) {
     await visit("/attendances");
 
-    assert.equal(currentURL(), "/attendances");
+    assert.strictEqual(currentURL(), "/attendances");
   });
 
   test("can list attendances", async function (assert) {

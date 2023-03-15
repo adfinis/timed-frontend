@@ -153,7 +153,7 @@ module("Acceptance | statistics", function (hooks) {
       .dom("[data-test-filter-reviewer] .ember-power-select-selected-item")
       .exists();
 
-    assert.equal(
+    assert.strictEqual(
       find("[data-test-filter-billing-type] select").options.selectedIndex,
       1
     );

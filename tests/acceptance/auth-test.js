@@ -26,7 +26,7 @@ module("Acceptance | auth", function (hooks) {
     await authenticateSession();
 
     await visit("/");
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
   });
 
   skip("can logout", async function (assert) {

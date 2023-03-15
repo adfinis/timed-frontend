@@ -51,6 +51,6 @@ module("Acceptance | users edit credits", function (hooks) {
 
     await click(".year-select .btn");
 
-    assert.equal(currentURL(), "/users/1/credits");
+    assert.strictEqual(currentURL(), "/users/1/credits");
   });
 });

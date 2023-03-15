@@ -22,7 +22,7 @@ module("Unit | Transform | django datetime", function (hooks) {
 
     const result = transform.serialize(datetime);
 
-    assert.equal(result, datetime.format("YYYY-MM-DDTHH:mm:ss.SSSSZ"));
+    assert.strictEqual(result, datetime.format("YYYY-MM-DDTHH:mm:ss.SSSSZ"));
   });
 
   test("deserializes", function (assert) {
@@ -45,6 +45,6 @@ module("Unit | Transform | django datetime", function (hooks) {
       .deserialize(datetime.format("YYYY-MM-DDTHH:mm:ss.SSSSZ"))
       .utc();
 
-    assert.equal(result.toISOString(), datetime.toISOString());
+    assert.strictEqual(result.toISOString(), datetime.toISOString());
   });
 });

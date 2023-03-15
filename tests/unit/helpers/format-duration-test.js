@@ -12,7 +12,7 @@ module("Unit | Helper | format duration", function () {
 
     const result = formatDurationFn([duration]);
 
-    assert.equal(result, "03:56:59");
+    assert.strictEqual(result, "03:56:59");
   });
 
   test("works without seconds", function (assert) {
@@ -24,6 +24,6 @@ module("Unit | Helper | format duration", function () {
 
     const result = formatDurationFn([duration, false]);
 
-    assert.equal(result, "03:56");
+    assert.strictEqual(result, "03:56");
   });
 });

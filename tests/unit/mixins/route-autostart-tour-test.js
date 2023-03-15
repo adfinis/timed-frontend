@@ -19,11 +19,11 @@ module("Unit | Mixin | route autostart tour", function () {
       routeName: "foo.bar.baz",
     });
 
-    assert.equal(subject._getParentRouteName(), "foo.bar");
+    assert.strictEqual(subject._getParentRouteName(), "foo.bar");
 
     subject.set("routeName", "foo");
 
-    assert.equal(subject._getParentRouteName(), "");
+    assert.strictEqual(subject._getParentRouteName(), "");
   });
 
   test("can check if a tour is wanted", function (assert) {

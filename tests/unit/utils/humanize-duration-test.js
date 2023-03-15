@@ -12,7 +12,7 @@ module("Unit | Utility | humanize duration", function () {
 
     const result = humanizeDuration(duration);
 
-    assert.equal(result, "11h 12m");
+    assert.strictEqual(result, "11h 12m");
   });
 
   test("works with seconds", function (assert) {
@@ -24,7 +24,7 @@ module("Unit | Utility | humanize duration", function () {
 
     const result = humanizeDuration(duration, true);
 
-    assert.equal(result, "11h 12m 13s");
+    assert.strictEqual(result, "11h 12m 13s");
   });
 
   test("renders days as hours", function (assert) {
@@ -36,19 +36,19 @@ module("Unit | Utility | humanize duration", function () {
 
     const result = humanizeDuration(duration);
 
-    assert.equal(result, "50h 0m");
+    assert.strictEqual(result, "50h 0m");
   });
 
   test("has a fallback", function (assert) {
     const result = humanizeDuration(null);
 
-    assert.equal(result, "0h 0m");
+    assert.strictEqual(result, "0h 0m");
   });
 
   test("has a fallback with seconds", function (assert) {
     const result = humanizeDuration(null, true);
 
-    assert.equal(result, "0h 0m 0s");
+    assert.strictEqual(result, "0h 0m 0s");
   });
 
   test("splits big numbers", function (assert) {
@@ -58,7 +58,7 @@ module("Unit | Utility | humanize duration", function () {
 
     const result = humanizeDuration(duration);
 
-    assert.equal(result, `${hours.toLocaleString("de-CH")}h 0m`);
+    assert.strictEqual(result, `${hours.toLocaleString("de-CH")}h 0m`);
   });
 
   test("works with negative durations", function (assert) {
@@ -66,6 +66,6 @@ module("Unit | Utility | humanize duration", function () {
       moment.duration({ hours: -4, minutes: -30 })
     );
 
-    assert.equal(result, "-4h 30m");
+    assert.strictEqual(result, "-4h 30m");
   });
 });

@@ -23,7 +23,7 @@ module("Unit | Model | user", function (hooks) {
 
     assert.ok(model);
 
-    assert.equal(model.get("fullName"), "Hans Muster");
+    assert.strictEqual(model.get("fullName"), "Hans Muster");
   });
 
   test("computes a long name with full name", function (assert) {
@@ -35,7 +35,7 @@ module("Unit | Model | user", function (hooks) {
 
     assert.ok(model);
 
-    assert.equal(model.get("longName"), "Hans Muster (hansm)");
+    assert.strictEqual(model.get("longName"), "Hans Muster (hansm)");
   });
 
   test("computes a long name without full name", function (assert) {
@@ -43,7 +43,7 @@ module("Unit | Model | user", function (hooks) {
 
     assert.ok(model);
 
-    assert.equal(model.get("longName"), "hansm");
+    assert.strictEqual(model.get("longName"), "hansm");
   });
 
   test("computes the active employment", function (assert) {
@@ -58,6 +58,6 @@ module("Unit | Model | user", function (hooks) {
       this.store.createRecord("employment", { id: 2, to: moment() }),
     ]);
 
-    assert.equal(Number(model.get("activeEmployment.id")), 1);
+    assert.strictEqual(Number(model.get("activeEmployment.id")), 1);
   });
 });

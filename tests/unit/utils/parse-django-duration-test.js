@@ -7,7 +7,7 @@ module("Unit | Utility | parse django duration", function () {
     assert.notOk(parseDjangoDuration(""));
     assert.notOk(parseDjangoDuration(null));
 
-    assert.equal(
+    assert.strictEqual(
       parseDjangoDuration("01:02:03").asMilliseconds(),
       moment
         .duration({
@@ -18,7 +18,7 @@ module("Unit | Utility | parse django duration", function () {
         .asMilliseconds()
     );
 
-    assert.equal(
+    assert.strictEqual(
       parseDjangoDuration("1 02:03:04").asMilliseconds(),
       moment
         .duration({
@@ -30,7 +30,7 @@ module("Unit | Utility | parse django duration", function () {
         .asMilliseconds()
     );
 
-    assert.equal(
+    assert.strictEqual(
       parseDjangoDuration("01:02:03.004000").asMilliseconds(),
       moment
         .duration({
@@ -42,7 +42,7 @@ module("Unit | Utility | parse django duration", function () {
         .asMilliseconds()
     );
 
-    assert.equal(
+    assert.strictEqual(
       parseDjangoDuration("1 02:03:04.005000").asMilliseconds(),
       moment
         .duration({
@@ -55,7 +55,7 @@ module("Unit | Utility | parse django duration", function () {
         .asMilliseconds()
     );
 
-    assert.equal(
+    assert.strictEqual(
       parseDjangoDuration("-1 22:57:57").asMilliseconds(),
       moment
         .duration({
@@ -66,7 +66,7 @@ module("Unit | Utility | parse django duration", function () {
         .asMilliseconds()
     );
 
-    assert.equal(
+    assert.strictEqual(
       parseDjangoDuration("-10 22:57:57").asMilliseconds(),
       moment
         .duration({

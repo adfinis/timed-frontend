@@ -27,11 +27,11 @@ module("Acceptance | index", function (hooks) {
 
     const lastDay = moment().subtract(1, "day");
 
-    assert.equal(currentURL(), `/?day=${lastDay.format("YYYY-MM-DD")}`);
+    assert.strictEqual(currentURL(), `/?day=${lastDay.format("YYYY-MM-DD")}`);
 
     await click("[data-test-today]");
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
   });
 
   test("can start a new activity", async function (assert) {

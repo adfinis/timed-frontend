@@ -16,7 +16,7 @@ module("Integration | Component | date navigation", function (hooks) {
       hbs`<DateNavigation @current={{this.date}} @onChange={{fn (mut this.date)}} />`
     );
 
-    assert.equal(this.date.format("YYYY-MM-DD"), "2017-01-10");
+    assert.strictEqual(this.date.format("YYYY-MM-DD"), "2017-01-10");
   });
 
   test("can select the next day", async function (assert) {
@@ -28,7 +28,7 @@ module("Integration | Component | date navigation", function (hooks) {
 
     await click("[data-test-next]");
 
-    assert.equal(this.date.format("YYYY-MM-DD"), "2017-01-11");
+    assert.strictEqual(this.date.format("YYYY-MM-DD"), "2017-01-11");
   });
 
   test("can select the previous day", async function (assert) {
@@ -40,7 +40,7 @@ module("Integration | Component | date navigation", function (hooks) {
 
     await click("[data-test-previous]");
 
-    assert.equal(this.date.format("YYYY-MM-DD"), "2017-01-09");
+    assert.strictEqual(this.date.format("YYYY-MM-DD"), "2017-01-09");
   });
 
   test("can select the current day", async function (assert) {
@@ -52,6 +52,9 @@ module("Integration | Component | date navigation", function (hooks) {
 
     await click("[data-test-today]");
 
-    assert.equal(this.date.format("YYYY-MM-DD"), moment().format("YYYY-MM-DD"));
+    assert.strictEqual(
+      this.date.format("YYYY-MM-DD"),
+      moment().format("YYYY-MM-DD")
+    );
   });
 });

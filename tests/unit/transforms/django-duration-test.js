@@ -10,7 +10,7 @@ module("Unit | Transform | django duration", function (hooks) {
 
     assert.notOk(transform.serialize(null));
 
-    assert.equal(
+    assert.strictEqual(
       transform.serialize(
         moment.duration({
           hours: 1,
@@ -21,7 +21,7 @@ module("Unit | Transform | django duration", function (hooks) {
       "01:02:03"
     );
 
-    assert.equal(
+    assert.strictEqual(
       transform.serialize(
         moment.duration({
           days: 1,
@@ -33,7 +33,7 @@ module("Unit | Transform | django duration", function (hooks) {
       "1 02:03:04"
     );
 
-    assert.equal(
+    assert.strictEqual(
       transform.serialize(
         moment.duration({
           hours: 1,
@@ -45,7 +45,7 @@ module("Unit | Transform | django duration", function (hooks) {
       "01:02:03.004000"
     );
 
-    assert.equal(
+    assert.strictEqual(
       transform.serialize(
         moment.duration({
           days: 1,
@@ -58,7 +58,7 @@ module("Unit | Transform | django duration", function (hooks) {
       "1 02:03:04.005000"
     );
 
-    assert.equal(
+    assert.strictEqual(
       transform.serialize(
         moment.duration({
           hours: -1,
@@ -69,7 +69,7 @@ module("Unit | Transform | django duration", function (hooks) {
       "-1 22:57:57"
     );
 
-    assert.equal(
+    assert.strictEqual(
       transform.serialize(
         moment.duration({
           days: -9,

@@ -18,7 +18,7 @@ module("Integration | Component | balance donut", function (hooks) {
     assert.dom(".donut-content").includesText("5 of 10");
     assert.dom(".donut-content").includesText("50%");
 
-    assert.equal(
+    assert.strictEqual(
       find(".donut-segment").getAttribute("stroke-dasharray"),
       "50 50"
     );
@@ -35,7 +35,7 @@ module("Integration | Component | balance donut", function (hooks) {
     assert.dom(".donut-content").includesText("3");
     assert.dom(".donut-content").doesNotIncludeText("0");
 
-    assert.equal(
+    assert.strictEqual(
       find(".donut-segment").getAttribute("stroke-dasharray"),
       "100 0"
     );
@@ -52,7 +52,7 @@ module("Integration | Component | balance donut", function (hooks) {
     assert.dom(".donut-content").includesText("20 of 10");
     assert.dom(".donut-content").includesText("200%");
 
-    assert.equal(
+    assert.strictEqual(
       find(".donut-segment").getAttribute("stroke-dasharray"),
       "100 0"
     );
@@ -67,7 +67,7 @@ module("Integration | Component | balance donut", function (hooks) {
 
     assert.dom(".donut-content").includesText("10:00");
 
-    assert.equal(
+    assert.strictEqual(
       find(".donut-segment").getAttribute("stroke-dasharray"),
       "100 0"
     );
