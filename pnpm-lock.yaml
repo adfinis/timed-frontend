@@ -77,7 +77,7 @@ specifiers:
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
   ember-simple-auth: 4.2.2
-  ember-simple-auth-oidc: 5.0.1
+  ember-simple-auth-oidc: 5.0.2
   ember-sinon-qunit: ^6.0.0
   ember-site-tour: 2.2.0
   ember-source: 3.28.11
@@ -185,7 +185,7 @@ devDependencies:
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
   ember-simple-auth: 4.2.2_ember-fetch@8.1.2
-  ember-simple-auth-oidc: 5.0.1_7e7y6jke3ilm2zv35xwnb6fp4m
+  ember-simple-auth-oidc: 5.0.2_7e7y6jke3ilm2zv35xwnb6fp4m
   ember-sinon-qunit: 6.0.0
   ember-site-tour: 2.2.0
   ember-source: 3.28.11
@@ -11206,8 +11206,8 @@ packages:
       - supports-color
     dev: true
 
-  /ember-simple-auth-oidc/5.0.1_7e7y6jke3ilm2zv35xwnb6fp4m:
-    resolution: {integrity: sha512-/LLp31cjWIpdPWLnxbroCHkfP/s5vcUqKjvk44qXjl0YZbxWWwVAqdh0paptRbkfk62eYPY1/519qADWu7wzsw==}
+  /ember-simple-auth-oidc/5.0.2_7e7y6jke3ilm2zv35xwnb6fp4m:
+    resolution: {integrity: sha512-KUpnGD94TnK9fZe66SegBJr20Gcgbp8TjDMtfotqoypSoneJ6amrbvyMQu6pjtS3kvNpLP1uZ2VMuuxnrflc3Q==}
     engines: {node: 14.* || >= 16}
     dependencies:
       '@apollo/client': 3.7.9_graphql@16.6.0
