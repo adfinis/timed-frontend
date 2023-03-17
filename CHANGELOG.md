@@ -1,3 +1,16 @@
+# [3.1.0](https://github.com/adfinis/timed-frontend/compare/v3.0.2...v3.1.0) (2023-03-17)
+
+
+### Bug Fixes
+
+* all the `equal` warning moved to `strictEqual` with making sure that all tests still running ([a9fcc68](https://github.com/adfinis/timed-frontend/commit/a9fcc68e33d515a0042c4cad43bcf5a83eb824e1))
+* changeset was not trigger the form change (save button was not been enabled) ([bac534c](https://github.com/adfinis/timed-frontend/commit/bac534c0c11d6d92ca65810257ee4fa70573ea05))
+
+
+### Features
+
+* gray background color for the archived projects ([e44fe5f](https://github.com/adfinis/timed-frontend/commit/e44fe5ff1a249ae441a92356f2e4c9d858ea0611))
+
 ## [3.0.2](https://github.com/adfinis/timed-frontend/compare/v3.0.1...v3.0.2) (2023-03-03)
 
 
