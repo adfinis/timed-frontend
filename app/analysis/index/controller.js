@@ -5,11 +5,16 @@ import { inject as service } from "@ember/service";
 import { isTesting, macroCondition } from "@embroider/macros";
 import { tracked } from "@glimmer/tracking";
 import download from "downloadjs";
-import { dropTask, enqueueTask, task, hash } from "ember-concurrency";
+import {
+  animationFrame,
+  dropTask,
+  enqueueTask,
+  task,
+  hash,
+} from "ember-concurrency";
 import QueryParams from "ember-parachute";
 import fetch from "fetch";
 import moment from "moment";
-import { Promise } from "rsvp";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 import {
   underscoreQueryParams,
@@ -18,13 +23,6 @@ import {
 import { cleanParams, toQueryString } from "timed/utils/url";
 
 import config from "../../config/environment";
-
-const rAF = () => {
-  /* istanbul ignore next */
-  return new Promise((resolve) => {
-    window.requestAnimationFrame(resolve);
-  });
-};
 
 const DATE_FORMAT = "YYYY-MM-DD";
 
@@ -362,7 +360,7 @@ export default class AnalysisController extends Controller.extend(
     while (this._shouldLoadMore && this._canLoadMore) {
       yield this.data.perform();
 
-      yield rAF();
+      yield animationFrame();
     }
   }
 
