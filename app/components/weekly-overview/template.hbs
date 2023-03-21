@@ -1,17 +1,15 @@
 <div class="weekly-overview">
-  {{weekly-overview-benchmark showLabel=true hours=20}}
-  {{weekly-overview-benchmark showLabel=false hours=18}}
-  {{weekly-overview-benchmark showLabel=false hours=16}}
-  {{weekly-overview-benchmark showLabel=false hours=14}}
-  {{weekly-overview-benchmark showLabel=false hours=12}}
-  {{weekly-overview-benchmark showLabel=false hours=10}}
-  {{weekly-overview-benchmark showLabel=false hours=8}}
-  {{weekly-overview-benchmark showLabel=false hours=6}}
-  {{weekly-overview-benchmark showLabel=false hours=4}}
-  {{weekly-overview-benchmark showLabel=false hours=2}}
-  {{weekly-overview-benchmark showLabel=true hours=0}}
-
-  {{weekly-overview-benchmark showLabel=true hours=this.hours expected=true}}
-
+  <WeeklyOverviewBenchmark @showLabel={{ true }} @hours={{ 20 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 18 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 16 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 14 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 12 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 10 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 8 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 6 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 4 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ false }} @hours={{ 2 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ true }} @hours={{ 0 }} />
+  <WeeklyOverviewBenchmark @showLabel={{ true }} @hours={{ this.hours }} @expected={{ true }} />
   {{yield}}
 </div>
