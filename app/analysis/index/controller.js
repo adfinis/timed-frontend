@@ -144,6 +144,7 @@ export default class AnalysisController extends Controller.extend(
   @tracked totalTime = moment.duration();
   @tracked totalItems = A();
   @tracked selectedReportIds;
+  @tracked _dataCache = A();
 
   @tracked user;
   @tracked reviewer;
@@ -194,7 +195,6 @@ export default class AnalysisController extends Controller.extend(
   }
 
   setup() {
-    this._dataCache = A();
     this.selectedReportIds = A();
 
     this.prefetchData.perform();
