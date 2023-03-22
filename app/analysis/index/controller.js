@@ -195,7 +195,6 @@ export default class AnalysisController extends Controller.extend(
   }
 
   setup() {
-    // this._dataCache = A();
     this.selectedReportIds = A();
 
     this.prefetchData.perform();
