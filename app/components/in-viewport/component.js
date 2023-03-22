@@ -5,8 +5,6 @@ import { tracked } from "@glimmer/tracking";
 export default class InViewport extends Component {
   @tracked rootSelector = "body";
   @tracked rootMargin = 0;
-  @tracked onEnterViewport = this.args["on-enter-viewport"];
-  @tracked onExitViewport = this.args["on-exit-viewport"];
   _observer = null;
 
   @action
@@ -14,10 +12,10 @@ export default class InViewport extends Component {
     const observer = new IntersectionObserver(
       ([{ isIntersecting }]) => {
         if (isIntersecting) {
-          return (this.onEnterViewport ?? (() => {}))();
+          return (this.args["on-enter-viewport"] ?? (() => {}))();
         }
 
-        return (this.onExitViewport ?? (() => {}))();
+        return (this.args["on-exit-viewport"] ?? (() => {}))();
       },
       {
         root: document.querySelector(this.rootSelector),
@@ -32,7 +30,8 @@ export default class InViewport extends Component {
   }
 
   @action
-  disconnectObserver() {
-    this._observer.disconnect();
+  willDestroy(...args) {
+    super.willDestroy(...args);
+    this._observer?.disconnect();
   }
 }
