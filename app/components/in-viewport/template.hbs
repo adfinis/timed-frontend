@@ -1,1 +1,3 @@
-{{yield}}
+<div
+  {{did-insert this.registerObserver}}
+  {{will-destroy this.disconnectObserver}}>{{yield}}</div>

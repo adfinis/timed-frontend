@@ -1,23 +1,23 @@
-import Component from "@ember/component";
-import { get } from "@ember/object";
-import classic from "ember-classic-decorator";
+import { action } from "@ember/object";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 
-@classic
-class InViewportComponent extends Component {
-  rootSelector = "body";
-  rootMargin = 0;
+export default class InViewport extends Component {
+  @tracked rootSelector = "body";
+  @tracked rootMargin = 0;
+  @tracked onEnterViewport = this.args["on-enter-viewport"];
+  @tracked onExitViewport = this.args["on-exit-viewport"];
   _observer = null;
 
-  didInsertElement(...args) {
-    super.didInsertElement(...args);
-
+  @action
+  registerObserver(element) {
     const observer = new IntersectionObserver(
       ([{ isIntersecting }]) => {
         if (isIntersecting) {
-          return (get(this, "on-enter-viewport") ?? (() => {}))();
+          return (this.onEnterViewport ?? (() => {}))();
         }
 
-        return (get(this, "on-exit-viewport") ?? (() => {}))();
+        return (this.onExitViewport ?? (() => {}))();
       },
       {
         root: document.querySelector(this.rootSelector),
@@ -25,17 +25,14 @@ class InViewportComponent extends Component {
       }
     );
 
-    this.set("_observer", observer);
+    this._observer = observer;
 
     // eslint-disable-next-line ember/no-observers
-    observer.observe(this.element);
+    observer.observe(element);
   }
 
-  willDestroyElement(...args) {
-    super.willDestroyElement(...args);
-
+  @action
+  disconnectObserver() {
     this._observer.disconnect();
   }
 }
-
-export default InViewportComponent;
