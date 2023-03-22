@@ -10,7 +10,7 @@ module("Integration | Component | in viewport", function (hooks) {
     await render(hbs`
       <div class="parent" style="heigth: 20px; overflow: scroll;">
         <div class="child" style="heigth: 2000px;">
-          {{#in-viewport}}test{{/in-viewport}}
+          <InViewport>test</InViewport>
         </div>
       </div>
     `);
