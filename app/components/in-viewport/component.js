@@ -29,7 +29,6 @@ export default class InViewport extends Component {
     observer.observe(element);
   }
 
-  @action
   willDestroy(...args) {
     super.willDestroy(...args);
     this._observer?.disconnect();
