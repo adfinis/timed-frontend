@@ -1,3 +1,21 @@
+## [3.1.1](https://github.com/adfinis/timed-frontend/compare/v3.1.0...v3.1.1) (2023-03-24)
+
+
+### Bug Fixes
+
+* {{yield}}-only templates are not allowed ([15f4bda](https://github.com/adfinis/timed-frontend/commit/15f4bda6991b1888ab296c5c8368c3d271bfa293))
+* analytics loading loop ([4556536](https://github.com/adfinis/timed-frontend/commit/4556536e7cd5e1863a1d2f470fad6cbcb4e52eca))
+* attendances added wrong day after page refresh ([8dfe303](https://github.com/adfinis/timed-frontend/commit/8dfe303640afbc452f2579e6c39c644e253e6c16))
+* change the component test to angle bracket style ([ff80012](https://github.com/adfinis/timed-frontend/commit/ff80012a65fd118b6422d3724a7e541377cd4dcc))
+* changing to new syntax ([4ba628c](https://github.com/adfinis/timed-frontend/commit/4ba628c92c7549aa1af3985cfce6667e56a717b4))
+* clean the code, no action in hooks ([918dcc9](https://github.com/adfinis/timed-frontend/commit/918dcc95aa01090ff54ac2ba79f1efd33bcb9d0f))
+* cleaning the code ([bd78911](https://github.com/adfinis/timed-frontend/commit/bd78911c6404d9780d7e8f43d8c9e0f15f5b951b))
+* form elements require a valid associated label ([667a77e](https://github.com/adfinis/timed-frontend/commit/667a77e753abc80b03c55c827ac78f16f76300a6))
+* moving to glimmer component style ([6aab55d](https://github.com/adfinis/timed-frontend/commit/6aab55d8fe1ade191fc2859f067fa90e5d444b96))
+* report verifier is not defined ([ac12349](https://github.com/adfinis/timed-frontend/commit/ac12349113cc19d06f613702d3f05ccb81260bf1))
+* use component lifecycle hooks ([4229bb8](https://github.com/adfinis/timed-frontend/commit/4229bb8fbde9919e7df84fa07ac3141873e5a0ec))
+* use the new syntax for click event ([0b4e326](https://github.com/adfinis/timed-frontend/commit/0b4e3262d515d24bffd235996c4592cb5f1bd8e9))
+
 # [3.1.0](https://github.com/adfinis/timed-frontend/compare/v3.0.2...v3.1.0) (2023-03-17)
 
 
