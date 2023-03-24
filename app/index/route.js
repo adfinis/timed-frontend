@@ -106,6 +106,7 @@ export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
   setupController(controller, model, ...args) {
     super.setupController(controller, model, ...args);
 
+    controller.date = model;
     controller.set("user", this.modelFor("protected"));
     controller.setCenter.perform({ moment: model });
 
