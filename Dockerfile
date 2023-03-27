@@ -2,7 +2,7 @@ FROM python:3.9
 
 WORKDIR /app
 
-RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -P /usr/local/bin \
+RUN wget https://raw.githubusercontent.com/vishnubob/wait-for-it/81b1373/wait-for-it.sh -P /usr/local/bin \
   && chmod +x /usr/local/bin/wait-for-it.sh
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
