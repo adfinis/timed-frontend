@@ -27,6 +27,7 @@ specifiers:
   '@semantic-release/git': ^10.0.1
   babel-eslint: 10.1.0
   broccoli-asset-rev: 3.0.0
+  broccoli-funnel: ^3.0.8
   downloadjs: 1.4.7
   ember-auto-import: 2.6.0
   ember-basic-dropdown: 7.0.0
@@ -135,6 +136,7 @@ devDependencies:
   '@semantic-release/git': 10.0.1_semantic-release@20.1.1
   babel-eslint: 10.1.0_eslint@7.32.0
   broccoli-asset-rev: 3.0.0
+  broccoli-funnel: 3.0.8
   downloadjs: 1.4.7
   ember-auto-import: 2.6.0_webpack@5.76.2
   ember-basic-dropdown: 7.0.0_e6fg45zjdxbvsebidtb2pysuxm
@@ -8075,7 +8077,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -17255,6 +17257,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise-map-series/0.2.3:
