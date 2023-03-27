@@ -4,6 +4,7 @@
  * @public
  */
 import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
 import Changeset from "ember-changeset";
 import lookupValidator from "ember-changeset-validations";
 import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
@@ -19,6 +20,7 @@ import ActivityValidator from "timed/validations/activity";
 export default class IndexActivityEditController extends Route.extend(
   RouteAutostartTourMixin
 ) {
+  @service router;
   /**
    * Model hook, fetch the activity to edit
    *
@@ -34,7 +36,7 @@ export default class IndexActivityEditController extends Route.extend(
 
   afterModel(model) {
     if (model.get("transferred")) {
-      this.transitionTo("index");
+      this.router.transitionTo("index");
     }
   }
 
