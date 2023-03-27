@@ -16,9 +16,9 @@ window.deprecationWorkflow.config = {
     },
     { handler: "silence", matchId: "ember-utils.try-invoke" },
     { handler: "silence", matchId: "this-property-fallback" },
-    { handler: "silence", matchId: "autotracking.mutation-after-consumption" },
-    { handler: "silence", matchId: "manager-capabilities.modifiers-3-13" },
-    { handler: "silence", matchId: "setting-on-hash" },
+    { handler: "throw", matchId: "autotracking.mutation-after-consumption" },
+    { handler: "throw", matchId: "manager-capabilities.modifiers-3-13" },
+    { handler: "throw", matchId: "setting-on-hash" },
     { handler: "throw", matchId: "routing.transition-methods" },
   ],
 };
