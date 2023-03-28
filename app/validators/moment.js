@@ -1,6 +1,13 @@
 import { get } from "@ember/object";
 import moment from "moment";
 
+function getDateTimeIfValid(momentObject) {
+  if (momentObject && momentObject._isValid) {
+    return momentObject;
+  }
+  return undefined;
+}
+
 /**
  * Validator to determine if a value is a valid moment object and if it is
  * greater or smaller than another property of the content.
@@ -24,7 +31,9 @@ export default function validateMoment(options = { gt: null, lt: null }) {
 
     if (options.gt) {
       const gtVal =
-        get(changes, options.gt) || get(content, options.gt) || moment();
+        getDateTimeIfValid(get(changes, options.gt)) ||
+        getDateTimeIfValid(get(content, options.gt)) ||
+        moment();
 
       if (newValue <= gtVal) {
         valid = false;
@@ -32,7 +41,9 @@ export default function validateMoment(options = { gt: null, lt: null }) {
     }
     if (options.lt) {
       const ltVal =
-        get(changes, options.lt) || get(content, options.lt) || moment();
+        getDateTimeIfValid(get(changes, options.lt)) ||
+        getDateTimeIfValid(get(content, options.lt)) ||
+        moment();
 
       if (newValue >= ltVal) {
         valid = false;
