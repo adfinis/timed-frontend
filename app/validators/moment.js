@@ -26,7 +26,7 @@ export default function validateMoment(options = { gt: null, lt: null }) {
     }
     let valid = !!newValue && newValue._isValid;
     if (!valid) {
-      return "false";
+      return "The given value is not a valid value";
     }
 
     if (options.gt) {
@@ -35,7 +35,7 @@ export default function validateMoment(options = { gt: null, lt: null }) {
         getDateTimeIfValid(get(content, options.gt)) ||
         moment();
       if (newValue <= gtVal) {
-        valid = "false";
+        valid = `The value is smaller than ${options.gt}`;
       }
     }
     if (options.lt) {
@@ -45,7 +45,7 @@ export default function validateMoment(options = { gt: null, lt: null }) {
         moment();
 
       if (newValue >= ltVal) {
-        valid = "false";
+        valid = `The valus is larger than ${options.lt}`;
       }
     }
     return valid;

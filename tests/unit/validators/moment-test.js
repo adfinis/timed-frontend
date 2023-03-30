@@ -4,7 +4,10 @@ import validateMoment from "timed/validators/moment";
 
 module("Unit | Validator | moment", function () {
   test("works without value", function (assert) {
-    assert.strictEqual(validateMoment()("key", null, null, {}, {}), "false");
+    assert.strictEqual(
+      validateMoment()("key", null, null, {}, {}),
+      "The given value is not a valid value"
+    );
     assert.true(validateMoment()("key", moment(), null, {}, {}));
   });
 
@@ -27,7 +30,7 @@ module("Unit | Validator | moment", function () {
         {},
         { otherKey: moment().add(1, "second") }
       ),
-      "false"
+      "The value is smaller than otherKey"
     );
   });
 
@@ -50,7 +53,7 @@ module("Unit | Validator | moment", function () {
         {},
         { otherKey: moment().add(-1, "second") }
       ),
-      "false"
+      "The valus is larger than otherKey"
     );
   });
 
