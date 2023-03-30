@@ -26,7 +26,7 @@ export default function validateMoment(options = { gt: null, lt: null }) {
     }
     let valid = !!newValue && newValue._isValid;
     if (!valid) {
-      return valid;
+      return "false";
     }
 
     if (options.gt) {
