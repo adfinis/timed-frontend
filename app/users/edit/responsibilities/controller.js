@@ -1,4 +1,5 @@
 import Controller from "@ember/controller";
+import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
 import QueryParams from "ember-parachute";
 import moment from "moment";
@@ -7,10 +8,16 @@ import { all } from "rsvp";
 const UsersEditResponsibilitiesQueryParams = new QueryParams({});
 
 export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
+  router: service("router"),
+
   setup() {
     this.projects.perform();
     this.supervisees.perform();
   },
+
+  openSuperviseProfile: task(function* (superviseId) {
+    yield this.router.transitionTo("users.edit", superviseId);
+  }),
 
   projects: task(function* () {
     return yield this.store.query("project", {

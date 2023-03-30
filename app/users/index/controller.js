@@ -31,8 +31,13 @@ const UsersQueryParams = new QueryParams({
 
 const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   session: service("session"),
+  router: service("router"),
 
   currentUser: reads("session.data.user"),
+
+  viewUserProfile: task(function* (userId) {
+    yield this.router.transitionTo("users.edit", userId);
+  }),
 
   selectedSupervisor: computed(
     "prefetchData.lastSuccessful.value.supervisor",
