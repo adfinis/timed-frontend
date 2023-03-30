@@ -27,16 +27,20 @@
                 data-test-attendance-slider
                 data-test-attendance-slider-id={{attendance.id}}
               >
-                <td>
+                <td class="form-group {{if model.error.from 'has-error'}}">
                   <SyTimepicker
                     @value={{model.from}}
                     @onChange={{fn (mut model.from)}}
+                    @max={{model.to}}
+                    @onFocusOut={{(fn this.validateChangeset model)}}
                   />
                 </td>
-                <td>
+                <td class="form-group {{if model.error.to 'has-error'}}">
                   <SyTimepicker
                     @value={{model.to}}
                     @onChange={{fn (mut model.to)}}
+                    @min={{model.from}}
+                    @onFocusOut={{(fn this.validateChangeset model)}}
                   />
                 </td>
                 <td>

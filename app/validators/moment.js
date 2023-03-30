@@ -34,9 +34,8 @@ export default function validateMoment(options = { gt: null, lt: null }) {
         getDateTimeIfValid(get(changes, options.gt)) ||
         getDateTimeIfValid(get(content, options.gt)) ||
         moment();
-
       if (newValue <= gtVal) {
-        valid = false;
+        valid = "false";
       }
     }
     if (options.lt) {
@@ -46,7 +45,7 @@ export default function validateMoment(options = { gt: null, lt: null }) {
         moment();
 
       if (newValue >= ltVal) {
-        valid = false;
+        valid = "false";
       }
     }
     return valid;

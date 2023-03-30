@@ -20,8 +20,19 @@ export default class AttendanceController extends Controller {
   @service store;
   @service tracking;
 
-  AttendacenValidator = AttendanceValidator;
+  AttendanceValidator = AttendanceValidator;
 
+  /**
+   * Validate the given changeset
+   *
+   * @method validateChangeset
+   * @param {EmberChangeset.Changeset} changeset The changeset to validate
+   * @public
+   */
+  @action
+  validateChangeset(changeset) {
+    changeset.validate();
+  }
   /**
    * All attendances currently in the store
    *
