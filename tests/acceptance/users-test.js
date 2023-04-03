@@ -71,4 +71,10 @@ module("Acceptance | users", function (hooks) {
 
     assert.strictEqual(currentURL(), "/users");
   });
+  test("can open other users profile", async function (assert) {
+    await visit("/users");
+    await waitFor("table tbody tr");
+    await click("table tbody tr");
+    assert.strictEqual(currentURL(), "/users/2");
+  });
 });

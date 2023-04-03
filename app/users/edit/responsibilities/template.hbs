@@ -63,10 +63,9 @@
                 </thead>
                 <tbody>
                   {{#each supervisees as |supervisee|}}
-                    <LinkTo
-                      @route="users.edit"
-                      @model={{supervisee.id}}
-                      @tagName="tr"
+                    <tr
+                    role="link"
+                      {{on "click" (fn this.openSupervisorProfile supervisee.id)}}
                       class="pointer"
                     >
                       <td>{{supervisee.fullName}}</td>
@@ -90,7 +89,7 @@
                     }}
                       <td
                       >{{supervisee.absenceBalances.firstObject.balance}}</td>
-                    </LinkTo>
+                    </tr>
                   {{/each}}
                 </tbody>
               </table>

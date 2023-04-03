@@ -50,6 +50,7 @@
                     <tbody>
                       {{#each absenceCredits as |absenceCredit|}}
                         <tr
+                        role="link"
                           class={{if (can "edit absence-credit") "pointer"}}
                           {{on
                             "click"
@@ -89,7 +90,6 @@
                     <br />
                     <LinkTo
                       @route="users.edit.credits.absence-credits.new"
-                      @tagName="button"
                       class="btn btn-success"
                     >Add new credit</LinkTo>
                   {{/if}}
@@ -128,6 +128,7 @@
                     <tbody>
                       {{#each overtimeCredits as |overtimeCredit|}}
                         <tr
+                        role="link"
                           class="{{if (can 'edit overtime-credit') 'pointer'}}"
                           {{on
                             "click"
@@ -169,7 +170,6 @@
                     <br />
                     <LinkTo
                       @route="users.edit.credits.overtime-credits.new"
-                      @tagName="button"
                       class="btn btn-success"
                     >Add new credit</LinkTo>
                   {{/if}}

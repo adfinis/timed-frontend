@@ -3,7 +3,7 @@
   class="sy-toggle {{if @value 'active' 'inactive'}}"
   title={{concat @hint (if @disabled " (disabled)")}}
   tabindex="0"
-  role="button"
+  role="link"
   {{on "click" (optional (unless @disabled @onToggle))}}
   {{on "keyup" this.handleKeyUp}}
 >

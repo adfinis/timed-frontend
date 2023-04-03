@@ -1,5 +1,5 @@
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
+import { computed, action } from "@ember/object";
 import { reads } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import { task, timeout, hash } from "ember-concurrency";
@@ -31,8 +31,13 @@ const UsersQueryParams = new QueryParams({
 
 const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
   session: service("session"),
+  router: service("router"),
 
   currentUser: reads("session.data.user"),
+
+  viewUserProfile: action(function (userId) {
+    return this.router.transitionTo("users.edit", userId);
+  }),
 
   selectedSupervisor: computed(
     "prefetchData.lastSuccessful.value.supervisor",
