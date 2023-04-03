@@ -9,19 +9,19 @@ module("Acceptance | users edit responsibilities", function (hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function () {
-    this.user = this.server.create("user", {
+    this.admin = this.server.create("user", {
       isSuperuser: true,
       firstName: "Admin FirstName",
       lastName: "Admin LastName",
     });
-    this.secondUser = this.server.create("user", {
-      supervisorIds: [this.user.id],
+    this.user = this.server.create("user", {
+      supervisorIds: [this.admin.id],
       firstName: "FirstName",
       lastName: "LastName",
     });
 
     // eslint-disable-next-line camelcase
-    await authenticateSession({ user_id: this.user.id });
+    await authenticateSession({ user_id: this.admin.id });
   });
 
   test("can visit /users/:id/responsibilities", async function (assert) {
@@ -33,6 +33,6 @@ module("Acceptance | users edit responsibilities", function (hooks) {
   test("Super user can visit the users profile", async function (assert) {
     await visit(`/users/1/responsibilities`);
     await click("tbody tr:nth-child(2)");
-    assert.strictEqual(currentURL(), `/users/${this.secondUser.id}`);
+    assert.strictEqual(currentURL(), `/users/${this.user.id}`);
   });
 });
