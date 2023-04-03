@@ -7,10 +7,10 @@ module("Integration | Component | async list", function (hooks) {
   setupRenderingTest(hooks);
 
   test("yields list on success", async function (assert) {
-    this.set("data", { last: { value: ["a", "b"] } });
+    this.data = { last: { value: ["a", "b"] } };
 
     await render(hbs`
-      {{#async-list data as |section data|}}
+      {{#async-list this.data as |section data|}}
         {{#if (eq section 'body')}}
           {{#each data as |d|}}
             <div class="item">{{d}}</div>
@@ -23,10 +23,10 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("yields empty section", async function (assert) {
-    this.set("data", { last: { value: [] } });
+    this.data = { last: { value: [] } };
 
     await render(hbs`
-      {{#async-list data as |section data|}}
+      {{#async-list this.data as |section data|}}
         {{#if (eq section 'empty')}}
           <div class="check-me"></div>
         {{/if}}
@@ -37,20 +37,20 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("shows loading icon", async function (assert) {
-    this.set("data", { isRunning: true });
+    this.data = { isRunning: true };
 
     await render(hbs`
-      {{#async-list data}}{{/async-list}}
+      {{#async-list this.data}}{{/async-list}}
     `);
 
     assert.dom(".loading-icon").exists();
   });
 
   test("shows error message", async function (assert) {
-    this.set("data", { last: { isError: true } });
+    this.data = { last: { isError: true } };
 
     await render(hbs`
-      {{#async-list data as |section data|}}{{/async-list}}
+      {{#async-list this.data as |section data|}}{{/async-list}}
     `);
 
     assert.dom(".fa-bolt").exists();

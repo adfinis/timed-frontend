@@ -52,12 +52,12 @@ module("Integration | Component | task selection", function (hooks) {
 
   test("can set initial customer", async function (assert) {
     assert.expect(4);
-    this.set("customer", CUSTOMER);
+    this.customer = CUSTOMER;
 
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          customer = customer
+          customer = this.customer
         )}}
       as |t|>
         {{t.customer}}
@@ -80,12 +80,12 @@ module("Integration | Component | task selection", function (hooks) {
 
   test("can set initial project", async function (assert) {
     assert.expect(5);
-    this.set("project", PROJECT);
+    this.project = PROJECT;
 
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          project = project
+          project = this.project
         )}}
       as |t|>
         {{t.customer}}
@@ -114,12 +114,12 @@ module("Integration | Component | task selection", function (hooks) {
 
   test("can set initial task", async function (assert) {
     assert.expect(6);
-    this.set("task", TASK);
+    this.task = TASK;
 
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -153,12 +153,12 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("can clear only task", async function (assert) {
-    this.set("task", TASK);
+    this.task = TASK;
 
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -175,12 +175,12 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("can clear project and task", async function (assert) {
-    this.set("task", TASK);
+    this.task = TASK;
 
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -199,12 +199,12 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("can clear all filters", async function (assert) {
-    this.set("task", TASK);
+    this.task = TASK;
 
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -226,11 +226,11 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("opens on tab-key navigation", async function (assert) {
-    this.set("customer", CUSTOMER);
-    this.set("project", PROJECT);
+    this.customer = CUSTOMER;
+    this.project = PROJECT;
 
     await render(hbs`
-      <TaskSelection 
+      <TaskSelection
         @initial={{(hash
           customer = this.customer
           project = this.project
@@ -248,12 +248,12 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("only shows non-archived entries when archived option is passed", async function (assert) {
-    this.set("customer", CUSTOMER);
-    this.set("project", PROJECT);
-    this.set("archived", false);
+    this.customer = CUSTOMER;
+    this.project = PROJECT;
+    this.archived = false;
 
     await render(hbs`
-      <TaskSelection 
+      <TaskSelection
         @initial={{(hash
           customer = this.customer
           project = this.project

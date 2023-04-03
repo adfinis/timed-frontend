@@ -8,39 +8,30 @@ module("Integration | Component | duration since", function (hooks) {
   setupRenderingTest(hooks);
 
   test("computes the duration correctly", async function (assert) {
-    this.set(
-      "start",
-      moment().milliseconds(0).subtract({
-        minutes: 5,
-        seconds: 5,
-      })
-    );
+    this.start = moment().milliseconds(0).subtract({
+      minutes: 5,
+      seconds: 5,
+    });
 
-    await render(hbs`{{duration-since start}}`);
+    await render(hbs`{{duration-since this.start}}`);
 
     assert.ok(this.element);
     assert.dom(this.element).hasText("00:05:05");
   });
 
   test("computes the duration correctly with elapsed time", async function (assert) {
-    this.set(
-      "start",
-      moment().subtract({
-        minutes: 5,
-        seconds: 5,
-      })
-    );
+    this.start = moment().subtract({
+      minutes: 5,
+      seconds: 5,
+    });
 
-    this.set(
-      "elapsed",
-      moment.duration({
-        hours: 1,
-        minutes: 1,
-        seconds: 1,
-      })
-    );
+    this.elapsed = moment.duration({
+      hours: 1,
+      minutes: 1,
+      seconds: 1,
+    });
 
-    await render(hbs`{{duration-since start elapsed=elapsed}}`);
+    await render(hbs`{{duration-since this.start elapsed=this.elapsed}}`);
 
     assert.ok(this.element);
     assert.dom(this.element).hasText("01:06:06");
