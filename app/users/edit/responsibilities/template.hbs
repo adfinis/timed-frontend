@@ -65,7 +65,7 @@
                   {{#each supervisees as |supervisee|}}
                     <tr
                     role="link"
-                      {{on "click" (perform this.openSuperviseProfile supervisee.id)}}
+                      {{on "click" (fn this.openSupervisorProfile supervisee.id)}}
                       class="pointer"
                     >
                       <td>{{supervisee.fullName}}</td>

@@ -1,4 +1,5 @@
 import Controller from "@ember/controller";
+import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
 import QueryParams from "ember-parachute";
@@ -15,8 +16,8 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
     this.supervisees.perform();
   },
 
-  openSuperviseProfile: task(function* (superviseId) {
-    yield this.router.transitionTo("users.edit", superviseId);
+  openSupervisorProfile: action(function (superviseId) {
+    return this.router.transitionTo("users.edit", superviseId);
   }),
 
   projects: task(function* () {

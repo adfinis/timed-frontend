@@ -1,5 +1,5 @@
 import Controller from "@ember/controller";
-import { computed } from "@ember/object";
+import { computed, action } from "@ember/object";
 import { reads } from "@ember/object/computed";
 import { inject as service } from "@ember/service";
 import { task, timeout, hash } from "ember-concurrency";
@@ -35,8 +35,8 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
 
   currentUser: reads("session.data.user"),
 
-  viewUserProfile: task(function* (userId) {
-    yield this.router.transitionTo("users.edit", userId);
+  viewUserProfile: action(function (userId) {
+    return this.router.transitionTo("users.edit", userId);
   }),
 
   selectedSupervisor: computed(
