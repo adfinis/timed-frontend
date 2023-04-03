@@ -95,6 +95,6 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Updating Redmine issue {project.redmine_project.issue_id} with total spent hours {total_spent_hours}, amount offered {amount_offered}, amount invoiced {amount_invoiced}"
+                    f"Updating Redmine issue {project.redmine_project.issue_id} with total spent hours {total_spent_hours}, estimated time {estimated_hours}, amount offered {amount_offered}, amount invoiced {amount_invoiced}"
                 )
             )
