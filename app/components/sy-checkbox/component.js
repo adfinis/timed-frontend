@@ -1,8 +1,3 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
 import { action } from "@ember/object";
 import { guidFor } from "@ember/object/internals";
 import Component from "@glimmer/component";
