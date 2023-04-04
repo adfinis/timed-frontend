@@ -7,7 +7,7 @@ module("Integration | Component | async list", function (hooks) {
   setupRenderingTest(hooks);
 
   test("yields list on success", async function (assert) {
-    this.data = { last: { value: ["a", "b"] } };
+    this.set("data", { last: { value: ["a", "b"] } });
 
     await render(hbs`
       {{#async-list this.data as |section data|}}
@@ -23,7 +23,7 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("yields empty section", async function (assert) {
-    this.data = { last: { value: [] } };
+    this.set("data", { last: { value: [] } });
 
     await render(hbs`
       {{#async-list this.data as |section data|}}
@@ -37,17 +37,17 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("shows loading icon", async function (assert) {
-    this.data = { isRunning: true };
+    this.set("data", { isRunning: true });
 
     await render(hbs`
-      {{#async-list this.data}}{{/async-list}}
+      <AsyncList @data={{this.data}} />
     `);
 
     assert.dom(".loading-icon").exists();
   });
 
   test("shows error message", async function (assert) {
-    this.data = { last: { isError: true } };
+    this.set("data", { last: { isError: true } });
 
     await render(hbs`
       {{#async-list this.data as |section data|}}{{/async-list}}

@@ -8,12 +8,12 @@ module("Integration | Component | balance donut", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders with a credit", async function (assert) {
-    this.balance = {
+    this.set("balance", {
       credit: 10,
       usedDays: 5,
-    };
+    });
 
-    await render(hbs`{{balance-donut this.balance}}`);
+    await render(hbs`<BalanceDonut @balance={{this.balance}} />`);
 
     assert.dom(".donut-content").includesText("5 of 10");
     assert.dom(".donut-content").includesText("50%");
@@ -25,10 +25,10 @@ module("Integration | Component | balance donut", function (hooks) {
   });
 
   test("renders without a credit", async function (assert) {
-    this.balance = {
+    this.set("balance", {
       credit: 0,
       usedDays: 3,
-    };
+    });
 
     await render(hbs`{{balance-donut this.balance}}`);
 
@@ -42,10 +42,10 @@ module("Integration | Component | balance donut", function (hooks) {
   });
 
   test("renders with a smaller credit than used days", async function (assert) {
-    this.balance = {
+    this.set("balance", {
       credit: 10,
       usedDays: 20,
-    };
+    });
 
     await render(hbs`{{balance-donut this.balance}}`);
 
@@ -59,9 +59,9 @@ module("Integration | Component | balance donut", function (hooks) {
   });
 
   test("renders with a duration", async function (assert) {
-    this.balance = {
+    this.set("balance", {
       usedDuration: moment.duration({ h: 10 }),
-    };
+    });
 
     await render(hbs`{{balance-donut this.balance}}`);
 

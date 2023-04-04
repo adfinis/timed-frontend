@@ -8,9 +8,9 @@ module("Integration | Component | weekly overview day", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    this.day = moment({ y: 2017, m: 4, d: 5 });
-    this.expected = moment.duration({ h: 8 });
-    this.worktime = moment.duration({ h: 8 });
+    this.set("day", moment({ y: 2017, m: 4, d: 5 }));
+    this.set("expected", moment.duration({ h: 8 }));
+    this.set("worktime", moment.duration({ h: 8 }));
 
     await render(
       hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} />`
@@ -22,9 +22,9 @@ module("Integration | Component | weekly overview day", function (hooks) {
   });
 
   test("computes a title", async function (assert) {
-    this.day = moment({ y: 2017, m: 4, d: 5 });
-    this.expected = moment.duration({ h: 8, m: 30 });
-    this.worktime = moment.duration({ h: 8, m: 30 });
+    this.set("day", moment({ y: 2017, m: 4, d: 5 }));
+    this.set("expected", moment.duration({ h: 8, m: 30 }));
+    this.set("worktime", moment.duration({ h: 8, m: 30 }));
 
     await render(
       hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} @prefix='Ferien' />`
@@ -36,10 +36,10 @@ module("Integration | Component | weekly overview day", function (hooks) {
   });
 
   test("fires on-click action on click", async function (assert) {
-    this.day = moment({ y: 2017, m: 4, d: 5 });
-    this.expected = moment.duration({ h: 8, m: 30 });
-    this.worktime = moment.duration({ h: 8, m: 30 });
-    this.clicked = false;
+    this.set("day", moment({ y: 2017, m: 4, d: 5 }));
+    this.set("expected", moment.duration({ h: 8, m: 30 }));
+    this.set("worktime", moment.duration({ h: 8, m: 30 }));
+    this.set("checked", false);
 
     await render(
       hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} />`
@@ -60,7 +60,7 @@ module("Integration | Component | weekly overview day", function (hooks) {
 
     assert.ok(this.clicked);
 
-    this.clicked = false;
+    this.set("clicked", false);
 
     assert.notOk(this.clicked);
 

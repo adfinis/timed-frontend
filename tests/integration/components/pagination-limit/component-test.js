@@ -12,9 +12,11 @@ module("Integration | Component | pagination limit", function (hooks) {
   });
 
   test("can change limit", async function (assert) {
-    this.limit = 10;
+    this.set("limit", 10);
 
-    await render(hbs`{{pagination-limit pages=5 page_size=this.limit}}`);
+    await render(
+      hbs`<PaginationLimit @pages={{5}} @page_size={{this.limit}} />`
+    );
 
     assert.dom("span").exists({ count: 4 });
     assert.dom("a").exists({ count: 3 });

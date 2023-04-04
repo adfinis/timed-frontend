@@ -9,11 +9,15 @@ module("Integration | Component | date buttons", function (hooks) {
 
   test("changes the date", async function (assert) {
     const format = "YYYY-MM-DD";
-    this.fromDate = null;
-    this.toDate = null;
+    this.set("fromDate", null);
+    this.set("toDate", null);
 
     await render(
-      hbs`{{date-buttons onUpdateFromDate=(action (mut this.fromDate)) onUpdateToDate=(action (mut this.toDate))}}`
+      hbs`<DateButtons
+        @onUpdateFromDate={{(action (mut this.fromDate))}}
+        @onUpdateToDate={{(action (mut this.toDate))}}
+      />
+      `
     );
 
     await click('[data-test-preset-date="0"]');

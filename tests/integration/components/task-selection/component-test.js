@@ -52,7 +52,7 @@ module("Integration | Component | task selection", function (hooks) {
 
   test("can set initial customer", async function (assert) {
     assert.expect(4);
-    this.customer = CUSTOMER;
+    this.set("customer", CUSTOMER);
 
     await render(hbs`
       <TaskSelection
@@ -80,7 +80,7 @@ module("Integration | Component | task selection", function (hooks) {
 
   test("can set initial project", async function (assert) {
     assert.expect(5);
-    this.project = PROJECT;
+    this.set("project", PROJECT);
 
     await render(hbs`
       <TaskSelection
@@ -114,7 +114,7 @@ module("Integration | Component | task selection", function (hooks) {
 
   test("can set initial task", async function (assert) {
     assert.expect(6);
-    this.task = TASK;
+    this.set("task", TASK);
 
     await render(hbs`
       <TaskSelection
@@ -153,7 +153,7 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("can clear only task", async function (assert) {
-    this.task = TASK;
+    this.set("task", TASK);
 
     await render(hbs`
       <TaskSelection
@@ -175,7 +175,7 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("can clear project and task", async function (assert) {
-    this.task = TASK;
+    this.set("task", TASK);
 
     await render(hbs`
       <TaskSelection
@@ -199,7 +199,7 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("can clear all filters", async function (assert) {
-    this.task = TASK;
+    this.set("task", TASK);
 
     await render(hbs`
       <TaskSelection
@@ -226,8 +226,8 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("opens on tab-key navigation", async function (assert) {
-    this.customer = CUSTOMER;
-    this.project = PROJECT;
+    this.set("customer", CUSTOMER);
+    this.set("project", PROJECT);
 
     await render(hbs`
       <TaskSelection
@@ -248,9 +248,9 @@ module("Integration | Component | task selection", function (hooks) {
   });
 
   test("only shows non-archived entries when archived option is passed", async function (assert) {
-    this.customer = CUSTOMER;
-    this.project = PROJECT;
-    this.archived = false;
+    this.set("customer", CUSTOMER);
+    this.set("project", PROJECT);
+    this.set("archived", false);
 
     await render(hbs`
       <TaskSelection
