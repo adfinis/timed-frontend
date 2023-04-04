@@ -13,7 +13,7 @@ module("Integration | Component | balance donut", function (hooks) {
       usedDays: 5,
     });
 
-    await render(hbs`{{balance-donut balance}}`);
+    await render(hbs`<BalanceDonut @balance={{this.balance}} />`);
 
     assert.dom(".donut-content").includesText("5 of 10");
     assert.dom(".donut-content").includesText("50%");
@@ -30,7 +30,7 @@ module("Integration | Component | balance donut", function (hooks) {
       usedDays: 3,
     });
 
-    await render(hbs`{{balance-donut balance}}`);
+    await render(hbs`<BalanceDonut @balance={{this.balance}} />`);
 
     assert.dom(".donut-content").includesText("3");
     assert.dom(".donut-content").doesNotIncludeText("0");
@@ -47,7 +47,7 @@ module("Integration | Component | balance donut", function (hooks) {
       usedDays: 20,
     });
 
-    await render(hbs`{{balance-donut balance}}`);
+    await render(hbs`<BalanceDonut @balance={{this.balance}} />`);
 
     assert.dom(".donut-content").includesText("20 of 10");
     assert.dom(".donut-content").includesText("200%");
@@ -63,7 +63,7 @@ module("Integration | Component | balance donut", function (hooks) {
       usedDuration: moment.duration({ h: 10 }),
     });
 
-    await render(hbs`{{balance-donut balance}}`);
+    await render(hbs`<BalanceDonut @balance={{this.balance}} />`);
 
     assert.dom(".donut-content").includesText("10:00");
 

@@ -20,6 +20,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   fetch: service("fetch"),
 
   can: service("can"),
+  router: service("router"),
 
   userController: controller("users.edit"),
 
@@ -109,7 +110,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
   editAbsenceCredit: task(function* (id) {
     if (this.can.can("edit absence-credit")) {
-      yield this.transitionToRoute(
+      yield this.router.transitionTo(
         "users.edit.credits.absence-credits.edit",
         id
       );
@@ -118,7 +119,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
   editOvertimeCredit: task(function* (id) {
     if (this.can.can("edit overtime-credit")) {
-      yield this.transitionToRoute(
+      yield this.router.transitionTo(
         "users.edit.credits.overtime-credits.edit",
         id
       );

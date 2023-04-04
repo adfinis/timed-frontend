@@ -16,7 +16,7 @@ module("Integration | Component | duration since", function (hooks) {
       })
     );
 
-    await render(hbs`{{duration-since start}}`);
+    await render(hbs`<DurationSince @from={{this.start}} />`);
 
     assert.ok(this.element);
     assert.dom(this.element).hasText("00:05:05");
@@ -40,7 +40,9 @@ module("Integration | Component | duration since", function (hooks) {
       })
     );
 
-    await render(hbs`{{duration-since start elapsed=elapsed}}`);
+    await render(
+      hbs`<DurationSince @from={{this.start}} @elapsed={{this.elapsed}} />`
+    );
 
     assert.ok(this.element);
     assert.dom(this.element).hasText("01:06:06");

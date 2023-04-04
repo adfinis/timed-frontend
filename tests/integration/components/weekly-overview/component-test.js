@@ -10,7 +10,7 @@ module("Integration | Component | weekly overview", function (hooks) {
   test("renders", async function (assert) {
     this.set("expected", moment.duration({ h: 8 }));
 
-    await render(hbs`{{weekly-overview expected=expected}}`);
+    await render(hbs`<WeeklyOverview @expected={{this.expected}} />`);
 
     assert.ok(this.element);
   });
@@ -18,7 +18,7 @@ module("Integration | Component | weekly overview", function (hooks) {
   test("renders the benchmarks", async function (assert) {
     this.set("expected", moment.duration({ h: 8 }));
 
-    await render(hbs`{{weekly-overview expected=expected}}`);
+    await render(hbs`<WeeklyOverview @expected={{this.expected}} />`);
 
     // 11 (evens from 0 to 20) plus the expected
     assert.dom("hr").exists({ count: 12 });
@@ -30,9 +30,13 @@ module("Integration | Component | weekly overview", function (hooks) {
     this.set("worktime", moment.duration({ h: 8 }));
 
     await render(hbs`
-      {{#weekly-overview expected=expected}}
-        {{weekly-overview-day day=day expected=expected worktime=worktime}}
-      {{/weekly-overview}}
+      <WeeklyOverview @expected={{this.expected}} >
+        <WeeklyOverviewDay
+          @day={{ this.day }}
+          @expected={{ this.expected }}
+          @worktime={{ this.worktime }}
+        />
+      </WeeklyOverview>
     `);
 
     assert.dom(".bar").exists();

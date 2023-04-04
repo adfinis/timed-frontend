@@ -2,23 +2,16 @@
 window.deprecationWorkflow = window.deprecationWorkflow || {};
 window.deprecationWorkflow.config = {
   workflow: [
-    { handler: "silence", matchId: "ember-global" },
-    { handler: "silence", matchId: "ember.component.reopen" },
-    { handler: "silence", matchId: "ember-metal.get-with-default" },
+    { handler: "silence", matchId: "ember.component.reopen" }, // not finish yet
     { handler: "silence", matchId: "implicit-injections" },
     {
-      handler: "silence",
-      matchId: "ember-views.curly-components.jquery-element",
-    },
-    {
+      // the issue exists in ember scrollable package
       handler: "silence",
       matchId: "deprecated-run-loop-and-computed-dot-access",
     },
+    // This error is caused by ember-parachute and will persist
+    // until we have refactored all controllers and routes to not use ember-parachute
     { handler: "silence", matchId: "ember-utils.try-invoke" },
     { handler: "silence", matchId: "this-property-fallback" },
-    { handler: "silence", matchId: "autotracking.mutation-after-consumption" },
-    { handler: "silence", matchId: "manager-capabilities.modifiers-3-13" },
-    { handler: "silence", matchId: "setting-on-hash" },
-    { handler: "silence", matchId: "routing.transition-methods" },
   ],
 };

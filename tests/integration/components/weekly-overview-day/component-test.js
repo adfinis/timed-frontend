@@ -51,7 +51,7 @@ module("Integration | Component | weekly overview day", function (hooks) {
     assert.notOk(this.clicked);
 
     await render(
-      hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} @on-click={{fn (mut clicked) true}} />`
+      hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} @on-click={{fn (mut this.clicked) true}} />`
     );
 
     assert.notOk(this.clicked);

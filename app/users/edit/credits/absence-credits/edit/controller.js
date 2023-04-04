@@ -11,6 +11,7 @@ export default Controller.extend({
   userCreditsController: controller("users.edit.credits.index"),
 
   notify: service("notify"),
+  router: service("router"),
 
   absenceTypes: task(function* () {
     return yield this.store.query("absence-type", {
@@ -49,9 +50,13 @@ export default Controller.extend({
       const year =
         allYears.find((y) => y === String(changeset.get("date").year())) || "";
 
-      yield this.transitionToRoute("users.edit.credits", this.get("user.id"), {
-        queryParams: { year },
-      });
+      yield this.router.transitionTo(
+        "users.edit.credits",
+        this.get("user.id"),
+        {
+          queryParams: { year },
+        }
+      );
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while saving the absence credit");
@@ -66,7 +71,7 @@ export default Controller.extend({
 
       this.get("userController.data").perform(this.get("user.id"));
 
-      this.transitionToRoute("users.edit.credits");
+      this.router.transitionTo("users.edit.credits");
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while deleting the absence credit");

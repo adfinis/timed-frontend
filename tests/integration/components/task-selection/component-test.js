@@ -57,7 +57,7 @@ module("Integration | Component | task selection", function (hooks) {
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          customer = customer
+          customer = this.customer
         )}}
       as |t|>
         {{t.customer}}
@@ -85,7 +85,7 @@ module("Integration | Component | task selection", function (hooks) {
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          project = project
+          project = this.project
         )}}
       as |t|>
         {{t.customer}}
@@ -119,7 +119,7 @@ module("Integration | Component | task selection", function (hooks) {
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -158,7 +158,7 @@ module("Integration | Component | task selection", function (hooks) {
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -180,7 +180,7 @@ module("Integration | Component | task selection", function (hooks) {
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -204,7 +204,7 @@ module("Integration | Component | task selection", function (hooks) {
     await render(hbs`
       <TaskSelection
         @initial={{(hash
-          task  = task
+          task  = this.task
         )}}
       as |t|>
         {{t.customer}}
@@ -230,7 +230,7 @@ module("Integration | Component | task selection", function (hooks) {
     this.set("project", PROJECT);
 
     await render(hbs`
-      <TaskSelection 
+      <TaskSelection
         @initial={{(hash
           customer = this.customer
           project = this.project
@@ -253,7 +253,7 @@ module("Integration | Component | task selection", function (hooks) {
     this.set("archived", false);
 
     await render(hbs`
-      <TaskSelection 
+      <TaskSelection
         @initial={{(hash
           customer = this.customer
           project = this.project
