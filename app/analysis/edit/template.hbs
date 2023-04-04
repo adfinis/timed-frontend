@@ -39,10 +39,6 @@
                     project=this._project
                     task=this._task
                   }}
-                  @disabled={{and
-                    this.isAccountant
-                    (not this.hasSelectedOwnReports)
-                  }}
                   as |t|
                 >
                   <f.input @name="task">
@@ -119,10 +115,6 @@
                         class="form-control comment-field"
                         {{on "change" (pick "target.value" fi.update)}}
                         value={{fi.value}}
-                        disabled={{and
-                          this.isAccountant
-                          (not this.hasSelectedOwnReports)
-                        }}
                       />
                     </label>
                     {{#if model.task.project.customerVisible}}
@@ -135,10 +127,6 @@
                       data-test-not-billable
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
-                      @disabled={{and
-                        this.isAccountant
-                        (not this.hasSelectedOwnReports)
-                      }}
                     >
                       Not billable
                       {{#if (eq model.notBillable null)}}
@@ -155,10 +143,6 @@
                       data-test-review
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
-                      @disabled={{and
-                        this.isAccountant
-                        (not this.hasSelectedOwnReports)
-                      }}
                     >
                       Needs Review
                       {{#if (eq model.review null)}}

@@ -248,17 +248,17 @@ module("Acceptance | analysis", function (hooks) {
 
     assert
       .dom("[data-test-customer] .ember-power-select-trigger")
-      .hasAttribute("aria-disabled", "true");
+      .hasAttribute("aria-disabled", "false");
     assert
       .dom("[data-test-project] .ember-power-select-trigger")
-      .hasAttribute("aria-disabled", "true");
+      .hasAttribute("aria-disabled", "false");
     assert
       .dom("[data-test-task] .ember-power-select-trigger")
-      .hasAttribute("aria-disabled", "true");
+      .hasAttribute("aria-disabled", "false");
 
-    assert.dom("[data-test-comment]").isDisabled();
-    assert.dom("[data-test-not-billable] input").isDisabled();
-    assert.dom("[data-test-review] input").isDisabled();
+    assert.dom("[data-test-comment]").isNotDisabled();
+    assert.dom("[data-test-not-billable] input").isNotDisabled();
+    assert.dom("[data-test-review] input").isNotDisabled();
     assert.dom("[data-test-billed] input").isNotDisabled();
     assert.dom("[data-test-verified] input").isDisabled();
   });
