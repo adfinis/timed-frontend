@@ -10,13 +10,13 @@ module("Integration | Component | async list", function (hooks) {
     this.set("data", { last: { value: ["a", "b"] } });
 
     await render(hbs`
-      {{#async-list this.data as |section data|}}
+      <AsyncList @data={{this.data}} as |section data|>
         {{#if (eq section 'body')}}
           {{#each data as |d|}}
             <div class="item">{{d}}</div>
           {{/each}}
         {{/if}}
-      {{/async-list}}
+      </AsyncList>
     `);
 
     assert.dom("div.item").exists({ count: 2 });
@@ -26,11 +26,11 @@ module("Integration | Component | async list", function (hooks) {
     this.set("data", { last: { value: [] } });
 
     await render(hbs`
-      {{#async-list this.data as |section data|}}
+      <AsyncList @data={{this.data}} as |section data|>
         {{#if (eq section 'empty')}}
           <div class="check-me"></div>
         {{/if}}
-      {{/async-list}}
+      </AsyncList>
     `);
 
     assert.dom(".check-me").exists();
@@ -50,7 +50,7 @@ module("Integration | Component | async list", function (hooks) {
     this.set("data", { last: { isError: true } });
 
     await render(hbs`
-      {{#async-list this.data as |section data|}}{{/async-list}}
+    <AsyncList @data={{this.data}} as |section data|></AsyncList>
     `);
 
     assert.dom(".fa-bolt").exists();

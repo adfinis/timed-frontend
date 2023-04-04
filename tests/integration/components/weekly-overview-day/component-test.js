@@ -39,7 +39,7 @@ module("Integration | Component | weekly overview day", function (hooks) {
     this.set("day", moment({ y: 2017, m: 4, d: 5 }));
     this.set("expected", moment.duration({ h: 8, m: 30 }));
     this.set("worktime", moment.duration({ h: 8, m: 30 }));
-    this.set("checked", false);
+    this.set("clicked", false);
 
     await render(
       hbs`<WeeklyOverviewDay @day={{this.day}} @expected={{this.expected}} @worktime={{this.worktime}} />`
