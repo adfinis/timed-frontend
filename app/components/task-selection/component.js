@@ -37,11 +37,19 @@ export default class TaskSelectionComponent extends Component {
   async _setInitial() {
     await this.tracking.fetchActiveActivity?.last;
 
-    const { customer, project, task } = this.args.initial ?? {
+    const initial = this.args.initial ?? {
       customer: null,
       project: null,
       task: null,
     };
+
+    // the objects are possibily wrapped in a proxy which would
+    // confuse the upcoming null check
+    const [customer, project, task] = await Promise.all([
+      initial.customer,
+      initial.project,
+      initial.task,
+    ]);
 
     if (task && !this.task) {
       this.onTaskChange(task);
@@ -265,7 +273,8 @@ export default class TaskSelectionComponent extends Component {
 
   @action
   async onCustomerChange(value, options = {}) {
-    if (value && value.get("constructor.modelName") === "task") {
+    const isTask = value?.get("constructor.modelName") === "task";
+    if (isTask) {
       this._customer = await value.get("project.customer");
       this.onTaskChange(value);
     } else {
@@ -278,7 +287,8 @@ export default class TaskSelectionComponent extends Component {
 
     if (
       this.project &&
-      (!value || value.get("id") !== this.project.get("customer.id"))
+      (!value ||
+        (!isTask && value.get("id") !== this.project.get("customer.id")))
     ) {
       this.onProjectChange(null, options);
     }

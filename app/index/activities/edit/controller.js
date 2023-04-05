@@ -96,9 +96,9 @@ export default class IndexActivitiesEditController extends Controller {
   }
 
   @action
-  setTask(task) {
-    if (task.id !== this.changeset.task.id) {
-      this.changeset.task = task;
+  setTask(cs, task) {
+    if (task?.id !== cs.task?.id) {
+      cs.task = task;
     }
   }
 }
