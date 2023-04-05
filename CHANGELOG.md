@@ -1,3 +1,8 @@
+# v3.0.4
+
+### Fix
+* **redmine:** Log estimated_hours in update_project_expenditure command ([`fc1f631`](https://github.com/adfinis/timed-backend/commit/fc1f631a7fcdc25ab93b5cbcf38845f30af3f4a5))
+
 # v3.0.3
 
 ### Fix
