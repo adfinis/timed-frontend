@@ -7,6 +7,7 @@ import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
+import { timeout } from "ember-concurrency";
 
 /**
  * Controller to edit an activity
@@ -84,6 +85,13 @@ export default class IndexActivitiesEditController extends Controller {
     }
 
     try {
+      let limiter = 0;
+      while (limiter++ < 100 && this.model.isSaving) {
+        // wait for maximum 5 seconds for saving changes
+        // eslint-disable-next-line no-await-in-loop
+        await timeout(50);
+      }
+
       await this.model.destroyRecord();
 
       this.notify.success("Activity was deleted");
