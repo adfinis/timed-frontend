@@ -1,3 +1,18 @@
+## [3.1.2](https://github.com/adfinis/timed-frontend/compare/v3.1.1...v3.1.2) (2023-04-05)
+
+
+### Bug Fixes
+
+* **activities:** dont delete records while in flight ([#898](https://github.com/adfinis/timed-frontend/issues/898)) ([b9c9316](https://github.com/adfinis/timed-frontend/commit/b9c93167e3e9b6534eb58157b2875133d72d8a6c))
+* **analysis:** enlarge accountants bulk editing capabilities ([#895](https://github.com/adfinis/timed-frontend/issues/895)) ([f844c9d](https://github.com/adfinis/timed-frontend/commit/f844c9db0d117e282faf35e65b5c31fc20ad0b3c))
+* attendance validation ([a4b1812](https://github.com/adfinis/timed-frontend/commit/a4b1812040edc3a5f927c620be2ec0c0000b4119))
+* change the error message, and the tests ([6ca6185](https://github.com/adfinis/timed-frontend/commit/6ca61855aec0e74db1e2cfb7885a130bed9fec2e))
+* fix of tests after changing the return type ([979e411](https://github.com/adfinis/timed-frontend/commit/979e411839368edf3e050cd23ebee92b56d04813))
+* hbs warnings ([#894](https://github.com/adfinis/timed-frontend/issues/894)) ([b00f97b](https://github.com/adfinis/timed-frontend/commit/b00f97b3d28b2607ce158fbefe449124839ec472))
+* negative activities possible ([f6392ad](https://github.com/adfinis/timed-frontend/commit/f6392ad6e57d461fe73b6fdbe1eac466ec32bc0b))
+* **sy-checkbox:** add scss for indeterminate state ([7c27966](https://github.com/adfinis/timed-frontend/commit/7c27966710ad98220875d285e8d5da1467680b8f))
+* **task-selection:** make selection more robust ([91edd83](https://github.com/adfinis/timed-frontend/commit/91edd8360113eb852ac58cacc481b14f86eeafee))
+
 ## [3.1.1](https://github.com/adfinis/timed-frontend/compare/v3.1.0...v3.1.1) (2023-03-24)
 
 
