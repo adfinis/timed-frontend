@@ -12,7 +12,7 @@
       <TaskSelection
         @initial={{hash task=this.changeset.task}}
         @task={{this.changeset.task}}
-        @on-set-task={{fn this.setTask this.changeset.task}}
+        @on-set-task={{fn this.setTask this.changeset}}
         as |t|
       >
         <div class="form-group">{{t.customer}}</div>
