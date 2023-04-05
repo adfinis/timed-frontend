@@ -1,12 +1,10 @@
-import Component from "@ember/component";
 import {
   classNames,
   attributeBindings,
   tagName,
 } from "@ember-decorators/component";
-import classic from "ember-classic-decorator";
+import Component from "@glimmer/component";
 
-@classic
 @tagName("span")
 @classNames("color-warning")
 @attributeBindings("title")

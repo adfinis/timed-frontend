@@ -5,10 +5,12 @@ export default Ability.extend({
   canAccess: computed(
     "user.{activeEmployment.isExternal,isReviewer}",
     function () {
+      if (!this.user) {
+        return false;
+      }
       return (
-        !this.get("user.activeEmployment.isExternal") ||
-        (this.get("user.activeEmployment.isExternal") &&
-          this.get("user.isReviewer"))
+        !this.user.activeEmployment.isExternal ||
+        (this.user.activeEmployment.isExternal && this.user.isReviewer)
       );
     }
   ),

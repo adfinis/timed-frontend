@@ -45,7 +45,7 @@
   </fs.group>
 </FilterSidebar>
 
-{{#async-list this.data as |section data|}}
+<AsyncList @data={{this.data}} as |section data|>
   {{#if (eq section "empty")}}
     <div class="empty">
       <div>
@@ -102,4 +102,4 @@
       </VerticalCollection>
     </table>
   {{/if}}
-{{/async-list}}
+</AsyncList>

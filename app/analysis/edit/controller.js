@@ -1,6 +1,6 @@
 import { getOwner } from "@ember/application";
 import Controller from "@ember/controller";
-import { action, get } from "@ember/object";
+import { action } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
@@ -106,22 +106,22 @@ export default class AnalysisEditController extends Controller.extend(
   }
 
   get _customer() {
-    const id = get(this, "intersectionModel.customer.id");
+    const id = this.intersectionModel.customer.get("id");
     return id && this.store.peekRecord("customer", id);
   }
 
   get _project() {
-    const id = get(this, "intersectionModel.project.id");
+    const id = this.intersectionModel.project.get("id");
     return id && this.store.peekRecord("project", id);
   }
 
   get _task() {
-    const id = get(this, "intersectionModel.task.id");
+    const id = this.intersectionModel.task.get("id");
     return id && this.store.peekRecord("task", id);
   }
 
   get hasSelectedOwnReports() {
-    return get(this, "intersectionModel.user.id") === this.session.data.user.id;
+    return this.intersectionModel.user.get("id") === this.session.data.user.id;
   }
 
   get canVerify() {

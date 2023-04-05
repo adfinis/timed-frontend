@@ -7,9 +7,9 @@ export default Ability.extend({
     "model.{id,supervisors}",
     function () {
       return (
-        this.get("user.isSuperuser") ||
-        this.get("user.id") === this.get("model.id") ||
-        this.get("model.supervisors").mapBy("id").includes(this.get("user.id"))
+        this.user?.isSuperuser ||
+        this.user?.id === this.model.id ||
+        this.model.supervisors.mapBy("id").includes(this.user?.id)
       );
     }
   ),
