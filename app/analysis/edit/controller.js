@@ -132,7 +132,7 @@ export default class AnalysisEditController extends Controller.extend(
   }
 
   get canBill() {
-    return this.session.data.user.isAccountant || this.isSuperuser;
+    return this.isAccountant || this.isSuperuser;
   }
 
   get needsReview() {
