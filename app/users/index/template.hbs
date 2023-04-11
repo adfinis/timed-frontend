@@ -45,7 +45,7 @@
   </fs.group>
 </FilterSidebar>
 
-<AsyncList @data={{this.fetchData.value}} as |section data|>
+<AsyncList @data={{this.fetchData}} as |section data|>
   {{#if (eq section "empty")}}
     <div class="empty">
       <div>

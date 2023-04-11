@@ -31,7 +31,7 @@ export default class UsersIndexController extends Controller {
   }
 
   get fetchData() {
-    return this._fetchData.value ?? [];
+    return this._fetchData ?? {};
   }
 
   get allQueryParams() {

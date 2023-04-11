@@ -2,7 +2,7 @@
   <div class="empty">
     <LoadingIcon />
   </div>
-{{else if @data.last.isError}}
+{{else if (not @data)}}
   <div class="empty">
     <div>
       <FaIcon @icon="bolt" @prefix="fas" />
@@ -14,10 +14,10 @@
       </p>
     </div>
   </div>
-{{else if (not @data.last.value.length)}}
+{{else if (not @data.value.length)}}
   <div class="empty">
-    {{yield "empty" @data.last.value}}
+    {{yield "empty" @data.value}}
   </div>
 {{else}}
-  {{yield "body" @data.last.value}}
+  {{yield "body" @data.value}}
 {{/if}}
