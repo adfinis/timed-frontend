@@ -57,7 +57,7 @@ module("Integration | Component | optimized power select", function (hooks) {
     this.set("optionTemplate", taskOptionTemplate);
 
     await render(hbs`
-      {{(component 
+      {{(component
           (ensure-safe-component "optimized-power-select")
           options            = this.options
           selected           = this.selected
@@ -78,7 +78,7 @@ module("Integration | Component | optimized power select", function (hooks) {
 
     await triggerKeyEvent(".ember-power-select-search-input", "keydown", 13);
 
-    assert.strictEqual(this.get("selected.id"), 2);
+    assert.strictEqual(this.selected.id, 2);
   });
 
   test("can select with tab key", async function (assert) {
@@ -90,7 +90,7 @@ module("Integration | Component | optimized power select", function (hooks) {
     this.set("optionTemplate", taskOptionTemplate);
 
     await render(hbs`
-      {{(component 
+      {{(component
           (ensure-safe-component "optimized-power-select")
           options            = this.options
           selected           = this.selected
@@ -111,6 +111,6 @@ module("Integration | Component | optimized power select", function (hooks) {
 
     await triggerKeyEvent(".ember-power-select-search-input", "keydown", 9);
 
-    assert.strictEqual(this.get("selected.id"), 2);
+    assert.strictEqual(this.selected.id, 2);
   });
 });

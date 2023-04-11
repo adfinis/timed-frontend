@@ -1,5 +1,4 @@
 import { getOwner } from "@ember/application";
-import { get } from "@ember/object";
 import { scheduleOnce } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { camelize, capitalize } from "@ember/string";
@@ -135,10 +134,10 @@ export default class TrackingService extends Service {
 
       let task = "Unknown Task";
 
-      if (get(this, "activity.task.content")) {
-        const c = get(this, "activity.task.project.customer.name");
-        const p = get(this, "activity.task.project.name");
-        const t = get(this, "activity.task.name");
+      if (this.activity.task.content) {
+        const c = this.activity.task.get("project.customer.name");
+        const p = this.activity.get("task.project.name");
+        const t = this.activity.get("task.name");
 
         task = `${c} > ${p} > ${t}`;
       }
