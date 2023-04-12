@@ -2,7 +2,7 @@
   <div class="empty">
     <LoadingIcon />
   </div>
-{{else if (not @data)}}
+{{else if @data.isError}}
   <div class="empty">
     <div>
       <FaIcon @icon="bolt" @prefix="fas" />
