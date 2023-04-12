@@ -22,9 +22,12 @@ export default class UsersIndexController extends Controller {
     this.prefetchData.perform();
   }
 
-  _fetchData = trackedTask(this, this.data, () => {
-    return [this.supervisor, this.search, this.ordering, this.active];
-  });
+  _fetchData = trackedTask(this, this.data, () => [
+    this.supervisor,
+    this.search,
+    this.ordering,
+    this.active,
+  ]);
 
   get selectedSupervisor() {
     return this.supervisor && this.store.peekRecord("user", this.supervisor);
