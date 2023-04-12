@@ -11,7 +11,6 @@ export default class UsersIndexController extends Controller {
   @service session;
   @service router;
   @service store;
-  @tracked currentUser = this.session.data.user;
   @tracked search = "";
   @tracked supervisor = null;
   @tracked active = "1";
@@ -31,6 +30,10 @@ export default class UsersIndexController extends Controller {
 
   get selectedSupervisor() {
     return this.supervisor && this.store.peekRecord("user", this.supervisor);
+  }
+
+  get currentUser() {
+    return this.session.data.user;
   }
 
   get fetchData() {
