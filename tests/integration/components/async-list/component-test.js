@@ -47,7 +47,7 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("shows error message", async function (assert) {
-    this.set("data", false);
+    this.set("data", { isError: true });
 
     await render(hbs`
     <AsyncList @data={{this.data}} as |section data|></AsyncList>
