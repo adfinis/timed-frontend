@@ -14,7 +14,7 @@
           data-test-attendance-slider
           data-test-attendance-slider-id={{attendance.id}}
           @attendance={{(changeset attendance this.AttendanceValidator)}}
-          @onSave={{this.saveAttendance}}
+          @onSave={{(queue this.validateChangeset this.saveAttendance)}}
           @onDelete={{this.deleteAttendance}}
         />
       {{/each}}
