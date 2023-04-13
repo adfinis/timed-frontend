@@ -1,8 +1,8 @@
-{{#if this.data.isRunning}}
+{{#if @data.isRunning}}
   <div class="empty">
     <LoadingIcon />
   </div>
-{{else if this.data.last.isError}}
+{{else if @data.isError}}
   <div class="empty">
     <div>
       <FaIcon @icon="bolt" @prefix="fas" />
@@ -14,10 +14,10 @@
       </p>
     </div>
   </div>
-{{else if (not this.data.last.value.length)}}
+{{else if (not @data.value.length)}}
   <div class="empty">
-    {{yield "empty" this.data.last.value}}
+    {{yield "empty" @data.value}}
   </div>
 {{else}}
-  {{yield "body" this.data.last.value}}
+  {{yield "body" @data.value}}
 {{/if}}

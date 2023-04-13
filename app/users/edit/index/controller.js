@@ -1,19 +1,21 @@
 import Controller from "@ember/controller";
+import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
-import QueryParams from "ember-parachute";
 import moment from "moment";
 
-const UsersEditIndexQueryParams = new QueryParams({});
+export default class EditUser extends Controller {
+  @service store;
 
-export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
-  setup() {
+  constructor(...args) {
+    super(...args);
     this.absences.perform();
     this.employments.perform();
-  },
+  }
 
-  absences: task(function* () {
+  @task
+  *absences() {
     return yield this.store.query("absence", {
-      user: this.get("model.id"),
+      user: this.model?.id,
       ordering: "-date",
       // eslint-disable-next-line camelcase
       from_date: moment({
@@ -23,13 +25,14 @@ export default Controller.extend(UsersEditIndexQueryParams.Mixin, {
       }).format("YYYY-MM-DD"),
       include: "absence_type",
     });
-  }),
+  }
 
-  employments: task(function* () {
+  @task
+  *employments() {
     return yield this.store.query("employment", {
-      user: this.get("model.id"),
+      user: this.model?.id,
       ordering: "-start_date",
       include: "location",
     });
-  }),
-});
+  }
+}

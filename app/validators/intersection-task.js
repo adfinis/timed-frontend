@@ -1,16 +1,12 @@
-import { get } from "@ember/object";
-
 export default function validateIntersectionTask() {
   return (key, newValue, oldValue, changes, content) => {
     const customerChanged =
       Object.keys(changes).includes("customer") &&
-      (get(changes, "customer.id") || null) !==
-        (get(content, "customer.id") || null);
+      (changes.customer.id || null) !== (content.customer.id || null);
 
     const projectChanged =
       Object.keys(changes).includes("project") &&
-      (get(changes, "project.id") || null) !==
-        (get(content, "project.id") || null);
+      (changes.project.id || null) !== (content.project.id || null);
 
     const hasTask = !!(newValue && newValue.id);
 

@@ -1,78 +1,83 @@
 import Controller from "@ember/controller";
-import { computed, action } from "@ember/object";
-import { reads } from "@ember/object/computed";
+import { action, set } from "@ember/object";
 import { inject as service } from "@ember/service";
-import { task, timeout, hash } from "ember-concurrency";
-import QueryParams from "ember-parachute";
+import { tracked } from "@glimmer/tracking";
+import { restartableTask, timeout, hash } from "ember-concurrency";
+import { task as trackedTask } from "ember-resources/util/ember-concurrency";
 import moment from "moment";
 
-const UsersQueryParams = new QueryParams({
-  search: {
-    defaultValue: "",
-    replace: true,
-    refresh: true,
-  },
-  supervisor: {
-    defaultValue: null,
-    replace: true,
-    refresh: true,
-  },
-  active: {
-    defaultValue: "1",
-    replace: true,
-    refresh: true,
-  },
-  ordering: {
-    defaultValue: "username",
-    replace: true,
-    refresh: true,
-  },
-});
+export default class UsersIndexController extends Controller {
+  queryParams = ["search", "supervisor", "active", "ordering"];
+  @service session;
+  @service router;
+  @service store;
+  @tracked search = "";
+  @tracked supervisor = null;
+  @tracked active = "1";
+  @tracked ordering = "username";
 
-const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
-  session: service("session"),
-  router: service("router"),
-
-  currentUser: reads("session.data.user"),
-
-  viewUserProfile: action(function (userId) {
-    return this.router.transitionTo("users.edit", userId);
-  }),
-
-  selectedSupervisor: computed(
-    "prefetchData.lastSuccessful.value.supervisor",
-    "store",
-    "supervisor",
-    function () {
-      return this.supervisor && this.store.peekRecord("user", this.supervisor);
-    }
-  ),
-
-  setup() {
+  constructor(...args) {
+    super(...args);
     this.prefetchData.perform();
-    this.data.perform();
-  },
+  }
 
-  reset() {
-    /* istanbul ignore next */
-    this.resetQueryParams();
-  },
+  _fetchData = trackedTask(this, this.data, () => [
+    this.supervisor,
+    this.search,
+    this.ordering,
+    this.active,
+  ]);
 
-  queryParamsDidChange({ shouldRefresh }) {
-    if (shouldRefresh) {
-      this.data.perform();
-    }
-  },
+  get selectedSupervisor() {
+    return this.supervisor && this.store.peekRecord("user", this.supervisor);
+  }
 
-  prefetchData: task(function* () {
+  get currentUser() {
+    return this.session.data.user;
+  }
+
+  get fetchData() {
+    return this._fetchData ?? {};
+  }
+
+  get allQueryParams() {
+    return {
+      supervisor: this.supervisor,
+      search: this.search,
+      active: this.active,
+      ordering: this.ordering,
+    };
+  }
+
+  resetQueryParams() {
+    this.search = "";
+    this.supervisor = null;
+    this.active = "1";
+    this.ordering = "username";
+  }
+
+  @restartableTask
+  *resetFilter() {
+    yield this.resetQueryParams();
+  }
+
+  @action
+  viewUserProfile(userId) {
+    return this.router.transitionTo("users.edit", userId);
+  }
+
+  @restartableTask
+  *prefetchData() {
     const supervisorId = this.supervisor;
 
     return yield hash({
       supervisor: supervisorId && this.store.findRecord("user", supervisorId),
     });
-  }).restartable(),
+  }
 
-  data: task(function* () {
+  @restartableTask
+  *data() {
+    yield Promise.resolve();
     const date = moment().format("YYYY-MM-DD");
 
     yield this.store.query("employment", { date });
@@ -80,27 +85,23 @@ const UsersIndexController = Controller.extend(UsersQueryParams.Mixin, {
 
     return yield this.store.query("user", {
       ...this.allQueryParams,
-      ...(this.get("currentUser.isSuperuser")
+      ...(this.currentUser.isSuperuser
         ? {}
         : {
-            supervisor: this.get("currentUser.id"),
+            supervisor: this.currentUser.id,
           }),
     });
-  }).restartable(),
+  }
 
-  setSearchFilter: task(function* (value) {
+  @restartableTask
+  *setSearchFilter(value) {
     yield timeout(500);
 
-    this.set("search", value);
-  }).restartable(),
+    this.search = value;
+  }
 
-  setModelFilter: task(function* (key, value) {
-    yield this.set(key, value && value.id);
-  }),
-
-  resetFilter: task(function* () {
-    yield this.resetQueryParams();
-  }),
-});
-
-export default UsersIndexController;
+  @restartableTask
+  *setModelFilter(key, value) {
+    yield set(this, key, value && value.id);
+  }
+}

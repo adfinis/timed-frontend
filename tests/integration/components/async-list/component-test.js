@@ -7,7 +7,7 @@ module("Integration | Component | async list", function (hooks) {
   setupRenderingTest(hooks);
 
   test("yields list on success", async function (assert) {
-    this.set("data", { last: { value: ["a", "b"] } });
+    this.set("data", { value: ["a", "b"] });
 
     await render(hbs`
       <AsyncList @data={{this.data}} as |section data|>
@@ -23,7 +23,7 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("yields empty section", async function (assert) {
-    this.set("data", { last: { value: [] } });
+    this.set("data", { value: [] });
 
     await render(hbs`
       <AsyncList @data={{this.data}} as |section data|>
@@ -47,7 +47,7 @@ module("Integration | Component | async list", function (hooks) {
   });
 
   test("shows error message", async function (assert) {
-    this.set("data", { last: { isError: true } });
+    this.set("data", { isError: true });
 
     await render(hbs`
     <AsyncList @data={{this.data}} as |section data|></AsyncList>
