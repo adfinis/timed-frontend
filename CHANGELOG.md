@@ -1,3 +1,24 @@
+## [3.1.3](https://github.com/adfinis/timed-frontend/compare/v3.1.2...v3.1.3) (2023-04-14)
+
+
+### Bug Fixes
+
+* async list component/tests to be compatible with the new data structure ([5c4c6d5](https://github.com/adfinis/timed-frontend/commit/5c4c6d524660f499212912cc19e0175addfb692c))
+* async list tests isError ([0c76db5](https://github.com/adfinis/timed-frontend/commit/0c76db5e3fd3fd4a2da5c5dcf9380c5a4bea3d27))
+* **attendance-slider:** update validation status before saving ([622e41c](https://github.com/adfinis/timed-frontend/commit/622e41cd2672d37d0a1b7f8ee20fa4eb7c3a1951))
+* changed warning component ([90691cc](https://github.com/adfinis/timed-frontend/commit/90691cc2873755bfd333c33870e851bfec6bda83))
+* current user property from tracked to computed ([b93ab65](https://github.com/adfinis/timed-frontend/commit/b93ab65886f3c1380e6c9f572570f720a4549af8))
+* edit users, edit responsibilities routes to use native js classes ([5bfba5e](https://github.com/adfinis/timed-frontend/commit/5bfba5e087c98dab102186188d7a77da10868357))
+* js warnings ([82f5a23](https://github.com/adfinis/timed-frontend/commit/82f5a239a808c499944a6944280de5010b427ad8))
+* no need for controller in CustomerVisableIcon component ([9bd68ef](https://github.com/adfinis/timed-frontend/commit/9bd68efc7e1d97818167105ab95e03e8b0f46bbd))
+* query param change trigger a full transition ([e6d10d3](https://github.com/adfinis/timed-frontend/commit/e6d10d38ef7d3bcabe25066a4b88b05d2f07b575))
+* refactor users index page ([24165d6](https://github.com/adfinis/timed-frontend/commit/24165d67986dcca131f1d5b55e7ad29c17f903fd))
+* replace normal function with arrow functions ([0b9e99a](https://github.com/adfinis/timed-frontend/commit/0b9e99aaaae977115e80c90663ab2322b4dde2d0))
+* some new fixes ([acee301](https://github.com/adfinis/timed-frontend/commit/acee301ca2f7a122879b80cf0b1508aab494d364))
+* use offecial task state isError in async list component ([464797a](https://github.com/adfinis/timed-frontend/commit/464797a6da895c17fdd1e47b339b74948ed102e9))
+* users edit controller to use native class ([6d62bd4](https://github.com/adfinis/timed-frontend/commit/6d62bd45dda3aafd9e0c0a9e05cfa92e912c1049))
+* users edit route to use native class ([0ddd3a6](https://github.com/adfinis/timed-frontend/commit/0ddd3a6fe99432f03804877d91b4d402698a9f95))
+
 ## [3.1.2](https://github.com/adfinis/timed-frontend/compare/v3.1.1...v3.1.2) (2023-04-05)
 
 
