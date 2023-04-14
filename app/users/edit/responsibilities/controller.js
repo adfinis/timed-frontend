@@ -2,34 +2,36 @@ import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
-import QueryParams from "ember-parachute";
 import moment from "moment";
 import { all } from "rsvp";
 
-const UsersEditResponsibilitiesQueryParams = new QueryParams({});
+export default class EditUsersResponsibilities extends Controller {
+  @service router;
+  @service store;
 
-export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
-  router: service("router"),
-
-  setup() {
+  constructor(...args) {
+    super(...args);
     this.projects.perform();
     this.supervisees.perform();
-  },
+  }
 
-  openSupervisorProfile: action(function (superviseId) {
+  @action
+  openSupervisorProfile(superviseId) {
     return this.router.transitionTo("users.edit", superviseId);
-  }),
+  }
 
-  projects: task(function* () {
+  @task
+  *projects() {
     return yield this.store.query("project", {
-      has_reviewer: this.get("model.id"),
+      has_reviewer: this.model?.id,
       include: "customer",
       ordering: "customer__name,name",
     });
-  }),
+  }
 
-  supervisees: task(function* () {
-    const supervisor = this.get("model.id");
+  @task
+  *supervisees() {
+    const supervisor = this.model?.id;
 
     const balances = yield this.store.query("worktime-balance", {
       supervisor,
@@ -53,5 +55,5 @@ export default Controller.extend(UsersEditResponsibilitiesQueryParams.Mixin, {
           return user;
         })
     );
-  }),
-});
+  }
+}
