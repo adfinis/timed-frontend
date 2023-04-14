@@ -1,16 +1,18 @@
-import Controller from "@ember/controller";
 import { action, set } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { restartableTask, timeout, hash } from "ember-concurrency";
 import { task as trackedTask } from "ember-resources/util/ember-concurrency";
 import moment from "moment";
+import QPController from "timed/controllers/qpcontroller";
 
-export default class UsersIndexController extends Controller {
+export default class UsersIndexController extends QPController {
   queryParams = ["search", "supervisor", "active", "ordering"];
+
   @service session;
   @service router;
   @service store;
+
   @tracked search = "";
   @tracked supervisor = null;
   @tracked active = "1";
@@ -18,6 +20,7 @@ export default class UsersIndexController extends Controller {
 
   constructor(...args) {
     super(...args);
+
     this.prefetchData.perform();
   }
 
@@ -38,22 +41,6 @@ export default class UsersIndexController extends Controller {
 
   get fetchData() {
     return this._fetchData ?? {};
-  }
-
-  get allQueryParams() {
-    return {
-      supervisor: this.supervisor,
-      search: this.search,
-      active: this.active,
-      ordering: this.ordering,
-    };
-  }
-
-  resetQueryParams() {
-    this.search = "";
-    this.supervisor = null;
-    this.active = "1";
-    this.ordering = "username";
   }
 
   @restartableTask
