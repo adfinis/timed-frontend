@@ -26,7 +26,7 @@ const { round } = Math;
  * @extends DS.Transform
  * @public
  */
-export default Transform.extend({
+export default class DjangoDurationTransform extends Transform {
   /**
    * Deserialize the django duration into a moment duration
    *
@@ -37,7 +37,7 @@ export default Transform.extend({
    */
   deserialize(serialized) {
     return parseDjangoDuration(serialized);
-  },
+  }
 
   /**
    * Get the duration components from the duration like pythons timedelta does
@@ -65,7 +65,7 @@ export default Transform.extend({
       seconds: positiveDuration.seconds(),
       microseconds: round(positiveDuration.milliseconds() * 1000),
     };
-  },
+  }
 
   /**
    * Serialize the moment duration into a django duration
@@ -94,5 +94,5 @@ export default Transform.extend({
     }
 
     return string;
-  },
-});
+  }
+}

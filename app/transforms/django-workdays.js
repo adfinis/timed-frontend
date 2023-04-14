@@ -14,7 +14,7 @@ import Transform from "@ember-data/serializer/transform";
  * @extends DS.Transform
  * @public
  */
-export default Transform.extend({
+export default class DjangoWorkdaysTransform extends Transform {
   /**
    * Deserialize the string separated by comma into an array of numbers
    *
@@ -25,7 +25,7 @@ export default Transform.extend({
    */
   deserialize(serialized) {
     return serialized.map(Number);
-  },
+  }
 
   /**
    * Serialize the array of numbers into a string separated by comma
@@ -37,5 +37,5 @@ export default Transform.extend({
    */
   serialize(deserialized) {
     return deserialized.map(String);
-  },
-});
+  }
+}
