@@ -2,7 +2,7 @@ import Route from "@ember/routing/route";
 
 const EDIT_PATH = "users.edit.credits.overtime-credits.edit";
 
-export default class NewUserOvertimeCreditRoute extends Route {
+export default class UsersEditCreditsOvertimeCreditsNewRoute extends Route {
   controllerName = EDIT_PATH;
 
   templateName = EDIT_PATH;
