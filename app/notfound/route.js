@@ -1,10 +1,3 @@
 import Route from "@ember/routing/route";
 
-/**
- * The notfound route
- *
- * @class NotfoundRoute
- * @extends Ember.Route
- * @public
- */
-export default Route;
+export default class NotFoundRoute extends Route {}

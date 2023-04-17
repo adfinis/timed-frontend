@@ -1,3 +1,3 @@
 import Route from "@ember/routing/route";
 
-export default Route;
+export default class UsersEditCreditsIndexRoute extends Route {}

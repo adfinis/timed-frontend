@@ -5,15 +5,9 @@ import { task } from "ember-concurrency";
 import moment from "moment";
 import { all } from "rsvp";
 
-export default class EditUsersResponsibilities extends Controller {
+export default class UsersEditResponsibilitiesController extends Controller {
   @service router;
   @service store;
-
-  constructor(...args) {
-    super(...args);
-    this.projects.perform();
-    this.supervisees.perform();
-  }
 
   @action
   openSupervisorProfile(superviseId) {
@@ -23,7 +17,7 @@ export default class EditUsersResponsibilities extends Controller {
   @task
   *projects() {
     return yield this.store.query("project", {
-      has_reviewer: this.model?.id,
+      has_reviewer: this.user?.id,
       include: "customer",
       ordering: "customer__name,name",
     });
@@ -31,7 +25,7 @@ export default class EditUsersResponsibilities extends Controller {
 
   @task
   *supervisees() {
-    const supervisor = this.model?.id;
+    const supervisor = this.user?.id;
 
     const balances = yield this.store.query("worktime-balance", {
       supervisor,
