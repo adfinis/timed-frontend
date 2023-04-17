@@ -6,16 +6,10 @@ import moment from "moment";
 export default class EditUser extends Controller {
   @service store;
 
-  constructor(...args) {
-    super(...args);
-    this.absences.perform();
-    this.employments.perform();
-  }
-
   @task
   *absences() {
     return yield this.store.query("absence", {
-      user: this.model?.id,
+      user: this.user.id,
       ordering: "-date",
       // eslint-disable-next-line camelcase
       from_date: moment({
@@ -30,7 +24,7 @@ export default class EditUser extends Controller {
   @task
   *employments() {
     return yield this.store.query("employment", {
-      user: this.model?.id,
+      user: this.user.id,
       ordering: "-start_date",
       include: "location",
     });
