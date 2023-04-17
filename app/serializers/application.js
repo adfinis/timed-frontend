@@ -12,4 +12,4 @@ import JSONAPISerializer from "@ember-data/serializer/json-api";
  * @extends DS.JSONAPISerializer
  * @public
  */
-export default JSONAPISerializer;
+export default class ApplicationSerializer extends JSONAPISerializer {}

@@ -1,6 +1,6 @@
 import Route from "@ember/routing/route";
 
-export default class EditUsersAbsenceCredits extends Route {
+export default class UsersEditCreditsAbsenceCreditsEditRoute extends Route {
   model = ({ absence_credit_id: id }) => id;
 
   setupController(controller, ...args) {

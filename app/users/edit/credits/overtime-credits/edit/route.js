@@ -1,6 +1,6 @@
 import Route from "@ember/routing/route";
 
-export default class NewUserOvertimeCreditRoute extends Route {
+export default class UsersEditCreditsOvertimeCreditsRoute extends Route {
   model = ({ overtime_credit_id: id }) => id;
 
   setupController(controller, ...args) {

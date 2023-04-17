@@ -2,7 +2,7 @@ import Route from "@ember/routing/route";
 
 const EDIT_PATH = "users.edit.credits.absence-credits.edit";
 
-export default class NewUsersAbsenceCredit extends Route {
+export default class UsersEditCreditsAbsenceCreditNewRoute extends Route {
   controllerName = EDIT_PATH;
 
   templateName = EDIT_PATH;
