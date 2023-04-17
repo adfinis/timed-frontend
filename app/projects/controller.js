@@ -1,5 +1,5 @@
 import Controller from "@ember/controller";
-import { action, get } from "@ember/object";
+import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { dropTask, lastValue, task } from "ember-concurrency";
@@ -44,13 +44,13 @@ export default class ProjectsController extends Controller {
   *fetchProjectsByUser() {
     try {
       let projects;
-      if (get(this, "user.isSuperuser")) {
+      if (this.user.isSuperuser) {
         projects = yield this.store.findAll("project", {
           include: "customer",
         });
       } else {
         projects = yield this.store.query("project", {
-          has_manager: get(this, "user.id"),
+          has_manager: this.user.get("id"),
           include: "customer",
         });
       }
@@ -66,14 +66,14 @@ export default class ProjectsController extends Controller {
   *filterProjects() {
     return yield this.projects.filter(
       (project) =>
-        project.get("customer.id") === get(this, "selectedCustomer.id")
+        project.get("customer.id") === this.selectedCustomer.get("id")
     );
   }
 
   @dropTask
   *fetchTasksByProject() {
     try {
-      const id = get(this, "selectedProject.id");
+      const id = this.selectedProject.get("id");
       return yield this.store.query("task", {
         project: id,
       });

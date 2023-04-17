@@ -1,16 +1,13 @@
 import Controller from "@ember/controller";
+import { inject as service } from "@ember/service";
 import { task, all, hash } from "ember-concurrency";
-import QueryParams from "ember-parachute";
 import moment from "moment";
 
-const UsersEditQueryParams = new QueryParams({});
+export default class UsersEditController extends Controller {
+  @service store;
 
-export default Controller.extend(UsersEditQueryParams.Mixin, {
-  setup() {
-    this.data.perform(this.get("model.id"));
-  },
-
-  data: task(function* (uid) {
+  @task
+  *data(uid) {
     return yield hash({
       worktimeBalanceLastValidTimesheet:
         this.worktimeBalanceLastValidTimesheet.perform(uid),
@@ -18,35 +15,39 @@ export default Controller.extend(UsersEditQueryParams.Mixin, {
       worktimeBalances: this.worktimeBalances.perform(uid),
       absenceBalances: this.absenceBalances.perform(uid),
     });
-  }),
+  }
 
-  worktimeBalanceLastValidTimesheet: task(function* (user) {
+  @task
+  *worktimeBalanceLastValidTimesheet(user) {
     const worktimeBalance = yield this.store.query("worktime-balance", {
       user,
       last_reported_date: 1, // eslint-disable-line camelcase
     });
 
     return worktimeBalance.get("firstObject");
-  }),
+  }
 
-  worktimeBalanceToday: task(function* (user) {
+  @task
+  *worktimeBalanceToday(user) {
     const worktimeBalance = yield this.store.query("worktime-balance", {
       user,
       date: moment().format("YYYY-MM-DD"),
     });
 
     return worktimeBalance.get("firstObject");
-  }),
+  }
 
-  absenceBalances: task(function* (user) {
+  @task
+  *absenceBalances(user) {
     return yield this.store.query("absence-balance", {
       user,
       date: moment().format("YYYY-MM-DD"),
       include: "absence_type",
     });
-  }),
+  }
 
-  worktimeBalances: task(function* (user) {
+  @task
+  *worktimeBalances(user) {
     const dates = [...Array(10).keys()]
       .map((i) => moment().subtract(i, "days"))
       .reverse();
@@ -61,5 +62,5 @@ export default Controller.extend(UsersEditQueryParams.Mixin, {
         return balance.get("firstObject");
       })
     );
-  }),
-});
+  }
+}
