@@ -1,3 +1,23 @@
+## [3.1.4](https://github.com/adfinis/timed-frontend/compare/v3.1.3...v3.1.4) (2023-04-20)
+
+
+### Bug Fixes
+
+* implement Suggested changes ([f0e099f](https://github.com/adfinis/timed-frontend/commit/f0e099f15346a841e545db5c05288183ac7d2c41))
+* **protected:** await before model hook auth request ([#909](https://github.com/adfinis/timed-frontend/issues/909)) ([1561af1](https://github.com/adfinis/timed-frontend/commit/1561af12627ca1da5d6ec32d4815013108eb6c08))
+* refactor edit users responsibilites controller to use native js class ([659f5f8](https://github.com/adfinis/timed-frontend/commit/659f5f8f62d9cb8f7bf4f39161ac179a3797fabd))
+* remove ember get function from projects page ([73e7182](https://github.com/adfinis/timed-frontend/commit/73e7182784f90de7e48b3e1f152af14a96275cda))
+* remove unneded component of page permissions ([1e5a74e](https://github.com/adfinis/timed-frontend/commit/1e5a74e7890b29b0bacc528dbe776be860413fc1))
+* responsibilities users route ([f2e28d7](https://github.com/adfinis/timed-frontend/commit/f2e28d77b92279b0447d25d17ed7c1e7525d64b8))
+* run data fetching on setup controller hook in users edit index ([8c907c7](https://github.com/adfinis/timed-frontend/commit/8c907c798cc2bd6a6de7a88e5cbab086189314fb))
+* run data fetching on setup controller hook in users edit route ([068dedc](https://github.com/adfinis/timed-frontend/commit/068dedc7c130265b88d35e60a8ae52f804586656))
+* update class name `UsersEditCreditsOvertimeCreditsNewRoute` ([9165ada](https://github.com/adfinis/timed-frontend/commit/9165ada0adacad6162f4115a193de28f22e73357))
+* use native JS class in 'no-access' route ([c0ce893](https://github.com/adfinis/timed-frontend/commit/c0ce893e1afe4f3c0ba4291adcab21673ed8199d))
+* use native JS class in 'not-found' route ([2e9a11f](https://github.com/adfinis/timed-frontend/commit/2e9a11fb006df01884e04b589a4bd1a22ecea669))
+* use native js class in users edit route ([616dc0a](https://github.com/adfinis/timed-frontend/commit/616dc0ae83d97bd4d04752ceaa9d26f0835c5c87))
+* use native js classes in routes ([aeec8c3](https://github.com/adfinis/timed-frontend/commit/aeec8c39836be504e1ec16646c168c1833c5455c))
+* use native js classes in transforms ([05d86d4](https://github.com/adfinis/timed-frontend/commit/05d86d49b98645efe7cbc0b13eabe595db19158c))
+
 ## [3.1.3](https://github.com/adfinis/timed-frontend/compare/v3.1.2...v3.1.3) (2023-04-14)
 
 
