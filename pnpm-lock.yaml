@@ -78,7 +78,7 @@ specifiers:
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
   ember-simple-auth: 4.2.2
-  ember-simple-auth-oidc: 5.0.3
+  ember-simple-auth-oidc: 5.1.0
   ember-sinon-qunit: ^6.0.0
   ember-site-tour: 2.2.0
   ember-source: 3.28.11
@@ -187,7 +187,7 @@ devDependencies:
   ember-route-action-helper: 2.0.8
   ember-scrollable: 1.0.2
   ember-simple-auth: 4.2.2_ember-fetch@8.1.2
-  ember-simple-auth-oidc: 5.0.3_emjwjj3f6avaeowcbuu3b2fwnm
+  ember-simple-auth-oidc: 5.1.0_emjwjj3f6avaeowcbuu3b2fwnm
   ember-sinon-qunit: 6.0.0
   ember-site-tour: 2.2.0
   ember-source: 3.28.11
@@ -270,6 +270,40 @@ packages:
     dependencies:
       '@jridgewell/gen-mapping': 0.1.1
       '@jridgewell/trace-mapping': 0.3.17
+    dev: true
+
+  /@apollo/client/3.7.12_graphql@16.6.0:
+    resolution: {integrity: sha512-XvH8ssDibx5hR92Tet8CHtUxhiIs+RbYjyxkflAcnF85QT3VacUdNAhjj0OcA2kcZ+5KyceJmilmBNjj6+rJFg==}
+    peerDependencies:
+      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+      graphql-ws: ^5.5.5
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
+    peerDependenciesMeta:
+      graphql-ws:
+        optional: true
+      react:
+        optional: true
+      react-dom:
+        optional: true
+      subscriptions-transport-ws:
+        optional: true
+    dependencies:
+      '@graphql-typed-document-node/core': 3.2.0_graphql@16.6.0
+      '@wry/context': 0.7.0
+      '@wry/equality': 0.5.3
+      '@wry/trie': 0.3.2
+      graphql: 16.6.0
+      graphql-tag: 2.12.6_graphql@16.6.0
+      hoist-non-react-statics: 3.3.2
+      optimism: 0.16.2
+      prop-types: 15.8.1
+      response-iterator: 0.2.6
+      symbol-observable: 4.0.0
+      ts-invariant: 0.10.3
+      tslib: 2.5.0
+      zen-observable-ts: 1.2.5
     dev: true
 
   /@apollo/client/3.7.9_graphql@16.6.0:
@@ -4408,6 +4442,14 @@ packages:
       graphql: 16.6.0
     dev: true
 
+  /@graphql-typed-document-node/core/3.2.0_graphql@16.6.0:
+    resolution: {integrity: sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==}
+    peerDependencies:
+      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+    dependencies:
+      graphql: 16.6.0
+    dev: true
+
   /@handlebars/parser/2.0.0:
     resolution: {integrity: sha512-EP9uEDZv/L5Qh9IWuMUGJRfwhXJ4h1dqKTT4/3+tY0eu7sPis7xh23j61SYUnNF4vqCQvvUXpDo9Bh/+q1zASA==}
     dev: true
@@ -8077,7 +8119,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1_bluebird@3.7.2
+      promise-inflight: 1.0.1
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -11188,11 +11230,11 @@ packages:
       - supports-color
     dev: true
 
-  /ember-simple-auth-oidc/5.0.3_emjwjj3f6avaeowcbuu3b2fwnm:
-    resolution: {integrity: sha512-AaPhFZS/Kh2PTIQSFoRbElF7zyE0qoMAuh/u0bfxZtYxH6h7n4v1zfkZ40dz/YP2GozAlBe1jrBEeb1nHZsOdQ==}
+  /ember-simple-auth-oidc/5.1.0_emjwjj3f6avaeowcbuu3b2fwnm:
+    resolution: {integrity: sha512-HAK8CyBV4IVOCXLu2us+uFNRMWYAx5S7KIWV8eZHcdIa4CWoWnSiZS0vCTRHVSIjX0rLK7h8/00QIz4x8UoH4A==}
     engines: {node: 14.* || >= 16}
     dependencies:
-      '@apollo/client': 3.7.9_graphql@16.6.0
+      '@apollo/client': 3.7.12_graphql@16.6.0
       '@embroider/macros': 1.10.0
       base64-js: 1.5.1
       ember-auto-import: 2.6.0_webpack@5.76.2
@@ -17257,17 +17299,6 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
-    dev: true
-
-  /promise-inflight/1.0.1_bluebird@3.7.2:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-    dependencies:
-      bluebird: 3.7.2
     dev: true
 
   /promise-map-series/0.2.3:
