@@ -224,15 +224,17 @@ export default class TrackingService extends Service {
   }
 
   get activeCustomer() {
-    return this.activity?.task?.get("project.customer");
+    return (
+      this.hasActiveActivity && this.activity?.task?.get("project.customer")
+    );
   }
 
   get activeProject() {
-    return this.activity?.task?.get("project");
+    return this.hasActiveActivity && this.activity?.task?.get("project");
   }
 
   get activeTask() {
-    return this.activity?.get("task");
+    return this.hasActiveActivity && this.activity?.get("task");
   }
 
   /**
