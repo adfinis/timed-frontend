@@ -24,8 +24,8 @@ export default class ProtectedRoute extends Route {
   @service store;
   @service fetch;
 
-  beforeModel(transition) {
-    this.session.requireAuthentication(transition, "login");
+  async beforeModel(transition) {
+    await this.session.requireAuthentication(transition, "login");
   }
 
   async model() {
