@@ -1,3 +1,10 @@
+## [3.1.5](https://github.com/adfinis/timed-frontend/compare/v3.1.4...v3.1.5) (2023-04-24)
+
+
+### Bug Fixes
+
+* **activities:** check for active tracking state ([#912](https://github.com/adfinis/timed-frontend/issues/912)) ([134b435](https://github.com/adfinis/timed-frontend/commit/134b43506f159fa7afa4fe41ba60f89a76c75a56))
+
 ## [3.1.4](https://github.com/adfinis/timed-frontend/compare/v3.1.3...v3.1.4) (2023-04-20)
 
 
