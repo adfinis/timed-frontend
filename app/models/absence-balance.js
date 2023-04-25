@@ -1,11 +1,11 @@
 import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 
-export default Model.extend({
-  credit: attr("number"),
-  usedDays: attr("number"),
-  usedDuration: attr("django-duration"),
-  balance: attr("number"),
-  user: belongsTo("user"),
-  absenceType: belongsTo("absence-type"),
-  absenceCredits: hasMany("absence-credit"),
-});
+export default class AbsenceBalance extends Model {
+  @attr("number") credit;
+  @attr("number") usedDays;
+  @attr("django-duration") usedDuration;
+  @attr("number") balance;
+  @belongsTo("user") user;
+  @belongsTo("absence-type") absenceType;
+  @hasMany("absence-credit") absenceCredits;
+}
