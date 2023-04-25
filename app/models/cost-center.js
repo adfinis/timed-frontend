@@ -1,6 +1,6 @@
 import Model, { attr } from "@ember-data/model";
 
-export default Model.extend({
-  name: attr("string"),
-  reference: attr("string"),
-});
+export default class CostCenter extends Model {
+  @attr("string") name;
+  @attr("string") reference;
+}
