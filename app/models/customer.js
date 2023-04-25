@@ -3,7 +3,6 @@
  * @submodule timed-models
  * @public
  */
-import { reads } from "@ember/object/computed";
 import Model, { attr, hasMany } from "@ember-data/model";
 
 /**
@@ -13,7 +12,7 @@ import Model, { attr, hasMany } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-const Customer = Model.extend({
+export default class Customer extends Model {
   /**
    * The name
    *
@@ -21,7 +20,7 @@ const Customer = Model.extend({
    * @type {String}
    * @public
    */
-  name: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) name;
 
   /**
    * Whether the project is archived
@@ -30,7 +29,7 @@ const Customer = Model.extend({
    * @type {Boolean}
    * @public
    */
-  archived: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) archived;
 
   /**
    * The projects
@@ -39,7 +38,7 @@ const Customer = Model.extend({
    * @type {Project[]}
    * @public
    */
-  projects: hasMany("project"),
+  @hasMany("project") projects;
 
   /**
    * Long name - alias for name, used for filtering in the customer box
@@ -47,7 +46,9 @@ const Customer = Model.extend({
    * @property {String} longName
    * @public
    */
-  longName: reads("name"),
+  get longName() {
+    return this.name;
+  }
 
   /**
    * Assigned users to this customer
@@ -56,7 +57,5 @@ const Customer = Model.extend({
    * @type {CustomerAssignee[]}
    * @public
    */
-  assignees: hasMany("customer-assignee"),
-});
-
-export default Customer;
+  @hasMany("customer-assignee") assignees;
+}
