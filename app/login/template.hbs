@@ -3,9 +3,7 @@
   <hr>
   <TimedClock />
   <br>
-  <button
-  class="btn btn-primary sso-login"
-  type="button"
-  {{on "click" this.ssoLogin}}
-  >Login With SSO</button>
+  <LinkTo @route="sso-login" class="btn btn-primary">
+    Login with SSO
+  </LinkTo>
 </div>
