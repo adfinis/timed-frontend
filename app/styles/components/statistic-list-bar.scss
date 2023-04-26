@@ -25,6 +25,14 @@
       animation: slide-in-statistic-bar 0.5s cubic-bezier(0.86, 0, 0.07, 1);
     }
 
+    &.strong-success::before {
+      background-color: $color-success;
+    }
+
+    &.strong-danger::before {
+      background-color: $color-danger;
+    }
+
     &.success::before {
       background-color: $color-success-lighter;
     }
