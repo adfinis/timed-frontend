@@ -12,14 +12,14 @@ import Model, { attr, belongsTo } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class AbsenceCredit extends Model {
   /**
    * The days
    *
    * @property {Number} days
    * @public
    */
-  days: attr("number"),
+  @attr("number") days;
 
   /**
    * The date
@@ -27,7 +27,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr("django-date"),
+  @attr("django-date") date;
 
   /**
    * The comment
@@ -35,7 +35,7 @@ export default Model.extend({
    * @property {String} comment
    * @public
    */
-  comment: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) comment;
 
   /**
    * The absence type for which this credit counts
@@ -43,7 +43,7 @@ export default Model.extend({
    * @property {AbsenceType} absenceType
    * @public
    */
-  absenceType: belongsTo("absence-type"),
+  @belongsTo("absence-type") absenceType;
 
   /**
    * The user to which this credit belongs to
@@ -51,5 +51,5 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo("user"),
-});
+  @belongsTo("user") user;
+}
