@@ -12,7 +12,7 @@ import Model, { attr, hasMany } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class AbsenceType extends Model {
   /**
    * The name of the absence type
    *
@@ -21,7 +21,7 @@ export default Model.extend({
    * @property {String} name
    * @public
    */
-  name: attr("string"),
+  @attr("string") name;
 
   /**
    * Whether the absence type only fills the worktime
@@ -29,7 +29,7 @@ export default Model.extend({
    * @property {Boolean} fillWorktime
    * @public
    */
-  fillWorktime: attr("boolean"),
+  @attr("boolean") fillWorktime;
 
   /**
    * The balances for this type
@@ -37,5 +37,5 @@ export default Model.extend({
    * @property {AbsenceBalance[]} absenceBalances
    * @public
    */
-  absenceBalances: hasMany("absence-balance"),
-});
+  @hasMany("absence-balance") absenceBalances;
+}
