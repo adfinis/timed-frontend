@@ -13,14 +13,14 @@ import moment from "moment";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class Absence extends Model {
   /**
    * The comment
    *
    * @property {String} comment
    * @public
    */
-  comment: attr("string", { defaultValue: "" }),
+  @attr("string", { defaultValue: "" }) comment;
 
   /**
    * The duration
@@ -28,7 +28,7 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: attr("django-duration", { defaultValue: () => moment.duration() }),
+  @attr("django-duration", { defaultValue: () => moment.duration() }) duration;
 
   /**
    * The date
@@ -36,7 +36,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr("django-date"),
+  @attr("django-date") date;
 
   /**
    * The type of the absence
@@ -44,7 +44,7 @@ export default Model.extend({
    * @property {AbsenceType} absenceType
    * @public
    */
-  absenceType: belongsTo("absence-type"),
+  @belongsTo("absence-type") absenceType;
 
   /**
    * The user
@@ -52,5 +52,5 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo("user"),
-});
+  @belongsTo("user") user;
+}
