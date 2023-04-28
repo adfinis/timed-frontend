@@ -2,11 +2,6 @@
   display: flex;
   flex-direction: column;
 
-  & {
-    display: flex;
-    flex-direction: column;
-  }
-
   &.filter-sidebar-group--expanded .filter-sidebar-group-label .fa {
     transform: rotate(90deg);
   }
