@@ -1,18 +1,18 @@
-<a
-  href="#"
-  class="filter-sidebar-group-label"
-  {{on "click" (toggle "expanded" this)}}
->
-  {{@label}}
-  <FaIcon
-    @icon="angle-right"
-    @prefix="fas"
-    @transform="{{if this.expanded 'rotate-90'}}"
-  />
-</a>
-
-<div class="filter-sidebar-group-body">
-  <div class="filter-sidebar-group-content">
-    {{yield}}
+<div class="filter-sidebar-group {{if this.expanded 'filter-sidebar-group--expanded'}}">
+  <a
+    href="#"
+    class="filter-sidebar-group-label"
+    {{on "click" (toggle "expanded" this)}}>
+    {{@label}}
+    <FaIcon
+      @icon="angle-right"
+      @prefix="fas"
+      @transform="{{if this.expanded 'rotate-90'}}"
+      />
+    </a>
+    <div class="filter-sidebar-group-body">
+      <div class="filter-sidebar-group-content">
+        {{yield}}
+      </div>
+    </div>
   </div>
-</div>
