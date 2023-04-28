@@ -1,0 +1,11 @@
+.filter-sidebar-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+}
+
+.filter-sidebar-label > * {
+  font-weight: 300;
+  margin-top: 0.3rem;
+}
