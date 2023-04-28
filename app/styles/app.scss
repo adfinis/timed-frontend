@@ -28,7 +28,9 @@
 
 /* Component styles */
 @import "components/attendance-slider";
+@import "components/date-buttons";
 @import "components/date-navigation";
+@import "components/filter-sidebar--group";
 @import "components/nav-top";
 @import "components/tracking-bar";
 @import "components/record-button";
@@ -43,7 +45,6 @@
 @import "components/sy-toggle";
 @import "components/progress-tooltip";
 @import "components/welcome-modal";
-@import "components/filter-sidebar--groups";
 
 html {
   hyphens: auto;
