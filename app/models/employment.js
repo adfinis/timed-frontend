@@ -12,14 +12,14 @@ import Model, { attr, belongsTo } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class Employment extends Model {
   /**
    * The percentage
    *
    * @property {Number} percentage
    * @public
    */
-  percentage: attr("number"),
+  @attr("number") percentage;
 
   /**
    * The time the user has to work every day
@@ -27,7 +27,7 @@ export default Model.extend({
    * @property {moment.duration} worktimePerDay
    * @public
    */
-  worktimePerDay: attr("django-duration"),
+  @attr("django-duration") worktimePerDay;
 
   /**
    * The start date
@@ -35,7 +35,7 @@ export default Model.extend({
    * @property {moment} start
    * @public
    */
-  start: attr("django-date"),
+  @attr("django-date") start;
 
   /**
    * Whether the employment is of an external employee
@@ -43,7 +43,7 @@ export default Model.extend({
    * @property {Boolean} isExternal
    * @public
    */
-  isExternal: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) isExternal;
 
   /**
    * The end date
@@ -51,7 +51,7 @@ export default Model.extend({
    * @property {moment} end
    * @public
    */
-  end: attr("django-date"),
+  @attr("django-date") end;
 
   /**
    * The employed user
@@ -59,7 +59,7 @@ export default Model.extend({
    * @property {User} user
    * @public
    */
-  user: belongsTo("user"),
+  @belongsTo("user") user;
 
   /**
    * The work location
@@ -67,5 +67,5 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo("location"),
-});
+  @belongsTo("location") location;
+}

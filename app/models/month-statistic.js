@@ -1,7 +1,7 @@
 import Model, { attr } from "@ember-data/model";
 
-export default Model.extend({
-  year: attr("number"),
-  month: attr("number"),
-  duration: attr("django-duration"),
-});
+export default class MonthStatistic extends Model {
+  @attr("number") year;
+  @attr("number") month;
+  @attr("django-duration") duration;
+}
