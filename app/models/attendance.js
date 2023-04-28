@@ -3,7 +3,6 @@
  * @submodule timed-models
  * @public
  */
-import { computed } from "@ember/object";
 import Model, { attr, belongsTo } from "@ember-data/model";
 import moment from "moment";
 
@@ -14,14 +13,14 @@ import moment from "moment";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class Attendance extends Model {
   /**
    * The date of the attendance
    *
    * @property {moment} date
    * @public
    */
-  date: attr("django-date"),
+  @attr("django-date") date;
 
   /**
    * The start time
@@ -29,7 +28,7 @@ export default Model.extend({
    * @property {moment} from
    * @public
    */
-  from: attr("django-time"),
+  @attr("django-time") from;
 
   /**
    * The end time
@@ -37,7 +36,7 @@ export default Model.extend({
    * @property {moment} to
    * @public
    */
-  to: attr("django-time"),
+  @attr("django-time") to;
 
   /**
    * The user
@@ -46,7 +45,7 @@ export default Model.extend({
    * @type {User}
    * @public
    */
-  user: belongsTo("user"),
+  @belongsTo("user") user;
 
   /**
    * The duration between start and end time
@@ -57,12 +56,12 @@ export default Model.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: computed("from", "to", function () {
+  get duration() {
     const calcTo =
       this.to.format("HH:mm") === "00:00"
         ? this.to.clone().add(1, "day")
         : this.to;
 
     return moment.duration(calcTo.diff(this.from));
-  }),
-});
+  }
+}

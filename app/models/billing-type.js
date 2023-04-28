@@ -12,12 +12,12 @@ import Model, { attr } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class BillingType extends Model {
   /**
    * The name
    *
    * @property {String} name
    * @public
    */
-  name: attr("string"),
-});
+  @attr("string") name;
+}
