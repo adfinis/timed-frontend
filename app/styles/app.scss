@@ -34,7 +34,8 @@
 @import "components/filter-sidebar--label";
 @import "components/loading-icon";
 @import "components/nav-top";
-@import "components/tracking-bar";
+@import "components/paginated-table--foot";
+@import "components/progress-tooltip";
 @import "components/record-button";
 @import "components/sort-header";
 @import "components/statistic-list-bar";
@@ -45,7 +46,7 @@
 @import "components/sy-modal--footer";
 @import "components/sy-modal--overlay";
 @import "components/sy-toggle";
-@import "components/progress-tooltip";
+@import "components/tracking-bar";
 @import "components/welcome-modal";
 
 html {
