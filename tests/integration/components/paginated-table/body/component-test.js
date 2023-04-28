@@ -7,7 +7,7 @@ module("Integration | Component | paginated table/body", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{paginated-table/body}}`);
+    await render(hbs`<PaginatedTable::Body />`);
     assert.ok(this.element);
   });
 });
