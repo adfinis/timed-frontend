@@ -31,6 +31,7 @@
 @import "components/date-buttons";
 @import "components/date-navigation";
 @import "components/filter-sidebar--groups";
+@import "components/loading-icon";
 @import "components/magic-link-btn.scss";
 @import "components/nav-top";
 @import "components/tracking-bar";
@@ -46,7 +47,6 @@
 @import "components/sy-toggle";
 @import "components/progress-tooltip";
 @import "components/welcome-modal";
-@import "components/loading-icon";
 
 html {
   hyphens: auto;
