@@ -7,7 +7,7 @@ module("Integration | Component | loading icon", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{loading-icon}}`);
+    await render(hbs`<LoadingIcon />`);
 
     assert.dom(".loading-dot").exists({ count: 9 });
   });

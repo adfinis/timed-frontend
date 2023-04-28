@@ -12,14 +12,14 @@ import Model, { attr, belongsTo } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class PublicHoliday extends Model {
   /**
    * The name
    *
    * @property {String} name
    * @public
    */
-  name: attr("string"),
+  @attr("string") name;
 
   /**
    * The date
@@ -27,7 +27,7 @@ export default Model.extend({
    * @property {moment} date
    * @public
    */
-  date: attr("django-date"),
+  @attr("django-date") date;
 
   /**
    * The location
@@ -35,5 +35,5 @@ export default Model.extend({
    * @property {Location} location
    * @public
    */
-  location: belongsTo("location"),
-});
+  @belongsTo("location") location;
+}
