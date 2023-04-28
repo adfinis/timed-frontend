@@ -7,7 +7,7 @@ module("Integration | Component | not identical warning", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{not-identical-warning}}`);
+    await render(hbs`<NotIdenticalWarning />`);
 
     assert.dom(".fa-circle-info").exists();
   });
