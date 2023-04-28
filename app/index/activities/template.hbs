@@ -64,7 +64,7 @@
               </td>
               <td>
                 {{#if activity.active}}
-                  {{duration-since activity.from}}
+                  <DurationSince @from={{activity.from}} />
                 {{else}}
                   {{format-duration activity.duration}}
                 {{/if}}

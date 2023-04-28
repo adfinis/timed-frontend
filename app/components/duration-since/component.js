@@ -3,7 +3,8 @@
  * @submodule timed-components
  * @public
  */
-import Component from "@ember/component";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import Ember from "ember";
 import { task, timeout } from "ember-concurrency";
 import moment from "moment";
@@ -24,14 +25,11 @@ import moment from "moment";
  * @extends Ember.Component
  * @public
  */
-const DurationSinceComponent = Component.extend({
-  /**
-   * The DOM element of the component
-   *
-   * @property {String} tagName
-   * @public
-   */
-  tagName: "span",
+export default class DurationSinceComponent extends Component {
+  constructor(...args) {
+    super(...args);
+    this.timer.perform();
+  }
 
   /**
    * The moment from which the duration is computed
@@ -39,7 +37,9 @@ const DurationSinceComponent = Component.extend({
    * @property {moment} from
    * @public
    */
-  from: moment(),
+  get from() {
+    return this.args.from ?? moment();
+  }
 
   /**
    * The already elapsed time which is added to the computed duration
@@ -47,7 +47,9 @@ const DurationSinceComponent = Component.extend({
    * @property {moment.duration} elapsed
    * @public
    */
-  elapsed: moment.duration(),
+  get elapsed() {
+    return this.args.elapsed ?? moment.duration();
+  }
 
   /**
    * The total duration since the from moment plus the elapsed time
@@ -55,12 +57,7 @@ const DurationSinceComponent = Component.extend({
    * @property {moment.duration} duration
    * @public
    */
-  duration: moment.duration(),
-
-  init(...args) {
-    this._super(...args);
-    this._compute();
-  },
+  @tracked duration = moment.duration();
 
   /**
    * Compute the duration
@@ -69,11 +66,8 @@ const DurationSinceComponent = Component.extend({
    * @private
    */
   _compute() {
-    this.set(
-      "duration",
-      moment.duration(moment().diff(this.from)).add(this.elapsed)
-    );
-  },
+    this.duration = moment.duration(moment().diff(this.from)).add(this.elapsed);
+  }
 
   /**
    * The timer function, which causes the duration to be recomputed every second
@@ -81,7 +75,8 @@ const DurationSinceComponent = Component.extend({
    * @proprety {*} timer
    * @public
    */
-  timer: task(function* () {
+  @task
+  *timer() {
     for (;;) {
       this._compute();
 
@@ -93,11 +88,5 @@ const DurationSinceComponent = Component.extend({
       /* istanbul ignore next */
       yield timeout(1000);
     }
-  }).on("init"),
-});
-
-DurationSinceComponent.reopenClass({
-  positionalParams: ["from"],
-});
-
-export default DurationSinceComponent;
+  }
+}
