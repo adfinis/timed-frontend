@@ -1,10 +1,13 @@
-{{yield}}
-<tr>
-  <td colspan="42">
-    {{#if (gt this.pages 1)}}
-      <PaginationPager @current={{this.page}} @count={{this.pages}} @class="pagination-nav" />
-    {{/if}}
-    <PaginationLimit page={{this.page}} page_size={{this.page_size}} />
-  </td>
-</tr>
-{{yield to='inverse'}}
+<tfoot class="paginated-table-foot">
+  {{yield}}
+  <tr>
+    <td colspan="42">
+      {{#if (gt this.pages 1)}}
+      <PaginationPager @current={{this.page}} @count={{this.pages}}
+        @class="pagination-nav" />
+      {{/if}}
+      <PaginationLimit page={{this.page}} page_size={{this.page_size}} />
+    </td>
+  </tr>
+  {{yield to='inverse'}}
+</tfoot>
