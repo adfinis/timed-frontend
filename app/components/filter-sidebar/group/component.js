@@ -1,10 +1,6 @@
-import Component from "@ember/component";
-import { classNames, classNameBindings } from "@ember-decorators/component";
-import classic from "ember-classic-decorator";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 
-@classic
-@classNames("filter-sidebar-group")
-@classNameBindings("expanded:filter-sidebar-group--expanded")
 export default class Group extends Component {
-  expanded = false;
+  @tracked expanded = false;
 }

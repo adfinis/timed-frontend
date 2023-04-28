@@ -1,0 +1,47 @@
+.filter-sidebar-group {
+  display: flex;
+  flex-direction: column;
+
+  &.filter-sidebar-group--expanded .filter-sidebar-group-label .fa {
+    transform: rotate(90deg);
+  }
+
+  &.filter-sidebar-group--expanded .filter-sidebar-group-label,
+  .filter-sidebar-group-label:hover {
+    color: $body-color;
+  }
+
+  &.filter-sidebar-group--expanded .filter-sidebar-group-body {
+    max-height: 450px;
+  }
+
+  .filter-sidebar-group-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 1rem;
+    color: lighten($body-color, 50%);
+    border-top: 1px solid $color-border;
+    transition: color 0.3s ease;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .filter-sidebar-group-body {
+    display: block;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.3s ease;
+  }
+
+  .filter-sidebar-group-content {
+    padding: 0.5rem 1rem;
+  }
+
+  .filter-sidebar-group-label .fa {
+    transition: transform 0.3s ease;
+  }
+}

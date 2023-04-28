@@ -12,7 +12,7 @@ import Model, { attr, belongsTo } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class CustomerAssignee extends Model {
   /**
    * The customer
    *
@@ -20,7 +20,7 @@ export default Model.extend({
    * @type {Customer}
    * @public
    */
-  customer: belongsTo("customer"),
+  @belongsTo("customer") customer;
   /**
    * The user
    *
@@ -28,7 +28,7 @@ export default Model.extend({
    * @type {User}
    * @public
    */
-  user: belongsTo("user"),
+  @belongsTo("user") user;
 
   /**
    * Whether the assignee is a reviewer
@@ -37,7 +37,7 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  isReviewer: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) isReviewer;
 
   /**
    * Whether the assignee is a manager
@@ -46,7 +46,7 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  isManager: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) isManager;
 
   /**
    * Whether the assignee is a resource
@@ -55,5 +55,5 @@ export default Model.extend({
    * @type {Boolean}
    * @public
    */
-  isResource: attr("boolean", { defaultValue: false }),
-});
+  @attr("boolean", { defaultValue: false }) isResource;
+}

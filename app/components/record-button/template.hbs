@@ -12,7 +12,7 @@
       <FaIcon @icon="square" @prefix="fas" />
     </button>
     <div class="record-button-timer">
-      {{duration-since @activity.from}}
+      <DurationSince @from={{@activity.from}} />
     </div>
   {{else}}
     <button
