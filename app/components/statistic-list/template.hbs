@@ -73,7 +73,7 @@
               as |remainingEffort|
             }}
               {{#let
-                (if remainingEffort (add row.duration remainingEffort) 0)
+                (if (gt remainingEffort 0) (add row.duration remainingEffort) 0)
                 as |allotted|
               }}
                 <StatisticList::Bar
