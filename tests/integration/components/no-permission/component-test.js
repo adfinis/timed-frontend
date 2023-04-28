@@ -7,7 +7,7 @@ module("Integration | Component | no permission", function (hooks) {
   setupRenderingTest(hooks);
 
   test("renders", async function (assert) {
-    await render(hbs`{{no-permission}}`);
+    await render(hbs`<NoPermission />`);
 
     assert.dom(".empty").exists();
     assert.dom(".empty").includesText("Halt");
