@@ -90,7 +90,7 @@
     "ember-component-css": "0.8.1",
     "ember-composable-helpers": "5.0.0",
     "ember-concurrency": "2.3.4",
-    "ember-data": "3.28.12",
+    "ember-data": "3.28.13",
     "ember-decorators": "6.1.1",
     "ember-event-helpers": "^0.1.1",
     "ember-export-application-global": "2.0.1",
