@@ -1,6 +1,6 @@
 "use strict";
 
-// eslint-disable-next-line node/no-missing-require
+// eslint-disable-next-line n/no-missing-require
 const Funnel = require("broccoli-funnel");
 const EmberApp = require("ember-cli/lib/broccoli/ember-app");
 

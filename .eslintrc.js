@@ -1,7 +1,7 @@
 "use-strict";
 
 module.exports = {
-  extends: ["@adfinis-sygroup/eslint-config/ember-app"],
+  extends: ["@adfinis/eslint-config/ember-app"],
   rules: {
     "ember/no-actions-hash": "warn",
     "ember/no-component-lifecycle-hooks": "warn",

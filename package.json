@@ -35,12 +35,14 @@
     "*.{scss,graphql,json,md,yml}": "prettier --write"
   },
   "release": {
-    "extends": "@adfinis-sygroup/semantic-release-config"
+    "extends": "@adfinis/semantic-release-config"
   },
   "devDependencies": {
-    "@adfinis-sygroup/eslint-config": "1.5.0",
-    "@adfinis-sygroup/semantic-release-config": "3.4.0",
+    "@adfinis/eslint-config": "2.0.0",
+    "@adfinis/semantic-release-config": "4.0.0",
     "@apollo/client": "3.7.9",
+    "@babel/core": "7.21.4",
+    "@babel/eslint-parser": "7.21.3",
     "@commitlint/cli": "17.4.4",
     "@commitlint/config-conventional": "17.4.4",
     "@ember/jquery": "2.0.0",
@@ -59,7 +61,6 @@
     "@html-next/vertical-collection": "4.0.2",
     "@semantic-release/changelog": "^6.0.2",
     "@semantic-release/git": "^10.0.1",
-    "babel-eslint": "10.1.0",
     "broccoli-asset-rev": "3.0.0",
     "broccoli-funnel": "^3.0.8",
     "downloadjs": "1.4.7",
@@ -123,11 +124,11 @@
     "ember-truth-helpers": "3.1.1",
     "ember-validated-form": "6.1.2",
     "ember-wormhole": "0.6.0",
-    "eslint": "7.32.0",
-    "eslint-config-prettier": "8.6.0",
-    "eslint-plugin-ember": "11.4.6",
+    "eslint": "8.39.0",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-plugin-ember": "11.5.2",
     "eslint-plugin-import": "2.27.5",
-    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-n": "15.7.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-qunit": "7.3.4",
     "faker": "4.1.0",
@@ -137,7 +138,7 @@
     "loader.js": "4.7.0",
     "npm-run-all": "4.1.5",
     "pagination-pager": "4.0.1",
-    "prettier": "2.8.4",
+    "prettier": "2.8.8",
     "qunit": "2.19.4",
     "qunit-dom": "2.0.0",
     "sass": "1.58.3",
@@ -147,7 +148,7 @@
     "webpack": "5.76.2"
   },
   "engines": {
-    "node": " ^14.17.0 || >= 16"
+    "node": ">=16.*"
   },
   "ember": {
     "edition": "octane"
