@@ -6,7 +6,7 @@ overrides:
 specifiers:
   '@adfinis/eslint-config': 2.0.0
   '@adfinis/semantic-release-config': 4.0.0
-  '@apollo/client': 3.7.9
+  '@apollo/client': 3.7.13
   '@babel/core': 7.21.4
   '@babel/eslint-parser': 7.21.3
   '@commitlint/cli': 17.4.4
@@ -116,7 +116,7 @@ specifiers:
 devDependencies:
   '@adfinis/eslint-config': 2.0.0_e7h3bs44blekh2oht77fmxvty4
   '@adfinis/semantic-release-config': 4.0.0
-  '@apollo/client': 3.7.9_graphql@16.6.0
+  '@apollo/client': 3.7.13_graphql@16.6.0
   '@babel/core': 7.21.4
   '@babel/eslint-parser': 7.21.3_awdqtp74dga4gnyb5cnw6hcaya
   '@commitlint/cli': 17.4.4
@@ -282,8 +282,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.17
     dev: true
 
-  /@apollo/client/3.7.12_graphql@16.6.0:
-    resolution: {integrity: sha512-XvH8ssDibx5hR92Tet8CHtUxhiIs+RbYjyxkflAcnF85QT3VacUdNAhjj0OcA2kcZ+5KyceJmilmBNjj6+rJFg==}
+  /@apollo/client/3.7.13_graphql@16.6.0:
+    resolution: {integrity: sha512-wi63WnO2mhb6uHGB/8x1qIOL4ZtZocrxdHS0VBQ9KwBDkwoP/TdVVgZ29J2WkiAPmJ0SK07ju4R2AjHor1gPxQ==}
     peerDependencies:
       graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
       graphql-ws: ^5.5.5
@@ -301,40 +301,6 @@ packages:
         optional: true
     dependencies:
       '@graphql-typed-document-node/core': 3.2.0_graphql@16.6.0
-      '@wry/context': 0.7.0
-      '@wry/equality': 0.5.3
-      '@wry/trie': 0.3.2
-      graphql: 16.6.0
-      graphql-tag: 2.12.6_graphql@16.6.0
-      hoist-non-react-statics: 3.3.2
-      optimism: 0.16.2
-      prop-types: 15.8.1
-      response-iterator: 0.2.6
-      symbol-observable: 4.0.0
-      ts-invariant: 0.10.3
-      tslib: 2.5.0
-      zen-observable-ts: 1.2.5
-    dev: true
-
-  /@apollo/client/3.7.9_graphql@16.6.0:
-    resolution: {integrity: sha512-YnJvrJOVWrp4y/zdNvUaM8q4GuSHCEIecsRDTJhK/veT33P/B7lfqGJ24NeLdKMj8tDEuXYF7V0t+th4+rgC+Q==}
-    peerDependencies:
-      graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
-      graphql-ws: ^5.5.5
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0
-      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
-      subscriptions-transport-ws: ^0.9.0 || ^0.11.0
-    peerDependenciesMeta:
-      graphql-ws:
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-      subscriptions-transport-ws:
-        optional: true
-    dependencies:
-      '@graphql-typed-document-node/core': 3.1.1_graphql@16.6.0
       '@wry/context': 0.7.0
       '@wry/equality': 0.5.3
       '@wry/trie': 0.3.2
@@ -3376,14 +3342,6 @@ packages:
     resolution: {integrity: sha512-gNhityUr9HODYH9GydHVk7C6NZ57MqSbdGzC5TM8VdPibtd72N3+3Zggrm12Faw4E4zTvTM1692Sz/bNwMxLNw==}
     dependencies:
       '@glimmer/util': 0.27.0
-    dev: true
-
-  /@graphql-typed-document-node/core/3.1.1_graphql@16.6.0:
-    resolution: {integrity: sha512-NQ17ii0rK1b34VZonlmT2QMJFI70m0TRwbknO/ihlbatXyaktDhN/98vBiUU6kNBPljqGqyIrl2T4nY2RpFANg==}
-    peerDependencies:
-      graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
-    dependencies:
-      graphql: 16.6.0
     dev: true
 
   /@graphql-typed-document-node/core/3.2.0_graphql@16.6.0:
@@ -7134,7 +7092,7 @@ packages:
       mississippi: 3.0.0
       mkdirp: 0.5.6
       move-concurrently: 1.0.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1_bluebird@3.7.2
       rimraf: 2.7.1
       ssri: 6.0.2
       unique-filename: 1.1.1
@@ -10206,7 +10164,7 @@ packages:
     resolution: {integrity: sha512-HAK8CyBV4IVOCXLu2us+uFNRMWYAx5S7KIWV8eZHcdIa4CWoWnSiZS0vCTRHVSIjX0rLK7h8/00QIz4x8UoH4A==}
     engines: {node: 14.* || >= 16}
     dependencies:
-      '@apollo/client': 3.7.12_graphql@16.6.0
+      '@apollo/client': 3.7.13_graphql@16.6.0
       '@embroider/macros': 1.10.0
       base64-js: 1.5.1
       ember-auto-import: 2.6.0_webpack@5.76.2
@@ -16237,6 +16195,17 @@ packages:
     peerDependenciesMeta:
       bluebird:
         optional: true
+    dev: true
+
+  /promise-inflight/1.0.1_bluebird@3.7.2:
+    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
+    peerDependencies:
+      bluebird: '*'
+    peerDependenciesMeta:
+      bluebird:
+        optional: true
+    dependencies:
+      bluebird: 3.7.2
     dev: true
 
   /promise-map-series/0.2.3:
