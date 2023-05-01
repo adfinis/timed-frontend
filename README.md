@@ -1,7 +1,7 @@
 ![Timed Logo](/public/assets/logo_text.png)
 
-[![Build Status](https://github.com/adfinis-sygroup/timed-frontend/actions/workflows/test.yml/badge.svg?branch=master)](https://github.com/adfinis-sygroup/timed-frontend/actions/workflows/test.yml)
-[![Codecov](https://codecov.io/gh/adfinis/timed-frontend/branch/master/graph/badge.svg)](https://codecov.io/gh/adfinis-sygroup/timed-frontend)
+[![Build Status](https://github.com/adfinis/timed-frontend/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/adfinis/timed-frontend/actions/workflows/test.yml)
+[![Codecov](https://codecov.io/gh/adfinis/timed-frontend/branch/main/graph/badge.svg)](https://codecov.io/gh/adfinis/timed-frontend)
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GHCR Image](https://github.com/adfinis/timed-frontend/actions/workflows/release-image.yml/badge.svg)](https://github.com/adfinis/timed-frontend/actions/workflows/release-image.yml)
 
@@ -23,7 +23,7 @@ Optional:
 
 ## Installation
 
-- `git clone git@github.com/adfinis-sygroup/timed-frontend`
+- `git clone git@github.com/adfinis/timed-frontend`
 - `cd timed-frontend`
 - `pnpm i`
 
@@ -32,13 +32,13 @@ Optional:
 - `ember server`
 - Visit your app at [http://localhost:4200](http://localhost:4200).
 
-If you have a running [backend](https://github.com/adfinis-sygroup/timed-backend) you need to run
+If you have a running [backend](https://github.com/adfinis/timed-backend) you need to run
 
 - `ember server --proxy=http://localhost:8000`
   or
 - `pnpm start`
 
-If you are using docker-compose you can start a static frontend and the backend by following the instructions in the [backend](https://github.com/adfinis-sygroup/timed-backend)
+If you are using docker-compose you can start a static frontend and the backend by following the instructions in the [backend](https://github.com/adfinis/timed-backend)
 
 ### Running Tests
 

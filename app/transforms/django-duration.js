@@ -20,7 +20,7 @@ const { round } = Math;
  * days and microseconds are optional.
  *
  * @see http://www.django-rest-framework.org/api-guide/fields/#durationfield
- * @see https://github.com/django/django/blob/master/django/utils/duration.py
+ * @see https://github.com/django/django/blob/main/django/utils/duration.py
  *
  * @class DjangoDurationTransform
  * @extends DS.Transform
