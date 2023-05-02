@@ -2,16 +2,20 @@ import Component from "@glimmer/component";
 
 export default class StatisticListBar extends Component {
   get didFinishEffortsInBudget() {
-    if (this.args.remaining === 0 && this.args.value < this.args.goal) {
-      return true;
-    }
-    return false;
+    return this.args.remaining === 0 && !this.didFinishEffortsOverBudget;
   }
 
   get didFinishEffortsOverBudget() {
-    if (this.args.value > this.args.goal) {
-      return true;
+    return this.args.value > this.args.goal;
+  }
+
+  get spentEffortsBarColor() {
+    if (this.didFinishEffortsInBudget) {
+      return "strong-success";
     }
-    return false;
+    if (this.didFinishEffortsOverBudget) {
+      return "strong-danger";
+    }
+    return "";
   }
 }

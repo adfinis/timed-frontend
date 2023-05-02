@@ -2,10 +2,7 @@
 
   <div
     ...attributes
-    class="statistic-list-bar
-    {{if this.didFinishEffortsInBudget 'strong-success'}}
-    {{if this.didFinishEffortsOverBudget 'strong-danger'}}
-    "
+    class="statistic-list-bar {{ this.spentEffortsBarColor }}"
     {{style --value=(concat @value)}}
   ></div>
   {{#if (and @remaining (lte @remaining 1))}}
