@@ -1698,7 +1698,7 @@ def test_report_list_no_employment(
 @pytest.mark.parametrize(
     "report_owner, reviewer, expected, mail_count, status_code",
     [
-        (True, True, True, 1, status.HTTP_200_OK),
+        (True, True, False, 0, status.HTTP_400_BAD_REQUEST),
         (False, True, True, 1, status.HTTP_200_OK),
         (True, False, False, 0, status.HTTP_400_BAD_REQUEST),
         (False, False, False, 0, status.HTTP_403_FORBIDDEN),
@@ -1742,6 +1742,29 @@ def test_report_reject(
     if mail_count:
         mail = mailoutbox[0]
         assert mail.to[0] == user2.email if not report_owner else user
+
+
+def test_report_update_rejected_owner(
+    internal_employee_client, report_factory, mailoutbox
+):
+    user = internal_employee_client.user
+    report = report_factory.create(user=user, rejected=True)
+
+    data = {
+        "data": {
+            "type": "reports",
+            "id": report.id,
+            "attributes": {
+                "comment": "foobar",
+                "rejected": True,
+            },
+        }
+    }
+
+    url = reverse("report-detail", args=[report.id])
+    response = internal_employee_client.patch(url, data)
+    assert response.status_code == status.HTTP_200_OK
+    assert len(mailoutbox) == 0
 
 
 def test_report_reject_multiple_notify(

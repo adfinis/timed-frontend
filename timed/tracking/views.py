@@ -165,16 +165,18 @@ class ReportViewSet(ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
-        fields = {
-            key: value
-            for key, value in serializer.validated_data.items()
-            # value equal None means do not touch
-            if value is not None
-        }
-        if fields and request.user != instance.user:
-            tasks.notify_user_changed_report(instance, fields, request.user)
-        if fields.get("rejected"):
-            tasks.notify_user_rejected_report(instance, request.user)
+        if request.user != instance.user:
+            # send a notification only when the user is updating someone else's report
+            fields = {
+                key: value
+                for key, value in serializer.validated_data.items()
+                # value equal None means do not touch
+                if value is not None
+            }
+            if fields:
+                tasks.notify_user_changed_report(instance, fields, request.user)
+            if fields.get("rejected"):
+                tasks.notify_user_rejected_report(instance, request.user)
 
         return super().update(request, *args, **kwargs)
 
