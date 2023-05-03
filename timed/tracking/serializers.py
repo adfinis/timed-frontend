@@ -131,7 +131,9 @@ class ReportSerializer(TotalTimeRootMetaMixin, ModelSerializer):
         """Only reviewers are allowed to change rejected field."""
         if self.instance is not None:
             user = self.context["request"].user
-            if not user.is_reviewer and (self.instance.rejected != value):
+            if (
+                not user.is_reviewer or self.instance.user == user
+            ) and self.instance.rejected != value:
                 raise ValidationError(_("Only reviewers may reject reports."))
 
         return value
