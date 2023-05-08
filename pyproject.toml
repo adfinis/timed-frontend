@@ -21,7 +21,7 @@ include = ["CHANGELOG.md"]
 [tool.poetry.dependencies]
 python = "^3.8"
 python-dateutil = "^2.8.2"
-django = "^3.2.18"
+django = "^3.2.19"
 # might remove this once we find out how the jsonapi extras_require work
 django-cors-headers = "^3.13.0"
 django-filter = "^21.1"
@@ -101,6 +101,7 @@ filterwarnings = [
     "ignore:django.conf.urls.url().*:django.utils.deprecation.RemovedInDjango40Warning",
     "ignore:.*is deprecated in favour of new moneyed.l10n.format_money.*",
     "ignore:.*invalid escape sequence.*",
+    "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
 ]
 
 [tool.coverage.run]
