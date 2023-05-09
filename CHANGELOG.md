@@ -1,3 +1,8 @@
+# v3.0.5
+
+### Fix
+* **tracking:** Fix updating own rejected reports and rejecting own reports ([`6a5d0ed`](https://github.com/adfinis/timed-backend/commit/6a5d0eda470939c59ad9ea869d4296e0115dd33e))
+
 # v3.0.4
 
 ### Fix
