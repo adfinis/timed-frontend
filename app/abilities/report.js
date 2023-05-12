@@ -11,13 +11,13 @@ export default Ability.extend({
     function () {
       const isEditable =
         this.user?.isSuperuser ||
-        (!this.model.verifiedBy?.id &&
+        (!this.model?.verifiedBy?.get("id") &&
           // eslint-disable-next-line ember/no-get
-          (this.get("model.user.id") === this.user?.id ||
+          (this.model?.user?.get("id") === this.user?.get("id") ||
             // eslint-disable-next-line ember/no-get
-            (this.get("model.user.supervisors") ?? [])
+            (this.model?.user?.get("supervisors") ?? [])
               .mapBy("id")
-              .includes(this.user?.id)));
+              .includes(this.user?.get("id"))));
       const isReviewer =
         (this.model?.taskAssignees ?? [])
           .concat(
@@ -25,7 +25,7 @@ export default Ability.extend({
             this.model?.customerAssignees ?? []
           )
           .mapBy("user.id")
-          .includes(this.user?.id) && !this.model.verifiedBy?.id;
+          .includes(this.user?.get("id")) && !this.model?.verifiedBy?.get("id");
       return isEditable || isReviewer;
     }
   ),
