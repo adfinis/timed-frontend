@@ -77,3 +77,6 @@
 .table--analysis tr.selected td {
   border-color: lighten($color-primary, 20%) !important;
 }
+.blue-checked {
+  color: darken($color-primary, 10);
+}

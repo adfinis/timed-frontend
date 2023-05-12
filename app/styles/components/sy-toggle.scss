@@ -5,7 +5,7 @@
   margin: auto;
 
   &.active {
-    color: $color-primary;
+    color: darken($color-primary, 10);
   }
 
   &.inactive {
