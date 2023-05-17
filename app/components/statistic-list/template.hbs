@@ -73,13 +73,14 @@
               as |remainingEffort|
             }}
               {{#let
-                (if remainingEffort (add row.duration remainingEffort) 0)
+                (if (gt remainingEffort 0) (add row.duration remainingEffort) 0)
                 as |allotted|
               }}
                 <StatisticList::Bar
                   @value={{div row.duration this.maxDuration}}
                   @remaining={{div allotted this.maxDuration}}
                   @goal={{div row.estimatedTime this.maxDuration}}
+                  @archived={{row.archived}}
                 />
               {{/let}}
             {{/let}}
