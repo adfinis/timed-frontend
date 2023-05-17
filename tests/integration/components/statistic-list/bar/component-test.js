@@ -57,9 +57,24 @@ module("Integration | Component | statistic list/bar", function (hooks) {
     assert.false(element.classList.contains("remaining"));
   });
 
-  test("The Chart color is green when spent effort is in the budget", async function (assert) {
+  test("The Chart color is blue when spent effort is in the budget", async function (assert) {
     await render(
       hbs`<StatisticList::Bar @value={{1}} @goal={{1}} @remaining={{0}} />`
+    );
+
+    const element = this.element.querySelector(".statistic-list-bar");
+    const remainingElement = this.element.querySelector(".remaining");
+
+    assert.ok(element);
+    assert.notOk(remainingElement);
+
+    assert.false(element.classList.contains("strong-danger"));
+    assert.false(element.classList.contains("strong-success"));
+  });
+
+  test("The Chart color is green when spent effort is in the budget and the task is archived", async function (assert) {
+    await render(
+      hbs`<StatisticList::Bar @value={{1}} @archived={{true}} @goal={{1}} @remaining={{0}} />`
     );
 
     const element = this.element.querySelector(".statistic-list-bar");
@@ -83,19 +98,6 @@ module("Integration | Component | statistic list/bar", function (hooks) {
 
     assert.true(element.classList.contains("strong-danger"));
     assert.false(element.classList.contains("strong-success"));
-  });
-
-  test("The Chart color is GREEN when spent effort is in the budget", async function (assert) {
-    await render(
-      hbs`<StatisticList::Bar @value={{0.5}} @goal={{0.6}} @remaining={{0}} />`
-    );
-
-    const element = this.element.querySelector(".statistic-list-bar");
-
-    assert.ok(element);
-
-    assert.false(element.classList.contains("strong-danger"));
-    assert.true(element.classList.contains("strong-success"));
   });
 
   test("The Chart color is red when spent effort is over the budget", async function (assert) {

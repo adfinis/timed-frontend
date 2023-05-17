@@ -2,7 +2,11 @@ import Component from "@glimmer/component";
 
 export default class StatisticListBar extends Component {
   get didFinishEffortsInBudget() {
-    return this.args.remaining === 0 && !this.didFinishEffortsOverBudget;
+    return (
+      this.args.remaining === 0 &&
+      !this.didFinishEffortsOverBudget &&
+      this.args.archived
+    );
   }
 
   get didFinishEffortsOverBudget() {
