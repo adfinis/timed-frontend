@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .sy-toggle {
   display: flex;
   align-items: center;
@@ -5,7 +7,7 @@
   margin: auto;
 
   &.active {
-    color: $color-primary;
+    color: color.adjust($color-primary, $lightness: -10%);
   }
 
   &.inactive {
