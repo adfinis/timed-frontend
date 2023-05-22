@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .table--analysis {
   margin-bottom: 0;
   table-layout: fixed;
@@ -77,6 +79,6 @@
 .table--analysis tr.selected td {
   border-color: lighten($color-primary, 20%) !important;
 }
-.blue-checked {
-  color: darken($color-primary, 10);
+.highlight {
+  color: color.adjust($color-primary, $lightness: -10%);
 }

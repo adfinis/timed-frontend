@@ -15,4 +15,10 @@ module("Integration | Component | sy checkmark", function (hooks) {
     await render(hbs`<SyCheckmark @checked={{true}} />`);
     assert.dom(".fa-square-check").exists({ count: 1 });
   });
+
+  test("works highlight", async function (assert) {
+    await render(hbs`<SyCheckmark @checked={{true}} @highlight={{true}} />`);
+    assert.dom(".fa-square-check").exists({ count: 1 });
+    assert.dom(".highlight").exists({ count: 1 });
+  });
 });
