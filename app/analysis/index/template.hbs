@@ -374,10 +374,10 @@
                           report.verifiedBy
                           report.verifiedBy.username
                         }}</td>
-                      <td><SyCheckmark @checked={{report.rejected}} /></td>
-                      <td><SyCheckmark @checked={{report.review}} /></td>
-                      <td><SyCheckmark @checked={{report.notBillable}} /></td>
-                      <td><SyCheckmark @checked={{report.billed}} /></td>
+                      <td><SyCheckmark @checked={{report.rejected}} @highlight={{true}} /></td>
+                      <td><SyCheckmark @checked={{report.review}} @highlight={{true}} /></td>
+                      <td><SyCheckmark @checked={{report.notBillable}} @highlight={{true}} /></td>
+                      <td><SyCheckmark @checked={{report.billed}} @highlight={{true}} /></td>
                     </tr>
                   {{/each}}
                   {{#if this._canLoadMore}}
