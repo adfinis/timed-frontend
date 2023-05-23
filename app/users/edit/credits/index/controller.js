@@ -1,12 +1,10 @@
-import Controller from "@ember/controller";
+import Controller, { inject as controller } from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { ability } from "ember-can/computed";
 import { dropTask, restartableTask } from "ember-concurrency";
 import moment from "moment";
-
-import UsersController from "../../controller";
 
 export default class UsersEditCredits extends Controller {
   queryParams = ["year"];
@@ -15,7 +13,7 @@ export default class UsersEditCredits extends Controller {
   @service can;
   @service router;
   @service store;
-  userController = UsersController;
+  @controller("users.edit") userController;
   @tracked year = moment().year().toString();
 
   @action
@@ -27,9 +25,9 @@ export default class UsersEditCredits extends Controller {
   }
 
   @restartableTask
-  *years() {
+  *years(userId = 0) {
     const employments = yield this.store.query("employment", {
-      user: this.model.id,
+      user: userId === 0 ? this.model.id : userId,
       ordering: "start_date",
     });
 
@@ -39,8 +37,8 @@ export default class UsersEditCredits extends Controller {
     return [...new Array(to + 1 - from).keys()].map((i) => `${from + i}`);
   }
 
-  overtimeCreditAbility = ability("overtime-credit");
-  absenceCreditAbility = ability("absence-credit");
+  @ability("overtime-credit") overtimeCreditAbility;
+  @ability("absence-credit") absenceCreditAbility;
 
   get allowTransfer() {
     return (
@@ -48,13 +46,6 @@ export default class UsersEditCredits extends Controller {
       this.overtimeCreditAbility.canCreate &&
       this.absenceCreditAbility.canCreate
     );
-  }
-
-  queryParamsDidChange({ shouldRefresh }) {
-    if (shouldRefresh) {
-      this.absenceCredits.perform();
-      this.overtimeCredits.perform();
-    }
   }
 
   @restartableTask
@@ -94,9 +85,9 @@ export default class UsersEditCredits extends Controller {
 
       this.notify.success("Transfer was successful");
 
-      this.modelController.data.perform(this.model.id);
+      this.userController.data.perform(this.model.id);
 
-      this.resetQueryParams("year");
+      this.year = moment().year().toString();
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while transfering");

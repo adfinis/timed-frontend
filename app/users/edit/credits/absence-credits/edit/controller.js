@@ -3,23 +3,23 @@ import { inject as service } from "@ember/service";
 import { task } from "ember-concurrency";
 import AbsenceCreditValidations from "timed/validations/absence-credit";
 
-export default Controller.extend({
-  AbsenceCreditValidations,
+export default class UsersEditAbsenceCreditsController extends Controller {
+  AbsenceCreditValidations = AbsenceCreditValidations;
+  @service notify;
+  @service router;
 
-  userController: controller("users.edit"),
+  @controller("users.edit") userController;
+  @controller("users.edit.credits.index") userCreditsController;
 
-  userCreditsController: controller("users.edit.credits.index"),
-
-  notify: service("notify"),
-  router: service("router"),
-
-  absenceTypes: task(function* () {
+  @task
+  *absenceTypes() {
     return yield this.store.query("absence-type", {
       fill_worktime: 0, // eslint-disable-line camelcase
     });
-  }),
+  }
 
-  credit: task(function* () {
+  @task
+  *credit() {
     const id = this.model;
 
     return id
@@ -29,52 +29,48 @@ export default Controller.extend({
       : yield this.store.createRecord("absence-credit", {
           user: this.user,
         });
-  }),
+  }
 
-  save: task(function* (changeset) {
+  @task({ drop: true })
+  *save(changeset) {
     try {
       yield changeset.save();
 
       this.notify.success("Absence credit was saved");
 
-      this.get("userController.data").perform(this.get("user.id"));
+      this.userController.data.perform(this.user.id);
 
-      let allYears = this.get(
-        "userCreditsController.years.lastSuccessful.value"
-      );
+      let allYears = this.userCreditsController.years.lastSuccessful?.value;
 
       if (!allYears) {
-        allYears = yield this.get("userCreditsController.years").perform();
+        allYears = yield this.userCreditsController.years.perform(this.user.id);
       }
 
       const year =
         allYears.find((y) => y === String(changeset.get("date").year())) || "";
 
-      yield this.router.transitionTo(
-        "users.edit.credits",
-        this.get("user.id"),
-        {
-          queryParams: { year },
-        }
-      );
+      yield this.router.transitionTo("users.edit.credits", this.user.id, {
+        queryParams: { year },
+      });
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while saving the absence credit");
     }
-  }).drop(),
+  }
 
-  delete: task(function* (credit) {
+  @task({ drop: true })
+  *delete(credit) {
     try {
       yield credit.destroyRecord();
 
       this.notify.success("Absence credit was deleted");
 
-      this.get("userController.data").perform(this.get("user.id"));
+      this.userController.data.perform(this.user.id);
 
       this.router.transitionTo("users.edit.credits");
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while deleting the absence credit");
     }
-  }).drop(),
-});
+  }
+}
