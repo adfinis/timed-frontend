@@ -41,12 +41,13 @@
         <div class="user-header-absence-balance-container">
           {{#let this.data.lastSuccessful.value.absenceBalances as |balances|}}
             {{#each balances as |balance index|}}
-              {{balance-donut balance
-                class = 'user-header-absence-balance'
-                title = balance.absenceType.name
-                index = index
-                count = balances.length
-              }}
+              <BalanceDonut
+                @balance={{balance}}
+                @class='user-header-absence-balance'
+                @title={{balance.absenceType.name}}
+                @index={{index}}
+                @count={{balances.length}}
+              />
             {{/each}}
           {{/let}}
         </div>
