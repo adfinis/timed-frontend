@@ -67,6 +67,6 @@ class Command(BaseCommand):  # pragma: no cover
                 timed_project.save()
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Updating project {timed_project.name} with amount offered {timed_project.amount_offered} and amount invoiced {timed_project.amount_invoiced}"
+                    f"Updating project {timed_project.name} #{redmine_project.id} with amount offered {timed_project.amount_offered} and amount invoiced {timed_project.amount_invoiced}"
                 )
             )
