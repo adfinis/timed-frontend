@@ -87,7 +87,7 @@ export default class UsersEditCredits extends Controller {
 
       this.userController.data.perform(this.model.id);
 
-      this.year = moment().year().toString();
+      this.fetchData(moment().year().toString());
     } catch (e) {
       /* istanbul ignore next */
       this.notify.error("Error while transfering");

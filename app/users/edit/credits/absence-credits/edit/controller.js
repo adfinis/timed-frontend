@@ -1,6 +1,6 @@
 import Controller, { inject as controller } from "@ember/controller";
 import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency";
+import { task, dropTask } from "ember-concurrency";
 import AbsenceCreditValidations from "timed/validations/absence-credit";
 
 export default class UsersEditAbsenceCreditsController extends Controller {
@@ -31,7 +31,7 @@ export default class UsersEditAbsenceCreditsController extends Controller {
         });
   }
 
-  @task({ drop: true })
+  @dropTask
   *save(changeset) {
     try {
       yield changeset.save();
@@ -58,7 +58,7 @@ export default class UsersEditAbsenceCreditsController extends Controller {
     }
   }
 
-  @task({ drop: true })
+  @dropTask
   *delete(credit) {
     try {
       yield credit.destroyRecord();

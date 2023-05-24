@@ -1,6 +1,6 @@
 import Controller, { inject as controller } from "@ember/controller";
 import { inject as service } from "@ember/service";
-import { task } from "ember-concurrency";
+import { task, dropTask } from "ember-concurrency";
 import OvertimeCreditValidations from "timed/validations/overtime-credit";
 
 export default class UsersEditOvertimeCreditsController extends Controller {
@@ -23,7 +23,7 @@ export default class UsersEditOvertimeCreditsController extends Controller {
         });
   }
 
-  @task({ drop: true })
+  @dropTask
   *save(changeset) {
     try {
       yield changeset.save();
@@ -50,7 +50,7 @@ export default class UsersEditOvertimeCreditsController extends Controller {
     }
   }
 
-  @task({ drop: true })
+  @dropTask
   *delete(credit) {
     try {
       yield credit.destroyRecord();
