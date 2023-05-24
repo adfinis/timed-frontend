@@ -15,7 +15,7 @@
       <select
         id="credit-year-select"
         class="form-control"
-        {{on "change" (pick "target.value" (fn (mut this.year)))}}
+        {{on "change" (pick "target.value" this.fetchData)}}
       >
         {{#each years as |y|}}
           <option value={{y}} selected={{eq y this.year}}>{{y}}</option>
