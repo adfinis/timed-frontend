@@ -1,31 +1,29 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
-import Component from "@ember/component";
+import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import Ember from "ember";
 import { task, timeout } from "ember-concurrency";
 import moment from "moment";
 
-export default Component.extend({
-  classNames: ["timed-clock"],
+export default class TimedClock extends Component {
+  @tracked hour = 0;
+  @tracked minute = 0;
+  @tracked second = 0;
 
-  hour: 0,
-  minute: 0,
-  second: 0,
+  constructor(...args) {
+    super(...args);
+    this.timer.perform();
+  }
 
   _update() {
     const now = moment();
 
-    const second = now.seconds() * 6;
-    const minute = now.minutes() * 6 + second / 60;
-    const hour = ((now.hours() % 12) / 12) * 360 + minute / 12;
+    this.second = now.seconds() * 6;
+    this.minute = now.minutes() * 6 + this.second / 60;
+    this.hour = ((now.hours() % 12) / 12) * 360 + this.minute / 12;
+  }
 
-    this.setProperties({ second, minute, hour });
-  },
-
-  timer: task(function* () {
+  @task
+  *timer() {
     for (;;) {
       this._update();
 
@@ -37,5 +35,5 @@ export default Component.extend({
       /* istanbul ignore next */
       yield timeout(1000);
     }
-  }).on("didInsertElement"),
-});
+  }
+}
