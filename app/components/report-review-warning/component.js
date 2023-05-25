@@ -1,13 +1,10 @@
-import Component from "@ember/component";
 import { inject as service } from "@ember/service";
+import Component from "@glimmer/component";
 
 export default class ReportReviewWarning extends Component {
-  @service
-  session;
+  @service session;
 
-  @service
-  unverifiedReports;
+  @service unverifiedReports;
 
-  @service
-  rejectedReports;
+  @service rejectedReports;
 }
