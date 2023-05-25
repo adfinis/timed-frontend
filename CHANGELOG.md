@@ -1,3 +1,8 @@
+# v3.0.6
+
+### Feature
+* **redmine:** Add redmine issue id to log ([`b5c509b`](https://github.com/adfinis/timed-backend/commit/b5c509bc196137b28e84b814d4dba0a60b117747))
+
 # v3.0.5
 
 ### Fix
