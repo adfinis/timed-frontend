@@ -1,4 +1,3 @@
-import { htmlSafe } from "@ember/string";
 import Component from "@glimmer/component";
 import { cached } from "tracked-toolbox";
 
@@ -43,7 +42,7 @@ class BalanceDonutComponent extends Component {
     const offset =
       deviation && (1 / (floor(mean) - (isInteger(mean) ? 1 : 0))) * deviation;
 
-    return htmlSafe(`--offset-multiplicator: ${offset};`);
+    return { "--offset-multiplicator": offset.toString() };
   }
 }
 
