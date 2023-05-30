@@ -1,0 +1,15 @@
+.weekly-overview {
+  width: 100%;
+  padding: 20px 0 50px 50px;
+  overflow: hidden;
+  display: none;
+  display: flex;
+
+  .weekly-overview-children {
+    flex-grow: 1;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+  }
+}
