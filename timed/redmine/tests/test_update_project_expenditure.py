@@ -18,7 +18,7 @@ def test_update_project_expenditure(
     redmine_class = mocker.patch("redminelib.Redmine")
     redmine_class.return_value = redmine_instance
 
-    report = report_factory(duration=datetime.timedelta(hours=4))
+    report = report_factory()
     project = report.task.project
     project.estimated_time = datetime.timedelta(hours=10)
     project.amount_offered = amount_offered
@@ -33,14 +33,12 @@ def test_update_project_expenditure(
     if not pretend:
         redmine_instance.issue.get.assert_called_once_with(1000)
         assert issue.estimated_hours == project.estimated_time.total_seconds() / 3600
-        assert issue.custom_fields[0]["value"] == report.duration.total_seconds() / 3600
-        assert issue.custom_fields[1]["value"] == offered
-        assert issue.custom_fields[2]["value"] == project.amount_invoiced.amount
+        assert issue.custom_fields[0]["value"] == offered
+        assert issue.custom_fields[1]["value"] == project.amount_invoiced.amount
         issue.save.assert_called_once_with()
     else:
         out, _ = capsys.readouterr()
         assert "Redmine issue 1000" in out
-        assert f"total spent hours {report.duration.total_seconds() / 3600}" in out
         assert f"amount offered {offered}" in out
         assert f"amount invoiced {project.amount_invoiced.amount}" in out
 

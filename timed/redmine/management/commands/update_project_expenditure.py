@@ -44,11 +44,6 @@ class Command(BaseCommand):
                 if project.estimated_time
                 else 0.0
             )
-            total_spent_hours = (
-                project.total_hours.total_seconds() / 3600
-                if project.total_hours
-                else 0.0
-            )
             try:
                 issue = redmine.issue.get(project.redmine_project.issue_id)
             except redminelib.exceptions.BaseRedmineError as e:
@@ -69,10 +64,6 @@ class Command(BaseCommand):
 
             # fields not active in Redmine projects settings won't be saved
             issue.custom_fields = [
-                {
-                    "id": settings.REDMINE_SPENTHOURS_FIELD,
-                    "value": total_spent_hours,
-                },
                 {
                     "id": settings.REDMINE_AMOUNT_OFFERED_FIELD,
                     "value": amount_offered,
@@ -95,6 +86,6 @@ class Command(BaseCommand):
 
             self.stdout.write(
                 self.style.SUCCESS(
-                    f"Updating Redmine issue {project.redmine_project.issue_id} with total spent hours {total_spent_hours}, estimated time {estimated_hours}, amount offered {amount_offered}, amount invoiced {amount_invoiced}"
+                    f"Updating Redmine issue {project.redmine_project.issue_id} with estimated time {estimated_hours}, amount offered {amount_offered}, amount invoiced {amount_invoiced}"
                 )
             )
