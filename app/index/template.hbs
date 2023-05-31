@@ -18,7 +18,7 @@
             @absence={{d.absence}}
             @holiday={{d.holiday}}
             @prefix={{d.prefix}}
-            @on-click={{(fn (mut this.date))}}
+            @onClick={{(fn (mut this.date))}}
             data-test-weekly-overview-day={{moment-format d.day "DD"}}
           />
         {{/each}}
