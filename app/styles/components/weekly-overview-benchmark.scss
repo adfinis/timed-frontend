@@ -1,0 +1,42 @@
+.weekly-overview-benchmark {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  right: 0;
+
+  &.expected {
+    hr {
+      background-color: $color-primary;
+    }
+
+    span {
+      color: $color-primary;
+    }
+  }
+
+  hr {
+    margin: 0;
+    border: none;
+    height: 1px;
+    width: 100%;
+    background-color: transparentize($color-primary, 0.7);
+    position: absolute;
+    left: 0;
+    right: 0;
+  }
+
+  span {
+    width: 30px;
+    font-family: $font-family-mono;
+    font-size: 12px;
+    text-align: right;
+    color: transparentize($color-primary, 0.7);
+    transform: translateY(50%);
+    position: absolute;
+    left: -35px;
+    right: 0;
+  }
+}
