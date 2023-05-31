@@ -1,5 +1,18 @@
-<div class="bar"></div>
-<div class="day">
-  {{moment-format this.day 'DD'}}
-  {{moment-format this.day 'dd'}}
+<div title={{this.title}}
+  role="button"
+  {{on "click" this.click}}
+  {{style this.style}}
+  class="weekly-overview-day
+    {{if @active "active"}}
+    {{if @absence "absence"}}
+    {{if @holidy "holiday"}}
+    {{if (not @workday "weekend")}}
+  "
+  ...attributes
+  >
+  <div class="bar"></div>
+  <div class="day">
+    {{moment-format @day 'DD'}}
+  {{moment-format @day 'dd'}}
+  </div>
 </div>
