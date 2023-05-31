@@ -1,0 +1,72 @@
+.weekly-overview-day {
+  height: 0%;
+  width: 15px;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  transition: height 300ms ease;
+
+  &.weekend,
+  &.holiday {
+    .bar {
+      background-color: rgb(220, 220, 220);
+    }
+
+    .day {
+      color: rgb(220, 220, 220);
+    }
+  }
+
+  &.absence {
+    .bar {
+      background-color: $color-warning;
+    }
+
+    .day {
+      color: $color-warning;
+    }
+  }
+
+  &.active {
+    .bar {
+      background-color: $color-primary;
+    }
+
+    .day {
+      color: $color-primary;
+      font-weight: bold;
+      padding: 0 5px 5px;
+      margin-bottom: -5px;
+      border-bottom: 2px solid $color-primary;
+    }
+  }
+
+  &:hover {
+    .bar {
+      background-color: desaturate($color-primary, 30%);
+    }
+
+    .day {
+      color: desaturate($color-primary, 30%);
+    }
+  }
+
+  .bar {
+    background-color: rgb(150, 150, 150);
+    height: 100%;
+    width: 100%;
+    transition: background-color 300ms ease;
+  }
+
+  .day {
+    position: absolute;
+    font-family: $font-family-mono;
+    font-size: 12px;
+    left: 50%;
+    bottom: -35px;
+    text-align: center;
+    transform: translateX(-50%);
+    color: rgb(150, 150, 150);
+    transition: color 300ms ease;
+  }
+}
