@@ -1,5 +1,4 @@
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
 
 export default class WeeklyOverviewBenchmark extends Component {
   /**
@@ -10,7 +9,9 @@ export default class WeeklyOverviewBenchmark extends Component {
    * @property {Number} max
    * @public
    */
-  @tracked max = 20;
+  get max() {
+    return this.args.max || 20;
+  }
 
   /**
    * The offset to the bottom
