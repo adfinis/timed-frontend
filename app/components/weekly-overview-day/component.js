@@ -1,55 +1,7 @@
-/**
- * @module timed
- * @submodule timed-components
- * @public
- */
-import Component from "@ember/component";
-import { computed } from "@ember/object";
-import { htmlSafe } from "@ember/string";
-import {
-  attributeBindings,
-  classNameBindings,
-} from "@ember-decorators/component";
+import { action } from "@ember/object";
+import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import classic from "ember-classic-decorator";
-
-/**
- * Component to display a single day in the weekly overview
- *
- * This contains a bar which shows the worktime and the day
- *
- * @class WeeklyOverviewDayComponent
- * @extends Ember.Component
- * @public
- */
-@classic
-@attributeBindings("style", "title")
-@classNameBindings("active", "workday::weekend", "absence", "holiday")
 export default class WeeklyOverviewDay extends Component {
-  /**
-   * Whether there is an absence on this day
-   *
-   * @property {Boolean} absence
-   * @public
-   */
-  absence = false;
-
-  /**
-   * Whether there is an holiday on this day
-   *
-   * @property {Boolean} holiday
-   * @public
-   */
-  holiday = false;
-
-  /**
-   * Whether it is the currently selected day
-   *
-   * @property {Boolean} active
-   * @public
-   */
-  active = false;
-
   /**
    * Maximum worktime in hours
    *
@@ -58,68 +10,33 @@ export default class WeeklyOverviewDay extends Component {
    */
   @tracked max = 20;
 
-  /**
-   * A prefix to the title
-   *
-   * @property {String} prefix
-   * @public
-   */
-  @tracked prefix = "";
-
-  /**
-   * The element title
-   *
-   * This is shown on hover. It contains the worktime.
-   *
-   * @property {String} title
-   * @public
-   */
-  @computed("prefix.length", "worktime")
   get title() {
-    const pre = this.prefix?.length ? `${this.prefix}, ` : "";
+    const pre = this.args.prefix?.length ? `${this.args.prefix}, ` : "";
 
-    let title = `${this.worktime.hours()}h`;
+    let title = `${this.args.worktime.hours()}h`;
 
-    if (this.worktime.minutes()) {
-      title += ` ${this.worktime.minutes()}m`;
+    if (this.args.worktime.minutes()) {
+      title += ` ${this.args.worktime.minutes()}m`;
     }
-
     return `${pre}${title}`;
   }
 
-  /**
-   * Whether the day is a workday
-   *
-   * @property {Boolean} workday
-   * @public
-   */
-  workday = true;
-
-  /**
-   * The style of the element
-   *
-   * This computes the height of the bar
-   *
-   * @property {String} style
-   * @public
-   */
-  @computed("max", "worktime")
   get style() {
-    const height = Math.min((this.worktime.asHours() / this.max) * 100, 100);
-
-    return htmlSafe(`height: ${height}%;`);
+    const height = Math.min(
+      (this.args.worktime.asHours() / this.max) * 100,
+      100
+    );
+    return { height: `${height}%` };
   }
 
-  /**
-   * Click event - fire the on-click action
-   */
+  @action
   click(event) {
-    const action = this["on-click"];
+    const action = this.args.onClick;
 
     if (action) {
       event.preventDefault();
 
-      this["on-click"](this.day);
+      this.args.onClick(this.args.day);
     }
   }
 }
