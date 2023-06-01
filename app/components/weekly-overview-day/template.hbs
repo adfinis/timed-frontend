@@ -6,7 +6,7 @@
     {{if @active "active"}}
     {{if @absence "absence"}}
     {{if @holidy "holiday"}}
-    {{if (not @workday "weekend")}}
+    {{unless @workday "weekend"}}
   "
   ...attributes
   >
