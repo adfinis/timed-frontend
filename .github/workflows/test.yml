@@ -3,10 +3,12 @@ name: Test
 on:
   push:
     branches:
+      - beta
       - main
       - renovate/**
   pull_request:
     branches:
+      - beta
       - main
 
 env:
