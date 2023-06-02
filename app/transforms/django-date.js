@@ -1,8 +1,3 @@
-/**
- * @module timed
- * @submodule timed-transforms
- * @public
- */
 import MomentTransform from "timed/transforms/moment";
 
 /**
@@ -14,12 +9,12 @@ import MomentTransform from "timed/transforms/moment";
  * @extends MomentTransform
  * @public
  */
-export default MomentTransform.extend({
+export default class DjangoDateTransform extends MomentTransform {
   /**
    * The date format
    *
    * @property {String} format
    * @public
    */
-  format: "YYYY-MM-DD",
-});
+  format = "YYYY-MM-DD";
+}
