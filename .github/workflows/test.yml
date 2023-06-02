@@ -10,7 +10,6 @@ on:
     branches:
       - beta
       - main
-      - beta
 
 env:
   NODE_VERSION: 18
