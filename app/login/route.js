@@ -1,10 +1,4 @@
-/**
- * @module timed
- * @submodule timed-routes
- * @public
- */
-import OIDCAuthenticationRoute from "ember-simple-auth-oidc/routes/oidc-authentication";
-
+import Route from "@ember/routing/route";
 /**
  * The login route
  *
@@ -12,4 +6,4 @@ import OIDCAuthenticationRoute from "ember-simple-auth-oidc/routes/oidc-authenti
  * @extends Ember.Route
  * @public
  */
-export default class LoginRoute extends OIDCAuthenticationRoute {}
+export default class LoginRoute extends Route {}

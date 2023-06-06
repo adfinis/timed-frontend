@@ -12,6 +12,7 @@ const resetNamespace = true;
 Router.map(function () {
   this.route("login");
   this.route("no-access");
+  this.route("sso-login");
 
   this.route("protected", { path: "/" }, function () {
     this.route("index", { resetNamespace, path: "/" }, function () {
