@@ -3,10 +3,6 @@ import { setupRenderingTest } from "ember-qunit";
 import moment from "moment";
 import { module, test } from "qunit";
 
-const WorktimeBalance = EmberObject.extend({
-  balance: moment.duration({ h: 10 }),
-});
-
 module("Unit | Component | worktime balance chart", function (hooks) {
   setupRenderingTest(hooks);
 
@@ -18,7 +14,12 @@ module("Unit | Component | worktime balance chart", function (hooks) {
     const component = this.owner.lookup("component:worktime-balance-chart");
     component.set(
       "worktimeBalances",
-      dates.map((date) => WorktimeBalance.create({ date }))
+      dates.map((date) =>
+        EmberObject.create({
+          balance: moment.duration({ h: 10 }),
+          date,
+        })
+      )
     );
 
     assert.deepEqual(
