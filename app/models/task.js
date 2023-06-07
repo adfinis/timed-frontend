@@ -1,68 +1,13 @@
-/**
- * @module timed
- * @submodule timed-models
- * @public
- */
-import { get } from "@ember/object";
 import Model, { attr, belongsTo, hasMany } from "@ember-data/model";
 
-/**
- * The task model
- *
- * @class Task
- * @extends Model
- * @public
- */
 export default class Task extends Model {
-  /**
-   * The name
-   *
-   * @property name
-   * @type {String}
-   * @public
-   */
   @attr("string", { defaultValue: "" }) name;
-
-  /**
-   * The estimated time
-   *
-   * @property {moment.duration} estimatedTime
-   * @public
-   */
   @attr("django-duration") estimatedTime;
-
-  /**
-   * Remaining effort for this task
-   */
   @attr("django-duration") mostRecentRemainingEffort;
-
-  /**
-   * Whether the task is archived
-   *
-   * @property archived
-   * @type {Boolean}
-   * @public
-   */
   @attr("boolean", { defaultValue: false }) archived;
-
   @attr("string", { defaultValue: "" }) reference;
 
-  /**
-   * The project
-   *
-   * @property project
-   * @type {Project}
-   * @public
-   */
   @belongsTo("project") project;
-
-  /**
-   * Assigned users to this task
-   *
-   * @property assignees
-   * @type {TaskAssignee[]}
-   * @public
-   */
   @hasMany("task-assignee") assignees;
 
   /**
@@ -79,8 +24,8 @@ export default class Task extends Model {
 
   get longName() {
     const taskName = this.name;
-    const projectName = get(this, "project.name");
-    const customerName = get(this, "project.customer.name");
+    const projectName = this.project.get("name");
+    const customerName = this.project.get("customer.name");
 
     return `${customerName} > ${projectName} > ${taskName}`;
   }
