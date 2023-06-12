@@ -153,7 +153,7 @@ export default class ActivitiesIndexController extends Controller {
     this.showOverlappingWarning = hasOverlapping;
 
     if (!hasUnknown && !hasOverlapping) {
-      this.send("generateReports");
+      this.generateReports();
     }
   }
 
@@ -178,18 +178,14 @@ export default class ActivitiesIndexController extends Controller {
             !a.get("transferred")
         )
         .reduce(async (reducer, activity) => {
-          const duration = activity.get("duration");
-
           if (activity.get("active")) {
-            duration.add(moment().diff(activity.get("from")));
-
             await this.tracking.stopActivity.perform();
             this.tracking.activity = activity;
             await this.tracking.startActivity.perform();
           }
 
           const data = {
-            duration,
+            duration: activity.get("duration"),
             date: activity.get("date"),
             task: activity.get("task"),
             review: activity.get("review"),
