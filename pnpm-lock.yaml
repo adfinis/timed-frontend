@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   ember-concurrency: ^2.1.1
 
@@ -44,8 +48,8 @@ devDependencies:
     specifier: ^1.9.0
     version: 1.10.0(ember-source@3.28.11)
   '@fontsource/source-sans-pro':
-    specifier: 4.5.11
-    version: 4.5.11
+    specifier: 5.0.3
+    version: 5.0.3
   '@fortawesome/ember-fontawesome':
     specifier: ^0.4.1
     version: 0.4.1(rollup@2.79.1)
@@ -2837,8 +2841,8 @@ packages:
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
 
-  /@fontsource/source-sans-pro@4.5.11:
-    resolution: {integrity: sha512-f7iw44q1EjBv3MNcHCGAgrW/QVyweaEouFsJzykPhTOGnZFSwFJRISToXornOmuAy7xUUGiVdqOLiykgZoYB8A==}
+  /@fontsource/source-sans-pro@5.0.3:
+    resolution: {integrity: sha512-mQnjuif/37VxwRloHZ+wQdoozd2VPWutbFSt1AuSkk7nFXIBQxHJLw80rgCF/osL0t7N/3Gx1V7UJuOX2zxzhQ==}
     dev: true
 
   /@fortawesome/ember-fontawesome@0.4.1(rollup@2.79.1):
