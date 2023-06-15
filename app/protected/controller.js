@@ -22,6 +22,7 @@ export default class ProtectedController extends Controller {
 
   @tracked visible;
   @tracked loading;
+  @service shepherd;
 
   /**
    * Invalidate the session
@@ -39,21 +40,6 @@ export default class ProtectedController extends Controller {
   }
 
   /**
-   * Close the current tour
-   *
-   * @method _closeCurrentTour
-   * @private
-   */
-  _closeCurrentTour() {
-    const currentRoute = this.router.currentRouteName.replace(/\.index$/, "");
-
-    if (this.autostartTour.tours.includes(currentRoute)) {
-      // TODO: How to refactor this shit?
-      this.controllerFor?.get("tour").close();
-    }
-  }
-
-  /**
    * Never start the tour, set the tour done property on the current user
    *
    * @method neverTour
@@ -63,12 +49,8 @@ export default class ProtectedController extends Controller {
   async neverTour() {
     try {
       const user = this.model;
-
       user.tourDone = true;
-
       await user.save();
-
-      this._closeCurrentTour();
       this.visible = false;
     } catch (error) {
       this.notify.error("Error while saving the user");
@@ -83,7 +65,6 @@ export default class ProtectedController extends Controller {
    */
   @action
   laterTour() {
-    this._closeCurrentTour();
     this.autostartTour.done = this.autostartTour.tours;
     this.visible = false;
 
@@ -97,10 +78,12 @@ export default class ProtectedController extends Controller {
    * @public
    */
   @action
-  startTour() {
+  async startTour() {
     this.autostartTour.done = [];
     this.visible = false;
-
     this.router.transitionTo("index.activities");
+    this.shepherd.addModelOfProtected(this.model);
+    await this.shepherd.prepare();
+    this.shepherd.startTour();
   }
 }

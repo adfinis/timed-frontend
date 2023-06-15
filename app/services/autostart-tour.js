@@ -1,5 +1,6 @@
 import Service from "@ember/service";
 import { tracked } from "@glimmer/tracking";
+import TOURS from "timed/tours";
 
 /**
  * Autostart tour service
@@ -11,12 +12,7 @@ import { tracked } from "@glimmer/tracking";
  * @public
  */
 export default class AutostartTourService extends Service {
-  constructor(...args) {
-    super(...args);
-
-    this.tours = ["index.activities", "index.attendances", "index.reports"];
-  }
-
+  tours = Object.keys(TOURS);
   /**
    * The item key to use in the localstorage
    *
@@ -39,6 +35,16 @@ export default class AutostartTourService extends Service {
     localStorage.setItem(this.doneKey, JSON.stringify(value));
   }
 
+  get routeOfNextTour() {
+    const done = this.done;
+    for (const route of this.tours) {
+      if (!done.includes(route)) {
+        return route;
+      }
+    }
+    // this method is called if {this.allDone} is false -> the code is never arrive here
+    return "index";
+  }
   /**
    * Whether all tours are done
    *
