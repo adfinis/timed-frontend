@@ -4,7 +4,6 @@
  * @public
  */
 import Route from "@ember/routing/route";
-import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 /**
  * The index activities route
@@ -13,7 +12,7 @@ import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
  * @extends Ember.Route
  * @public
  */
-export default Route.extend(RouteAutostartTourMixin, {
+export default Route.extend({
   model() {
     return this.modelFor("index");
   },

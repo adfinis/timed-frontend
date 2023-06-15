@@ -15,10 +15,6 @@ module.exports = function (defaults) {
     "ember-simple-auth": {
       useSessionSetupMethod: true,
     },
-    "ember-site-tour": {
-      importHopscotchJS: true,
-      importHopscotchCSS: true,
-    },
     "ember-validated-form": {
       theme: "bootstrap",
     },
