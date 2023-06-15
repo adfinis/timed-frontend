@@ -1,8 +1,3 @@
-/**
- * @module timed
- * @submodule timed-routes
- * @public
- */
 import Route from "@ember/routing/route";
 import { inject as service } from "@ember/service";
 import Changeset from "ember-changeset";
@@ -21,6 +16,7 @@ export default class IndexActivityEditController extends Route.extend(
   RouteAutostartTourMixin
 ) {
   @service router;
+  @service store;
   /**
    * Model hook, fetch the activity to edit
    *

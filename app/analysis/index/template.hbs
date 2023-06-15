@@ -356,7 +356,7 @@
                           'selected'
                         }}
                         {{if
-                          (or this.canBill (can 'edit report' report))
+                          (or (can "bill report" report) (can 'edit report' report))
                           'pointer'
                         }}"
                       {{on "click" (fn this.selectRow report)}}

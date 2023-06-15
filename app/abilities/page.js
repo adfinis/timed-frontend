@@ -1,17 +1,18 @@
-import { computed } from "@ember/object";
-import { Ability } from "ember-can";
+import classic from "ember-classic-decorator";
+import BaseAbility from "timed/abilities/-base";
 
-export default Ability.extend({
-  canAccess: computed(
-    "user.{activeEmployment.isExternal,isReviewer}",
-    function () {
-      if (!this.user) {
-        return false;
-      }
-      return (
-        !this.user.activeEmployment.isExternal ||
-        (this.user.activeEmployment.isExternal && this.user.isReviewer)
-      );
+// The Ability class is used in a way which triggeres some deprecation error in ember.
+// See https://github.com/minutebase/ember-can/issues/157 for further information. This
+// decorator should be deleted as soon as ember-can refactors to native classes.
+@classic
+export default class PageAbility extends BaseAbility {
+  get canAccess() {
+    if (!this.user) {
+      return false;
     }
-  ),
-});
+    return (
+      !this.user.activeEmployment.isExternal ||
+      (this.user.activeEmployment.isExternal && this.user.isReviewer)
+    );
+  }
+}

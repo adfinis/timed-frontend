@@ -20,7 +20,10 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
   fetch: service("fetch"),
 
   can: service("can"),
+
   router: service("router"),
+
+  store: service("store"),
 
   userController: controller("users.edit"),
 
@@ -99,7 +102,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
       this.notify.success("Transfer was successful");
 
-      this.get("userController.data").perform(this.get("model.id"));
+      this.userController.data.perform(this.get("model.id"));
 
       this.resetQueryParams("year");
     } catch (e) {

@@ -135,7 +135,7 @@ export default class AnalysisController extends Controller.extend(
   @service store;
   @service router;
   @service notify;
-  @service can;
+  @service abilities;
 
   @tracked _scrollOffset = 0;
   @tracked _shouldLoadMore = false;
@@ -438,7 +438,10 @@ export default class AnalysisController extends Controller.extend(
 
   @action
   selectRow(report) {
-    if (this.can.can("edit report", report) || this.canBill) {
+    if (
+      this.abilities.can("edit report", report) ||
+      this.abilities.can("bill report", report)
+    ) {
       const selected = this.selectedReportIds;
 
       if (selected.includes(report.id)) {
