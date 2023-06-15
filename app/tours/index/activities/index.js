@@ -21,7 +21,7 @@ export default [
     `,
   },
   {
-    target: ".table--activities",
+    target: ".activities-list",
     placement: "top",
     title: "Activity list",
     content: `

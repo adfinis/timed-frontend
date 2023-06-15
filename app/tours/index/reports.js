@@ -1,6 +1,6 @@
 export default [
   {
-    target: ".table--reports",
+    target: ".form-list-body",
     placement: "top",
     title: "Timesheet",
     content: `
@@ -15,7 +15,7 @@ export default [
     `,
   },
   {
-    target: ".table--reports input[name=duration]",
+    target: "input[name=duration-day]",
     placement: "top",
     title: "Duration",
     content: `
@@ -28,7 +28,7 @@ export default [
     `,
   },
   {
-    target: ".table--reports",
+    target: ".form-list-row",
     placement: "bottom",
     title: "New entry",
     content: `
