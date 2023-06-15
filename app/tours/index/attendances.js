@@ -15,7 +15,7 @@ export default [
     `,
   },
   {
-    target: ".tab-content .visible-md",
+    target: ".visible-md",
     placement: "top",
     title: "Edit attendance",
     content: `

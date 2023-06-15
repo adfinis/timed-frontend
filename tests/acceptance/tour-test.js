@@ -3,7 +3,6 @@ import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { setBreakpoint } from "ember-responsive/test-support";
 import { authenticateSession } from "ember-simple-auth/test-support";
-import { waitForStep } from "ember-site-tour/test-support/helpers";
 import { module, test } from "qunit";
 
 module("Acceptance | tour", function (hooks) {
@@ -23,8 +22,6 @@ module("Acceptance | tour", function (hooks) {
 
   test("shows a welcome dialog", async function (assert) {
     await visit("/");
-
-    await waitForStep();
 
     assert.dom(".modal--visible").exists();
   });

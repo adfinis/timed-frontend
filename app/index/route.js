@@ -7,7 +7,6 @@ import Route from "@ember/routing/route";
 import { inject as service } from "@ember/service";
 import moment from "moment";
 import { all } from "rsvp";
-import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 const DATE_FORMAT = "YYYY-MM-DD";
 
@@ -18,7 +17,7 @@ const DATE_FORMAT = "YYYY-MM-DD";
  * @extends Ember.Route
  * @public
  */
-export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
+export default class IndexRoute extends Route {
   lastUpdateDate = null;
 
   queryParams = {
