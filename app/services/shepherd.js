@@ -2,6 +2,8 @@ import { schedule, later } from "@ember/runloop";
 import Service, { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import TOURS from "timed/tours";
+import { waitFor } from "@ember/test-waiters";
+import { isTesting, macroCondition } from "@embroider/macros";
 
 export default class Shepherd extends Service {
   @service tour;
@@ -21,6 +23,14 @@ export default class Shepherd extends Service {
     this.watchRouteChanges();
   }
 
+  get modalContainer() {
+    if (macroCondition(isTesting())) {
+      return document.getElementById('ember-testing');
+    }
+    return document.body;
+  }
+
+  @waitFor
   async showToursOfCurrentRoute() {
     if (this.hasTourForRoute()) {
       const tours = this.getRouteTours();
@@ -28,9 +38,14 @@ export default class Shepherd extends Service {
     }
   }
 
+  @waitFor
   async startFromBeginning() {
     if (this.routeName !== "index.activities.index") {
-      await this.router.transitionTo("index.activities.index");
+      try {
+        await this.router.transitionTo("index.activities.index");
+      } catch (error) {
+        this.notify.error('unexpected error');
+      }
     }
   }
 
@@ -59,12 +74,14 @@ export default class Shepherd extends Service {
       },
       highlightClass: "highlight",
       scrollTo: true,
+      modalContainer: this.modalContainer,
     };
     this.tour.modal = true;
   }
 
   tourToSteps(data) {
     return {
+      id: data.id,
       attachTo: {
         element: data.target,
         on: data.placement,
@@ -102,6 +119,7 @@ export default class Shepherd extends Service {
     );
   }
 
+  @waitFor
   async startTour() {
     if (this._wantsTour()) {
       await this.showToursOfCurrentRoute();
@@ -124,7 +142,13 @@ export default class Shepherd extends Service {
               this.notify.error("Error while saving the user");
             }
           } else {
-            this.router.transitionTo(this.autostartTour.routeOfNextTour);
+            try {
+              if (!isTesting()) {
+                await this.router.transitionTo(this.autostartTour.routeOfNextTour);
+              }
+            } catch (error) {
+              this.notify.error('unexpected error');
+            }
           }
         };
 
