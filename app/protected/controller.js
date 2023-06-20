@@ -1,28 +1,17 @@
-/**
- * @module timed
- * @submodule timed-controllers
- * @public
- */
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
-/**
- * The protected controller
- *
- * @class ProtectedController
- * @extends Ember.Controller
- * @public
- */
+
 export default class ProtectedController extends Controller {
   @service notify;
   @service router;
   @service session;
   @service("autostart-tour") autostartTour;
+  @service tour;
 
   @tracked visible;
   @tracked loading;
-  @service shepherd;
 
   /**
    * Invalidate the session
@@ -67,8 +56,6 @@ export default class ProtectedController extends Controller {
   laterTour() {
     this.autostartTour.done = this.autostartTour.tours;
     this.visible = false;
-
-    this.router.transitionTo("index.activities");
   }
 
   /**
@@ -78,12 +65,11 @@ export default class ProtectedController extends Controller {
    * @public
    */
   @action
-  async startTour() {
+  startTour() {
     this.autostartTour.done = [];
     this.visible = false;
-    this.router.transitionTo("index.activities");
-    this.shepherd.addModelOfProtected(this.model);
-    await this.shepherd.prepare();
-    this.shepherd.startTour();
+
+    this.tour.prepare(this.model);
+    this.tour.startTour();
   }
 }
