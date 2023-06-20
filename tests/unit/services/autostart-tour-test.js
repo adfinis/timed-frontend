@@ -30,14 +30,14 @@ module("Unit | Service | autostart tour", function (hooks) {
 
     service.setProperties({ doneKey: "timed-tour-test", tours: ["test"] });
 
-    assert.notOk(service.allDone());
+    assert.notOk(service.allDone);
 
     service.set("done", ["test"]);
 
-    assert.ok(service.allDone());
+    assert.ok(service.allDone);
 
     service.set("done", ["test", "test2"]);
 
-    assert.ok(service.allDone());
+    assert.ok(service.allDone);
   });
 });

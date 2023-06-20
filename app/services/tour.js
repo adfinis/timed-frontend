@@ -1,69 +1,84 @@
 import { schedule, later } from "@ember/runloop";
-import Service, { inject as service } from "@ember/service";
-import { tracked } from "@glimmer/tracking";
-import TOURS from "timed/tours";
+import { inject as service } from "@ember/service";
 import { waitFor } from "@ember/test-waiters";
 import { isTesting, macroCondition } from "@embroider/macros";
+import { tracked } from "@glimmer/tracking";
+import Tour from "ember-shepherd/services/tour";
+import TOURS from "timed/tours";
+import { cached } from "tracked-toolbox";
 
-export default class Shepherd extends Service {
-  @service tour;
+export default class TourService extends Tour {
   @service notify;
   @service media;
   @service router;
   @service autostartTour;
   @tracked model;
 
-  get routeName() {
-    return this.router.get("currentRoute")?.name;
-  }
-  async prepare() {
-    this.addDefaultStepsOptions();
-    await this.startFromBeginning();
-    await this.showToursOfCurrentRoute();
-    this.watchRouteChanges();
-  }
+  constructor(...args) {
+    super(...args);
 
-  get modalContainer() {
+    this.modal = true;
     if (macroCondition(isTesting())) {
-      return document.getElementById('ember-testing');
+      this.modalContainer = document.getElementById("ember-testing");
     }
-    return document.body;
-  }
 
-  @waitFor
-  async showToursOfCurrentRoute() {
-    if (this.hasTourForRoute()) {
-      const tours = this.getRouteTours();
-      await this.tour.addSteps(tours.map(this.tourToSteps));
-    }
-  }
-
-  @waitFor
-  async startFromBeginning() {
-    if (this.routeName !== "index.activities.index") {
-      try {
-        await this.router.transitionTo("index.activities.index");
-      } catch (error) {
-        this.notify.error('unexpected error');
-      }
-    }
-  }
-
-  watchRouteChanges() {
-    this.router.on("routeDidChange", () => {
-      if (this.hasTourForRoute()) {
-        this.tour.hide();
+    this.boundOnRouteChangeHandler = () => {
+      if (this.hasTourForRoute) {
+        if (this.isActive) {
+          this.hide();
+        }
         this.startTour();
       }
-    });
+    };
   }
 
-  hasTourForRoute() {
+  willDestroy(...args) {
+    this.detachRouteListener();
+    this._onTourFinish = () => {};
+
+    super.willDestroy(...args);
+  }
+
+  @cached
+  get routeName() {
+    return this.router.currentRouteName.replace(/\.index$/, "");
+  }
+
+  prepare(model) {
+    this.model = model;
+
+    this.startFromBeginning();
+
+    this.attachRouteListener();
+  }
+
+  startFromBeginning() {
+    if (this.routeName !== "index.activities") {
+      this.router.transitionTo("index.activities.index");
+    }
+  }
+
+  async prepareTourForCurrentRoute() {
+    if (this.hasTourForRoute) {
+      const tours = this.routeTours;
+      await this.addSteps(tours.map(this.tourToSteps));
+    }
+  }
+
+  attachRouteListener() {
+    this.router.on("routeDidChange", this.boundOnRouteChangeHandler);
+  }
+
+  detachRouteListener() {
+    this.router.off("routeDidChange", this.boundOnRouteChangeHandler);
+  }
+
+  get hasTourForRoute() {
     return this.autostartTour.tours.includes(this.routeName);
   }
 
-  addDefaultStepsOptions() {
-    this.tour.defaultStepOptions = {
+  get defaultStepOptions() {
+    return {
       beforeShowPromise() {
         return new Promise(function (resolve) {
           schedule("afterRender", this, function () {
@@ -74,9 +89,7 @@ export default class Shepherd extends Service {
       },
       highlightClass: "highlight",
       scrollTo: true,
-      modalContainer: this.modalContainer,
     };
-    this.tour.modal = true;
   }
 
   tourToSteps(data) {
@@ -103,15 +116,11 @@ export default class Shepherd extends Service {
     };
   }
 
-  getRouteTours() {
+  get routeTours() {
     return TOURS[this.routeName];
   }
 
-  addModelOfProtected(model) {
-    this.model = model;
-  }
-
-  _wantsTour() {
+  get _wantsTour() {
     return (
       !this.model.tourDone &&
       !this.autostartTour.done.includes(this.routeName) &&
@@ -119,17 +128,24 @@ export default class Shepherd extends Service {
     );
   }
 
+  // TODO: see if needed, maybe not
+  closeCurrentTour() {
+    if (this.tour.isActive) {
+      this.tour.hide();
+    }
+  }
+
   @waitFor
   async startTour() {
-    if (this._wantsTour()) {
-      await this.showToursOfCurrentRoute();
+    if (this._wantsTour && this.hasTourForRoute) {
+      await this.prepareTourForCurrentRoute();
       schedule("afterRender", this, () => {
-        this.tour._onTourFinish = async () => {
+        this._onTourFinish = async () => {
           const done = this.autostartTour.done;
           done.push(this.routeName);
           this.autostartTour.done = done;
 
-          if (this.autostartTour.allDone()) {
+          if (this.autostartTour.allDone) {
             try {
               const user = this.model;
 
@@ -143,17 +159,17 @@ export default class Shepherd extends Service {
             }
           } else {
             try {
-              if (!isTesting()) {
-                await this.router.transitionTo(this.autostartTour.routeOfNextTour);
-              }
+              await this.router.transitionTo(
+                this.autostartTour.undoneTours.shift() ?? "index"
+              );
             } catch (error) {
-              this.notify.error('unexpected error');
+              this.notify.error("unexpected error");
             }
           }
         };
 
         later(this, () => {
-          this.tour.start();
+          this.start();
         });
       });
     }

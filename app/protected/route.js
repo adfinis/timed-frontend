@@ -1,8 +1,3 @@
-/**
- * @module timed
- * @submodule timed-routes
- * @public
- */
 import { action } from "@ember/object";
 import Route from "@ember/routing/route";
 import { inject as service } from "@ember/service";
@@ -70,7 +65,7 @@ export default class ProtectedRoute extends Route {
     super.setupController(controller, model, ...args);
 
     const visible =
-      !this.autostartTour.allDone() &&
+      !this.autostartTour.allDone &&
       !model.tourDone &&
       (this.media.isMd || this.media.isLg || this.media.isXl);
 
