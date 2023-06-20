@@ -1,9 +1,9 @@
-import IndexActivitiesIndex from "./index/activities/index";
+import IndexActivities from "./index/activities";
 import IndexAttendances from "./index/attendances";
 import IndexReports from "./index/reports";
 
 export default {
-  "index.activities.index": IndexActivitiesIndex,
+  "index.activities": IndexActivities,
   "index.attendances": IndexAttendances,
   "index.reports": IndexReports,
 };
