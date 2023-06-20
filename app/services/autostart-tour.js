@@ -21,12 +21,6 @@ export default class AutostartTourService extends Service {
    */
   @tracked doneKey = "timed-tour";
 
-  /**
-   * All done tours
-   *
-   * @property {String[]} done
-   * @public
-   */
   get done() {
     return Array.from(JSON.parse(localStorage.getItem(this.doneKey)) || []);
   }
@@ -35,27 +29,11 @@ export default class AutostartTourService extends Service {
     localStorage.setItem(this.doneKey, JSON.stringify(value));
   }
 
-  get routeOfNextTour() {
-    const done = this.done;
-    for (const route of this.tours) {
-      if (!done.includes(route)) {
-        return route;
-      }
-    }
-    // this method is called if {this.allDone} is false -> the code is never arrive here
-    return "index";
+  get undoneTours() {
+    return this.tours.filter((tour) => !this.done.includes(tour));
   }
-  /**
-   * Whether all tours are done
-   *
-   * @method allDone
-   * @return {Boolean} Whether all tours are done
-   * @public
-   */
-  allDone() {
-    const tours = this.tours;
-    const done = this.done;
 
-    return tours.every((tour) => done.includes(tour));
+  get allDone() {
+    return this.undoneTours.length === 0;
   }
 }
