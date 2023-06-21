@@ -7,6 +7,7 @@ export default class UsersEditAbsenceCreditsController extends Controller {
   AbsenceCreditValidations = AbsenceCreditValidations;
   @service notify;
   @service router;
+  @service store;
 
   @controller("users.edit") userController;
   @controller("users.edit.credits.index") userCreditsController;

@@ -21,6 +21,7 @@ export default class IndexActivityEditController extends Route.extend(
   RouteAutostartTourMixin
 ) {
   @service router;
+  @service store;
   /**
    * Model hook, fetch the activity to edit
    *

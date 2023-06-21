@@ -62,6 +62,7 @@ export default class AnalysisEditController extends Controller.extend(
   @service router;
   @service fetch;
   @service session;
+  @service store;
   @service unverifiedReports;
 
   get analysisIndexController() {

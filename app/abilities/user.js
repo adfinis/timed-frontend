@@ -1,16 +1,18 @@
-import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
 import { Ability } from "ember-can";
 
-export default Ability.extend({
-  canRead: computed(
-    "user.{id,isSuperuser}",
-    "model.{id,supervisors}",
-    function () {
-      return (
-        this.user?.isSuperuser ||
-        this.user?.id === this.model.id ||
-        this.model.supervisors.mapBy("id").includes(this.user?.id)
-      );
-    }
-  ),
-});
+export default class UserAbility extends Ability {
+  @service session;
+
+  get user() {
+    return this.session.data.user;
+  }
+
+  get canRead() {
+    return (
+      this.user?.isSuperuser ||
+      this.user?.id === this.model.id ||
+      this.model.supervisors.mapBy("id").includes(this.user?.id)
+    );
+  }
+}
