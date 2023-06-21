@@ -20,6 +20,7 @@ import { cached } from "tracked-toolbox";
  * @public
  */
 export default class IndexReportController extends Controller {
+  @service store;
   @service notify;
   @service router;
 

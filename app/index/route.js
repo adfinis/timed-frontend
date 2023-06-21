@@ -34,6 +34,7 @@ export default class IndexRoute extends Route.extend(RouteAutostartTourMixin) {
    * @public
    */
   @service session;
+  @service store;
 
   /**
    * Model hook, return the selected day as moment object

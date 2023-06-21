@@ -4,6 +4,7 @@
  * @public
  */
 import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
 import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 /**
@@ -16,6 +17,7 @@ import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 export default class IndexReportsRoute extends Route.extend(
   RouteAutostartTourMixin
 ) {
+  @service store;
   /**
    * Before model hook, fetch all absence types
    *

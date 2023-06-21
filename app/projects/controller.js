@@ -11,6 +11,7 @@ export default class ProjectsController extends Controller {
   projectValidations = ProjectValidations;
 
   @service session;
+  @service store;
   @service notify;
 
   @tracked selectedCustomer;

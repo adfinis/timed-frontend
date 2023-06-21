@@ -3,9 +3,9 @@
  * @submodule timed-models
  * @public
  */
+import { inject as service } from "@ember/service";
 import Model, { attr, hasMany } from "@ember-data/model";
 import moment from "moment";
-
 /**
  * The user model
  *
@@ -14,6 +14,7 @@ import moment from "moment";
  * @public
  */
 export default class User extends Model {
+  @service store;
   /**
    * The username
    *
