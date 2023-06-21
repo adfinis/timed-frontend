@@ -27,13 +27,14 @@ export default class IndexReportController extends Controller {
   @tracked review = false;
   @tracked notBillable = false;
 
+  @tracked showReschedule = false;
+  @tracked _center;
+
+  @service store;
   @service notify;
   @service router;
 
   ReportValidations = ReportValidations;
-
-  @tracked showReschedule = false;
-  @tracked _center;
 
   get center() {
     return this._center ?? moment(this.model);

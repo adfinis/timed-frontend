@@ -19,14 +19,11 @@ const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
  */
 @classic
 export default class UnverifiedReportsService extends Service {
-  @service
-  store;
+  @service store;
 
-  @service
-  session;
+  @service session;
 
-  @service
-  notify;
+  @service notify;
 
   @tracked amountReports = 0;
 
