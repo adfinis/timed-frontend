@@ -1,9 +1,16 @@
-import { reads } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
 import { Ability } from "ember-can";
 
-const AbsenceCreditAbility = Ability.extend({
-  canEdit: reads("user.isSuperuser"),
-  canCreate: reads("user.isSuperuser"),
-});
+export default class AbsenceCreditAbility extends Ability {
+  @service session;
 
-export default AbsenceCreditAbility;
+  get user() {
+    return this.session.data.user;
+  }
+  get canEdit() {
+    return this.user.isSuperuser;
+  }
+  get canCreate() {
+    return this.user.isSuperuser;
+  }
+}
