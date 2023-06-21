@@ -3,7 +3,6 @@ window.deprecationWorkflow = window.deprecationWorkflow || {};
 window.deprecationWorkflow.config = {
   workflow: [
     { handler: "silence", matchId: "ember.component.reopen" }, // not finish yet
-    { handler: "throw", matchId: "implicit-injections" },
     {
       // the issue exists in ember scrollable package
       handler: "silence",
