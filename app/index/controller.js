@@ -33,7 +33,7 @@ export default class IndexController extends Controller {
   /* istanbul ignore next */
   @trackedWrapper disabledDates = [];
 
-  @service session;
+  @service store;
   @service notify;
   @service tracking;
 

@@ -1,9 +1,16 @@
-import { reads } from "@ember/object/computed";
+import { inject as service } from "@ember/service";
 import { Ability } from "ember-can";
 
-const OvertimeCreditAbility = Ability.extend({
-  canEdit: reads("user.isSuperuser"),
-  canCreate: reads("user.isSuperuser"),
-});
+export default class OvertimeCreditAbility extends Ability {
+  @service session;
 
-export default OvertimeCreditAbility;
+  get user() {
+    return this.session.data.user;
+  }
+  get canEdit() {
+    return this.user.isSuperuser;
+  }
+  get canCreate() {
+    return this.user.isSuperuser;
+  }
+}

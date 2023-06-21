@@ -15,6 +15,7 @@ export default class Activity extends Model {
   @belongsTo("user") user;
 
   @service notify;
+  @service store;
 
   get active() {
     return !this.toTime && !!this.id;
