@@ -1,14 +1,11 @@
 import { inject as service } from "@ember/service";
-import { tracked } from "@glimmer/tracking";
 import { Ability } from "ember-can";
 
 export default class ReportAbility extends Ability {
   @service session;
-  @tracked user;
 
-  constructor(...args) {
-    super(...args);
-    this.user = this.session.data.user;
+  get user() {
+    return this.session.data.user;
   }
 
   get canEdit() {
