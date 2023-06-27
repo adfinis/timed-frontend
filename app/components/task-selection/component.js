@@ -275,6 +275,8 @@ export default class TaskSelectionComponent extends Component {
   async onCustomerChange(value, options = {}) {
     const isTask = value?.get("constructor.modelName") === "task";
     if (isTask) {
+      const project = await value.get("project");
+      this.onProjectChange(project);
       this._customer = await value.get("project.customer");
       this.onTaskChange(value);
     } else {
