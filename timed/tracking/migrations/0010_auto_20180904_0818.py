@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tracking", "0009_remove_report_activity")]
 
     operations = [

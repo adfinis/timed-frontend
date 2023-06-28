@@ -21,7 +21,6 @@ def migrate_blocks(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tracking", "0006_add_activity_time")]
 
     operations = [migrations.RunPython(migrate_blocks)]

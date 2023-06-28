@@ -20,7 +20,6 @@ from timed.tracking.models import Absence, Report
 
 
 class UserSerializer(ModelSerializer):
-
     included_serializers = {
         "supervisors": "timed.employment.serializers.UserSerializer",
         "supervisees": "timed.employment.serializers.UserSerializer",

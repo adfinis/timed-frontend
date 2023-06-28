@@ -5,7 +5,6 @@ import djmoney.models.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("subscription", "0004_auto_20200407_2052"),
     ]

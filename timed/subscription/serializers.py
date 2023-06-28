@@ -76,7 +76,6 @@ class PackageSerializer(ModelSerializer):
 
 
 class OrderSerializer(ModelSerializer):
-
     included_serializers = {
         "project": ("timed.subscription.serializers" ".SubscriptionProjectSerializer")
     }

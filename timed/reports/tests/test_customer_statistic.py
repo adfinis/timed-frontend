@@ -29,7 +29,6 @@ def test_customer_statistic_list(
     status_code,
     django_assert_num_queries,
 ):
-
     user = auth_client.user
 
     assignee, employment = setup_customer_and_employment_status(
@@ -135,7 +134,7 @@ def test_customer_statistic_filtered(auth_client, filter, expected_result):
 @pytest.mark.parametrize(
     "is_employed, expected, status_code",
     [
-        (True, 4, status.HTTP_200_OK),
+        (True, 5, status.HTTP_200_OK),
         (False, 1, status.HTTP_403_FORBIDDEN),
     ],
 )

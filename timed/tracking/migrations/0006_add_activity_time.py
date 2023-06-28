@@ -7,7 +7,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tracking", "0005_remove_absence_duration")]
 
     operations = [

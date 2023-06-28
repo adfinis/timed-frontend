@@ -11,7 +11,6 @@ def migrate_report_review(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tracking", "0011_auto_20181026_1528")]
 
     operations = [migrations.RunPython(migrate_report_review)]

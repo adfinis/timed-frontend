@@ -6,7 +6,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("employment", "0008_auto_20171013_1041")]
 
     operations = [migrations.DeleteModel(name="UserAbsenceType")]

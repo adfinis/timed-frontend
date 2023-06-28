@@ -5,7 +5,6 @@ import djmoney.models.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("projects", "0008_auto_20190220_1133"),
     ]

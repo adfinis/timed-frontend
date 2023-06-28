@@ -81,7 +81,6 @@ class StatisticQueryset(QuerySet):
         self._catch_prefixes = catch_prefixes
 
     def filter(self, *args, **kwargs):
-
         if args:  # pragma: no cover
             # This is a check against programming errors, no need to test
             raise RuntimeError(
