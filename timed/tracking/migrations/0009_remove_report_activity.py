@@ -6,7 +6,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tracking", "0008_delete_activity_blocks")]
 
     operations = [migrations.RemoveField(model_name="report", name="activity")]

@@ -101,7 +101,6 @@ def test_task_statistic_filtered(
     filter,
     expected_result,
 ):
-
     user = auth_client.user
     setup_customer_and_employment_status(
         user=user,

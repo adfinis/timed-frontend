@@ -22,7 +22,6 @@ def migrate_estimated_hours(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("projects", "0003_auto_20170831_1624")]
 
     operations = [

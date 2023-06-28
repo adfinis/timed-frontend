@@ -7,7 +7,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("projects", "0007_project_subscription_project")]
 
     operations = [

@@ -5,7 +5,6 @@ import djmoney.models.fields
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("subscription", "0005_alter_package_price_currency"),
     ]

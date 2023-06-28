@@ -36,7 +36,6 @@ def delete_invalid_blocks(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("tracking", "0001_initial")]
 
     operations = [

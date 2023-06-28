@@ -76,7 +76,6 @@ class EmploymentFilterSet(FilterSet):
     date = DateFilter(method="filter_date")
 
     def filter_date(self, queryset, name, value):
-
         queryset = queryset.filter(
             Q(start_date__lte=value)
             & Q(Q(end_date__gte=value) | Q(end_date__isnull=True))

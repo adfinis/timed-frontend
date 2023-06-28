@@ -177,7 +177,6 @@ def test_worktime_balance_list_filter_user(auth_client):
 def test_worktime_balance_list_last_reported_date_no_reports(
     auth_client, django_assert_num_queries
 ):
-
     url = reverse("worktime-balance-list")
 
     with django_assert_num_queries(1):
@@ -193,7 +192,6 @@ def test_worktime_balance_list_last_reported_date_no_reports(
 def test_worktime_balance_list_last_reported_date(
     auth_client, django_assert_num_queries
 ):
-
     EmploymentFactory.create(
         user=auth_client.user,
         start_date=date(2017, 2, 1),

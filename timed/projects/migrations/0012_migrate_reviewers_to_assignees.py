@@ -16,7 +16,6 @@ def migrate_reviewers(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("projects", "0011_auto_20210419_1459"),
     ]

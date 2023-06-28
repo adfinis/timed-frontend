@@ -77,7 +77,6 @@ class StatisticFiltersetBase:
             return queryset.filter_base(filter_q).filter_aggregate(filter_q)
 
     def filter_queryset(self, queryset):
-
         qs = super().filter_queryset(queryset)
 
         duration_ref = self._refs["reports_ref"] + "__duration"

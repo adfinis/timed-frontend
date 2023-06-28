@@ -161,7 +161,6 @@ def setup_customer_and_employment_status(
             user=user, is_customer=is_customer
         )
     if is_employed:
-
         employment = employment_factories.EmploymentFactory.create(
             user=user, is_external=is_external
         )

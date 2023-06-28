@@ -31,7 +31,6 @@ def migrate_packages(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("projects", "0005_auto_20170907_0938"),
         ("subscription", "0002_auto_20170808_1729"),
