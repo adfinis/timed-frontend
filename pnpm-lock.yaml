@@ -183,8 +183,8 @@ devDependencies:
     specifier: 2.1.2
     version: 2.1.2(@babel/core@7.21.4)
   ember-math-helpers:
-    specifier: 2.18.2
-    version: 2.18.2
+    specifier: 3.0.0
+    version: 3.0.0
   ember-maybe-import-regenerator:
     specifier: 1.0.0
     version: 1.0.0
@@ -9581,9 +9581,9 @@ packages:
       - supports-color
     dev: true
 
-  /ember-math-helpers@2.18.2:
-    resolution: {integrity: sha512-ikAXlIiT0wk8X8uuMtHkrRYt8HnDt9Wk+iNoY9IoBmt6IRZjCD5BmuxrIPj5Eop2/afMfKmNKnc4L1StkXM3wg==}
-    engines: {node: 12.* || 14.* || >= 16}
+  /ember-math-helpers@3.0.0:
+    resolution: {integrity: sha512-sVbrU4glI89LL7/h0SOQxdthzs4a0FmvxZ0lXYwi43bNkcSw5YfEtXpIEvgABR0CJxjRZ7GjPy10Jcvv47RIaA==}
+    engines: {node: 14.* || 16.* || >= 18}
     dependencies:
       broccoli-funnel: 3.0.8
       ember-cli-babel: 7.26.11
