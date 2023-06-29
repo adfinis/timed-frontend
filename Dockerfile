@@ -1,4 +1,4 @@
-FROM danlynn/ember-cli:3.28.5 as build
+FROM danlynn/ember-cli:4.12.1 as build
 
 # pin pnpm to v7 as long as we are on the ember-cli:3.28.5 image
 RUN npm install -g pnpm@7
