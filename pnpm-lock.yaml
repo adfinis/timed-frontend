@@ -39,8 +39,8 @@ devDependencies:
     specifier: 2.0.5
     version: 2.0.5(@babel/core@7.21.4)(ember-source@3.28.11)
   '@ember/test-helpers':
-    specifier: 2.9.3
-    version: 2.9.3(@babel/core@7.21.4)(ember-source@3.28.11)
+    specifier: 3.1.0
+    version: 3.1.0(ember-source@3.28.11)(webpack@5.76.2)
   '@embroider/macros':
     specifier: ^1.9.0
     version: 1.10.0
@@ -133,7 +133,7 @@ devDependencies:
     version: 2.1.0
   ember-cli-mirage:
     specifier: 2.4.0
-    version: 2.4.0(@babel/core@7.21.4)(@ember/test-helpers@2.9.3)(ember-data@3.28.13)(ember-qunit@6.1.1)
+    version: 2.4.0(@babel/core@7.21.4)(@ember/test-helpers@3.1.0)(ember-data@3.28.13)(ember-qunit@6.1.1)
   ember-cli-moment-shim:
     specifier: 3.8.0
     version: 3.8.0
@@ -2663,25 +2663,23 @@ packages:
       - supports-color
     dev: true
 
-  /@ember/test-helpers@2.9.3(@babel/core@7.21.4)(ember-source@3.28.11):
-    resolution: {integrity: sha512-ejVg4Dj+G/6zyLvQsYOvmGiOLU6AS94tY4ClaO1E2oVvjjtVJIRmVLFN61I+DuyBg9hS3cFoPjQRTZB9MRIbxQ==}
-    engines: {node: 10.* || 12.* || 14.* || 15.* || >= 16.*}
+  /@ember/test-helpers@3.1.0(ember-source@3.28.11)(webpack@5.76.2):
+    resolution: {integrity: sha512-7T4sKM/8oML7tBvBPIAlugtz8p+Vm0x0PcQsPW8sg83/tIQY8EUElhclMbYcAoYeij+KJ4HKGI+fCUBBfKAImg==}
+    engines: {node: 16.* || >= 18}
     peerDependencies:
-      ember-source: '>=3.8.0'
+      ember-source: ^4.0.0 || ^5.0.0
     dependencies:
       '@ember/test-waiters': 3.0.2
       '@embroider/macros': 1.10.0
-      '@embroider/util': 1.10.0(ember-source@3.28.11)
       broccoli-debug: 0.6.5
       broccoli-funnel: 3.0.8
+      ember-auto-import: 2.6.3(webpack@5.76.2)
       ember-cli-babel: 7.26.11
       ember-cli-htmlbars: 6.2.0
-      ember-destroyable-polyfill: 2.0.3(@babel/core@7.21.4)
       ember-source: 3.28.11(@babel/core@7.21.4)
     transitivePeerDependencies:
-      - '@babel/core'
-      - '@glint/template'
       - supports-color
+      - webpack
     dev: true
 
   /@ember/test-waiters@3.0.2:
@@ -6101,7 +6099,7 @@ packages:
       broccoli-plugin: 1.3.1
       copy-dereference: 1.0.0
       debug: 2.6.9
-      mkdirp: 0.5.5
+      mkdirp: 0.5.6
       promise-map-series: 0.2.3
       rsvp: 3.6.2
       symlink-or-copy: 1.3.1
@@ -6303,7 +6301,7 @@ packages:
       hash-for-dep: 1.5.1
       heimdalljs: 0.2.6
       heimdalljs-logger: 0.1.10
-      mkdirp: 0.5.5
+      mkdirp: 0.5.6
       promise-map-series: 0.2.3
       rimraf: 2.7.1
       rsvp: 3.6.2
@@ -8786,7 +8784,7 @@ packages:
     engines: {node: ^4.5 || 6.* || >= 7.*}
     dev: true
 
-  /ember-cli-mirage@2.4.0(@babel/core@7.21.4)(@ember/test-helpers@2.9.3)(ember-data@3.28.13)(ember-qunit@6.1.1):
+  /ember-cli-mirage@2.4.0(@babel/core@7.21.4)(@ember/test-helpers@3.1.0)(ember-data@3.28.13)(ember-qunit@6.1.1):
     resolution: {integrity: sha512-cy8B+IZV07V6xgnFzktKUsntTQvIqPSS3u4+XaLdNW91yOowLsN2BsuQldN3eCnwswgE3a9eGNGS4I0BD4llNA==}
     engines: {node: '>= 10.*'}
     peerDependencies:
@@ -8801,7 +8799,7 @@ packages:
       ember-qunit:
         optional: true
     dependencies:
-      '@ember/test-helpers': 2.9.3(@babel/core@7.21.4)(ember-source@3.28.11)
+      '@ember/test-helpers': 3.1.0(ember-source@3.28.11)(webpack@5.76.2)
       '@embroider/macros': 0.41.0
       broccoli-file-creator: 2.1.1
       broccoli-funnel: 3.0.8
@@ -14341,13 +14339,6 @@ packages:
   /mkdirp@0.3.5:
     resolution: {integrity: sha512-8OCq0De/h9ZxseqzCH8Kw/Filf5pF/vMI6+BH7Lu0jXz2pqYCjTAQRolSxRIi+Ax+oCCjlxoJMP0YQ4XlrQNHg==}
     deprecated: Legacy versions of mkdirp are no longer supported. Please update to mkdirp 1.x. (Note that the API surface has changed to use Promises in 1.x.)
-    dev: true
-
-  /mkdirp@0.5.5:
-    resolution: {integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==}
-    hasBin: true
-    dependencies:
-      minimist: 1.2.8
     dev: true
 
   /mkdirp@0.5.6:
