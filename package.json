@@ -52,7 +52,7 @@
     "@embroider/macros": "^1.9.0",
     "@embroider/util": "^1.9.0",
     "@fontsource/source-sans-pro": "4.5.11",
-    "@fortawesome/ember-fontawesome": "^0.4.1",
+    "@fortawesome/ember-fontawesome": "^0.4.3",
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
