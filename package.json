@@ -142,7 +142,7 @@
     "qunit": "2.19.4",
     "qunit-dom": "2.0.0",
     "sass": "1.58.3",
-    "semantic-release": "^20.1.1",
+    "semantic-release": "^21.0.0",
     "tracked-built-ins": "3.1.1",
     "tracked-toolbox": "2.0.0",
     "webpack": "5.76.2"
