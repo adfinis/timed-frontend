@@ -91,7 +91,7 @@ devDependencies:
     version: 2.6.3(webpack@5.76.2)
   ember-basic-dropdown:
     specifier: 7.0.0
-    version: 7.0.0(@babel/core@7.21.4)(ember-source@3.28.11)(webpack@5.76.2)
+    version: 7.0.0(@babel/core@7.21.4)(@ember/string@3.0.1)(ember-source@3.28.11)(webpack@5.76.2)
   ember-can:
     specifier: 4.2.0
     version: 4.2.0
@@ -246,8 +246,8 @@ devDependencies:
     specifier: 3.28.11
     version: 3.28.11(@babel/core@7.21.4)
   ember-style-modifier:
-    specifier: ^1.0.0
-    version: 1.0.0(@babel/core@7.21.4)
+    specifier: ^3.0.0
+    version: 3.0.0(@babel/core@7.21.4)(@ember/string@3.0.1)(webpack@5.76.2)
   ember-template-lint:
     specifier: 4.17.0
     version: 4.17.0(ember-cli-htmlbars@6.2.0)
@@ -8415,7 +8415,7 @@ packages:
       - supports-color
     dev: true
 
-  /ember-basic-dropdown@7.0.0(@babel/core@7.21.4)(ember-source@3.28.11)(webpack@5.76.2):
+  /ember-basic-dropdown@7.0.0(@babel/core@7.21.4)(@ember/string@3.0.1)(ember-source@3.28.11)(webpack@5.76.2):
     resolution: {integrity: sha512-AAxe06PBqR9K3tASGtCOdDgLcsaBvElnAUOTQvqiAerfjddG5OuYE8RptfOrYgXLYDyFX7HH3eqsKXiG7uJroQ==}
     engines: {node: 14.* || >= 16}
     dependencies:
@@ -8432,10 +8432,11 @@ packages:
       ember-get-config: 2.1.1
       ember-maybe-in-element: 2.1.0
       ember-modifier: 3.2.7(@babel/core@7.21.4)
-      ember-style-modifier: 1.0.0(@babel/core@7.21.4)
+      ember-style-modifier: 3.0.0(@babel/core@7.21.4)(@ember/string@3.0.1)(webpack@5.76.2)
       ember-truth-helpers: 3.1.1
     transitivePeerDependencies:
       - '@babel/core'
+      - '@ember/string'
       - '@glint/template'
       - ember-source
       - supports-color
@@ -10021,6 +10022,22 @@ packages:
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
+    dev: true
+
+  /ember-style-modifier@3.0.0(@babel/core@7.21.4)(@ember/string@3.0.1)(webpack@5.76.2):
+    resolution: {integrity: sha512-XCwoDwznYiWUlNq4XoS5VPh9hwDJfQGc3fJ+S7lYbF64mgB2hB/Rqm5VMOnFSXBTJ97ROQzsSysxUdJioGdAOg==}
+    engines: {node: 14.* || 16.* || >= 18}
+    peerDependencies:
+      '@ember/string': ^3.0.1
+    dependencies:
+      '@ember/string': 3.0.1
+      ember-auto-import: 2.6.3(webpack@5.76.2)
+      ember-cli-babel: 7.26.11
+      ember-modifier: 3.2.7(@babel/core@7.21.4)
+    transitivePeerDependencies:
+      - '@babel/core'
+      - supports-color
+      - webpack
     dev: true
 
   /ember-template-imports@3.3.1(ember-cli-htmlbars@6.2.0):
