@@ -249,8 +249,8 @@ devDependencies:
     specifier: ^1.0.0
     version: 1.0.0(@babel/core@7.21.4)
   ember-template-lint:
-    specifier: 4.17.0
-    version: 4.17.0(ember-cli-htmlbars@6.2.0)
+    specifier: 4.18.2
+    version: 4.18.2
   ember-test-selectors:
     specifier: 6.0.0
     version: 6.0.0
@@ -3920,7 +3920,7 @@ packages:
     resolution: {integrity: sha512-9K4zoImiZc3HlIp6AVUDE4CWYx22a+lhSZMYNpbjW04+YF0KWj4pJXnEMjdnFTiQibFFmElcsasJXDbdI/EPhA==}
     dependencies:
       '@types/eslint': 8.21.2
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
     dev: true
 
   /@types/eslint@7.29.0:
@@ -3933,7 +3933,7 @@ packages:
   /@types/eslint@8.21.2:
     resolution: {integrity: sha512-EMpxUyystd3uZVByZap1DACsMXvb82ypQnGn89e1Y0a+LYu3JJscUd/gqhRsVFDkaD2MIiWo0MT8EfXr3DGRKw==}
     dependencies:
-      '@types/estree': 0.0.51
+      '@types/estree': 1.0.0
       '@types/json-schema': 7.0.11
     dev: true
 
@@ -10023,26 +10023,6 @@ packages:
       - supports-color
     dev: true
 
-  /ember-template-imports@3.3.1(ember-cli-htmlbars@6.2.0):
-    resolution: {integrity: sha512-OeOaEhKL6fz40O3OgKff8czu0d9ppX3tLV7ohvaQL0eM1Pv+Fl4bi/zvEdiCCAn+5Nu7/DFCaMElFuRhurlPJA==}
-    engines: {node: 12.* || >= 14}
-    peerDependencies:
-      ember-cli-htmlbars: ^6.0.0
-    dependencies:
-      babel-import-util: 0.2.0
-      broccoli-stew: 3.0.0
-      ember-cli-babel-plugin-helpers: 1.1.1
-      ember-cli-htmlbars: 6.2.0
-      ember-cli-version-checker: 5.1.2
-      line-column: 1.0.2
-      magic-string: 0.25.9
-      parse-static-imports: 1.1.0
-      string.prototype.matchall: 4.0.8
-      validate-peer-dependencies: 1.2.0
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /ember-template-imports@3.4.2:
     resolution: {integrity: sha512-OS8TUVG2kQYYwP3netunLVfeijPoOKIs1SvPQRTNOQX4Pu8xGGBEZmrv0U1YTnQn12Eg+p6w/0UdGbUnITjyzw==}
     engines: {node: 12.* || >= 14}
@@ -10060,8 +10040,8 @@ packages:
       - supports-color
     dev: true
 
-  /ember-template-lint@4.17.0(ember-cli-htmlbars@6.2.0):
-    resolution: {integrity: sha512-9Ove2WM6mPF3WRu4+ikLhdTHQAeK031dJp4WlVYzbCl1YFbtoUeKojH+/0U98hJCjiQg/dRb0baSTr+VevEyzw==}
+  /ember-template-lint@4.18.2:
+    resolution: {integrity: sha512-yI8kQ8IQ2x5HVq0tQAISXABOHr0Is5sAg6rwceO6M8CYozq7HMxUPEj0VbdcbyIE70SWw/8d24M1rBI4km544Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     hasBin: true
     dependencies:
@@ -10070,7 +10050,7 @@ packages:
       chalk: 4.1.2
       ci-info: 3.5.0
       date-fns: 2.29.3
-      ember-template-imports: 3.3.1(ember-cli-htmlbars@6.2.0)
+      ember-template-imports: 3.4.2
       ember-template-recast: 6.1.3
       find-up: 6.3.0
       fuse.js: 6.5.3
@@ -10081,9 +10061,8 @@ packages:
       micromatch: 4.0.5
       resolve: 1.22.1
       v8-compile-cache: 2.3.0
-      yargs: 17.6.2
+      yargs: 17.7.0
     transitivePeerDependencies:
-      - ember-cli-htmlbars
       - supports-color
     dev: true
 
