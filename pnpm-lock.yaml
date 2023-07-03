@@ -36,8 +36,8 @@ devDependencies:
     specifier: 2.0.0
     version: 2.0.0
   '@ember/render-modifiers':
-    specifier: 2.0.5
-    version: 2.0.5(@babel/core@7.21.4)(ember-source@3.28.11)
+    specifier: 2.1.0
+    version: 2.1.0(@babel/core@7.21.4)(ember-source@3.28.11)
   '@ember/test-helpers':
     specifier: 2.9.3
     version: 2.9.3(@babel/core@7.21.4)(ember-source@3.28.11)
@@ -2639,11 +2639,15 @@ packages:
       - supports-color
     dev: true
 
-  /@ember/render-modifiers@2.0.5(@babel/core@7.21.4)(ember-source@3.28.11):
-    resolution: {integrity: sha512-5cJ1niIdOJC6k6KtIn9HGbr1DATJQp4ZqMv1vbi6LKQWbVCQ3byvKONtUEi3H0wcewlrcaWCqXOgm0nACzCOQA==}
+  /@ember/render-modifiers@2.1.0(@babel/core@7.21.4)(ember-source@3.28.11):
+    resolution: {integrity: sha512-LruhfoDv2itpk0fA0IC76Sxjcnq/7BC6txpQo40hOko8Dn6OxwQfxkPIbZGV0Cz7df+iX+VJrcYzNIvlc3w2EQ==}
     engines: {node: 12.* || 14.* || >= 16}
     peerDependencies:
-      ember-source: ^3.8 || ^4.0.0
+      '@glint/template': ^1.0.2
+      ember-source: ^3.8 || ^4.0.0 || ^5.0.0
+    peerDependenciesMeta:
+      '@glint/template':
+        optional: true
     dependencies:
       '@embroider/macros': 1.10.0
       ember-cli-babel: 7.26.11
@@ -8394,7 +8398,7 @@ packages:
     resolution: {integrity: sha512-JgI/cy7eS/Y2WoQl7B2Mko/1aFTAlxr5d+KpQeH7rBKOFml7IQtLvhiDQrpU/FLkrQ9aLNEJtzwtDZV1xQxAKA==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
-      '@ember/render-modifiers': 2.0.5(@babel/core@7.21.4)(ember-source@3.28.11)
+      '@ember/render-modifiers': 2.1.0(@babel/core@7.21.4)(ember-source@3.28.11)
       '@embroider/macros': 1.10.0
       '@embroider/util': 1.10.0(ember-source@3.28.11)
       '@glimmer/component': 1.1.2(@babel/core@7.21.4)
@@ -8419,7 +8423,7 @@ packages:
     resolution: {integrity: sha512-AAxe06PBqR9K3tASGtCOdDgLcsaBvElnAUOTQvqiAerfjddG5OuYE8RptfOrYgXLYDyFX7HH3eqsKXiG7uJroQ==}
     engines: {node: 14.* || >= 16}
     dependencies:
-      '@ember/render-modifiers': 2.0.5(@babel/core@7.21.4)(ember-source@3.28.11)
+      '@ember/render-modifiers': 2.1.0(@babel/core@7.21.4)(ember-source@3.28.11)
       '@embroider/macros': 1.10.0
       '@embroider/util': 1.10.0(ember-source@3.28.11)
       '@glimmer/component': 1.1.2(@babel/core@7.21.4)
