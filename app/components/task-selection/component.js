@@ -3,7 +3,7 @@ import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
-import { dropTask } from "ember-concurrency";
+import { restartableTask, timeout, dropTask } from "ember-concurrency";
 import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { resolve } from "rsvp";
 import customerOptionTemplate from "timed/components/optimized-power-select/custom-options/customer-option";
@@ -31,6 +31,34 @@ export default class TaskSelectionComponent extends Component {
 
     if (this.args.task) {
       this.onTaskChange(this.args.task, { preventAction: true });
+    }
+
+    if (this.args.liveTracking) {
+      // we track "_activity" here since we can not track the public getters directly
+      this.tracking.addObserver(
+        "_activity",
+        this.handleTrackingActiveActivityChanged.perform
+      );
+    }
+  }
+
+  willDestroy(...args) {
+    if (this.args.liveTracking) {
+      this.tracking.removeObserver(
+        "_activity",
+        this.handleTrackingActiveActivityChanged.perform
+      );
+    }
+    super.willDestroy(...args);
+  }
+
+  @restartableTask
+  *handleTrackingActiveActivityChanged() {
+    // wait a little to catch multiple updates to the prop.
+    yield timeout(50);
+
+    if (this.args.liveTracking && !this.tracking.hasActiveActivity) {
+      this.clear();
     }
   }
 
@@ -338,7 +366,11 @@ export default class TaskSelectionComponent extends Component {
   onTaskChange(value, options = {}) {
     this._task = value;
 
-    if (!this.project && value?.get("project.id")) {
+    const projectId = value?.get("project.id");
+    if (
+      (!this.project && projectId) ||
+      (projectId && this.project?.id !== projectId)
+    ) {
       resolve(value.get("project")).then((p) => {
         this.onProjectChange(p, {
           preventAction: true,
