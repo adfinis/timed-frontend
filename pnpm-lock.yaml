@@ -318,8 +318,8 @@ devDependencies:
     specifier: 2.0.0
     version: 2.0.0
   sass:
-    specifier: 1.58.3
-    version: 1.58.3
+    specifier: 1.63.6
+    version: 1.63.6
   semantic-release:
     specifier: ^20.1.1
     version: 20.1.1
@@ -16797,9 +16797,9 @@ packages:
       - supports-color
     dev: true
 
-  /sass@1.58.3:
-    resolution: {integrity: sha512-Q7RaEtYf6BflYrQ+buPudKR26/lH+10EmO9bBqbmPh/KeLqv8bjpTNqxe71ocONqXq+jYiCbpPUmQMS+JJPk4A==}
-    engines: {node: '>=12.0.0'}
+  /sass@1.63.6:
+    resolution: {integrity: sha512-MJuxGMHzaOW7ipp+1KdELtqKbfAWbH7OLIdoSMnVe3EXPMTmxTmlaZDCTsgIpPCs3w99lLo9/zDKkOrJuT5byw==}
+    engines: {node: '>=14.0.0'}
     hasBin: true
     dependencies:
       chokidar: 3.5.3
