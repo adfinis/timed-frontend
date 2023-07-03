@@ -219,8 +219,8 @@ devDependencies:
     specifier: 8.0.3
     version: 8.0.3(@babel/core@7.21.4)
   ember-resources:
-    specifier: 5.6.2
-    version: 5.6.2(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@3.28.11)
+    specifier: 5.6.4
+    version: 5.6.4(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@3.28.11)
   ember-responsive:
     specifier: 5.0.0
     version: 5.0.0
@@ -9804,8 +9804,8 @@ packages:
       - supports-color
     dev: true
 
-  /ember-resources@5.6.2(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@3.28.11):
-    resolution: {integrity: sha512-aJnEucw9q3S5kF/bVNQamf4yaER0j6H+RIRum+x635nD4+Spwr/J766GxJURBRPZn1tQw6cJrR3IdYCYEf4dUw==}
+  /ember-resources@5.6.4(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@3.28.11):
+    resolution: {integrity: sha512-ShdosnruPm37jPpzPOgPVelymEDJT/27Jz/j5AGPVAfCaUhRIocTxNMtPx13ox890A2babuPF5M3Ur8UFidqtw==}
     peerDependencies:
       '@ember/test-waiters': ^3.0.0
       '@glimmer/component': ^1.1.2
