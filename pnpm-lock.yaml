@@ -216,8 +216,8 @@ devDependencies:
     specifier: 6.1.1
     version: 6.1.1(ember-source@3.28.11)(qunit@2.19.4)(webpack@5.76.2)
   ember-resolver:
-    specifier: 8.0.3
-    version: 8.0.3(@babel/core@7.21.4)
+    specifier: 8.1.0
+    version: 8.1.0(@babel/core@7.21.4)
   ember-resources:
     specifier: 5.6.2
     version: 5.6.2(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@3.28.11)
@@ -9789,8 +9789,8 @@ packages:
       - supports-color
     dev: true
 
-  /ember-resolver@8.0.3(@babel/core@7.21.4):
-    resolution: {integrity: sha512-fA53fxfG821BRqNiB9mQDuzZpzSRcSAYZTYBlRQOHsJwoYdjyE7idz4YcytbSsa409G5J2kP6B+PiKOBh0odlw==}
+  /ember-resolver@8.1.0(@babel/core@7.21.4):
+    resolution: {integrity: sha512-MGD7X2ztZVswGqs1mLgzhZJRhG7XiF6Mg4DgC7xJFWRYQQUHyGJpGdNWY9nXyrYnRIsCrQoL1do41zpxbrB/cg==}
     engines: {node: '>= 10.*'}
     dependencies:
       babel-plugin-debug-macros: 0.3.4(@babel/core@7.21.4)
