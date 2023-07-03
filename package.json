@@ -145,7 +145,7 @@
     "semantic-release": "^20.1.1",
     "tracked-built-ins": "3.1.1",
     "tracked-toolbox": "2.0.0",
-    "webpack": "5.76.2"
+    "webpack": "5.88.1"
   },
   "engines": {
     "node": ">= 18"
