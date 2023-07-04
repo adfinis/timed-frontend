@@ -1,6 +1,6 @@
 export default [
   {
-    id: 'timesheet',
+    id: "timesheet",
     target: ".form-list-body",
     placement: "top",
     title: "Timesheet",
@@ -16,7 +16,7 @@ export default [
     `,
   },
   {
-    id: 'duration',
+    id: "duration",
     target: "input[name=duration-day]",
     placement: "top",
     title: "Duration",
@@ -30,7 +30,7 @@ export default [
     `,
   },
   {
-    id: 'newEntry',
+    id: "newEntry",
     target: ".form-list-row",
     placement: "bottom",
     title: "New entry",
@@ -42,7 +42,7 @@ export default [
     `,
   },
   {
-    id: 'reschedule',
+    id: "reschedule",
     target: ".btn-toolbar .btn-success",
     placement: "left",
     title: "Reschedule",
@@ -54,7 +54,7 @@ export default [
     `,
   },
   {
-    id: 'Attendance',
+    id: "Attendance",
     target: ".nav-tabs li:nth-child(2)",
     placement: "top",
     title: "Attendance",
