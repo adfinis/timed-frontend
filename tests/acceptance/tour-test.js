@@ -3,12 +3,13 @@ import {
   visit,
   currentURL,
   currentRouteName,
+  settled,
 } from "@ember/test-helpers";
 import { setupMirage } from "ember-cli-mirage/test-support";
 import { setupApplicationTest } from "ember-qunit";
 import { setBreakpoint } from "ember-responsive/test-support";
 import { authenticateSession } from "ember-simple-auth/test-support";
-import { module, skip, test } from "qunit";
+import { module, test } from "qunit";
 import TOURS from "timed/tours";
 
 module("Acceptance | tour", function (hooks) {
@@ -89,16 +90,30 @@ module("Acceptance | tour", function (hooks) {
     assert.dom(".shepherd-enabled").exists({ count: 1 });
   });
 
-  skip("steps through all available tour steps", async function (assert) {
+  test("steps through all available tour steps", async function (assert) {
+    const sites = Object.keys(TOURS);
+    const stepCount = sites.reduce((counter, site) => {
+      return counter + Object.keys(TOURS[site]).length;
+    }, 0);
+
+    assert.expect(sites.length + stepCount);
+
     await visit("/");
     await click("[data-test-tour-start]");
 
-    // TODO: assert that the tour is navigating trough the app
-    //
-    // for each available tour of TOURS
-    // * assert url
-    // * go trough steps
-    assert.strictEqual(currentRouteName, Object.keys(TOURS)[0]);
-    assert.ok(true);
+    for (const site of sites) {
+      assert.strictEqual(currentRouteName().replace(/\.index$/, ""), site);
+      for (const step of TOURS[site]) {
+        const header = Array.from(
+          document.getElementsByClassName("shepherd-header")
+        ).pop();
+        assert.dom(header).hasText(step.title);
+        Array.from(document.getElementsByClassName("shepherd-button-primary"))
+          .pop()
+          .click();
+        // eslint-disable-next-line  no-await-in-loop
+        await settled();
+      }
+    }
   });
 });
