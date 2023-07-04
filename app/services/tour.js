@@ -30,6 +30,18 @@ export default class TourService extends Tour {
         this.startTour();
       }
     };
+    this.defaultStepOptions = {
+      beforeShowPromise() {
+        return new Promise(function (resolve) {
+          schedule("afterRender", this, function () {
+            window.scrollTo(0, 0);
+            resolve();
+          });
+        });
+      },
+      highlightClass: "highlight",
+      scrollTo: true,
+    };
   }
 
   willDestroy(...args) {
@@ -75,21 +87,6 @@ export default class TourService extends Tour {
 
   get hasTourForRoute() {
     return this.autostartTour.tours.includes(this.routeName);
-  }
-
-  get defaultStepOptions() {
-    return {
-      beforeShowPromise() {
-        return new Promise(function (resolve) {
-          schedule("afterRender", this, function () {
-            window.scrollTo(0, 0);
-            resolve();
-          });
-        });
-      },
-      highlightClass: "highlight",
-      scrollTo: true,
-    };
   }
 
   tourToSteps(data) {
