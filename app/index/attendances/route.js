@@ -4,7 +4,6 @@
  * @public
  */
 import Route from "@ember/routing/route";
-import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
 /**
  * The index attendances route
@@ -13,9 +12,7 @@ import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
  * @extends Ember.Route
  * @public
  */
-export default class AttendaceIndexRoute extends Route.extend(
-  RouteAutostartTourMixin
-) {
+export default class AttendaceIndexRoute extends Route {
   /**
    * Setup controller hook, set the current user
    *

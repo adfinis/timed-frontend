@@ -1,24 +1,14 @@
-/**
- * @module timed
- * @submodule timed-controllers
- * @public
- */
 import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
-/**
- * The protected controller
- *
- * @class ProtectedController
- * @extends Ember.Controller
- * @public
- */
+
 export default class ProtectedController extends Controller {
   @service notify;
   @service router;
   @service session;
   @service("autostart-tour") autostartTour;
+  @service tour;
 
   @tracked visible;
   @tracked loading;
@@ -39,21 +29,6 @@ export default class ProtectedController extends Controller {
   }
 
   /**
-   * Close the current tour
-   *
-   * @method _closeCurrentTour
-   * @private
-   */
-  _closeCurrentTour() {
-    const currentRoute = this.router.currentRouteName.replace(/\.index$/, "");
-
-    if (this.autostartTour.tours.includes(currentRoute)) {
-      // TODO: How to refactor this shit?
-      this.controllerFor?.get("tour").close();
-    }
-  }
-
-  /**
    * Never start the tour, set the tour done property on the current user
    *
    * @method neverTour
@@ -63,14 +38,11 @@ export default class ProtectedController extends Controller {
   async neverTour() {
     try {
       const user = this.model;
-
       user.tourDone = true;
-
       await user.save();
-
-      this._closeCurrentTour();
       this.visible = false;
     } catch (error) {
+      /* istanbul ignore next */
       this.notify.error("Error while saving the user");
     }
   }
@@ -83,11 +55,8 @@ export default class ProtectedController extends Controller {
    */
   @action
   laterTour() {
-    this._closeCurrentTour();
     this.autostartTour.done = this.autostartTour.tours;
     this.visible = false;
-
-    this.router.transitionTo("index.activities");
   }
 
   /**
@@ -101,6 +70,7 @@ export default class ProtectedController extends Controller {
     this.autostartTour.done = [];
     this.visible = false;
 
-    this.router.transitionTo("index.activities");
+    this.tour.prepare(this.model);
+    this.tour.startTour();
   }
 }
