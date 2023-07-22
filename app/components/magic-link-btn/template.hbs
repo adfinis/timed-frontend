@@ -1,0 +1,13 @@
+<button
+  type="button"
+  data-test-magic-link-btn
+  title="Create a magic link"
+  class="btn btn-default"
+  {{on "click" (toggle "isModalVisible" this)}}
+>
+  <FaIcon @icon="magic" @prefix="fas" /> 
+</button>
+
+{{#if this.isModalVisible}}
+  <MagicLinkModal @isVisible={{this.isModalVisible}} @onClose={{toggle "isModalVisible" this}} />
+{{/if}}

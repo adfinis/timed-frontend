@@ -43,6 +43,7 @@
 @import "components/sy-toggle";
 @import "components/progress-tooltip";
 @import "components/welcome-modal";
+@import "components/magic-link-btn.scss";
 
 html {
   hyphens: auto;
@@ -61,6 +62,36 @@ strong {
 
 .flex {
   display: flex;
+}
+.margin-small-left {
+  margin-left: 0.5rem;
+}
+.margin-small-right {
+  margin-left: 0.5rem;
+}
+.margin-small-top {
+  margin-top: 0.5rem;
+}
+.margin-small-bottom {
+  margin-bottom: 0.5rem;
+}
+.margin-medium-left {
+  margin-left: 1rem;
+}
+.margin-medium-right {
+  margin-left: 1rem;
+}
+.margin-medium-top {
+  margin-top: 1rem;
+}
+.margin-medium-bottom {
+  margin-bottom: 1rem;
+}
+.flex-grow {
+  flex: 1;
+}
+.flex-shrink {
+  flex: 0;
 }
 
 .height-100 {
