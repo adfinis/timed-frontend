@@ -44,6 +44,7 @@ module.exports = function () {
       "plus",
       "users",
       "question",
+      "magic",
     ],
   };
 };

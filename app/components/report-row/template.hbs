@@ -109,7 +109,7 @@
           type="submit"
           data-test-save-report
           class="btn btn-primary"
-          disabled={{or (not cs.isDirty) (not cs.isValid)}}
+          disabled={{and (not cs.isNew) (or (not cs.isDirty) (not cs.isValid))}}
           {{on "click" (prevent-default (fn (optional @onSave) cs))}}
         ><FaIcon @icon="floppy-disk" /></button>
       {{/if}}

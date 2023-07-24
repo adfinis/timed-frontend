@@ -20,6 +20,13 @@ import { cached } from "tracked-toolbox";
  * @public
  */
 export default class IndexReportController extends Controller {
+  queryParams = ["task", "duration", "comment", "review", "notBillable"];
+  @tracked task;
+  @tracked duration;
+  @tracked comment;
+  @tracked review;
+  @tracked notBillable;
+
   @service notify;
   @service router;
 
