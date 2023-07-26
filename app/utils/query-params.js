@@ -19,20 +19,9 @@ export const underscoreQueryParams = (params) => {
   }, {});
 };
 
-/**
- * Serialize a query param object with a given ember-parachute QueryParams object
- *
- * let queryParamsObject = new QueryParams({
- *   foo: {
- *     serialize: val => `test-${val}`
- *   }
- * })
- *
- * serializeParachuteQueryParams({ foo: 'bar' }).foo // will be 'test-bar'
- */
-export const serializeParachuteQueryParams = (params, queryParamsObject) => {
+export const serializeQueryParams = (params, queryParamsObject) => {
   return Object.keys(params).reduce((parsed, key) => {
-    const serializeFn = get(queryParamsObject, `queryParams.${key}.serialize`);
+    const serializeFn = get(queryParamsObject, key)?.serialize;
     const value = get(params, key);
 
     return key === "type"
@@ -43,3 +32,23 @@ export const serializeParachuteQueryParams = (params, queryParamsObject) => {
         };
   }, {});
 };
+
+/**
+ *
+ * @param {string} param
+ * @returns {string} | {undefined}
+ * ? in all controllers, the only parameter that have the default value is `ordering`, and the value is "-date"
+ */
+export function getDefaultQueryParamValue(param) {
+  if (param === "ordering") return "-date";
+  else if (param === "type") return "year";
+  return undefined;
+}
+
+export function allQueryParams(controller) {
+  const queries = {};
+  for (const param of controller.queryParams) {
+    queries[param] = controller[param];
+  }
+  return queries;
+}

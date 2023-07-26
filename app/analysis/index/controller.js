@@ -1,6 +1,6 @@
 import { A } from "@ember/array";
 import Controller from "@ember/controller";
-import { action, set } from "@ember/object";
+import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isTesting, macroCondition } from "@embroider/macros";
 import { tracked } from "@glimmer/tracking";
@@ -12,122 +12,44 @@ import {
   task,
   hash,
 } from "ember-concurrency";
-import QueryParams from "ember-parachute";
 import fetch from "fetch";
 import moment from "moment";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 import {
   underscoreQueryParams,
-  serializeParachuteQueryParams,
+  serializeQueryParams,
+  getDefaultQueryParamValue,
+  allQueryParams,
 } from "timed/utils/query-params";
+import {
+  serializeMoment,
+  deserializeMoment,
+} from "timed/utils/serialize-moment";
 import { cleanParams, toQueryString } from "timed/utils/url";
 
 import config from "../../config/environment";
 
-const DATE_FORMAT = "YYYY-MM-DD";
+export default class AnalysisController extends Controller {
+  queryParams = [
+    "customer",
+    "costCenter",
+    "project",
+    "task",
+    "user",
+    "reviewer",
+    "billingType",
+    "costCenter",
+    "fromDate",
+    "toDate",
+    "review",
+    "notBillable",
+    "verified",
+    "billed",
+    "ordering",
+    "editable",
+    "rejected",
+  ];
 
-const serializeMoment = (momentObject) =>
-  (moment.isMoment(momentObject) && momentObject.format(DATE_FORMAT)) || null;
-
-const deserializeMoment = (momentString) =>
-  (momentString && moment(momentString, DATE_FORMAT)) || null;
-
-export const AnalysisQueryParams = new QueryParams({
-  customer: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  project: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  task: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  user: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  reviewer: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  billingType: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  costCenter: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  fromDate: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-    serialize: serializeMoment,
-    deserialize: deserializeMoment,
-  },
-  toDate: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-    serialize: serializeMoment,
-    deserialize: deserializeMoment,
-  },
-  review: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  rejected: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  notBillable: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  verified: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  editable: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  billed: {
-    defaultValue: undefined,
-    replace: true,
-    refresh: true,
-  },
-  ordering: {
-    defaultValue: "-date",
-    replace: true,
-    refresh: true,
-    serialize(val) {
-      return `${val},id`;
-    },
-    deserialize(val) {
-      return val.replace(",id", "");
-    },
-  },
-});
-
-export default class AnalysisController extends Controller.extend(
-  AnalysisQueryParams.Mixin
-) {
   exportLinks = config.APP.REPORTEXPORTS;
   exportLimit = config.APP.EXPORT_LIMIT;
 
@@ -143,7 +65,7 @@ export default class AnalysisController extends Controller.extend(
   @tracked _lastPage = 0;
   @tracked totalTime = moment.duration();
   @tracked totalItems = A();
-  @tracked selectedReportIds;
+  @tracked selectedReportIds = A();
   @tracked _dataCache = A();
 
   @tracked user;
@@ -151,6 +73,43 @@ export default class AnalysisController extends Controller.extend(
   @tracked customer;
   @tracked project;
   @tracked task;
+  @tracked rejected;
+  @tracked editable;
+  @tracked billingType;
+  @tracked fromDate;
+  @tracked toDate;
+  @tracked review;
+  @tracked notBillable;
+  @tracked verified;
+  @tracked billed;
+  @tracked costCenter;
+  @tracked ordering = "-date";
+
+  @action
+  changeFromDate(date) {
+    this.fromDate = serializeMoment(date);
+    this._reset();
+  }
+
+  get getFromDate() {
+    return deserializeMoment(this.fromDate);
+  }
+
+  @action
+  changeToDate(date) {
+    this.toDate = serializeMoment(date);
+    this._reset();
+  }
+
+  get getToDate() {
+    return deserializeMoment(this.toDate);
+  }
+
+  @action
+  updateParam(key, value) {
+    this[key] = value;
+    this._reset();
+  }
 
   get billingTypes() {
     return this.store.findAll("billing-type");
@@ -194,16 +153,6 @@ export default class AnalysisController extends Controller.extend(
     );
   }
 
-  setup() {
-    this.selectedReportIds = A();
-
-    this.prefetchData.perform();
-
-    if (!this.skipResetOnSetup) {
-      this._reset();
-    }
-  }
-
   _reset() {
     this.data.cancelAll();
     this.loadNext.cancelAll();
@@ -217,12 +166,6 @@ export default class AnalysisController extends Controller.extend(
     this.totalItems = A();
 
     this.data.perform();
-  }
-
-  queryParamsDidChange({ shouldRefresh }) {
-    if (shouldRefresh) {
-      this._reset();
-    }
   }
 
   get appliedFilters() {
@@ -243,7 +186,7 @@ export default class AnalysisController extends Controller.extend(
       task: taskId,
       user: userId,
       reviewer: reviewerId,
-    } = this.allQueryParams;
+    } = allQueryParams(this);
 
     return yield hash({
       customer: customerId && this.store.findRecord("customer", customerId),
@@ -259,7 +202,7 @@ export default class AnalysisController extends Controller.extend(
   @enqueueTask
   *data() {
     const params = underscoreQueryParams(
-      serializeParachuteQueryParams(this.allQueryParams, AnalysisQueryParams)
+      serializeQueryParams(allQueryParams(this), this.queryParamsState)
     );
 
     if (this._canLoadMore) {
@@ -374,10 +317,7 @@ export default class AnalysisController extends Controller.extend(
         underscoreQueryParams(
           cleanParams({
             ...params,
-            ...serializeParachuteQueryParams(
-              allQueryParams,
-              AnalysisQueryParams
-            ),
+            ...serializeQueryParams(allQueryParams, this.queryParamsState),
           })
         )
       );
@@ -431,7 +371,7 @@ export default class AnalysisController extends Controller.extend(
     this.router.transitionTo("analysis.edit", {
       queryParams: {
         ...(ids && ids.length ? { id: ids } : {}),
-        ...this.allQueryParams,
+        ...serializeQueryParams(allQueryParams(this), this.queryParamsState),
       },
     });
   }
@@ -453,13 +393,53 @@ export default class AnalysisController extends Controller.extend(
 
   @action
   setModelFilter(key, value) {
-    set(this, key, value && value.id);
+    this[key] = value && value.id;
+    this._reset();
   }
 
   @action
   reset() {
     this.resetQueryParams(
-      Object.keys(this.allQueryParams).filter((k) => k !== "ordering")
+      Object.keys(allQueryParams(this)).filter((k) => k !== "ordering")
     );
+  }
+
+  get queryParamsState() {
+    const states = {};
+    for (const param of this.queryParams) {
+      const defaultValue = getDefaultQueryParamValue(param);
+      const currentValue = this[param];
+      states[param] = {
+        as: param,
+        defaultValue,
+        serializedValue: currentValue,
+        value: currentValue,
+        changed: currentValue !== defaultValue,
+      };
+      if (["fromDate", "toDate"].includes(param)) {
+        states[param].serialize = serializeMoment;
+      }
+      if (param === "ordering") {
+        states[param].serialize = (val) => {
+          if (val.includes(",id")) {
+            return val;
+          }
+          return `${val},id`;
+        };
+      }
+    }
+    return states;
+  }
+
+  resetQueryParams(...args) {
+    const params = [...args[0]];
+    for (const param of params) {
+      this[param] = getDefaultQueryParamValue(param);
+    }
+  }
+
+  // i am puting it here in a getter, becuase it's used in the template
+  get allQueryParams() {
+    return allQueryParams(this);
   }
 }
