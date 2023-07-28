@@ -1,4 +1,5 @@
-import { Response } from "ember-cli-mirage";
+import { Response, discoverEmberDataModels } from "ember-cli-mirage";
+import { createServer } from "miragejs";
 import moment from "moment";
 import formatDuration from "timed/utils/format-duration";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
@@ -44,7 +45,17 @@ const byUserAndDate = (modelName) => {
   };
 };
 
-export default function () {
+export default function (config) {
+  const finalConfig = {
+    ...config,
+    models: { ...discoverEmberDataModels(), ...config.models },
+    routes,
+  };
+
+  return createServer(finalConfig);
+}
+
+function routes() {
   this.passthrough("/write-coverage");
 
   this.urlPrefix = "";
