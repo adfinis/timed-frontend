@@ -1,3 +1,22 @@
+# [3.2.0](https://github.com/adfinis/timed-frontend/compare/v3.1.5...v3.2.0) (2023-07-28)
+
+
+### Bug Fixes
+
+* **activities:** prevent doubling time while generating reports ([#970](https://github.com/adfinis/timed-frontend/issues/970)) ([96f1a37](https://github.com/adfinis/timed-frontend/commit/96f1a37b979ea4521418c22cb02f6cd588e6c2c9))
+* changing project in the activity bar when change the recent customer ([#998](https://github.com/adfinis/timed-frontend/issues/998)) ([05a3ce5](https://github.com/adfinis/timed-frontend/commit/05a3ce512b7080e4a44c8b6db8811d5607235eb3))
+* **customer-visible-icon:** splatter attributes ([ee5a2b8](https://github.com/adfinis/timed-frontend/commit/ee5a2b84d2ba31298e8cf0d0abf9f96043670efd))
+* **statistics-list:** allotted efforts calculation ([a0643b4](https://github.com/adfinis/timed-frontend/commit/a0643b4e98d8abcb8be621e113b51c145d8d2cc6))
+* **tests:** parameter compatibility of reports abilities ([3fc5648](https://github.com/adfinis/timed-frontend/commit/3fc56488b442972d3442e28a205749b846d289ad))
+* the bar is green only if the task is archived and have no remeaning ([369f942](https://github.com/adfinis/timed-frontend/commit/369f942639559202796a26e4b3f68cd8606a5bc1))
+
+
+### Features
+
+* add magic link component to create a magic link that can be sent to another user ([#1022](https://github.com/adfinis/timed-frontend/issues/1022)) ([4096c58](https://github.com/adfinis/timed-frontend/commit/4096c58c20f74606bad0d15d70c30420e7d4e51b))
+* improve statistics bar chart rendering ([b1f1d98](https://github.com/adfinis/timed-frontend/commit/b1f1d98bb1a0b7e25608ca9127c94aea6a37fed7))
+* writing tests for chart rendering ([699906e](https://github.com/adfinis/timed-frontend/commit/699906ea746bbc603935a2465dac2fd8ea5b17e7))
+
 ## [3.1.5](https://github.com/adfinis/timed-frontend/compare/v3.1.4...v3.1.5) (2023-04-24)
 
 
