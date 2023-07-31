@@ -99,7 +99,7 @@ export default Controller.extend(UsersEditCreditsQueryParams.Mixin, {
 
       this.notify.success("Transfer was successful");
 
-      this.get("userController.data").perform(this.get("model.id"));
+      this.userController.data.perform(this.get("model.id"));
 
       this.resetQueryParams("year");
     } catch (e) {
