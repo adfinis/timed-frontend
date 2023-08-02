@@ -29,14 +29,14 @@ export default Controller.extend({
 
       this.notify.success("Overtime credit was saved");
 
-      this.get("userController.data").perform(this.get("user.id"));
+      this.userController.data.perform(this.get("user.id"));
 
       let allYears = this.get(
         "userCreditsController.years.lastSuccessful.value"
       );
 
       if (!allYears) {
-        allYears = yield this.get("userCreditsController.years").perform();
+        allYears = yield this.userCreditsController.years.perform();
       }
 
       const year =
@@ -61,7 +61,7 @@ export default Controller.extend({
 
       this.notify.success("Overtime credit was deleted");
 
-      this.get("userController.data").perform(this.get("user.id"));
+      this.userController.data.perform(this.get("user.id"));
 
       this.router.transitionTo("users.edit.credits");
     } catch (e) {
