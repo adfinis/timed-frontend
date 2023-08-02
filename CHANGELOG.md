@@ -1,3 +1,10 @@
+## [3.2.1](https://github.com/adfinis/timed-frontend/compare/v3.2.0...v3.2.1) (2023-08-02)
+
+
+### Bug Fixes
+
+* **lint:** use direct property accessor ([#1030](https://github.com/adfinis/timed-frontend/issues/1030)) ([575867d](https://github.com/adfinis/timed-frontend/commit/575867d7ae1e3ce7ecd82c52889335121c4d0420))
+
 # [3.2.0](https://github.com/adfinis/timed-frontend/compare/v3.1.5...v3.2.0) (2023-07-28)
 
 
