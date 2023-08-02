@@ -258,8 +258,8 @@ devDependencies:
     specifier: 3.1.1
     version: 3.1.1
   ember-validated-form:
-    specifier: 6.1.2
-    version: 6.1.2(@babel/core@7.22.9)(ember-data@3.28.13)(ember-source@3.28.11)(webpack@5.76.2)
+    specifier: 6.2.0
+    version: 6.2.0(@babel/core@7.22.9)(ember-data@3.28.13)(ember-source@3.28.11)(webpack@5.76.2)
   ember-wormhole:
     specifier: 0.6.0
     version: 0.6.0
@@ -9924,9 +9924,9 @@ packages:
       - supports-color
     dev: true
 
-  /ember-validated-form@6.1.2(@babel/core@7.22.9)(ember-data@3.28.13)(ember-source@3.28.11)(webpack@5.76.2):
-    resolution: {integrity: sha512-v9ezPtiuLUtIiA0cyMAbPf13vSODXTRYsVmbtRDaZySjyYYk/ZxXlFB48VupJiq5eb8sxrCLZZdjdoq/lCvfSQ==}
-    engines: {node: 14.* || >= 16}
+  /ember-validated-form@6.2.0(@babel/core@7.22.9)(ember-data@3.28.13)(ember-source@3.28.11)(webpack@5.76.2):
+    resolution: {integrity: sha512-30EUv32EcPNnCKvbY3D+k++z/fgH/G0GTP37chqQCuag2/S+p0w0ku0ZNwEmV47UfIxPu7F52lZ7a9OyxnxPFQ==}
+    engines: {node: 14.* || 16.* || >= 18}
     dependencies:
       '@embroider/macros': 1.13.1
       '@embroider/util': 1.12.0(ember-source@3.28.11)
