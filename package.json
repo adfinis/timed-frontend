@@ -82,7 +82,6 @@
     "ember-cli-mirage": "2.4.0",
     "ember-cli-moment-shim": "3.8.0",
     "ember-cli-nouislider": "1.2.1",
-    "ember-cli-release": "1.0.0-beta.2",
     "ember-cli-sass": "11.0.1",
     "ember-cli-sri": "2.1.1",
     "ember-cli-terser": "4.0.2",

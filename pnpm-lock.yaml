@@ -140,9 +140,6 @@ devDependencies:
   ember-cli-nouislider:
     specifier: 1.2.1
     version: 1.2.1
-  ember-cli-release:
-    specifier: 1.0.0-beta.2
-    version: 1.0.0-beta.2
   ember-cli-sass:
     specifier: 11.0.1
     version: 11.0.1
@@ -8847,25 +8844,6 @@ packages:
       - supports-color
     dev: true
 
-  /ember-cli-release@1.0.0-beta.2:
-    resolution: {integrity: sha512-/dvKM9Bryla26hOxbpUshs7qssQHLOeDKkLiTF4MNNqC/ATqjLaGBha+gFgl/sRhqpAqZiDCwpMEUP3AXKf8dA==}
-    engines: {node: '>= 0.10.0'}
-    dependencies:
-      chalk: 1.1.3
-      git-tools: 0.1.4
-      make-array: 0.1.2
-      merge: 1.2.1
-      moment-timezone: 0.3.1
-      nopt: 3.0.6
-      npm: 3.5.4
-      require-dir: 0.3.2
-      rsvp: 3.6.2
-      semver: 4.3.6
-      silent-error: 1.1.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
   /ember-cli-sass@11.0.1:
     resolution: {integrity: sha512-RMlFPMK4kaB+67seF/IIoY3EC4rRd+L58q+lyElrxB3FcQTgph/qmGwtqf9Up7m3SDbPiA7cccCOSmgReMgCXA==}
     engines: {node: '>= 10.*'}
@@ -11691,12 +11669,6 @@ packages:
     engines: {node: '>= 4.0'}
     dev: true
 
-  /git-tools@0.1.4:
-    resolution: {integrity: sha512-Fx8ewWo0LNNbDAfRUuXulkHPQZoOp3cEvvMOdEzFBnMmBZ0K5qFr/ceLukz+WVognnIZOm2QjyITecINoI+G2A==}
-    dependencies:
-      spawnback: 1.0.0
-    dev: true
-
   /glob-parent@3.1.0:
     resolution: {integrity: sha512-E8Ak/2+dZY6fnzlR7+ueWvhsH1SjHr4jjss4YS/h4py44jY9MhK/VFdaZJAWDz6BbL21KeteKxFSFpq8OS5gVA==}
     dependencies:
@@ -13800,11 +13772,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.14
     dev: true
 
-  /make-array@0.1.2:
-    resolution: {integrity: sha512-bcFmxgZ+OTaMYJp/w6eifElKTcfum7Gi5H7vQ8KzAf9X6swdxkVuilCaG3ZjXr/qJsQT4JJ2Rq9SDYScWEdu9Q==}
-    engines: {node: '>=0.10.0'}
-    dev: true
-
   /make-dir@2.1.0:
     resolution: {integrity: sha512-LS9X+dc8KLxXCb8dni79fLIIUA5VyZoyjSMCwTluaXA0o27cCK0bhXkpgw+sTXVpPy/lSO57ilRixqk0vDmtRA==}
     engines: {node: '>=6'}
@@ -14059,10 +14026,6 @@ packages:
   /merge2@1.4.1:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
-    dev: true
-
-  /merge@1.2.1:
-    resolution: {integrity: sha512-VjFo4P5Whtj4vsLzsYBu5ayHhoHJ0UqNm7ibvShmbmoz7tGi0vXaoJbGdB+GmDMLUdg8DpQXEIeVDAe8MaABvQ==}
     dev: true
 
   /methods@1.1.2:
@@ -14347,12 +14310,6 @@ packages:
   /modify-values@1.0.1:
     resolution: {integrity: sha512-xV2bxeN6F7oYjZWTe/YPAy6MN2M+sL4u/Rlm2AHCIVGfo2p1yGmBHQ6vHehl4bRTZBdHu3TSkWdYgkwpYzAGSw==}
     engines: {node: '>=0.10.0'}
-    dev: true
-
-  /moment-timezone@0.3.1:
-    resolution: {integrity: sha512-glTWIu3fKgZIMS9KwaPYvyf7M6jazusAGvWEOqfL09nXDtYTO75BEXqseQhwNAcQvifQlQ9Q7tWpMnDu+TxT+w==}
-    dependencies:
-      moment: 2.29.4
     dev: true
 
   /moment-timezone@0.5.14:
@@ -14788,97 +14745,6 @@ packages:
     dependencies:
       path-key: 4.0.0
     dev: true
-
-  /npm@3.5.4:
-    resolution: {integrity: sha512-iVTraM7hgTkG6LlRJOWa9J+167E+UGvIdnRq9g4VTA00CNujeblHPlNQeH3k9p7lG2j1ZVU2H4c6hqoL6IRiLQ==}
-    hasBin: true
-    dev: true
-    bundledDependencies:
-      - abbrev
-      - ansi-regex
-      - ansicolors
-      - ansistyles
-      - aproba
-      - archy
-      - async-some
-      - chownr
-      - cmd-shim
-      - columnify
-      - config-chain
-      - debuglog
-      - dezalgo
-      - editor
-      - fs-vacuum
-      - fs-write-stream-atomic
-      - fstream
-      - fstream-npm
-      - glob
-      - graceful-fs
-      - has-unicode
-      - hosted-git-info
-      - iferr
-      - imurmurhash
-      - inflight
-      - inherits
-      - ini
-      - init-package-json
-      - lockfile
-      - lodash._baseindexof
-      - lodash._baseuniq
-      - lodash._bindcallback
-      - lodash._cacheindexof
-      - lodash._createcache
-      - lodash._getnative
-      - lodash.clonedeep
-      - lodash.isarguments
-      - lodash.isarray
-      - lodash.keys
-      - lodash.restparam
-      - lodash.union
-      - lodash.uniq
-      - lodash.without
-      - mkdirp
-      - node-gyp
-      - nopt
-      - normalize-git-url
-      - normalize-package-data
-      - npm-cache-filename
-      - npm-install-checks
-      - npm-package-arg
-      - npm-registry-client
-      - npm-user-validate
-      - npmlog
-      - once
-      - opener
-      - osenv
-      - path-is-inside
-      - read
-      - read-cmd-shim
-      - read-installed
-      - read-package-json
-      - read-package-tree
-      - readable-stream
-      - readdir-scoped-modules
-      - realize-package-specifier
-      - request
-      - retry
-      - rimraf
-      - semver
-      - sha
-      - slide
-      - sorted-object
-      - strip-ansi
-      - tar
-      - text-table
-      - uid-number
-      - umask
-      - unique-filename
-      - unpipe
-      - validate-npm-package-license
-      - validate-npm-package-name
-      - which
-      - wrappy
-      - write-file-atomic
 
   /npm@8.19.3:
     resolution: {integrity: sha512-0QjmyPtDxSyMWWD8I91QGbrgx9KzbV6C9FK1liEb/K0zppiZkr5KxXc990G+LzPwBHDfRjUBlO9T1qZ08vl9mA==}
@@ -16438,10 +16304,6 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /require-dir@0.3.2:
-    resolution: {integrity: sha512-Onohhl/mv/fdIf51dpIiiDQXzLHBPXINN6XLzhW9D/hYrW6ANsYrXVkVE1I5X4Ly5r/hCZXGwDfaD+qsiqcroA==}
-    dev: true
-
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
     engines: {node: '>=0.10.0'}
@@ -16880,11 +16742,6 @@ packages:
     engines: {node: '>=12'}
     dev: true
 
-  /semver@4.3.6:
-    resolution: {integrity: sha512-IrpJ+yoG4EOH8DFWuVg+8H1kW1Oaof0Wxe7cPcXW3x9BjkN/eVo54F15LyqemnDIUYskQWr9qvl/RihmSy6+xQ==}
-    hasBin: true
-    dev: true
-
   /semver@5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==}
     hasBin: true
@@ -17310,10 +17167,6 @@ packages:
 
   /spawn-error-forwarder@1.0.0:
     resolution: {integrity: sha512-gRjMgK5uFjbCvdibeGJuy3I5OYz6VLoVdsOJdA6wV0WlfQVLFueoqMxwwYD9RODdgb6oUIvlRlsyFSiQkMKu0g==}
-    dev: true
-
-  /spawnback@1.0.0:
-    resolution: {integrity: sha512-xcoszq8qrEKpLpsp/1r+e+wkblvzV/h9tUxipb7aqB0WYWTBo6ZQD+SlfzkaTQ5XrgPwqHCCU9UmMdM6OifF2w==}
     dev: true
 
   /spdx-correct@3.1.1:
