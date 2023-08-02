@@ -190,4 +190,12 @@ export default class User extends Model {
       }) || null
     );
   }
+
+  toJSON() {
+    const { data } = this.serialize();
+    return {
+      ...data,
+      id: this.id,
+    };
+  }
 }
