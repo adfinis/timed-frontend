@@ -299,6 +299,9 @@ devDependencies:
   loader.js:
     specifier: 4.7.0
     version: 4.7.0
+  miragejs:
+    specifier: ^0.1.47
+    version: 0.1.47
   npm-run-all:
     specifier: 4.1.5
     version: 4.1.5
@@ -8619,7 +8622,7 @@ packages:
       ember-inflector: 4.0.2
       ember-qunit: 6.2.0(@ember/test-helpers@2.9.3)(ember-source@3.28.11)(qunit@2.19.4)(webpack@5.76.2)
       lodash-es: 4.17.21
-      miragejs: 0.1.43
+      miragejs: 0.1.47
     transitivePeerDependencies:
       - '@babel/core'
       - supports-color
@@ -13996,8 +13999,8 @@ packages:
       yallist: 4.0.0
     dev: true
 
-  /miragejs@0.1.43:
-    resolution: {integrity: sha512-BhkyxssOZ2i4JqRjWpRnUQu9AFAKHyft8dJbqsg/N64+gCn2vw6vRteMpTKXllLjCPOA9Os8PhGRVXlXs4Ojhw==}
+  /miragejs@0.1.47:
+    resolution: {integrity: sha512-99tuCbIAlMhNhyF3s5d3+5/FdJ7O4jSq/5e3e+sDv7L8dZdwJuwutXe0pobJ7hm6yRChTDjK+Nn8dZZd175wbg==}
     engines: {node: 6.* || 8.* || >= 10.*}
     dependencies:
       '@miragejs/pretender-node-polyfill': 0.1.2
