@@ -1,7 +1,7 @@
 lockfileVersion: '6.0'
 
 settings:
-  autoInstallPeers: false
+  autoInstallPeers: true
   excludeLinksFromLockfile: false
 
 overrides:
@@ -2982,7 +2982,7 @@ packages:
       lru-cache: 6.0.0
       mkdirp: 1.0.4
       npm-pick-manifest: 6.1.1
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1(bluebird@3.7.2)
       promise-retry: 2.0.1
       semver: 7.5.4
       which: 2.0.2
@@ -4162,8 +4162,10 @@ packages:
       ajv: 6.12.6
     dev: true
 
-  /ajv-formats@2.1.1:
+  /ajv-formats@2.1.1(ajv@8.12.0):
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependencies:
+      ajv: ^8.0.0
     peerDependenciesMeta:
       ajv:
         optional: true
@@ -5509,7 +5511,7 @@ packages:
     engines: {node: '>=0.8.0'}
     dependencies:
       graceful-fs: 4.2.11
-      minimist: 0.2.2
+      minimist: 0.2.4
       mout: 1.2.4
       osenv: 0.1.5
       untildify: 2.1.0
@@ -6461,7 +6463,7 @@ packages:
       minipass-pipeline: 1.2.4
       mkdirp: 1.0.4
       p-map: 4.0.0
-      promise-inflight: 1.0.1
+      promise-inflight: 1.0.1(bluebird@3.7.2)
       rimraf: 3.0.2
       ssri: 8.0.1
       tar: 6.1.11
@@ -13748,8 +13750,8 @@ packages:
       kind-of: 6.0.3
     dev: true
 
-  /minimist@0.2.2:
-    resolution: {integrity: sha512-g92kDfAOAszDRtHNagjZPPI/9lfOFaRBL/Ud6Z0RKZua/x+49awTydZLh5Gkhb80Xy5hmcvZNLGzscW5n5yd0g==}
+  /minimist@0.2.4:
+    resolution: {integrity: sha512-Pkrrm8NjyQ8yVt8Am9M+yUt74zE3iokhzbG1bFVNjLB92vwM71hf40RkEsryg98BujhVOncKm/C1xROxZ030LQ==}
     dev: true
 
   /minimist@1.2.8:
@@ -15336,15 +15338,6 @@ packages:
     engines: {node: '>= 0.6.0'}
     dev: true
 
-  /promise-inflight@1.0.1:
-    resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
-    peerDependencies:
-      bluebird: '*'
-    peerDependenciesMeta:
-      bluebird:
-        optional: true
-    dev: true
-
   /promise-inflight@1.0.1(bluebird@3.7.2):
     resolution: {integrity: sha512-6zWPyEOFaQBJYcGMHBKTKJ3u6TBsnMFOIZSa6ce1e/ZrrsOlnHRHbabMjLiBYKp+n44X9eUI6VUPaukCXHuG4g==}
     peerDependencies:
@@ -16246,7 +16239,7 @@ packages:
     dependencies:
       '@types/json-schema': 7.0.11
       ajv: 8.12.0
-      ajv-formats: 2.1.1
+      ajv-formats: 2.1.1(ajv@8.12.0)
       ajv-keywords: 5.1.0(ajv@8.12.0)
     dev: true
 
