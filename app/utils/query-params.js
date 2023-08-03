@@ -1,5 +1,9 @@
 import { get } from "@ember/object";
 import { underscore } from "@ember/string";
+import {
+  serializeMoment,
+  deserializeMoment,
+} from "timed/utils/serialize-moment";
 
 /**
  * Filter params by key
@@ -46,9 +50,56 @@ export function getDefaultQueryParamValue(param) {
 }
 
 export function allQueryParams(controller) {
-  const queries = {};
-  for (const param of controller.queryParams) {
-    queries[param] = controller[param];
+  const params = {};
+  for (const qpKey of controller.queryParams) {
+    params[qpKey] = controller[qpKey];
   }
-  return queries;
+  return params;
+}
+
+export function queryParamsState(controller) {
+  const states = {};
+  for (const param of controller.queryParams) {
+    const defaultValue = getDefaultQueryParamValue(param);
+    const currentValue = controller[param];
+    states[param] = {
+      defaultValue,
+      serializedValue: currentValue,
+      value: currentValue,
+      changed: currentValue !== defaultValue,
+    };
+    if (["fromDate", "toDate"].includes(param)) {
+      states[param].serialize = serializeMoment;
+      states[param].deserialize = deserializeMoment;
+    }
+
+    if (param === "id") {
+      states[param].serialize = (arr) => {
+        return (arr && Array.isArray(arr) && arr.join(",")) || null;
+      };
+      states[param].deserialize = (str) => {
+        return (str && str.split(",")) || [];
+      };
+    }
+    if (param === "ordering") {
+      states[param].serialize = function (val) {
+        if (!val) return;
+        if (val.includes(",id")) {
+          return val;
+        }
+        return `${val},id`;
+      };
+    }
+  }
+  return states;
+}
+
+export function resetQueryParams(controller, ...args) {
+  if (!args[0]) {
+    return;
+  }
+  const params = [...args[0]];
+  for (const param of params) {
+    controller[param] = getDefaultQueryParamValue(param);
+  }
 }
