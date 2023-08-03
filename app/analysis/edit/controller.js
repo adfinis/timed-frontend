@@ -10,13 +10,9 @@ import {
   underscoreQueryParams,
   serializeQueryParams,
   filterQueryParams,
-  getDefaultQueryParamValue,
   allQueryParams,
+  queryParamsState,
 } from "timed/utils/query-params";
-import {
-  serializeMoment,
-  deserializeMoment,
-} from "timed/utils/serialize-moment";
 import { cleanParams, toQueryString } from "timed/utils/url";
 import IntersectionValidations from "timed/validations/intersection";
 
@@ -192,7 +188,7 @@ export default class AnalysisEditController extends Controller {
 
       this.router.transitionTo("analysis.index", {
         queryParams: {
-          ...serializeQueryParams(allQueryParams(this), this.queryParamsState),
+          ...serializeQueryParams(allQueryParams(this), queryParamsState(this)),
         },
       });
 
@@ -219,7 +215,7 @@ export default class AnalysisEditController extends Controller {
     this.router
       .transitionTo("analysis.index", {
         queryParams: {
-          ...serializeQueryParams(allQueryParams(this), this.queryParamsState),
+          ...serializeQueryParams(allQueryParams(this), queryParamsState(this)),
         },
       })
       .then(() => {
@@ -237,51 +233,12 @@ export default class AnalysisEditController extends Controller {
     });
   }
 
-  get queryParamsState() {
-    const states = {};
-    for (const param of this.queryParams) {
-      const defaultValue = getDefaultQueryParamValue(param);
-      const currentValue = this[param];
-      states[param] = {
-        as: param,
-        defaultValue,
-        serializedValue: currentValue,
-        value: currentValue,
-        changed: currentValue !== defaultValue,
-      };
-      if (["fromDate", "toDate"].includes(param)) {
-        states[param].serialize = serializeMoment;
-        states[param].deserialize = deserializeMoment;
-      }
-
-      if (param === "id") {
-        states[param].serialize = (arr) => {
-          return (arr && Array.isArray(arr) && arr.join(",")) || null;
-        };
-        states[param].deserialize = (str) => {
-          return (str && str.split(",")) || [];
-        };
-      }
-    }
-    return states;
-  }
-
-  resetQueryParams(...args) {
-    if (!args[0]) {
-      return;
-    }
-    const params = [...args[0]];
-    for (const param of params) {
-      this[param] = getDefaultQueryParamValue(param);
-    }
-  }
-
   prepareParams(params) {
     return cleanParams(
       underscoreQueryParams(
         serializeQueryParams(
           filterQueryParams(params, "editable"),
-          this.queryParamsState
+          queryParamsState(this)
         )
       )
     );
