@@ -104,7 +104,7 @@
               data-test-filter-from-date
               @type="date"
               @selected={{this.getFromDate}}
-              @onChange={{this.changeFromDate}}
+              @onChange={{fn this.setModelFilter "fromDate"}}
             />
           </fs.label>
           <fs.label>
@@ -113,12 +113,12 @@
               data-test-filter-to-date
               @type="date"
               @selected={{this.getToDate}}
-              @onChange={{this.changeToDate}}
+              @onChange={{fn this.setModelFilter "toDate"}}
             />
           </fs.label>
           <DateButtons
-            @onUpdateFromDate={{this.changeFromDate}}
-            @onUpdateToDate={{this.changeToDate}}
+            @onUpdateFromDate={{fn this.setModelFilter "fromDate"}}
+            @onUpdateToDate={{fn this.setModelFilter "toDate"}}
           />
         </fs.group>
         <fs.group @label="State">
