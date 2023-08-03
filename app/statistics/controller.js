@@ -3,25 +3,17 @@ import { action, get, set } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { restartableTask, hash } from "ember-concurrency";
-import moment from "moment";
 import {
   underscoreQueryParams,
   serializeQueryParams,
-  getDefaultQueryParamValue,
+  resetQueryParams,
   allQueryParams,
+  queryParamsState,
 } from "timed/utils/query-params";
-
-const DATE_FORMAT = "YYYY-MM-DD";
-
-const serializeMoment = (momentObject) => {
-  if (momentObject) {
-    momentObject = moment(momentObject);
-  }
-  return (momentObject && momentObject.format(DATE_FORMAT)) || null;
-};
-
-const deserializeMoment = (momentString) =>
-  (momentString && moment(momentString, DATE_FORMAT)) || null;
+import {
+  serializeMoment,
+  deserializeMoment,
+} from "timed/utils/serialize-moment";
 
 const TYPES = {
   year: { include: "", requiredParams: [] },
@@ -65,7 +57,7 @@ export default class StatisticsController extends Controller {
   @tracked task;
   @tracked user;
   @tracked reviewer;
-  @tracked type = Object.keys(TYPES)[0];
+  @tracked type = this.types[0];
   @tracked observed;
   @tracked billingType;
   @tracked costCenter;
@@ -133,13 +125,13 @@ export default class StatisticsController extends Controller {
 
   get missingParams() {
     return this.requiredParams.filter(
-      (param) => !this.queryParamsState[param].changed
+      (param) => !queryParamsState(this)[param].changed
     );
   }
 
   get appliedFilters() {
-    return Object.keys(this.queryParamsState).filter((key) => {
-      return this.queryParamsState[key]?.changed && key !== "type";
+    return Object.keys(queryParamsState(this)).filter((key) => {
+      return queryParamsState(this)[key]?.changed && key !== "type";
     });
   }
 
@@ -177,7 +169,7 @@ export default class StatisticsController extends Controller {
     const type = this.type;
 
     let params = underscoreQueryParams(
-      serializeQueryParams(allQueryParams(this), this.queryParamsState)
+      serializeQueryParams(allQueryParams(this), queryParamsState(this))
     );
 
     params = Object.keys(params).reduce((obj, key) => {
@@ -190,20 +182,8 @@ export default class StatisticsController extends Controller {
     });
   }
 
-  @action
-  changeFromDate(date) {
-    this.fromDate = serializeMoment(date);
-    this.data.perform();
-  }
-
   get getFromDate() {
     return deserializeMoment(this.fromDate);
-  }
-
-  @action
-  changeToDate(date) {
-    this.toDate = serializeMoment(date);
-    this.data.perform();
   }
 
   get getToDate() {
@@ -212,41 +192,19 @@ export default class StatisticsController extends Controller {
 
   @action
   setModelFilter(key, value) {
-    set(this, key, value && value.id);
+    if (["fromDate", "toDate"].includes(key)) {
+      set(this, key, serializeMoment(value));
+    } else {
+      set(this, key, value && value.id);
+    }
     this.data.perform();
   }
 
   @action
   resetQP() {
-    this.resetQueryParams(
+    resetQueryParams(
+      this,
       Object.keys(allQueryParams(this)).filter((qp) => qp !== "type")
     );
-  }
-
-  get queryParamsState() {
-    const states = {};
-    for (const param of this.queryParams) {
-      const defaultValue = getDefaultQueryParamValue(param);
-      const currentValue = this[param];
-      states[param] = {
-        as: param,
-        defaultValue,
-        serializedValue: currentValue,
-        value: currentValue,
-        changed: currentValue !== defaultValue,
-      };
-      if (["fromDate", "toDate"].includes(param)) {
-        states[param].serialize = serializeMoment;
-        states[param].deserialize = deserializeMoment;
-      }
-    }
-    return states;
-  }
-
-  resetQueryParams(...args) {
-    const params = [...args[0]];
-    for (const param of params) {
-      this[param] = getDefaultQueryParamValue(param);
-    }
   }
 }
