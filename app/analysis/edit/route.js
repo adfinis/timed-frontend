@@ -1,4 +1,5 @@
 import Route from "@ember/routing/route";
+import { resetQueryParams } from "timed/utils/query-params";
 
 export default class AnalysisEditRoute extends Route {
   setupController(controller) {
@@ -9,7 +10,7 @@ export default class AnalysisEditRoute extends Route {
   }
   resetController(controller, isExiting, transition) {
     if (isExiting && transition.targetName !== "error") {
-      controller.resetQueryParams();
+      resetQueryParams(controller);
     }
   }
 }
