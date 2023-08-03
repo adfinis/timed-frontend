@@ -18,8 +18,9 @@ import parseDjangoDuration from "timed/utils/parse-django-duration";
 import {
   underscoreQueryParams,
   serializeQueryParams,
-  getDefaultQueryParamValue,
+  resetQueryParams,
   allQueryParams,
+  queryParamsState,
 } from "timed/utils/query-params";
 import {
   serializeMoment,
@@ -169,8 +170,8 @@ export default class AnalysisController extends Controller {
   }
 
   get appliedFilters() {
-    return Object.keys(this.queryParamsState).filter((key) => {
-      return key !== "ordering" && this.queryParamsState?.[key]?.changed;
+    return Object.keys(queryParamsState(this)).filter((key) => {
+      return key !== "ordering" && queryParamsState(this)?.[key]?.changed;
     });
   }
 
@@ -202,7 +203,7 @@ export default class AnalysisController extends Controller {
   @enqueueTask
   *data() {
     const params = underscoreQueryParams(
-      serializeQueryParams(allQueryParams(this), this.queryParamsState)
+      serializeQueryParams(allQueryParams(this), queryParamsState(this))
     );
 
     if (this._canLoadMore) {
@@ -317,7 +318,7 @@ export default class AnalysisController extends Controller {
         underscoreQueryParams(
           cleanParams({
             ...params,
-            ...serializeQueryParams(allQueryParams, this.queryParamsState),
+            ...serializeQueryParams(allQueryParams, queryParamsState(this)),
           })
         )
       );
@@ -371,7 +372,7 @@ export default class AnalysisController extends Controller {
     this.router.transitionTo("analysis.edit", {
       queryParams: {
         ...(ids && ids.length ? { id: ids } : {}),
-        ...serializeQueryParams(allQueryParams(this), this.queryParamsState),
+        ...serializeQueryParams(allQueryParams(this), queryParamsState(this)),
       },
     });
   }
@@ -399,43 +400,10 @@ export default class AnalysisController extends Controller {
 
   @action
   reset() {
-    this.resetQueryParams(
+    resetQueryParams(
+      this,
       Object.keys(allQueryParams(this)).filter((k) => k !== "ordering")
     );
-  }
-
-  get queryParamsState() {
-    const states = {};
-    for (const param of this.queryParams) {
-      const defaultValue = getDefaultQueryParamValue(param);
-      const currentValue = this[param];
-      states[param] = {
-        as: param,
-        defaultValue,
-        serializedValue: currentValue,
-        value: currentValue,
-        changed: currentValue !== defaultValue,
-      };
-      if (["fromDate", "toDate"].includes(param)) {
-        states[param].serialize = serializeMoment;
-      }
-      if (param === "ordering") {
-        states[param].serialize = (val) => {
-          if (val.includes(",id")) {
-            return val;
-          }
-          return `${val},id`;
-        };
-      }
-    }
-    return states;
-  }
-
-  resetQueryParams(...args) {
-    const params = [...args[0]];
-    for (const param of params) {
-      this[param] = getDefaultQueryParamValue(param);
-    }
   }
 
   // i am puting it here in a getter, becuase it's used in the template
