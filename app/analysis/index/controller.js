@@ -406,7 +406,6 @@ export default class AnalysisController extends Controller {
     );
   }
 
-  // i am puting it here in a getter, becuase it's used in the template
   get allQueryParams() {
     return allQueryParams(this);
   }
