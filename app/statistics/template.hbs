@@ -103,8 +103,8 @@
             <fs.filter
               data-test-filter-from-date
               @type="date"
-              @selected={{this.fromDate}}
-              @onChange={{fn (mut this.fromDate)}}
+              @selected={{this.getFromDate}}
+              @onChange={{fn this.setModelFilter "fromDate"}}
             />
           </fs.label>
           <fs.label>
@@ -112,13 +112,13 @@
             <fs.filter
               data-test-filter-to-date
               @type="date"
-              @selected={{this.toDate}}
-              @onChange={{fn (mut this.toDate)}}
+              @selected={{this.getToDate}}
+              @onChange={{fn this.setModelFilter "toDate"}}
             />
           </fs.label>
           <DateButtons
-            @onUpdateFromDate={{fn (mut this.fromDate)}}
-            @onUpdateToDate={{fn (mut this.toDate)}}
+            @onUpdateFromDate={{fn this.setModelFilter "fromDate"}}
+            @onUpdateToDate={{fn this.setModelFilter "toDate"}}
           />
         </fs.group>
         <fs.group @label="State">
@@ -135,7 +135,7 @@
                 (hash label="Needed" value="1")
                 (hash label="Not needed" value="0")
               }}
-              @onChange={{fn (mut this.review)}}
+              @onChange={{fn this.updateParam "review"}}
             />
           </fs.label>
           <fs.label>
@@ -151,7 +151,7 @@
                 (hash label="Billable" value="0")
                 (hash label="Not billable" value="1")
               }}
-              @onChange={{fn (mut this.notBillable)}}
+              @onChange={{fn this.updateParam "notBillable"}}
             />
           </fs.label>
           <fs.label>
@@ -167,7 +167,7 @@
                 (hash label="Verified" value="1")
                 (hash label="Not verified" value="0")
               }}
-              @onChange={{fn (mut this.verified)}}
+              @onChange={{fn this.updateParam "verified"}}
             />
           </fs.label>
           <fs.label>
@@ -183,7 +183,7 @@
                 (hash label="Billed" value="1")
                 (hash label="Not Billed" value="0")
               }}
-              @onChange={{fn (mut this.billed)}}
+              @onChange={{fn this.updateParam "billed"}}
             />
           </fs.label>
         </fs.group>
@@ -197,7 +197,7 @@
             <a
               href="#"
               class={{if (eq t this.type) "active"}}
-              {{on "click" (fn (mut this.type) t)}}
+              {{on "click" (fn this.updateParam "type" t)}}
             >
               By
               {{t}}
@@ -214,7 +214,7 @@
         @type={{this.type}}
         @missingParams={{this.missingParams}}
         @ordering={{this.ordering}}
-        @onOrderingChange={{fn (mut this.ordering)}}
+        @onOrderingChange={{fn this.updateParam "ordering"}}
       />
     </div>
   </PagePermission>

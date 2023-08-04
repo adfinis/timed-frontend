@@ -197,9 +197,6 @@ devDependencies:
   ember-page-title:
     specifier: 7.0.0
     version: 7.0.0
-  ember-parachute:
-    specifier: 1.0.2
-    version: 1.0.2
   ember-power-calendar:
     specifier: 0.18.0
     version: 0.18.0(@babel/core@7.22.9)(ember-source@3.28.11)
@@ -9458,15 +9455,6 @@ packages:
   /ember-page-title@7.0.0:
     resolution: {integrity: sha512-oq6+HYbeVD/BnxIO5AkP4gWlsatdgW2HFO10F8+XQiJZrwa7cC7Wm54JNGqQkavkDQTgNSiy1Fe2NILJ14MmAg==}
     engines: {node: 12.* || 14.* || >= 16}
-    dependencies:
-      ember-cli-babel: 7.26.11
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /ember-parachute@1.0.2:
-    resolution: {integrity: sha512-wpTn179au/BE2+p4z9mQRh2Cy/a5J038oPpY2Buja3gDO/Qh64ny3klr4dxMRQ5GePniglkWK/LW3qitcs902A==}
-    engines: {node: 6.* || 8.* || >= 10.*}
     dependencies:
       ember-cli-babel: 7.26.11
     transitivePeerDependencies:
