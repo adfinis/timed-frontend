@@ -35,10 +35,10 @@ module("Acceptance | auth", function (hooks) {
 
     await visit("/");
 
-    assert.equal(currentURL(), "/");
+    assert.strictEqual(currentURL(), "/");
 
     await click("[data-test-logout]");
 
-    assert.equal(currentURL(), "/login");
+    assert.strictEqual(currentURL(), "/login");
   });
 });
