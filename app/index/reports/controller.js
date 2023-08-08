@@ -24,8 +24,8 @@ export default class IndexReportController extends Controller {
   @tracked task;
   @tracked duration;
   @tracked comment;
-  @tracked review;
-  @tracked notBillable;
+  @tracked review = false;
+  @tracked notBillable = false;
 
   @service notify;
   @service router;
