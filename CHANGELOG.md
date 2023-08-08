@@ -1,3 +1,10 @@
+## [3.2.2](https://github.com/adfinis/timed-frontend/compare/v3.2.1...v3.2.2) (2023-08-08)
+
+
+### Bug Fixes
+
+* **sy-duration-picker-day:** respect disabled flag ([#1043](https://github.com/adfinis/timed-frontend/issues/1043)) ([b184bee](https://github.com/adfinis/timed-frontend/commit/b184beef2283690256b002844e0cf8321e6ea835))
+
 ## [3.2.1](https://github.com/adfinis/timed-frontend/compare/v3.2.0...v3.2.1) (2023-08-02)
 
 
