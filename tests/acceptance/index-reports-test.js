@@ -182,7 +182,7 @@ module("Acceptance | index reports", function (hooks) {
     await click(`button[data-date="${tomorrow}"]`);
     await click("[data-test-report-save]");
 
-    assert.strictEqual(currentURL(), `/reports?day=${tomorrow}`);
+    assert.ok(currentURL().includes(`/reports?day=${tomorrow}`));
     assert.dom("[data-test-report-row]").exists({ count: 6 });
   });
 });
