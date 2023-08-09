@@ -1,3 +1,10 @@
+## [3.2.3](https://github.com/adfinis/timed-frontend/compare/v3.2.2...v3.2.3) (2023-08-09)
+
+
+### Bug Fixes
+
+* parse queryparams for magic link as booleans, not strings ([#1046](https://github.com/adfinis/timed-frontend/issues/1046)) ([6076b87](https://github.com/adfinis/timed-frontend/commit/6076b87d0b29b9b3f4cfe72501d2002fe9296bf7))
+
 ## [3.2.2](https://github.com/adfinis/timed-frontend/compare/v3.2.1...v3.2.2) (2023-08-08)
 
 
