@@ -40,7 +40,7 @@
   "devDependencies": {
     "@adfinis/eslint-config": "2.0.0",
     "@adfinis/semantic-release-config": "4.0.0",
-    "@apollo/client": "3.7.13",
+    "@apollo/client": "3.8.1",
     "@babel/core": "7.22.9",
     "@babel/eslint-parser": "7.21.3",
     "@commitlint/cli": "17.4.4",
