@@ -228,8 +228,8 @@ devDependencies:
     specifier: 1.0.2
     version: 1.0.2(@babel/core@7.22.9)
   ember-simple-auth:
-    specifier: 4.2.2
-    version: 4.2.2(ember-fetch@8.1.2)
+    specifier: 6.0.0
+    version: 6.0.0(@ember/test-helpers@2.9.3)
   ember-simple-auth-oidc:
     specifier: 5.1.0
     version: 5.1.0(@babel/core@7.22.9)(graphql@16.8.1)(webpack@5.76.2)
@@ -9178,6 +9178,15 @@ packages:
       - supports-color
     dev: true
 
+  /ember-cookies@1.0.0:
+    resolution: {integrity: sha512-/kugyQInCkELQAdWMX9ud5AGiQrmkDGV16kOBSCRN3I8jCsaU2uzh8bGFyjyTSFc1cTdIO0Rwm9+ImbgHMzjpA==}
+    engines: {node: '>= 16.*'}
+    dependencies:
+      '@embroider/addon-shim': 1.8.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /ember-data@3.28.13(@babel/core@7.22.9):
     resolution: {integrity: sha512-j1YjPl2JNHxQwQW6Bgfis44XSr4WCtdwMXr/SPpLsF1oVeTWIn3kwefcDnbuCI8Spmt1B9ab3ZLKzf2KkGN/7g==}
     engines: {node: 12.* || >= 14.*}
@@ -9724,6 +9733,26 @@ packages:
       ember-fetch: 8.1.2
       silent-error: 1.1.1
     transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /ember-simple-auth@6.0.0(@ember/test-helpers@2.9.3):
+    resolution: {integrity: sha512-9SzSFApxZ74CD4UxIeTV+poIPeXcRLXWM60cMvC1SwTYjoc/p9DeQF0pVm6m1XV6uA3kPUzEsEn4/GeHc2YX1w==}
+    peerDependencies:
+      '@ember/test-helpers': '>= 3 || > 2.7'
+    peerDependenciesMeta:
+      '@ember/test-helpers':
+        optional: true
+    dependencies:
+      '@ember/test-helpers': 2.9.3(@babel/core@7.22.9)(ember-source@3.28.11)
+      '@ember/test-waiters': 3.0.2
+      '@embroider/addon-shim': 1.8.4
+      '@embroider/macros': 1.13.1
+      ember-cli-is-package-missing: 1.0.0
+      ember-cookies: 1.0.0
+      silent-error: 1.1.1
+    transitivePeerDependencies:
+      - '@glint/template'
       - supports-color
     dev: true
 
