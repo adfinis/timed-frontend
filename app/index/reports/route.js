@@ -4,6 +4,7 @@ import moment from "moment";
 
 export default class IndexReportsRoute extends Route {
   @service store;
+  @service notify;
 
   /**
    * Before model hook, fetch all absence types
