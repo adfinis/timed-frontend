@@ -34,7 +34,9 @@
         @disabled={{not this.selectedCustomer}}
         as |project|
       >
-        <div class={{if project.archived "archived-background-color"}}>{{project.name}}</div>
+        <div
+          class={{if project.archived "archived-background-color"}}
+        >{{project.name}}</div>
       </PowerSelect>
     </div>
     {{#if this.selectedProject}}
@@ -99,70 +101,67 @@
             >Add Task</button>
           </span>
         </h3>
-        <div class="task-table-container">
-          <EmberScrollable @class="projects-scrollable-container">
-            <table
-              class="table table--striped table--projects"
-              data-test-tasks-table
-            >
-              <colgroup>
-                <col class="title" />
-                <col class="reference" />
+        <ScrollContainer>
+          <table
+            class="table table--striped table--projects"
+            data-test-tasks-table
+          >
+            <colgroup>
+              <col class="title" />
+              <col class="reference" />
+              <col class="duration" />
+              {{#if remainingEffortTracking}}
                 <col class="duration" />
+              {{/if}}
+              <col class="archived" />
+            </colgroup>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Reference</th>
+                <th>Estimated time</th>
                 {{#if remainingEffortTracking}}
-                  <col class="duration" />
+                  <th>Remaining effort</th>
                 {{/if}}
-                <col class="archived" />
-              </colgroup>
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Reference</th>
-                  <th>Estimated time</th>
-                  {{#if remainingEffortTracking}}
-                    <th>Remaining effort</th>
-                  {{/if}}
-                  <th>Archived</th>
-                </tr>
-              </thead>
-              <tbody>
-                {{#each this.tasks as |task|}}
-                  <tr
-                    class="pointer
-                      {{if (eq this.selectedTask task) 'selected'}}"
-                    {{! template-lint-disable }}
-                    {{on "click" (fn (mut this.selectedTask) task)}}
-                    data-test-task-table-row
-                  >
-                    <td data-test-table-name>{{task.name}}</td>
-                    <td data-test-table-reference>{{if
-                        task.reference
-                        task.reference
-                        "-"
-                      }}</td>
-                    <td data-test-table-estimated-time>{{if
-                        task.estimatedTime
-                        (humanize-duration task.estimatedTime)
-                        "-"
-                      }}</td>
+                <th>Archived</th>
+              </tr>
+            </thead>
+            <tbody>
+              {{#each this.tasks as |task|}}
+                <tr
+                  class="pointer {{if (eq this.selectedTask task) 'selected'}}"
+                  {{! template-lint-disable }}
+                  {{on "click" (fn (mut this.selectedTask) task)}}
+                  data-test-task-table-row
+                >
+                  <td data-test-table-name>{{task.name}}</td>
+                  <td data-test-table-reference>{{if
+                      task.reference
+                      task.reference
+                      "-"
+                    }}</td>
+                  <td data-test-table-estimated-time>{{if
+                      task.estimatedTime
+                      (humanize-duration task.estimatedTime)
+                      "-"
+                    }}</td>
 
-                    {{#if remainingEffortTracking}}
-                      <td data-test-table-most-recent-remaining-effort>{{if
-                          task.mostRecentRemainingEffort
-                          (humanize-duration task.mostRecentRemainingEffort)
-                          "-"
-                        }}</td>
-                    {{/if}}
-                    <td><SyCheckmark
-                        data-test-table-archived
-                        @checked={{task.archived}}
-                      /></td>
-                  </tr>
-                {{/each}}
-              </tbody>
-            </table>
-          </EmberScrollable>
-        </div>
+                  {{#if remainingEffortTracking}}
+                    <td data-test-table-most-recent-remaining-effort>{{if
+                        task.mostRecentRemainingEffort
+                        (humanize-duration task.mostRecentRemainingEffort)
+                        "-"
+                      }}</td>
+                  {{/if}}
+                  <td><SyCheckmark
+                      data-test-table-archived
+                      @checked={{task.archived}}
+                    /></td>
+                </tr>
+              {{/each}}
+            </tbody>
+          </table>
+        </ScrollContainer>
         {{#if this.selectedTask}}
           <div class="task-form-container" data-test-task-form>
             <h3>{{if
