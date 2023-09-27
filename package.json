@@ -81,7 +81,7 @@
     "ember-cli-inject-live-reload": "2.1.0",
     "ember-cli-mirage": "2.4.0",
     "ember-cli-moment-shim": "3.8.0",
-    "ember-cli-nouislider": "1.2.1",
+    "ember-cli-nouislider": "derrabauke/ember-cli-nouislider#cf0d87986cf25d5795e1edd6c8b9f008c5b39872",
     "ember-cli-sass": "11.0.1",
     "ember-cli-sri": "2.1.1",
     "ember-cli-terser": "4.0.2",

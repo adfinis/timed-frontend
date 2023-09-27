@@ -138,8 +138,8 @@ devDependencies:
     specifier: 3.8.0
     version: 3.8.0
   ember-cli-nouislider:
-    specifier: 1.2.1
-    version: 1.2.1
+    specifier: derrabauke/ember-cli-nouislider#cf0d87986cf25d5795e1edd6c8b9f008c5b39872
+    version: github.com/derrabauke/ember-cli-nouislider/cf0d87986cf25d5795e1edd6c8b9f008c5b39872
   ember-cli-sass:
     specifier: 11.0.1
     version: 11.0.1
@@ -8633,19 +8633,6 @@ packages:
     resolution: {integrity: sha512-rF4P1rW2P1gVX1ynZYPmuIf7TnAFDiJmIUFI1Xz16VYykUAyiOCme0Y22LeZq8rTzwBMiwBwoE3RO4GYWehXZA==}
     dependencies:
       silent-error: 1.1.1
-    transitivePeerDependencies:
-      - supports-color
-    dev: true
-
-  /ember-cli-nouislider@1.2.1:
-    resolution: {integrity: sha512-Rp0sllQndU8OjuNsz+RN36Fz5feuap/wklXbuYaIf1aTc9XSH5DVcLxlEU2askZhojkBl35yRTFOjm854T2XMw==}
-    engines: {node: 10.* || >= 12}
-    dependencies:
-      broccoli-funnel: 3.0.8
-      broccoli-merge-trees: 4.2.0
-      ember-cli-babel: 7.26.11
-      ember-cli-htmlbars: 4.5.0
-      nouislider: 14.7.0
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -18656,4 +18643,19 @@ packages:
 
   /zen-observable@0.8.15:
     resolution: {integrity: sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==}
+    dev: true
+
+  github.com/derrabauke/ember-cli-nouislider/cf0d87986cf25d5795e1edd6c8b9f008c5b39872:
+    resolution: {tarball: https://codeload.github.com/derrabauke/ember-cli-nouislider/tar.gz/cf0d87986cf25d5795e1edd6c8b9f008c5b39872}
+    name: ember-cli-nouislider
+    version: 1.2.1
+    engines: {node: 10.* || >= 12}
+    dependencies:
+      broccoli-funnel: 3.0.8
+      broccoli-merge-trees: 4.2.0
+      ember-cli-babel: 7.26.11
+      ember-cli-htmlbars: 4.5.0
+      nouislider: 14.7.0
+    transitivePeerDependencies:
+      - supports-color
     dev: true
