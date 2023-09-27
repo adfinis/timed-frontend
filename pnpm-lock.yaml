@@ -215,9 +215,6 @@ devDependencies:
   ember-responsive:
     specifier: 5.0.0
     version: 5.0.0
-  ember-route-action-helper:
-    specifier: 2.0.8
-    version: 2.0.8(@babel/core@7.22.9)
   ember-scrollable:
     specifier: 1.0.2
     version: 1.0.2(@babel/core@7.22.9)
@@ -9595,17 +9592,6 @@ packages:
 
   /ember-rfc176-data@0.3.18:
     resolution: {integrity: sha512-JtuLoYGSjay1W3MQAxt3eINWXNYYQliK90tLwtb8aeCuQK8zKGCRbBodVIrkcTqshULMnRuTOS6t1P7oQk3g6Q==}
-    dev: true
-
-  /ember-route-action-helper@2.0.8(@babel/core@7.22.9):
-    resolution: {integrity: sha512-V+4uKwqaYveriVt2rl4e+9mzHJiQOr1B8dCPQQ2TS3iAcmi5RD2giRDFGtCK9d2XY9Arb/f9hJh0obP20iyt3A==}
-    engines: {node: ^4.5 || 6.* || >= 7.*}
-    dependencies:
-      ember-cli-babel: 6.18.0(@babel/core@7.22.9)
-      ember-getowner-polyfill: 2.2.0
-    transitivePeerDependencies:
-      - '@babel/core'
-      - supports-color
     dev: true
 
   /ember-router-generator@2.0.0:
