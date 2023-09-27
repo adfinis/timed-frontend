@@ -13,8 +13,8 @@
 # misc
 /coverage/
 !.*
-.*/
 .eslintcache
+.lint-todo/
 
 # ember-try
 /.node_modules.ember-try/
@@ -22,6 +22,4 @@
 /npm-shrinkwrap.json.ember-try
 /package.json.ember-try
 /package-lock.json.ember-try
-
-# template lint ci config
-.template-lintrc-ci.js
+/yarn.lock.ember-try

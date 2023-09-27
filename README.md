@@ -11,9 +11,9 @@ You will need the following things properly installed on your computer.
 
 - [Git](https://git-scm.com/)
 - [Node.js](https://nodejs.org/)
-- [pnpm](https://pnpm.io/)
-- [Ember CLI](https://ember-cli.com/)
-- [Chrome](https://www.google.com/chrome/)
+- [Yarn](https://yarnpkg.com/)
+- [Ember CLI](https://cli.emberjs.com/release/)
+- [Google Chrome](https://google.com/chrome/)
 - [Firefox](https://www.mozilla.org/firefox/)
 
 Optional:
