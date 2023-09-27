@@ -1,6 +1,6 @@
 import Route from "@ember/routing/route";
-import moment from "moment";
 import { inject as service } from "@ember/service";
+import moment from "moment";
 
 export default class IndexReportsRoute extends Route {
   @service store;
