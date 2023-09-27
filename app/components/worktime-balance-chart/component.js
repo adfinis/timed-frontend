@@ -1,26 +1,22 @@
-import { computed } from "@ember/object";
-import classic from "ember-classic-decorator";
-import EmberChartComponent from "ember-cli-chart/components/ember-chart";
+import Component from "@glimmer/component";
 import moment from "moment";
 import humanizeDuration from "timed/utils/humanize-duration";
 
 const FONT_FAMILY = "Source Sans Pro";
 
-@classic
-export default class WorktimeBalanceChart extends EmberChartComponent {
+export default class WorktimeBalanceChart extends Component {
   type = "line";
 
-  @computed("worktimeBalances.[]")
   get data() {
-    if (!this.worktimeBalances) {
+    if (!this.args.worktimeBalances) {
       return [];
     }
 
     return {
-      labels: this.worktimeBalances.mapBy("date"),
+      labels: this.args.worktimeBalances.mapBy("date"),
       datasets: [
         {
-          data: this.worktimeBalances.map((balance) =>
+          data: this.args.worktimeBalances.map((balance) =>
             balance.get("balance").asHours()
           ),
         },
@@ -28,10 +24,8 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
     };
   }
 
-  init(...args) {
-    super.init(...args);
-
-    this.set("options", {
+  get options() {
+    return {
       lineTension: 0,
       legend: { display: false },
       layout: { padding: 10 },
@@ -100,6 +94,6 @@ export default class WorktimeBalanceChart extends EmberChartComponent {
           },
         },
       },
-    });
+    };
   }
 }
