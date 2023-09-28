@@ -16,8 +16,8 @@ export default class WorktimeBalanceChart extends Component {
       labels: this.args.worktimeBalances.mapBy("date"),
       datasets: [
         {
-          data: this.args.worktimeBalances.map((balance) =>
-            balance.get("balance").asHours()
+          data: this.args.worktimeBalances.map(({ balance }) =>
+            balance.asHours()
           ),
         },
       ],
