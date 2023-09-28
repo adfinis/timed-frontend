@@ -7,13 +7,16 @@ import moment from "moment";
 
 export default class UsersEditCredits extends Controller {
   queryParams = ["year"];
+
+  @tracked year = moment().year().toString();
+
   @service notify;
   @service fetch;
   @service can;
   @service router;
   @service store;
+
   @controller("users.edit") userController;
-  @tracked year = moment().year().toString();
 
   @action
   fetchData(year) {

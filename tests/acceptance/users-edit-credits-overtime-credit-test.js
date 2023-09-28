@@ -25,10 +25,7 @@ module("Acceptance | users edit credits overtime credit", function (hooks) {
 
     await click("[data-test-overtime-credit-save]");
 
-    assert.strictEqual(
-      currentURL(),
-      `/users/${this.user.id}/credits?year=${moment().format("YYYY")}`
-    );
+    assert.strictEqual(currentURL(), `/users/${this.user.id}/credits`);
 
     assert.dom("[data-test-overtime-credits] tbody > tr").exists({ count: 1 });
   });
@@ -51,10 +48,7 @@ module("Acceptance | users edit credits overtime credit", function (hooks) {
 
     await click("[data-test-overtime-credit-save]");
 
-    assert.strictEqual(
-      currentURL(),
-      `/users/${this.user.id}/credits?year=${moment().format("YYYY")}`
-    );
+    assert.strictEqual(currentURL(), `/users/${this.user.id}/credits`);
 
     assert.dom("[data-test-overtime-credits] tbody > tr").exists({ count: 1 });
 
@@ -84,10 +78,7 @@ module("Acceptance | users edit credits overtime credit", function (hooks) {
 
     await click("[data-test-overtime-credit-delete]");
 
-    assert.strictEqual(
-      currentURL(),
-      `/users/${this.user.id}/credits?year=${moment().format("YYYY")}`
-    );
+    assert.strictEqual(currentURL(), `/users/${this.user.id}/credits`);
 
     assert.dom("[data-test-overtime-credits] tr").doesNotExist();
   });
