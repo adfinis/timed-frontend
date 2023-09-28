@@ -5,7 +5,7 @@ module.exports = function (environment) {
     modulePrefix: "timed",
     environment,
     rootURL: "/",
-    locationType: "auto",
+    locationType: "history",
     fontawesome: {
       defaultPrefix: "far", // regular icons
     },
