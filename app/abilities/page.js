@@ -12,8 +12,8 @@ export default class PageAbility extends Ability {
       return false;
     }
     return (
-      !this.user.activeEmployment.isExternal ||
-      (this.user.activeEmployment.isExternal && this.user.isReviewer)
+      !this.user.activeEmployment?.isExternal ||
+      (this.user.activeEmployment?.isExternal && this.user.isReviewer)
     );
   }
 }
