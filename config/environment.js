@@ -5,7 +5,7 @@ module.exports = function (environment) {
     modulePrefix: "timed",
     environment,
     rootURL: "/",
-    locationType: "auto",
+    locationType: "history",
     fontawesome: {
       defaultPrefix: "far", // regular icons
     },
@@ -58,7 +58,7 @@ module.exports = function (environment) {
       tokenEndpoint: "/token",
       endSessionEndpoint: "/logout",
       userinfoEndpoint: "/userinfo",
-      afterLogoutUri: "/",
+      afterLogoutUri: "/sso-login",
     },
   };
 

@@ -1,3 +1,5 @@
+@use "sass:color";
+
 .table--analysis {
   margin-bottom: 0;
   table-layout: fixed;
@@ -49,26 +51,6 @@
   margin-top: 1rem;
 }
 
-.analysis-scrollable-container::after,
-.analysis-scrollable-container::before {
-  content: "";
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  right: 0;
-  height: 7px;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.03), rgba(0, 0, 0, 0));
-}
-
-.analysis-scrollable-container::before {
-  top: 0;
-}
-
-.analysis-scrollable-container::after {
-  bottom: 0;
-  transform: rotate(180deg);
-}
-
 .table--analysis tr.selected {
   background-color: lighten($color-primary, 20%) !important;
 }
@@ -76,4 +58,7 @@
 .table--analysis tr.selected + tr td,
 .table--analysis tr.selected td {
   border-color: lighten($color-primary, 20%) !important;
+}
+.highlight {
+  color: color.adjust($color-primary, $lightness: -10%);
 }

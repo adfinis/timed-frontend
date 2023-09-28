@@ -15,10 +15,7 @@ module("Integration | Component | weekly overview benchmark", function (hooks) {
   test("computes the position correctly", async function (assert) {
     await render(hbs`{{weekly-overview-benchmark hours=10 max=10}}`);
 
-    assert.strictEqual(
-      find("hr").getAttribute("style"),
-      "bottom: calc(100% / 10 * 10)"
-    );
+    assert.strictEqual(find("hr").getAttribute("style"), "bottom: calc(100%);");
   });
 
   test("shows labels only when permitted", async function (assert) {

@@ -1,8 +1,6 @@
-import { computed } from "@ember/object";
 import Service, { inject as service } from "@ember/service";
+import { isTesting, macroCondition } from "@embroider/macros";
 import { tracked } from "@glimmer/tracking";
-import Ember from "ember";
-import classic from "ember-classic-decorator";
 import moment from "moment";
 
 const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
@@ -17,16 +15,12 @@ const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
  * @extends Ember.Service
  * @public
  */
-@classic
 export default class UnverifiedReportsService extends Service {
-  @service
-  store;
+  @service store;
 
-  @service
-  session;
+  @service session;
 
-  @service
-  notify;
+  @service notify;
 
   @tracked amountReports = 0;
 
@@ -34,21 +28,21 @@ export default class UnverifiedReportsService extends Service {
     return this.amountReports > 0;
   }
 
-  @computed
   get reportsToDate() {
     return moment().subtract(1, "month").endOf("month");
   }
 
-  init() {
-    super.init();
+  constructor(...args) {
+    super(...args);
+
     this.pollReports();
 
-    this.set(
-      "intervalId",
-      Ember.testing
-        ? null
-        : setInterval(this.pollReports.bind(this), INTERVAL_DELAY)
-    );
+    if (macroCondition(!isTesting())) {
+      this.intervalId = setInterval(
+        this.pollReports.bind(this),
+        INTERVAL_DELAY
+      );
+    }
   }
 
   async pollReports() {
@@ -61,7 +55,7 @@ export default class UnverifiedReportsService extends Service {
         page: { number: 1, size: 1 },
       });
 
-      this.set("amountReports", reports.meta.pagination.count);
+      this.amountReports = reports.meta.pagination.count;
     } catch (e) {
       this.notify.error("Error while polling reports");
     }

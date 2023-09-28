@@ -1,8 +1,3 @@
-/**
- * @module timed
- * @submodule timed-transforms
- * @public
- */
 import Transform from "@ember-data/serializer/transform";
 import moment from "moment";
 
@@ -15,14 +10,14 @@ import moment from "moment";
  * @extends DS.Transform
  * @public
  */
-export default Transform.extend({
+export default class MomentTransform extends Transform {
   /**
    * The default date string format
    *
    * @property {String} format
    * @public
    */
-  format: moment.defaultFormat,
+  format = moment.defaultFormat;
 
   /**
    * Deserialize the string into a moment object
@@ -34,7 +29,7 @@ export default Transform.extend({
    */
   deserialize(serialized) {
     return serialized ? moment(serialized, this.format) : null;
-  },
+  }
 
   /**
    * Serialize the moment object into a string
@@ -48,5 +43,5 @@ export default Transform.extend({
     return deserialized && deserialized.isValid()
       ? deserialized.format(this.format)
       : null;
-  },
-});
+  }
+}

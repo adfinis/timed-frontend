@@ -1,17 +1,19 @@
-import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
 import { Ability } from "ember-can";
 
-export default Ability.extend({
-  canAccess: computed(
-    "user.{activeEmployment.isExternal,isReviewer}",
-    function () {
-      if (!this.user) {
-        return false;
-      }
-      return (
-        !this.user.activeEmployment.isExternal ||
-        (this.user.activeEmployment.isExternal && this.user.isReviewer)
-      );
+export default class PageAbility extends Ability {
+  @service session;
+
+  get user() {
+    return this.session.data.user;
+  }
+  get canAccess() {
+    if (!this.user) {
+      return false;
     }
-  ),
-});
+    return (
+      !this.user.activeEmployment?.isExternal ||
+      (this.user.activeEmployment?.isExternal && this.user.isReviewer)
+    );
+  }
+}

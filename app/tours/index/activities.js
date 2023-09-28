@@ -1,5 +1,6 @@
 export default [
   {
+    id: "trackingActivities",
     target: ".tracking-bar",
     placement: "bottom",
     title: "Tracking activities",
@@ -21,7 +22,8 @@ export default [
     `,
   },
   {
-    target: ".table--activities",
+    id: "activitiesList",
+    target: ".activities-list",
     placement: "top",
     title: "Activity list",
     content: `
@@ -36,6 +38,7 @@ export default [
     `,
   },
   {
+    id: "generatingTimesheet",
     target: ".btn-toolbar .btn-success",
     placement: "left",
     title: "Generating the timesheet",

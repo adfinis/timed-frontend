@@ -1,146 +1,64 @@
-/**
- * @module timed
- * @submodule timed-models
- * @public
- */
-import { computed } from "@ember/object";
 import { inject as service } from "@ember/service";
 import Model, { attr, belongsTo } from "@ember-data/model";
 import moment from "moment";
 import { all } from "rsvp";
 
-/**
- * The activity model
- *
- * @class Activity
- * @extends DS.Model
- * @public
- */
-export default Model.extend({
-  /**
-   * The start time
-   *
-   * @property {moment} fromTime
-   * @public
-   */
-  fromTime: attr("django-time"),
+export default class Activity extends Model {
+  @attr("django-time") fromTime;
+  @attr("django-time") toTime;
+  @attr("string", { defaultValue: "" }) comment;
+  @attr("django-date") date;
+  @attr("boolean", { defaultValue: false }) transferred;
+  @attr("boolean", { defaultValue: false }) review;
+  @attr("boolean", { defaultValue: false }) notBillable;
+  @belongsTo("task") task;
+  @belongsTo("user") user;
 
-  /**
-   * The end time
-   *
-   * @property {moment} toTime
-   * @public
-   */
-  toTime: attr("django-time"),
+  @service notify;
+  @service store;
 
-  /**
-   * The comment
-   *
-   * @property comment
-   * @type {String}
-   * @public
-   */
-  comment: attr("string", { defaultValue: "" }),
-
-  /**
-   * The date
-   *
-   * @property {moment} date
-   * @public
-   */
-  date: attr("django-date"),
-
-  transferred: attr("boolean", { defaultValue: false }),
-
-  review: attr("boolean", { defaultValue: false }),
-
-  notBillable: attr("boolean", { defaultValue: false }),
-
-  /**
-   * The task
-   *
-   * @property task
-   * @type {Task}
-   * @public
-   */
-  task: belongsTo("task"),
-
-  /**
-   * The user
-   *
-   * @property user
-   * @type {User}
-   * @public
-   */
-  user: belongsTo("user"),
-
-  /**
-   * The notify service
-   *
-   * @property {EmberNotify.NotifyService} notify
-   * @public
-   */
-  notify: service("notify"),
-
-  /**
-   * Whether the activity is active
-   *
-   * @property active
-   * @type {Boolean}
-   * @public
-   */
-  active: computed("id", "toTime", function () {
+  get active() {
     return !this.toTime && !!this.id;
-  }),
+  }
 
-  duration: computed("from", "fromTime", "to", "toTime", function () {
-    return moment.duration((this.to ? this.to : moment()).diff(this.from));
-  }),
+  get duration() {
+    return moment.duration((this.to ?? moment()).diff(this.from));
+  }
 
-  from: computed("date", "fromTime", {
-    get() {
-      const time = this.fromTime;
-      return (
-        time &&
-        moment(this.date).set({
-          h: time.hours(),
-          m: time.minutes(),
-          s: time.seconds(),
-          ms: time.milliseconds(),
-        })
-      );
-    },
-    set(key, val) {
-      this.set("fromTime", val);
-      return val;
-    },
-  }),
+  get from() {
+    const time = this.fromTime;
+    return (
+      time &&
+      moment(this.date).set({
+        h: time.hours(),
+        m: time.minutes(),
+        s: time.seconds(),
+        ms: time.milliseconds(),
+      })
+    );
+  }
 
-  to: computed("date", "toTime", {
-    get() {
-      const time = this.toTime;
-      return (
-        time &&
-        moment(this.date).set({
-          h: time.hours(),
-          m: time.minutes(),
-          s: time.seconds(),
-          ms: time.milliseconds(),
-        })
-      );
-    },
-    set(key, val) {
-      this.set("toTime", val);
-      return val;
-    },
-  }),
+  set from(value) {
+    this.fromTime = value;
+  }
 
-  /**
-   * Start the activity
-   *
-   * @method start
-   * @public
-   */
+  get to() {
+    const time = this.toTime;
+    return (
+      time &&
+      moment(this.date).set({
+        h: time.hours(),
+        m: time.minutes(),
+        s: time.seconds(),
+        ms: time.milliseconds(),
+      })
+    );
+  }
+
+  set to(value) {
+    this.toTime = value;
+  }
+
   async start() {
     const activity = this.store.createRecord("activity", {
       date: moment(),
@@ -154,7 +72,7 @@ export default Model.extend({
     await activity.save();
 
     return activity;
-  },
+  }
 
   /**
    * Stop the activity
@@ -196,17 +114,14 @@ export default Model.extend({
           await activity.save();
         }
 
-        activity.set(
-          "toTime",
-          moment(
-            Math.min(
-              moment(activity.get("date")).set({
-                h: 23,
-                m: 59,
-                s: 59,
-              }),
-              moment()
-            )
+        activity.toTime = moment(
+          Math.min(
+            moment(activity.get("date")).set({
+              h: 23,
+              m: 59,
+              s: 59,
+            }),
+            moment()
           )
         );
 
@@ -220,5 +135,5 @@ export default Model.extend({
         { closeAfter: 5000 }
       );
     }
-  },
-});
+  }
+}

@@ -1,5 +1,6 @@
 export default [
   {
+    id: "addAttendance",
     target: ".btn-toolbar .btn-success",
     placement: "left",
     title: "Add attendance",
@@ -15,7 +16,8 @@ export default [
     `,
   },
   {
-    target: ".tab-content .visible-md",
+    id: "editAttendance",
+    target: ".visible-md",
     placement: "top",
     title: "Edit attendance",
     content: `

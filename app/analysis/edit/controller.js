@@ -4,42 +4,17 @@ import { action } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import { dasherize } from "@ember/string";
+import { tracked } from "@glimmer/tracking";
 import { task } from "ember-concurrency";
 import {
   underscoreQueryParams,
-  serializeParachuteQueryParams,
+  serializeQueryParams,
   filterQueryParams,
+  allQueryParams,
+  queryParamsState,
 } from "timed/utils/query-params";
 import { cleanParams, toQueryString } from "timed/utils/url";
 import IntersectionValidations from "timed/validations/intersection";
-
-import { AnalysisQueryParams } from "../index/controller";
-
-/* eslint-disable ember/avoid-leaking-state-in-ember-objects */
-export const AnalysisEditQueryParams = AnalysisQueryParams.extend({
-  id: {
-    defaultValue: [],
-    replace: true,
-    refresh: true,
-    serialize(arr) {
-      return (arr && arr.join(",")) || null;
-    },
-    deserialize(str) {
-      return (str && str.split(",")) || [];
-    },
-  },
-});
-/* eslint-enable ember/avoid-leaking-state-in-ember-objects */
-
-const prepareParams = (params) =>
-  cleanParams(
-    underscoreQueryParams(
-      serializeParachuteQueryParams(
-        filterQueryParams(params, "editable"),
-        AnalysisEditQueryParams
-      )
-    )
-  );
 
 const filterUnchanged = (attributes, changes) => {
   return Object.keys(attributes).reduce((obj, attr) => {
@@ -53,16 +28,54 @@ const TOOLTIP_CANNOT_VERIFY =
   "Please select yourself as 'reviewer' to verify reports.";
 const TOOLTIP_NEEDS_REVIEW = "Please review selected reports before verifying.";
 
-export default class AnalysisEditController extends Controller.extend(
-  AnalysisEditQueryParams.Mixin
-) {
+export default class AnalysisEditController extends Controller {
+  queryParams = [
+    "customer",
+    "costCenter",
+    "project",
+    "task",
+    "user",
+    "reviewer",
+    "billingType",
+    "costCenter",
+    "fromDate",
+    "toDate",
+    "review",
+    "notBillable",
+    "verified",
+    "billed",
+    "ordering",
+    "editable",
+    "rejected",
+    "id",
+  ];
+
   IntersectionValidations = IntersectionValidations;
 
   @service notify;
   @service router;
   @service fetch;
   @service session;
+  @service store;
   @service unverifiedReports;
+
+  @tracked id;
+  @tracked user;
+  @tracked reviewer;
+  @tracked customer;
+  @tracked project;
+  @tracked task;
+  @tracked billingType;
+  @tracked costCenter;
+  @tracked fromDate;
+  @tracked toDate;
+  @tracked review;
+  @tracked notBillable;
+  @tracked verified;
+  @tracked billed;
+  @tracked editable;
+  @tracked rejected;
+  @tracked ordering = "-date";
 
   get analysisIndexController() {
     return getOwner(this).lookup("controller:analysis.index");
@@ -80,15 +93,11 @@ export default class AnalysisEditController extends Controller.extend(
     return this.session.data.user.isSuperuser;
   }
 
-  setup() {
-    this.intersection.perform();
-  }
-
   @task
   *intersection() {
     const res = yield this.fetch.fetch(
       `/api/v1/reports/intersection?${new URLSearchParams({
-        ...prepareParams(this.allQueryParams),
+        ...this.prepareParams(allQueryParams(this)),
         editable: 1,
         include: "task,project,customer,user",
       })}`,
@@ -126,7 +135,7 @@ export default class AnalysisEditController extends Controller.extend(
 
   get canVerify() {
     return (
-      this.allQueryParams.reviewer === this.session.data.user.id ||
+      allQueryParams(this).reviewer === this.session.data.user.id ||
       this.isSuperuser
     );
   }
@@ -157,12 +166,11 @@ export default class AnalysisEditController extends Controller.extend(
   @task
   *save(changeset) {
     try {
-      const params = prepareParams(this.allQueryParams);
+      const params = this.prepareParams(allQueryParams(this));
 
       const queryString = toQueryString(params);
 
       yield changeset.execute();
-
       const {
         data: { attributes, relationships },
       } = this.intersectionModel.serialize();
@@ -180,7 +188,7 @@ export default class AnalysisEditController extends Controller.extend(
 
       this.router.transitionTo("analysis.index", {
         queryParams: {
-          ...this.allQueryParams,
+          ...serializeQueryParams(allQueryParams(this), queryParamsState(this)),
         },
       });
 
@@ -204,11 +212,10 @@ export default class AnalysisEditController extends Controller.extend(
     if (task.lastSuccessful) {
       this.analysisIndexController.skipResetOnSetup = true;
     }
-
     this.router
       .transitionTo("analysis.index", {
         queryParams: {
-          ...this.allQueryParams,
+          ...serializeQueryParams(allQueryParams(this), queryParamsState(this)),
         },
       })
       .then(() => {
@@ -224,5 +231,16 @@ export default class AnalysisEditController extends Controller.extend(
     later(() => {
       changeset.rollback();
     });
+  }
+
+  prepareParams(params) {
+    return cleanParams(
+      underscoreQueryParams(
+        serializeQueryParams(
+          filterQueryParams(params, "editable"),
+          queryParamsState(this)
+        )
+      )
+    );
   }
 }

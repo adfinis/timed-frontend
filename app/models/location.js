@@ -12,14 +12,14 @@ import Model, { attr } from "@ember-data/model";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class Location extends Model {
   /**
    * The name
    *
    * @property {String} name
    * @public
    */
-  name: attr("string"),
+  @attr("string") name;
 
   /**
    * The days on which users in this location need to work
@@ -27,5 +27,5 @@ export default Model.extend({
    * @property {Number[]} workdays
    * @public
    */
-  workdays: attr("django-workdays"),
-});
+  @attr("django-workdays") workdays;
+}

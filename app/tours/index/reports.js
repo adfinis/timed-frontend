@@ -1,6 +1,7 @@
 export default [
   {
-    target: ".table--reports",
+    id: "timesheet",
+    target: ".form-list-body",
     placement: "top",
     title: "Timesheet",
     content: `
@@ -15,7 +16,8 @@ export default [
     `,
   },
   {
-    target: ".table--reports input[name=duration]",
+    id: "duration",
+    target: "input[name=duration-day]",
     placement: "top",
     title: "Duration",
     content: `
@@ -28,7 +30,8 @@ export default [
     `,
   },
   {
-    target: ".table--reports",
+    id: "newEntry",
+    target: ".form-list-row",
     placement: "bottom",
     title: "New entry",
     content: `
@@ -39,6 +42,7 @@ export default [
     `,
   },
   {
+    id: "reschedule",
     target: ".btn-toolbar .btn-success",
     placement: "left",
     title: "Reschedule",
@@ -50,6 +54,7 @@ export default [
     `,
   },
   {
+    id: "Attendance",
     target: ".nav-tabs li:nth-child(2)",
     placement: "top",
     title: "Attendance",

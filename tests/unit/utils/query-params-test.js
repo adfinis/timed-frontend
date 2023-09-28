@@ -1,22 +1,20 @@
 import { module, test } from "qunit";
 import {
-  serializeParachuteQueryParams,
+  serializeQueryParams,
   underscoreQueryParams,
   filterQueryParams,
 } from "timed/utils/query-params";
 
 module("Unit | Utility | query params", function () {
-  test("can serialize parachute query params", function (assert) {
+  test("can serialize query params", function (assert) {
     const params = { foo: 10 };
     const qp = {
-      queryParams: {
-        foo: {
-          serialize: (val) => val * 10,
-        },
+      foo: {
+        serialize: (val) => val * 10,
       },
     };
 
-    const result = serializeParachuteQueryParams(params, qp);
+    const result = serializeQueryParams(params, qp);
 
     assert.strictEqual(result.foo, 100);
   });

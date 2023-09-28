@@ -15,16 +15,14 @@ module.exports = function (defaults) {
     "ember-simple-auth": {
       useSessionSetupMethod: true,
     },
-    "ember-site-tour": {
-      importHopscotchJS: true,
-      importHopscotchCSS: true,
-    },
     "ember-validated-form": {
       theme: "bootstrap",
     },
   });
 
   app.import("node_modules/@fontsource/source-sans-pro/index.css");
+
+  app.import("node_modules/simplebar/dist/simplebar.css");
 
   app.import("node_modules/downloadjs/download.min.js", {
     using: [{ transformation: "amd", as: "downloadjs" }],

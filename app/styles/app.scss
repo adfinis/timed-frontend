@@ -25,13 +25,21 @@
 @import "tour";
 @import "users-navigation";
 @import "users";
+@import "login";
 
 /* Component styles */
 @import "components/attendance-slider";
+@import "components/balance-donut";
+@import "components/date-buttons";
 @import "components/date-navigation";
+@import "components/filter-sidebar--group";
+@import "components/filter-sidebar--label";
+@import "components/loading-icon";
+@import "components/magic-link-btn.scss";
 @import "components/nav-top";
-@import "components/tracking-bar";
+@import "components/progress-tooltip";
 @import "components/record-button";
+@import "components/scroll-container";
 @import "components/sort-header";
 @import "components/statistic-list-bar";
 @import "components/sy-calendar";
@@ -41,9 +49,12 @@
 @import "components/sy-modal--footer";
 @import "components/sy-modal--overlay";
 @import "components/sy-toggle";
-@import "components/progress-tooltip";
+@import "components/timed-clock";
+@import "components/tracking-bar";
+@import "components/weekly-overview";
+@import "components/weekly-overview-benchmark";
+@import "components/weekly-overview-day";
 @import "components/welcome-modal";
-@import "components/magic-link-btn.scss";
 
 html {
   hyphens: auto;

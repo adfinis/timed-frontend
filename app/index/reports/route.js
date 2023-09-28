@@ -1,22 +1,11 @@
-/**
- * @module timed
- * @submodule timed-routes
- * @public
- */
 import Route from "@ember/routing/route";
+import { inject as service } from "@ember/service";
 import moment from "moment";
-import RouteAutostartTourMixin from "timed/mixins/route-autostart-tour";
 
-/**
- * The index reports route
- *
- * @class IndexReportsRoute
- * @extends Ember.Route
- * @public
- */
-export default class IndexReportsRoute extends Route.extend(
-  RouteAutostartTourMixin
-) {
+export default class IndexReportsRoute extends Route {
+  @service store;
+  @service notify;
+
   /**
    * Before model hook, fetch all absence types
    *

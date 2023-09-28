@@ -1,32 +1,20 @@
-import Component from "@ember/component";
-import { computed } from "@ember/object";
-import { htmlSafe } from "@ember/string";
-import {
-  attributeBindings,
-  classNameBindings,
-} from "@ember-decorators/component";
-import classic from "ember-classic-decorator";
+import Component from "@glimmer/component";
+import { cached } from "tracked-toolbox";
 
 const { PI, floor, min, abs } = Math;
 
 const { isInteger } = Number;
-
-@classic
-@attributeBindings("style")
-@classNameBindings("color")
 class BalanceDonutComponent extends Component {
-  @computed("balance.{usedDays,usedDuration,credit}")
   get value() {
-    if (this.get("balance.usedDuration") || !this.get("balance.credit")) {
+    if (this.args.balance.usedDuration || !this.args.balance.credit) {
       return 1;
     }
 
-    return abs(this.get("balance.usedDays") / this.get("balance.credit"));
+    return abs(this.args.balance.usedDays / this.args.balance.credit);
   }
 
-  @computed("value", "balance.usedDuration")
   get color() {
-    if (this.get("balance.usedDuration")) {
+    if (this.args.balance.usedDuration) {
       return "primary";
     }
 
@@ -43,23 +31,19 @@ class BalanceDonutComponent extends Component {
 
   radius = 100 / (2 * PI);
 
-  @computed("count", "index")
+  @cached
   get style() {
-    const mean = this.count / 2;
+    const mean = this.args.count / 2;
 
     const median = [floor(mean), ...(isInteger(mean) ? [floor(mean - 1)] : [])];
 
-    const deviation = min(...median.map((m) => abs(m - this.index)));
+    const deviation = min(...median.map((m) => abs(m - this.args.index)));
 
     const offset =
       deviation && (1 / (floor(mean) - (isInteger(mean) ? 1 : 0))) * deviation;
 
-    return htmlSafe(`--offset-multiplicator: ${offset};`);
+    return { "--offset-multiplicator": offset.toString() };
   }
 }
-
-BalanceDonutComponent.reopenClass({
-  positionalParams: ["balance"],
-});
 
 export default BalanceDonutComponent;

@@ -3,10 +3,9 @@
  * @submodule timed-models
  * @public
  */
-import { computed } from "@ember/object";
+import { inject as service } from "@ember/service";
 import Model, { attr, hasMany } from "@ember-data/model";
 import moment from "moment";
-
 /**
  * The user model
  *
@@ -14,14 +13,15 @@ import moment from "moment";
  * @extends DS.Model
  * @public
  */
-export default Model.extend({
+export default class User extends Model {
+  @service store;
   /**
    * The username
    *
    * @property {String} username
    * @public
    */
-  username: attr("string"),
+  @attr("string") username;
 
   /**
    * The first name
@@ -29,7 +29,7 @@ export default Model.extend({
    * @property {String} firstName
    * @public
    */
-  firstName: attr("string"),
+  @attr("string") firstName;
 
   /**
    * The last name
@@ -37,7 +37,7 @@ export default Model.extend({
    * @property {String} lastName
    * @public
    */
-  lastName: attr("string"),
+  @attr("string") lastName;
 
   /**
    * The email address
@@ -45,7 +45,7 @@ export default Model.extend({
    * @property {String} email
    * @public
    */
-  email: attr("string"),
+  @attr("string") email;
 
   /**
    * Defines if the user is a superuser
@@ -53,7 +53,7 @@ export default Model.extend({
    * @property {Boolean} isSuperuser
    * @public
    */
-  isSuperuser: attr("boolean"),
+  @attr("boolean") isSuperuser;
 
   /**
    * Whether a user is active
@@ -61,7 +61,7 @@ export default Model.extend({
    * @property {Boolean} isActive
    * @public
    */
-  isActive: attr("boolean"),
+  @attr("boolean") isActive;
 
   /**
    * Whether the user is a reviewer in a project
@@ -69,12 +69,12 @@ export default Model.extend({
    * @property {Boolean} isReviewer
    * @public
    */
-  isReviewer: attr("boolean"),
+  @attr("boolean") isReviewer;
 
   /**
    * Whether the user is an accountant
    */
-  isAccountant: attr("boolean", { defaultValue: false }),
+  @attr("boolean", { defaultValue: false }) isAccountant;
 
   /**
    * Whether the user completed the app tour
@@ -82,7 +82,7 @@ export default Model.extend({
    * @property {Boolean} tourDone
    * @public
    */
-  tourDone: attr("boolean"),
+  @attr("boolean") tourDone;
 
   /**
    * The users supervisors
@@ -90,7 +90,7 @@ export default Model.extend({
    * @property {User[]} supervisors
    * @public
    */
-  supervisors: hasMany("user", { inverse: "supervisees" }),
+  @hasMany("user", { inverse: "supervisees" }) supervisors;
 
   /**
    * The users supervisees
@@ -98,7 +98,7 @@ export default Model.extend({
    * @property {User[]} supervisees
    * @public
    */
-  supervisees: hasMany("user", { inverse: "supervisors" }),
+  @hasMany("user", { inverse: "supervisors" }) supervisees;
 
   /**
    * The users employments
@@ -106,7 +106,7 @@ export default Model.extend({
    * @property {Employment[]} employments
    * @public
    */
-  employments: hasMany("employment"),
+  @hasMany("employment") employments;
 
   /**
    * The users worktime balances
@@ -114,7 +114,7 @@ export default Model.extend({
    * @property {WorktimeBalance[]} worktimeBalances
    * @public
    */
-  worktimeBalances: hasMany("worktime-balances"),
+  @hasMany("worktime-balances") worktimeBalances;
 
   /**
    * The users absence balances
@@ -122,7 +122,7 @@ export default Model.extend({
    * @property {AbsenceBalance[]} absenceBalances
    * @public
    */
-  absenceBalances: hasMany("absence-balance"),
+  @hasMany("absence-balance") absenceBalances;
 
   /**
    * The full name
@@ -132,13 +132,13 @@ export default Model.extend({
    * @property {String} fullName
    * @public
    */
-  fullName: computed("firstName", "lastName", function () {
+  get fullName() {
     if (!this.firstName && !this.lastName) {
       return "";
     }
 
     return `${this.firstName} ${this.lastName}`;
-  }),
+  }
 
   /**
    * The long name
@@ -149,11 +149,11 @@ export default Model.extend({
    * @property {String} longName
    * @public
    */
-  longName: computed("username", "fullName", function () {
+  get longName() {
     return this.fullName
       ? `${this.fullName} (${this.username})`
       : this.username;
-  }),
+  }
 
   /**
    * The active employment
@@ -163,7 +163,7 @@ export default Model.extend({
    * @property {Employment} activeEmployment
    * @public
    */
-  activeEmployment: computed("employments.[]", "id", "store", function () {
+  get activeEmployment() {
     return (
       this.store.peekAll("employment").find((e) => {
         return (
@@ -172,7 +172,7 @@ export default Model.extend({
         );
       }) || null
     );
-  }),
+  }
 
   /**
    * The current worktime balance
@@ -180,19 +180,22 @@ export default Model.extend({
    * @property {WorktimeBalance} currentWorktimeBalance
    * @public
    */
-  currentWorktimeBalance: computed(
-    "id",
-    "store",
-    "worktimeBalances.[]",
-    function () {
-      return (
-        this.store.peekAll("worktime-balance").find((balance) => {
-          return (
-            balance.get("user.id") === this.id &&
-            balance.get("date").isSame(moment(), "day")
-          );
-        }) || null
-      );
-    }
-  ),
-});
+  get currentWorktimeBalance() {
+    return (
+      this.store.peekAll("worktime-balance").find((balance) => {
+        return (
+          balance.get("user.id") === this.id &&
+          balance.get("date").isSame(moment(), "day")
+        );
+      }) || null
+    );
+  }
+
+  toJSON() {
+    const { data } = this.serialize();
+    return {
+      ...data,
+      id: this.id,
+    };
+  }
+}

@@ -106,8 +106,8 @@
               <fs.filter
                 data-test-filter-from-date
                 @type="date"
-                @selected={{this.fromDate}}
-                @onChange={{fn (mut this.fromDate)}}
+                @selected={{this.getFromDate}}
+                @onChange={{this.changeFromDate}}
               />
             </fs.label>
             <fs.label>
@@ -115,13 +115,13 @@
               <fs.filter
                 data-test-filter-to-date
                 @type="date"
-                @selected={{this.toDate}}
-                @onChange={{fn (mut this.toDate)}}
+                @selected={{this.getToDate}}
+                @onChange={{this.changeToDate}}
               />
             </fs.label>
             <DateButtons
-              @onUpdateFromDate={{fn (mut this.fromDate)}}
-              @onUpdateToDate={{fn (mut this.toDate)}}
+              @onUpdateFromDate={{this.changeFromDate}}
+              @onUpdateToDate={{this.changeToDate}}
             />
           </fs.group>
           <fs.group @label="State">
@@ -138,7 +138,7 @@
                   (hash label="Needed" value="1")
                   (hash label="Not needed" value="0")
                 }}
-                @onChange={{fn (mut this.review)}}
+                @onChange={{fn this.updateParam "review"}}
               />
             </fs.label>
             <fs.label>
@@ -154,7 +154,7 @@
                   (hash label="Billable" value="0")
                   (hash label="Not billable" value="1")
                 }}
-                @onChange={{fn (mut this.notBillable)}}
+                @onChange={{fn this.updateParam "notBillable"}}
               />
             </fs.label>
             <fs.label>
@@ -170,7 +170,7 @@
                   (hash label="Verified" value="1")
                   (hash label="Not verified" value="0")
                 }}
-                @onChange={{fn (mut this.verified)}}
+                @onChange={{fn this.updateParam "verified"}}
               />
             </fs.label>
             <fs.label>
@@ -186,7 +186,7 @@
                   (hash label="Billed" value="1")
                   (hash label="Not Billed" value="0")
                 }}
-                @onChange={{fn (mut this.billed)}}
+                @onChange={{fn this.updateParam "billed"}}
               />
             </fs.label>
             <fs.label>
@@ -201,7 +201,7 @@
                   (hash label="All" value="")
                   (hash label="Editable" value="1")
                 }}
-                @onChange={{fn (mut this.editable)}}
+                @onChange={{fn this.updateParam "editable"}}
               />
             </fs.label>
             <fs.label>
@@ -211,13 +211,12 @@
                 @type="button"
                 @selected={{this.rejected}}
                 @valuePath="value"
-                @labelPath="label"
                 @options={{array
                   (hash label="All" value="")
                   (hash label="Rejected" value="1")
                   (hash label="Not rejected" value="0")
                 }}
-                @onChange={{fn (mut this.rejected)}}
+                @onChange={{fn this.updateParam "rejected"}}
               />
             </fs.label>
 
@@ -284,42 +283,42 @@
               <thead>
                 <tr>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="user__username"
                   >User</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="date"
                   >Date</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="duration"
                   >Duration</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="task__project__customer__name"
                   >Customer</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="task__project__name"
                   >Project</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="task__name"
                   >Task</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="comment"
                   >Comment</SortHeader>
                   <SortHeader
-                    @update={{fn (mut this.ordering)}}
+                    @update={{fn this.updateParam "ordering"}}
                     @current={{this.ordering}}
                     @by="verified_by__username"
                   >Verified by</SortHeader>
@@ -330,7 +329,7 @@
                 </tr>
               </thead>
             </table>
-            <EmberScrollable @class="analysis-scrollable-container">
+            <ScrollContainer class="analysis-scrollable-container">
               <table class="table table--striped table--analysis">
                 <colgroup>
                   <col />
@@ -374,10 +373,22 @@
                           report.verifiedBy
                           report.verifiedBy.username
                         }}</td>
-                      <td><SyCheckmark @checked={{report.rejected}} /></td>
-                      <td><SyCheckmark @checked={{report.review}} /></td>
-                      <td><SyCheckmark @checked={{report.notBillable}} /></td>
-                      <td><SyCheckmark @checked={{report.billed}} /></td>
+                      <td><SyCheckmark
+                          @checked={{report.rejected}}
+                          @highlight={{true}}
+                        /></td>
+                      <td><SyCheckmark
+                          @checked={{report.review}}
+                          @highlight={{true}}
+                        /></td>
+                      <td><SyCheckmark
+                          @checked={{report.notBillable}}
+                          @highlight={{true}}
+                        /></td>
+                      <td><SyCheckmark
+                          @checked={{report.billed}}
+                          @highlight={{true}}
+                        /></td>
                     </tr>
                   {{/each}}
                   {{#if this._canLoadMore}}
@@ -399,7 +410,7 @@
                   {{/if}}
                 </tbody>
               </table>
-            </EmberScrollable>
+            </ScrollContainer>
             <table class="table table--striped table--analysis">
               <colgroup>
                 <col />

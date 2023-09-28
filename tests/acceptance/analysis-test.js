@@ -79,12 +79,12 @@ module("Acceptance | analysis", function (hooks) {
     assert.ok(currentURL().includes("user=1"));
     assert.ok(currentURL().includes("fromDate=2016-12-01"));
     assert.ok(currentURL().includes("toDate=2017-12-01"));
-    assert.ok(currentURL().includes("ordering=-user__username%2Cid"));
+    assert.ok(currentURL().includes("ordering=-user__username"));
 
     await click(".filter-sidebar-reset");
 
     // ordering should not be resetted
-    assert.strictEqual(currentURL(), "/analysis?ordering=-user__username%2Cid");
+    assert.strictEqual(currentURL(), "/analysis?ordering=-user__username");
   });
 
   test("can have initial filters", async function (assert) {
