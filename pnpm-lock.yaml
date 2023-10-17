@@ -210,8 +210,8 @@ devDependencies:
     specifier: 8.0.3
     version: 8.0.3(@babel/core@7.22.9)
   ember-resources:
-    specifier: 5.6.2
-    version: 5.6.2(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@4.4.0)
+    specifier: 6.4.0
+    version: 6.4.0(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@4.4.0)
   ember-responsive:
     specifier: 5.0.0
     version: 5.0.0
@@ -2561,6 +2561,17 @@ packages:
 
   /@embroider/addon-shim@1.8.4:
     resolution: {integrity: sha512-sFhfWC0vI18KxVenmswQ/ShIvBg4juL8ubI+Q3NTSdkCTeaPQ/DIOUF6oR5DCQ8eO/TkIaw+kdG3FkTY6yNJqA==}
+    engines: {node: 12.* || 14.* || >= 16}
+    dependencies:
+      '@embroider/shared-internals': 2.4.0
+      broccoli-funnel: 3.0.8
+      semver: 7.5.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /@embroider/addon-shim@1.8.6:
+    resolution: {integrity: sha512-siC9kP78uucEbpDcVyxjkwa76pcs5rVzDVpWO4PDc9EAXRX+pzmUuSTLAK3GztUwx7/PWhz1BenAivqdSvSgfg==}
     engines: {node: 12.* || 14.* || >= 16}
     dependencies:
       '@embroider/shared-internals': 2.4.0
@@ -8139,6 +8150,18 @@ packages:
       '@glimmer/syntax': 0.27.0
     dev: true
 
+  /ember-async-data@1.0.3(ember-source@4.4.0):
+    resolution: {integrity: sha512-54OtoQwNi+/ZvPOVuT4t8fcHR9xL8N7kBydzcZSo6BIEsLYeXPi3+jUR8niWjfjXXhKlJ8EWXR0lTeHleTrxbw==}
+    peerDependencies:
+      ember-source: '>=4.8.4'
+    dependencies:
+      '@ember/test-waiters': 3.0.2
+      '@embroider/addon-shim': 1.8.6
+      ember-source: 4.4.0(@babel/core@7.22.9)(webpack@5.76.2)
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /ember-auto-import@1.12.2:
     resolution: {integrity: sha512-gLqML2k77AuUiXxWNon1FSzuG1DV7PEPpCLCU5aJvf6fdL6rmFfElsZRh+8ELEB/qP9dT+LHjNEunVzd2dYc8A==}
     engines: {node: '>= 10.*'}
@@ -9535,15 +9558,15 @@ packages:
       - supports-color
     dev: true
 
-  /ember-resources@5.6.2(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@4.4.0):
-    resolution: {integrity: sha512-aJnEucw9q3S5kF/bVNQamf4yaER0j6H+RIRum+x635nD4+Spwr/J766GxJURBRPZn1tQw6cJrR3IdYCYEf4dUw==}
+  /ember-resources@6.4.0(@glimmer/component@1.1.2)(@glimmer/tracking@1.1.2)(ember-concurrency@2.3.7)(ember-source@4.4.0):
+    resolution: {integrity: sha512-F5tfwhu8yRrPsMQk5nJWAZJuCi1xvGaTHp3izT+8rwuBXZSvjJAW+EapWNhKR7SYmtail9cPVwh37lcDd6HLXQ==}
     peerDependencies:
       '@ember/test-waiters': ^3.0.0
       '@glimmer/component': ^1.1.2
       '@glimmer/tracking': ^1.1.2
-      '@glint/template': '>= 0.8.3'
+      '@glint/template': ^1.0.0-beta.3 || ^1.0.0
       ember-concurrency: ^2.1.1
-      ember-source: '>= 3.28.0'
+      ember-source: ^3.28.0 || ^4.0.0 || ^5.0.0
     peerDependenciesMeta:
       '@ember/test-waiters':
         optional: true
@@ -9559,6 +9582,7 @@ packages:
       '@embroider/macros': 1.13.1
       '@glimmer/component': 1.1.2(@babel/core@7.22.9)
       '@glimmer/tracking': 1.1.2
+      ember-async-data: 1.0.3(ember-source@4.4.0)
       ember-concurrency: 2.3.7(@babel/core@7.22.9)
       ember-source: 4.4.0(@babel/core@7.22.9)(webpack@5.76.2)
     transitivePeerDependencies:
