@@ -5,10 +5,11 @@
         @route="analysis.index"
         @query={{hash
           fromDate=null
-          toDate=this.unverifiedReports.reportsToDate
+          toDate=(moment-format this.unverifiedReports.reportsToDate "YYYY-MM-DD")
           reviewer=this.session.data.user.id
           editable=1
           verified=0
+          rejected=0
           customer=null
           project=null
           task=null
