@@ -154,7 +154,11 @@ export default class AnalysisController extends Controller {
     );
   }
 
-  _reset() {
+  resetData() {
+    this._reset(false);
+  }
+
+  _reset(refetch = true) {
     this.data.cancelAll();
     this.loadNext.cancelAll();
 
@@ -166,7 +170,9 @@ export default class AnalysisController extends Controller {
     this.totalTime = moment.duration();
     this.totalItems = A();
 
-    this.data.perform();
+    if (refetch) {
+      this.data.perform();
+    }
   }
 
   get appliedFilters() {
