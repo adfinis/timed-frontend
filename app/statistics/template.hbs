@@ -19,7 +19,7 @@
     >
       <FilterSidebar
         @appliedCount={{this.appliedFilters.length}}
-        @onReset={{(queue t.clear this.resetQP)}}
+        @onReset={{(queue t.clear this.reset)}}
         as |fs|
       >
         <fs.group @label="Task" @expanded={{true}}>

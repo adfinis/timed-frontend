@@ -1,13 +1,11 @@
-import Controller from "@ember/controller";
 import { action, get, set } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { tracked } from "@glimmer/tracking";
 import { restartableTask, hash } from "ember-concurrency";
+import QPController from "timed/controllers/qpcontroller";
 import {
   underscoreQueryParams,
   serializeQueryParams,
-  resetQueryParams,
-  allQueryParams,
   queryParamsState,
 } from "timed/utils/query-params";
 import { serializeMoment } from "timed/utils/serialize-moment";
@@ -27,7 +25,7 @@ const TYPES = {
   user: { include: "user", requiredParams: [] },
 };
 
-export default class StatisticsController extends Controller {
+export default class StatisticsController extends QPController {
   types = Object.keys(TYPES);
 
   queryParams = [
@@ -146,7 +144,7 @@ export default class StatisticsController extends Controller {
       task: taskId,
       user: userId,
       reviewer: reviewerId,
-    } = allQueryParams(this);
+    } = this.allQueryParams;
 
     return yield hash({
       customer: customerId && this.store.findRecord("customer", customerId),
@@ -168,7 +166,7 @@ export default class StatisticsController extends Controller {
     const type = this.type;
 
     let params = underscoreQueryParams(
-      serializeQueryParams(allQueryParams(this), queryParamsState(this))
+      serializeQueryParams(this.allQueryParams, queryParamsState(this))
     );
 
     params = Object.keys(params).reduce((obj, key) => {
@@ -188,10 +186,7 @@ export default class StatisticsController extends Controller {
   }
 
   @action
-  resetQP() {
-    resetQueryParams(
-      this,
-      Object.keys(allQueryParams(this)).filter((qp) => qp !== "type")
-    );
+  reset() {
+    this.resetQueryParams({ except: ["type"] });
   }
 }
