@@ -128,7 +128,10 @@ export default class StatisticsController extends QPController {
 
   get appliedFilters() {
     return Object.keys(queryParamsState(this)).filter((key) => {
-      return queryParamsState(this)[key]?.changed && key !== "type";
+      return (
+        queryParamsState(this)[key]?.changed &&
+        !["type", "ordering"].includes(key)
+      );
     });
   }
 
@@ -187,6 +190,6 @@ export default class StatisticsController extends QPController {
 
   @action
   reset() {
-    this.resetQueryParams({ except: ["type"] });
+    this.resetQueryParams({ except: ["ordering", "type"] });
   }
 }
