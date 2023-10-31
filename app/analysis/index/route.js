@@ -11,16 +11,12 @@ export default class AnalysisIndexRoute extends Route {
     },
   };
 
-  async beforeModel() {
-    /* eslint-disable-next-line ember/no-controller-access-in-routes */
-    const controller = this.controllerFor("analysis.index");
-    controller.resetData();
-    await controller.prefetchData.perform();
-  }
-
   model() {
     /* eslint-disable-next-line ember/no-controller-access-in-routes */
     const controller = this.controllerFor("analysis.index");
-    next(() => controller.data.perform());
+    next(() => {
+      controller.resetData();
+      controller.data.perform();
+    });
   }
 }

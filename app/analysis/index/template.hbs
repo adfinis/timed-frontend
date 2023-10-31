@@ -437,16 +437,7 @@
             <div class="export-buttons">
               {{#each this.exportLinks as |link|}}
                 <button
-                  {{on
-                    "click"
-                    (fn
-                      (perform this.download)
-                      this.notify
-                      this.allQueryParams
-                      this.jwt
-                      link
-                    )
-                  }}
+                  {{on "click" (fn (perform this.download) link)}}
                   type="button"
                   data-download-count="{{this.download.performCount}}"
                   class="btn btn-primary

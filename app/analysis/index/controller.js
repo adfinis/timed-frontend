@@ -1,5 +1,4 @@
 import { A } from "@ember/array";
-import Controller from "@ember/controller";
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import { isTesting, macroCondition } from "@embroider/macros";
@@ -14,12 +13,11 @@ import {
 } from "ember-concurrency";
 import fetch from "fetch";
 import moment from "moment";
+import QPController from "timed/controllers/qpcontroller";
 import parseDjangoDuration from "timed/utils/parse-django-duration";
 import {
   underscoreQueryParams,
   serializeQueryParams,
-  resetQueryParams,
-  allQueryParams,
   queryParamsState,
 } from "timed/utils/query-params";
 import {
@@ -30,7 +28,7 @@ import { cleanParams, toQueryString } from "timed/utils/url";
 
 import config from "../../config/environment";
 
-export default class AnalysisController extends Controller {
+export default class AnalysisController extends QPController {
   queryParams = [
     "customer",
     "costCenter",
@@ -85,6 +83,12 @@ export default class AnalysisController extends Controller {
   @tracked billed;
   @tracked costCenter;
   @tracked ordering = "-date";
+
+  constructor(...args) {
+    super(...args);
+
+    this.prefetchData.perform();
+  }
 
   @action
   changeFromDate(date) {
@@ -193,7 +197,7 @@ export default class AnalysisController extends Controller {
       task: taskId,
       user: userId,
       reviewer: reviewerId,
-    } = allQueryParams(this);
+    } = this.allQueryParams;
 
     return yield hash({
       customer: customerId && this.store.findRecord("customer", customerId),
@@ -209,7 +213,7 @@ export default class AnalysisController extends Controller {
   @enqueueTask
   *data() {
     const params = underscoreQueryParams(
-      serializeQueryParams(allQueryParams(this), queryParamsState(this))
+      serializeQueryParams(this.allQueryParams, queryParamsState(this))
     );
 
     if (this._canLoadMore) {
@@ -315,7 +319,7 @@ export default class AnalysisController extends Controller {
   }
 
   @task
-  *download(notify, allQueryParams, jwt, { url = null, params = {} }) {
+  *download({ url = null, params = {} }) {
     try {
       this.url = url;
       this.params = params;
@@ -324,14 +328,17 @@ export default class AnalysisController extends Controller {
         underscoreQueryParams(
           cleanParams({
             ...params,
-            ...serializeQueryParams(allQueryParams, queryParamsState(this)),
+            ...serializeQueryParams(
+              this.allQueryParams,
+              queryParamsState(this)
+            ),
           })
         )
       );
 
       const res = yield fetch(`${url}?${queryString}`, {
         headers: {
-          Authorization: `Bearer ${jwt}`,
+          Authorization: `Bearer ${this.jwt}`,
         },
       });
 
@@ -363,10 +370,10 @@ export default class AnalysisController extends Controller {
       }
       download(file, filename, file.type);
 
-      notify.success("File was downloaded");
+      this.notify.success("File was downloaded");
     } catch (e) {
       /* istanbul ignore next */
-      notify.error(
+      this.notify.error(
         "Error while downloading, try again or try reducing results"
       );
     }
@@ -378,7 +385,7 @@ export default class AnalysisController extends Controller {
     this.router.transitionTo("analysis.edit", {
       queryParams: {
         ...(ids && ids.length ? { id: ids } : {}),
-        ...serializeQueryParams(allQueryParams(this), queryParamsState(this)),
+        ...serializeQueryParams(this.allQueryParams, queryParamsState(this)),
       },
     });
   }
@@ -406,13 +413,6 @@ export default class AnalysisController extends Controller {
 
   @action
   reset() {
-    resetQueryParams(
-      this,
-      Object.keys(allQueryParams(this)).filter((k) => k !== "ordering")
-    );
-  }
-
-  get allQueryParams() {
-    return allQueryParams(this);
+    this.resetQueryParams();
   }
 }
