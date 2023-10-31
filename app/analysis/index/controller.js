@@ -81,12 +81,6 @@ export default class AnalysisController extends QPController {
   @tracked costCenter;
   @tracked ordering = "-date";
 
-  constructor(...args) {
-    super(...args);
-
-    this.prefetchData.perform();
-  }
-
   get billingTypes() {
     return this.store.findAll("billing-type");
   }

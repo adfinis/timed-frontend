@@ -18,4 +18,8 @@ export default class AnalysisIndexRoute extends Route {
       controller._reset();
     });
   }
+
+  setupController(controller) {
+    controller.prefetchData.perform();
+  }
 }
