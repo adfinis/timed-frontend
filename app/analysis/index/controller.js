@@ -20,10 +20,7 @@ import {
   serializeQueryParams,
   queryParamsState,
 } from "timed/utils/query-params";
-import {
-  serializeMoment,
-  deserializeMoment,
-} from "timed/utils/serialize-moment";
+import { serializeMoment } from "timed/utils/serialize-moment";
 import { cleanParams, toQueryString } from "timed/utils/url";
 
 import config from "../../config/environment";
@@ -90,32 +87,6 @@ export default class AnalysisController extends QPController {
     this.prefetchData.perform();
   }
 
-  @action
-  changeFromDate(date) {
-    this.fromDate = serializeMoment(date);
-    this._reset();
-  }
-
-  get getFromDate() {
-    return deserializeMoment(this.fromDate);
-  }
-
-  @action
-  changeToDate(date) {
-    this.toDate = serializeMoment(date);
-    this._reset();
-  }
-
-  get getToDate() {
-    return deserializeMoment(this.toDate);
-  }
-
-  @action
-  updateParam(key, value) {
-    this[key] = value;
-    this._reset();
-  }
-
   get billingTypes() {
     return this.store.findAll("billing-type");
   }
@@ -158,11 +129,36 @@ export default class AnalysisController extends QPController {
     );
   }
 
-  resetData() {
-    this._reset(false);
+  get appliedFilters() {
+    return Object.keys(queryParamsState(this)).filter((key) => {
+      return key !== "ordering" && queryParamsState(this)?.[key]?.changed;
+    });
   }
 
-  _reset(refetch = true) {
+  get jwt() {
+    return this.session.data.authenticated.access_token;
+  }
+
+  @action
+  updateParam(key, value) {
+    this[key] = ["toDate", "fromDate"].includes(key)
+      ? serializeMoment(value)
+      : value;
+    this._reset();
+  }
+
+  @action
+  setModelFilter(key, value) {
+    this[key] = value && value.id;
+    this._reset();
+  }
+
+  @action
+  reset() {
+    this.resetQueryParams();
+  }
+
+  _reset() {
     this.data.cancelAll();
     this.loadNext.cancelAll();
 
@@ -174,19 +170,7 @@ export default class AnalysisController extends QPController {
     this.totalTime = moment.duration();
     this.totalItems = A();
 
-    if (refetch) {
-      this.data.perform();
-    }
-  }
-
-  get appliedFilters() {
-    return Object.keys(queryParamsState(this)).filter((key) => {
-      return key !== "ordering" && queryParamsState(this)?.[key]?.changed;
-    });
-  }
-
-  get jwt() {
-    return this.session.data.authenticated.access_token;
+    this.data.perform();
   }
 
   @task
@@ -403,16 +387,5 @@ export default class AnalysisController extends QPController {
         this.selectedReportIds = A([...selected, report.id]);
       }
     }
-  }
-
-  @action
-  setModelFilter(key, value) {
-    this[key] = value && value.id;
-    this._reset();
-  }
-
-  @action
-  reset() {
-    this.resetQueryParams();
   }
 }

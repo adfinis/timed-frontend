@@ -15,8 +15,7 @@ export default class AnalysisIndexRoute extends Route {
     /* eslint-disable-next-line ember/no-controller-access-in-routes */
     const controller = this.controllerFor("analysis.index");
     next(() => {
-      controller.resetData();
-      controller.data.perform();
+      controller._reset();
     });
   }
 }
