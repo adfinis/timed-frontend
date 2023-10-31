@@ -10,10 +10,7 @@ import {
   allQueryParams,
   queryParamsState,
 } from "timed/utils/query-params";
-import {
-  serializeMoment,
-  deserializeMoment,
-} from "timed/utils/serialize-moment";
+import { serializeMoment } from "timed/utils/serialize-moment";
 
 const TYPES = {
   year: { include: "", requiredParams: [] },
@@ -71,7 +68,9 @@ export default class StatisticsController extends Controller {
 
   @action
   updateParam(key, value) {
-    this[key] = value;
+    this[key] = ["toDate", "fromDate"].includes(key)
+      ? serializeMoment(value)
+      : value;
     this.data.perform();
   }
 
@@ -182,21 +181,9 @@ export default class StatisticsController extends Controller {
     });
   }
 
-  get getFromDate() {
-    return deserializeMoment(this.fromDate);
-  }
-
-  get getToDate() {
-    return deserializeMoment(this.toDate);
-  }
-
   @action
   setModelFilter(key, value) {
-    if (["fromDate", "toDate"].includes(key)) {
-      set(this, key, serializeMoment(value));
-    } else {
-      set(this, key, value && value.id);
-    }
+    set(this, key, value && value.id);
     this.data.perform();
   }
 
