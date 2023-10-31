@@ -17,9 +17,11 @@ export default class ControllersQPControllerController extends Controller {
     });
   }
 
-  resetQueryParams() {
+  resetQueryParams(options = { except: [] }) {
     this.queryParams.forEach((qp) => {
-      this[qp] = this.#defaults[qp];
+      if (!options.except.includes(qp)) {
+        this[qp] = this.#defaults[qp];
+      }
     });
   }
 
