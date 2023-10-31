@@ -155,7 +155,7 @@ export default class AnalysisController extends QPController {
 
   @action
   reset() {
-    this.resetQueryParams();
+    this.resetQueryParams({ except: ["ordering"] });
   }
 
   _reset() {
