@@ -1,0 +1,33 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:12.4
+    ports:
+      - 5432:5432
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=timed
+      - POSTGRES_PASSWORD=timed
+    networks:
+      - timed.local
+
+  backend:
+    build: .
+    ports:
+      - 8000:80
+    depends_on:
+      - db
+    environment:
+      - DJANGO_DATABASE_HOST=db
+      - DJANGO_DATABASE_PORT=5432
+      - STATIC_ROOT=/var/www/static
+    networks:
+      - timed.local
+
+volumes:
+  dbdata:
+
+networks:
+  timed.local:
