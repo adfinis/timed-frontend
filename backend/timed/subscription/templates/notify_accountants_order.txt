@@ -1,0 +1,14 @@
+***EN***
+
+Customer {{customer.name}} has ordered {{hours_added}} hours for {{project.name}}.
+The new project total (if the order is accepted) would be {{hours_total}} hours.
+
+https://my.adfinis-sygroup.ch/timed-admin/confirm-subscriptions
+
+
+***DE***
+
+Kunde {{customer.name}} hat für {{project.name}} {{hours_added}} Stunden bestellt.
+Das neue Projekt Total (falls die Bestellung akzeptiert wird) wäre {{hours_total}} Stunden.
+
+https://my.adfinis-sygroup.ch/timed-admin/confirm-subscriptions
