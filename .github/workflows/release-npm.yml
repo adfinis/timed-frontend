@@ -2,6 +2,9 @@ name: Release npm package
 
 on: workflow_dispatch
 
+env:
+  frontend-dir: ./frontend
+
 jobs:
   release:
     name: Release
@@ -24,9 +27,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
+        working-directory: ${{ env.frontend-dir }}
 
       - name: Release on NPM
         run: pnpm semantic-release
+        working-directory: ${{ env.frontend-dir }}
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

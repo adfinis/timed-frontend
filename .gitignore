@@ -1,3 +1,12 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+
+# VSCode
+.vscode/
+
+# PyCharm
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -73,5 +82,6 @@ target/
 # pytest
 .pytest_cache
 
-# PyCharm
-.idea
+# dependencies
+/node_modules
+/bower_components

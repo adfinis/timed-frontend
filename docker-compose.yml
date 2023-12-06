@@ -14,7 +14,8 @@ services:
       - timed.local
 
   backend:
-    build: .
+    build:
+      context: ./backend/
     ports:
       - 8000:80
     depends_on:
@@ -23,6 +24,16 @@ services:
       - DJANGO_DATABASE_HOST=db
       - DJANGO_DATABASE_PORT=5432
       - STATIC_ROOT=/var/www/static
+    networks:
+      - timed.local
+    
+  frontend:
+    build: ./frontend/
+    ports:
+      - 4200:80
+    environment:
+      - TIMED_SSO_CLIENT_HOST=http://timed.local/auth/realms/timed/protocol/openid-connect
+      - TIMED_SSO_CLIENT_ID=timed-public
     networks:
       - timed.local
 

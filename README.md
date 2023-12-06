@@ -52,12 +52,17 @@ DJANGO_OIDC_USERNAME_CLAIM=preferred_username
 ```
 
 The test data includes 3 users admin, fritzm and alexs with you can log into [http://timed.local](http://timed.local)
+You can initialize the test data using the following command:
+
+```bash
+make loaddata
+```
 
 The username and password are identical.
 
 To access the Django admin interface you will have to change the admin password in Django directly:
 
-```console
+```bash
 $ make bash
 root@0a036a10f3c4:/app# poetry run python manage.py changepassword admin
 Changing password for user 'admin'
@@ -68,6 +73,29 @@ Password changed successfully for user 'admin'
 
 Then you'll be able to login in the Django admin interface [http://timed.local/admin/](http://timed.local/admin/).
 
+## Work locally with Ember
+
+```bash
+cd frontend
+pnpm i
+```
+
+## Running / Development
+
+```bash
+ember server
+```
+- Visit your app at [http://localhost:4200](http://localhost:4200).
+
+If you have a running [backend](https://github.com/adfinis/timed-backend) you need to run
+
+```bash
+ember server --proxy=http://localhost:8000
+```
+or
+```bash
+pnpm start
+```
 
 ### Adding a user
 
@@ -77,6 +105,12 @@ Head to [http://timed.local/admin/](http://timed.local/admin/) after having perf
 You should see that new user in the `Employment -> Users`.
 Click on the user and scroll down to the `Employments` section to set a `Location`.
 Save the user and you should now see the _Timed_ interface correctly under that account.
+
+
+### Sending emails
+In development mode, the apllication is configured to send all email to a Mailhog instance running in the same docker-compose setup. No emails will be sent out from the development environment, unless you specify something else.
+
+You can access the Mailhog interface at [http://timed.local/mailhog/](http://timed.local/mailhog/). All emails sent from the application will be visible there.
 
 ## Configuration
 

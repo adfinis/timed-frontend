@@ -1,18 +1,18 @@
 # Contributing
 
-Contributions to Timed backend are very welcome! Best have a look at the open [issues](https://github.com/adfinis/timed-backend)
-and open a [GitHub pull request](https://github.com/adfinis/timed-backend/compare). See instructions below how to setup development
+Contributions to Timed are very welcome! Best have a look at the open [issues](https://github.com/adfinis/timed)
+and open a [GitHub pull request](https://github.com/adfinis/timed/compare). See instructions below how to setup development
 environment. Before writing any code, best discuss your proposed change in a GitHub issue to see if the proposed change makes sense for the project.
 
 ## Setup development environment
 
 ### Clone
 
-To work on Timed backend you first need to clone
+To work on Timed you first need to clone
 
 ```bash
-git clone https://github.com/adfinis/timed-backend.git
-cd timed-backend
+git clone https://github.com/adfinis/timed.git
+cd timed
 ```
 
 ### Open Shell
@@ -32,13 +32,13 @@ etc.
 
 ```bash
 # linting
-flake8
+poetry run flake8
 # format code
-black .
+poetry run black .
 # running tests
-pytest
+poetry run pytest
 # create migrations
-python manage.py makemigrations
+poetry run python manage.py makemigrations
 ```
 
 Writing of code can still happen outside the docker container of course.

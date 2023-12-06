@@ -3,7 +3,7 @@ version: "3.7"
 services:
   backend:
     build:
-      context: .
+      context: ./backend/
       args:
         INSTALL_DEV_DEPENDENCIES: "true"
     depends_on:
@@ -13,20 +13,10 @@ services:
       - EMAIL_URL=smtp://mailhog:1025
       - DJANGO_OIDC_USERNAME_CLAIM=preferred_username
     volumes:
-      - ./:/app
+      - ./backend/:/app
     command: /bin/sh cmd.sh --autoreload --static
     ports:
       - "81:81"
-    networks:
-      - timed.local
-
-  frontend:
-    image: ghcr.io/adfinis/timed-frontend:latest
-    ports:
-      - 4200:80
-    environment:
-      - TIMED_SSO_CLIENT_HOST=http://timed.local/auth/realms/timed/protocol/openid-connect
-      - TIMED_SSO_CLIENT_ID=timed-public
     networks:
       - timed.local
 

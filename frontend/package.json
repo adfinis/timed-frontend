@@ -17,7 +17,7 @@
     "lint:hbs:fix": "ember-template-lint . --fix",
     "lint:js": "eslint --config .eslintrc.js .",
     "lint:js:fix": "eslint --config .eslintrc.js . --fix",
-    "prepare": "husky install",
+    "prepare": "cd .. && husky install frontend/.husky",
     "preinstall": "npx only-allow pnpm",
     "start": "ember server --proxy http://localhost:8000",
     "test": "npm-run-all test:*",

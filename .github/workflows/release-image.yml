@@ -1,4 +1,4 @@
-name: Release ghcr image
+name: Release ghcr images
 
 on:
   release:
@@ -7,6 +7,9 @@ on:
 jobs:
   container:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target: [frontend, backend]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -15,11 +18,11 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ghcr.io/adfinis/timed-frontend
+          images: ghcr.io/adfinis/timed-${{ matrix.target }}
           flavor: |
             latest=auto
           labels: |
-            org.opencontainers.image.title=${{ github.event.repository.name }}
+            org.opencontainers.image.title=${{ github.event.repository.name }}-${{ matrix.target }}
             org.opencontainers.image.description=${{ github.event.repository.description }}
             org.opencontainers.image.url=${{ github.event.repository.html_url }}
             org.opencontainers.image.source=${{ github.event.repository.clone_url }}
@@ -38,7 +41,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile
+          file: ./${{ matrix.target }}/Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: |

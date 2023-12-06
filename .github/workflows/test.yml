@@ -13,9 +13,11 @@ on:
 
 env:
   NODE_VERSION: 18
+  frontend-dir: ./frontend
+  backend-dir: ./backend
 
 jobs:
-  lint:
+  lint-frontend:
     name: Lint
     runs-on: [ubuntu-latest]
     timeout-minutes: 5
@@ -39,13 +41,15 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+        working-directory: ${{ env.frontend-dir }}
 
       - name: Lint ${{ matrix.target }}
         run: pnpm lint:${{ matrix.target }}
+        working-directory: ${{ env.frontend-dir }}
 
-  test:
+  test-frontend:
     name: Tests
-    needs: [lint]
+    needs: [lint-frontend]
     runs-on: [ubuntu-latest]
     timeout-minutes: 10
 
@@ -64,9 +68,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+        working-directory: ${{ env.frontend-dir }}
 
       - name: Run tests
         run: pnpm test
+        working-directory: ${{ env.frontend-dir }}
         env:
           COVERAGE: true
 
@@ -74,3 +80,25 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage/lcov.info
+
+  test-backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v3
+        with:
+          path: .venv
+          key: poetry-${{ hashFiles('poetry.lock')}}
+          restore-keys: |
+            peotry-
+      - name: Build the project
+        run: |
+          echo "ENV=dev" > .env
+          docker-compose up -d --build backend
+      - name: Lint the code
+        run: |
+          docker-compose exec -T backend black --check .
+          docker-compose exec -T backend flake8
+          docker-compose exec -T backend python manage.py makemigrations --check --dry-run --no-input
+      - name: Run pytest
+        run: docker-compose exec -T backend pytest --no-cov-on-fail --cov --create-db -vv
