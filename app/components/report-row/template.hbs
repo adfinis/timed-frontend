@@ -109,8 +109,8 @@
           type="submit"
           data-test-save-report
           class="btn btn-primary"
-          disabled={{and (not cs.isNew) (or (not cs.isDirty) (not cs.isValid))}}
-          {{on "click" (prevent-default (fn (optional @onSave) cs))}}
+          disabled={{or this.inUpdate (and (not cs.isNew) (or (not cs.isDirty) (not cs.isValid)))}}
+          {{on "click" (prevent-default (fn (optional this.save) cs))}}
         ><FaIcon @icon="floppy-disk" /></button>
       {{/if}}
     </div>

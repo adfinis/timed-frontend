@@ -1,10 +1,12 @@
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
+import { tracked } from "@glimmer/tracking";
 import ReportValidations from "timed/validations/report";
 
 export default class ReportRowComponent extends Component {
   @service abilities;
+  @tracked inUpdate = false;
 
   ReportValidations = ReportValidations;
 
@@ -27,8 +29,10 @@ export default class ReportRowComponent extends Component {
    * @public
    */
   @action
-  save(changeset) {
-    this.args.onSave(changeset);
+  async save(changeset) {
+    this.inUpdate = true;
+    await this.args.onSave(changeset);
+    this.inUpdate = false;
   }
   /**
    * Delete the row
