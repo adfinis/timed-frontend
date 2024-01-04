@@ -1,6 +1,7 @@
 import { action } from "@ember/object";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
+import { dropTask } from "ember-concurrency";
 import ReportValidations from "timed/validations/report";
 
 export default class ReportRowComponent extends Component {
@@ -26,9 +27,11 @@ export default class ReportRowComponent extends Component {
    * @method save
    * @public
    */
-  @action
-  save(changeset) {
-    this.args.onSave(changeset);
+  @dropTask
+  *save(changeset) {
+    if (this.args.onSave) {
+      yield this.args.onSave(changeset);
+    }
   }
   /**
    * Delete the row
