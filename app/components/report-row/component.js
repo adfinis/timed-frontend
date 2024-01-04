@@ -29,7 +29,9 @@ export default class ReportRowComponent extends Component {
    */
   @dropTask
   *save(changeset) {
-    yield this.args.onSave(changeset);
+    if (this.args.onSave) {
+      yield this.args.onSave(changeset);
+    }
   }
   /**
    * Delete the row
