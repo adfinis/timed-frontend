@@ -134,6 +134,9 @@ export default class AnalysisEditController extends Controller {
   }
 
   get canVerify() {
+    if (this.intersection.lastSuccessful.value.model.rejected !== false) {
+      return false;
+    }
     return (
       allQueryParams(this).reviewer === this.session.data.user.id ||
       this.isSuperuser
