@@ -1,3 +1,15 @@
+# [3.3.0](https://github.com/adfinis/timed-frontend/compare/v3.2.4...v3.3.0) (2024-01-31)
+
+
+### Bug Fixes
+
+* coverage report ([0206f40](https://github.com/adfinis/timed-frontend/commit/0206f40ffd6940cff8ab5a81fbbd5bb8c63373dd))
+
+
+### Features
+
+* sentry integration ([c6b3d9f](https://github.com/adfinis/timed-frontend/commit/c6b3d9f39965d5f74b363fec45338af101f02111))
+
 ## [3.2.4](https://github.com/adfinis/timed-frontend/compare/v3.2.3...v3.2.4) (2024-01-31)
 
 
