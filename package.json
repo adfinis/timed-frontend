@@ -61,6 +61,7 @@
     "@html-next/vertical-collection": "4.0.2",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
+    "@sentry/ember": "^7.98.0",
     "broccoli-asset-rev": "3.0.0",
     "broccoli-funnel": "^3.0.8",
     "downloadjs": "1.4.7",
@@ -88,7 +89,7 @@
     "ember-cli-update": "1.0.1",
     "ember-component-css": "0.8.1",
     "ember-composable-helpers": "5.0.0",
-    "ember-concurrency": "2.3.4",
+    "ember-concurrency": "^2.3.7",
     "ember-data": "4.4.0",
     "ember-decorators": "6.1.1",
     "ember-event-helpers": "^0.1.1",
@@ -139,7 +140,7 @@
     "resize-observer-polyfill": "^1.5.1",
     "sass": "1.58.3",
     "semantic-release": "21.0.7",
-    "shepherd.js": "^11.1.1",
+    "shepherd.js": "^11.2.0",
     "simplebar": "^6.2.5",
     "tracked-built-ins": "3.1.1",
     "tracked-toolbox": "2.0.0",
@@ -165,5 +166,8 @@
         "marked"
       ]
     }
+  },
+  "dependencies": {
+    "fast-redact": "^3.3.0"
   }
 }
