@@ -1,3 +1,19 @@
+## [3.2.4](https://github.com/adfinis/timed-frontend/compare/v3.2.3...v3.2.4) (2024-01-31)
+
+
+### Bug Fixes
+
+* **analysis:** dont reset the ordering query parameter on reset ([9520f07](https://github.com/adfinis/timed-frontend/commit/9520f0777bd95b9d8d4070c99d82755010d6a542))
+* **analysis:** move prefetch data call to route ([db23304](https://github.com/adfinis/timed-frontend/commit/db23304bb4386e551a9fcfe88313f70c6336f97e))
+* **analysis:** rejected and verified qp updates trigger model hook ([1c92121](https://github.com/adfinis/timed-frontend/commit/1c92121f4a9c0d052ec3981c37a12021bfbb8c13))
+* **report-row:** check if the argument is defined before calling `save` function ([0bc1c98](https://github.com/adfinis/timed-frontend/commit/0bc1c987b006f9b9f947b8fc7ea6dbe1833ed50d))
+* **report-row:** components from duplication when clicking submit multible time ([834a5ad](https://github.com/adfinis/timed-frontend/commit/834a5adfc65f88aa7965b329550df20964879844))
+* **statistics:** except ordering and type from qp reset ([20df93c](https://github.com/adfinis/timed-frontend/commit/20df93cd1d11e3d495dbc8e9d36b4e1e24913a36))
+* the default value of `rejected` attribute in `ReportIntersection` is false ([192c8a8](https://github.com/adfinis/timed-frontend/commit/192c8a868ce053b7058a838bc1232adcece97808))
+* updating the customer, project, task in analysis edit report page ([2d6210e](https://github.com/adfinis/timed-frontend/commit/2d6210e0fdb08f7dee6d98fd997be107fb684e99))
+* verify rejected reports ([cbd0ce1](https://github.com/adfinis/timed-frontend/commit/cbd0ce1f3ff11a97b05cc8b6cdd35bd07db5c7e4))
+* **worktime-balance-chart:** the float number was not rendered in the chart if it's long float ([b1339dc](https://github.com/adfinis/timed-frontend/commit/b1339dcc746f5f8f4f206de0b2db444f6e239012))
+
 ## [3.2.3](https://github.com/adfinis/timed-frontend/compare/v3.2.2...v3.2.3) (2023-08-09)
 
 
