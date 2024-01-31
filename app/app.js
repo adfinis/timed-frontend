@@ -22,6 +22,7 @@ const redact = fastRedact({
   serialize: false,
 });
 
+/* istanbul ignore if */
 if (config["@sentry/ember"]) {
   const sentryConfig = config["@sentry/ember"].sentry;
   Sentry.init({
