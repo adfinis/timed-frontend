@@ -254,8 +254,8 @@ devDependencies:
     specifier: 3.1.1
     version: 3.1.1
   ember-validated-form:
-    specifier: 6.2.0
-    version: 6.2.0(@babel/core@7.22.9)(ember-data@4.4.0)(ember-source@4.4.0)(webpack@5.76.2)
+    specifier: 7.0.0
+    version: 7.0.0(@babel/core@7.22.9)(ember-data@4.4.0)(ember-source@4.4.0)(webpack@5.76.2)
   ember-wormhole:
     specifier: 0.6.0
     version: 0.6.0
@@ -10014,9 +10014,11 @@ packages:
       - supports-color
     dev: true
 
-  /ember-validated-form@6.2.0(@babel/core@7.22.9)(ember-data@4.4.0)(ember-source@4.4.0)(webpack@5.76.2):
-    resolution: {integrity: sha512-30EUv32EcPNnCKvbY3D+k++z/fgH/G0GTP37chqQCuag2/S+p0w0ku0ZNwEmV47UfIxPu7F52lZ7a9OyxnxPFQ==}
+  /ember-validated-form@7.0.0(@babel/core@7.22.9)(ember-data@4.4.0)(ember-source@4.4.0)(webpack@5.76.2):
+    resolution: {integrity: sha512-1vwYi9X9P0QwjE2c61Cqbsn3wFdz2gkWTht+F1t97kipA39MQKGmYzkN1AeyDeoe6EFe+Ip9Y4ujTlAsyUCRLw==}
     engines: {node: 14.* || 16.* || >= 18}
+    peerDependencies:
+      ember-source: ^4.0.0
     dependencies:
       '@embroider/macros': 1.13.1
       '@embroider/util': 1.12.0(ember-source@4.4.0)
@@ -10026,13 +10028,13 @@ packages:
       ember-changeset-validations: 4.1.1(webpack@5.76.2)
       ember-cli-babel: 7.26.11
       ember-cli-htmlbars: 6.2.0
+      ember-source: 4.4.0(@babel/core@7.22.9)(webpack@5.76.2)
       ember-truth-helpers: 3.1.1
     transitivePeerDependencies:
       - '@babel/core'
       - '@glint/environment-ember-loose'
       - '@glint/template'
       - ember-data
-      - ember-source
       - supports-color
       - webpack
     dev: true
