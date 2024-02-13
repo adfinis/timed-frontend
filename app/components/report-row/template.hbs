@@ -27,6 +27,7 @@
         id="row-comment"
         value={{cs.comment}}
         disabled={{not this.editable}}
+        spellcheck="true"
         {{on "change" (pick "target.value" (fn (mut cs.comment)))}}
         data-test-report-comment
       />
