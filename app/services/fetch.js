@@ -43,6 +43,7 @@ export default class FetchService extends Service {
   @service session;
 
   async fetch(resource, init = {}) {
+    await this.session.refreshAuthentication.perform();
     init.headers = cleanObject({
       ...this.headers,
       ...(init.headers || {}),
