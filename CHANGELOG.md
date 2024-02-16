@@ -1,3 +1,16 @@
+# [3.4.0](https://github.com/adfinis/timed-frontend/compare/v3.3.0...v3.4.0) (2024-02-16)
+
+
+### Bug Fixes
+
+* `htmlSafe` function import path ([ecfe1ad](https://github.com/adfinis/timed-frontend/commit/ecfe1ad98357015ece96f3722d2ed86409646d11))
+* **fetch-service:** insure token is valid before making request ([a687a59](https://github.com/adfinis/timed-frontend/commit/a687a5998e162fef77abaf0647f2e54e06632081))
+
+
+### Features
+
+* enforce spelling check for comment field ([b5ddcc9](https://github.com/adfinis/timed-frontend/commit/b5ddcc9381a3a2695a3eed85809e33b9801c5cce))
+
 # [3.3.0](https://github.com/adfinis/timed-frontend/compare/v3.2.4...v3.3.0) (2024-01-31)
 
 
