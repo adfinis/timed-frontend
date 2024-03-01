@@ -2,7 +2,6 @@ import { action } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
 import { restartableTask, timeout, dropTask } from "ember-concurrency";
 import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { resolve } from "rsvp";
@@ -10,7 +9,7 @@ import customerOptionTemplate from "timed/components/optimized-power-select/cust
 import projectOptionTemplate from "timed/components/optimized-power-select/custom-options/project-option";
 import taskOptionTemplate from "timed/components/optimized-power-select/custom-options/task-option";
 import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/task-selection";
-
+import { localCopy } from "tracked-toolbox";
 /**
  * Component for selecting a task, which consists of selecting a customer and
  * project first.
@@ -79,11 +78,11 @@ export default class TaskSelectionComponent extends Component {
       initial.task,
     ]);
 
-    if (task && !this.task) {
+    if (task) {
       this.onTaskChange(task);
-    } else if (project && !this.project) {
+    } else if (project) {
       this.onProjectChange(project);
-    } else if (customer && !this.customer) {
+    } else if (customer) {
       this.onCustomerChange(customer);
     } else {
       this.tracking.fetchCustomers.perform();
@@ -128,8 +127,8 @@ export default class TaskSelectionComponent extends Component {
    * @property {Customer} _customer
    * @private
    */
-  @tracked
-  _customer = null;
+  @localCopy("args.initial.customer")
+  _customer = this.args.initial.customer || null;
 
   /**
    * The manually selected project
@@ -137,8 +136,8 @@ export default class TaskSelectionComponent extends Component {
    * @property {Project} _project
    * @private
    */
-  @tracked
-  _project = null;
+  @localCopy("args.initial.project")
+  _project = this.args.initial.project || null;
 
   /**
    * The manually selected task
@@ -146,7 +145,7 @@ export default class TaskSelectionComponent extends Component {
    * @property {Task} _task
    * @private
    */
-  @tracked
+  @localCopy("args.initial.task")
   _task = null;
 
   /**

@@ -106,7 +106,7 @@
               <fs.filter
                 data-test-filter-from-date
                 @type="date"
-                @selected={{moment this.fromDate}}
+                @selected={{if this.fromDate (moment this.fromDate)}}
                 @onChange={{fn this.updateParam "fromDate"}}
               />
             </fs.label>
@@ -115,7 +115,7 @@
               <fs.filter
                 data-test-filter-to-date
                 @type="date"
-                @selected={{moment this.toDate}}
+                @selected={{if this.toDate (moment this.toDate)}}
                 @onChange={{fn this.updateParam "toDate"}}
               />
             </fs.label>
