@@ -22,6 +22,33 @@ export default class TaskSelectionComponent extends Component {
   @service store;
   @service tracking;
 
+  /**
+   * The manually selected customer
+   *
+   * @property {Customer} _customer
+   * @private
+   */
+  @localCopy("args.initial.customer")
+  _customer;
+
+  /**
+   * The manually selected project
+   *
+   * @property {Project} _project
+   * @private
+   */
+  @localCopy("args.initial.project")
+  _project;
+
+  /**
+   * The manually selected task
+   *
+   * @property {Task} _task
+   * @private
+   */
+  @localCopy("args.initial.task")
+  _task;
+
   constructor(...args) {
     super(...args);
 
@@ -120,33 +147,6 @@ export default class TaskSelectionComponent extends Component {
    * @public
    */
   selectedTemplate = customSelectedTemplate;
-
-  /**
-   * The manually selected customer
-   *
-   * @property {Customer} _customer
-   * @private
-   */
-  @localCopy("args.initial.customer")
-  _customer = this.args.initial.customer || null;
-
-  /**
-   * The manually selected project
-   *
-   * @property {Project} _project
-   * @private
-   */
-  @localCopy("args.initial.project")
-  _project = this.args.initial.project || null;
-
-  /**
-   * The manually selected task
-   *
-   * @property {Task} _task
-   * @private
-   */
-  @localCopy("args.initial.task")
-  _task = null;
 
   /**
    * Whether to show archived customers, projects or tasks
