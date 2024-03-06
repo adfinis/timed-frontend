@@ -2,7 +2,6 @@ import { action } from "@ember/object";
 import { later } from "@ember/runloop";
 import { inject as service } from "@ember/service";
 import Component from "@glimmer/component";
-import { tracked } from "@glimmer/tracking";
 import { restartableTask, timeout, dropTask } from "ember-concurrency";
 import { trackedTask } from "ember-resources/util/ember-concurrency";
 import { resolve } from "rsvp";
@@ -10,7 +9,7 @@ import customerOptionTemplate from "timed/components/optimized-power-select/cust
 import projectOptionTemplate from "timed/components/optimized-power-select/custom-options/project-option";
 import taskOptionTemplate from "timed/components/optimized-power-select/custom-options/task-option";
 import customSelectedTemplate from "timed/components/optimized-power-select/custom-select/task-selection";
-
+import { localCopy } from "tracked-toolbox";
 /**
  * Component for selecting a task, which consists of selecting a customer and
  * project first.
@@ -22,6 +21,33 @@ import customSelectedTemplate from "timed/components/optimized-power-select/cust
 export default class TaskSelectionComponent extends Component {
   @service store;
   @service tracking;
+
+  /**
+   * The manually selected customer
+   *
+   * @property {Customer} _customer
+   * @private
+   */
+  @localCopy("args.initial.customer")
+  _customer;
+
+  /**
+   * The manually selected project
+   *
+   * @property {Project} _project
+   * @private
+   */
+  @localCopy("args.initial.project")
+  _project;
+
+  /**
+   * The manually selected task
+   *
+   * @property {Task} _task
+   * @private
+   */
+  @localCopy("args.initial.task")
+  _task;
 
   constructor(...args) {
     super(...args);
@@ -79,11 +105,11 @@ export default class TaskSelectionComponent extends Component {
       initial.task,
     ]);
 
-    if (task && !this.task) {
+    if (task) {
       this.onTaskChange(task);
-    } else if (project && !this.project) {
+    } else if (project) {
       this.onProjectChange(project);
-    } else if (customer && !this.customer) {
+    } else if (customer) {
       this.onCustomerChange(customer);
     } else {
       this.tracking.fetchCustomers.perform();
@@ -121,33 +147,6 @@ export default class TaskSelectionComponent extends Component {
    * @public
    */
   selectedTemplate = customSelectedTemplate;
-
-  /**
-   * The manually selected customer
-   *
-   * @property {Customer} _customer
-   * @private
-   */
-  @tracked
-  _customer = null;
-
-  /**
-   * The manually selected project
-   *
-   * @property {Project} _project
-   * @private
-   */
-  @tracked
-  _project = null;
-
-  /**
-   * The manually selected task
-   *
-   * @property {Task} _task
-   * @private
-   */
-  @tracked
-  _task = null;
 
   /**
    * Whether to show archived customers, projects or tasks
