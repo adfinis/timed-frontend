@@ -27,8 +27,10 @@ export default class IndexReportsRoute extends Route {
 
     if (controller.task) {
       try {
+        const task = await this.store.findRecord("task", controller.task);
+
         await this.store.createRecord("report", {
-          task: await this.store.findRecord("task", controller.task),
+          task,
           duration: controller.duration
             ? moment.duration(controller.duration)
             : "",
@@ -37,6 +39,7 @@ export default class IndexReportsRoute extends Route {
           user: this.modelFor("protected"),
           review: controller.review ?? false,
           notBillable: controller.notBillable ?? false,
+          remainingEffort: task.mostRecentRemainingEffort,
         });
 
         controller.task = null;
