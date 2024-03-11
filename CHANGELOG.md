@@ -1,3 +1,16 @@
+# [3.5.0](https://github.com/adfinis/timed-frontend/compare/v3.4.0...v3.5.0) (2024-03-11)
+
+
+### Bug Fixes
+
+* respect last value for remianing efforts for magic links ([14a0336](https://github.com/adfinis/timed-frontend/commit/14a033689aad76b28cc44943c7e5303fa79ccded))
+* **TaskSelection:** reset component filter when updating the page controller properties ([2d373b0](https://github.com/adfinis/timed-frontend/commit/2d373b0a44b167cc1e79555fcb0adc4698178047))
+
+
+### Features
+
+* create github issue template ([4faa472](https://github.com/adfinis/timed-frontend/commit/4faa47217b8f6453ff4efefcc648b68f98b55b98))
+
 # [3.4.0](https://github.com/adfinis/timed-frontend/compare/v3.3.0...v3.4.0) (2024-02-16)
 
 
