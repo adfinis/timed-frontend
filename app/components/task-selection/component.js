@@ -97,6 +97,8 @@ export default class TaskSelectionComponent extends Component {
       task: null,
     };
 
+    const options = { preventAction: true };
+
     // the objects are possibily wrapped in a proxy which would
     // confuse the upcoming null check
     const [customer, project, task] = await Promise.all([
@@ -106,11 +108,11 @@ export default class TaskSelectionComponent extends Component {
     ]);
 
     if (task) {
-      this.onTaskChange(task);
+      this.onTaskChange(task, options);
     } else if (project) {
-      this.onProjectChange(project);
+      this.onProjectChange(project, options);
     } else if (customer) {
-      this.onCustomerChange(customer);
+      this.onCustomerChange(customer, options);
     } else {
       this.tracking.fetchCustomers.perform();
     }
