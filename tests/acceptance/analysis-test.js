@@ -26,6 +26,10 @@ module("Acceptance | analysis", function (hooks) {
     await authenticateSession({ user_id: this.user.id });
 
     this.server.createList("report", 40, { userId: this.user.id });
+    this.reportIntersection = this.server.create("report-intersection", {
+      verified: false,
+      review: true,
+    });
   });
 
   test("can visit /analysis", async function (assert) {
@@ -166,6 +170,12 @@ module("Acceptance | analysis", function (hooks) {
     );
 
     await click("tbody > tr:first-child");
+
+    assert.ok(find("tbody > tr:first-child.selected"));
+
+    // check if selection remains after canceling the edit
+    await click("button[data-test-edit-selected]");
+    await click("button[data-test-cancel]");
 
     assert.ok(find("tbody > tr:first-child.selected"));
 
