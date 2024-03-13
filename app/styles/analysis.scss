@@ -54,6 +54,12 @@
 .table--analysis tr.selected {
   background-color: lighten($color-primary, 20%) !important;
 }
+.table--analysis tr.needs-review {
+  background-color: lighten($color-warning, 30%) !important;
+}
+.table--analysis tr.needs-review.selected {
+  background-color: #c4afed !important;
+}
 
 .table--analysis tr.selected + tr td,
 .table--analysis tr.selected td {

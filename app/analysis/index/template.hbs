@@ -350,9 +350,12 @@
                   {{#each reports as |report|}}
                     {{! template-lint-disable}}
                     <tr
-                      class="{{if
-                          (includes report.id this.selectedReportIds)
-                          'selected'
+                      class="{{concat
+                          (if
+                            (includes report.id this.selectedReportIds)
+                            'selected'
+                          )
+                          (if report.review ' needs-review')
                         }}
                         {{if
                           (or this.canBill (can 'edit report' report))
