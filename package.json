@@ -111,7 +111,7 @@
     "ember-shepherd": "^14.0.2",
     "ember-simple-auth": "4.2.2",
     "ember-simple-auth-oidc": "5.1.0",
-    "ember-sinon-qunit": "^6.0.0",
+    "ember-sinon-qunit": "^7.4.0",
     "ember-source": "4.4.0",
     "ember-style-modifier": "^1.0.0",
     "ember-template-lint": "4.17.0",
