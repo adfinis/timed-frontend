@@ -147,7 +147,7 @@ devDependencies:
     version: 3.8.0
   ember-cli-nouislider:
     specifier: derrabauke/ember-cli-nouislider#cf0d87986cf25d5795e1edd6c8b9f008c5b39872
-    version: github.com/derrabauke/ember-cli-nouislider/cf0d87986cf25d5795e1edd6c8b9f008c5b39872
+    version: git/github.com+derrabauke/ember-cli-nouislider/cf0d87986cf25d5795e1edd6c8b9f008c5b39872
   ember-cli-sass:
     specifier: 11.0.1
     version: 11.0.1
@@ -194,8 +194,8 @@ devDependencies:
     specifier: 9.0.1
     version: 9.0.1
   ember-notify:
-    specifier: 6.0.3
-    version: 6.0.3
+    specifier: 6.0.4
+    version: 6.0.4
   ember-pad:
     specifier: 1.2.3
     version: 1.2.3(@babel/core@7.22.9)
@@ -9534,8 +9534,8 @@ packages:
       - webpack-command
     dev: true
 
-  /ember-notify@6.0.3:
-    resolution: {integrity: sha512-Am/2gitsEtnOiRi4f24b3P98moJZgHfxO4Ss0X9zAyQhomAUq6sRYBn5kO5QSLZURiGkcw3ZZiaoj2J2nG6L/Q==}
+  /ember-notify@6.0.4:
+    resolution: {integrity: sha512-JwqgpPdF50GjaJxL1uU6jkYEVR56qn3A3x7frAB+8jJgIwpeIytZO8geSYQVeRLUUeadDS1yd6sj26BbLZAZww==}
     engines: {node: 10.* || >= 12}
     dependencies:
       ember-cli-babel: 7.26.11
@@ -18850,8 +18850,8 @@ packages:
     resolution: {integrity: sha512-PQ2PC7R9rslx84ndNBZB/Dkv8V8fZEpk83RLgXtYd0fwUgEjseMn1Dgajh2x6S8QbZAFa9p2qVCEuYZNgve0dQ==}
     dev: true
 
-  github.com/derrabauke/ember-cli-nouislider/cf0d87986cf25d5795e1edd6c8b9f008c5b39872:
-    resolution: {tarball: https://codeload.github.com/derrabauke/ember-cli-nouislider/tar.gz/cf0d87986cf25d5795e1edd6c8b9f008c5b39872}
+  git/github.com+derrabauke/ember-cli-nouislider/cf0d87986cf25d5795e1edd6c8b9f008c5b39872:
+    resolution: {commit: cf0d87986cf25d5795e1edd6c8b9f008c5b39872, repo: git@github.com:derrabauke/ember-cli-nouislider.git, type: git}
     name: ember-cli-nouislider
     version: 1.2.1
     engines: {node: 10.* || >= 12}
