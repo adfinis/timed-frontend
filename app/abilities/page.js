@@ -11,9 +11,7 @@ export default class PageAbility extends Ability {
     if (!this.user) {
       return false;
     }
-    return (
-      !this.user.activeEmployment?.isExternal ||
-      (this.user.activeEmployment?.isExternal && this.user.isReviewer)
-    );
+
+    return !this.user.activeEmployment?.isExternal || this.user.isReviewer;
   }
 }
