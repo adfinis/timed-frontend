@@ -10,7 +10,7 @@ export default class AnalysisEditRoute extends Route {
   }
   resetController(controller, isExiting, transition) {
     if (isExiting && transition.targetName !== "error") {
-      resetQueryParams(controller);
+      resetQueryParams(controller, controller.queryParams);
     }
   }
 }
