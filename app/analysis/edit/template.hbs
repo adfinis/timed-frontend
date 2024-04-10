@@ -160,7 +160,7 @@
                       @checked={{fi.value}}
                       @onChange={{fi.update}}
                       @disabled={{or
-                        (not this.canVerify)
+                        (and (not this.isReviewer) (not this.isSuperuser))
                         this.hasSelectedOwnReports
                       }}
                     >
