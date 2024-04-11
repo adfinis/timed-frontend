@@ -133,14 +133,15 @@ export default class AnalysisEditController extends Controller {
     return this.intersectionModel.user.get("id") === this.session.data.user.id;
   }
 
+  get isReviewer() {
+    return allQueryParams(this).reviewer === this.session.data.user.id;
+  }
+
   get canVerify() {
     if (this.intersection.lastSuccessful.value.model.rejected !== false) {
       return false;
     }
-    return (
-      allQueryParams(this).reviewer === this.session.data.user.id ||
-      this.isSuperuser
-    );
+    return this.isReviewer || this.isSuperuser;
   }
 
   get canBill() {
