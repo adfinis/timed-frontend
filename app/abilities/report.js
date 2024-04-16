@@ -13,11 +13,11 @@ export default class ReportAbility extends Ability {
       this.user?.isSuperuser ||
       (!this.model?.verifiedBy?.get("id") &&
         // eslint-disable-next-line ember/no-get
-        (this.model?.user?.get("id") === this.user?.get("id") ||
+        (this.model?.user?.get("id") === this.user?.id ||
           // eslint-disable-next-line ember/no-get
           (this.model?.user?.get("supervisors") ?? [])
             .mapBy("id")
-            .includes(this.user?.get("id"))));
+            .includes(this.user?.id)));
     const isReviewer =
       (this.model?.taskAssignees ?? [])
         .concat(
@@ -25,7 +25,7 @@ export default class ReportAbility extends Ability {
           this.model?.customerAssignees ?? []
         )
         .mapBy("user.id")
-        .includes(this.user?.get("id")) && !this.model?.verifiedBy?.get("id");
+        .includes(this.user?.id) && !this.model?.verifiedBy?.get("id");
     return isEditable || isReviewer;
   }
 }
