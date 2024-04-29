@@ -109,7 +109,7 @@
     "ember-resources": "5.6.2",
     "ember-responsive": "5.0.0",
     "ember-shepherd": "^14.0.2",
-    "ember-simple-auth": "4.2.2",
+    "ember-simple-auth": "6.0.0",
     "ember-simple-auth-oidc": "5.1.0",
     "ember-sinon-qunit": "^6.0.0",
     "ember-source": "4.4.0",
