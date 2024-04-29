@@ -227,8 +227,8 @@ devDependencies:
     specifier: ^14.0.2
     version: 14.0.2(webpack@5.76.2)
   ember-simple-auth:
-    specifier: 4.2.2
-    version: 4.2.2(ember-fetch@8.1.2)
+    specifier: 6.0.0
+    version: 6.0.0(@ember/test-helpers@2.9.3)
   ember-simple-auth-oidc:
     specifier: 5.1.0
     version: 5.1.0(@babel/core@7.22.9)(graphql@16.8.1)(webpack@5.76.2)
@@ -4474,6 +4474,9 @@ packages:
 
   /ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
+    peerDependenciesMeta:
+      ajv:
+        optional: true
     dependencies:
       ajv: 8.12.0
     dev: true
@@ -9299,6 +9302,15 @@ packages:
       - supports-color
     dev: true
 
+  /ember-cookies@1.1.2:
+    resolution: {integrity: sha512-6GaN0eEDZT9SEUSZBxWzZMlvxjcGKXFTJNjv30LVXTTOxozE5IBmIxiDAEq0udi0UpWUGHLYQBgnANn4jdll7w==}
+    engines: {node: '>= 16.*'}
+    dependencies:
+      '@embroider/addon-shim': 1.8.4
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /ember-data@4.4.0(@babel/core@7.22.9)(webpack@5.76.2):
     resolution: {integrity: sha512-Ak/CyffnGuaGv7y1TZJFPmHuCNf11cvcPICBGbe9nw5rbTJawakqsxCJ6TaPb9vR+KqE52uzWRcgz4c5HmfLsw==}
     engines: {node: 12.* || >= 14.*}
@@ -9791,6 +9803,26 @@ packages:
       ember-fetch: 8.1.2
       silent-error: 1.1.1
     transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /ember-simple-auth@6.0.0(@ember/test-helpers@2.9.3):
+    resolution: {integrity: sha512-9SzSFApxZ74CD4UxIeTV+poIPeXcRLXWM60cMvC1SwTYjoc/p9DeQF0pVm6m1XV6uA3kPUzEsEn4/GeHc2YX1w==}
+    peerDependencies:
+      '@ember/test-helpers': '>= 3 || > 2.7'
+    peerDependenciesMeta:
+      '@ember/test-helpers':
+        optional: true
+    dependencies:
+      '@ember/test-helpers': 2.9.3(@babel/core@7.22.9)(ember-source@4.4.0)
+      '@ember/test-waiters': 3.0.2
+      '@embroider/addon-shim': 1.8.4
+      '@embroider/macros': 1.13.1
+      ember-cli-is-package-missing: 1.0.0
+      ember-cookies: 1.1.2
+      silent-error: 1.1.1
+    transitivePeerDependencies:
+      - '@glint/template'
       - supports-color
     dev: true
 
