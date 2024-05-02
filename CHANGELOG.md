@@ -1,3 +1,18 @@
+# [3.6.0](https://github.com/adfinis/timed-frontend/compare/v3.5.0...v3.6.0) (2024-05-02)
+
+
+### Bug Fixes
+
+* **analysis:** skip reset if edit is cancled ([bdea886](https://github.com/adfinis/timed-frontend/commit/bdea886c98ea61192129d4c9f4fdbacd012a3bb5))
+* **filter-sidebar:** component to show the rejected options ([f393ed2](https://github.com/adfinis/timed-frontend/commit/f393ed29d0565494b47f45f13920b5b8f98be60c))
+* resetting `analysis.edit` query params ([717bda4](https://github.com/adfinis/timed-frontend/commit/717bda4167cbd66840e3786c599cc4d1263de3fb))
+* **task-selection:** prevent action on init ([1222ca4](https://github.com/adfinis/timed-frontend/commit/1222ca42ca463358e5d80a5d9811debad16d8bdf))
+
+
+### Features
+
+* reviewer can remove rejected from edit report page ([db89055](https://github.com/adfinis/timed-frontend/commit/db89055283876afdc36a5464dcff2af93c16799c))
+
 # [3.5.0](https://github.com/adfinis/timed-frontend/compare/v3.4.0...v3.5.0) (2024-03-11)
 
 
