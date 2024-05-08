@@ -1,24 +1,24 @@
 import EmberObject from "@ember/object";
 import { setupTest } from "ember-qunit";
 import { module, test } from "qunit";
-import setupSession from "timed/tests/helpers/session-mock";
+import setupCurrentUser from "timed/tests/helpers/current-user-mock";
 
 module("Unit | Ability | report", function (hooks) {
   setupTest(hooks);
-  setupSession(hooks);
+  setupCurrentUser(hooks);
 
   test("can edit when user is superuser", function (assert) {
     const ability = this.owner.lookup("ability:report");
-    const session = this.owner.lookup("service:session");
-    session.data = { user: EmberObject.create({ isSuperuser: true }) };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = EmberObject.create({ isSuperuser: true });
 
     assert.true(ability.get("canEdit"));
   });
 
   test("can edit when user is superuser and report is verified", function (assert) {
     const ability = this.owner.lookup("ability:report");
-    const session = this.owner.lookup("service:session");
-    session.data = { user: EmberObject.create({ isSuperuser: true }) };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = EmberObject.create({ isSuperuser: true });
     ability.set("model", { verifiedBy: EmberObject.create({ id: 1 }) });
 
     assert.true(ability.get("canEdit"));
@@ -26,8 +26,8 @@ module("Unit | Ability | report", function (hooks) {
 
   test("can edit when user owns report", function (assert) {
     const ability = this.owner.lookup("ability:report");
-    const session = this.owner.lookup("service:session");
-    session.data = { user: EmberObject.create({ id: 1 }) };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = EmberObject.create({ id: 1 });
     ability.set("model", { user: EmberObject.create({ id: 1 }) });
 
     assert.true(ability.get("canEdit"));
@@ -35,8 +35,8 @@ module("Unit | Ability | report", function (hooks) {
 
   test("can edit when user is supervisor of owner", function (assert) {
     const ability = this.owner.lookup("ability:report");
-    const session = this.owner.lookup("service:session");
-    session.data = { user: EmberObject.create({ id: 1 }) };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = EmberObject.create({ id: 1 });
     ability.set("model", {
       user: EmberObject.create({ supervisors: [{ id: 1 }] }),
     });
@@ -48,8 +48,8 @@ module("Unit | Ability | report", function (hooks) {
     const ability = this.owner.lookup("ability:report");
     const user = EmberObject.create({ id: 1 });
     const projectAssignee = [{ user }];
-    const session = this.owner.lookup("service:session");
-    session.data = { user };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = user;
     ability.set(
       "model",
       EmberObject.create({
@@ -62,8 +62,8 @@ module("Unit | Ability | report", function (hooks) {
 
   test("can not edit when not allowed", function (assert) {
     const ability = this.owner.lookup("ability:report");
-    const session = this.owner.lookup("service:session");
-    session.data = { user: EmberObject.create({ id: 1, isSuperuser: false }) };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = EmberObject.create({ id: 1, isSuperuser: false });
     ability.set("model", {
       user: EmberObject.create({ id: 2, supervisors: [{ id: 2 }] }),
       task: { project: { reviewers: [{ id: 2 }] } },
@@ -75,8 +75,8 @@ module("Unit | Ability | report", function (hooks) {
 
   test("can not edit when report is verified and billed", function (assert) {
     const ability = this.owner.lookup("ability:report");
-    const session = this.owner.lookup("service:session");
-    session.data = { user: EmberObject.create({ id: 1, isSuperuser: false }) };
+    const currentUser = this.owner.lookup("service:currentUser");
+    currentUser.user = EmberObject.create({ id: 1, isSuperuser: false });
     ability.set("model", {
       user: EmberObject.create({ id: 1, supervisors: [{ id: 1 }] }),
       projectAssignees: [{ id: 1 }],

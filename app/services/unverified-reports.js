@@ -18,7 +18,7 @@ const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
 export default class UnverifiedReportsService extends Service {
   @service store;
 
-  @service session;
+  @service currentUser;
 
   @service notify;
 
@@ -49,7 +49,7 @@ export default class UnverifiedReportsService extends Service {
     try {
       const reports = await this.store.query("report", {
         to_date: this.reportsToDate.format("YYYY-MM-DD"),
-        reviewer: this.session.data.user.id,
+        reviewer: this.currentUser.user.id,
         editable: 1,
         verified: 0,
         page: { number: 1, size: 1 },

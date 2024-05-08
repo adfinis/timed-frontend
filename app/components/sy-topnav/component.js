@@ -3,7 +3,7 @@ import Component from "@glimmer/component";
 import { tracked } from "@glimmer/tracking";
 
 export default class SyTopnav extends Component {
-  @service session;
+  @service currentUser;
 
   @service media;
 

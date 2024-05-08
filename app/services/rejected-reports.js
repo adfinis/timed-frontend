@@ -7,7 +7,7 @@ const INTERVAL_DELAY = 10 * 60000; // 10 Minutes
 export default class RejectedReportsService extends Service {
   @service store;
 
-  @service session;
+  @service currentUser;
 
   @service notify;
 
@@ -37,7 +37,7 @@ export default class RejectedReportsService extends Service {
   async pollReports() {
     try {
       const reports = await this.store.query("report", {
-        user: this.session.data.user.id,
+        user: this.currentUser.user.id,
         editable: 1,
         rejected: 1,
         page: { number: 1, size: 1 },

@@ -10,7 +10,7 @@ export default class ProjectsController extends Controller {
   taskValidations = TaskValidations;
   projectValidations = ProjectValidations;
 
-  @service session;
+  @service currentUser;
   @service store;
   @service notify;
 
@@ -29,7 +29,7 @@ export default class ProjectsController extends Controller {
   }
 
   get user() {
-    return this.session.data.user;
+    return this.currentUser.user;
   }
 
   get customers() {

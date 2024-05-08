@@ -2,10 +2,10 @@ import { inject as service } from "@ember/service";
 import { Ability } from "ember-can";
 
 export default class AbsenceCreditAbility extends Ability {
-  @service session;
+  @service currentUser;
 
   get user() {
-    return this.session.data.user;
+    return this.currentUser.user;
   }
   get canEdit() {
     return this.user.isSuperuser;

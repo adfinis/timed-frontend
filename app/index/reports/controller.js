@@ -33,6 +33,7 @@ export default class IndexReportController extends Controller {
   @service store;
   @service notify;
   @service router;
+  @service currentUser;
 
   ReportValidations = ReportValidations;
 
@@ -65,7 +66,7 @@ export default class IndexReportController extends Controller {
   get reports() {
     const reportsToday = this._allReports.filter((r) => {
       return (
-        (!r.get("user.id") || r.get("user.id") === this.user.id) &&
+        (!r.get("user.id") || r.get("user.id") === this.currentUser.user.id) &&
         r.get("date").isSame(this.model, "day") &&
         !r.get("isDeleted")
       );
@@ -74,7 +75,7 @@ export default class IndexReportController extends Controller {
     if (!reportsToday.filterBy("isNew", true).get("length")) {
       this.store.createRecord("report", {
         date: this.model,
-        user: this.user,
+        user: this.currentUser.user,
       });
     }
 
@@ -86,7 +87,7 @@ export default class IndexReportController extends Controller {
     const absences = this.store.peekAll("absence").filter((absence) => {
       return (
         absence.date.isSame(this.model, "day") &&
-        absence.get("user.id") === this.user.id &&
+        absence.get("user.id") === this.currentUser.user.id &&
         !absence.isNew &&
         !absence.isDeleted
       );

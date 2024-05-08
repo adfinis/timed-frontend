@@ -7,6 +7,7 @@ export default class ProtectedController extends Controller {
   @service notify;
   @service router;
   @service session;
+  @service currentUser;
   @service("autostart-tour") autostartTour;
   @service tour;
 
@@ -37,7 +38,7 @@ export default class ProtectedController extends Controller {
   @action
   async neverTour() {
     try {
-      const user = this.model;
+      const user = this.currentUser.user;
       user.tourDone = true;
       await user.save();
       this.visible = false;
@@ -70,7 +71,7 @@ export default class ProtectedController extends Controller {
     this.autostartTour.done = [];
     this.visible = false;
 
-    this.tour.prepare(this.model);
+    this.tour.prepare(this.currentUser.user);
     this.tour.startTour();
   }
 }

@@ -55,7 +55,7 @@ export default class AnalysisEditController extends Controller {
   @service notify;
   @service router;
   @service fetch;
-  @service session;
+  @service currentUser;
   @service store;
   @service unverifiedReports;
 
@@ -86,11 +86,11 @@ export default class AnalysisEditController extends Controller {
   }
 
   get isAccountant() {
-    return this.session.data.user.isAccountant;
+    return this.currentUser.user.isAccountant;
   }
 
   get isSuperuser() {
-    return this.session.data.user.isSuperuser;
+    return this.currentUser.user.isSuperuser;
   }
 
   @task
@@ -130,11 +130,11 @@ export default class AnalysisEditController extends Controller {
   }
 
   get hasSelectedOwnReports() {
-    return this.intersectionModel.user.get("id") === this.session.data.user.id;
+    return this.intersectionModel.user.get("id") === this.currentUser.user.id;
   }
 
   get isReviewer() {
-    return allQueryParams(this).reviewer === this.session.data.user.id;
+    return allQueryParams(this).reviewer === this.currentUser.user.id;
   }
 
   get canVerify() {

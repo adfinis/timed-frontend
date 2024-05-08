@@ -50,6 +50,7 @@ export default class AnalysisController extends QPController {
   exportLimit = config.APP.EXPORT_LIMIT;
 
   @service session;
+  @service currentUser;
   @service store;
   @service router;
   @service notify;
@@ -119,7 +120,7 @@ export default class AnalysisController extends QPController {
 
   get canBill() {
     return (
-      this.session.data.user.isAccountant || this.session.data.user.isSuperuser
+      this.currentUser.user.isAccountant || this.currentUser.user.isSuperuser
     );
   }
 

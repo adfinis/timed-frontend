@@ -18,6 +18,8 @@ const DATE_FORMAT = "YYYY-MM-DD";
  * @public
  */
 export default class IndexRoute extends Route {
+  @service currentUser;
+
   lastUpdateDate = null;
 
   queryParams = {
@@ -65,7 +67,7 @@ export default class IndexRoute extends Route {
 
     this.lastUpdateDate = formattedDate;
 
-    const userId = this.session.data.user.id;
+    const userId = this.currentUser.user.id;
     const day = model.format(DATE_FORMAT);
     const from = moment(model).subtract(20, "days").format(DATE_FORMAT);
     const to = moment(model).add(10, "days").format(DATE_FORMAT);
@@ -107,7 +109,6 @@ export default class IndexRoute extends Route {
     super.setupController(controller, model, ...args);
 
     controller.date = model;
-    controller.set("user", this.modelFor("protected"));
     controller.setCenter.perform({ moment: model });
 
     controller.set("newAbsence", {

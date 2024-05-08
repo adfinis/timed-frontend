@@ -1,7 +1,6 @@
 import { action } from "@ember/object";
 import Route from "@ember/routing/route";
 import { inject as service } from "@ember/service";
-import moment from "moment";
 
 /**
  * The protected route
@@ -13,6 +12,7 @@ import moment from "moment";
  */
 export default class ProtectedRoute extends Route {
   @service session;
+  @service currentUser;
   @service("autostart-tour") autostartTour;
   @service router;
   @service media;
@@ -21,36 +21,7 @@ export default class ProtectedRoute extends Route {
 
   async beforeModel(transition) {
     await this.session.requireAuthentication(transition, "login");
-  }
-
-  async model() {
-    const user = await this.fetch.fetch(
-      `/api/v1/users/me?${new URLSearchParams({
-        include: "supervisors,supervisees",
-      })}`,
-      {
-        method: "GET",
-      }
-    );
-
-    await this.store.pushPayload("user", user);
-
-    const usermodel = await this.store.peekRecord("user", user.data.id);
-
-    // Fetch current employment
-    const employment = await this.store.query("employment", {
-      user: usermodel.id,
-      date: moment().format("YYYY-MM-DD"),
-      include: "location",
-    });
-
-    if (!employment.length) {
-      this.router.transitionTo("no-access");
-    }
-
-    this.session.data.user = usermodel;
-
-    return usermodel;
+    await this.currentUser.load();
   }
 
   /**
@@ -66,7 +37,7 @@ export default class ProtectedRoute extends Route {
 
     const visible =
       !this.autostartTour.allDone &&
-      !model.tourDone &&
+      !this.currentUser.user.tourDone &&
       (this.media.isMd || this.media.isLg || this.media.isXl);
 
     controller.set("visible", visible);

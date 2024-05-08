@@ -47,7 +47,7 @@
           </li>
         {{/if}}
       {{/unless}}
-      {{#if this.session.data.user.isSuperuser}}
+      {{#if this.currentUser.user.isSuperuser}}
         <li class="nav-top-list-item">
           <LinkTo @route="users.index">
             <FaIcon @icon="users" @prefix="fas" />
@@ -59,9 +59,9 @@
     <ul class="nav-top-list nav-top-list--right">
       <ReportReviewWarning />
       <li class="nav-top-list-item">
-        <LinkTo @route="users.edit" @model={{this.session.data.user.id}}>
+        <LinkTo @route="users.edit" @model={{this.currentUser.user.id}}>
           <FaIcon @icon="user" />
-          {{this.session.data.user.fullName}}
+          {{this.currentUser.user.fullName}}
         </LinkTo>
       </li>
       <li class="nav-top-list-item">
