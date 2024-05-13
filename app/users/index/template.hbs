@@ -11,7 +11,7 @@
         @onChange={{perform this.setSearchFilter}}
       />
     </fs.label>
-    {{#if this.currentUser.isSuperuser}}
+    {{#if this.currentUser.user.isSuperuser}}
       <fs.label>
         Supervisor
         <fs.filter data-test-filter-user>

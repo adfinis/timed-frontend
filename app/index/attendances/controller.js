@@ -19,6 +19,7 @@ export default class AttendanceController extends Controller {
   @service notify;
   @service store;
   @service tracking;
+  @service currentUser;
 
   AttendanceValidator = AttendanceValidator;
 
@@ -53,7 +54,7 @@ export default class AttendanceController extends Controller {
     return this._allAttendances.filter((a) => {
       return (
         a.get("date").isSame(this.model, "day") &&
-        a.get("user.id") === this.user.id &&
+        a.get("user.id") === this.currentUser.user.id &&
         !a.get("isDeleted")
       );
     });

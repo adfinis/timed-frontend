@@ -8,7 +8,7 @@
           toDate=(moment-format
             this.unverifiedReports.reportsToDate "YYYY-MM-DD"
           )
-          reviewer=this.session.data.user.id
+          reviewer=this.currentUser.user.id
           editable=1
           rejected=null
           verified=0
@@ -34,7 +34,7 @@
         @query={{hash
           fromDate=null
           toDate=null
-          user=this.session.data.user.id
+          user=this.currentUser.user.id
           editable=1
           rejected=1
           verified=0

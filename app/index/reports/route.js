@@ -4,6 +4,7 @@ import moment from "moment";
 
 export default class IndexReportsRoute extends Route {
   @service store;
+  @service currentUser;
   @service notify;
 
   /**
@@ -22,7 +23,6 @@ export default class IndexReportsRoute extends Route {
   async setupController(controller, model, ...args) {
     super.setupController(controller, model, ...args);
 
-    controller.set("user", this.modelFor("protected"));
     controller.set("rescheduleDate", model);
 
     if (controller.task) {
@@ -36,7 +36,7 @@ export default class IndexReportsRoute extends Route {
             : "",
           date: model,
           comment: controller.comment ?? "",
-          user: this.modelFor("protected"),
+          user: this.currentUser.user,
           review: controller.review ?? false,
           notBillable: controller.notBillable ?? false,
           remainingEffort: task.mostRecentRemainingEffort,

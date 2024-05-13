@@ -9,7 +9,7 @@ import QPController from "timed/controllers/qpcontroller";
 export default class UsersIndexController extends QPController {
   queryParams = ["search", "supervisor", "active", "ordering"];
 
-  @service session;
+  @service currentUser;
   @service router;
   @service store;
 
@@ -33,10 +33,6 @@ export default class UsersIndexController extends QPController {
 
   get selectedSupervisor() {
     return this.supervisor && this.store.peekRecord("user", this.supervisor);
-  }
-
-  get currentUser() {
-    return this.session.data.user;
   }
 
   get fetchData() {
@@ -72,10 +68,10 @@ export default class UsersIndexController extends QPController {
 
     return yield this.store.query("user", {
       ...this.allQueryParams,
-      ...(this.currentUser.isSuperuser
+      ...(this.currentUser.user.isSuperuser
         ? {}
         : {
-            supervisor: this.currentUser.id,
+            supervisor: this.currentUser.user.id,
           }),
     });
   }

@@ -36,6 +36,7 @@ export default class IndexController extends Controller {
   @service store;
   @service notify;
   @service tracking;
+  @service currentUser;
 
   AbsenceValidations = AbsenceValidations;
   MultipleAbsenceValidations = MultipleAbsenceValidations;
@@ -55,7 +56,7 @@ export default class IndexController extends Controller {
       return (
         a.get("date") &&
         a.get("date").isSame(this.date, "day") &&
-        a.get("user.id") === this.user?.id &&
+        a.get("user.id") === this.currentUser.user?.id &&
         !a.get("isDeleted")
       );
     });
@@ -166,7 +167,7 @@ export default class IndexController extends Controller {
       return (
         attendance.get("date") &&
         attendance.get("date").isSame(this.date, "day") &&
-        attendance.get("user.id") === this.user?.id &&
+        attendance.get("user.id") === this.currentUser.user?.id &&
         !attendance.get("isDeleted")
       );
     });
@@ -214,7 +215,7 @@ export default class IndexController extends Controller {
     return this.allReports.filter((report) => {
       return (
         report.date.isSame(this.date, "day") &&
-        report.get("user.id") === this.user?.id &&
+        report.get("user.id") === this.currentUser.user?.id &&
         !report.isNew &&
         !report.isDeleted
       );
@@ -231,7 +232,7 @@ export default class IndexController extends Controller {
     return this.allAbsences.filter((absence) => {
       return (
         absence.date.isSame(this.date, "day") &&
-        absence.get("user.id") === this.user?.id &&
+        absence.get("user.id") === this.currentUser.user?.id &&
         !absence.isNew &&
         !absence.isDeleted
       );
@@ -301,7 +302,7 @@ export default class IndexController extends Controller {
    * @public
    */
   get expectedWorktime() {
-    return this.user.activeEmployment.worktimePerDay;
+    return this.currentUser.user.activeEmployment.worktimePerDay;
   }
 
   /**
@@ -312,7 +313,7 @@ export default class IndexController extends Controller {
    */
   get workdays() {
     // eslint-disable-next-line ember/no-get
-    return get(this, "user.activeEmployment.location.workdays");
+    return get(this, "currentUser.user.activeEmployment.location.workdays");
   }
 
   /**
@@ -324,14 +325,14 @@ export default class IndexController extends Controller {
   weeklyOverviewData = trackedFunction(this, {}, async () => {
     const allReports = this.allReports.filter(
       (report) =>
-        report.get("user.id") === this.user.get("id") &&
+        report.get("user.id") === this.currentUser.user.get("id") &&
         !report.get("isDeleted") &&
         !report.get("isNew")
     );
 
     const allAbsences = this.allAbsences.filter(
       (absence) =>
-        absence.get("user.id") === this.user.get("id") &&
+        absence.get("user.id") === this.currentUser.user.get("id") &&
         !absence.get("isDeleted") &&
         !absence.get("isNew")
     );
@@ -420,7 +421,7 @@ export default class IndexController extends Controller {
     const params = {
       from_date: from.format("YYYY-MM-DD"),
       to_date: to.format("YYYY-MM-DD"),
-      user: this.user?.id,
+      user: this.currentUser.user?.id,
     };
 
     const absences = yield this.store.query("absence", params);
