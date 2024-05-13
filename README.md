@@ -5,6 +5,9 @@
 [![License: AGPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 [![GHCR Image](https://github.com/adfinis/timed-frontend/actions/workflows/release-image.yml/badge.svg)](https://github.com/adfinis/timed-frontend/actions/workflows/release-image.yml)
 
+## Archived
+This Repository has been merged into a [monorepo](https://github.com/adfinis/timed) and is therefore archived.
+
 ## Requirements
 
 You will need the following things properly installed on your computer.
